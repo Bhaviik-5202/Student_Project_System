@@ -15,8 +15,11 @@ const MainLayout = () => {
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
         <div className="flex-1 flex flex-col">
-          <main className="flex-1 overflow-y-auto p-4 md:p-6 animate-fade-in">
-            <Outlet />
+          <main className="flex-1 overflow-y-auto p-4 md:p-6">
+            {/* Simple fade-in for page content */}
+            <div className="animate-fade-in">
+              <Outlet />
+            </div>
           </main>
           <Footer />
         </div>

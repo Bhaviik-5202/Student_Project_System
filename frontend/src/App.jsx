@@ -5,6 +5,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
+import { useState, useEffect } from "react";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 
 // Layouts
@@ -28,45 +29,63 @@ import ProjectGroupsList from "./components/pages/projects/ProjectGroups";
 import GuideAllocationList from "./components/pages/projects/GuideAllocation";
 import StudentAttendance from "./components/pages/students/Attendance";
 
-// Profile and Settings Pages (ADD THESE IMPORTS)
+// Settings
 import Profile from "./components/pages/settings/Profile";
 import Settings from "./components/pages/settings/Settings";
 
-// Protected Route Component
+/* ================================
+   Protected Route Component
+================================ */
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user, loading } = useAuth();
 
-  if (loading) {
-    return <LoadingSpinner />;
-  }
-
-  if (!user) {
-    return <Navigate to="/login" />;
-  }
+  if (loading) return <LoadingSpinner />;
+  if (!user) return <Navigate to="/login" replace />;
 
   if (allowedRoles && !allowedRoles.includes(user.role)) {
-    return <Navigate to="/dashboard" />;
+    return <Navigate to="/dashboard" replace />;
   }
 
   return children;
 };
 
+/* ================================
+   App Component
+================================ */
 function App() {
+  const [initialLoading, setInitialLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setInitialLoading(false);
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, []);
+
+  /* Startup Animation */
+  if (initialLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 to-secondary-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-24 h-24 bg-primary-600 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
+            <i className="fas fa-graduation-cap text-white text-4xl"></i>
+          </div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">
+            Project Management System
+          </h2>
+          <p className="text-gray-600">Loading workspace...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <Router>
       <AuthProvider>
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            duration: 3000,
-            style: {
-              background: "#363636",
-              color: "#fff",
-            },
-          }}
-        />
+        <Toaster position="top-right" />
 
         <Routes>
+          {/* Login */}
           <Route
             path="/login"
             element={
@@ -76,6 +95,7 @@ function App() {
             }
           />
 
+          {/* Protected App */}
           <Route
             path="/"
             element={
@@ -85,9 +105,16 @@ function App() {
             }
           >
             <Route index element={<Navigate to="/dashboard" />} />
-            <Route path="dashboard" element={<Dashboard />} />
+            <Route
+              path="dashboard"
+              element={
+                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
 
-            {/* Admin Routes */}
+            {/* Admin */}
             <Route
               path="students"
               element={
@@ -113,7 +140,7 @@ function App() {
               }
             />
 
-            {/* Faculty & Admin Routes */}
+            {/* Faculty + Admin */}
             <Route
               path="project-groups"
               element={
@@ -131,7 +158,7 @@ function App() {
               }
             />
 
-            {/* Student Routes */}
+            {/* Student */}
             <Route
               path="my-projects"
               element={
@@ -157,43 +184,14 @@ function App() {
               }
             />
 
-            {/* Profile & Settings Routes for ALL roles (ADD THESE) */}
-            <Route
-              path="profile"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <Profile />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="settings"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <Settings />
-                </ProtectedRoute>
-              }
-            />
-
-            {/* Common Routes */}
-            <Route
-              path="meetings"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <MeetingCalendar />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="reports"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <Reports />
-                </ProtectedRoute>
-              }
-            />
+            {/* Common */}
+            <Route path="profile" element={<Profile />} />
+            <Route path="settings" element={<Settings />} />
+            <Route path="meetings" element={<MeetingCalendar />} />
+            <Route path="reports" element={<Reports />} />
           </Route>
 
+          {/* Catch all */}
           <Route path="*" element={<Navigate to="/dashboard" />} />
         </Routes>
       </AuthProvider>
