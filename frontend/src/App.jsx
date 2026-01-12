@@ -67,13 +67,25 @@ function App() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary-50 to-secondary-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-24 h-24 bg-primary-600 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
-            <i className="fas fa-graduation-cap text-white text-4xl"></i>
+          <div className="w-24 h-24 bg-gradient-to-r from-primary-500 to-primary-600 rounded-full flex items-center justify-center mx-auto mb-6 relative">
+            {/* Pulsing ring effect */}
+            <div className="absolute inset-0 rounded-full border-4 border-primary-300 animate-ping opacity-75"></div>
+            {/* Shrinking ring */}
+            <div className="absolute inset-0 rounded-full border-4 border-primary-200 animate-pulse"></div>
+
+            <i className="fas fa-graduation-cap text-white text-4xl relative z-10"></i>
           </div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">
+          <h2 className="text-2xl font-bold text-gray-800 mb-2 animate-fade-in">
             Project Management System
           </h2>
-          <p className="text-gray-600">Loading workspace...</p>
+          <p className="text-gray-600 flex items-center justify-center gap-2">
+            <span className="inline-block">Loading Workspace</span>
+            <span className="flex gap-1">
+              <span className="animate-bounce delay-0">.</span>
+              <span className="animate-bounce delay-150">.</span>
+              <span className="animate-bounce delay-300">.</span>
+            </span>
+          </p>
         </div>
       </div>
     );
