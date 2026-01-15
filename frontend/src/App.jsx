@@ -9,7 +9,7 @@ import { useState, useEffect } from "react";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 
 // Layouts
-import MainLayout from "./components/layout/MainLayout";
+import MainLayout from "./components/layout/MainLayout"; 
 import AuthLayout from "./components/layout/AuthLayout";
 
 // Pages

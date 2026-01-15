@@ -2,27 +2,125 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom styles */
+/* ================================
+   Global Base
+================================ */
+:root {
+    --primary: #3b82f6;
+    --primary-dark: #1d4ed8;
+    --bg-soft: #f8fafc;
+    --border-soft: #e5e7eb;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background-color: var(--bg-soft);
+    color: #0f172a;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ================================
+   Layout & Scrollbar
+================================ */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #cbd5f5;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #94a3b8;
+}
+
+/* ================================
+   Sidebar
+================================ */
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    color: #334155;
+    transition: all 0.25s ease;
+}
+
+.sidebar-link:hover {
+    background: rgba(59, 130, 246, 0.06);
+    color: var(--primary);
+}
+
 .sidebar-link.active {
-    background-color: rgba(59, 130, 246, 0.1);
-    border-left: 4px solid #3b82f6;
-    color: #1d4ed8;
+    background: rgba(59, 130, 246, 0.12);
+    border-left: 4px solid var(--primary);
+    color: var(--primary-dark);
+    font-weight: 600;
+}
+
+/* ================================
+   Cards
+================================ */
+.card {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid var(--border-soft);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s ease;
 }
 
 .card-hover:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    transform: translateY(-6px);
+    box-shadow: 0 25px 30px rgba(0, 0, 0, 0.08);
 }
 
 .stat-card {
     transition: all 0.3s ease;
 }
 
-.modal-overlay {
-    background-color: rgba(0, 0, 0, 0.5);
+.stat-card:hover {
+    transform: scale(1.02);
 }
 
-/* Simple Animations */
+/* ================================
+   Buttons
+================================ */
+.btn-primary {
+    background: var(--primary);
+    color: white;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-weight: 500;
+    transition: all 0.25s ease;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
+}
+
+/* ================================
+   Modal
+================================ */
+.modal-overlay {
+    background-color: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(4px);
+}
+
+/* ================================
+   Animations
+================================ */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -35,7 +133,7 @@
 
 @keyframes slideUp {
     from {
-        transform: translateY(10px);
+        transform: translateY(12px);
         opacity: 0;
     }
 
@@ -53,7 +151,7 @@
     }
 
     50% {
-        opacity: 0.8;
+        opacity: 0.85;
     }
 }
 
@@ -65,13 +163,13 @@
     }
 
     50% {
-        transform: translateY(-5px);
+        transform: translateY(-6px);
     }
 }
 
 @keyframes smoothScale {
     from {
-        transform: scale(0.98);
+        transform: scale(0.96);
         opacity: 0;
     }
 
@@ -81,13 +179,13 @@
     }
 }
 
-/* Animation Classes */
+/* Utility animation classes */
 .animate-fade-in {
-    animation: fadeIn 0.5s ease-out;
+    animation: fadeIn 0.4s ease-out;
 }
 
 .animate-slide-up {
-    animation: slideUp 0.4s ease-out;
+    animation: slideUp 0.45s ease-out;
 }
 
 .animate-gentle-pulse {
@@ -99,29 +197,43 @@
 }
 
 .animate-smooth-scale {
-    animation: smoothScale 0.3s ease-out;
+    animation: smoothScale 0.35s ease-out;
 }
 
-/* Simple Loading Spinner */
+/* ================================
+   Loader
+================================ */
 .spinner-simple {
-    border: 2px solid rgba(59, 130, 246, 0.1);
+    border: 3px solid rgba(59, 130, 246, 0.15);
+    border-top: 3px solid var(--primary);
     border-radius: 50%;
-    border-top: 2px solid #3b82f6;
-    width: 24px;
-    height: 24px;
-    animation: spin 1s linear infinite;
+    width: 28px;
+    height: 28px;
+    animation: spin 0.8s linear infinite;
 }
 
 @keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
+    to {
         transform: rotate(360deg);
     }
 }
 
-body {
-    font-family: 'Inter', sans-serif;
+/* ================================
+   Forms
+================================ */
+input,
+select,
+textarea {
+    border: 1px solid var(--border-soft);
+    border-radius: 10px;
+    padding: 10px 12px;
+    transition: all 0.2s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
 }

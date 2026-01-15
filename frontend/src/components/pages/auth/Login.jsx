@@ -188,7 +188,7 @@ const Login = () => {
                 </div>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i className="fas fa-envelope text-gray-400"></i>
+                    {/* <i className="fas fa-envelope text-gray-400"></i> */}
                   </div>
                   <input
                     id="email"
@@ -197,7 +197,7 @@ const Login = () => {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10 appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm transition-all duration-200 hover:border-primary-300"
+                    className="pl-5 appearance-none relative block w-full px-4 py-2 border border-gray-200 placeholder-gray-500 text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm transition-all duration-200 hover:border-primary-300"
                     placeholder="you@university.edu"
                   />
                 </div>
@@ -225,8 +225,8 @@ const Login = () => {
                   </a>
                 </div>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i className="fas fa-lock text-gray-400"></i>
+                  <div>
+                    {/* <i className="fas fa-lock text-gray-400"></i> */}
                   </div>
                   <input
                     id="password"
@@ -235,7 +235,7 @@ const Login = () => {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm transition-all duration-200 hover:border-primary-300"
+                    className="pl-5 appearance-none relative block w-full px-4 py-2 border border-gray-200 placeholder-gray-500 text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm transition-all duration-200 hover:border-primary-300"
                     placeholder="Enter your password"
                   />
                 </div>
@@ -264,7 +264,7 @@ const Login = () => {
                     required
                     value={role}
                     onChange={(e) => setRole(e.target.value)}
-                    className="pl-10 appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm transition-all duration-200 hover:border-primary-300"
+                    className="pl-5 appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm transition-all duration-200 hover:border-primary-300"
                   >
                     <option value="">Choose your role...</option>
                     <option value="admin">Administrator</option>
@@ -337,7 +337,7 @@ const Login = () => {
                 </div>
                 <div className="relative flex justify-center text-sm">
                   <span className="px-4 bg-white text-gray-500">
-                    Quick login with demo accounts
+                    Quick Login With Demo Accounts
                   </span>
                 </div>
               </div>
@@ -371,9 +371,9 @@ const Login = () => {
                     >
                       {user.type}
                     </span>
-                    <span className="text-xs text-gray-500 mt-1">
+                    {/* <span className="text-xs text-gray-500 mt-1">
                       Click to fill
-                    </span>
+                    </span> */}
                   </button>
                 ))}
               </div>
