@@ -8,6 +8,7 @@ const Login = () => {
   const [role, setRole] = useState("");
   const [loading, setLoading] = useState(false);
   const [showContent, setShowContent] = useState(false);
+  const [error, setError] = useState("");
 
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -22,9 +23,16 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
     setLoading(true);
 
-    const result = await login(email, password, role);
+    if (!email || !password || !role) {
+      setError("Please fill in all fields");
+      setLoading(false);
+      return;
+    }
+
+    const result = await login(email, password);
 
     if (result.success) {
       // Success animation before navigation
@@ -32,6 +40,7 @@ const Login = () => {
         navigate("/dashboard");
       }, 500);
     } else {
+      setError(result.message || "Login failed. Please try again.");
       setLoading(false);
     }
   };
@@ -166,6 +175,16 @@ const Login = () => {
               Sign in to continue to your dashboard
             </p>
           </div>
+
+          {/* Error Message */}
+          {error && (
+            <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm animate-slide-down">
+              <div className="flex items-start">
+                <i className="fas fa-exclamation-circle mr-2 mt-0.5"></i>
+                <span>{error}</span>
+              </div>
+            </div>
+          )}
 
           {/* Login Form */}
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>

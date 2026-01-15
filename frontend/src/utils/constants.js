@@ -1,5 +1,5 @@
 export const API_BASE_URL =
-  process.env.REACT_APP_API_URL || "http://localhost:5000/api";
+  import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 export const ROLES = {
   ADMIN: "admin",
@@ -46,9 +46,10 @@ export const ROUTES = {
 };
 
 export const LOCAL_STORAGE_KEYS = {
-  TOKEN: "token",
+  TOKEN: "authToken",
   USER: "user",
-  ROLE: "role",
+  USER_ROLE: "userRole",
+  REFRESH_TOKEN: "refreshToken",
   THEME: "theme",
 };
 

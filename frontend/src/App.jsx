@@ -4,12 +4,11 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import { Toaster } from "react-hot-toast";
 import { useState, useEffect } from "react";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 
 // Layouts
-import MainLayout from "./components/layout/MainLayout"; 
+import MainLayout from "./components/layout/MainLayout";
 import AuthLayout from "./components/layout/AuthLayout";
 
 // Pages
@@ -33,13 +32,11 @@ import StudentAttendance from "./components/pages/students/Attendance";
 import Profile from "./components/pages/settings/Profile";
 import Settings from "./components/pages/settings/Settings";
 
-/* ================================
-   Protected Route Component
-================================ */
+//  Protected Route Component
 const ProtectedRoute = ({ children, allowedRoles }) => {
-  const { user, loading } = useAuth();
+  const { user, isLoading } = useAuth();
 
-  if (loading) return <LoadingSpinner />;
+  if (isLoading) return <LoadingSpinner />;
   if (!user) return <Navigate to="/login" replace />;
 
   if (allowedRoles && !allowedRoles.includes(user.role)) {
@@ -49,9 +46,7 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
   return children;
 };
 
-/* ================================
-   App Component
-================================ */
+//  App Component
 function App() {
   const [initialLoading, setInitialLoading] = useState(true);
 
@@ -94,8 +89,6 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <Toaster position="top-right" />
-
         <Routes>
           {/* Login */}
           <Route
@@ -117,14 +110,7 @@ function App() {
             }
           >
             <Route index element={<Navigate to="/dashboard" />} />
-            <Route
-              path="dashboard"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="dashboard" element={<Dashboard />} />
 
             {/* Admin */}
             <Route
@@ -153,48 +139,13 @@ function App() {
             />
 
             {/* Faculty + Admin */}
-            <Route
-              path="project-groups"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty"]}>
-                  <ProjectGroupsList />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="guide-allocation"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty"]}>
-                  <GuideAllocationList />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="project-groups" element={<ProjectGroupsList />} />
+            <Route path="guide-allocation" element={<GuideAllocationList />} />
 
             {/* Student */}
-            <Route
-              path="my-projects"
-              element={
-                <ProtectedRoute allowedRoles={["student"]}>
-                  <StudentProjects />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="proposal"
-              element={
-                <ProtectedRoute allowedRoles={["student"]}>
-                  <ProjectProposal />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="attendance"
-              element={
-                <ProtectedRoute allowedRoles={["student"]}>
-                  <StudentAttendance />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="my-projects" element={<StudentProjects />} />
+            <Route path="proposal" element={<ProjectProposal />} />
+            <Route path="attendance" element={<StudentAttendance />} />
 
             {/* Common */}
             <Route path="profile" element={<Profile />} />
