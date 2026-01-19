@@ -1,34 +1,57 @@
-import { Link, useLocation } from "react-router-dom";
+import React from "react";
+import { useLocation, Link } from "react-router-dom";
 
 const Breadcrumb = () => {
   const location = useLocation();
   const pathnames = location.pathname.split("/").filter((x) => x);
 
+  // Map route names to display names
+  const routeNames = {
+    dashboard: "Dashboard",
+    projects: "Projects",
+    students: "Students",
+    meetings: "Meetings",
+    reports: "Reports",
+    profile: "Profile",
+    settings: "Settings",
+    admin: "Admin",
+    faculty: "Faculty",
+  };
+
   return (
-    <nav className="flex items-center space-x-2 text-sm text-gray-600">
-      <Link to="/" className="hover:text-primary-600 transition-colors">
+    <nav
+      className="flex items-center text-sm text-gray-600 mb-4"
+      aria-label="Breadcrumb"
+    >
+      <Link
+        to="/dashboard"
+        className="hover:text-primary-600 transition-colors"
+      >
+        <i className="fas fa-home mr-2"></i>
         Home
       </Link>
+
       {pathnames.map((name, index) => {
         const routeTo = `/${pathnames.slice(0, index + 1).join("/")}`;
         const isLast = index === pathnames.length - 1;
+        const displayName =
+          routeNames[name] ||
+          name.replace("-", " ").replace(/\b\w/g, (l) => l.toUpperCase());
 
         return (
-          <span key={name} className="flex items-center">
-            <span className="mx-2">/</span>
+          <React.Fragment key={name}>
+            <i className="fas fa-chevron-right mx-2 text-gray-400"></i>
             {isLast ? (
-              <span className="text-gray-800 font-medium capitalize">
-                {name.replace(/-/g, " ")}
-              </span>
+              <span className="font-medium text-gray-900">{displayName}</span>
             ) : (
               <Link
                 to={routeTo}
-                className="hover:text-primary-600 transition-colors capitalize"
+                className="hover:text-primary-600 transition-colors"
               >
-                {name.replace(/-/g, " ")}
+                {displayName}
               </Link>
             )}
-          </span>
+          </React.Fragment>
         );
       })}
     </nav>

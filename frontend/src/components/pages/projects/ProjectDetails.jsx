@@ -1,22 +1,152 @@
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
+import { toast } from "react-hot-toast";
 
+const ProjectDetails = () => {
+  const { id } = useParams();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [project, setProject] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-const ProjectDetails = ({ project }) => {
-  return (
-    <div className="bg-white p-6 rounded-lg shadow">
-      <h2 className="text-2xl font-bold mb-4">{project.name}</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <h3 className="font-semibold mb-2">Description</h3>
-          <p className="text-gray-600">{project.description}</p>
+  useEffect(() => {
+    fetchProject();
+  }, [id]);
+
+  const fetchProject = async () => {
+    setLoading(true);
+    try {
+      setTimeout(() => {
+        setProject({
+          id,
+          title: "Final Year Project",
+          description: "Complete project management system for students",
+          status: "In Progress",
+          progress: 65,
+          startDate: "2024-01-15",
+          endDate: "2024-06-30",
+          supervisor: "Dr. John Smith",
+          teamMembers: ["Student A", "Student B", "Student C"],
+          documents: [],
+          milestones: [],
+        });
+        setLoading(false);
+      }, 500);
+    } catch (error) {
+      toast.error("Failed to load project details");
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="container mx-auto px-4 py-8">
+          <div className="animate-pulse">
+            <div className="h-8 bg-gray-300 rounded w-1/4 mb-4"></div>
+            <div className="h-4 bg-gray-300 rounded w-1/2 mb-8"></div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="h-64 bg-gray-300 rounded"></div>
+              <div className="h-64 bg-gray-300 rounded"></div>
+            </div>
+          </div>
         </div>
-        <div>
-          <h3 className="font-semibold mb-2">Details</h3>
-          <ul className="space-y-2">
-            <li>Status: {project.status}</li>
-            <li>Start Date: {project.startDate}</li>
-            <li>End Date: {project.endDate}</li>
-            <li>Team Size: {project.teamSize}</li>
-          </ul>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-6">
+          <button
+            onClick={() => navigate("/projects")}
+            className="text-blue-600 hover:text-blue-800 flex items-center mb-4"
+          >
+            ← Back to Projects
+          </button>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            {project.title}
+          </h1>
+          <div className="flex items-center gap-4">
+            <span
+              className={`px-3 py-1 rounded-full text-sm font-medium ${
+                project.status === "Completed"
+                  ? "bg-green-100 text-green-800"
+                  : project.status === "In Progress"
+                  ? "bg-blue-100 text-blue-800"
+                  : "bg-yellow-100 text-yellow-800"
+              }`}
+            >
+              {project.status}
+            </span>
+            <span className="text-gray-600">Progress: {project.progress}%</span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-6">
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                Project Description
+              </h2>
+              <p className="text-gray-600">{project.description}</p>
+            </div>
+
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                Progress
+              </h2>
+              <div className="w-full bg-gray-200 rounded-full h-2.5 mb-2">
+                <div
+                  className="bg-blue-600 h-2.5 rounded-full"
+                  style={{ width: `${project.progress}%` }}
+                ></div>
+              </div>
+              <div className="flex justify-between text-sm text-gray-600">
+                <span>0%</span>
+                <span className="font-medium">{project.progress}%</span>
+                <span>100%</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                Project Details
+              </h2>
+              <div className="space-y-3">
+                <div>
+                  <p className="text-sm text-gray-500">Supervisor</p>
+                  <p className="font-medium">{project.supervisor}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Start Date</p>
+                  <p className="font-medium">{project.startDate}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">End Date</p>
+                  <p className="font-medium">{project.endDate}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                Team Members
+              </h2>
+              <div className="space-y-3">
+                {project.teamMembers.map((member, index) => (
+                  <div key={index} className="flex items-center">
+                    <div className="w-8 h-8 bg-gray-300 rounded-full mr-3"></div>
+                    <span className="font-medium">{member}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

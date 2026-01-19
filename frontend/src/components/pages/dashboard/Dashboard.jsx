@@ -87,9 +87,9 @@ const Dashboard = () => {
       // Set time-based greeting
       const hour = new Date().getHours();
       let timeGreeting = "";
-      if (hour < 12) timeGreeting = "Good morning";
-      else if (hour < 18) timeGreeting = "Good afternoon";
-      else timeGreeting = "Good evening";
+      if (hour < 12) timeGreeting = "Good Morning";
+      else if (hour < 18) timeGreeting = "Good Afternoon";
+      else timeGreeting = "Good Evening";
 
       setTimeOfDay(timeGreeting);
 
