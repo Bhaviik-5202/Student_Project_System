@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import Header from "../common/Header";
@@ -9,7 +9,6 @@ import LoadingSpinner from "../common/LoadingSpinner";
 import useScreenSize from "../../hooks/useScreenSize";
 
 const MainLayout = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [notificationCount, setNotificationCount] = useState(3); // Start with 3 notifications
   const location = useLocation();
@@ -23,65 +22,6 @@ const MainLayout = () => {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  // Auto-close sidebar on mobile when route changes
-  useEffect(() => {
-    if (isMobile && sidebarOpen) {
-      setSidebarOpen(false);
-    }
-  }, [location.pathname, isMobile, sidebarOpen]);
-
-  // Responsive sidebar behavior
-  useEffect(() => {
-    if (isDesktop) {
-      setSidebarOpen(true);
-    } else if (isTablet || isMobile) {
-      setSidebarOpen(false);
-    }
-  }, [isDesktop, isTablet, isMobile]);
-
-  const toggleSidebar = useCallback(() => {
-    setSidebarOpen((prev) => !prev);
-  }, []);
-
-  // Handle keyboard shortcuts
-  useEffect(() => {
-    const handleKeyPress = (e) => {
-      // Ctrl/Cmd + B to toggle sidebar
-      if ((e.ctrlKey || e.metaKey) && e.key === "b") {
-        e.preventDefault();
-        toggleSidebar();
-      }
-      // Escape to close sidebar
-      if (e.key === "Escape" && sidebarOpen) {
-        setSidebarOpen(false);
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyPress);
-    return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [sidebarOpen, toggleSidebar]);
-
-  // Handle click outside sidebar on mobile
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      const sidebar = document.querySelector(".sidebar-container");
-      const toggleBtn = document.querySelector(".sidebar-toggle");
-
-      if (
-        sidebarOpen &&
-        isMobile &&
-        sidebar &&
-        !sidebar.contains(event.target) &&
-        !toggleBtn?.contains(event.target)
-      ) {
-        setSidebarOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [sidebarOpen, isMobile]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 font-sans flex flex-col">
@@ -114,38 +54,19 @@ const MainLayout = () => {
 
       {/* Header */}
       <Header
-        toggleSidebar={toggleSidebar}
         isScrolled={isScrolled}
         notificationCount={notificationCount}
         clearNotifications={() => setNotificationCount(0)}
-        sidebarOpen={sidebarOpen}
       />
-
-      {/* Backdrop for mobile sidebar */}
-      {sidebarOpen && (isMobile || isTablet) && (
-        <div
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity duration-300"
-          onClick={() => setSidebarOpen(false)}
-          aria-hidden="true"
-        />
-      )}
 
       <div className="flex flex-1 pt-16">
         {/* Sidebar */}
-        <div
-          className={`sidebar-container fixed md:relative z-40 h-[calc(100vh-4rem)] transition-transform duration-300 ease-in-out ${
-            sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
-          }`}
-        >
-          <Sidebar
-            isOpen={sidebarOpen}
-            onClose={() => setSidebarOpen(false)}
-            isMobile={isMobile}
-          />
+        <div className="sidebar-container fixed top-16 left-0 h-[calc(100vh-4rem)] z-40 hidden md:block overflow-y-auto">
+          <Sidebar />
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 flex flex-col min-w-0">
+        <div className="flex-1 flex flex-col min-w-0 md:ml-64 lg:ml-72">
           {/* Breadcrumb Navigation - Only show on desktop */}
           {!isMobile && (
             <div className="px-4 md:px-6 pt-4">
@@ -197,56 +118,6 @@ const MainLayout = () => {
           <Footer />
         </div>
       </div>
-
-      {/* Mobile Floating Action Button for sidebar */}
-      {isMobile && !sidebarOpen && (
-        <button
-          onClick={toggleSidebar}
-          className="fixed left-4 bottom-6 z-40 w-12 h-12 bg-primary-600 rounded-full shadow-lg flex items-center justify-center text-white hover:bg-primary-700 hover:shadow-xl transition-all duration-300 animate-bounce-slow"
-          aria-label="Open menu"
-        >
-          <i className="fas fa-bars text-lg"></i>
-        </button>
-      )}
-
-      {/* Quick Actions Panel */}
-      {isDesktop && (
-        <div className="fixed right-0 top-1/2 transform -translate-y-1/2 z-30">
-          <div className="flex flex-col items-end space-y-2 pr-2">
-            <button
-              onClick={() => window.print()}
-              className="w-10 h-10 bg-white rounded-l-lg shadow-md border border-gray-200 flex items-center justify-center text-gray-700 hover:text-primary-600 hover:bg-gray-50 transition-all duration-200 group"
-              aria-label="Print page"
-              title="Print"
-            >
-              <i className="fas fa-print"></i>
-            </button>
-            <button
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              className="w-10 h-10 bg-white rounded-l-lg shadow-md border border-gray-200 flex items-center justify-center text-gray-700 hover:text-primary-600 hover:bg-gray-50 transition-all duration-200 group"
-              aria-label="Scroll to top"
-              title="Scroll to top"
-            >
-              <i className="fas fa-arrow-up"></i>
-            </button>
-            <button
-              onClick={() => {
-                const html = document.documentElement;
-                html.classList.toggle("dark");
-                localStorage.setItem(
-                  "theme",
-                  html.classList.contains("dark") ? "dark" : "light",
-                );
-              }}
-              className="w-10 h-10 bg-white rounded-l-lg shadow-md border border-gray-200 flex items-center justify-center text-gray-700 hover:text-primary-600 hover:bg-gray-50 transition-all duration-200 group"
-              aria-label="Toggle theme"
-              title="Toggle theme"
-            >
-              <i className="fas fa-moon"></i>
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

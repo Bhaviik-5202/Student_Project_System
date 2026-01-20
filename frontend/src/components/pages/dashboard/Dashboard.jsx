@@ -1,4 +1,3 @@
-// src/components/pages/dashboard/Dashboard.jsx
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
@@ -122,8 +121,8 @@ const Dashboard = () => {
         user?.role === "student"
           ? studentGreetings
           : user?.role === "faculty"
-          ? facultyGreetings
-          : adminGreetings;
+            ? facultyGreetings
+            : adminGreetings;
       setGreeting(greetings[Math.floor(Math.random() * greetings.length)]);
 
       // Create role-specific dashboard data
@@ -468,8 +467,8 @@ const Dashboard = () => {
   const handleNotificationClick = (notificationId) => {
     setNotifications(
       notifications.map((notif) =>
-        notif.id === notificationId ? { ...notif, read: true } : notif
-      )
+        notif.id === notificationId ? { ...notif, read: true } : notif,
+      ),
     );
   };
 
@@ -497,7 +496,7 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 p-4 md:p-6 space-y-6 animate-fade-in">
-      {/* Enhanced Welcome Section with User Menu */}
+      {/* Dashboard Header with Welcome */}
       <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-6 md:p-8">
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
           <div className="flex-1">
@@ -519,8 +518,8 @@ const Dashboard = () => {
                       {user?.role === "admin"
                         ? "Administrator"
                         : user?.role === "faculty"
-                        ? "Faculty"
-                        : "Student"}
+                          ? "Faculty"
+                          : "Student"}
                     </span>
                     <span className="text-sm text-gray-500 flex items-center">
                       <CalendarDaysIcon className="w-4 h-4 mr-1" />
@@ -740,26 +739,26 @@ const Dashboard = () => {
               stat.color === "blue"
                 ? "bg-gradient-to-br from-blue-50 to-blue-25"
                 : stat.color === "green"
-                ? "bg-gradient-to-br from-green-50 to-green-25"
-                : stat.color === "yellow"
-                ? "bg-gradient-to-br from-yellow-50 to-yellow-25"
-                : "bg-gradient-to-br from-purple-50 to-purple-25";
+                  ? "bg-gradient-to-br from-green-50 to-green-25"
+                  : stat.color === "yellow"
+                    ? "bg-gradient-to-br from-yellow-50 to-yellow-25"
+                    : "bg-gradient-to-br from-purple-50 to-purple-25";
             const iconColor =
               stat.color === "blue"
                 ? "text-blue-600"
                 : stat.color === "green"
-                ? "text-green-600"
-                : stat.color === "yellow"
-                ? "text-yellow-600"
-                : "text-purple-600";
+                  ? "text-green-600"
+                  : stat.color === "yellow"
+                    ? "text-yellow-600"
+                    : "text-purple-600";
             const borderColor =
               stat.color === "blue"
                 ? "border-blue-100"
                 : stat.color === "green"
-                ? "border-green-100"
-                : stat.color === "yellow"
-                ? "border-yellow-100"
-                : "border-purple-100";
+                  ? "border-green-100"
+                  : stat.color === "yellow"
+                    ? "border-yellow-100"
+                    : "border-purple-100";
 
             return (
               <div
@@ -778,8 +777,8 @@ const Dashboard = () => {
                       stat.trend === "up"
                         ? "bg-gradient-to-r from-green-100 to-green-50 text-green-700 border border-green-200"
                         : stat.trend === "attention"
-                        ? "bg-gradient-to-r from-yellow-100 to-yellow-50 text-yellow-700 border border-yellow-200"
-                        : "bg-gradient-to-r from-blue-100 to-blue-50 text-blue-700 border border-blue-200"
+                          ? "bg-gradient-to-r from-yellow-100 to-yellow-50 text-yellow-700 border border-yellow-200"
+                          : "bg-gradient-to-r from-blue-100 to-blue-50 text-blue-700 border border-blue-200"
                     }`}
                   >
                     {stat.change}
@@ -1035,10 +1034,10 @@ const Dashboard = () => {
                       resource.color === "blue"
                         ? "bg-gradient-to-br from-blue-50 to-blue-25"
                         : resource.color === "purple"
-                        ? "bg-gradient-to-br from-purple-50 to-purple-25"
-                        : resource.color === "green"
-                        ? "bg-gradient-to-br from-green-50 to-green-25"
-                        : "bg-gradient-to-br from-gray-50 to-gray-25"
+                          ? "bg-gradient-to-br from-purple-50 to-purple-25"
+                          : resource.color === "green"
+                            ? "bg-gradient-to-br from-green-50 to-green-25"
+                            : "bg-gradient-to-br from-gray-50 to-gray-25"
                     }`}
                   >
                     <resource.icon
@@ -1046,10 +1045,10 @@ const Dashboard = () => {
                         resource.color === "blue"
                           ? "text-blue-600"
                           : resource.color === "purple"
-                          ? "text-purple-600"
-                          : resource.color === "green"
-                          ? "text-green-600"
-                          : "text-gray-600"
+                            ? "text-purple-600"
+                            : resource.color === "green"
+                              ? "text-green-600"
+                              : "text-gray-600"
                       }`}
                     />
                   </div>
@@ -1138,10 +1137,10 @@ const Dashboard = () => {
                       project.color === "blue"
                         ? "bg-gradient-to-r from-blue-500 to-blue-400"
                         : project.color === "purple"
-                        ? "bg-gradient-to-r from-purple-500 to-purple-400"
-                        : project.color === "green"
-                        ? "bg-gradient-to-r from-green-500 to-green-400"
-                        : "bg-gradient-to-r from-yellow-500 to-yellow-400"
+                          ? "bg-gradient-to-r from-purple-500 to-purple-400"
+                          : project.color === "green"
+                            ? "bg-gradient-to-r from-green-500 to-green-400"
+                            : "bg-gradient-to-r from-yellow-500 to-yellow-400"
                     }`}
                     style={{ width: `${project.progress}%` }}
                   ></div>
@@ -1216,8 +1215,8 @@ const Dashboard = () => {
                         metric.color === "green"
                           ? "text-green-400"
                           : metric.color === "blue"
-                          ? "text-blue-400"
-                          : "text-purple-400"
+                            ? "text-blue-400"
+                            : "text-purple-400"
                       }`}
                     />
                     <span className="font-medium text-gray-300">
@@ -1231,8 +1230,8 @@ const Dashboard = () => {
                         metric.color === "green"
                           ? "bg-gradient-to-r from-green-900/40 to-green-800/30 text-green-400 border border-green-800/30"
                           : metric.color === "blue"
-                          ? "bg-gradient-to-r from-blue-900/40 to-blue-800/30 text-blue-400 border border-blue-800/30"
-                          : "bg-gradient-to-r from-purple-900/40 to-purple-800/30 text-purple-400 border border-purple-800/30"
+                            ? "bg-gradient-to-r from-blue-900/40 to-blue-800/30 text-blue-400 border border-blue-800/30"
+                            : "bg-gradient-to-r from-purple-900/40 to-purple-800/30 text-purple-400 border border-purple-800/30"
                       }`}
                     >
                       {metric.change}
@@ -1245,8 +1244,8 @@ const Dashboard = () => {
                       metric.color === "green"
                         ? "bg-gradient-to-r from-green-500 to-green-400"
                         : metric.color === "blue"
-                        ? "bg-gradient-to-r from-blue-500 to-blue-400"
-                        : "bg-gradient-to-r from-purple-500 to-purple-400"
+                          ? "bg-gradient-to-r from-blue-500 to-blue-400"
+                          : "bg-gradient-to-r from-purple-500 to-purple-400"
                     }`}
                     style={{ width: `${metric.progress}%` }}
                   ></div>

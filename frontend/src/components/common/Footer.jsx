@@ -93,7 +93,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-white border-t border-gray-200 mt-8">
+    <footer className="bg-white border-t-2 border-gray-300 mt-8 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Top Section - Enhanced */}
         <div className="py-6">
