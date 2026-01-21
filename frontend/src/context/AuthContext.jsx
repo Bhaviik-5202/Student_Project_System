@@ -5,7 +5,6 @@ import React, {
   useEffect,
   useCallback,
 } from "react";
-import { NotificationProvider } from "./NotificationContext";
 
 const AuthContext = createContext(null);
 
@@ -17,7 +16,7 @@ export const useAuth = () => {
   return context;
 };
 
-const AuthProviderInner = ({ children }) => {
+export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -120,14 +119,6 @@ const AuthProviderInner = ({ children }) => {
     >
       {children}
     </AuthContext.Provider>
-  );
-};
-
-export const AuthProvider = ({ children }) => {
-  return (
-    <NotificationProvider>
-      <AuthProviderInner>{children}</AuthProviderInner>
-    </NotificationProvider>
   );
 };
 

@@ -1,125 +1,201 @@
-import { useState, useEffect, Suspense } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { useState, useEffect, Suspense, useCallback, memo } from "react";
+import { Outlet, useLocation, Link } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import Header from "../common/Header";
 import Sidebar from "../common/Sidebar";
 import Footer from "../common/Footer";
 import Breadcrumb from "../common/Breadcrumb";
 import LoadingSpinner from "../common/LoadingSpinner";
+import BackToTop from "../common/BackToTop.jsx";
 import useScreenSize from "../../hooks/useScreenSize";
+
+// Memoized components for better performance
+const MemoizedSidebar = memo(Sidebar);
+const MemoizedHeader = memo(Header);
+const MemoizedBreadcrumb = memo(Breadcrumb);
+const MemoizedFooter = memo(Footer);
 
 const MainLayout = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [notificationCount, setNotificationCount] = useState(3); // Start with 3 notifications
+  const [notificationCount] = useState(3);
   const location = useLocation();
-  const { isMobile, isTablet, isDesktop } = useScreenSize();
+  const { isMobile } = useScreenSize();
 
-  // Handle scroll for header effects
+  // Optimized scroll handler
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
+
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Clear notifications callback
+  const handleClearNotifications = useCallback(() => {
+    console.log("Notifications cleared");
+  }, []);
+
+  // Toast configuration
+  const toastOptions = {
+    duration: 4000,
+    style: {
+      background: "#ffffff",
+      color: "#374151",
+      border: "1px solid #e5e7eb",
+      borderRadius: "0.5rem",
+      boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
+    },
+    success: {
+      iconTheme: {
+        primary: "#10B981",
+        secondary: "#ffffff",
+      },
+    },
+    error: {
+      iconTheme: {
+        primary: "#EF4444",
+        secondary: "#ffffff",
+      },
+    },
+  };
+
+  // Skip animation for certain routes
+  const shouldAnimate = !location.pathname.includes("/chat");
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 font-sans flex flex-col">
       {/* Toast Notifications */}
       <Toaster
-        position="top-right"
-        toastOptions={{
-          duration: 4000,
-          style: {
-            background: "#ffffff",
-            color: "#374151",
-            border: "1px solid #e5e7eb",
-            borderRadius: "0.5rem",
-            boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
-          },
-          success: {
-            iconTheme: {
-              primary: "#10B981",
-              secondary: "#ffffff",
-            },
-          },
-          error: {
-            iconTheme: {
-              primary: "#EF4444",
-              secondary: "#ffffff",
-            },
-          },
-        }}
+        position={isMobile ? "top-center" : "top-right"}
+        toastOptions={toastOptions}
       />
 
       {/* Header */}
-      <Header
+      <MemoizedHeader
         isScrolled={isScrolled}
         notificationCount={notificationCount}
-        clearNotifications={() => setNotificationCount(0)}
+        clearNotifications={handleClearNotifications}
       />
 
       <div className="flex flex-1 pt-16">
         {/* Sidebar */}
-        <div className="sidebar-container fixed top-16 left-0 h-[calc(100vh-4rem)] z-40 hidden md:block overflow-y-auto">
-          <Sidebar />
-        </div>
+        {!isMobile && (
+          <aside
+            className="fixed top-16 left-0 h-[calc(100vh-4rem)] z-30 overflow-y-auto"
+            aria-label="Main navigation"
+          >
+            <MemoizedSidebar />
+          </aside>
+        )}
 
-        {/* Main Content */}
+        {/* Main Content Area */}
         <div className="flex-1 flex flex-col min-w-0 md:ml-64 lg:ml-72">
-          {/* Breadcrumb Navigation - Only show on desktop */}
+          {/* Breadcrumb Navigation */}
           {!isMobile && (
-            <div className="px-4 md:px-6 pt-4">
-              <Breadcrumb />
-            </div>
+            <nav className="px-4 md:px-6 pt-4" aria-label="Breadcrumb">
+              <MemoizedBreadcrumb />
+            </nav>
           )}
 
-          {/* Main Content Area */}
+          {/* Main Content */}
           <main className="flex-1 overflow-y-auto px-4 md:px-6 pb-6">
-            {/* Page content with loading state */}
             <Suspense
               fallback={
-                <div className="flex items-center justify-center min-h-[400px]">
+                <div
+                  className="flex items-center justify-center min-h-[50vh]"
+                  role="status"
+                  aria-label="Loading content"
+                >
                   <LoadingSpinner size="lg" />
                 </div>
               }
             >
-              {/* Content animation based on route change */}
-              <div key={location.pathname} className="animate-fade-in">
+              {/* Content with conditional animation */}
+              <div
+                key={location.pathname}
+                className={shouldAnimate ? "animate-fade-in" : ""}
+                role="main"
+              >
                 <Outlet />
               </div>
             </Suspense>
 
             {/* Back to Top Button */}
-            {isScrolled && (
-              <button
-                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-                className="fixed bottom-6 right-6 bg-gradient-to-r from-primary-600 to-primary-700 text-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 z-40 group"
-                aria-label="Back to top"
-              >
-                <svg
-                  className="w-5 h-5 transform group-hover:-translate-y-1 transition-transform"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 10l7-7m0 0l7 7m-7-7v18"
-                  />
-                </svg>
-              </button>
-            )}
+            {isScrolled && <BackToTop />}
           </main>
 
           {/* Footer */}
-          <Footer />
+          <MemoizedFooter />
         </div>
       </div>
+
+      {/* Mobile Navigation Drawer */}
+      {isMobile && (
+        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-3 px-4 z-40 shadow-lg">
+          <MobileNav currentPath={location.pathname} />
+        </div>
+      )}
     </div>
   );
 };
 
-export default MainLayout;
+// Mobile Navigation Component with simple colored blocks as icons
+const MobileNav = ({ currentPath }) => {
+  const navItems = [
+    {
+      label: "Dashboard",
+      path: "/dashboard",
+      color: "from-blue-500 to-blue-600",
+    },
+    {
+      label: "Courses",
+      path: "/courses",
+      color: "from-green-500 to-green-600",
+    },
+    {
+      label: "Chat",
+      path: "/chat",
+      color: "from-purple-500 to-purple-600",
+    },
+    {
+      label: "Settings",
+      path: "/settings",
+      color: "from-gray-500 to-gray-600",
+    },
+  ];
+
+  return (
+    <nav
+      className="flex justify-between items-center"
+      aria-label="Mobile navigation"
+    >
+      {navItems.map((item) => {
+        const isActive =
+          currentPath === item.path || currentPath.startsWith(item.path + "/");
+
+        return (
+          <Link
+            key={item.path}
+            to={item.path}
+            className={`flex flex-col items-center p-2 rounded-xl transition-all duration-200 ${
+              isActive
+                ? "text-primary-600 bg-primary-50"
+                : "text-gray-600 hover:text-primary-600 hover:bg-gray-50"
+            }`}
+            aria-label={item.label}
+          >
+            <div
+              className={`w-6 h-6 rounded-md bg-gradient-to-br ${item.color} ${
+                isActive ? "ring-2 ring-primary-400 ring-offset-1" : ""
+              }`}
+            />
+            <span className="text-xs mt-1 font-medium">{item.label}</span>
+          </Link>
+        );
+      })}
+    </nav>
+  );
+};
+
+export default memo(MainLayout);

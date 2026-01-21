@@ -11,6 +11,9 @@ import { AuthProvider, useAuth } from "./context/AuthContext";
 import MainLayout from "./components/layout/MainLayout";
 import AuthLayout from "./components/layout/AuthLayout";
 
+// Common Components
+import LoadingSpinner from "./components/common/LoadingSpinner";
+
 // Auth Pages
 import Login from "./components/pages/auth/Login";
 import Register from "./components/pages/auth/Register";
@@ -132,10 +135,29 @@ import SupportTicket from "./components/pages/help/SupportTicket";
 import Tutorials from "./components/pages/help/Tutorials";
 import UserGuide from "./components/pages/help/UserGuide";
 
-// Common Components
-import LoadingSpinner from "./components/common/LoadingSpinner";
+// ============================================
+// Role-Based Access Control Constants
+// ============================================
+const ROLE_COMBINATIONS = Object.freeze({
+  ALL: ["admin", "faculty", "student"],
+  ADMIN_ONLY: ["admin"],
+  FACULTY_ONLY: ["faculty"],
+  STUDENT_ONLY: ["student"],
+  ADMIN_FACULTY: ["admin", "faculty"],
+  FACULTY_STUDENT: ["faculty", "student"],
+});
 
-//  Protected Route Component
+const SPLASH_SCREEN_DELAY = 1200; // ms
+
+// ============================================
+// Protected Route Component
+// ============================================
+/**
+ * ProtectedRoute - Route wrapper requiring authentication & role-based access
+ * @param {React.ReactNode} children - Route content to render
+ * @param {Array<string>} allowedRoles - User roles permitted to access this route
+ * @returns {React.ReactNode} Protected route or redirect
+ */
 const ProtectedRoute = ({ children, allowedRoles = [] }) => {
   const { user, isLoading } = useAuth();
 
@@ -149,782 +171,185 @@ const ProtectedRoute = ({ children, allowedRoles = [] }) => {
   return children;
 };
 
-//  App Component
+// ============================================
+// Splash Screen Component
+// ============================================
+/**
+ * SplashScreen - Animated loading screen shown during app initialization
+ * Features pulsing animation and loading indicator
+ * @returns {React.ReactNode} Splash screen UI
+ */
+const SplashScreen = () => (
+  <div className="min-h-screen bg-gradient-to-br from-primary-50 to-secondary-50 flex items-center justify-center">
+    <div className="text-center">
+      <div className="w-24 h-24 bg-gradient-to-r from-primary-500 to-primary-600 rounded-full flex items-center justify-center mx-auto mb-6 relative">
+        <div className="absolute inset-0 rounded-full border-4 border-primary-300 animate-ping opacity-75"></div>
+        <div className="absolute inset-0 rounded-full border-4 border-primary-200 animate-pulse"></div>
+        <i className="fas fa-graduation-cap text-white text-4xl relative z-10"></i>
+      </div>
+      <h2 className="text-2xl font-bold text-gray-800 mb-2 animate-fade-in">
+        Project Management System
+      </h2>
+      <p className="text-gray-600 flex items-center justify-center gap-2">
+        <span className="inline-block">Loading Workspace</span>
+        <span className="flex gap-1">
+          <span className="animate-bounce delay-0">.</span>
+          <span className="animate-bounce delay-150">.</span>
+          <span className="animate-bounce delay-300">.</span>
+        </span>
+      </p>
+    </div>
+  </div>
+);
+
+// ============================================
+// Main App Component
+// ============================================
+/**
+ * App - Main application router component
+ * Initializes authentication provider and configures all app routes
+ * @returns {React.ReactNode} Application component with routing
+ */
 function App() {
   const [initialLoading, setInitialLoading] = useState(true);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setInitialLoading(false);
-    }, 1200);
+    }, SPLASH_SCREEN_DELAY);
     return () => clearTimeout(timer);
   }, []);
 
-  /* Startup Animation */
-  if (initialLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 to-secondary-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-24 h-24 bg-gradient-to-r from-primary-500 to-primary-600 rounded-full flex items-center justify-center mx-auto mb-6 relative">
-            {/* Pulsing ring effect */}
-            <div className="absolute inset-0 rounded-full border-4 border-primary-300 animate-ping opacity-75"></div>
-            {/* Shrinking ring */}
-            <div className="absolute inset-0 rounded-full border-4 border-primary-200 animate-pulse"></div>
-
-            <i className="fas fa-graduation-cap text-white text-4xl relative z-10"></i>
-          </div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2 animate-fade-in">
-            Project Management System
-          </h2>
-          <p className="text-gray-600 flex items-center justify-center gap-2">
-            <span className="inline-block">Loading Workspace</span>
-            <span className="flex gap-1">
-              <span className="animate-bounce delay-0">.</span>
-              <span className="animate-bounce delay-150">.</span>
-              <span className="animate-bounce delay-300">.</span>
-            </span>
-          </p>
-        </div>
-      </div>
-    );
-  }
+  if (initialLoading) return <SplashScreen />;
 
   return (
-    <Router>
+<Router>
       <AuthProvider>
         <Routes>
-          {/* Public Routes */}
-          <Route
-            path="/login"
-            element={
-              <AuthLayout>
-                <Login />
-              </AuthLayout>
-            }
-          />
-          <Route
-            path="/register"
-            element={
-              <AuthLayout>
-                <Register />
-              </AuthLayout>
-            }
-          />
-          <Route
-            path="/forgot-password"
-            element={
-              <AuthLayout>
-                <ForgotPassword />
-              </AuthLayout>
-            }
-          />
+          {/* Public/Auth Routes */}
+          <Route path="/login" element={<AuthLayout><Login /></AuthLayout>} />
+          <Route path="/register" element={<AuthLayout><Register /></AuthLayout>} />
+          <Route path="/forgot-password" element={<AuthLayout><ForgotPassword /></AuthLayout>} />
 
           {/* Protected Routes with MainLayout */}
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                <MainLayout />
-              </ProtectedRoute>
-            }
-          >
+          <Route path="/" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><MainLayout /></ProtectedRoute>}>
+
             {/* Dashboard Routes */}
             <Route index element={<Navigate to="/dashboard" />} />
             <Route path="dashboard" element={<Dashboard />} />
-            <Route
-              path="admin-dashboard"
-              element={
-                <ProtectedRoute allowedRoles={["admin"]}>
-                  <AdminDashboard />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="admin-dashboard" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}><AdminDashboard /></ProtectedRoute>} />
 
             {/* Admin Management Routes */}
-            <Route
-              path="students"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty"]}>
-                  <StudentsList />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="students/new"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty"]}>
-                  <StudentForm />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="students/filters"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty"]}>
-                  <StudentFilters />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="staff"
-              element={
-                <ProtectedRoute allowedRoles={["admin"]}>
-                  <StaffManagement />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="user-management"
-              element={
-                <ProtectedRoute allowedRoles={["admin"]}>
-                  <UserManagement />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="permissions"
-              element={
-                <ProtectedRoute allowedRoles={["admin"]}>
-                  <PermissionsManager />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="system-settings"
-              element={
-                <ProtectedRoute allowedRoles={["admin"]}>
-                  <SystemSettings />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="backup"
-              element={
-                <ProtectedRoute allowedRoles={["admin"]}>
-                  <BackupRestore />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="audit-log"
-              element={
-                <ProtectedRoute allowedRoles={["admin"]}>
-                  <AuditLog />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="batch-operations"
-              element={
-                <ProtectedRoute allowedRoles={["admin"]}>
-                  <BatchOperations />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="students" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><StudentsList /></ProtectedRoute>} />
+            <Route path="students/new" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><StudentForm /></ProtectedRoute>} />
+            <Route path="students/filters" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><StudentFilters /></ProtectedRoute>} />
+            <Route path="staff" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}><StaffManagement /></ProtectedRoute>} />
+            <Route path="user-management" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}><UserManagement /></ProtectedRoute>} />
+            <Route path="permissions" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}><PermissionsManager /></ProtectedRoute>} />
+            <Route path="system-settings" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}><SystemSettings /></ProtectedRoute>} />
+            <Route path="backup" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}><BackupRestore /></ProtectedRoute>} />
+            <Route path="audit-log" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}><AuditLog /></ProtectedRoute>} />
+            <Route path="batch-operations" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}><BatchOperations /></ProtectedRoute>} />
 
             {/* Project Routes */}
-            <Route
-              path="projects"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <ProjectList />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="projects/:id"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <ProjectDetails />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="project-proposal"
-              element={
-                <ProtectedRoute allowedRoles={["student", "faculty"]}>
-                  <ProjectProposal />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="project-types"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty"]}>
-                  <ProjectTypes />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="project-groups"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty"]}>
-                  <ProjectGroups />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="guide-allocation"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty"]}>
-                  <GuideAllocation />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="projects" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><ProjectList /></ProtectedRoute>} />
+            <Route path="projects/:id" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><ProjectDetails /></ProtectedRoute>} />
+            <Route path="project-proposal" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.FACULTY_STUDENT}><ProjectProposal /></ProtectedRoute>} />
+            <Route path="project-types" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><ProjectTypes /></ProtectedRoute>} />
+            <Route path="project-groups" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><ProjectGroups /></ProtectedRoute>} />
+            <Route path="guide-allocation" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><GuideAllocation /></ProtectedRoute>} />
 
             {/* Meeting Routes */}
-            <Route
-              path="meetings"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <MeetingCalendar />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="meetings/list"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <MeetingList />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="meetings/new"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty"]}>
-                  <MeetingForm />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="meetings" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><MeetingCalendar /></ProtectedRoute>} />
+            <Route path="meetings/list" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><MeetingList /></ProtectedRoute>} />
+            <Route path="meetings/new" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><MeetingForm /></ProtectedRoute>} />
 
             {/* Course Routes */}
-            <Route
-              path="courses"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <MyCourses />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="course-catalog"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <CourseCatalog />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="courses/:id"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <CourseDetails />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="course-materials"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <CourseMaterials />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="course-registration"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <CourseRegistration />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="course-schedule"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <CourseSchedule />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="syllabus/:id"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <SyllabusViewer />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="courses" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><MyCourses /></ProtectedRoute>} />
+            <Route path="course-catalog" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><CourseCatalog /></ProtectedRoute>} />
+            <Route path="courses/:id" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><CourseDetails /></ProtectedRoute>} />
+            <Route path="course-materials" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><CourseMaterials /></ProtectedRoute>} />
+            <Route path="course-registration" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><CourseRegistration /></ProtectedRoute>} />
+            <Route path="course-schedule" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><CourseSchedule /></ProtectedRoute>} />
+            <Route path="syllabus/:id" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><SyllabusViewer /></ProtectedRoute>} />
 
             {/* Assignment Routes */}
-            <Route
-              path="assignments"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <AssignmentList />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="assignments/:id"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <AssignmentDetails />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="assignments/submit/:id"
-              element={
-                <ProtectedRoute allowedRoles={["student"]}>
-                  <AssignmentSubmission />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="assignments/upload"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty"]}>
-                  <AssignmentUpload />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="assignments/rubric/:id"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty"]}>
-                  <GradingRubric />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="assignments/peer-review"
-              element={
-                <ProtectedRoute allowedRoles={["student", "faculty"]}>
-                  <PeerReview />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="submission-history"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <SubmissionHistory />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="assignments" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><AssignmentList /></ProtectedRoute>} />
+            <Route path="assignments/:id" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><AssignmentDetails /></ProtectedRoute>} />
+            <Route path="assignments/submit/:id" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.STUDENT_ONLY}><AssignmentSubmission /></ProtectedRoute>} />
+            <Route path="assignments/upload" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><AssignmentUpload /></ProtectedRoute>} />
+            <Route path="assignments/rubric/:id" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><GradingRubric /></ProtectedRoute>} />
+            <Route path="assignments/peer-review" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.FACULTY_STUDENT}><PeerReview /></ProtectedRoute>} />
+            <Route path="submission-history" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><SubmissionHistory /></ProtectedRoute>} />
 
             {/* Resource Routes */}
-            <Route
-              path="resources"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <ResourceBrowser />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="documents"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <DocumentLibrary />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="resources/:id"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <ResourceDetails />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="resource-upload"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty"]}>
-                  <ResourceUpload />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="templates"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <TemplateLibrary />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="tutorials"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <TutorialVideos />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="resources" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><ResourceBrowser /></ProtectedRoute>} />
+            <Route path="documents" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><DocumentLibrary /></ProtectedRoute>} />
+            <Route path="resources/:id" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><ResourceDetails /></ProtectedRoute>} />
+            <Route path="resource-upload" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><ResourceUpload /></ProtectedRoute>} />
+            <Route path="templates" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><TemplateLibrary /></ProtectedRoute>} />
+            <Route path="tutorials" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><TutorialVideos /></ProtectedRoute>} />
 
             {/* Portfolio Routes */}
-            <Route
-              path="portfolio"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <PortfolioView />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="portfolio-builder"
-              element={
-                <ProtectedRoute allowedRoles={["student"]}>
-                  <PortfolioBuilder />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="achievements"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <AchievementBadges />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="project-gallery"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <ProjectGallery />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="skills"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <SkillMatrix />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="transcript"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <TranscriptViewer />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="portfolio" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><PortfolioView /></ProtectedRoute>} />
+            <Route path="portfolio-builder" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.STUDENT_ONLY}><PortfolioBuilder /></ProtectedRoute>} />
+            <Route path="achievements" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><AchievementBadges /></ProtectedRoute>} />
+            <Route path="project-gallery" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><ProjectGallery /></ProtectedRoute>} />
+            <Route path="skills" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><SkillMatrix /></ProtectedRoute>} />
+            <Route path="transcript" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><TranscriptViewer /></ProtectedRoute>} />
 
             {/* Collaboration Routes */}
-            <Route
-              path="chat"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <TeamChat />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="chat/:id"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <ChatWindow />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="discussions"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <DiscussionBoard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="discussions/:id"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <DiscussionThread />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="file-sharing"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <FileSharing />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="team-directory"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <TeamDirectory />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="workspace"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <Workspace />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="chat" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><TeamChat /></ProtectedRoute>} />
+            <Route path="chat/:id" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><ChatWindow /></ProtectedRoute>} />
+            <Route path="discussions" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><DiscussionBoard /></ProtectedRoute>} />
+            <Route path="discussions/:id" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><DiscussionThread /></ProtectedRoute>} />
+            <Route path="file-sharing" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><FileSharing /></ProtectedRoute>} />
+            <Route path="team-directory" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><TeamDirectory /></ProtectedRoute>} />
+            <Route path="workspace" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><Workspace /></ProtectedRoute>} />
 
             {/* Analytics Routes */}
-            <Route
-              path="analytics"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty"]}>
-                  <AnalyticsDashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="analytics/grades"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty"]}>
-                  <GradeDistribution />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="analytics/performance"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty"]}>
-                  <PerformanceMetrics />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="analytics/progress"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <ProgressAnalytics />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="analytics/usage"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty"]}>
-                  <UsageStatistics />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="analytics/visualizations"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty"]}>
-                  <Visualizations />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="analytics" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><AnalyticsDashboard /></ProtectedRoute>} />
+            <Route path="analytics/grades" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><GradeDistribution /></ProtectedRoute>} />
+            <Route path="analytics/performance" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><PerformanceMetrics /></ProtectedRoute>} />
+            <Route path="analytics/progress" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><ProgressAnalytics /></ProtectedRoute>} />
+            <Route path="analytics/usage" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><UsageStatistics /></ProtectedRoute>} />
+            <Route path="analytics/visualizations" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><Visualizations /></ProtectedRoute>} />
 
             {/* Evaluation Routes */}
-            <Route
-              path="evaluation"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty"]}>
-                  <EvaluationForm />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="evaluation-criteria"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty"]}>
-                  <EvaluationCriteria />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="feedback"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <FeedbackDashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="peer-evaluation"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <PeerEvaluation />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="rubric-builder"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty"]}>
-                  <RubricBuilder />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="self-evaluation"
-              element={
-                <ProtectedRoute allowedRoles={["student"]}>
-                  <SelfEvaluation />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="evaluation" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><EvaluationForm /></ProtectedRoute>} />
+            <Route path="evaluation-criteria" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><EvaluationCriteria /></ProtectedRoute>} />
+            <Route path="feedback" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><FeedbackDashboard /></ProtectedRoute>} />
+            <Route path="peer-evaluation" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><PeerEvaluation /></ProtectedRoute>} />
+            <Route path="rubric-builder" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><RubricBuilder /></ProtectedRoute>} />
+            <Route path="self-evaluation" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.STUDENT_ONLY}><SelfEvaluation /></ProtectedRoute>} />
 
             {/* Timeline Routes */}
-            <Route
-              path="timeline"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <ProjectTimeline />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="gantt"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty"]}>
-                  <GanttChart />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="milestones"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <MilestoneTracker />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="roadmap"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty"]}>
-                  <RoadmapViewer />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="sprint-planner"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty"]}>
-                  <SprintPlanner />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="timeline-editor"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty"]}>
-                  <TimelineEditor />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="timeline" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><ProjectTimeline /></ProtectedRoute>} />
+            <Route path="gantt" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><GanttChart /></ProtectedRoute>} />
+            <Route path="milestones" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><MilestoneTracker /></ProtectedRoute>} />
+            <Route path="roadmap" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><RoadmapViewer /></ProtectedRoute>} />
+            <Route path="sprint-planner" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><SprintPlanner /></ProtectedRoute>} />
+            <Route path="timeline-editor" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><TimelineEditor /></ProtectedRoute>} />
 
             {/* Attendance Route */}
-            <Route
-              path="attendance"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty"]}>
-                  <StudentAttendance />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="attendance" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><StudentAttendance /></ProtectedRoute>} />
 
             {/* Reports Routes */}
-            <Route
-              path="reports"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty"]}>
-                  <Reports />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="export"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty"]}>
-                  <ExportOptions />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="reports" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><Reports /></ProtectedRoute>} />
+            <Route path="export" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><ExportOptions /></ProtectedRoute>} />
 
             {/* Settings Routes */}
-            <Route
-              path="profile"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <Profile />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="profile-settings"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <ProfileSettings />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="settings"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <Settings />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="profile" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><Profile /></ProtectedRoute>} />
+            <Route path="profile-settings" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><ProfileSettings /></ProtectedRoute>} />
+            <Route path="settings" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><Settings /></ProtectedRoute>} />
 
             {/* Help Routes */}
-            <Route
-              path="help"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <HelpCenter />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="faq"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <FAQ />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="knowledge-base"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <KnowledgeBase />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="support"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <SupportTicket />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="tutorials"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <Tutorials />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="user-guide"
-              element={
-                <ProtectedRoute allowedRoles={["admin", "faculty", "student"]}>
-                  <UserGuide />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="help" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><HelpCenter /></ProtectedRoute>} />
+            <Route path="faq" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><FAQ /></ProtectedRoute>} />
+            <Route path="knowledge-base" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><KnowledgeBase /></ProtectedRoute>} />
+            <Route path="support" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><SupportTicket /></ProtectedRoute>} />
+            <Route path="tutorials" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><Tutorials /></ProtectedRoute>} />
+            <Route path="user-guide" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><UserGuide /></ProtectedRoute>} />
           </Route>
 
           {/* Catch all route */}
@@ -936,3 +361,4 @@ function App() {
 }
 
 export default App;
+
