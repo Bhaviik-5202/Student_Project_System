@@ -12,17 +12,17 @@ const MeetingRow = memo(({ meeting, onView }) => {
   return (
     <tr className="hover:bg-gray-50 dark:hover:bg-gray-700">
       <td className="px-6 py-4 whitespace-nowrap">
-        <div className="font-medium text-slate-900 dark:text-white\">
+        <div className="font-medium text-slate-900 dark:text-white">
           {meeting.title}
         </div>
       </td>
-      <td className="px-6 py-4 whitespace-nowrap\">
-        <div className="text-slate-900 dark:text-white\">{meeting.date}</div>
-        <div className="text-slate-500 dark:text-slate-400 text-sm\">
+      <td className="px-6 py-4 whitespace-nowrap">
+        <div className="text-slate-900 dark:text-white">{meeting.date}</div>
+        <div className="text-slate-500 dark:text-slate-400 text-sm">
           {meeting.time}
         </div>
       </td>
-      <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white\">
+      <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
         {meeting.location}
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
@@ -37,7 +37,7 @@ const MeetingRow = memo(({ meeting, onView }) => {
         >
           View
         </button>
-        <button className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors\">
+        <button className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors">
           Edit
         </button>
       </td>

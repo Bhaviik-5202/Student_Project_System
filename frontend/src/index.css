@@ -896,6 +896,16 @@ body {
     animation: fadeIn 0.3s ease-out;
 }
 
+/* Scrollbar hide utility for horizontal navigation */
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
 .animate-fade-out {
     animation: fadeOut 0.3s ease-out;
 }

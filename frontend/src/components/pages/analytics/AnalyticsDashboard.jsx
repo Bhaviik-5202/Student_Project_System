@@ -54,7 +54,7 @@ const AnalyticsDashboard = memo(() => {
           <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
             <div className="flex items-center">
               <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mr-4">
-                <span className="text-2xl text-blue-600 dark:text-blue-400">👥</span>
+                <i className="fas fa-user-graduate text-xl text-blue-600 dark:text-blue-400"></i>
               </div>
               <div>
                 <div className="text-2xl font-bold text-slate-900 dark:text-white">
@@ -68,7 +68,7 @@ const AnalyticsDashboard = memo(() => {
           <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
             <div className="flex items-center">
               <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center mr-4">
-                <span className="text-2xl text-emerald-600 dark:text-emerald-400">📊</span>
+                <i className="fas fa-project-diagram text-xl text-emerald-600 dark:text-emerald-400"></i>
               </div>
               <div>
                 <div className="text-2xl font-bold text-slate-900 dark:text-white">
@@ -82,7 +82,7 @@ const AnalyticsDashboard = memo(() => {
           <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
             <div className="flex items-center">
               <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mr-4">
-                <span className="text-2xl text-purple-600 dark:text-purple-400">⭐</span>
+                <i className="fas fa-star text-xl text-purple-600 dark:text-purple-400"></i>
               </div>
               <div>
                 <div className="text-2xl font-bold text-slate-900 dark:text-white">
@@ -96,7 +96,7 @@ const AnalyticsDashboard = memo(() => {
           <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
             <div className="flex items-center">
               <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-lg flex items-center justify-center mr-4">
-                <span className="text-2xl text-amber-600 dark:text-amber-400">📈</span>
+                <i className="fas fa-chart-line text-xl text-amber-600 dark:text-amber-400"></i>
               </div>
               <div>
                 <div className="text-2xl font-bold text-slate-900 dark:text-white">

@@ -58,7 +58,7 @@ const AdminDashboard = memo(() => {
           <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
             <div className="flex items-center">
               <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mr-4">
-                <span className="text-2xl text-blue-600 dark:text-blue-400">👥</span>
+                <i className="fas fa-users text-xl text-blue-600 dark:text-blue-400"></i>
               </div>
               <div>
                 <div className="text-2xl font-bold text-slate-900 dark:text-white">
@@ -72,7 +72,7 @@ const AdminDashboard = memo(() => {
           <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
             <div className="flex items-center">
               <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center mr-4">
-                <span className="text-2xl text-emerald-600 dark:text-emerald-400">📊</span>
+                <i className="fas fa-project-diagram text-xl text-emerald-600 dark:text-emerald-400"></i>
               </div>
               <div>
                 <div className="text-2xl font-bold text-slate-900 dark:text-white">
@@ -86,7 +86,7 @@ const AdminDashboard = memo(() => {
           <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
             <div className="flex items-center">
               <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-lg flex items-center justify-center mr-4">
-                <span className="text-2xl text-amber-600 dark:text-amber-400">⏳</span>
+                <i className="fas fa-clock text-xl text-amber-600 dark:text-amber-400"></i>
               </div>
               <div>
                 <div className="text-2xl font-bold text-slate-900 dark:text-white">
@@ -100,7 +100,7 @@ const AdminDashboard = memo(() => {
           <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
             <div className="flex items-center">
               <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mr-4">
-                <span className="text-2xl text-purple-600 dark:text-purple-400">💻</span>
+                <i className="fas fa-heartbeat text-xl text-purple-600 dark:text-purple-400"></i>
               </div>
               <div>
                 <div className="text-2xl font-bold text-slate-900 dark:text-white">
@@ -121,30 +121,38 @@ const AdminDashboard = memo(() => {
             <div className="grid grid-cols-2 gap-4">
               <button
                 onClick={() => navigate("/admin/users")}
-                className="p-4 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 text-center"
+                className="p-4 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 text-center transition-colors"
               >
-                <div className="text-blue-600 dark:text-blue-400 text-lg mb-2">👤</div>
+                <div className="text-blue-600 dark:text-blue-400 text-lg mb-2">
+                  <i className="fas fa-user-cog"></i>
+                </div>
                 <div className="font-medium text-slate-900 dark:text-white">User Management</div>
               </button>
               <button
                 onClick={() => navigate("/admin/settings")}
-                className="p-4 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 text-center"
+                className="p-4 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 text-center transition-colors"
               >
-                <div className="text-emerald-600 dark:text-emerald-400 text-lg mb-2">⚙️</div>
+                <div className="text-emerald-600 dark:text-emerald-400 text-lg mb-2">
+                  <i className="fas fa-cogs"></i>
+                </div>
                 <div className="font-medium text-slate-900 dark:text-white">System Settings</div>
               </button>
               <button
                 onClick={() => navigate("/admin/audit")}
-                className="p-4 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 text-center"
+                className="p-4 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 text-center transition-colors"
               >
-                <div className="text-purple-600 dark:text-purple-400 text-lg mb-2">📋</div>
+                <div className="text-purple-600 dark:text-purple-400 text-lg mb-2">
+                  <i className="fas fa-clipboard-list"></i>
+                </div>
                 <div className="font-medium text-slate-900 dark:text-white">Audit Log</div>
               </button>
               <button
                 onClick={() => navigate("/admin/backup")}
-                className="p-4 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 text-center"
+                className="p-4 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 text-center transition-colors"
               >
-                <div className="text-amber-600 dark:text-amber-400 text-lg mb-2">💾</div>
+                <div className="text-amber-600 dark:text-amber-400 text-lg mb-2">
+                  <i className="fas fa-database"></i>
+                </div>
                 <div className="font-medium text-slate-900 dark:text-white">Backup</div>
               </button>
             </div>
