@@ -223,7 +223,7 @@ function App() {
   if (initialLoading) return <SplashScreen />;
 
   return (
-<Router>
+    <Router>
       <AuthProvider>
         <Routes>
           {/* Public/Auth Routes */}
