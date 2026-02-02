@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 
 const AchievementBadges = () => {
   const [selectedFilter, setSelectedFilter] = useState("all");
@@ -74,34 +74,34 @@ const AchievementBadges = () => {
     },
   ]);
 
-  const filters = [
+  const filters = useMemo(() => [
     { id: "all", name: "All Badges", count: 8 },
     { id: "earned", name: "Earned", count: 5 },
     { id: "available", name: "Available", count: 3 },
     { id: "recent", name: "Recent", count: 2 },
-  ];
+  ], []);
 
-  const filteredBadges = userBadges.filter((badge) => {
+  const filteredBadges = useMemo(() => userBadges.filter((badge) => {
     if (selectedFilter === "earned") return badge.earned;
     if (selectedFilter === "available") return !badge.earned;
     if (selectedFilter === "recent") return badge.earned && badge.date;
     return true;
-  });
+  }), [userBadges, selectedFilter]);
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
+    <div className="bg-white dark:bg-slate-900 rounded-lg shadow p-6\">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
         <div>
-          <h2 className="text-2xl font-bold text-gray-800">
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white\">
             Achievement Badges
           </h2>
-          <p className="text-gray-600 mt-1">
+          <p className="text-slate-600 dark:text-slate-400 mt-1\">
             Track your accomplishments and milestones
           </p>
         </div>
         <div className="mt-4 md:mt-0 flex items-center space-x-2">
-          <div className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full font-medium">
+          <div className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 rounded-full font-medium">
             {userBadges.filter((b) => b.earned).length} / {userBadges.length}{" "}
             Badges Earned
           </div>
@@ -219,7 +219,7 @@ const AchievementBadges = () => {
       )}
 
       {/* Recent Activity */}
-      <div className="mt-8 pt-6 border-t border-gray-200">
+      <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700\">
         <h3 className="font-medium text-gray-700 mb-4">Recent Activity</h3>
         <div className="space-y-3">
           {userBadges
@@ -256,4 +256,6 @@ const AchievementBadges = () => {
   );
 };
 
-export default AchievementBadges;
+AchievementBadges.displayName = 'AchievementBadges';
+
+export default React.memo(AchievementBadges);

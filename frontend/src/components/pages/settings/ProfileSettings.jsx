@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { useCallback, useEffect, useState, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import { toast } from "react-hot-toast";
 
-const ProfileSettings = () => {
+const ProfileSettings = memo(() => {
   const { user, updateProfile } = useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -18,22 +18,44 @@ const ProfileSettings = () => {
   });
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (user) {
-      setFormData({
-        name: user.name || "",
-        email: user.email || "",
-        phone: user.phone || "",
-        department: user.department || "",
-        bio: user.bio || "",
+  const buildFormData = useCallback((currentUser) => {
+    if (!currentUser) {
+      return {
+        name: "",
+        email: "",
+        phone: "",
+        department: "",
+        bio: "",
         currentPassword: "",
         newPassword: "",
         confirmPassword: "",
-      });
+      };
     }
-  }, [user]);
 
-  const handleSubmit = async (e) => {
+    return {
+      name: currentUser.name || "",
+      email: currentUser.email || "",
+      phone: currentUser.phone || "",
+      department: currentUser.department || "",
+      bio: currentUser.bio || "",
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    };
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      setFormData(buildFormData(user));
+    }
+  }, [user, buildFormData]);
+
+  const handleChange = useCallback((e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  }, []);
+
+  const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
 
     if (
@@ -53,99 +75,99 @@ const ProfileSettings = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [formData, updateProfile]);
+
+  const inputClass =
+    "w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500";
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6">
           <button
             onClick={() => navigate("/profile")}
-            className="text-blue-600 hover:text-blue-800 flex items-center mb-4"
+            className="text-blue-600 dark:text-blue-300 hover:text-blue-800 dark:hover:text-blue-200 flex items-center mb-4"
           >
             ← Back to Profile
           </button>
-          <h1 className="text-2xl font-bold text-gray-900">Edit Profile</h1>
-          <p className="text-gray-600">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+            Edit Profile
+          </h1>
+          <p className="text-slate-600 dark:text-slate-300">
             Update your personal information and settings
           </p>
         </div>
 
-        <div className="bg-white rounded-lg border border-gray-200 p-6 max-w-3xl">
+        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6 max-w-3xl">
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Personal Information */}
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">
                 Personal Information
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                     Full Name
                   </label>
                   <input
                     type="text"
+                    name="name"
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={inputClass}
                     value={formData.name}
-                    onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
+                    onChange={handleChange}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                     Email Address
                   </label>
                   <input
                     type="email"
+                    name="email"
                     required
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={inputClass}
                     value={formData.email}
-                    onChange={(e) =>
-                      setFormData({ ...formData, email: e.target.value })
-                    }
+                    onChange={handleChange}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                     Phone Number
                   </label>
                   <input
                     type="tel"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    name="phone"
+                    className={inputClass}
                     value={formData.phone}
-                    onChange={(e) =>
-                      setFormData({ ...formData, phone: e.target.value })
-                    }
+                    onChange={handleChange}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                     Department
                   </label>
                   <input
                     type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    name="department"
+                    className={inputClass}
                     value={formData.department}
-                    onChange={(e) =>
-                      setFormData({ ...formData, department: e.target.value })
-                    }
+                    onChange={handleChange}
                   />
                 </div>
               </div>
 
               <div className="mt-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                   Bio
                 </label>
                 <textarea
                   rows="3"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  name="bio"
+                  className={inputClass}
                   value={formData.bio}
-                  onChange={(e) =>
-                    setFormData({ ...formData, bio: e.target.value })
-                  }
+                  onChange={handleChange}
                   placeholder="Tell us about yourself"
                 />
               </div>
@@ -153,57 +175,45 @@ const ProfileSettings = () => {
 
             {/* Change Password */}
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">
                 Change Password
               </h2>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                     Current Password
                   </label>
                   <input
                     type="password"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    name="currentPassword"
+                    className={inputClass}
                     value={formData.currentPassword}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        currentPassword: e.target.value,
-                      })
-                    }
+                    onChange={handleChange}
                   />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                       New Password
                     </label>
                     <input
                       type="password"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      name="newPassword"
+                      className={inputClass}
                       value={formData.newPassword}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          newPassword: e.target.value,
-                        })
-                      }
+                      onChange={handleChange}
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                       Confirm New Password
                     </label>
                     <input
                       type="password"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      name="confirmPassword"
+                      className={inputClass}
                       value={formData.confirmPassword}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          confirmPassword: e.target.value,
-                        })
-                      }
+                      onChange={handleChange}
                     />
                   </div>
                 </div>
@@ -221,7 +231,7 @@ const ProfileSettings = () => {
               <button
                 type="button"
                 onClick={() => navigate("/profile")}
-                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                className="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700"
               >
                 Cancel
               </button>
@@ -231,6 +241,8 @@ const ProfileSettings = () => {
       </div>
     </div>
   );
-};
+});
+
+ProfileSettings.displayName = 'ProfileSettings';
 
 export default ProfileSettings;

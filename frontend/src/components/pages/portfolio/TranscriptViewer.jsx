@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 
 const TranscriptViewer = () => {
   const [selectedYear, setSelectedYear] = useState("all");
-  const [viewMode, setViewMode] = useState("detailed"); // detailed or summary
+  const [viewMode, setViewMode] = useState("detailed");
 
-  const studentInfo = {
+  const studentInfo = useMemo(() => ({
     name: "Alex Johnson",
     studentId: "S2024001",
     program: "Bachelor of Computer Science",
@@ -12,17 +12,17 @@ const TranscriptViewer = () => {
     expectedGraduation: "Spring 2024",
     advisor: "Dr. Sarah Wilson",
     department: "Computer Science",
-  };
+  }), []);
 
-  const academicYears = [
+  const academicYears = useMemo(() => [
     { id: "all", name: "All Years" },
     { id: "2023-2024", name: "2023-2024", gpa: 3.8 },
     { id: "2022-2023", name: "2022-2023", gpa: 3.6 },
     { id: "2021-2022", name: "2021-2022", gpa: 3.7 },
     { id: "2020-2021", name: "2020-2021", gpa: 3.5 },
-  ];
+  ], []);
 
-  const courses = [
+  const courses = useMemo(() => [
     {
       id: 1,
       code: "CS401",
@@ -111,16 +111,16 @@ const TranscriptViewer = () => {
       status: "Completed",
       instructor: "Prof. David Lee",
     },
-  ];
+  ], []);
 
-  const filteredCourses =
+  const filteredCourses = useMemo(() =>
     selectedYear === "all"
       ? courses
       : courses.filter((course) =>
           course.semester.includes(selectedYear.split("-")[0])
-        );
+        ), [courses, selectedYear]);
 
-  const calculateStats = () => {
+  const calculateStats = useCallback(() => {
     const relevantCourses = selectedYear === "all" ? courses : filteredCourses;
     const totalCredits = relevantCourses.reduce(
       (sum, course) => sum + course.credits,
@@ -143,41 +143,41 @@ const TranscriptViewer = () => {
     };
 
     return { totalCredits, gpa, gradeDistribution };
-  };
+  }, [courses, filteredCourses, selectedYear]);
 
-  const stats = calculateStats();
+  const stats = useMemo(() => calculateStats(), [calculateStats]);
 
-  const getGradeColor = (grade) => {
+  const getGradeColor = useCallback((grade) => {
     switch (grade) {
       case "A":
-        return "bg-green-100 text-green-700";
+        return "bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-200";
       case "A-":
-        return "bg-green-50 text-green-600";
+        return "bg-emerald-50 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-200";
       case "B+":
-        return "bg-blue-100 text-blue-700";
+        return "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200";
       case "B":
-        return "bg-yellow-100 text-yellow-700";
+        return "bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-200";
       case "B-":
-        return "bg-yellow-50 text-yellow-600";
+        return "bg-amber-50 dark:bg-amber-900/50 text-amber-600 dark:text-amber-200";
       case "C+":
-        return "bg-orange-100 text-orange-700";
+        return "bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-200";
       case "C":
-        return "bg-orange-50 text-orange-600";
+        return "bg-orange-50 dark:bg-orange-900/50 text-orange-600 dark:text-orange-200";
       default:
-        return "bg-gray-100 text-gray-700";
+        return "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300";
     }
-  };
+  }, []);
 
-  const handlePrint = () => {
+  const handlePrint = useCallback(() => {
     window.print();
-  };
+  }, []);
 
-  const handleDownload = (format) => {
+  const handleDownload = useCallback((format) => {
     alert(`Downloading transcript as ${format.toUpperCase()}`);
-  };
+  }, []);
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
+    <div className="bg-white dark:bg-slate-900 rounded-lg shadow p-6">
       {/* Header */}
       <div className="mb-8">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between">
@@ -528,7 +528,7 @@ const TranscriptViewer = () => {
       </div>
 
       {/* Transcript Footer */}
-      <div className="mt-8 pt-6 border-t border-gray-200 text-sm text-gray-500">
+      <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700 text-sm text-slate-500 dark:text-slate-400">
         <div className="flex justify-between">
           <div>
             <p>Issued by: {studentInfo.department}</p>
@@ -550,4 +550,6 @@ const TranscriptViewer = () => {
   );
 };
 
-export default TranscriptViewer;
+TranscriptViewer.displayName = 'TranscriptViewer';
+
+export default React.memo(TranscriptViewer);

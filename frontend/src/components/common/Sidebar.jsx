@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback, memo } from "react";
 import { NavLink, useLocation } from "react-router-dom";
+import PropTypes from "prop-types";
 import { useAuth } from "../../context/AuthContext";
 
-const Sidebar = () => {
+const Sidebar = memo(() => {
   const location = useLocation();
   const { user, logout } = useAuth();
   const [expandedSections, setExpandedSections] = useState({
@@ -10,22 +11,35 @@ const Sidebar = () => {
     projects: false,
     resources: false,
     analytics: false,
+    collaboration: false,
+    portfolio: false,
+    courses: false,
+    "help & support": false,
   });
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   // Get user role and set permissions
-  const userRole = user?.role || "student";
-  const isAdmin = userRole === "admin";
-  const isFaculty = userRole === "faculty" || isAdmin;
-  const isStudent = userRole === "student";
+  const userRole = useMemo(() => user?.role || "student", [user?.role]);
+  const isAdmin = useMemo(() => userRole === "admin", [userRole]);
+  const isFaculty = useMemo(() => userRole === "faculty" || isAdmin, [userRole, isAdmin]);
 
-  const toggleSection = (section) => {
+  // Update time every minute
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 60000); // Update every minute
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const toggleSection = useCallback((section) => {
     setExpandedSections((prev) => ({
       ...prev,
       [section]: !prev[section],
     }));
-  };
+  }, []);
 
-  const navigationItems = [
+  const navigationItems = useMemo(() => [
     {
       title: "Dashboard",
       icon: "fas fa-home",
@@ -285,13 +299,14 @@ const Sidebar = () => {
         },
       ],
     },
-  ];
+  ], [isAdmin]);
 
-  const filteredItems = navigationItems.filter((item) =>
-    item.roles.includes(userRole),
+  const filteredItems = useMemo(
+    () => navigationItems.filter((item) => item.roles.includes(userRole)),
+    [navigationItems, userRole]
   );
 
-  const renderNavItem = (item, isSubmenu = false) => {
+  const renderNavItem = useCallback((item, isSubmenu = false) => {
     const hasSubmenu = item.submenu && item.submenu.length > 0;
     const isExpanded = expandedSections[item.title.toLowerCase()] || false;
     const isActive = location.pathname === item.path;
@@ -300,8 +315,8 @@ const Sidebar = () => {
       isSubmenu ? "pl-8 pr-3 py-2 text-sm" : "px-4 py-3"
     } rounded-lg transition-all duration-200 ${
       isActive
-        ? "bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-md"
-        : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+        ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md"
+        : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white"
     }`;
 
     return (
@@ -311,19 +326,22 @@ const Sidebar = () => {
             <button
               onClick={() => toggleSection(item.title.toLowerCase())}
               className={`w-full ${baseClasses} justify-between`}
+              aria-expanded={isExpanded}
+              aria-label={`${item.title} menu`}
             >
               <div className="flex items-center">
                 {!isSubmenu && (
-                  <i className={`${item.icon} mr-3 w-5 text-center`}></i>
+                  <i className={`${item.icon} mr-3 w-5 text-center`} aria-hidden="true"></i>
                 )}
                 <span className="font-medium">{item.title}</span>
               </div>
               <i
                 className={`fas fa-chevron-${isExpanded ? "up" : "down"} text-xs`}
+                aria-hidden="true"
               ></i>
             </button>
             {isExpanded && (
-              <div className="mt-1 ml-2 border-l border-gray-200">
+              <div className="mt-1 ml-2 border-l border-gray-200 dark:border-gray-700">
                 {item.submenu
                   .filter((subItem) => subItem.roles.includes(userRole))
                   .map((subItem) => renderNavItem(subItem, true))}
@@ -334,35 +352,43 @@ const Sidebar = () => {
           <NavLink
             to={item.path}
             className={({ isActive }) =>
-              `${baseClasses} ${isActive ? "bg-primary-500 text-white" : ""}`
+              `${baseClasses} ${isActive ? "bg-blue-500 text-white" : ""}`
             }
+            aria-current={isActive ? "page" : undefined}
           >
             {!isSubmenu && (
-              <i className={`${item.icon} mr-3 w-5 text-center`}></i>
+              <i className={`${item.icon} mr-3 w-5 text-center`} aria-hidden="true"></i>
             )}
             <span className="font-medium">{item.title}</span>
           </NavLink>
         )}
       </div>
     );
-  };
+  }, [expandedSections, location.pathname, toggleSection, userRole]);
 
   return (
-    <aside className="sidebar bg-white border-r border-gray-200 w-64 md:w-72 h-full flex flex-col transition-all duration-300">
+    <aside 
+      className="sidebar bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 w-64 md:w-72 h-full flex flex-col transition-all duration-300"
+      role="navigation"
+      aria-label="Main navigation"
+    >
       {/* User Profile Info */}
-      <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100">
+      <div className="p-4 border-b border-gray-200 dark:border-gray-800 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
         <div className="flex items-center space-x-3">
           <div className="relative">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
-              {user?.name?.charAt(0) || "U"}
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+              {user?.name?.charAt(0)?.toUpperCase() || "U"}
             </div>
-            <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
+            <div 
+              className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white dark:border-gray-900"
+              aria-label="Online"
+            ></div>
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-gray-900 truncate">
+            <h3 className="font-semibold text-gray-900 dark:text-white truncate">
               {user?.name || "User"}
             </h3>
-            <p className="text-sm text-gray-600 truncate">
+            <p className="text-sm text-gray-600 dark:text-gray-400 truncate">
               {user?.email || "user@university.edu"}
             </p>
           </div>
@@ -370,7 +396,7 @@ const Sidebar = () => {
       </div>
 
       {/* Navigation Menu */}
-      <nav className="flex-1 overflow-y-auto py-4 px-2">
+      <nav className="flex-1 overflow-y-auto py-4 px-2" aria-label="Sidebar navigation">
         <div className="space-y-1">
           {filteredItems.map((item) => renderNavItem(item))}
         </div>
@@ -378,22 +404,22 @@ const Sidebar = () => {
         {/* Quick Stats (Admin/Faculty only) */}
         {(isAdmin || isFaculty) && (
           <div className="mt-8 px-3">
-            <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-4">
-              <h4 className="font-semibold text-gray-800 text-sm mb-2">
+            <div className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-lg p-4">
+              <h4 className="font-semibold text-gray-800 dark:text-gray-200 text-sm mb-2">
                 System Status
               </h4>
               <div className="space-y-2">
                 <div className="flex justify-between text-xs">
-                  <span className="text-gray-600">Active Projects</span>
-                  <span className="font-bold text-green-600">48</span>
+                  <span className="text-gray-600 dark:text-gray-400">Active Projects</span>
+                  <span className="font-bold text-green-600 dark:text-green-400">48</span>
                 </div>
                 <div className="flex justify-between text-xs">
-                  <span className="text-gray-600">Active Students</span>
-                  <span className="font-bold text-blue-600">156</span>
+                  <span className="text-gray-600 dark:text-gray-400">Active Students</span>
+                  <span className="font-bold text-blue-600 dark:text-blue-400">156</span>
                 </div>
                 <div className="flex justify-between text-xs">
-                  <span className="text-gray-600">Upcoming Meetings</span>
-                  <span className="font-bold text-purple-600">5</span>
+                  <span className="text-gray-600 dark:text-gray-400">Upcoming Meetings</span>
+                  <span className="font-bold text-purple-600 dark:text-purple-400">5</span>
                 </div>
               </div>
             </div>
@@ -402,44 +428,47 @@ const Sidebar = () => {
       </nav>
 
       {/* Sidebar Footer */}
-      <div className="border-t border-gray-200 p-4">
+      <div className="border-t border-gray-200 dark:border-gray-800 p-4">
         <div className="space-y-3">
           {/* Settings & Profile Links */}
           <div className="flex space-x-2">
             <NavLink
               to="/profile"
-              className="flex-1 flex items-center justify-center p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+              className="flex-1 flex items-center justify-center p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
               title="Profile"
+              aria-label="Go to profile"
             >
-              <i className="fas fa-user text-sm"></i>
+              <i className="fas fa-user text-sm" aria-hidden="true"></i>
             </NavLink>
             <NavLink
               to="/settings"
-              className="flex-1 flex items-center justify-center p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+              className="flex-1 flex items-center justify-center p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
               title="Settings"
+              aria-label="Go to settings"
             >
-              <i className="fas fa-cog text-sm"></i>
+              <i className="fas fa-cog text-sm" aria-hidden="true"></i>
             </NavLink>
             <button
               onClick={logout}
-              className="flex-1 flex items-center justify-center p-2 text-gray-600 hover:bg-red-50 hover:text-red-600 rounded-lg transition-colors"
+              className="flex-1 flex items-center justify-center p-2 text-gray-600 dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 rounded-lg transition-colors"
               title="Logout"
+              aria-label="Sign out"
             >
-              <i className="fas fa-sign-out-alt text-sm"></i>
+              <i className="fas fa-sign-out-alt text-sm" aria-hidden="true"></i>
             </button>
           </div>
 
           {/* Current Date/Time */}
-          <div className="text-center text-xs text-gray-500">
+          <div className="text-center text-xs text-gray-500 dark:text-gray-400">
             <div>
-              {new Date().toLocaleDateString("en-US", {
+              {currentTime.toLocaleDateString("en-US", {
                 weekday: "short",
                 month: "short",
                 day: "numeric",
               })}
             </div>
             <div className="text-xs">
-              {new Date().toLocaleTimeString([], {
+              {currentTime.toLocaleTimeString([], {
                 hour: "2-digit",
                 minute: "2-digit",
               })}
@@ -449,6 +478,8 @@ const Sidebar = () => {
       </div>
     </aside>
   );
-};
+});
+
+Sidebar.displayName = "Sidebar";
 
 export default Sidebar;

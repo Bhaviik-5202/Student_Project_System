@@ -1,7 +1,7 @@
 // src/components/pages/dashboard/PerformanceTrendChart.jsx
-import { useEffect, useState } from "react";
+import { memo, useState } from "react";
 
-const PerformanceTrendChart = ({ data }) => {
+const PerformanceTrendChart = memo(({ data }) => {
   const [activePoint, setActivePoint] = useState(null);
 
   if (!data || data.length === 0) return null;
@@ -47,12 +47,12 @@ const PerformanceTrendChart = ({ data }) => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
       <div className="flex justify-between items-center mb-6">
-        <h3 className="text-lg font-semibold text-gray-900">
+        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
           📈 Performance Trend
         </h3>
-        <span className="text-sm text-gray-600">Last 5 months</span>
+        <span className="text-sm text-slate-600 dark:text-slate-400">Last 5 months</span>
       </div>
 
       <div className="relative h-48">
@@ -70,8 +70,9 @@ const PerformanceTrendChart = ({ data }) => {
               y1={line}
               x2="100"
               y2={line}
-              stroke="#E5E7EB"
+              stroke="#cbd5e1"
               strokeWidth="0.5"
+              className="dark:stroke-slate-600"
             />
           ))}
 

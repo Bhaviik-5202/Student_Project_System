@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 
 const PortfolioView = () => {
   const [activeTab, setActiveTab] = useState("overview");
 
-  const portfolioData = {
+  const portfolioData = useMemo(() => ({
     student: {
       name: "Alex Johnson",
       title: "Software Engineering Student",
@@ -88,16 +88,16 @@ const PortfolioView = () => {
         year: "2016-2020",
       },
     ],
-  };
+  }), []);
 
-  const tabs = [
+  const tabs = useMemo(() => [
     { id: "overview", name: "Overview", icon: "fas fa-home" },
     { id: "projects", name: "Projects", icon: "fas fa-project-diagram" },
     { id: "skills", name: "Skills", icon: "fas fa-code" },
     { id: "achievements", name: "Achievements", icon: "fas fa-trophy" },
     { id: "education", name: "Education", icon: "fas fa-graduation-cap" },
     { id: "contact", name: "Contact", icon: "fas fa-envelope" },
-  ];
+  ], []);
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -493,10 +493,14 @@ const PortfolioView = () => {
     }
   };
 
+  const handleTabChange = useCallback((tabId) => {
+    setActiveTab(tabId);
+  }, []);
+
   return (
-    <div className="bg-white rounded-lg shadow">
+    <div className="bg-white dark:bg-slate-900 rounded-lg shadow">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6 rounded-t-lg">
+      <div className="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-800 dark:to-blue-900 text-white p-6 rounded-t-lg">
         <div className="flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-6">
           <div className="w-32 h-32 bg-white rounded-full overflow-hidden border-4 border-white">
             <img
@@ -561,7 +565,7 @@ const PortfolioView = () => {
       <div className="p-6">{renderTabContent()}</div>
 
       {/* Footer */}
-      <div className="border-t border-gray-200 p-6 text-center text-gray-500 text-sm">
+      <div className="border-t border-slate-200 dark:border-slate-700 p-6 text-center text-slate-500 dark:text-slate-400 text-sm">
         <p>
           Portfolio generated using Project Management System • Last updated:{" "}
           {new Date().toLocaleDateString()}
@@ -575,4 +579,6 @@ const PortfolioView = () => {
   );
 };
 
-export default PortfolioView;
+PortfolioView.displayName = 'PortfolioView';
+
+export default React.memo(PortfolioView);

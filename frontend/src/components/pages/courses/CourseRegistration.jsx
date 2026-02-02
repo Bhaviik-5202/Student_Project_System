@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { memo, useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
-const CourseRegistration = () => {
+const CourseRegistration = memo(() => {
   const navigate = useNavigate();
-  const [availableCourses] = useState([
+  
+  const availableCourses = useMemo(() => [
     {
       id: 1,
       code: "CS401",
@@ -50,20 +51,20 @@ const CourseRegistration = () => {
       schedule: "Mon/Wed 3:00 PM",
       seats: 10,
     },
-  ]);
+  ], []);
 
   const [selectedCourses, setSelectedCourses] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const toggleCourseSelection = (courseId) => {
-    setSelectedCourses(
-      selectedCourses.includes(courseId)
-        ? selectedCourses.filter((id) => id !== courseId)
-        : [...selectedCourses, courseId]
+  const toggleCourseSelection = useCallback((courseId) => {
+    setSelectedCourses((prev) =>
+      prev.includes(courseId)
+        ? prev.filter((id) => id !== courseId)
+        : [...prev, courseId]
     );
-  };
+  }, []);
 
-  const handleRegistration = async () => {
+  const handleRegistration = useCallback(async () => {
     if (selectedCourses.length === 0) {
       toast.error("Please select at least one course");
       return;
@@ -79,27 +80,29 @@ const CourseRegistration = () => {
       setSelectedCourses([]);
       navigate("/courses/my");
     }, 1500);
-  };
+  }, [selectedCourses, navigate]);
 
-  const totalCredits = selectedCourses.reduce((total, courseId) => {
-    const course = availableCourses.find((c) => c.id === courseId);
-    return total + (course?.credits || 0);
-  }, 0);
+  const totalCredits = useMemo(() => 
+    selectedCourses.reduce((total, courseId) => {
+      const course = availableCourses.find((c) => c.id === courseId);
+      return total + (course?.credits || 0);
+    }, 0)
+  , [selectedCourses, availableCourses]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6">
           <button
             onClick={() => navigate("/courses")}
-            className="text-blue-600 hover:text-blue-800 flex items-center mb-4"
+            className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 flex items-center mb-4"
           >
             ← Back to Courses
           </button>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
             Course Registration
           </h1>
-          <p className="text-gray-600">
+          <p className="text-slate-600 dark:text-slate-400">
             Register for courses for the upcoming semester
           </p>
         </div>
@@ -107,15 +110,15 @@ const CourseRegistration = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Available Courses */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
                 Available Courses
               </h3>
               <div className="space-y-4">
                 {availableCourses.map((course) => (
                   <div
                     key={course.id}
-                    className="border border-gray-200 rounded-lg p-4"
+                    className="border border-slate-200 dark:border-slate-700 rounded-lg p-4"
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex items-start">
@@ -126,13 +129,13 @@ const CourseRegistration = () => {
                           className="h-4 w-4 text-blue-600 rounded focus:ring-blue-500 mt-1"
                         />
                         <div className="ml-3">
-                          <div className="font-medium text-gray-900">
+                          <div className="font-medium text-slate-900 dark:text-white">
                             {course.title}
                           </div>
-                          <div className="text-sm text-gray-600">
+                          <div className="text-sm text-slate-600 dark:text-slate-400">
                             {course.code} • {course.instructor}
                           </div>
-                          <div className="text-sm text-gray-500 mt-1">
+                          <div className="text-sm text-slate-500 dark:text-slate-500 mt-1">
                             {course.schedule} • {course.credits} Credits •{" "}
                             {course.seats} seats available
                           </div>
@@ -159,28 +162,28 @@ const CourseRegistration = () => {
 
           {/* Registration Summary */}
           <div>
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
                 Registration Summary
               </h3>
 
               <div className="mb-6">
                 <div className="flex justify-between items-center mb-2">
-                  <div className="text-gray-600">Selected Courses</div>
-                  <div className="font-medium">{selectedCourses.length}</div>
+                  <div className="text-slate-600 dark:text-slate-400">Selected Courses</div>
+                  <div className="font-medium text-slate-900 dark:text-white">{selectedCourses.length}</div>
                 </div>
                 <div className="flex justify-between items-center mb-2">
-                  <div className="text-gray-600">Total Credits</div>
-                  <div className="font-medium">{totalCredits}</div>
+                  <div className="text-slate-600 dark:text-slate-400">Total Credits</div>
+                  <div className="font-medium text-slate-900 dark:text-white">{totalCredits}</div>
                 </div>
                 <div className="flex justify-between items-center">
-                  <div className="text-gray-600">Maximum Allowed</div>
-                  <div className="font-medium">18 Credits</div>
+                  <div className="text-slate-600 dark:text-slate-400">Maximum Allowed</div>
+                  <div className="font-medium text-slate-900 dark:text-white">18 Credits</div>
                 </div>
               </div>
 
               <div className="mb-6">
-                <h4 className="text-sm font-medium text-gray-900 mb-3">
+                <h4 className="text-sm font-medium text-slate-900 dark:text-white mb-3">
                   Selected Courses
                 </h4>
                 <div className="space-y-2 max-h-48 overflow-y-auto">
@@ -191,33 +194,33 @@ const CourseRegistration = () => {
                     return (
                       <div
                         key={courseId}
-                        className="flex justify-between items-center p-2 bg-gray-50 rounded"
+                        className="flex justify-between items-center p-2 bg-slate-50 dark:bg-slate-700 rounded"
                       >
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm font-medium text-slate-900 dark:text-white">
                           {course?.code}
                         </div>
-                        <div className="text-sm text-gray-600">
+                        <div className="text-sm text-slate-600 dark:text-slate-400">
                           {course?.credits} credits
                         </div>
                       </div>
                     );
                   })}
                   {selectedCourses.length === 0 && (
-                    <div className="text-center py-4 text-gray-500">
+                    <div className="text-center py-4 text-slate-500 dark:text-slate-400">
                       No courses selected
                     </div>
                   )}
                 </div>
               </div>
 
-              <div className="mb-6 p-4 bg-blue-50 rounded-lg">
-                <div className="text-sm text-gray-600 mb-2">
+              <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
+                <div className="text-sm text-slate-600 dark:text-slate-400 mb-2">
                   Registration Deadline
                 </div>
-                <div className="font-medium text-gray-900">
+                <div className="font-medium text-slate-900 dark:text-white">
                   January 30, 2024
                 </div>
-                <div className="text-sm text-gray-600 mt-1">
+                <div className="text-sm text-slate-600 dark:text-slate-400 mt-1">
                   Late registration may incur fees
                 </div>
               </div>
@@ -227,7 +230,7 @@ const CourseRegistration = () => {
                 disabled={
                   loading || selectedCourses.length === 0 || totalCredits > 18
                 }
-                className="w-full px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
+                className="w-full px-4 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <div className="flex items-center justify-center">
@@ -242,7 +245,7 @@ const CourseRegistration = () => {
               </button>
 
               {totalCredits > 18 && (
-                <div className="mt-3 text-sm text-red-600 text-center">
+                <div className="mt-3 text-sm text-rose-600 dark:text-rose-400 text-center">
                   Maximum credit limit is 18 credits
                 </div>
               )}
@@ -252,6 +255,8 @@ const CourseRegistration = () => {
       </div>
     </div>
   );
-};
+});
+
+CourseRegistration.displayName = 'CourseRegistration';
 
 export default CourseRegistration;

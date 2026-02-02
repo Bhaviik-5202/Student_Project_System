@@ -483,10 +483,10 @@ const Dashboard = () => {
       <div className="min-h-[60vh] flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
             Loading Dashboard
           </h2>
-          <p className="text-gray-600">
+          <p className="text-gray-600 dark:text-gray-400">
             Preparing your personalized dashboard...
           </p>
         </div>
@@ -495,9 +495,9 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 p-4 md:p-6 space-y-6 animate-fade-in">
+    <div className="min-h-screen p-4 md:p-6 space-y-6 animate-fade-in">
       {/* Dashboard Header with Welcome */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-6 md:p-8">
+      <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-lg p-6 md:p-8">
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
           <div className="flex-1">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -506,22 +506,22 @@ const Dashboard = () => {
                   <HomeIcon className="w-7 h-7 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+                  <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">
                     {timeOfDay},{" "}
-                    <span className="text-blue-600">
+                    <span className="text-blue-600 dark:text-blue-400">
                       {user?.name || "Student"}
                     </span>
                   </h1>
-                  <p className="text-gray-600 mt-1 text-lg">{greeting}</p>
+                  <p className="text-gray-600 dark:text-gray-400 mt-1 text-lg">{greeting}</p>
                   <div className="flex items-center gap-3 mt-3">
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gradient-to-r from-blue-100 to-blue-50 text-blue-700 border border-blue-200">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gradient-to-r from-blue-100 to-blue-50 dark:from-blue-900/40 dark:to-blue-800/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700">
                       {user?.role === "admin"
                         ? "Administrator"
                         : user?.role === "faculty"
                           ? "Faculty"
                           : "Student"}
                     </span>
-                    <span className="text-sm text-gray-500 flex items-center">
+                    <span className="text-sm text-gray-500 dark:text-gray-400 flex items-center">
                       <CalendarDaysIcon className="w-4 h-4 mr-1" />
                       {new Date().toLocaleDateString("en-US", {
                         weekday: "long",
@@ -536,8 +536,8 @@ const Dashboard = () => {
               {/* User Stats Dropdown Menu */}
               <Menu as="div" className="relative inline-block text-left">
                 <div>
-                  <Menu.Button className="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-gray-50 to-white text-gray-700 rounded-xl hover:shadow-md transition-all duration-300 border border-gray-200 hover:border-gray-300 font-medium">
-                    <UserIcon className="w-5 h-5 mr-2 text-gray-500" />
+                  <Menu.Button className="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-gray-50 to-white dark:from-slate-700 dark:to-slate-800 text-gray-700 dark:text-gray-200 rounded-xl hover:shadow-md transition-all duration-300 border border-gray-200 dark:border-slate-600 hover:border-gray-300 dark:hover:border-slate-500 font-medium">
+                    <UserIcon className="w-5 h-5 mr-2 text-gray-500 dark:text-gray-400" />
                     <span className="font-semibold">
                       {user?.name || "User"}
                     </span>
@@ -553,65 +553,65 @@ const Dashboard = () => {
                   leaveFrom="transform opacity-100 scale-100"
                   leaveTo="transform opacity-0 scale-95"
                 >
-                  <Menu.Items className="absolute right-0 mt-2 w-72 origin-top-right bg-white rounded-xl shadow-xl border border-gray-200 z-50">
-                    <div className="px-4 py-3 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white rounded-t-xl">
-                      <p className="text-sm font-semibold text-gray-900">
+                  <Menu.Items className="absolute right-0 mt-2 w-72 origin-top-right bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-gray-200 dark:border-slate-700 z-50">
+                    <div className="px-4 py-3 border-b border-gray-200 dark:border-slate-700 bg-gradient-to-r from-gray-50 to-white dark:from-slate-700 dark:to-slate-800 rounded-t-xl">
+                      <p className="text-sm font-semibold text-gray-900 dark:text-white">
                         {user?.name}
                       </p>
-                      <p className="text-xs text-gray-500 mt-0.5">
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                         {user?.email}
                       </p>
                     </div>
                     <div className="py-3">
                       {/* User Stats in Dropdown */}
                       <div className="px-4 py-3 space-y-4">
-                        <div className="flex items-center justify-between p-2 bg-gradient-to-r from-orange-50 to-orange-25 rounded-lg">
+                        <div className="flex items-center justify-between p-2 bg-gradient-to-r from-orange-50 to-orange-100/50 dark:from-orange-900/30 dark:to-orange-800/20 rounded-lg">
                           <div className="flex items-center">
                             <FireIcon className="w-4 h-4 text-orange-500 mr-2" />
-                            <span className="text-sm text-gray-700 font-medium">
+                            <span className="text-sm text-gray-700 dark:text-gray-300 font-medium">
                               Login Streak
                             </span>
                           </div>
-                          <span className="text-sm font-bold text-gray-900 bg-white px-2 py-1 rounded-full">
+                          <span className="text-sm font-bold text-gray-900 dark:text-white bg-white dark:bg-slate-700 px-2 py-1 rounded-full">
                             {userActivity.streak} days
                           </span>
                         </div>
-                        <div className="flex items-center justify-between p-2 bg-gradient-to-r from-yellow-50 to-yellow-25 rounded-lg">
+                        <div className="flex items-center justify-between p-2 bg-gradient-to-r from-yellow-50 to-yellow-100/50 dark:from-yellow-900/30 dark:to-yellow-800/20 rounded-lg">
                           <div className="flex items-center">
                             <TrophyIcon className="w-4 h-4 text-yellow-500 mr-2" />
-                            <span className="text-sm text-gray-700 font-medium">
+                            <span className="text-sm text-gray-700 dark:text-gray-300 font-medium">
                               Achievements
                             </span>
                           </div>
-                          <span className="text-sm font-bold text-gray-900 bg-white px-2 py-1 rounded-full">
+                          <span className="text-sm font-bold text-gray-900 dark:text-white bg-white dark:bg-slate-700 px-2 py-1 rounded-full">
                             {userActivity.achievements}
                           </span>
                         </div>
-                        <div className="flex items-center justify-between p-2 bg-gradient-to-r from-blue-50 to-blue-25 rounded-lg">
+                        <div className="flex items-center justify-between p-2 bg-gradient-to-r from-blue-50 to-blue-100/50 dark:from-blue-900/30 dark:to-blue-800/20 rounded-lg">
                           <div className="flex items-center">
                             <ClockIcon className="w-4 h-4 text-blue-500 mr-2" />
-                            <span className="text-sm text-gray-700 font-medium">
+                            <span className="text-sm text-gray-700 dark:text-gray-300 font-medium">
                               Last Active
                             </span>
                           </div>
-                          <span className="text-sm font-bold text-gray-900 bg-white px-2 py-1 rounded-full">
+                          <span className="text-sm font-bold text-gray-900 dark:text-white bg-white dark:bg-slate-700 px-2 py-1 rounded-full">
                             {userActivity.lastActive}
                           </span>
                         </div>
                       </div>
                     </div>
-                    <div className="border-t border-gray-200 py-2">
+                    <div className="border-t border-gray-200 dark:border-slate-700 py-2">
                       <Menu.Item>
                         {({ active }) => (
                           <button
                             className={`${
                               active
-                                ? "bg-gradient-to-r from-blue-50 to-blue-25"
+                                ? "bg-gradient-to-r from-blue-50 to-blue-100/50 dark:from-blue-900/30 dark:to-blue-800/20"
                                 : ""
-                            } flex items-center w-full px-4 py-3 text-sm text-gray-700 font-medium`}
+                            } flex items-center w-full px-4 py-3 text-sm text-gray-700 dark:text-gray-300 font-medium`}
                             onClick={() => navigate("/profile")}
                           >
-                            <UserIcon className="w-4 h-4 mr-3 text-gray-500" />
+                            <UserIcon className="w-4 h-4 mr-3 text-gray-500 dark:text-gray-400" />
                             View Profile
                           </button>
                         )}
@@ -621,12 +621,12 @@ const Dashboard = () => {
                           <button
                             className={`${
                               active
-                                ? "bg-gradient-to-r from-blue-50 to-blue-25"
+                                ? "bg-gradient-to-r from-blue-50 to-blue-100/50 dark:from-blue-900/30 dark:to-blue-800/20"
                                 : ""
-                            } flex items-center w-full px-4 py-3 text-sm text-gray-700 font-medium`}
+                            } flex items-center w-full px-4 py-3 text-sm text-gray-700 dark:text-gray-300 font-medium`}
                             onClick={() => navigate("/settings")}
                           >
-                            <CogIcon className="w-4 h-4 mr-3 text-gray-500" />
+                            <CogIcon className="w-4 h-4 mr-3 text-gray-500 dark:text-gray-400" />
                             Settings
                           </button>
                         )}
@@ -642,7 +642,7 @@ const Dashboard = () => {
               <button
                 onClick={handleRefresh}
                 disabled={isLoading}
-                className="inline-flex items-center px-5 py-2.5 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 hover:shadow-sm transition-all duration-300 font-medium disabled:opacity-50"
+                className="inline-flex items-center px-5 py-2.5 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-700 hover:shadow-sm transition-all duration-300 font-medium disabled:opacity-50"
               >
                 {isLoading ? (
                   <RefreshIcon className="w-4 h-4 mr-2 animate-spin" />
@@ -668,7 +668,7 @@ const Dashboard = () => {
 
               <button
                 onClick={() => toast.info("Export feature coming soon!")}
-                className="inline-flex items-center px-5 py-2.5 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 hover:shadow-sm transition-all duration-300 font-medium"
+                className="inline-flex items-center px-5 py-2.5 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-700 hover:shadow-sm transition-all duration-300 font-medium"
               >
                 <DownloadIcon className="w-4 h-4 mr-2" />
                 Export Report
@@ -680,17 +680,17 @@ const Dashboard = () => {
 
       {/* Urgent Alert Section */}
       {upcomingDeadlines.filter((d) => d.priority === "high").length > 0 && (
-        <div className="bg-gradient-to-r from-red-50 to-red-25 border border-red-200 rounded-2xl p-6 shadow-sm">
+        <div className="bg-gradient-to-r from-red-50 to-red-100/50 dark:from-red-900/30 dark:to-red-800/20 border border-red-200 dark:border-red-800 rounded-2xl p-6 shadow-sm">
           <div className="flex flex-col md:flex-row md:items-center">
             <div className="flex items-start md:items-center">
               <div className="flex-shrink-0">
-                <ExclamationTriangleIcon className="w-6 h-6 text-red-600" />
+                <ExclamationTriangleIcon className="w-6 h-6 text-red-600 dark:text-red-400" />
               </div>
               <div className="ml-4 flex-1">
-                <h3 className="text-lg font-bold text-gray-900 mb-1">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">
                   ⚠️ Urgent Action Required
                 </h3>
-                <p className="text-gray-700">
+                <p className="text-gray-700 dark:text-gray-300">
                   {
                     upcomingDeadlines.filter((d) => d.priority === "high")[0]
                       .title
@@ -721,7 +721,7 @@ const Dashboard = () => {
               </button>
               <button
                 onClick={() => toast.info("Extension requested")}
-                className="px-5 py-2.5 border border-red-300 text-red-700 rounded-xl hover:bg-red-50 transition-all duration-300 font-medium"
+                className="px-5 py-2.5 border border-red-300 dark:border-red-700 text-red-700 dark:text-red-400 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/30 transition-all duration-300 font-medium"
               >
                 Request Extension
               </button>
@@ -737,33 +737,33 @@ const Dashboard = () => {
             const Icon = stat.icon;
             const bgColor =
               stat.color === "blue"
-                ? "bg-gradient-to-br from-blue-50 to-blue-25"
+                ? "bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/30 dark:to-blue-800/20"
                 : stat.color === "green"
-                  ? "bg-gradient-to-br from-green-50 to-green-25"
+                  ? "bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-900/30 dark:to-green-800/20"
                   : stat.color === "yellow"
-                    ? "bg-gradient-to-br from-yellow-50 to-yellow-25"
-                    : "bg-gradient-to-br from-purple-50 to-purple-25";
+                    ? "bg-gradient-to-br from-yellow-50 to-yellow-100/50 dark:from-yellow-900/30 dark:to-yellow-800/20"
+                    : "bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-900/30 dark:to-purple-800/20";
             const iconColor =
               stat.color === "blue"
-                ? "text-blue-600"
+                ? "text-blue-600 dark:text-blue-400"
                 : stat.color === "green"
-                  ? "text-green-600"
+                  ? "text-green-600 dark:text-green-400"
                   : stat.color === "yellow"
-                    ? "text-yellow-600"
-                    : "text-purple-600";
+                    ? "text-yellow-600 dark:text-yellow-400"
+                    : "text-purple-600 dark:text-purple-400";
             const borderColor =
               stat.color === "blue"
-                ? "border-blue-100"
+                ? "border-blue-100 dark:border-blue-800"
                 : stat.color === "green"
-                  ? "border-green-100"
+                  ? "border-green-100 dark:border-green-800"
                   : stat.color === "yellow"
-                    ? "border-yellow-100"
-                    : "border-purple-100";
+                    ? "border-yellow-100 dark:border-yellow-800"
+                    : "border-purple-100 dark:border-purple-800";
 
             return (
               <div
                 key={index}
-                className={`bg-white rounded-2xl border ${borderColor} p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer group`}
+                className={`bg-white dark:bg-slate-800 rounded-2xl border ${borderColor} p-6 hover:shadow-xl dark:hover:shadow-slate-900/50 transition-all duration-300 transform hover:-translate-y-1 cursor-pointer group`}
                 onClick={stat.onClick}
               >
                 <div className="flex items-center justify-between mb-6">
@@ -775,23 +775,23 @@ const Dashboard = () => {
                   <span
                     className={`text-xs font-semibold px-3 py-1.5 rounded-full ${
                       stat.trend === "up"
-                        ? "bg-gradient-to-r from-green-100 to-green-50 text-green-700 border border-green-200"
+                        ? "bg-gradient-to-r from-green-100 to-green-50 dark:from-green-900/40 dark:to-green-800/30 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800"
                         : stat.trend === "attention"
-                          ? "bg-gradient-to-r from-yellow-100 to-yellow-50 text-yellow-700 border border-yellow-200"
-                          : "bg-gradient-to-r from-blue-100 to-blue-50 text-blue-700 border border-blue-200"
+                          ? "bg-gradient-to-r from-yellow-100 to-yellow-50 dark:from-yellow-900/40 dark:to-yellow-800/30 text-yellow-700 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800"
+                          : "bg-gradient-to-r from-blue-100 to-blue-50 dark:from-blue-900/40 dark:to-blue-800/30 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800"
                     }`}
                   >
                     {stat.change}
                   </span>
                 </div>
-                <div className="text-3xl font-bold text-gray-900 mb-2">
+                <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
                   {stat.value}
                 </div>
-                <div className="text-lg text-gray-600 font-medium">
+                <div className="text-lg text-gray-600 dark:text-gray-400 font-medium">
                   {stat.title}
                 </div>
-                <div className="mt-6 pt-6 border-t border-gray-100">
-                  <span className="text-sm text-blue-600 hover:text-blue-700 transition-colors duration-300 font-medium flex items-center group-hover:underline">
+                <div className="mt-6 pt-6 border-t border-gray-100 dark:border-slate-700">
+                  <span className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors duration-300 font-medium flex items-center group-hover:underline">
                     View details
                     <ChevronRightIcon className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform duration-300" />
                   </span>
@@ -806,29 +806,29 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column - 2/3 width */}
         <div className="lg:col-span-2 space-y-8">
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm p-6">
             <RecentActivity userRole={user?.role} />
           </div>
 
           {/* Upcoming Deadlines */}
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm p-6">
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center">
-                <div className="w-10 h-10 bg-gradient-to-br from-orange-50 to-orange-25 rounded-lg flex items-center justify-center mr-3">
-                  <CalendarDaysIcon className="w-5 h-5 text-orange-600" />
+                <div className="w-10 h-10 bg-gradient-to-br from-orange-50 to-orange-100/50 dark:from-orange-900/30 dark:to-orange-800/20 rounded-lg flex items-center justify-center mr-3">
+                  <CalendarDaysIcon className="w-5 h-5 text-orange-600 dark:text-orange-400" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">
                     Upcoming Deadlines
                   </h3>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                     Stay on track with your tasks
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => navigate("/calendar")}
-                className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center bg-blue-50 hover:bg-blue-100 px-4 py-2 rounded-xl transition-colors duration-300"
+                className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium flex items-center bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 px-4 py-2 rounded-xl transition-colors duration-300"
               >
                 View calendar
                 <ChevronRightIcon className="w-4 h-4 ml-2" />
@@ -841,8 +841,8 @@ const Dashboard = () => {
                   key={deadline.id}
                   className={`flex items-center justify-between p-5 border rounded-xl hover:shadow-md transition-all duration-300 ${
                     deadline.priority === "high"
-                      ? "border-red-200 bg-gradient-to-r from-red-50 to-red-25"
-                      : "border-yellow-200 bg-gradient-to-r from-yellow-50 to-yellow-25"
+                      ? "border-red-200 dark:border-red-800 bg-gradient-to-r from-red-50 to-red-100/50 dark:from-red-900/30 dark:to-red-800/20"
+                      : "border-yellow-200 dark:border-yellow-800 bg-gradient-to-r from-yellow-50 to-yellow-100/50 dark:from-yellow-900/30 dark:to-yellow-800/20"
                   }`}
                 >
                   <div className="flex items-center">
@@ -854,10 +854,10 @@ const Dashboard = () => {
                       }`}
                     ></div>
                     <div>
-                      <div className="font-bold text-gray-900">
+                      <div className="font-bold text-gray-900 dark:text-white">
                         {deadline.title}
                       </div>
-                      <div className="text-sm text-gray-600 mt-1">
+                      <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                         <ClockIcon className="w-3 h-3 inline mr-1" />
                         Due {deadline.due} • {deadline.time}
                       </div>
@@ -866,8 +866,8 @@ const Dashboard = () => {
                   <span
                     className={`px-4 py-1.5 rounded-full text-xs font-bold ${
                       deadline.priority === "high"
-                        ? "bg-gradient-to-r from-red-100 to-red-50 text-red-700 border border-red-200"
-                        : "bg-gradient-to-r from-yellow-100 to-yellow-50 text-yellow-700 border border-yellow-200"
+                        ? "bg-gradient-to-r from-red-100 to-red-50 dark:from-red-900/40 dark:to-red-800/30 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800"
+                        : "bg-gradient-to-r from-yellow-100 to-yellow-50 dark:from-yellow-900/40 dark:to-yellow-800/30 text-yellow-700 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800"
                     }`}
                   >
                     {deadline.priority === "high" ? "URGENT" : "UPCOMING"}
@@ -881,24 +881,24 @@ const Dashboard = () => {
         {/* Right Column - 1/3 width */}
         <div className="space-y-8">
           {/* Notification Center */}
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm p-6">
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-50 to-blue-25 rounded-lg flex items-center justify-center mr-3">
-                  <BellIcon className="w-5 h-5 text-blue-600" />
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/30 dark:to-blue-800/20 rounded-lg flex items-center justify-center mr-3">
+                  <BellIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">
                     Notifications
                   </h3>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                     {notifications.filter((n) => !n.read).length} unread
                   </p>
                 </div>
               </div>
               <button
                 onClick={markAllNotificationsAsRead}
-                className="text-sm text-blue-600 hover:text-blue-700 font-medium bg-blue-50 hover:bg-blue-100 px-4 py-2 rounded-xl transition-colors duration-300"
+                className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 px-4 py-2 rounded-xl transition-colors duration-300"
               >
                 Mark all read
               </button>
@@ -910,8 +910,8 @@ const Dashboard = () => {
                   key={notification.id}
                   className={`p-4 border rounded-xl transition-all duration-300 cursor-pointer hover:shadow-sm ${
                     notification.read
-                      ? "border-gray-200 bg-white"
-                      : "border-blue-200 bg-gradient-to-r from-blue-50 to-blue-25"
+                      ? "border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800"
+                      : "border-blue-200 dark:border-blue-800 bg-gradient-to-r from-blue-50 to-blue-100/50 dark:from-blue-900/30 dark:to-blue-800/20"
                   }`}
                   onClick={() => handleNotificationClick(notification.id)}
                 >
@@ -920,19 +920,19 @@ const Dashboard = () => {
                       <div className="flex items-center mb-2">
                         <span
                           className={`w-2 h-2 rounded-full mr-2 ${
-                            notification.read ? "bg-gray-300" : "bg-blue-500"
+                            notification.read ? "bg-gray-300 dark:bg-gray-600" : "bg-blue-500"
                           }`}
                         ></span>
-                        <span className="text-xs font-semibold px-2 py-1 rounded bg-gray-100 text-gray-700">
+                        <span className="text-xs font-semibold px-2 py-1 rounded bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300">
                           {notification.type.toUpperCase()}
                         </span>
-                        <span className="text-xs text-gray-500 ml-2">
+                        <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">
                           {notification.time}
                         </span>
                       </div>
                       <p
                         className={`font-medium ${
-                          notification.read ? "text-gray-700" : "text-gray-900"
+                          notification.read ? "text-gray-700 dark:text-gray-300" : "text-gray-900 dark:text-white"
                         }`}
                       >
                         {notification.message}
@@ -946,24 +946,24 @@ const Dashboard = () => {
 
           {/* Today's Meetings */}
           {todayMeetings.length > 0 && (
-            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm p-6">
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center">
-                  <div className="w-10 h-10 bg-gradient-to-br from-purple-50 to-purple-25 rounded-lg flex items-center justify-center mr-3">
-                    <UserGroupIcon className="w-5 h-5 text-purple-600" />
+                  <div className="w-10 h-10 bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-900/30 dark:to-purple-800/20 rounded-lg flex items-center justify-center mr-3">
+                    <UserGroupIcon className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900">
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">
                       Today's Meetings
                     </h3>
-                    <p className="text-sm text-gray-600 mt-1">
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                       Your schedule for today
                     </p>
                   </div>
                 </div>
                 <button
                   onClick={() => navigate("/meetings")}
-                  className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center bg-blue-50 hover:bg-blue-100 px-4 py-2 rounded-xl transition-colors duration-300"
+                  className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium flex items-center bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 px-4 py-2 rounded-xl transition-colors duration-300"
                 >
                   Schedule
                   <ChevronRightIcon className="w-4 h-4 ml-2" />
@@ -974,22 +974,22 @@ const Dashboard = () => {
                 {todayMeetings.map((meeting) => (
                   <div
                     key={meeting.id}
-                    className="p-5 bg-gradient-to-r from-blue-50 to-blue-25 rounded-xl border border-blue-200 hover:shadow-md transition-all duration-300"
+                    className="p-5 bg-gradient-to-r from-blue-50 to-blue-100/50 dark:from-blue-900/30 dark:to-blue-800/20 rounded-xl border border-blue-200 dark:border-blue-800 hover:shadow-md transition-all duration-300"
                   >
                     <div className="flex items-center justify-between mb-4">
-                      <div className="font-bold text-gray-900">
+                      <div className="font-bold text-gray-900 dark:text-white">
                         {meeting.title}
                       </div>
-                      <span className="px-3 py-1 bg-gradient-to-r from-blue-100 to-blue-50 text-blue-700 rounded-lg text-xs font-bold border border-blue-200">
+                      <span className="px-3 py-1 bg-gradient-to-r from-blue-100 to-blue-50 dark:from-blue-900/50 dark:to-blue-800/40 text-blue-700 dark:text-blue-400 rounded-lg text-xs font-bold border border-blue-200 dark:border-blue-800">
                         {meeting.type}
                       </span>
                     </div>
-                    <div className="flex items-center text-sm text-gray-600 mb-3">
-                      <ClockIcon className="w-4 h-4 mr-2 text-blue-500" />
+                    <div className="flex items-center text-sm text-gray-600 dark:text-gray-400 mb-3">
+                      <ClockIcon className="w-4 h-4 mr-2 text-blue-500 dark:text-blue-400" />
                       <span className="font-medium">{meeting.time}</span>
                     </div>
-                    <div className="flex items-center text-sm text-gray-600">
-                      <LocationMarkerIcon className="w-4 h-4 mr-2 text-blue-500" />
+                    <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                      <LocationMarkerIcon className="w-4 h-4 mr-2 text-blue-500 dark:text-blue-400" />
                       {meeting.location}
                     </div>
                   </div>
@@ -999,22 +999,22 @@ const Dashboard = () => {
           )}
 
           {/* Quick Resources */}
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm p-6">
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center">
-                <div className="w-10 h-10 bg-gradient-to-br from-green-50 to-green-25 rounded-lg flex items-center justify-center mr-3">
-                  <BookOpenIcon className="w-5 h-5 text-green-600" />
+                <div className="w-10 h-10 bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-900/30 dark:to-green-800/20 rounded-lg flex items-center justify-center mr-3">
+                  <BookOpenIcon className="w-5 h-5 text-green-600 dark:text-green-400" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">
                     Quick Access
                   </h3>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                     Frequently used resources
                   </p>
                 </div>
               </div>
-              <CheckCircleIcon className="w-5 h-5 text-green-500" />
+              <CheckCircleIcon className="w-5 h-5 text-green-500 dark:text-green-400" />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -1027,32 +1027,32 @@ const Dashboard = () => {
                 <button
                   key={index}
                   onClick={() => navigate(`/${resource.label.toLowerCase()}`)}
-                  className="flex flex-col items-center p-4 border border-gray-200 rounded-xl hover:shadow-md hover:border-blue-200 hover:bg-blue-50 transition-all duration-300 group"
+                  className="flex flex-col items-center p-4 border border-gray-200 dark:border-slate-700 rounded-xl hover:shadow-md hover:border-blue-200 dark:hover:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-all duration-300 group"
                 >
                   <div
                     className={`w-12 h-12 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300 ${
                       resource.color === "blue"
-                        ? "bg-gradient-to-br from-blue-50 to-blue-25"
+                        ? "bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/30 dark:to-blue-800/20"
                         : resource.color === "purple"
-                          ? "bg-gradient-to-br from-purple-50 to-purple-25"
+                          ? "bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-900/30 dark:to-purple-800/20"
                           : resource.color === "green"
-                            ? "bg-gradient-to-br from-green-50 to-green-25"
-                            : "bg-gradient-to-br from-gray-50 to-gray-25"
+                            ? "bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-900/30 dark:to-green-800/20"
+                            : "bg-gradient-to-br from-gray-50 to-gray-100/50 dark:from-slate-700/50 dark:to-slate-600/30"
                     }`}
                   >
                     <resource.icon
                       className={`w-6 h-6 ${
                         resource.color === "blue"
-                          ? "text-blue-600"
+                          ? "text-blue-600 dark:text-blue-400"
                           : resource.color === "purple"
-                            ? "text-purple-600"
+                            ? "text-purple-600 dark:text-purple-400"
                             : resource.color === "green"
-                              ? "text-green-600"
-                              : "text-gray-600"
+                              ? "text-green-600 dark:text-green-400"
+                              : "text-gray-600 dark:text-gray-400"
                       }`}
                     />
                   </div>
-                  <span className="text-sm font-bold text-gray-900 group-hover:text-blue-700 transition-colors duration-300">
+                  <span className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors duration-300">
                     {resource.label}
                   </span>
                 </button>
@@ -1065,24 +1065,24 @@ const Dashboard = () => {
       {/* Bottom Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Project Progress */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm p-6">
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center">
-              <div className="w-10 h-10 bg-gradient-to-br from-indigo-50 to-indigo-25 rounded-lg flex items-center justify-center mr-3">
-                <ChartBarIcon className="w-5 h-5 text-indigo-600" />
+              <div className="w-10 h-10 bg-gradient-to-br from-indigo-50 to-indigo-100/50 dark:from-indigo-900/30 dark:to-indigo-800/20 rounded-lg flex items-center justify-center mr-3">
+                <ChartBarIcon className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-gray-900">
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white">
                   Project Progress
                 </h3>
-                <p className="text-sm text-gray-600 mt-1">
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                   Track your project completion
                 </p>
               </div>
             </div>
             <button
               onClick={() => navigate("/projects")}
-              className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center bg-blue-50 hover:bg-blue-100 px-4 py-2 rounded-xl transition-colors duration-300"
+              className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium flex items-center bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 px-4 py-2 rounded-xl transition-colors duration-300"
             >
               View all
               <ChevronRightIcon className="w-4 h-4 ml-2" />
@@ -1093,18 +1093,18 @@ const Dashboard = () => {
           <div className="mb-6">
             <div className="flex justify-between mb-4">
               <div>
-                <div className="text-sm text-gray-600">Average Completion</div>
-                <div className="text-3xl font-bold text-gray-900">72.5%</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Average Completion</div>
+                <div className="text-3xl font-bold text-gray-900 dark:text-white">72.5%</div>
               </div>
               <div className="text-right">
-                <div className="text-sm text-gray-600">On Track</div>
-                <div className="flex items-center text-green-600 font-bold">
+                <div className="text-sm text-gray-600 dark:text-gray-400">On Track</div>
+                <div className="flex items-center text-green-600 dark:text-green-400 font-bold">
                   <ArrowUpIcon className="w-4 h-4 mr-1" />
                   <span>+5.2%</span>
                 </div>
               </div>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-3">
+            <div className="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-3">
               <div
                 className="bg-gradient-to-r from-blue-500 to-purple-600 h-3 rounded-full transition-all duration-1000 ease-out"
                 style={{ width: "72.5%" }}
@@ -1121,17 +1121,17 @@ const Dashboard = () => {
             ].map((project, index) => (
               <div
                 key={index}
-                className="p-4 border border-gray-200 rounded-xl"
+                className="p-4 border border-gray-200 dark:border-slate-700 rounded-xl"
               >
                 <div className="flex justify-between mb-2">
-                  <span className="text-sm font-medium text-gray-900">
+                  <span className="text-sm font-medium text-gray-900 dark:text-white">
                     {project.label}
                   </span>
-                  <span className="text-sm font-bold text-gray-900">
+                  <span className="text-sm font-bold text-gray-900 dark:text-white">
                     {project.progress}%
                   </span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-2">
                   <div
                     className={`h-2 rounded-full ${
                       project.color === "blue"
@@ -1269,17 +1269,17 @@ const Dashboard = () => {
 
       {/* Role-specific Content */}
       {user?.role === "admin" && (
-        <div className="bg-gradient-to-r from-yellow-50 to-yellow-25 border border-yellow-200 rounded-2xl p-6 shadow-sm">
+        <div className="bg-gradient-to-r from-yellow-50 to-yellow-100/50 dark:from-yellow-900/30 dark:to-yellow-800/20 border border-yellow-200 dark:border-yellow-800 rounded-2xl p-6 shadow-sm">
           <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
             <div className="flex items-start">
               <div className="flex-shrink-0">
-                <InformationCircleIcon className="w-6 h-6 text-yellow-600" />
+                <InformationCircleIcon className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
               </div>
               <div className="ml-4">
-                <h4 className="text-lg font-bold text-yellow-800 mb-3">
+                <h4 className="text-lg font-bold text-yellow-800 dark:text-yellow-200 mb-3">
                   Administrator Alerts
                 </h4>
-                <div className="text-sm text-yellow-700 space-y-2">
+                <div className="text-sm text-yellow-700 dark:text-yellow-300 space-y-2">
                   <p className="flex items-center">
                     <span className="w-1.5 h-1.5 bg-yellow-500 rounded-full mr-2"></span>
                     3 projects awaiting approval
@@ -1306,17 +1306,17 @@ const Dashboard = () => {
       )}
 
       {user?.role === "student" && (
-        <div className="bg-gradient-to-r from-blue-50 to-blue-25 border border-blue-200 rounded-2xl p-6 shadow-sm">
+        <div className="bg-gradient-to-r from-blue-50 to-blue-100/50 dark:from-blue-900/30 dark:to-blue-800/20 border border-blue-200 dark:border-blue-800 rounded-2xl p-6 shadow-sm">
           <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
             <div className="flex items-start">
               <div className="flex-shrink-0">
-                <LightBulbIcon className="w-6 h-6 text-blue-600" />
+                <LightBulbIcon className="w-6 h-6 text-blue-600 dark:text-blue-400" />
               </div>
               <div className="ml-4">
-                <h4 className="text-lg font-bold text-blue-800 mb-3">
+                <h4 className="text-lg font-bold text-blue-800 dark:text-blue-200 mb-3">
                   Study Tip of the Day
                 </h4>
-                <p className="text-blue-700">
+                <p className="text-blue-700 dark:text-blue-300">
                   Break your study sessions into 25-minute focused intervals
                   with 5-minute breaks (Pomodoro Technique). This improves
                   retention and prevents burnout.

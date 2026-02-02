@@ -1,9 +1,54 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { memo, useMemo } from "react";
+import PropTypes from "prop-types";
 
-const DocumentLibrary = () => {
-  const navigate = useNavigate();
-  const [documents] = useState([
+const DocumentRow = memo(({ doc }) => (
+  <tr className="hover:bg-slate-50 dark:hover:bg-slate-700">
+    <td className="px-6 py-4 whitespace-nowrap">
+      <div className="font-medium text-slate-900 dark:text-white">
+        {doc.title}
+      </div>
+    </td>
+    <td className="px-6 py-4 whitespace-nowrap">
+      <span className="px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs rounded-full">
+        {doc.category}
+      </span>
+    </td>
+    <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
+      {doc.uploadedBy}
+    </td>
+    <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
+      {doc.date}
+    </td>
+    <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
+      {doc.size}
+    </td>
+    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+      <button className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 mr-3">
+        Download
+      </button>
+      <button className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">
+        Preview
+      </button>
+    </td>
+  </tr>
+));
+
+DocumentRow.displayName = "DocumentRow";
+
+DocumentRow.propTypes = {
+  doc: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    category: PropTypes.string.isRequired,
+    uploadedBy: PropTypes.string.isRequired,
+    date: PropTypes.string.isRequired,
+    size: PropTypes.string.isRequired,
+  }).isRequired,
+};
+
+const DocumentLibrary = memo(() => {
+  const documents = useMemo(
+    () => [
     {
       id: 1,
       title: "Project Guidelines",
@@ -44,81 +89,55 @@ const DocumentLibrary = () => {
       date: "Jan 15, 2024",
       size: "3.4 MB",
     },
-  ]);
+    ],
+    []
+  );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
               Document Library
             </h1>
-            <p className="text-gray-600">
+            <p className="text-slate-600 dark:text-slate-400">
               Access and manage all shared documents
             </p>
           </div>
-          <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+          <button className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
             Upload Document
           </button>
         </div>
 
-        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+              <thead className="bg-slate-50 dark:bg-slate-700">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
                     Document Title
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
                     Category
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
                     Uploaded By
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
                     Date
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
                     Size
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
                 {documents.map((doc) => (
-                  <tr key={doc.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="font-medium text-gray-900">
-                        {doc.title}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">
-                        {doc.category}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-900">
-                      {doc.uploadedBy}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-900">
-                      {doc.date}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-900">
-                      {doc.size}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button className="text-blue-600 hover:text-blue-900 mr-3">
-                        Download
-                      </button>
-                      <button className="text-gray-600 hover:text-gray-900">
-                        Preview
-                      </button>
-                    </td>
-                  </tr>
+                  <DocumentRow key={doc.id} doc={doc} />
                 ))}
               </tbody>
             </table>
@@ -127,6 +146,8 @@ const DocumentLibrary = () => {
       </div>
     </div>
   );
-};
+});
+
+DocumentLibrary.displayName = "DocumentLibrary";
 
 export default DocumentLibrary;

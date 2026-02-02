@@ -1,34 +1,43 @@
+import { memo, useCallback } from "react";
+import PropTypes from "prop-types";
 
+const Table = memo(({ columns = [], data = [], onRowClick }) => {
+  const handleRowClick = useCallback((row) => {
+    if (onRowClick) {
+      onRowClick(row);
+    }
+  }, [onRowClick]);
 
-const Table = ({ columns, data, onRowClick }) => {
   return (
-    <div className="overflow-x-auto bg-white rounded-lg shadow">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
+    <div className="overflow-x-auto bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-lg dark:shadow-gray-950">
+      <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+        <thead className="bg-gray-50 dark:bg-gray-900">
           <tr>
             {columns.map((column, index) => (
               <th
                 key={index}
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
               >
                 {column.header}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
+        <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
           {data.map((row, rowIndex) => (
             <tr
               key={rowIndex}
-              onClick={() => onRowClick && onRowClick(row)}
-              className={`${
-                onRowClick ? "hover:bg-gray-50 cursor-pointer" : ""
+              onClick={() => handleRowClick(row)}
+              className={`transition-colors ${
+                onRowClick
+                  ? "hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
+                  : ""
               }`}
             >
               {columns.map((column, colIndex) => (
                 <td
                   key={colIndex}
-                  className="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                  className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100"
                 >
                   {column.render
                     ? column.render(row[column.accessor], row)
@@ -41,6 +50,26 @@ const Table = ({ columns, data, onRowClick }) => {
       </table>
     </div>
   );
+});
+
+Table.displayName = "Table";
+
+Table.propTypes = {
+  columns: PropTypes.arrayOf(
+    PropTypes.shape({
+      header: PropTypes.string.isRequired,
+      accessor: PropTypes.string.isRequired,
+      render: PropTypes.func,
+    })
+  ),
+  data: PropTypes.arrayOf(PropTypes.object),
+  onRowClick: PropTypes.func,
+};
+
+Table.defaultProps = {
+  columns: [],
+  data: [],
+  onRowClick: null,
 };
 
 export default Table;

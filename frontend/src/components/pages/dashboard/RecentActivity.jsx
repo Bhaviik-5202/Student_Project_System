@@ -1,5 +1,65 @@
-const RecentActivity = ({ userRole }) => {
-  const activities = {
+import React, { memo, useMemo } from "react";
+import PropTypes from "prop-types";
+
+const ActivityItem = memo(({ activity }) => {
+  const colorStyles = {
+    green: {
+      bg: "bg-emerald-100 dark:bg-emerald-900",
+      text: "text-emerald-600 dark:text-emerald-400",
+    },
+    blue: {
+      bg: "bg-blue-100 dark:bg-blue-900",
+      text: "text-blue-600 dark:text-blue-400",
+    },
+    yellow: {
+      bg: "bg-amber-100 dark:bg-amber-900",
+      text: "text-amber-600 dark:text-amber-400",
+    },
+    purple: {
+      bg: "bg-purple-100 dark:bg-purple-900",
+      text: "text-purple-600 dark:text-purple-400",
+    },
+  };
+
+  const colorClass = colorStyles[activity.color] || colorStyles.blue;
+
+  return (
+    <div className="flex items-start p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition duration-150 group">
+      <div
+        className={`flex-shrink-0 w-10 h-10 ${colorClass.bg} rounded-full flex items-center justify-center mr-4`}
+      >
+        <i className={`fas ${activity.icon} ${colorClass.text}`} />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-medium text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-150">
+          {activity.title}
+        </p>
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          {activity.description}
+        </p>
+      </div>
+      <button className="ml-2 text-slate-400 dark:text-slate-600 hover:text-slate-600 dark:hover:text-slate-300 opacity-0 group-hover:opacity-100 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
+        <i className="fas fa-ellipsis-h" />
+      </button>
+    </div>
+  );
+});
+
+ActivityItem.displayName = "ActivityItem";
+
+ActivityItem.propTypes = {
+  activity: PropTypes.shape({
+    type: PropTypes.string.isRequired,
+    icon: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    color: PropTypes.string.isRequired,
+  }).isRequired,
+};
+
+const RecentActivity = memo(({ userRole = "admin" }) => {
+  const activities = useMemo(
+    () => ({
     admin: [
       {
         type: "approved",
@@ -76,55 +136,46 @@ const RecentActivity = ({ userRole }) => {
         color: "yellow",
       },
     ],
-  };
+    }),
+    []
+  );
 
-  const currentActivities = activities[userRole] || activities.admin;
+  const currentActivities = useMemo(
+    () => activities[userRole] || activities.admin,
+    [activities, userRole]
+  );
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm dark:shadow-md border border-slate-200 dark:border-slate-700 p-6">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h3 className="text-lg font-semibold text-gray-900">
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
             Recent Activity
           </h3>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-slate-500 dark:text-slate-400">
             Latest updates from your workspace
           </p>
         </div>
         <a
           href="#"
-          className="text-sm text-primary-600 hover:text-primary-700 font-medium flex items-center"
+          className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium flex items-center"
         >
-          View all <i className="fas fa-chevron-right ml-1"></i>
+          View all <i className="fas fa-chevron-right ml-1" />
         </a>
       </div>
       <div className="space-y-4">
         {currentActivities.map((activity, index) => (
-          <div
-            key={index}
-            className="flex items-start p-3 rounded-lg hover:bg-gray-50 transition duration-150 group"
-          >
-            <div
-              className={`flex-shrink-0 w-10 h-10 bg-${activity.color}-100 rounded-full flex items-center justify-center mr-4`}
-            >
-              <i
-                className={`fas ${activity.icon} text-${activity.color}-600`}
-              ></i>
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900 group-hover:text-primary-600 transition-colors duration-150">
-                {activity.title}
-              </p>
-              <p className="text-sm text-gray-500">{activity.description}</p>
-            </div>
-            <button className="ml-2 text-gray-400 hover:text-gray-600 opacity-0 group-hover:opacity-100 transition-all duration-150">
-              <i className="fas fa-ellipsis-h"></i>
-            </button>
-          </div>
+          <ActivityItem key={index} activity={activity} />
         ))}
       </div>
     </div>
   );
+});
+
+RecentActivity.displayName = "RecentActivity";
+
+RecentActivity.propTypes = {
+  userRole: PropTypes.oneOf(["admin", "faculty", "student"]),
 };
 
 export default RecentActivity;

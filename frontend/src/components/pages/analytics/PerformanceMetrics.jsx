@@ -1,27 +1,30 @@
-import React, { useState } from "react";
+import { useState, useMemo, memo } from "react";
 import { useNavigate } from "react-router-dom";
 
-const PerformanceMetrics = () => {
+const PerformanceMetrics = memo(() => {
   const navigate = useNavigate();
-  const [metrics] = useState({
-    overall: { current: 85, target: 90, trend: "up" },
-    attendance: { current: 92, target: 95, trend: "stable" },
-    assignments: { current: 88, target: 85, trend: "up" },
-    projects: { current: 82, target: 80, trend: "up" },
-    participation: { current: 78, target: 75, trend: "stable" },
-  });
+  const metrics = useMemo(
+    () => ({
+      overall: { current: 85, target: 90, trend: "up" },
+      attendance: { current: 92, target: 95, trend: "stable" },
+      assignments: { current: 88, target: 85, trend: "up" },
+      projects: { current: 82, target: 80, trend: "up" },
+      participation: { current: 78, target: 75, trend: "stable" },
+    }),
+    []
+  );
 
   const [timeRange, setTimeRange] = useState("month");
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
               Performance Metrics
             </h1>
-            <p className="text-gray-600">
+            <p className="text-slate-600 dark:text-slate-400">
               Track and analyze performance indicators
             </p>
           </div>
@@ -32,8 +35,8 @@ const PerformanceMetrics = () => {
                 onClick={() => setTimeRange(range)}
                 className={`px-3 py-1 rounded-lg text-sm capitalize ${
                   timeRange === range
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                    ? "bg-blue-600 dark:bg-blue-700 text-white"
+                    : "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600"
                 }`}
               >
                 {range}
@@ -46,26 +49,26 @@ const PerformanceMetrics = () => {
           {Object.entries(metrics).map(([key, metric]) => (
             <div
               key={key}
-              className="bg-white rounded-lg border border-gray-200 p-6"
+              className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6"
             >
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <div className="text-sm font-medium text-gray-500 uppercase tracking-wider">
+                  <div className="text-sm font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
                     {key
                       .replace(/([A-Z])/g, " $1")
                       .replace(/^./, (str) => str.toUpperCase())}
                   </div>
-                  <div className="text-2xl font-bold text-gray-900 mt-1">
+                  <div className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
                     {metric.current}%
                   </div>
                 </div>
                 <div
                   className={`px-2 py-1 rounded-full text-xs font-medium ${
                     metric.trend === "up"
-                      ? "bg-green-100 text-green-800"
+                      ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
                       : metric.trend === "down"
-                      ? "bg-red-100 text-red-800"
-                      : "bg-yellow-100 text-yellow-800"
+                      ? "bg-rose-100 dark:bg-rose-900/30 text-rose-800 dark:text-rose-300"
+                      : "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300"
                   }`}
                 >
                   {metric.trend === "up"
@@ -77,17 +80,17 @@ const PerformanceMetrics = () => {
               </div>
 
               <div className="mb-3">
-                <div className="flex justify-between text-sm text-gray-600 mb-1">
+                <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400 mb-1">
                   <span>Progress</span>
                   <span>
                     {metric.current}% / {metric.target}%
                   </span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
                   <div
                     className={`h-2 rounded-full ${
                       metric.current >= metric.target
-                        ? "bg-green-500"
+                        ? "bg-emerald-500"
                         : "bg-blue-500"
                     }`}
                     style={{
@@ -100,7 +103,7 @@ const PerformanceMetrics = () => {
                 </div>
               </div>
 
-              <div className="text-sm text-gray-600">
+              <div className="text-sm text-slate-600 dark:text-slate-400">
                 Target: {metric.target}%
               </div>
             </div>
@@ -108,8 +111,8 @@ const PerformanceMetrics = () => {
         </div>
 
         {/* Performance Chart */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-8">
-          <h3 className="text-lg font-semibold text-gray-900 mb-6">
+        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6 mb-8">
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-6">
             Performance Trends
           </h3>
           <div className="space-y-6">
@@ -121,7 +124,7 @@ const PerformanceMetrics = () => {
               { month: "Jan", overall: 85, attendance: 92, assignments: 82 },
             ].map((data, index) => (
               <div key={index}>
-                <div className="flex justify-between text-sm text-gray-600 mb-2">
+                <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400 mb-2">
                   <span className="font-medium">{data.month}</span>
                   <span>
                     Overall: {data.overall}% | Attendance: {data.attendance}% |
@@ -135,7 +138,7 @@ const PerformanceMetrics = () => {
                     title={`Overall: ${data.overall}%`}
                   ></div>
                   <div
-                    className="bg-green-500"
+                    className="bg-emerald-500"
                     style={{ width: `${data.attendance}%` }}
                     title={`Attendance: ${data.attendance}%`}
                   ></div>
@@ -152,6 +155,8 @@ const PerformanceMetrics = () => {
       </div>
     </div>
   );
-};
+});
+
+PerformanceMetrics.displayName = "PerformanceMetrics";
 
 export default PerformanceMetrics;

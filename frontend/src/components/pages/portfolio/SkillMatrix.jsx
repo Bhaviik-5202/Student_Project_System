@@ -1,17 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 
 const SkillMatrix = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [sortBy, setSortBy] = useState("level");
 
-  const categories = [
+  const categories = useMemo(() => [
     { id: "all", name: "All Skills", count: 15 },
     { id: "technical", name: "Technical", count: 8 },
     { id: "soft", name: "Soft Skills", count: 4 },
     { id: "tools", name: "Tools", count: 3 },
-  ];
+  ], []);
 
-  const skills = [
+  const skills = useMemo(() => [
     {
       id: 1,
       name: "JavaScript",
@@ -132,9 +132,9 @@ const SkillMatrix = () => {
       lastUsed: "2024-01-14",
       projects: 10,
     },
-  ];
+  ], []);
 
-  const filteredSkills = skills
+  const filteredSkills = useMemo(() => skills
     .filter(
       (skill) =>
         selectedCategory === "all" || skill.category === selectedCategory
@@ -145,35 +145,35 @@ const SkillMatrix = () => {
       if (sortBy === "recent")
         return new Date(b.lastUsed) - new Date(a.lastUsed);
       return 0;
-    });
+    }), [skills, selectedCategory, sortBy]);
 
-  const getLevelColor = (level) => {
-    if (level >= 80) return "bg-green-500";
-    if (level >= 60) return "bg-yellow-500";
-    return "bg-red-500";
-  };
+  const getLevelColor = useCallback((level) => {
+    if (level >= 80) return "bg-emerald-500 dark:bg-emerald-400";
+    if (level >= 60) return "bg-amber-500 dark:bg-amber-400";
+    return "bg-rose-500 dark:bg-rose-400";
+  }, []);
 
-  const getLevelLabel = (level) => {
+  const getLevelLabel = useCallback((level) => {
     if (level >= 80) return "Expert";
     if (level >= 60) return "Intermediate";
     return "Beginner";
-  };
+  }, []);
 
-  const getCategoryColor = (category) => {
+  const getCategoryColor = useCallback((category) => {
     switch (category) {
       case "technical":
-        return "bg-blue-100 text-blue-700";
+        return "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200";
       case "soft":
-        return "bg-green-100 text-green-700";
+        return "bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-200";
       case "tools":
-        return "bg-purple-100 text-purple-700";
+        return "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200";
       default:
-        return "bg-gray-100 text-gray-700";
+        return "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300";
     }
-  };
+  }, []);
 
   // Calculate average level per category
-  const categoryStats = categories.map((cat) => {
+  const categoryStats = useMemo(() => categories.map((cat) => {
     const categorySkills =
       cat.id === "all" ? skills : skills.filter((s) => s.category === cat.id);
     const avgLevel =
@@ -189,10 +189,10 @@ const SkillMatrix = () => {
       avgLevel,
       skillCount: categorySkills.length,
     };
-  });
+  }), [categories, skills]);
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
+    <div className="bg-white dark:bg-slate-900 rounded-lg shadow p-6\">
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-8">
         <div>
@@ -348,7 +348,7 @@ const SkillMatrix = () => {
       )}
 
       {/* Skill Distribution Chart */}
-      <div className="mt-8 pt-6 border-t border-gray-200">
+      <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700\">
         <h3 className="text-lg font-bold text-gray-800 mb-4">
           Skill Distribution
         </h3>
@@ -463,4 +463,6 @@ const SkillMatrix = () => {
   );
 };
 
-export default SkillMatrix;
+SkillMatrix.displayName = 'SkillMatrix';
+
+export default React.memo(SkillMatrix);

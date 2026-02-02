@@ -1,3 +1,5 @@
+@import "./assets/styles/global.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -43,6 +45,7 @@
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.08);
     --shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.12);
 
@@ -65,8 +68,26 @@
     --bg-hover: #334155;
     --text-primary: #f1f5f9;
     --text-secondary: #cbd5e1;
+    --text-tertiary: #94a3b8;
     --border-light: #334155;
     --border-medium: #475569;
+    --border-dark: #64748b;
+    --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.2);
+    --shadow-card-hover: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* Light mode (default) */
+:root:not(.dark) {
+    --bg-dashboard: #f8fafc;
+    --bg-sidebar: #ffffff;
+    --bg-card: #ffffff;
+    --bg-hover: #f1f5f9;
+    --text-primary: #0f172a;
+    --text-secondary: #64748b;
+    --text-tertiary: #94a3b8;
+    --border-light: #e2e8f0;
+    --border-medium: #cbd5e1;
+    --border-dark: #94a3b8;
 }
 
 /* ================================
@@ -81,6 +102,8 @@
 html {
     scroll-behavior: smooth;
     height: 100%;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(148, 163, 184, 0.3) transparent;
 }
 
 body {
@@ -91,6 +114,7 @@ body {
     -moz-osx-font-smoothing: grayscale;
     height: 100%;
     overflow-x: hidden;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
 }
 
 /* ================================
@@ -117,9 +141,7 @@ body {
     background-color: rgba(148, 163, 184, 0.5);
 }
 
-/* Firefox scrollbar */
-scrollbar-width: thin;
-scrollbar-color: rgba(148, 163, 184, 0.3) transparent;
+/* Firefox scrollbar handled on html */
 
 /* ================================
    Dashboard Layout Components
@@ -933,6 +955,15 @@ scrollbar-color: rgba(148, 163, 184, 0.3) transparent;
     border-width: 4px;
 }
 
+.spinner-light {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.35);
+    border-top: 2px solid #ffffff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
 @keyframes spin {
     to {
         transform: rotate(360deg);
@@ -1346,9 +1377,4 @@ footer a:hover {
     }
 }
 
-/* Ensure sidebar is only visible on medium screens and larger */
-@media (max-width: 768px) {
-    .sidebar {
-        display: none;
-    }
-}
+/* End of src/index.css */

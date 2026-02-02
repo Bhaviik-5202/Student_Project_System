@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import { useState, useMemo, useCallback, memo } from "react";
 import { useNavigate } from "react-router-dom";
 
-const AssignmentList = () => {
+const AssignmentList = memo(() => {
   const navigate = useNavigate();
-  const [assignments] = useState([
+  const assignments = useMemo(
+    () => [
     {
       id: 1,
       title: "Database Design",
@@ -44,95 +45,102 @@ const AssignmentList = () => {
       status: "Not Started",
       points: 180,
     },
-  ]);
+  ],
+  []
+);
+
+  const handleNavigate = useCallback(
+    (path) => navigate(path),
+    [navigate]
+  );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Assignments</h1>
-            <p className="text-gray-600">View and manage all assignments</p>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Assignments</h1>
+            <p className="text-slate-600 dark:text-slate-400">View and manage all assignments</p>
           </div>
           <button
-            onClick={() => navigate("/assignments/new")}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            onClick={() => handleNavigate("/assignments/new")}
+            className="px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-800"
           >
             New Assignment
           </button>
         </div>
 
-        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+              <thead className="bg-slate-50 dark:bg-slate-700">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
                     Assignment Title
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
                     Course
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
                     Due Date
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
                     Points
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
                 {assignments.map((assignment) => (
-                  <tr key={assignment.id} className="hover:bg-gray-50">
+                  <tr key={assignment.id} className="hover:bg-slate-50 dark:hover:bg-slate-700">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="font-medium text-gray-900">
+                      <div className="font-medium text-slate-900 dark:text-white">
                         {assignment.title}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
                       {assignment.course}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
                       {assignment.dueDate}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
                         className={`px-2 py-1 text-xs rounded-full ${
                           assignment.status === "Submitted"
-                            ? "bg-green-100 text-green-800"
+                            ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
                             : assignment.status === "In Progress"
-                            ? "bg-blue-100 text-blue-800"
+                            ? "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
                             : assignment.status === "Pending"
-                            ? "bg-yellow-100 text-yellow-800"
-                            : "bg-gray-100 text-gray-800"
+                            ? "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300"
+                            : "bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200"
                         }`}
                       >
                         {assignment.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
                       {assignment.points}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <button
                         onClick={() =>
-                          navigate(`/assignments/${assignment.id}`)
+                          handleNavigate(`/assignments/${assignment.id}`)
                         }
-                        className="text-blue-600 hover:text-blue-900 mr-3"
+                        className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 mr-3"
                       >
                         View
                       </button>
                       <button
                         onClick={() =>
-                          navigate(`/assignments/${assignment.id}/submit`)
+                          handleNavigate(`/assignments/${assignment.id}/submit`)
                         }
-                        className="text-green-600 hover:text-green-900"
+                        className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-900 dark:hover:text-emerald-300"
                       >
                         Submit
                       </button>
@@ -146,6 +154,8 @@ const AssignmentList = () => {
       </div>
     </div>
   );
-};
+});
+
+AssignmentList.displayName = "AssignmentList";
 
 export default AssignmentList;

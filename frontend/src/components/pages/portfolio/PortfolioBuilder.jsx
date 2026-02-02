@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 
 const PortfolioBuilder = () => {
   const [portfolio, setPortfolio] = useState({
@@ -49,16 +49,15 @@ const PortfolioBuilder = () => {
 
   const [activeSection, setActiveSection] = useState(1);
 
-  // Inline notification function since hook isn't available
-  const showNotification = (type, message) => {
+  const showNotification = useCallback((type, message) => {
     const notification = document.createElement("div");
     notification.className = `fixed top-4 right-4 px-4 py-2 rounded-lg shadow-lg z-50 ${
       type === "success"
-        ? "bg-green-500 text-white"
+        ? "bg-emerald-500 text-white"
         : type === "error"
-        ? "bg-red-500 text-white"
+        ? "bg-rose-500 text-white"
         : type === "warning"
-        ? "bg-yellow-500 text-black"
+        ? "bg-amber-500 text-white"
         : "bg-blue-500 text-white"
     }`;
     notification.textContent = message;
@@ -67,9 +66,9 @@ const PortfolioBuilder = () => {
     setTimeout(() => {
       notification.remove();
     }, 3000);
-  };
+  }, []);
 
-  const handleSectionToggle = (sectionId) => {
+  const handleSectionToggle = useCallback((sectionId) => {
     setPortfolio((prev) => ({
       ...prev,
       sections: prev.sections.map((section) =>
@@ -78,29 +77,29 @@ const PortfolioBuilder = () => {
           : section
       ),
     }));
-  };
+  }, []);
 
-  const handleSectionOrder = (fromIndex, toIndex) => {
+  const handleSectionOrder = useCallback((fromIndex, toIndex) => {
     const newSections = [...portfolio.sections];
     const [movedSection] = newSections.splice(fromIndex, 1);
     newSections.splice(toIndex, 0, movedSection);
     setPortfolio((prev) => ({ ...prev, sections: newSections }));
-  };
+  }, []);
 
-  const handleSave = () => {
+  const handleSave = useCallback(() => {
     showNotification("success", "Portfolio saved successfully");
-  };
+  }, [showNotification]);
 
-  const handlePreview = () => {
+  const handlePreview = useCallback(() => {
     showNotification("info", "Opening preview...");
-  };
+  }, [showNotification]);
 
-  const handlePublish = () => {
+  const handlePublish = useCallback(() => {
     showNotification("success", "Portfolio published successfully");
-  };
+  }, [showNotification]);
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
+    <div className="bg-white dark:bg-slate-900 rounded-lg shadow p-6">
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Left Column - Builder Controls */}
         <div className="lg:w-1/3">
@@ -408,4 +407,6 @@ const PortfolioBuilder = () => {
   );
 };
 
-export default PortfolioBuilder;
+PortfolioBuilder.displayName = 'PortfolioBuilder';
+
+export default React.memo(PortfolioBuilder);

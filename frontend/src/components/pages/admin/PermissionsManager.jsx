@@ -1,24 +1,27 @@
-import React, { useState } from "react";
+import { useState, useCallback, useMemo, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
-const PermissionsManager = () => {
+const PermissionsManager = memo(() => {
   const navigate = useNavigate();
-  const [roles] = useState([
-    { id: 1, name: "Admin", users: 3, description: "Full system access" },
-    {
-      id: 2,
-      name: "Faculty",
-      users: 12,
-      description: "Manage courses and projects",
-    },
-    {
-      id: 3,
-      name: "Student",
-      users: 141,
-      description: "Access to courses and projects",
-    },
-  ]);
+  const roles = useMemo(
+    () => [
+      { id: 1, name: "Admin", users: 3, description: "Full system access" },
+      {
+        id: 2,
+        name: "Faculty",
+        users: 12,
+        description: "Manage courses and projects",
+      },
+      {
+        id: 3,
+        name: "Student",
+        users: 141,
+        description: "Access to courses and projects",
+      },
+    ],
+    []
+  );
 
   const [permissions, setPermissions] = useState({
     userManagement: { admin: true, faculty: false, student: false },
@@ -31,7 +34,7 @@ const PermissionsManager = () => {
 
   const [selectedRole, setSelectedRole] = useState("admin");
 
-  const togglePermission = (permission, role) => {
+  const togglePermission = useCallback((permission, role) => {
     setPermissions((prev) => ({
       ...prev,
       [permission]: {
@@ -39,25 +42,58 @@ const PermissionsManager = () => {
         [role]: !prev[permission][role],
       },
     }));
-  };
+  }, []);
 
-  const savePermissions = () => {
+  const savePermissions = useCallback(() => {
     toast.success("Permissions updated successfully");
-  };
+  }, []);
+
+  const allowAll = useCallback(() => {
+    setPermissions((prev) => {
+      const updated = { ...prev };
+      Object.keys(updated).forEach((key) => {
+        updated[key] = { ...updated[key], [selectedRole]: true };
+      });
+      return updated;
+    });
+  }, [selectedRole]);
+
+  const denyAll = useCallback(() => {
+    setPermissions((prev) => {
+      const updated = { ...prev };
+      Object.keys(updated).forEach((key) => {
+        updated[key] = { ...updated[key], [selectedRole]: false };
+      });
+      return updated;
+    });
+  }, [selectedRole]);
+
+  const setAsFaculty = useCallback(() => {
+    setPermissions((prev) => {
+      const updated = { ...prev };
+      ["userManagement", "systemSettings", "backupRestore"].forEach((key) => {
+        updated[key] = { ...updated[key], [selectedRole]: false };
+      });
+      ["projectManagement", "courseManagement", "reporting"].forEach((key) => {
+        updated[key] = { ...updated[key], [selectedRole]: true };
+      });
+      return updated;
+    });
+  }, [selectedRole]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
               Permissions Manager
             </h1>
-            <p className="text-gray-600">Manage user roles and permissions</p>
+            <p className="text-slate-600 dark:text-slate-400">Manage user roles and permissions</p>
           </div>
           <button
             onClick={savePermissions}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-800"
           >
             Save Changes
           </button>
@@ -66,8 +102,8 @@ const PermissionsManager = () => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Roles List */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
                 Roles
               </h3>
               <div className="space-y-3">
@@ -77,15 +113,15 @@ const PermissionsManager = () => {
                     onClick={() => setSelectedRole(role.name.toLowerCase())}
                     className={`w-full p-4 text-left rounded-lg transition-colors ${
                       selectedRole === role.name.toLowerCase()
-                        ? "bg-blue-50 border-blue-200 border"
-                        : "border border-gray-200 hover:bg-gray-50"
+                        ? "bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700 border"
+                        : "border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700"
                     }`}
                   >
-                    <div className="font-medium text-gray-900">{role.name}</div>
-                    <div className="text-sm text-gray-600">
+                    <div className="font-medium text-slate-900 dark:text-white">{role.name}</div>
+                    <div className="text-sm text-slate-600 dark:text-slate-400">
                       {role.description}
                     </div>
-                    <div className="text-xs text-gray-500 mt-1">
+                    <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                       {role.users} users
                     </div>
                   </button>
@@ -96,12 +132,12 @@ const PermissionsManager = () => {
 
           {/* Permissions Table */}
           <div className="lg:col-span-3">
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
               <div className="mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 capitalize mb-2">
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-white capitalize mb-2">
                   {selectedRole} Permissions
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-slate-600 dark:text-slate-400">
                   {
                     roles.find((r) => r.name.toLowerCase() === selectedRole)
                       ?.description
@@ -112,19 +148,19 @@ const PermissionsManager = () => {
               <div className="overflow-x-auto">
                 <table className="min-w-full">
                   <thead>
-                    <tr className="border-b border-gray-200">
-                      <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
+                    <tr className="border-b border-slate-200 dark:border-slate-700">
+                      <th className="px-6 py-3 text-left text-sm font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
                         Permission
                       </th>
-                      <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-sm font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
                         Description
                       </th>
-                      <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-sm font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
                         Allow
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-200">
+                  <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
                     {Object.entries({
                       userManagement: "Manage users and access rights",
                       projectManagement: "Create, edit, and manage projects",
@@ -133,24 +169,24 @@ const PermissionsManager = () => {
                       reporting: "Access and generate reports",
                       backupRestore: "Perform backup and restore operations",
                     }).map(([key, description]) => (
-                      <tr key={key} className="hover:bg-gray-50">
+                      <tr key={key} className="hover:bg-slate-50 dark:hover:bg-slate-700">
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="font-medium text-gray-900">
+                          <div className="font-medium text-slate-900 dark:text-white">
                             {key
                               .replace(/([A-Z])/g, " $1")
                               .replace(/^./, (str) => str.toUpperCase())}
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <div className="text-gray-600">{description}</div>
+                          <div className="text-slate-600 dark:text-slate-400">{description}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <button
                             onClick={() => togglePermission(key, selectedRole)}
                             className={`relative inline-flex h-6 w-11 items-center rounded-full ${
                               permissions[key][selectedRole]
-                                ? "bg-green-600"
-                                : "bg-gray-200"
+                                ? "bg-emerald-600 dark:bg-emerald-500"
+                                : "bg-slate-200 dark:bg-slate-700"
                             }`}
                           >
                             <span
@@ -169,52 +205,26 @@ const PermissionsManager = () => {
               </div>
 
               {/* Quick Actions */}
-              <div className="mt-8 pt-6 border-t border-gray-200">
-                <h4 className="text-sm font-medium text-gray-900 mb-3">
+              <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
+                <h4 className="text-sm font-medium text-slate-900 dark:text-white mb-3">
                   Quick Actions
                 </h4>
                 <div className="flex flex-wrap gap-2">
                   <button
-                    onClick={() => {
-                      Object.keys(permissions).forEach((key) => {
-                        permissions[key][selectedRole] = true;
-                      });
-                      setPermissions({ ...permissions });
-                    }}
-                    className="px-3 py-2 bg-green-100 text-green-700 text-sm rounded-lg hover:bg-green-200"
+                    onClick={allowAll}
+                    className="px-3 py-2 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-sm rounded-lg hover:bg-emerald-200 dark:hover:bg-emerald-900/50"
                   >
                     Allow All
                   </button>
                   <button
-                    onClick={() => {
-                      Object.keys(permissions).forEach((key) => {
-                        permissions[key][selectedRole] = false;
-                      });
-                      setPermissions({ ...permissions });
-                    }}
-                    className="px-3 py-2 bg-red-100 text-red-700 text-sm rounded-lg hover:bg-red-200"
+                    onClick={denyAll}
+                    className="px-3 py-2 bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 text-sm rounded-lg hover:bg-rose-200 dark:hover:bg-rose-900/50"
                   >
                     Deny All
                   </button>
                   <button
-                    onClick={() => {
-                      [
-                        "userManagement",
-                        "systemSettings",
-                        "backupRestore",
-                      ].forEach((key) => {
-                        permissions[key][selectedRole] = false;
-                      });
-                      [
-                        "projectManagement",
-                        "courseManagement",
-                        "reporting",
-                      ].forEach((key) => {
-                        permissions[key][selectedRole] = true;
-                      });
-                      setPermissions({ ...permissions });
-                    }}
-                    className="px-3 py-2 bg-blue-100 text-blue-700 text-sm rounded-lg hover:bg-blue-200"
+                    onClick={setAsFaculty}
+                    className="px-3 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-sm rounded-lg hover:bg-blue-200 dark:hover:bg-blue-900/50"
                   >
                     Set as Faculty
                   </button>
@@ -226,6 +236,8 @@ const PermissionsManager = () => {
       </div>
     </div>
   );
-};
+});
+
+PermissionsManager.displayName = "PermissionsManager";
 
 export default PermissionsManager;

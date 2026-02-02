@@ -1,49 +1,66 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useMemo, memo } from "react";
 
-const GanttChart = () => {
-  const navigate = useNavigate();
-  const [projects] = useState([
-    {
-      id: 1,
-      name: "E-Commerce Platform",
-      start: "2024-01-01",
-      end: "2024-03-31",
-      progress: 65,
-      milestones: [
-        { name: "Planning", date: "2024-01-15", status: "completed" },
-        { name: "Design", date: "2024-02-15", status: "completed" },
-        { name: "Development", date: "2024-03-15", status: "in-progress" },
-        { name: "Testing", date: "2024-03-25", status: "pending" },
-        { name: "Deployment", date: "2024-03-31", status: "pending" },
-      ],
-    },
-    {
-      id: 2,
-      name: "Mobile App",
-      start: "2024-02-01",
-      end: "2024-04-30",
-      progress: 40,
-      milestones: [
-        { name: "Planning", date: "2024-02-15", status: "completed" },
-        { name: "Design", date: "2024-03-01", status: "in-progress" },
-        { name: "Development", date: "2024-04-01", status: "pending" },
-        { name: "Testing", date: "2024-04-20", status: "pending" },
-      ],
-    },
-  ]);
+const GanttChart = memo(() => {
+  const projects = useMemo(
+    () => [
+      {
+        id: 1,
+        name: "E-Commerce Platform",
+        start: "2024-01-01",
+        end: "2024-03-31",
+        progress: 65,
+        milestones: [
+          { name: "Planning", date: "2024-01-15", status: "completed" },
+          { name: "Design", date: "2024-02-15", status: "completed" },
+          { name: "Development", date: "2024-03-15", status: "in-progress" },
+          { name: "Testing", date: "2024-03-25", status: "pending" },
+          { name: "Deployment", date: "2024-03-31", status: "pending" },
+        ],
+      },
+      {
+        id: 2,
+        name: "Mobile App",
+        start: "2024-02-01",
+        end: "2024-04-30",
+        progress: 40,
+        milestones: [
+          { name: "Planning", date: "2024-02-15", status: "completed" },
+          { name: "Design", date: "2024-03-01", status: "in-progress" },
+          { name: "Development", date: "2024-04-01", status: "pending" },
+          { name: "Testing", date: "2024-04-20", status: "pending" },
+        ],
+      },
+    ],
+    []
+  );
 
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun"];
+  const months = useMemo(() => ["Jan", "Feb", "Mar", "Apr", "May", "Jun"], []);
+  const gridLines = useMemo(() => Array.from({ length: 180 }), []);
+
+  const statusStyles = {
+    completed: {
+      dot: "bg-emerald-500",
+      badge: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200",
+    },
+    "in-progress": {
+      dot: "bg-amber-500",
+      badge: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200",
+    },
+    pending: {
+      dot: "bg-slate-400",
+      badge: "bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200",
+    },
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
               Project Timeline
             </h1>
-            <p className="text-gray-600">
+            <p className="text-slate-600 dark:text-slate-300">
               Visualize project schedules and milestones
             </p>
           </div>
@@ -53,7 +70,7 @@ const GanttChart = () => {
         </div>
 
         {/* Timeline Header */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
+        <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 p-6 mb-6">
           <div className="flex">
             <div className="w-48"></div>
             <div className="flex-1">
@@ -61,17 +78,17 @@ const GanttChart = () => {
                 {months.map((month, index) => (
                   <div
                     key={index}
-                    className="text-center text-sm font-medium text-gray-700"
+                    className="text-center text-sm font-medium text-slate-700 dark:text-slate-300"
                   >
                     {month} 2024
                   </div>
                 ))}
               </div>
               <div className="flex">
-                {Array.from({ length: 180 }).map((_, i) => (
+                {gridLines.map((_, i) => (
                   <div
                     key={i}
-                    className="h-4 border-r border-gray-300 w-1"
+                    className="h-4 border-r border-slate-200 dark:border-slate-700 w-1"
                   ></div>
                 ))}
               </div>
@@ -84,21 +101,21 @@ const GanttChart = () => {
           {projects.map((project) => (
             <div
               key={project.id}
-              className="bg-white rounded-lg border border-gray-200 p-6"
+              className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 p-6"
             >
               <div className="flex items-center mb-4">
                 <div className="w-48">
-                  <h3 className="font-semibold text-gray-900">
+                  <h3 className="font-semibold text-slate-900 dark:text-slate-100">
                     {project.name}
                   </h3>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-slate-600 dark:text-slate-300">
                     {project.start} - {project.end}
                   </p>
                 </div>
                 <div className="flex-1 relative">
                   {/* Timeline Bar */}
                   <div className="relative h-10">
-                    <div className="absolute top-1/2 left-0 right-0 h-2 bg-gray-200 transform -translate-y-1/2 rounded-full"></div>
+                    <div className="absolute top-1/2 left-0 right-0 h-2 bg-slate-200 dark:bg-slate-700 transform -translate-y-1/2 rounded-full"></div>
                     <div
                       className="absolute top-1/2 left-0 h-2 bg-blue-500 transform -translate-y-1/2 rounded-full"
                       style={{ width: `${project.progress}%` }}
@@ -117,14 +134,10 @@ const GanttChart = () => {
                       >
                         <div
                           className={`w-3 h-3 rounded-full ${
-                            milestone.status === "completed"
-                              ? "bg-green-500"
-                              : milestone.status === "in-progress"
-                              ? "bg-yellow-500"
-                              : "bg-gray-400"
+                            statusStyles[milestone.status].dot
                           }`}
                         ></div>
-                        <div className="text-xs text-gray-600 mt-1 text-center">
+                        <div className="text-xs text-slate-600 dark:text-slate-300 mt-1 text-center">
                           {milestone.name}
                         </div>
                       </div>
@@ -132,7 +145,7 @@ const GanttChart = () => {
                   </div>
                 </div>
                 <div className="w-32 text-right">
-                  <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+                  <span className="px-3 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-200 rounded-full text-sm">
                     {project.progress}%
                   </span>
                 </div>
@@ -140,32 +153,28 @@ const GanttChart = () => {
 
               {/* Milestones List */}
               <div className="mt-6">
-                <h4 className="text-sm font-medium text-gray-900 mb-3">
+                <h4 className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-3">
                   Milestones
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
                   {project.milestones.map((milestone, idx) => (
                     <div
                       key={idx}
-                      className="border border-gray-200 rounded-lg p-3"
+                      className="border border-slate-200 dark:border-slate-700 rounded-lg p-3"
                     >
                       <div className="flex items-center justify-between mb-2">
-                        <span className="font-medium text-sm">
+                        <span className="font-medium text-sm text-slate-900 dark:text-slate-100">
                           {milestone.name}
                         </span>
                         <span
                           className={`text-xs px-2 py-1 rounded-full ${
-                            milestone.status === "completed"
-                              ? "bg-green-100 text-green-800"
-                              : milestone.status === "in-progress"
-                              ? "bg-yellow-100 text-yellow-800"
-                              : "bg-gray-100 text-gray-800"
+                            statusStyles[milestone.status].badge
                           }`}
                         >
                           {milestone.status}
                         </span>
                       </div>
-                      <div className="text-xs text-gray-600">
+                      <div className="text-xs text-slate-600 dark:text-slate-300">
                         Due: {milestone.date}
                       </div>
                     </div>
@@ -178,6 +187,8 @@ const GanttChart = () => {
       </div>
     </div>
   );
-};
+});
+
+GanttChart.displayName = "GanttChart";
 
 export default GanttChart;

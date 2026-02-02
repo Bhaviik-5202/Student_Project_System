@@ -1,18 +1,20 @@
-import React from "react";
+import React, { memo, useCallback } from "react";
+import PropTypes from "prop-types";
 
-const BackToTop = () => {
-  const scrollToTop = () => {
+const BackToTop = memo(() => {
+  const scrollToTop = useCallback(() => {
     window.scrollTo({
       top: 0,
       behavior: "smooth",
     });
-  };
+  }, []);
 
   return (
     <button
       onClick={scrollToTop}
-      className="fixed bottom-6 right-6 bg-gradient-to-r from-primary-600 to-primary-700 text-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 z-40 group focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+      className="fixed bottom-6 right-6 bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-700 dark:to-blue-800 text-white p-3 rounded-full shadow-lg hover:shadow-xl dark:hover:shadow-blue-500/30 transition-all duration-300 hover:scale-110 dark:hover:scale-110 z-40 group focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
       aria-label="Back to top"
+      title="Scroll to top"
     >
       <svg
         className="w-5 h-5 transform group-hover:-translate-y-0.5 transition-transform"
@@ -20,6 +22,7 @@ const BackToTop = () => {
         stroke="currentColor"
         viewBox="0 0 24 24"
         xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
       >
         <path
           strokeLinecap="round"
@@ -30,6 +33,8 @@ const BackToTop = () => {
       </svg>
     </button>
   );
-};
+});
 
-export default React.memo(BackToTop);
+BackToTop.displayName = "BackToTop";
+
+export default BackToTop;

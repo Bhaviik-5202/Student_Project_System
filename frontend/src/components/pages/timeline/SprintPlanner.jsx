@@ -1,71 +1,132 @@
-import React, { useState } from "react";
+import { useCallback, useMemo, useState, memo } from "react";
 import { useNavigate } from "react-router-dom";
 
-const SprintPlanner = () => {
+const SprintPlanner = memo(() => {
   const navigate = useNavigate();
-  const [sprints] = useState([
-    {
-      id: 1,
-      name: "Sprint 1: Foundation",
-      start: "2024-01-01",
-      end: "2024-01-14",
-      velocity: 32,
-      completed: 28,
-      status: "completed",
-      tasks: 12,
-    },
-    {
-      id: 2,
-      name: "Sprint 2: Development",
-      start: "2024-01-15",
-      end: "2024-01-28",
-      velocity: 40,
-      completed: 35,
-      status: "completed",
-      tasks: 15,
-    },
-    {
-      id: 3,
-      name: "Sprint 3: Refinement",
-      start: "2024-01-29",
-      end: "2024-02-11",
-      velocity: 45,
-      completed: 30,
-      status: "in-progress",
-      tasks: 18,
-    },
-    {
-      id: 4,
-      name: "Sprint 4: Finalization",
-      start: "2024-02-12",
-      end: "2024-02-25",
-      velocity: 50,
-      completed: 0,
-      status: "planned",
-      tasks: 20,
-    },
-  ]);
+  const sprints = useMemo(
+    () => [
+      {
+        id: 1,
+        name: "Sprint 1: Foundation",
+        start: "2024-01-01",
+        end: "2024-01-14",
+        velocity: 32,
+        completed: 28,
+        status: "completed",
+        tasks: 12,
+      },
+      {
+        id: 2,
+        name: "Sprint 2: Development",
+        start: "2024-01-15",
+        end: "2024-01-28",
+        velocity: 40,
+        completed: 35,
+        status: "completed",
+        tasks: 15,
+      },
+      {
+        id: 3,
+        name: "Sprint 3: Refinement",
+        start: "2024-01-29",
+        end: "2024-02-11",
+        velocity: 45,
+        completed: 30,
+        status: "in-progress",
+        tasks: 18,
+      },
+      {
+        id: 4,
+        name: "Sprint 4: Finalization",
+        start: "2024-02-12",
+        end: "2024-02-25",
+        velocity: 50,
+        completed: 0,
+        status: "planned",
+        tasks: 20,
+      },
+    ],
+    []
+  );
 
   const [activeSprint, setActiveSprint] = useState(3);
 
-  const activeSprintData = sprints.find((s) => s.id === activeSprint);
+  const activeSprintData = useMemo(
+    () => sprints.find((s) => s.id === activeSprint),
+    [sprints, activeSprint]
+  );
+
+  const sprintStatusStyles = {
+    completed: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200",
+    "in-progress": "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200",
+    planned: "bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200",
+  };
+
+  const taskStatusStyles = {
+    completed: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200",
+    "in-progress": "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200",
+    todo: "bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200",
+  };
+
+  const sprintTasks = useMemo(
+    () => [
+      {
+        task: "Design database schema",
+        assignee: "John Doe",
+        points: 8,
+        status: "completed",
+      },
+      {
+        task: "Create ER diagram",
+        assignee: "Jane Smith",
+        points: 5,
+        status: "completed",
+      },
+      {
+        task: "Implement user authentication",
+        assignee: "Robert Johnson",
+        points: 13,
+        status: "in-progress",
+      },
+      {
+        task: "Write API documentation",
+        assignee: "Sarah Williams",
+        points: 8,
+        status: "todo",
+      },
+      {
+        task: "Set up testing environment",
+        assignee: "Michael Brown",
+        points: 6,
+        status: "todo",
+      },
+    ],
+    []
+  );
+
+  const handleNavigate = useCallback(
+    (path) => {
+      navigate(path);
+    },
+    [navigate]
+  );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6">
           <button
-            onClick={() => navigate("/timeline")}
-            className="text-blue-600 hover:text-blue-800 flex items-center mb-4"
+            onClick={() => handleNavigate("/timeline")}
+            className="text-blue-600 dark:text-blue-300 hover:text-blue-800 dark:hover:text-blue-200 flex items-center mb-4"
           >
             ← Back to Timeline
           </button>
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                 Sprint Planner
               </h1>
-              <p className="text-gray-600">
+              <p className="text-slate-600 dark:text-slate-300">
                 Database Design Project • Agile Development
               </p>
             </div>
@@ -78,8 +139,8 @@ const SprintPlanner = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           {/* Sprint List */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">
                 Sprints
               </h3>
               <div className="space-y-4">
@@ -89,25 +150,21 @@ const SprintPlanner = () => {
                     onClick={() => setActiveSprint(sprint.id)}
                     className={`w-full p-4 text-left rounded-lg transition-colors ${
                       activeSprint === sprint.id
-                        ? "bg-blue-50 border-blue-200 border"
-                        : "border border-gray-200 hover:bg-gray-50"
+                        ? "bg-blue-50 border-blue-200 border dark:bg-blue-950/40 dark:border-blue-900/50"
+                        : "border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
                     }`}
                   >
-                    <div className="font-medium text-gray-900 mb-2">
+                    <div className="font-medium text-slate-900 dark:text-slate-100 mb-2">
                       {sprint.name}
                     </div>
-                    <div className="text-sm text-gray-600">
+                    <div className="text-sm text-slate-600 dark:text-slate-300">
                       {sprint.start} - {sprint.end}
                     </div>
-                    <div className="flex justify-between text-sm text-gray-600 mt-2">
+                    <div className="flex justify-between text-sm text-slate-600 dark:text-slate-300 mt-2">
                       <span>Velocity: {sprint.velocity}</span>
                       <span
                         className={`px-2 py-1 rounded-full text-xs ${
-                          sprint.status === "completed"
-                            ? "bg-green-100 text-green-800"
-                            : sprint.status === "in-progress"
-                            ? "bg-yellow-100 text-yellow-800"
-                            : "bg-gray-100 text-gray-800"
+                          sprintStatusStyles[sprint.status]
                         }`}
                       >
                         {sprint.status}
@@ -122,23 +179,19 @@ const SprintPlanner = () => {
           {/* Active Sprint Details */}
           <div className="lg:col-span-2">
             {activeSprintData && (
-              <div className="bg-white rounded-lg border border-gray-200 p-6">
+              <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
                 <div className="flex justify-between items-start mb-6">
                   <div>
-                    <h3 className="text-xl font-bold text-gray-900">
+                    <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
                       {activeSprintData.name}
                     </h3>
-                    <div className="text-gray-600 mt-1">
+                    <div className="text-slate-600 dark:text-slate-300 mt-1">
                       {activeSprintData.start} to {activeSprintData.end}
                     </div>
                   </div>
                   <span
                     className={`px-3 py-1 rounded-full text-sm font-medium ${
-                      activeSprintData.status === "completed"
-                        ? "bg-green-100 text-green-800"
-                        : activeSprintData.status === "in-progress"
-                        ? "bg-yellow-100 text-yellow-800"
-                        : "bg-gray-100 text-gray-800"
+                      sprintStatusStyles[activeSprintData.status]
                     }`}
                   >
                     {activeSprintData.status.replace("-", " ").toUpperCase()}
@@ -147,27 +200,35 @@ const SprintPlanner = () => {
 
                 {/* Sprint Metrics */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <div className="text-sm text-gray-600 mb-1">Velocity</div>
-                    <div className="text-2xl font-bold text-gray-900">
+                  <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-lg">
+                    <div className="text-sm text-slate-600 dark:text-slate-300 mb-1">
+                      Velocity
+                    </div>
+                    <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                       {activeSprintData.velocity}
                     </div>
                   </div>
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <div className="text-sm text-gray-600 mb-1">Completed</div>
-                    <div className="text-2xl font-bold text-gray-900">
+                  <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-lg">
+                    <div className="text-sm text-slate-600 dark:text-slate-300 mb-1">
+                      Completed
+                    </div>
+                    <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                       {activeSprintData.completed}
                     </div>
                   </div>
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <div className="text-sm text-gray-600 mb-1">Remaining</div>
-                    <div className="text-2xl font-bold text-gray-900">
+                  <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-lg">
+                    <div className="text-sm text-slate-600 dark:text-slate-300 mb-1">
+                      Remaining
+                    </div>
+                    <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                       {activeSprintData.velocity - activeSprintData.completed}
                     </div>
                   </div>
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <div className="text-sm text-gray-600 mb-1">Tasks</div>
-                    <div className="text-2xl font-bold text-gray-900">
+                  <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-lg">
+                    <div className="text-sm text-slate-600 dark:text-slate-300 mb-1">
+                      Tasks
+                    </div>
+                    <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                       {activeSprintData.tasks}
                     </div>
                   </div>
@@ -175,7 +236,7 @@ const SprintPlanner = () => {
 
                 {/* Progress */}
                 <div className="mb-8">
-                  <div className="flex justify-between text-sm text-gray-600 mb-2">
+                  <div className="flex justify-between text-sm text-slate-600 dark:text-slate-300 mb-2">
                     <span>Sprint Progress</span>
                     <span>
                       {activeSprintData.completed} / {activeSprintData.velocity}{" "}
@@ -188,15 +249,15 @@ const SprintPlanner = () => {
                       %)
                     </span>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-3">
+                  <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-3">
                     <div
                       className={`h-3 rounded-full ${
                         activeSprintData.completed >= activeSprintData.velocity
-                          ? "bg-green-500"
+                          ? "bg-emerald-500"
                           : activeSprintData.completed /
                               activeSprintData.velocity >=
                             0.7
-                          ? "bg-yellow-500"
+                          ? "bg-amber-500"
                           : "bg-blue-500"
                       }`}
                       style={{
@@ -212,65 +273,30 @@ const SprintPlanner = () => {
 
                 {/* Tasks */}
                 <div>
-                  <h4 className="text-lg font-semibold text-gray-900 mb-4">
+                  <h4 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">
                     Sprint Tasks
                   </h4>
                   <div className="space-y-3">
-                    {[
-                      {
-                        task: "Design database schema",
-                        assignee: "John Doe",
-                        points: 8,
-                        status: "completed",
-                      },
-                      {
-                        task: "Create ER diagram",
-                        assignee: "Jane Smith",
-                        points: 5,
-                        status: "completed",
-                      },
-                      {
-                        task: "Implement user authentication",
-                        assignee: "Robert Johnson",
-                        points: 13,
-                        status: "in-progress",
-                      },
-                      {
-                        task: "Write API documentation",
-                        assignee: "Sarah Williams",
-                        points: 8,
-                        status: "todo",
-                      },
-                      {
-                        task: "Set up testing environment",
-                        assignee: "Michael Brown",
-                        points: 6,
-                        status: "todo",
-                      },
-                    ].map((task, index) => (
+                    {sprintTasks.map((task, index) => (
                       <div
                         key={index}
-                        className="flex items-center justify-between p-4 border border-gray-200 rounded-lg"
+                        className="flex items-center justify-between p-4 border border-slate-200 dark:border-slate-700 rounded-lg"
                       >
                         <div>
-                          <div className="font-medium text-gray-900">
+                          <div className="font-medium text-slate-900 dark:text-slate-100">
                             {task.task}
                           </div>
-                          <div className="text-sm text-gray-600">
+                          <div className="text-sm text-slate-600 dark:text-slate-300">
                             Assigned to: {task.assignee}
                           </div>
                         </div>
                         <div className="flex items-center gap-4">
-                          <span className="px-2 py-1 bg-blue-100 text-blue-800 text-sm rounded">
+                          <span className="px-2 py-1 bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-200 text-sm rounded">
                             {task.points} points
                           </span>
                           <span
                             className={`px-2 py-1 text-sm rounded ${
-                              task.status === "completed"
-                                ? "bg-green-100 text-green-800"
-                                : task.status === "in-progress"
-                                ? "bg-yellow-100 text-yellow-800"
-                                : "bg-gray-100 text-gray-800"
+                              taskStatusStyles[task.status]
                             }`}
                           >
                             {task.status}
@@ -287,6 +313,8 @@ const SprintPlanner = () => {
       </div>
     </div>
   );
-};
+});
+
+SprintPlanner.displayName = "SprintPlanner";
 
 export default SprintPlanner;

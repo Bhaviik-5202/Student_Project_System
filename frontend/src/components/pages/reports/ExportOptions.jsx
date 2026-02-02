@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
-const ExportOptions = () => {
+const ExportOptions = memo(() => {
   const navigate = useNavigate();
   const [exportType, setExportType] = useState("pdf");
   const [dateRange, setDateRange] = useState({
@@ -17,7 +17,7 @@ const ExportOptions = () => {
   });
   const [loading, setLoading] = useState(false);
 
-  const handleExport = async () => {
+  const handleExport = useCallback(async () => {
     setLoading(true);
 
     try {
@@ -32,27 +32,31 @@ const ExportOptions = () => {
       toast.error("Export failed");
       setLoading(false);
     }
-  };
+  }, [exportType]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6">
           <button
             onClick={() => navigate("/reports")}
-            className="text-blue-600 hover:text-blue-800 flex items-center mb-4"
+            className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex items-center mb-4 font-medium transition-colors"
           >
             ← Back to Reports
           </button>
-          <h1 className="text-2xl font-bold text-gray-900">Export Reports</h1>
-          <p className="text-gray-600">Generate and download system reports</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+            Export Reports
+          </h1>
+          <p className="text-slate-600 dark:text-slate-400">
+            Generate and download system reports
+          </p>
         </div>
 
-        <div className="bg-white rounded-lg border border-gray-200 p-6 max-w-3xl">
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 max-w-3xl">
           <div className="space-y-8">
             {/* Export Format */}
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                 Export Format
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -63,12 +67,12 @@ const ExportOptions = () => {
                     onClick={() => setExportType(format)}
                     className={`px-4 py-3 rounded-lg border text-center transition-colors ${
                       exportType === format
-                        ? "border-blue-500 bg-blue-50 text-blue-700"
-                        : "border-gray-300 hover:bg-gray-50"
+                        ? "border-blue-500 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300"
+                        : "border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
                     }`}
                   >
                     <div className="font-medium">{format.toUpperCase()}</div>
-                    <div className="text-sm text-gray-500 mt-1">
+                    <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                       {format === "pdf" && "Portable Document Format"}
                       {format === "excel" && "Microsoft Excel"}
                       {format === "csv" && "Comma Separated Values"}
@@ -80,17 +84,17 @@ const ExportOptions = () => {
 
             {/* Date Range */}
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                 Date Range
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Start Date
                   </label>
                   <input
                     type="date"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
                     value={dateRange.start}
                     onChange={(e) =>
                       setDateRange({ ...dateRange, start: e.target.value })
@@ -98,12 +102,12 @@ const ExportOptions = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     End Date
                   </label>
                   <input
                     type="date"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
                     value={dateRange.end}
                     onChange={(e) =>
                       setDateRange({ ...dateRange, end: e.target.value })
@@ -115,7 +119,7 @@ const ExportOptions = () => {
 
             {/* Include Data */}
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                 Include Data
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -132,18 +136,20 @@ const ExportOptions = () => {
                       }
                       className="h-4 w-4 text-blue-600 rounded focus:ring-blue-500"
                     />
-                    <span className="ml-2 text-gray-700 capitalize">{key}</span>
+                    <span className="ml-2 text-gray-700 dark:text-gray-300 capitalize">
+                      {key}
+                    </span>
                   </label>
                 ))}
               </div>
             </div>
 
             {/* Export Button */}
-            <div className="pt-6 border-t border-gray-200">
+            <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
               <button
                 onClick={handleExport}
                 disabled={loading}
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center"
+                className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white rounded-lg disabled:opacity-50 flex items-center"
               >
                 {loading ? (
                   <>
@@ -175,6 +181,8 @@ const ExportOptions = () => {
       </div>
     </div>
   );
-};
+});
+
+ExportOptions.displayName = "ExportOptions";
 
 export default ExportOptions;

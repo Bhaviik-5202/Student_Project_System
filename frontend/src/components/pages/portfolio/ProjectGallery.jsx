@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 
 const ProjectGallery = () => {
   const [selectedProject, setSelectedProject] = useState(null);
-  const [viewMode, setViewMode] = useState("grid"); // grid or list
+  const [viewMode, setViewMode] = useState("grid");
   const [filter, setFilter] = useState("all");
 
-  const projects = [
+  const projects = useMemo(() => [
     {
       id: 1,
       title: "E-Commerce Platform",
@@ -102,38 +102,38 @@ const ProjectGallery = () => {
       likes: 31,
       views: 112,
     },
-  ];
+  ], []);
 
-  const filters = [
+  const filters = useMemo(() => [
     { id: "all", name: "All Projects", count: 6 },
     { id: "web", name: "Web Development", count: 2 },
     { id: "mobile", name: "Mobile Apps", count: 1 },
     { id: "ai", name: "AI/ML", count: 1 },
     { id: "completed", name: "Completed", count: 3 },
     { id: "in-progress", name: "In Progress", count: 2 },
-  ];
+  ], []);
 
-  const filteredProjects = projects.filter((project) => {
+  const filteredProjects = useMemo(() => projects.filter((project) => {
     if (filter === "all") return true;
     if (filter === "completed") return project.status === "completed";
     if (filter === "in-progress") return project.status === "in-progress";
     return project.category === filter || project.status === filter;
-  });
+  }), [projects, filter]);
 
-  const getStatusColor = (status) => {
+  const getStatusColor = useCallback((status) => {
     switch (status) {
       case "completed":
-        return "bg-green-100 text-green-700";
+        return "bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-200";
       case "in-progress":
-        return "bg-yellow-100 text-yellow-700";
+        return "bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-200";
       case "planning":
-        return "bg-blue-100 text-blue-700";
+        return "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200";
       default:
-        return "bg-gray-100 text-gray-700";
+        return "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300";
     }
-  };
+  }, []);
 
-  const getCategoryIcon = (category) => {
+  const getCategoryIcon = useCallback((category) => {
     switch (category) {
       case "web":
         return "fas fa-globe";
@@ -148,10 +148,10 @@ const ProjectGallery = () => {
       default:
         return "fas fa-project-diagram";
     }
-  };
+  }, []);
 
   return (
-    <div className="bg-white rounded-lg shadow p-6">
+    <div className="bg-white dark:bg-slate-900 rounded-lg shadow p-6\">
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-8">
         <div>
@@ -480,7 +480,7 @@ const ProjectGallery = () => {
       )}
 
       {/* Gallery Stats */}
-      <div className="mt-8 pt-6 border-t border-gray-200">
+      <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700\">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="text-center">
             <div className="text-2xl font-bold text-blue-600">
@@ -512,4 +512,6 @@ const ProjectGallery = () => {
   );
 };
 
-export default ProjectGallery;
+ProjectGallery.displayName = 'ProjectGallery';
+
+export default React.memo(ProjectGallery);

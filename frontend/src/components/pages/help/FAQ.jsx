@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { memo, useMemo, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
-const FAQ = () => {
+const FAQ = memo(() => {
   const navigate = useNavigate();
   const [activeIndex, setActiveIndex] = useState(null);
 
-  const faqs = [
+  const faqs = useMemo(() => [
     {
       category: "Getting Started",
       questions: [
@@ -57,26 +57,26 @@ const FAQ = () => {
         },
       ],
     },
-  ];
+  ], []);
 
-  const toggleFAQ = (index) => {
-    setActiveIndex(activeIndex === index ? null : index);
-  };
+  const toggleFAQ = useCallback((index) => {
+    setActiveIndex(prev => prev === index ? null : index);
+  }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6">
           <button
             onClick={() => navigate("/help")}
-            className="text-blue-600 hover:text-blue-800 flex items-center mb-4"
+            className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 flex items-center mb-4"
           >
             ← Back to Help Center
           </button>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
             Frequently Asked Questions
           </h1>
-          <p className="text-gray-600">
+          <p className="text-slate-600 dark:text-slate-400">
             Find answers to common questions about the system
           </p>
         </div>
@@ -84,7 +84,7 @@ const FAQ = () => {
         <div className="max-w-4xl mx-auto">
           {faqs.map((section, sectionIndex) => (
             <div key={sectionIndex} className="mb-8">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
                 {section.category}
               </h2>
               <div className="space-y-3">
@@ -93,22 +93,22 @@ const FAQ = () => {
                   return (
                     <div
                       key={index}
-                      className="bg-white border border-gray-200 rounded-lg"
+                      className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg"
                     >
                       <button
                         onClick={() => toggleFAQ(index)}
-                        className="w-full px-4 py-3 text-left flex justify-between items-center hover:bg-gray-50 rounded-lg"
+                        className="w-full px-4 py-3 text-left flex justify-between items-center hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg"
                       >
-                        <span className="font-medium text-gray-900">
+                        <span className="font-medium text-slate-900 dark:text-white">
                           {faq.q}
                         </span>
-                        <span className="text-gray-500">
+                        <span className="text-slate-500 dark:text-slate-400">
                           {activeIndex === index ? "−" : "+"}
                         </span>
                       </button>
                       {activeIndex === index && (
-                        <div className="px-4 py-3 border-t border-gray-200 bg-gray-50">
-                          <p className="text-gray-600">{faq.a}</p>
+                        <div className="px-4 py-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/50">
+                          <p className="text-slate-600 dark:text-slate-400">{faq.a}</p>
                         </div>
                       )}
                     </div>
@@ -121,6 +121,8 @@ const FAQ = () => {
       </div>
     </div>
   );
-};
+});
+
+FAQ.displayName = 'FAQ';
 
 export default FAQ;
