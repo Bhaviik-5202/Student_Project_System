@@ -6,7 +6,7 @@ const ResourceCard = memo(({ resource, icon }) => (
   <div className="border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-md hover:border-blue-300 dark:hover:border-blue-500 transition-all bg-white dark:bg-slate-800">
     <div className="flex items-start justify-between mb-3">
       <div className="flex items-center gap-3">
-        <span className="text-2xl">{icon}</span>
+        <i className={`${icon} text-xl`} />
         <div>
           <h4 className="font-medium text-slate-800 dark:text-white">
             {resource.name}
@@ -17,7 +17,7 @@ const ResourceCard = memo(({ resource, icon }) => (
         </div>
       </div>
       <button className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300">
-        <span>⋯</span>
+        <i className="fas fa-ellipsis-h" />
       </button>
     </div>
 
@@ -143,17 +143,17 @@ const ResourceBrowser = memo(() => {
   const getIcon = useCallback((type) => {
     switch (type) {
       case "pdf":
-        return "📄";
+        return "fas fa-file-alt text-blue-500";
       case "ppt":
-        return "📊";
+        return "fas fa-file-powerpoint text-orange-500";
       case "zip":
-        return "📦";
+        return "fas fa-file-archive text-yellow-500";
       case "fig":
-        return "🎨";
+        return "fas fa-palette text-purple-500";
       case "video":
-        return "🎥";
+        return "fas fa-video text-red-500";
       default:
-        return "📁";
+        return "fas fa-folder text-gray-500";
     }
   }, []);
 
@@ -176,7 +176,7 @@ const ResourceBrowser = memo(() => {
           Resource Browser
         </h1>
         <button className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white rounded-lg flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
-          <span>+</span> Upload Resource
+          <i className="fas fa-plus" /> Upload Resource
         </button>
       </div>
 

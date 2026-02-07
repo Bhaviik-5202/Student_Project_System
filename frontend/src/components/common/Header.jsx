@@ -203,10 +203,10 @@ const Header = memo(({
     const baseActions = [
       {
         icon: "diagram-project",
-        label: "New Project",
+        label: user?.role === "admin" ? "New Project Type" : "New Project",
         color: "text-blue-600",
         bgColor: "bg-blue-100 dark:bg-blue-900/40",
-        path: "/projects/new",
+        path: user?.role === "admin" ? "/project-types" : "/project-proposal",
       },
       {
         icon: "calendar-plus",
@@ -220,7 +220,7 @@ const Header = memo(({
         label: "Create Report",
         color: "text-purple-600",
         bgColor: "bg-purple-100 dark:bg-purple-900/40",
-        path: "/reports/new",
+        path: "/reports",
       },
     ];
 
@@ -240,7 +240,7 @@ const Header = memo(({
         label: "Create Course",
         color: "text-orange-600",
         bgColor: "bg-orange-100 dark:bg-orange-900/40",
-        path: "/courses/new",
+        path: "/course-catalog",
       });
     }
 

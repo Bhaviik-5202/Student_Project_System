@@ -48,6 +48,132 @@ import {
 
 import { Menu, Transition } from "@headlessui/react";
 
+// Animated Counter Hook for stat values (same as AdminDashboard)
+const useAnimatedCounter = (endValue, duration = 1000) => {
+  const [count, setCount] = useState(0);
+  const numericValue = parseInt(endValue) || 0;
+  
+  useEffect(() => {
+    let startTime = null;
+    let animationFrame;
+    
+    const animate = (currentTime) => {
+      if (!startTime) startTime = currentTime;
+      const progress = Math.min((currentTime - startTime) / duration, 1);
+      const easeOutQuad = 1 - (1 - progress) * (1 - progress);
+      setCount(Math.floor(easeOutQuad * numericValue));
+      
+      if (progress < 1) {
+        animationFrame = requestAnimationFrame(animate);
+      }
+    };
+    
+    animationFrame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationFrame);
+  }, [numericValue, duration]);
+  
+  return count;
+};
+
+// Animated Stat Card Component
+const AnimatedStatCard = ({ stat, index, onClick }) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const numericPart = parseInt(stat.value) || 0;
+  const suffix = stat.value.toString().replace(/[0-9]/g, '');
+  const animatedValue = useAnimatedCounter(isVisible ? numericPart : 0, 1200);
+  const Icon = stat.icon;
+  
+  useEffect(() => {
+    const timer = setTimeout(() => setIsVisible(true), index * 100);
+    return () => clearTimeout(timer);
+  }, [index]);
+  
+  const bgColor =
+    stat.color === "blue"
+      ? "bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/30 dark:to-blue-800/20"
+      : stat.color === "green"
+        ? "bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-900/30 dark:to-green-800/20"
+        : stat.color === "yellow"
+          ? "bg-gradient-to-br from-yellow-50 to-yellow-100/50 dark:from-yellow-900/30 dark:to-yellow-800/20"
+          : "bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-900/30 dark:to-purple-800/20";
+  const iconColor =
+    stat.color === "blue"
+      ? "text-blue-600 dark:text-blue-400"
+      : stat.color === "green"
+        ? "text-green-600 dark:text-green-400"
+        : stat.color === "yellow"
+          ? "text-yellow-600 dark:text-yellow-400"
+          : "text-purple-600 dark:text-purple-400";
+  const borderColor =
+    stat.color === "blue"
+      ? "border-blue-100 dark:border-blue-800"
+      : stat.color === "green"
+        ? "border-green-100 dark:border-green-800"
+        : stat.color === "yellow"
+          ? "border-yellow-100 dark:border-yellow-800"
+          : "border-purple-100 dark:border-purple-800";
+  const progressColor =
+    stat.color === "blue"
+      ? "bg-blue-500 dark:bg-blue-400"
+      : stat.color === "green"
+        ? "bg-green-500 dark:bg-green-400"
+        : stat.color === "yellow"
+          ? "bg-yellow-500 dark:bg-yellow-400"
+          : "bg-purple-500 dark:bg-purple-400";
+
+  return (
+    <div
+      className={`group relative bg-white dark:bg-slate-800 rounded-2xl border ${borderColor} p-6 transition-all duration-300 cursor-pointer overflow-hidden ${
+        isVisible ? 'translate-y-0 opacity-100 hover:border-transparent hover:shadow-lg dark:hover:shadow-slate-700/30' : 'translate-y-4 opacity-0'
+      }`}
+      onClick={onClick}
+    >
+      {/* Background overlay - same as Quick Access */}
+      <div className={`absolute inset-0 ${bgColor} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+      
+      <div className="relative z-10">
+        <div className="flex items-center justify-between mb-6">
+          <div
+            className={`w-14 h-14 ${bgColor} rounded-xl flex items-center justify-center border ${borderColor}`}
+          >
+            <Icon className={`w-7 h-7 ${iconColor} transform transition-transform duration-300 group-hover:scale-125 group-hover:-translate-y-1`} />
+          </div>
+          <span
+            className={`text-xs font-semibold px-3 py-1.5 rounded-full ${
+              stat.trend === "up"
+                ? "bg-gradient-to-r from-green-100 to-green-50 dark:from-green-900/40 dark:to-green-800/30 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800"
+                : stat.trend === "attention"
+                  ? "bg-gradient-to-r from-yellow-100 to-yellow-50 dark:from-yellow-900/40 dark:to-yellow-800/30 text-yellow-700 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800"
+                  : "bg-gradient-to-r from-blue-100 to-blue-50 dark:from-blue-900/40 dark:to-blue-800/30 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800"
+            }`}
+          >
+            {stat.change}
+          </span>
+        </div>
+        <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2 tabular-nums">
+          {numericPart > 0 ? animatedValue : ''}{suffix}
+        </div>
+        <div className="text-lg text-gray-600 dark:text-gray-400 font-medium">
+          {stat.title}
+        </div>
+        {/* Progress bar animation */}
+        <div className={`h-1 mt-4 rounded-full ${bgColor} overflow-hidden`}>
+          <div 
+            className={`h-full ${progressColor} rounded-full transition-all duration-1000 ease-out`}
+            style={{ width: isVisible ? '100%' : '0%' }}
+          />
+        </div>
+        <div className="mt-4 pt-4 border-t border-gray-100 dark:border-slate-700">
+          <span className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors duration-300 font-medium flex items-center group-hover:underline">
+            View details
+            <ChevronRightIcon className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform duration-300" />
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Dashboard = () => {
   const { user, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
@@ -496,7 +622,7 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen p-4 md:p-6 space-y-6 animate-fade-in">
-      {/* Dashboard Header with Welcome */}
+      {/* Dashboard Header with Welcome - Enhanced with animations */}
       <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-lg p-6 md:p-8">
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
           <div className="flex-1">
@@ -534,7 +660,7 @@ const Dashboard = () => {
               </div>
 
               {/* User Stats Dropdown Menu */}
-              <Menu as="div" className="relative inline-block text-left">
+              {/* <Menu as="div" className="relative inline-block text-left">
                 <div>
                   <Menu.Button className="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-gray-50 to-white dark:from-slate-700 dark:to-slate-800 text-gray-700 dark:text-gray-200 rounded-xl hover:shadow-md transition-all duration-300 border border-gray-200 dark:border-slate-600 hover:border-gray-300 dark:hover:border-slate-500 font-medium">
                     <UserIcon className="w-5 h-5 mr-2 text-gray-500 dark:text-gray-400" />
@@ -563,7 +689,6 @@ const Dashboard = () => {
                       </p>
                     </div>
                     <div className="py-3">
-                      {/* User Stats in Dropdown */}
                       <div className="px-4 py-3 space-y-4">
                         <div className="flex items-center justify-between p-2 bg-gradient-to-r from-orange-50 to-orange-100/50 dark:from-orange-900/30 dark:to-orange-800/20 rounded-lg">
                           <div className="flex items-center">
@@ -634,44 +759,55 @@ const Dashboard = () => {
                     </div>
                   </Menu.Items>
                 </Transition>
-              </Menu>
+              </Menu> */}
             </div>
 
-            {/* Action Buttons */}
+            {/* Action Buttons with enhanced animations */}
             <div className="flex flex-wrap gap-4 mt-8">
               <button
                 onClick={handleRefresh}
                 disabled={isLoading}
-                className="inline-flex items-center px-5 py-2.5 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-700 hover:shadow-sm transition-all duration-300 font-medium disabled:opacity-50"
+                className="group relative inline-flex items-center px-5 py-2.5 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 rounded-xl hover:border-transparent hover:shadow-lg transition-all duration-300 font-medium disabled:opacity-50 overflow-hidden"
               >
-                {isLoading ? (
-                  <RefreshIcon className="w-4 h-4 mr-2 animate-spin" />
-                ) : (
-                  <RefreshIcon className="w-4 h-4 mr-2" />
-                )}
-                {isLoading ? "Refreshing..." : "Refresh Dashboard"}
+                <div className="absolute inset-0 bg-gradient-to-r from-gray-100 to-gray-50 dark:from-slate-700 dark:to-slate-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="relative z-10 flex items-center">
+                  {isLoading ? (
+                    <RefreshIcon className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <RefreshIcon className="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-180" />
+                  )}
+                  <span>{isLoading ? "Refreshing..." : "Refresh Dashboard"}</span>
+                </div>
               </button>
 
               <button
                 onClick={() => {
-                  if (user?.role === "admin") navigate("/projects/types");
+                  if (user?.role === "admin") navigate("/project-types");
                   else if (user?.role === "faculty") navigate("/projects");
-                  else navigate("/projects/proposal");
+                  else navigate("/project-proposal");
                 }}
-                className="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-xl hover:shadow-lg hover:from-blue-700 hover:to-blue-600 transition-all duration-300 font-medium shadow-md"
+                className="group relative inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-xl hover:shadow-xl transition-all duration-300 font-medium shadow-md overflow-hidden"
               >
-                <PlusIcon className="w-4 h-4 mr-2" />
-                {user?.role === "admin" && "New Project Type"}
-                {user?.role === "faculty" && "New Project"}
-                {user?.role === "student" && "Submit Proposal"}
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-700 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="relative z-10 flex items-center">
+                  <PlusIcon className="w-4 h-4 mr-2 transition-transform duration-300 group-hover:scale-125 group-hover:rotate-90" />
+                  <span>
+                    {user?.role === "admin" && "New Project Type"}
+                    {user?.role === "faculty" && "New Project"}
+                    {user?.role === "student" && "Submit Proposal"}
+                  </span>
+                </div>
               </button>
 
               <button
                 onClick={() => toast.info("Export feature coming soon!")}
-                className="inline-flex items-center px-5 py-2.5 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-700 hover:shadow-sm transition-all duration-300 font-medium"
+                className="group relative inline-flex items-center px-5 py-2.5 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 rounded-xl hover:border-transparent hover:shadow-lg transition-all duration-300 font-medium overflow-hidden"
               >
-                <DownloadIcon className="w-4 h-4 mr-2" />
-                Export Report
+                <div className="absolute inset-0 bg-gradient-to-r from-gray-100 to-gray-50 dark:from-slate-700 dark:to-slate-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="relative z-10 flex items-center">
+                  <DownloadIcon className="w-4 h-4 mr-2 transition-transform duration-300 group-hover:scale-110 group-hover:translate-y-0.5" />
+                  <span>Export Report</span>
+                </div>
               </button>
             </div>
           </div>
@@ -715,90 +851,34 @@ const Dashboard = () => {
             <div className="mt-4 md:mt-0 md:ml-6 flex gap-3">
               <button
                 onClick={() => navigate("/assignments")}
-                className="px-5 py-2.5 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-xl hover:shadow-lg hover:from-red-700 hover:to-red-600 transition-all duration-300 font-medium shadow-md"
+                className="group relative px-5 py-2.5 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-xl hover:shadow-xl transition-all duration-300 font-medium shadow-md overflow-hidden"
               >
-                Start Now
+                <div className="absolute inset-0 bg-gradient-to-r from-red-700 to-red-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <span className="relative z-10 group-hover:scale-105 inline-block transition-transform duration-300">Start Now</span>
               </button>
               <button
                 onClick={() => toast.info("Extension requested")}
-                className="px-5 py-2.5 border border-red-300 dark:border-red-700 text-red-700 dark:text-red-400 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/30 transition-all duration-300 font-medium"
+                className="group relative px-5 py-2.5 border border-red-300 dark:border-red-700 text-red-700 dark:text-red-400 rounded-xl hover:border-transparent hover:shadow-lg transition-all duration-300 font-medium overflow-hidden"
               >
-                Request Extension
+                <div className="absolute inset-0 bg-red-50 dark:bg-red-900/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <span className="relative z-10">Request Extension</span>
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Stats Grid - Role Specific */}
+      {/* Stats Grid - Role Specific with Animations */}
       {dashboardData.stats.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {dashboardData.stats.map((stat, index) => {
-            const Icon = stat.icon;
-            const bgColor =
-              stat.color === "blue"
-                ? "bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/30 dark:to-blue-800/20"
-                : stat.color === "green"
-                  ? "bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-900/30 dark:to-green-800/20"
-                  : stat.color === "yellow"
-                    ? "bg-gradient-to-br from-yellow-50 to-yellow-100/50 dark:from-yellow-900/30 dark:to-yellow-800/20"
-                    : "bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-900/30 dark:to-purple-800/20";
-            const iconColor =
-              stat.color === "blue"
-                ? "text-blue-600 dark:text-blue-400"
-                : stat.color === "green"
-                  ? "text-green-600 dark:text-green-400"
-                  : stat.color === "yellow"
-                    ? "text-yellow-600 dark:text-yellow-400"
-                    : "text-purple-600 dark:text-purple-400";
-            const borderColor =
-              stat.color === "blue"
-                ? "border-blue-100 dark:border-blue-800"
-                : stat.color === "green"
-                  ? "border-green-100 dark:border-green-800"
-                  : stat.color === "yellow"
-                    ? "border-yellow-100 dark:border-yellow-800"
-                    : "border-purple-100 dark:border-purple-800";
-
-            return (
-              <div
-                key={index}
-                className={`bg-white dark:bg-slate-800 rounded-2xl border ${borderColor} p-6 hover:shadow-xl dark:hover:shadow-slate-900/50 transition-all duration-300 transform hover:-translate-y-1 cursor-pointer group`}
-                onClick={stat.onClick}
-              >
-                <div className="flex items-center justify-between mb-6">
-                  <div
-                    className={`w-12 h-12 ${bgColor} rounded-xl flex items-center justify-center border ${borderColor} group-hover:scale-110 transition-transform duration-300`}
-                  >
-                    <Icon className={`w-6 h-6 ${iconColor}`} />
-                  </div>
-                  <span
-                    className={`text-xs font-semibold px-3 py-1.5 rounded-full ${
-                      stat.trend === "up"
-                        ? "bg-gradient-to-r from-green-100 to-green-50 dark:from-green-900/40 dark:to-green-800/30 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800"
-                        : stat.trend === "attention"
-                          ? "bg-gradient-to-r from-yellow-100 to-yellow-50 dark:from-yellow-900/40 dark:to-yellow-800/30 text-yellow-700 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800"
-                          : "bg-gradient-to-r from-blue-100 to-blue-50 dark:from-blue-900/40 dark:to-blue-800/30 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800"
-                    }`}
-                  >
-                    {stat.change}
-                  </span>
-                </div>
-                <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                  {stat.value}
-                </div>
-                <div className="text-lg text-gray-600 dark:text-gray-400 font-medium">
-                  {stat.title}
-                </div>
-                <div className="mt-6 pt-6 border-t border-gray-100 dark:border-slate-700">
-                  <span className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors duration-300 font-medium flex items-center group-hover:underline">
-                    View details
-                    <ChevronRightIcon className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform duration-300" />
-                  </span>
-                </div>
-              </div>
-            );
-          })}
+          {dashboardData.stats.map((stat, index) => (
+            <AnimatedStatCard
+              key={index}
+              stat={stat}
+              index={index}
+              onClick={stat.onClick}
+            />
+          ))}
         </div>
       )}
 
@@ -827,11 +907,11 @@ const Dashboard = () => {
                 </div>
               </div>
               <button
-                onClick={() => navigate("/calendar")}
-                className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium flex items-center bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 px-4 py-2 rounded-xl transition-colors duration-300"
+                onClick={() => navigate("/meetings")}
+                className="group text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium flex items-center bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 px-4 py-2 rounded-xl transition-all duration-300 hover:shadow-md"
               >
                 View calendar
-                <ChevronRightIcon className="w-4 h-4 ml-2" />
+                <ChevronRightIcon className="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
               </button>
             </div>
 
@@ -898,7 +978,7 @@ const Dashboard = () => {
               </div>
               <button
                 onClick={markAllNotificationsAsRead}
-                className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 px-4 py-2 rounded-xl transition-colors duration-300"
+                className="group text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 px-4 py-2 rounded-xl transition-all duration-300 hover:shadow-md hover:scale-105"
               >
                 Mark all read
               </button>
@@ -1019,44 +1099,43 @@ const Dashboard = () => {
 
             <div className="grid grid-cols-2 gap-4">
               {[
-                { icon: DocumentTextIcon, label: "Materials", color: "blue" },
-                { icon: CalendarDaysIcon, label: "Calendar", color: "purple" },
-                { icon: ChartBarSquareIcon, label: "Grades", color: "green" },
-                { icon: AdjustmentsIcon, label: "Settings", color: "gray" },
-              ].map((resource, index) => (
-                <button
-                  key={index}
-                  onClick={() => navigate(`/${resource.label.toLowerCase()}`)}
-                  className="flex flex-col items-center p-4 border border-gray-200 dark:border-slate-700 rounded-xl hover:shadow-md hover:border-blue-200 dark:hover:border-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-all duration-300 group"
-                >
-                  <div
-                    className={`w-12 h-12 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300 ${
-                      resource.color === "blue"
-                        ? "bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/30 dark:to-blue-800/20"
-                        : resource.color === "purple"
-                          ? "bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-900/30 dark:to-purple-800/20"
-                          : resource.color === "green"
-                            ? "bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-900/30 dark:to-green-800/20"
-                            : "bg-gradient-to-br from-gray-50 to-gray-100/50 dark:from-slate-700/50 dark:to-slate-600/30"
-                    }`}
+                { icon: DocumentTextIcon, label: "Materials", color: "blue", path: "/course-materials" },
+                { icon: CalendarDaysIcon, label: "Calendar", color: "purple", path: "/meetings" },
+                { icon: ChartBarSquareIcon, label: "Grades", color: "green", path: "/analytics/grades" },
+                { icon: AdjustmentsIcon, label: "Settings", color: "gray", path: "/settings" },
+              ].map((resource, index) => {
+                const bgColorClass = resource.color === "blue"
+                  ? "bg-blue-50 dark:bg-blue-900/20"
+                  : resource.color === "purple"
+                    ? "bg-purple-50 dark:bg-purple-900/20"
+                    : resource.color === "green"
+                      ? "bg-green-50 dark:bg-green-900/20"
+                      : "bg-gray-50 dark:bg-slate-700/30";
+                const iconColorClass = resource.color === "blue"
+                  ? "text-blue-600 dark:text-blue-400"
+                  : resource.color === "purple"
+                    ? "text-purple-600 dark:text-purple-400"
+                    : resource.color === "green"
+                      ? "text-green-600 dark:text-green-400"
+                      : "text-gray-600 dark:text-gray-400";
+                
+                return (
+                  <button
+                    key={index}
+                    onClick={() => navigate(resource.path)}
+                    className="group relative p-5 border border-gray-200 dark:border-slate-700 rounded-xl hover:border-transparent text-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-slate-800 overflow-hidden hover:shadow-lg dark:hover:shadow-slate-700/30"
+                    aria-label={resource.label}
                   >
-                    <resource.icon
-                      className={`w-6 h-6 ${
-                        resource.color === "blue"
-                          ? "text-blue-600 dark:text-blue-400"
-                          : resource.color === "purple"
-                            ? "text-purple-600 dark:text-purple-400"
-                            : resource.color === "green"
-                              ? "text-green-600 dark:text-green-400"
-                              : "text-gray-600 dark:text-gray-400"
-                      }`}
-                    />
-                  </div>
-                  <span className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors duration-300">
-                    {resource.label}
-                  </span>
-                </button>
-              ))}
+                    <div className={`absolute inset-0 ${bgColorClass} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+                    <div className="relative z-10">
+                      <div className={`${iconColorClass} flex justify-center mb-3 transform transition-transform duration-300 group-hover:scale-125 group-hover:-translate-y-1`}>
+                        <resource.icon className="w-7 h-7" aria-hidden="true" />
+                      </div>
+                      <div className="font-semibold text-gray-900 dark:text-white transition-colors">{resource.label}</div>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -1082,10 +1161,10 @@ const Dashboard = () => {
             </div>
             <button
               onClick={() => navigate("/projects")}
-              className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium flex items-center bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 px-4 py-2 rounded-xl transition-colors duration-300"
+              className="group text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium flex items-center bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 px-4 py-2 rounded-xl transition-all duration-300 hover:shadow-md"
             >
               View all
-              <ChevronRightIcon className="w-4 h-4 ml-2" />
+              <ChevronRightIcon className="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
             </button>
           </div>
 
@@ -1296,7 +1375,7 @@ const Dashboard = () => {
               </div>
             </div>
             <button
-              onClick={() => navigate("/admin/alerts")}
+              onClick={() => navigate("/admin-dashboard")}
               className="px-5 py-2.5 bg-gradient-to-r from-yellow-600 to-yellow-500 text-white rounded-xl hover:shadow-lg hover:from-yellow-700 hover:to-yellow-600 transition-all duration-300 font-medium shadow-md whitespace-nowrap"
             >
               Manage Alerts
@@ -1324,7 +1403,7 @@ const Dashboard = () => {
               </div>
             </div>
             <button
-              onClick={() => navigate("/resources/study-tips")}
+              onClick={() => navigate("/resources")}
               className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-xl hover:shadow-lg hover:from-blue-700 hover:to-blue-600 transition-all duration-300 font-medium shadow-md whitespace-nowrap"
             >
               More Tips
