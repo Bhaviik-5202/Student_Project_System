@@ -7,7 +7,7 @@ import Breadcrumb from "../common/Breadcrumb";
 import LoadingSpinner from "../common/LoadingSpinner";
 import BackToTop from "../common/BackToTop.jsx";
 import useScreenSize from "../../hooks/useScreenSize";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";  
 
 // Memoized components for better performance
 const MemoizedTopNav = memo(TopNav);
@@ -89,11 +89,11 @@ const MainLayout = () => {
               <Suspense
                 fallback={
                   <div
-                    className="flex items-center justify-center min-h-[50vh]"
+                    className="flex items-center justify-center min-h-[50vh] bg-gray-50 dark:bg-gray-900/50 rounded-2xl m-4 transition-colors duration-300"
                     role="status"
                     aria-label="Loading content"
                   >
-                    <LoadingSpinner size="lg" />
+                    <LoadingSpinner size="lg" message="Loading content..." />
                   </div>
                 }
               >
@@ -137,11 +137,11 @@ class ErrorBoundary extends Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="flex flex-col items-center justify-center min-h-[50vh] p-8">
+        <div className="flex flex-col items-center justify-center min-h-[50vh] p-8 bg-gray-50 dark:bg-gray-900/50 rounded-2xl m-4 transition-colors duration-300">
           <div className="text-center max-w-md">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
               <svg
-                className="w-8 h-8 text-red-600"
+                className="w-8 h-8 text-red-600 dark:text-red-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -154,15 +154,15 @@ class ErrorBoundary extends Component {
                 />
               </svg>
             </div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
               Something went wrong
             </h2>
-            <p className="text-gray-600 mb-6">
+            <p className="text-gray-600 dark:text-gray-400 mb-6">
               We're sorry for the inconvenience. Please try refreshing the page.
             </p>
             <button
               onClick={() => window.location.reload()}
-              className="btn btn-primary"
+              className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-medium rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg"
             >
               Refresh Page
             </button>

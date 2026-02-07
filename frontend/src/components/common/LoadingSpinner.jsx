@@ -2,7 +2,12 @@
 import React, { memo } from "react";
 import PropTypes from "prop-types";
 
-const LoadingSpinner = ({ fullPage = false, size = "medium", message, className = "" }) => {
+const LoadingSpinner = ({
+  fullPage = false,
+  size = "medium",
+  message,
+  className = "",
+}) => {
   const sizeClasses = {
     small: "w-8 h-8 border-2",
     medium: "w-12 h-12 border-3",
@@ -11,13 +16,19 @@ const LoadingSpinner = ({ fullPage = false, size = "medium", message, className 
   };
 
   const spinner = (
-    <div className={`flex flex-col items-center justify-center ${className}`} role="status">
+    <div
+      className={`flex flex-col items-center justify-center ${className}`}
+      role="status"
+    >
       <div
         className={`${sizeClasses[size] || sizeClasses.medium} border-gray-200 dark:border-slate-700 border-t-blue-600 dark:border-t-blue-400 rounded-full animate-spin`}
         aria-label="Loading"
       />
       {message && (
-        <p className="mt-4 text-gray-600 dark:text-gray-400 text-sm animate-pulse" aria-live="polite">
+        <p
+          className="mt-4 text-gray-600 dark:text- text-sm animate-pulse"
+          aria-live="polite"
+        >
           {message}
         </p>
       )}
