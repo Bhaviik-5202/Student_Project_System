@@ -551,6 +551,11 @@ function App() {
               </ProtectedRoute>
             }
           />
+          {/* Route for "New Project" quick action - redirects to proposal */}
+          <Route
+            path="projects/new"
+            element={<Navigate to="/project-proposal" replace />}
+          />
           <Route
             path="projects/:id"
             element={
@@ -626,6 +631,11 @@ function App() {
                 <MyCourses />
               </ProtectedRoute>
             }
+          />
+          {/* Route for "Create Course" quick action (admin) */}
+          <Route
+            path="courses/new"
+            element={<Navigate to="/course-catalog" replace />}
           />
           <Route
             path="course-catalog"
@@ -1060,6 +1070,11 @@ function App() {
                 <Reports />
               </ProtectedRoute>
             }
+          />
+          {/* Route for "Create Report" quick action */}
+          <Route
+            path="reports/new"
+            element={<Navigate to="/reports" replace />}
           />
           <Route
             path="export"

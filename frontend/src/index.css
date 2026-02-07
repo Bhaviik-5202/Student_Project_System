@@ -1480,4 +1480,317 @@ footer a:hover {
     to { opacity: 1; }
 }
 
+/* ==========================================================================
+   Content Alignment & Spacing Refinements
+   - Ensures consistent visual alignment between header, navbar, and content
+   ========================================================================== */
+
+/* Main content area alignment - matches header/navbar padding */
+#main-content {
+    /* Consistent horizontal padding matching header */
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+}
+
+/* Ensure content max-width aligns with header content */
+#main-content > * {
+    max-width: 100%;
+}
+
+/* Content wrapper for consistent inner alignment */
+.content-wrapper,
+#main-content > section,
+#main-content > div:first-child {
+    /* Subtle fade-in for content sections */
+    animation: contentFadeIn 0.35s ease-out;
+}
+
+@keyframes contentFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==========================================================================
+   Subtle Micro-Interactions & Hover Effects
+   ========================================================================== */
+
+/* Enhanced link hover with subtle underline animation */
+a:not(.btn):not([class*="nav"]):not([class*="menu"]) {
+    position: relative;
+    transition: color 0.2s ease;
+}
+
+a:not(.btn):not([class*="nav"]):not([class*="menu"])::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 0;
+    height: 1px;
+    background: currentColor;
+    transition: width 0.25s ease;
+}
+
+a:not(.btn):not([class*="nav"]):not([class*="menu"]):hover::after {
+    width: 100%;
+}
+
+/* Smooth button press feedback */
+button:not(:disabled):active,
+.btn:not(:disabled):active,
+[role="button"]:not(:disabled):active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+}
+
+/* Focus ring animation */
+:focus-visible {
+    outline: 2px solid var(--primary-500);
+    outline-offset: 2px;
+    transition: outline-offset 0.15s ease;
+}
+
+/* Interactive card subtle lift on hover */
+.card,
+[class*="card"] {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card:hover,
+[class*="card"]:hover {
+    transform: translateY(-2px);
+}
+
+/* Icon hover micro-animation */
+.fa, .fas, .far, .fab, [class*="icon"] {
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+button:hover .fa,
+button:hover .fas,
+button:hover .far,
+button:hover [class*="icon"],
+a:hover .fa,
+a:hover .fas,
+a:hover .far,
+a:hover [class*="icon"] {
+    transform: scale(1.08);
+}
+
+/* ==========================================================================
+   Responsive Spacing Adjustments
+   ========================================================================== */
+
+/* Mobile: tighter but consistent spacing */
+@media (max-width: 640px) {
+    #main-content {
+        padding-left: 1rem;
+        padding-right: 1rem;
+        padding-top: 0.75rem;
+    }
+    
+    /* Reduce animation distance on mobile for snappier feel */
+    @keyframes contentFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(4px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}
+
+/* Tablet: balanced spacing */
+@media (min-width: 641px) and (max-width: 1024px) {
+    #main-content {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+}
+
+/* Desktop: generous spacing aligned with header */
+@media (min-width: 1025px) {
+    #main-content {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+}
+
+/* ==========================================================================
+   Subtle Loading & State Transitions
+   ========================================================================== */
+
+/* Smooth opacity transitions for async content */
+[data-loading="true"] {
+    opacity: 0.6;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+[data-loading="false"] {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+/* Skeleton shimmer effect for loading states */
+.skeleton,
+[class*="skeleton"] {
+    background: linear-gradient(
+        90deg,
+        var(--bg-hover) 25%,
+        var(--bg-card) 50%,
+        var(--bg-hover) 75%
+    );
+    background-size: 200% 100%;
+    animation: skeletonShimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes skeletonShimmer {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* ==========================================================================
+   Consistent Section Spacing
+   ========================================================================== */
+
+/* Uniform vertical rhythm for page sections */
+#main-content > section,
+#main-content > div > section,
+.page-section {
+    margin-bottom: 1.5rem;
+}
+
+#main-content > section:last-child,
+#main-content > div > section:last-child,
+.page-section:last-child {
+    margin-bottom: 0;
+}
+
+/* Grid/flex container gaps for consistent spacing */
+#main-content .grid {
+    gap: 1rem;
+}
+
+@media (min-width: 768px) {
+    #main-content .grid {
+        gap: 1.5rem;
+    }
+}
+
+/* ==========================================================================
+   Header/Navbar Content Alignment Helper
+   ========================================================================== */
+
+/* Ensures page headings align with navbar items */
+#main-content h1:first-child,
+#main-content h2:first-child,
+.page-title {
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Breadcrumb alignment refinement */
+nav[aria-label="Breadcrumb"] {
+    margin-bottom: 0.5rem;
+}
+
+/* ==========================================================================
+   Remove Underlines from Header & Navbar Links
+   - Keeps hover color/animation effects intact
+   ========================================================================== */
+
+/* Header links - remove underline on all states */
+header a,
+header a:hover,
+header a:focus,
+header a:active,
+header a:visited,
+[class*="header"] a,
+[class*="header"] a:hover,
+[class*="Header"] a,
+[class*="Header"] a:hover {
+    text-decoration: none !important;
+}
+
+/* Navbar / Navigation links - remove underline on all states */
+nav a,
+nav a:hover,
+nav a:focus,
+nav a:active,
+nav a:visited,
+[class*="nav"] a,
+[class*="nav"] a:hover,
+[class*="Nav"] a,
+[class*="Nav"] a:hover,
+[class*="menu"] a,
+[class*="menu"] a:hover,
+[class*="Menu"] a,
+[class*="Menu"] a:hover,
+[class*="topnav"] a,
+[class*="topnav"] a:hover,
+[class*="TopNav"] a,
+[class*="TopNav"] a:hover,
+[class*="sidebar"] a,
+[class*="sidebar"] a:hover,
+[class*="Sidebar"] a,
+[class*="Sidebar"] a:hover {
+    text-decoration: none !important;
+}
+
+/* NavLink component (React Router) - no underline */
+a[class*="active"],
+a.active,
+a[aria-current="page"] {
+    text-decoration: none !important;
+}
+
+/* Dropdown menu links - no underline */
+[class*="dropdown"] a,
+[class*="dropdown"] a:hover,
+[class*="Dropdown"] a,
+[class*="Dropdown"] a:hover,
+[role="menu"] a,
+[role="menu"] a:hover,
+[role="menuitem"],
+[role="menuitem"]:hover {
+    text-decoration: none !important;
+}
+
+/* Breadcrumb links - no underline */
+nav[aria-label="Breadcrumb"] a,
+nav[aria-label="Breadcrumb"] a:hover,
+[class*="breadcrumb"] a,
+[class*="breadcrumb"] a:hover,
+[class*="Breadcrumb"] a,
+[class*="Breadcrumb"] a:hover {
+    text-decoration: none !important;
+}
+
+/* Remove pseudo-element underline animation from nav/header links */
+header a::after,
+nav a::after,
+[class*="nav"] a::after,
+[class*="Nav"] a::after,
+[class*="header"] a::after,
+[class*="Header"] a::after,
+[class*="menu"] a::after,
+[class*="Menu"] a::after {
+    display: none !important;
+    width: 0 !important;
+    content: none !important;
+}
+
 /* End of src/index.css */

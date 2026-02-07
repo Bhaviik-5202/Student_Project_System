@@ -3,6 +3,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import Header from "../common/Header";
 import TopNav from "../common/TopNav";
 import Footer from "../common/Footer";
+import SimpleFooter from "../common/SimpleFooter"; // Lightweight footer for non-dashboard pages
 import Breadcrumb from "../common/Breadcrumb";
 import LoadingSpinner from "../common/LoadingSpinner";
 import BackToTop from "../common/BackToTop.jsx";
@@ -14,6 +15,7 @@ const MemoizedTopNav = memo(TopNav);
 const MemoizedHeader = memo(Header);
 const MemoizedBreadcrumb = memo(Breadcrumb);
 const MemoizedFooter = memo(Footer);
+const MemoizedSimpleFooter = memo(SimpleFooter);
 
 // Page Transition Component for smooth animations with fade and slide effects
 const PageTransition = memo(({ children, pathname, shouldAnimate }) => {
@@ -203,8 +205,12 @@ const MainLayout = () => {
             {isScrolled && <BackToTop />}
           </main>
 
-          {/* Footer */}
-          <MemoizedFooter />
+          {/* Footer - Full footer only on Dashboard, simple footer elsewhere */}
+          {location.pathname === "/dashboard" ? (
+            <MemoizedFooter />
+          ) : (
+            <MemoizedSimpleFooter />
+          )}
         </div>
       </div>
     </div>
