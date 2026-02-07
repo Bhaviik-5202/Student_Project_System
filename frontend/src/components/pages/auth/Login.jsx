@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo, memo } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { useAuth } from "../../../context/AuthContext";
 
@@ -287,13 +287,12 @@ const Login = memo(() => {
                     >
                       Password
                     </label>
-                    <a
-                      href="#"
-                      onClick={(e) => e.preventDefault()}
+                    <Link
+                      to="/forgot-password"
                       className="text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 transition-colors duration-200"
                     >
                       Forgot password?
-                    </a>
+                    </Link>
                   </div>
                   <div className="relative">
                     <i
@@ -498,21 +497,19 @@ const Login = memo(() => {
             >
               <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
                 By signing in, you agree to our{" "}
-                <a
-                  href="#"
-                  onClick={(e) => e.preventDefault()}
+                <button
+                  type="button"
                   className="font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors duration-200 underline decoration-blue-200 dark:decoration-blue-700 underline-offset-2"
                 >
                   Terms
-                </a>{" "}
+                </button>{" "}
                 and{" "}
-                <a
-                  href="#"
-                  onClick={(e) => e.preventDefault()}
+                <button
+                  type="button"
                   className="font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors duration-200 underline decoration-blue-200 dark:decoration-blue-700 underline-offset-2"
                 >
                   Privacy Policy
-                </a>
+                </button>
               </p>
             </div>
           </div>

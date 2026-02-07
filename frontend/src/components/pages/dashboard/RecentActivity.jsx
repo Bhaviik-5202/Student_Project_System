@@ -1,4 +1,5 @@
 import React, { memo, useMemo } from "react";
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
 const ActivityItem = memo(({ activity }) => {
@@ -156,12 +157,12 @@ const RecentActivity = memo(({ userRole = "admin" }) => {
             Latest updates from your workspace
           </p>
         </div>
-        <a
-          href="#"
+        <Link
+          to="/reports"
           className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium flex items-center"
         >
           View all <i className="fas fa-chevron-right ml-1" />
-        </a>
+        </Link>
       </div>
       <div className="space-y-4">
         {currentActivities.map((activity, index) => (

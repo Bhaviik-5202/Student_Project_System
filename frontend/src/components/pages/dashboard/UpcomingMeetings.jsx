@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const UpcomingMeetings = ({ userRole }) => {
   const meetings = {
     admin: [
@@ -69,12 +71,12 @@ const UpcomingMeetings = ({ userRole }) => {
             Your scheduled meetings and events
           </p>
         </div>
-        <a
-          href="#"
+        <Link
+          to="/meetings/new"
           className="text-sm text-primary-600 hover:text-primary-700 font-medium flex items-center"
         >
           <i className="fas fa-plus mr-1"></i> Schedule
-        </a>
+        </Link>
       </div>
       <div className="space-y-4">
         {currentMeetings.map((meeting, index) => (

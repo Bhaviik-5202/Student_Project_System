@@ -106,10 +106,10 @@ const KnowledgeBase = memo(() => {
               </h3>
               <div className="space-y-3">
                 {category.articles.map((article) => (
-                  <a
+                  <button
                     key={article.id}
-                    href="#"
-                    className="block p-3 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700"
+                    onClick={() => navigate(`/help?article=${article.id}`)}
+                    className="block w-full text-left p-3 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors cursor-pointer"
                   >
                     <div className="font-medium text-slate-900 dark:text-white">
                       {article.title}
@@ -117,7 +117,7 @@ const KnowledgeBase = memo(() => {
                     <div className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                       {article.views} views
                     </div>
-                  </a>
+                  </button>
                 ))}
               </div>
             </div>

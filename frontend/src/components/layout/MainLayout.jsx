@@ -15,9 +15,68 @@ const MemoizedHeader = memo(Header);
 const MemoizedBreadcrumb = memo(Breadcrumb);
 const MemoizedFooter = memo(Footer);
 
+// Page Transition Component for smooth animations with fade and slide effects
+const PageTransition = memo(({ children, pathname, shouldAnimate }) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const [currentPath, setCurrentPath] = useState(pathname);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  useEffect(() => {
+    if (pathname !== currentPath) {
+      // Start exit animation
+      setIsAnimating(true);
+      setIsVisible(false);
+      
+      // After exit animation, update content and start enter animation
+      const exitTimer = setTimeout(() => {
+        setCurrentPath(pathname);
+        // Small delay before enter animation
+        requestAnimationFrame(() => {
+          setIsVisible(true);
+          // End animation state after enter completes
+          setTimeout(() => setIsAnimating(false), 300);
+        });
+      }, 200);
+      
+      return () => clearTimeout(exitTimer);
+    } else {
+      // Initial mount
+      requestAnimationFrame(() => {
+        setIsVisible(true);
+      });
+    }
+  }, [pathname, currentPath]);
+
+  if (!shouldAnimate) {
+    return <div key={pathname}>{children}</div>;
+  }
+
+  return (
+    <div
+      key={currentPath}
+      className={`page-transition ${
+        isVisible 
+          ? 'page-enter-active' 
+          : 'page-exit-active'
+      }`}
+      style={{
+        transition: 'opacity 0.3s ease-out, transform 0.3s ease-out',
+        opacity: isVisible ? 1 : 0,
+        transform: isVisible ? 'translateY(0) scale(1)' : 'translateY(10px) scale(0.99)',
+        willChange: isAnimating ? 'opacity, transform' : 'auto',
+      }}
+    >
+      {children}
+    </div>
+  );
+});
+
+PageTransition.displayName = "PageTransition";
+
 const MainLayout = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [notificationCount, setNotificationCount] = useState(3);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const { isMobile } = useScreenSize();
   const { user } = useAuth();
@@ -40,9 +99,36 @@ const MainLayout = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Close mobile menu on route change
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMobileMenuOpen]);
+
   // Clear notifications callback
   const handleClearNotifications = useCallback(() => {
     setNotificationCount(0);
+  }, []);
+
+  // Toggle mobile menu
+  const handleMobileMenuToggle = useCallback(() => {
+    setIsMobileMenuOpen((prev) => !prev);
+  }, []);
+
+  // Close mobile menu
+  const handleCloseMobileMenu = useCallback(() => {
+    setIsMobileMenuOpen(false);
   }, []);
 
   // Skip animation for certain routes
@@ -58,20 +144,28 @@ const MainLayout = () => {
         Skip to main content
       </a>
 
-      {/* Header */}
+      {/* Header - Sticky at top */}
       <MemoizedHeader
         isScrolled={isScrolled}
         notificationCount={notificationCount}
         clearNotifications={handleClearNotifications}
+        onMobileMenuToggle={handleMobileMenuToggle}
+        isMobileMenuOpen={isMobileMenuOpen}
       />
 
-      {/* Top Navigation Bar */}
-      <MemoizedTopNav isScrolled={isScrolled} />
+      {/* Top Navigation Bar - Sticky below header on desktop, slide-down on mobile */}
+      <MemoizedTopNav 
+        isScrolled={isScrolled} 
+        isMobileMenuOpen={isMobileMenuOpen}
+        onMobileMenuToggle={handleMobileMenuToggle}
+        onCloseMobileMenu={handleCloseMobileMenu}
+      />
 
-      {/* Main Content Area - adjusted for header (64px) + top nav (56px) = 120px */}
-      <div className="flex flex-1 pt-[120px]">
+      {/* Main Content Area - spacing for Header (h-16 = 64px) + TopNav (h-14 = 56px) */}
+      {/* Total fixed height at top = 120px, but TopNav starts at top-16, so content needs mt-14 */}
+      <div className="flex flex-1 mt-14">
         {/* Main Content */}
-        <div className="flex-1 flex flex-col min-w-0 w-full">
+        <div className="flex-1 flex flex-col min-w-0 w-full relative" style={{ zIndex: 1 }}>
           {/* Breadcrumb Navigation */}
           {!isMobile && (
             <nav className="px-4 md:px-6 pt-4" aria-label="Breadcrumb">
@@ -82,14 +176,15 @@ const MainLayout = () => {
           {/* Main Content */}
           <main
             id="main-content"
-            className="flex-1 overflow-y-auto px-4 md:px-6 pb-6"
+            className="flex-1 px-4 md:px-6 py-4 pb-6 relative z-0"
             tabIndex={-1}
+            style={{ minHeight: 'calc(100vh - 160px)' }}
           >
             <ErrorBoundary>
               <Suspense
                 fallback={
                   <div
-                    className="flex items-center justify-center min-h-[50vh] bg-gray-50 dark:bg-gray-900/50 rounded-2xl m-4 transition-colors duration-300"
+                    className="flex items-center justify-center min-h-[50vh] bg-white/50 dark:bg-gray-900/50 rounded-2xl m-4 transition-colors duration-300 backdrop-blur-sm"
                     role="status"
                     aria-label="Loading content"
                   >
@@ -97,13 +192,10 @@ const MainLayout = () => {
                   </div>
                 }
               >
-                {/* Content with conditional animation */}
-                <div
-                  key={location.pathname}
-                  className={shouldAnimate ? "animate-fade-in" : ""}
-                >
+                {/* Page Transition Wrapper */}
+                <PageTransition pathname={location.pathname} shouldAnimate={shouldAnimate}>
                   <Outlet />
-                </div>
+                </PageTransition>
               </Suspense>
             </ErrorBoundary>
 

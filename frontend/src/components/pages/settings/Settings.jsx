@@ -347,11 +347,11 @@ const Settings = memo(() => {
                 <p className="font-medium text-slate-900 dark:text-slate-100">
                   {theme.label}
                 </p>
-                {theme.value === "auto" && (
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                    Syncs with OS
-                  </p>
-                )}
+                {/* {theme.value === "auto" && (
+                  // <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                  //   Syncs with OS
+                  // </p>
+                )} */}
               </div>
             </label>
           ))}

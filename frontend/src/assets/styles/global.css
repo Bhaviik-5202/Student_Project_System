@@ -1317,3 +1317,220 @@
 .toast-info {
     @apply bg-gradient-to-r from-blue-500 to-cyan-500 text-white;
 }
+
+/* ==========================================================================
+   Navigation & Page Transitions
+   ========================================================================== */
+
+/* Page transition wrapper */
+.page-enter {
+    opacity: 0;
+    transform: translateY(8px);
+}
+
+.page-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 300ms ease-out, transform 300ms ease-out;
+}
+
+.page-exit {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.page-exit-active {
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity 200ms ease-in, transform 200ms ease-in;
+}
+
+/* Navigation dropdown animations */
+@keyframes dropdownIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes dropdownOut {
+    from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.95);
+    }
+}
+
+.dropdown-enter {
+    animation: dropdownIn 0.2s ease-out forwards;
+}
+
+.dropdown-exit {
+    animation: dropdownOut 0.15s ease-in forwards;
+}
+
+/* Mobile menu slide animation */
+@keyframes slideInFromTop {
+    from {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideOutToTop {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+}
+
+.mobile-menu-enter {
+    animation: slideInFromTop 0.3s ease-out forwards;
+}
+
+.mobile-menu-exit {
+    animation: slideOutToTop 0.2s ease-in forwards;
+}
+
+/* Submenu expand animation */
+@keyframes expandIn {
+    from {
+        opacity: 0;
+        max-height: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+    to {
+        opacity: 1;
+        max-height: 500px;
+        padding-top: 0.25rem;
+        padding-bottom: 0.25rem;
+    }
+}
+
+.submenu-expand {
+    animation: expandIn 0.3s ease-out forwards;
+    overflow: hidden;
+}
+
+/* Navbar link hover effect */
+.nav-link {
+    position: relative;
+    transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #3b82f6, #6366f1);
+    transition: width 0.3s ease, left 0.3s ease;
+    border-radius: 1px;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+    width: 100%;
+    left: 0;
+}
+
+/* Smooth content transitions */
+.content-fade {
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+.content-fade-enter {
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.content-fade-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Staggered children animation */
+.stagger-children > * {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: staggerFadeIn 0.4s ease-out forwards;
+}
+
+.stagger-children > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger-children > *:nth-child(2) { animation-delay: 0.1s; }
+.stagger-children > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger-children > *:nth-child(4) { animation-delay: 0.2s; }
+.stagger-children > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger-children > *:nth-child(6) { animation-delay: 0.3s; }
+.stagger-children > *:nth-child(7) { animation-delay: 0.35s; }
+.stagger-children > *:nth-child(8) { animation-delay: 0.4s; }
+
+@keyframes staggerFadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Skeleton loading shimmer */
+.skeleton-shimmer {
+    background: linear-gradient(
+        90deg,
+        rgba(229, 231, 235, 1) 0%,
+        rgba(243, 244, 246, 1) 50%,
+        rgba(229, 231, 235, 1) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+}
+
+.dark .skeleton-shimmer {
+    background: linear-gradient(
+        90deg,
+        rgba(55, 65, 81, 1) 0%,
+        rgba(75, 85, 99, 1) 50%,
+        rgba(55, 65, 81, 1) 100%
+    );
+    background-size: 200% 100%;
+}
+
+/* Smooth scrollbar for navigation */
+.nav-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(156, 163, 175, 0.3) transparent;
+}
+
+.nav-scroll::-webkit-scrollbar {
+    height: 4px;
+}
+
+.nav-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.nav-scroll::-webkit-scrollbar-thumb {
+    background: rgba(156, 163, 175, 0.3);
+    border-radius: 2px;
+}
+
+.nav-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(156, 163, 175, 0.5);
+}
