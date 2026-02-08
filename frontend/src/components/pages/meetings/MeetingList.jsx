@@ -73,9 +73,11 @@ const MeetingList = memo(() => {
     []
   );
 
+  // Schedule Meeting button handler
   const handleCreate = useCallback(() => {
-    navigate("/meetings/new");
-  }, [navigate]);
+    // Simulate scheduling not available
+    alert("Scheduling meetings is currently unavailable. Please contact your administrator or try again later.");
+  }, []);
 
   const handleView = useCallback(
     (id) => {
@@ -90,10 +92,10 @@ const MeetingList = memo(() => {
         <div className="flex justify-between items-center mb-6">
           <div>
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-              Meetings
+              Meeting Management
             </h1>
             <p className="text-gray-600 dark:text-gray-400">
-              View and manage all meetings
+              View and manage all meetings. Find useful resources and tips below.
             </p>
           </div>
           <button
@@ -104,6 +106,17 @@ const MeetingList = memo(() => {
           </button>
         </div>
 
+        {/* Related Resources Section */}
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">Related Resources</h2>
+          <ul className="list-disc pl-6 text-gray-700 dark:text-gray-300">
+            <li><a href="https://www.mindtools.com/meeting-management" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400">Effective Meeting Management Tips</a></li>
+            <li><a href="https://www.atlassian.com/work-management/meeting-notes" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400">How to Take Meeting Notes</a></li>
+            <li><a href="https://www.youtube.com/watch?v=O2Q2FZp4R6A" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400">Video: Running Productive Meetings</a></li>
+          </ul>
+        </div>
+
+        {/* ...existing code... */}
         <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">

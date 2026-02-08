@@ -143,14 +143,14 @@ const AuthLayout = ({ children }) => {
               <span className="mx-2">•</span>
               <Link
                 to="/help"
-                className="text-blue-600 hover:text-blue-700 hover:underline transition-colors"
+                className="text-blue-600 hover:text-blue-700 transition-colors"
               >
                 Help
               </Link>
               <span className="mx-2">•</span>
               <Link
                 to="/support"
-                className="text-blue-600 hover:text-blue-700 hover:underline transition-colors"
+                className="text-blue-600 hover:text-blue-700 transition-colors"
               >
                 Support
               </Link>

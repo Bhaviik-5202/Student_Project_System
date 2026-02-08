@@ -504,7 +504,7 @@ const Header = memo(({
                         {unreadCount > 0 && (
                           <button
                             onClick={handleMarkAllAsRead}
-                            className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium hover:underline"
+                            className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
                           >
                             Mark all read
                           </button>
@@ -512,7 +512,7 @@ const Header = memo(({
                         <Link
                           to="/notifications"
                           onClick={() => setShowNotifications(false)}
-                          className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:underline"
+                          className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
                         >
                           View all
                         </Link>

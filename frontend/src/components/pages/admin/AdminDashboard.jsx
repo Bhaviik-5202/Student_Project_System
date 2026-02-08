@@ -465,7 +465,7 @@ const AdminDashboard = memo(() => {
                 Recent Activities
               </h2>
               <button className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors">
-                View All
+                <span style={{ textDecoration: 'none' }}>View All</span>
               </button>
             </div>
             <div className="space-y-3" role="list" aria-label="Activity list">
@@ -497,7 +497,7 @@ const AdminDashboard = memo(() => {
               </span>
             </div>
             <button className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors">
-              View Details
+              <span style={{ textDecoration: 'none' }}>View Details</span>
             </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4" role="list" aria-label="Service status list">
