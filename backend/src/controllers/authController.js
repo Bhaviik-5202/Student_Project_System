@@ -5,6 +5,7 @@ const { JWT_SECRET, TOKEN_EXPIRES_IN } = require("../config/config");
 
 // Register user
 exports.register = async (req, res) => {
+    console.log('REGISTER req.body:', req.body);
   try {
     const { name, email, password, role } = req.body;
     const existing = await User.findOne({ email });

@@ -17,7 +17,8 @@ const Register = memo(() => {
 
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { register } = useAuth();
+  // Use authService directly for backend registration
+  const authService = require("../../../services/authService").default;
 
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
@@ -29,9 +30,19 @@ const Register = memo(() => {
 
     setLoading(true);
     try {
-      await register(formData);
-      toast.success("Registration successful! Please login.");
-      navigate("/login");
+      // Send all required fields to backend
+      const res = await authService.register({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        role: formData.role
+      });
+      if (res.success) {
+        toast.success("Registration successful! Please login.");
+        navigate("/login");
+      } else {
+        toast.error(res.message || "Registration failed");
+      }
     } catch (error) {
       toast.error(error.message || "Registration failed");
     } finally {

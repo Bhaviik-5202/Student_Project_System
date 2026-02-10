@@ -1,4 +1,4 @@
-// import api from "../utils/api";
+import api from "../utils/api";
 import { ROUTES, LOCAL_STORAGE_KEYS, ROLES } from "../utils/constants";
 
 /**
