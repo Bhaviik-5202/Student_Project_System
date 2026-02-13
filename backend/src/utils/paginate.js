@@ -1,4 +1,3 @@
-// utils/paginate.js
 // Utility for pagination logic
 
 function paginate(query, { page = 1, limit = 10 }) {

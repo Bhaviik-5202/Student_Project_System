@@ -1,3 +1,19 @@
+const Project = require("../models/Project");
+// Add a project for a student
+exports.addProject = async (studentId, projectData) => {
+  // Find the student
+  const student = await Student.findById(studentId);
+  if (!student) return null;
+  // Create the project with the student as a member
+  const project = await Project.create({
+    ...projectData,
+    members: [studentId],
+  });
+  // Add project to student's projects array
+  student.projects.push(project._id);
+  await student.save();
+  return project;
+};
 const Student = require("../models/Student");
 
 exports.findAll = async (filter = {}) => {

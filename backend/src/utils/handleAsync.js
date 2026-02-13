@@ -1,4 +1,3 @@
-// utils/handleAsync.js
 // Utility to wrap async route handlers and catch errors
 
 function handleAsync(fn) {

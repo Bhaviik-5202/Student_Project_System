@@ -1,75 +1,68 @@
-const Meeting = require("../models/Meeting");
+const meetingService = require("../services/meetingService");
+const ApiError = require("../utils/ApiError");
 
 // Get all meetings
-exports.getAllMeetings = async (req, res) => {
+exports.getAllMeetings = async (req, res, next) => {
   try {
-    const meetings = await Meeting.find().populate("participants project");
-    res.json(meetings);
+    const meetings = await meetingService.findAll();
+    return res.json({ success: true, data: meetings });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Failed to fetch meetings", error: err.message });
+    return next(new ApiError(500, "Failed to fetch meetings", [err.message]));
   }
 };
 
 // Get meeting by ID
-exports.getMeetingById = async (req, res) => {
+exports.getMeetingById = async (req, res, next) => {
   try {
-    const meeting = await Meeting.findById(req.params.id).populate(
-      "participants project",
-    );
-    if (!meeting) return res.status(404).json({ message: "Meeting not found" });
-    res.json(meeting);
+    const meeting = await meetingService.findById(req.params.id);
+    if (!meeting) {
+      return next(new ApiError(404, "Meeting not found"));
+    }
+    return res.json({ success: true, data: meeting });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Failed to fetch meeting", error: err.message });
+    return next(new ApiError(500, "Failed to fetch meeting", [err.message]));
   }
 };
 
 // Create meeting
-exports.createMeeting = async (req, res) => {
+exports.createMeeting = async (req, res, next) => {
   try {
-    const meeting = new Meeting(req.body);
-    await meeting.save();
-    res.status(201).json(meeting);
+    const meeting = await meetingService.create(req.body);
+    return res.status(201).json({ success: true, data: meeting });
   } catch (err) {
-    res
-      .status(400)
-      .json({ message: "Failed to create meeting", error: err.message });
+    return next(new ApiError(400, "Failed to create meeting", [err.message]));
   }
 };
 
 // Update meeting
-exports.updateMeeting = async (req, res) => {
+exports.updateMeeting = async (req, res, next) => {
   try {
-    const meeting = await Meeting.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
-    if (!meeting) return res.status(404).json({ message: "Meeting not found" });
-    res.json(meeting);
+    const meeting = await meetingService.update(req.params.id, req.body);
+    if (!meeting) {
+      return next(new ApiError(404, "Meeting not found"));
+    }
+    return res.json({ success: true, data: meeting });
   } catch (err) {
-    res
-      .status(400)
-      .json({ message: "Failed to update meeting", error: err.message });
+    return next(new ApiError(400, "Failed to update meeting", [err.message]));
   }
 };
 
 // Delete meeting
-exports.deleteMeeting = async (req, res) => {
+exports.deleteMeeting = async (req, res, next) => {
   try {
-    const meeting = await Meeting.findByIdAndDelete(req.params.id);
-    if (!meeting) return res.status(404).json({ message: "Meeting not found" });
-    res.json({ message: "Meeting deleted" });
+    const deleted = await meetingService.delete(req.params.id);
+    if (!deleted) {
+      return next(new ApiError(404, "Meeting not found"));
+    }
+    return res.json({ success: true, message: "Meeting deleted successfully" });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Failed to delete meeting", error: err.message });
+    return next(new ApiError(400, "Failed to delete meeting", [err.message]));
   }
 };
+const Meeting = require("../models/Meeting");
 
 // Join meeting
-exports.joinMeeting = async (req, res) => {
+exports.joinMeeting = async (req, res, next) => {
   try {
     const meeting = await Meeting.findById(req.params.id);
     if (!meeting) return res.status(404).json({ message: "Meeting not found" });

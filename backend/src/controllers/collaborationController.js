@@ -1,90 +1,73 @@
-const { Message, Chat, File } = require("../models/Collaboration");
-const User = require("../models/User");
+const collaborationService = require("../services/collaborationService");
+const ApiError = require("../utils/ApiError");
 
 // Get all chats for a user
-exports.getUserChats = async (req, res) => {
+exports.getUserChats = async (req, res, next) => {
   try {
-    const chats = await Chat.find({ members: req.params.userId }).populate(
-      "members messages",
-    );
-    res.json(chats);
+    const chats = await collaborationService.getUserChats(req.params.userId);
+    return res.json({ success: true, data: chats });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Failed to fetch chats", error: err.message });
+    return next(new ApiError(500, "Failed to fetch user chats", [err.message]));
   }
 };
 
 // Get messages for a chat
-exports.getChatMessages = async (req, res) => {
+exports.getChatMessages = async (req, res, next) => {
   try {
-    const chat = await Chat.findById(req.params.chatId).populate({
-      path: "messages",
-      populate: { path: "sender" },
-    });
-    if (!chat) return res.status(404).json({ message: "Chat not found" });
-    res.json(chat.messages);
+    const chat = await collaborationService.getChatMessages(req.params.chatId);
+    if (!chat) return next(new ApiError(404, "Chat not found"));
+    return res.json({ success: true, data: chat.messages });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Failed to fetch messages", error: err.message });
+    return next(
+      new ApiError(500, "Failed to fetch chat messages", [err.message]),
+    );
   }
 };
 
 // Send message to chat
-exports.sendMessage = async (req, res) => {
+exports.sendMessage = async (req, res, next) => {
   try {
-    const { sender, content } = req.body;
-    const chat = await Chat.findById(req.params.chatId);
-    if (!chat) return res.status(404).json({ message: "Chat not found" });
-    const message = new Message({ sender, content, chat: chat._id });
-    await message.save();
-    chat.messages.push(message._id);
-    await chat.save();
-    res.status(201).json(message);
+    const message = await collaborationService.sendMessage(
+      req.params.chatId,
+      req.body,
+    );
+    if (!message) return next(new ApiError(404, "Chat not found"));
+    return res.status(201).json({ success: true, data: message });
   } catch (err) {
-    res
-      .status(400)
-      .json({ message: "Failed to send message", error: err.message });
+    return next(new ApiError(400, "Failed to send message", [err.message]));
   }
 };
 
 // Create group chat
-exports.createGroupChat = async (req, res) => {
+exports.createGroupChat = async (req, res, next) => {
   try {
-    const { name, members } = req.body;
-    const chat = new Chat({ name, members, isGroup: true });
-    await chat.save();
-    res.status(201).json(chat);
+    const chat = await collaborationService.createGroupChat(req.body);
+    return res.status(201).json({ success: true, data: chat });
   } catch (err) {
-    res
-      .status(400)
-      .json({ message: "Failed to create group chat", error: err.message });
+    return next(
+      new ApiError(400, "Failed to create group chat", [err.message]),
+    );
   }
 };
 
 // Upload file to chat
-exports.uploadFile = async (req, res) => {
+exports.uploadFile = async (req, res, next) => {
   try {
     const { uploader, fileName, fileUrl, chatId } = req.body;
     const file = new File({ uploader, fileName, fileUrl, chat: chatId });
     await file.save();
-    res.status(201).json(file);
+    return res.status(201).json({ success: true, data: file });
   } catch (err) {
-    res
-      .status(400)
-      .json({ message: "Failed to upload file", error: err.message });
+    return next(new ApiError(400, "Failed to upload file", [err.message]));
   }
 };
 
 // Get files for a chat
-exports.getChatFiles = async (req, res) => {
+exports.getChatFiles = async (req, res, next) => {
   try {
     const files = await File.find({ chat: req.params.chatId });
-    res.json(files);
+    return res.json({ success: true, data: files });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Failed to fetch files", error: err.message });
+    return next(new ApiError(500, "Failed to fetch files", [err.message]));
   }
 };

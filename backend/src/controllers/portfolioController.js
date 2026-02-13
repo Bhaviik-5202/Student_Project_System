@@ -1,46 +1,32 @@
 const Portfolio = require("../models/Portfolio");
+const ApiError = require("../utils/ApiError");
 
 // Get portfolio by student
-exports.getPortfolioByStudent = async (req, res) => {
+exports.getPortfolioByStudent = async (req, res, next) => {
   try {
     const portfolio = await Portfolio.findOne({
       student: req.params.studentId,
-    }).populate("student projects");
-    if (!portfolio)
-      return res.status(404).json({ message: "Portfolio not found" });
-    res.json(portfolio);
+    });
+    if (!portfolio) {
+      return next(new ApiError(404, "Portfolio not found"));
+    }
+    return res.json({ success: true, data: portfolio });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Failed to fetch portfolio", error: err.message });
+    return next(new ApiError(500, "Failed to fetch portfolio", [err.message]));
   }
 };
 
-// Create or update portfolio
-exports.savePortfolio = async (req, res) => {
+// Save (create or update) portfolio
+exports.savePortfolio = async (req, res, next) => {
   try {
-    const { student, projects, skills, badges, transcriptUrl } = req.body;
-    let portfolio = await Portfolio.findOne({ student });
-    if (portfolio) {
-      portfolio.projects = projects;
-      portfolio.skills = skills;
-      portfolio.badges = badges;
-      portfolio.transcriptUrl = transcriptUrl;
-      await portfolio.save();
-    } else {
-      portfolio = new Portfolio({
-        student,
-        projects,
-        skills,
-        badges,
-        transcriptUrl,
-      });
-      await portfolio.save();
-    }
-    res.status(201).json(portfolio);
+    const { student, ...portfolioData } = req.body;
+    let portfolio = await Portfolio.findOneAndUpdate(
+      { student },
+      { $set: portfolioData },
+      { new: true, upsert: true },
+    );
+    return res.status(201).json({ success: true, data: portfolio });
   } catch (err) {
-    res
-      .status(400)
-      .json({ message: "Failed to save portfolio", error: err.message });
+    return next(new ApiError(400, "Failed to save portfolio", [err.message]));
   }
 };

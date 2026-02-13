@@ -1,67 +1,47 @@
 const Staff = require("../models/Staff");
+const ApiError = require("../utils/ApiError");
+const handleAsync = require("../utils/handleAsync");
 
 // Get all staff
-exports.getAllStaff = async (req, res) => {
-  try {
-    const staff = await Staff.find();
-    res.json(staff);
-  } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Failed to fetch staff", error: err.message });
-  }
-};
+exports.getAllStaff = handleAsync(async (req, res) => {
+  const staff = await Staff.find();
+  return res.json({ success: true, data: staff });
+});
 
 // Get staff by ID
-exports.getStaffById = async (req, res) => {
-  try {
-    const staff = await Staff.findById(req.params.id);
-    if (!staff) return res.status(404).json({ message: "Staff not found" });
-    res.json(staff);
-  } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Failed to fetch staff", error: err.message });
-  }
-};
+exports.getStaffById = handleAsync(async (req, res, next) => {
+  const staff = await Staff.findById(req.params.id);
+  if (!staff) return next(new ApiError(404, "Staff not found"));
+  return res.json({ success: true, data: staff });
+});
 
 // Create staff
-exports.createStaff = async (req, res) => {
-  try {
-    const staff = new Staff(req.body);
-    await staff.save();
-    res.status(201).json(staff);
-  } catch (err) {
-    res
-      .status(400)
-      .json({ message: "Failed to create staff", error: err.message });
-  }
-};
+exports.createStaff = handleAsync(async (req, res) => {
+  const staff = new Staff(req.body);
+  await staff.save();
+  return res.status(201).json({ success: true, data: staff });
+});
 
 // Update staff
-exports.updateStaff = async (req, res) => {
+exports.updateStaff = async (req, res, next) => {
   try {
     const staff = await Staff.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
-    if (!staff) return res.status(404).json({ message: "Staff not found" });
-    res.json(staff);
+    if (!staff) return next(new ApiError(404, "Staff not found"));
+    return res.json({ success: true, data: staff });
   } catch (err) {
-    res
-      .status(400)
-      .json({ message: "Failed to update staff", error: err.message });
+    return next(new ApiError(400, "Failed to update staff", [err.message]));
   }
 };
 
 // Delete staff
-exports.deleteStaff = async (req, res) => {
+exports.deleteStaff = async (req, res, next) => {
   try {
     const staff = await Staff.findByIdAndDelete(req.params.id);
-    if (!staff) return res.status(404).json({ message: "Staff not found" });
-    res.json({ message: "Staff deleted" });
+    if (!staff) return next(new ApiError(404, "Staff not found"));
+    return res.json({ success: true, message: "Staff deleted" });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Failed to delete staff", error: err.message });
+    return next(new ApiError(500, "Failed to delete staff", [err.message]));
   }
 };

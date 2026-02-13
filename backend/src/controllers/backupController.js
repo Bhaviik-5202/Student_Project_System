@@ -1,41 +1,33 @@
-const Backup = require("../models/Backup");
+const backupService = require("../services/backupService");
+const ApiError = require("../utils/ApiError");
 
 // Get all backups
-exports.getAllBackups = async (req, res) => {
+exports.getAllBackups = async (req, res, next) => {
   try {
-    const backups = await Backup.find()
-      .populate("createdBy")
-      .sort({ createdAt: -1 });
-    res.json(backups);
+    const backups = await backupService.findAll();
+    return res.json({ success: true, data: backups });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Failed to fetch backups", error: err.message });
+    return next(new ApiError(500, "Failed to fetch backups", [err.message]));
   }
 };
 
 // Add backup record (metadata only)
-exports.addBackup = async (req, res) => {
+exports.addBackup = async (req, res, next) => {
   try {
-    const backup = new Backup(req.body);
-    await backup.save();
-    res.status(201).json(backup);
+    const backup = await backupService.create(req.body);
+    return res.status(201).json({ success: true, data: backup });
   } catch (err) {
-    res
-      .status(400)
-      .json({ message: "Failed to add backup", error: err.message });
+    return next(new ApiError(400, "Failed to create backup", [err.message]));
   }
 };
 
 // Delete backup record (metadata only)
-exports.deleteBackup = async (req, res) => {
+exports.deleteBackup = async (req, res, next) => {
   try {
-    const backup = await Backup.findByIdAndDelete(req.params.id);
-    if (!backup) return res.status(404).json({ message: "Backup not found" });
-    res.json({ message: "Backup deleted" });
+    const backup = await backupService.remove(req.params.id);
+    if (!backup) return next(new ApiError(404, "Backup not found"));
+    return res.json({ success: true, message: "Backup deleted" });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Failed to delete backup", error: err.message });
+    return next(new ApiError(400, "Failed to delete backup", [err.message]));
   }
 };

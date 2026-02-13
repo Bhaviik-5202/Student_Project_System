@@ -1,4 +1,3 @@
-// utils/index.js
 // Central utility exports for backend
 
 const generateToken = require("./generateToken");

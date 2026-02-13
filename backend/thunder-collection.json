@@ -1,7 +1,8 @@
 {
   "info": {
     "name": "Student Project System API",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "API collection for Student Project System. Contains endpoints for health check, student management, project management, and authentication."
   },
   "item": [
     {
@@ -10,61 +11,80 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:5000/api/health",
+          "raw": "http://localhost:5000/api/v1/health",
           "protocol": "http",
           "host": ["localhost"],
           "port": "5000",
-          "path": ["api", "health"]
+          "path": ["api", "v1", "health"]
         }
-      }
+      },
+      "description": "Checks if the API server is running and healthy. Returns status 200 and a simple message."
     },
     {
-      "name": "Get All Students",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "http://localhost:5000/api/students",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "5000",
-          "path": ["api", "students"]
+      "name": "Students",
+      "item": [
+        {
+          "name": "Get All Students",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/v1/students",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "v1", "students"]
+            }
+          },
+          "description": "Fetches a list of all students. Returns an array of student objects."
         }
-      }
+      ]
     },
     {
-      "name": "Get All Projects",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "http://localhost:5000/api/projects",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "5000",
-          "path": ["api", "projects"]
+      "name": "Projects",
+      "item": [
+        {
+          "name": "Get All Projects",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/v1/projects",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "v1", "projects"]
+            }
+          },
+          "description": "Fetches a list of all projects. Returns an array of project objects."
         }
-      }
+      ]
     },
     {
-      "name": "User Login",
-      "request": {
-        "method": "POST",
-        "header": [
-          { "key": "Content-Type", "value": "application/json" }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password\"\n}"
-        },
-        "url": {
-          "raw": "http://localhost:5000/api/auth/login",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "5000",
-          "path": ["api", "auth", "login"]
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "User Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/auth/login",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "v1", "auth", "login"]
+            }
+          },
+          "description": "Authenticates a user and returns a JWT token if credentials are valid."
         }
-      }
+      ]
     }
   ]
 }

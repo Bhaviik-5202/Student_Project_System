@@ -1,4 +1,3 @@
-// utils/validateObjectId.js
 // Utility to validate MongoDB ObjectId
 
 const mongoose = require("mongoose");

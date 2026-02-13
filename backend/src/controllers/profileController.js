@@ -1,29 +1,28 @@
-const User = require("../models/User");
+const userService = require("../services/userService");
+const ApiError = require("../utils/ApiError");
 
 // Get user profile
-exports.getProfile = async (req, res) => {
+exports.getProfile = async (req, res, next) => {
   try {
-    const user = await User.findById(req.params.id);
-    if (!user) return res.status(404).json({ message: "User not found" });
-    res.json(user);
+    const user = await userService.findById(req.params.id);
+    if (!user) return next(new ApiError(404, "User not found"));
+    return res.json({ success: true, data: user });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Failed to fetch profile", error: err.message });
+    return next(
+      new ApiError(500, "Failed to fetch user profile", [err.message]),
+    );
   }
 };
 
 // Update user profile
-exports.updateProfile = async (req, res) => {
+exports.updateProfile = async (req, res, next) => {
   try {
-    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
-    if (!user) return res.status(404).json({ message: "User not found" });
-    res.json(user);
+    const user = await userService.update(req.params.id, req.body);
+    if (!user) return next(new ApiError(404, "User not found"));
+    return res.json({ success: true, data: user });
   } catch (err) {
-    res
-      .status(400)
-      .json({ message: "Failed to update profile", error: err.message });
+    return next(
+      new ApiError(400, "Failed to update user profile", [err.message]),
+    );
   }
 };

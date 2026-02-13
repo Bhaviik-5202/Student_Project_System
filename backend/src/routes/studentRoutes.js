@@ -14,6 +14,8 @@ router.put("/:id", studentController.updateStudent);
 router.delete("/:id", studentController.deleteStudent);
 // GET /api/students/:id/projects
 router.get("/:id/projects", studentController.getStudentProjects);
+// POST /api/students/:id/projects
+router.post("/:id/projects", studentController.addStudentProject);
 // GET /api/students/:id/grades
 router.get("/:id/grades", studentController.getStudentGrades);
 

@@ -1,56 +1,44 @@
-const Resource = require("../models/Resource");
+const resourceService = require("../services/resourceService");
+const ApiError = require("../utils/ApiError");
 
 // Get all resources
-exports.getAllResources = async (req, res) => {
+exports.getAllResources = async (req, res, next) => {
   try {
-    const resources = await Resource.find().populate("uploadedBy");
-    res.json(resources);
+    const resources = await resourceService.findAll();
+    return res.json({ success: true, data: resources });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Failed to fetch resources", error: err.message });
+    return next(new ApiError(500, "Failed to fetch resources", [err.message]));
   }
 };
 
 // Get resource by ID
-exports.getResourceById = async (req, res) => {
+exports.getResourceById = async (req, res, next) => {
   try {
-    const resource = await Resource.findById(req.params.id).populate(
-      "uploadedBy",
-    );
-    if (!resource)
-      return res.status(404).json({ message: "Resource not found" });
-    res.json(resource);
+    const resource = await resourceService.findById(req.params.id);
+    if (!resource) return next(new ApiError(404, "Resource not found"));
+    return res.json({ success: true, data: resource });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Failed to fetch resource", error: err.message });
+    return next(new ApiError(500, "Failed to fetch resource", [err.message]));
   }
 };
 
 // Upload resource
-exports.uploadResource = async (req, res) => {
+exports.uploadResource = async (req, res, next) => {
   try {
-    const resource = new Resource(req.body);
-    await resource.save();
-    res.status(201).json(resource);
+    const resource = await resourceService.create(req.body);
+    return res.status(201).json({ success: true, data: resource });
   } catch (err) {
-    res
-      .status(400)
-      .json({ message: "Failed to upload resource", error: err.message });
+    return next(new ApiError(400, "Failed to upload resource", [err.message]));
   }
 };
 
 // Delete resource
-exports.deleteResource = async (req, res) => {
+exports.deleteResource = async (req, res, next) => {
   try {
-    const resource = await Resource.findByIdAndDelete(req.params.id);
-    if (!resource)
-      return res.status(404).json({ message: "Resource not found" });
-    res.json({ message: "Resource deleted" });
+    const resource = await resourceService.remove(req.params.id);
+    if (!resource) return next(new ApiError(404, "Resource not found"));
+    return res.json({ success: true, message: "Resource deleted" });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Failed to delete resource", error: err.message });
+    return next(new ApiError(500, "Failed to delete resource", [err.message]));
   }
 };

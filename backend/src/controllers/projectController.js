@@ -1,102 +1,87 @@
+const projectService = require("../services/projectService");
+const ApiError = require("../utils/ApiError");
 const Project = require("../models/Project");
 const Student = require("../models/Student");
 
 // Get all projects
-exports.getAllProjects = async (req, res) => {
+exports.getAllProjects = async (req, res, next) => {
   try {
-    const projects = await Project.find().populate("members guide");
-    res.json(projects);
+    const projects = await projectService.findAll();
+    return res.json({ success: true, data: projects });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Failed to fetch projects", error: err.message });
+    return next(new ApiError(500, "Failed to fetch projects", [err.message]));
   }
 };
 
 // Get project by ID
-exports.getProjectById = async (req, res) => {
+exports.getProjectById = async (req, res, next) => {
   try {
-    const project = await Project.findById(req.params.id).populate(
-      "members guide",
-    );
-    if (!project) return res.status(404).json({ message: "Project not found" });
-    res.json(project);
+    const project = await projectService.findById(req.params.id);
+    if (!project) return next(new ApiError(404, "Project not found"));
+    return res.json({ success: true, data: project });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Failed to fetch project", error: err.message });
+    return next(new ApiError(500, "Failed to fetch project", [err.message]));
   }
 };
 
 // Create project
-exports.createProject = async (req, res) => {
+exports.createProject = async (req, res, next) => {
   try {
-    const project = new Project(req.body);
-    await project.save();
-    res.status(201).json(project);
+    const project = await projectService.create(req.body);
+    return res.status(201).json({ success: true, data: project });
   } catch (err) {
-    res
-      .status(400)
-      .json({ message: "Failed to create project", error: err.message });
+    return next(new ApiError(400, "Failed to create project", [err.message]));
   }
 };
 
 // Update project
-exports.updateProject = async (req, res) => {
+exports.updateProject = async (req, res, next) => {
   try {
-    const project = await Project.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
-    if (!project) return res.status(404).json({ message: "Project not found" });
-    res.json(project);
+    const project = await projectService.update(req.params.id, req.body);
+    if (!project) return next(new ApiError(404, "Project not found"));
+    return res.json({ success: true, data: project });
   } catch (err) {
-    res
-      .status(400)
-      .json({ message: "Failed to update project", error: err.message });
+    return next(new ApiError(400, "Failed to update project", [err.message]));
   }
 };
 
 // Delete project
-exports.deleteProject = async (req, res) => {
+exports.deleteProject = async (req, res, next) => {
   try {
     const project = await Project.findByIdAndDelete(req.params.id);
-    if (!project) return res.status(404).json({ message: "Project not found" });
-    res.json({ message: "Project deleted" });
+    if (!project) return next(new ApiError(404, "Project not found"));
+    return res.json({ success: true, message: "Project deleted" });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Failed to delete project", error: err.message });
+    return next(new ApiError(500, "Failed to delete project", [err.message]));
   }
 };
 
 // Get project members
-exports.getProjectMembers = async (req, res) => {
+exports.getProjectMembers = async (req, res, next) => {
   try {
     const project = await Project.findById(req.params.id).populate("members");
-    if (!project) return res.status(404).json({ message: "Project not found" });
-    res.json(project.members);
+    if (!project) return next(new ApiError(404, "Project not found"));
+    return res.json({ success: true, data: project.members });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Failed to fetch project members", error: err.message });
+    return next(
+      new ApiError(500, "Failed to fetch project members", [err.message]),
+    );
   }
 };
 
 // Add member to project
-exports.addProjectMember = async (req, res) => {
+exports.addProjectMember = async (req, res, next) => {
   try {
     const project = await Project.findById(req.params.id);
-    if (!project) return res.status(404).json({ message: "Project not found" });
+    if (!project) return next(new ApiError(404, "Project not found"));
     const student = await Student.findById(req.body.studentId);
-    if (!student) return res.status(404).json({ message: "Student not found" });
+    if (!student) return next(new ApiError(404, "Student not found"));
     if (!project.members.includes(student._id)) {
       project.members.push(student._id);
       await project.save();
     }
-    res.json(project);
+    return res.json({ success: true, data: project });
   } catch (err) {
-    res
-      .status(400)
-      .json({ message: "Failed to add member", error: err.message });
+    return next(new ApiError(400, "Failed to add member", [err.message]));
   }
 };

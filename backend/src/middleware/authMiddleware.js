@@ -1,11 +1,12 @@
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../config/config");
+const ApiError = require("../utils/ApiError");
 
 // Auth middleware: verifies JWT and attaches user to req
 module.exports = function (req, res, next) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "No token provided" });
+    return next(new ApiError(401, "No token provided"));
   }
   const token = authHeader.split(" ")[1];
   try {
@@ -13,6 +14,6 @@ module.exports = function (req, res, next) {
     req.user = decoded;
     next();
   } catch (err) {
-    return res.status(401).json({ message: "Invalid token" });
+    return next(new ApiError(401, "Invalid token"));
   }
 };

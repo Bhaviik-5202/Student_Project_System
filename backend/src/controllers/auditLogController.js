@@ -1,26 +1,22 @@
-const AuditLog = require("../models/AuditLog");
+const auditLogService = require("../services/auditLogService");
+const ApiError = require("../utils/ApiError");
 
 // Get all audit logs
-exports.getAllAuditLogs = async (req, res) => {
+exports.getAllAuditLogs = async (req, res, next) => {
   try {
-    const logs = await AuditLog.find().populate("user").sort({ createdAt: -1 });
-    res.json(logs);
+    const logs = await auditLogService.findAll();
+    return res.json({ success: true, data: logs });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Failed to fetch audit logs", error: err.message });
+    return next(new ApiError(500, "Failed to fetch audit logs", [err.message]));
   }
 };
 
 // Add audit log
-exports.addAuditLog = async (req, res) => {
+exports.addAuditLog = async (req, res, next) => {
   try {
-    const log = new AuditLog(req.body);
-    await log.save();
-    res.status(201).json(log);
+    const log = await auditLogService.create(req.body);
+    return res.status(201).json({ success: true, data: log });
   } catch (err) {
-    res
-      .status(400)
-      .json({ message: "Failed to add audit log", error: err.message });
+    return next(new ApiError(400, "Failed to create audit log", [err.message]));
   }
 };

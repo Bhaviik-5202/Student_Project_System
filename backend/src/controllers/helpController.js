@@ -1,65 +1,56 @@
-const { FAQ, SupportTicket, KnowledgeBase } = require("../models/Help");
+const helpService = require("../services/helpService");
+const ApiError = require("../utils/ApiError");
 
 // FAQ
-exports.getAllFAQs = async (req, res) => {
+exports.getAllFAQs = async (req, res, next) => {
   try {
-    const faqs = await FAQ.find();
-    res.json(faqs);
+    const faqs = await helpService.getAllFAQs();
+    return res.json({ success: true, data: faqs });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Failed to fetch FAQs", error: err.message });
+    return next(new ApiError(500, "Failed to fetch FAQs", [err.message]));
   }
 };
 
 // Support Tickets
-exports.getAllTickets = async (req, res) => {
+exports.getAllTickets = async (req, res, next) => {
   try {
-    const tickets = await SupportTicket.find().populate("user");
-    res.json(tickets);
+    const tickets = await helpService.getAllTickets();
+    return res.json({ success: true, data: tickets });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Failed to fetch tickets", error: err.message });
+    return next(new ApiError(500, "Failed to fetch tickets", [err.message]));
   }
 };
 
-exports.createTicket = async (req, res) => {
+exports.createTicket = async (req, res, next) => {
   try {
-    const ticket = new SupportTicket(req.body);
-    await ticket.save();
-    res.status(201).json(ticket);
+    const ticket = await helpService.createTicket(req.body);
+    return res.status(201).json({ success: true, data: ticket });
   } catch (err) {
-    res
-      .status(400)
-      .json({ message: "Failed to create ticket", error: err.message });
+    return next(new ApiError(400, "Failed to create ticket", [err.message]));
   }
 };
 
-exports.updateTicketStatus = async (req, res) => {
+exports.updateTicketStatus = async (req, res, next) => {
   try {
-    const ticket = await SupportTicket.findByIdAndUpdate(
+    const ticket = await helpService.updateTicketStatus(
       req.params.id,
-      { status: req.body.status },
-      { new: true },
+      req.body.status,
     );
-    if (!ticket) return res.status(404).json({ message: "Ticket not found" });
-    res.json(ticket);
+    if (!ticket) return next(new ApiError(404, "Ticket not found"));
+    return res.json({ success: true, data: ticket });
   } catch (err) {
-    res
-      .status(400)
-      .json({ message: "Failed to update ticket", error: err.message });
+    return next(
+      new ApiError(400, "Failed to update ticket status", [err.message]),
+    );
   }
 };
 
 // Knowledge Base
-exports.getAllArticles = async (req, res) => {
+exports.getAllArticles = async (req, res, next) => {
   try {
-    const articles = await KnowledgeBase.find();
-    res.json(articles);
+    const articles = await helpService.getAllArticles();
+    return res.json({ success: true, data: articles });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Failed to fetch articles", error: err.message });
+    return next(new ApiError(500, "Failed to fetch articles", [err.message]));
   }
 };

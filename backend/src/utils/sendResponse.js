@@ -1,4 +1,3 @@
-// utils/sendResponse.js
 // Utility to standardize API responses
 
 function sendResponse(

@@ -1,94 +1,59 @@
 const studentService = require("../services/studentService");
+const ApiError = require("../utils/ApiError");
 
+const handleAsync = require("../utils/handleAsync");
 // Get all students
-exports.getAllStudents = async (req, res) => {
-  try {
-    const students = await studentService.findAll();
-    res.json(students);
-  } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Failed to fetch students", error: err.message });
-  }
-};
+exports.getAllStudents = handleAsync(async (req, res) => {
+  const students = await studentService.findAll();
+  res.json({ success: true, data: students });
+});
 
 // Get student by ID
-exports.getStudentById = async (req, res) => {
-  try {
-    const student = await studentService.findById(req.params.id);
-    if (!student) return res.status(404).json({ message: "Student not found" });
-    res.json(student);
-  } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Failed to fetch student", error: err.message });
-  }
-};
+exports.getStudentById = handleAsync(async (req, res, next) => {
+  const student = await studentService.findById(req.params.id);
+  if (!student) return next(new ApiError(404, "Student not found"));
+  res.json({ success: true, data: student });
+});
 
 // Create student
-exports.createStudent = async (req, res) => {
-  try {
-    const student = await studentService.create(req.body);
-    res.status(201).json(student);
-  } catch (err) {
-    res
-      .status(400)
-      .json({ message: "Failed to create student", error: err.message });
-  }
-};
+exports.createStudent = handleAsync(async (req, res) => {
+  const student = await studentService.create(req.body);
+  res.status(201).json({ success: true, data: student });
+});
 
 // Update student
-exports.updateStudent = async (req, res) => {
-  try {
-    const student = await studentService.update(req.params.id, req.body);
-    if (!student) return res.status(404).json({ message: "Student not found" });
-    res.json(student);
-  } catch (err) {
-    res
-      .status(400)
-      .json({ message: "Failed to update student", error: err.message });
-  }
-};
+exports.updateStudent = handleAsync(async (req, res, next) => {
+  const student = await studentService.update(req.params.id, req.body);
+  if (!student) return next(new ApiError(404, "Student not found"));
+  res.json({ success: true, data: student });
+});
 
 // Delete student
-exports.deleteStudent = async (req, res) => {
-  try {
-    const student = await studentService.remove(req.params.id);
-    if (!student) return res.status(404).json({ message: "Student not found" });
-    res.json({ message: "Student deleted" });
-  } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Failed to delete student", error: err.message });
-  }
-};
+exports.deleteStudent = handleAsync(async (req, res, next) => {
+  const student = await studentService.remove(req.params.id);
+  if (!student) return next(new ApiError(404, "Student not found"));
+  res.json({ success: true, message: "Student deleted" });
+});
 
+// Add a project for a student
+exports.addStudentProject = handleAsync(async (req, res, next) => {
+  const studentId = req.params.id;
+  const projectData = req.body;
+  const project = await studentService.addProject(studentId, projectData);
+  if (!project)
+    return next(new ApiError(404, "Student not found or project not created"));
+  return res.status(201).json({ success: true, data: project });
+});
 // Get student projects
-exports.getStudentProjects = async (req, res) => {
-  try {
-    const projects = await studentService.getProjects(req.params.id);
-    if (!projects)
-      return res.status(404).json({ message: "Student not found" });
-    res.json(projects);
-  } catch (err) {
-    res
-      .status(500)
-      .json({
-        message: "Failed to fetch student projects",
-        error: err.message,
-      });
-  }
-};
+exports.getStudentProjects = handleAsync(async (req, res, next) => {
+  const projects = await studentService.getProjects(req.params.id);
+  if (!projects) return next(new ApiError(404, "Student not found"));
+  return res.json({ success: true, data: projects });
+});
 
 // Get student grades
-exports.getStudentGrades = async (req, res) => {
-  try {
-    const grades = await studentService.getGrades(req.params.id);
-    if (!grades) return res.status(404).json({ message: "Student not found" });
-    res.json(grades);
-  } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Failed to fetch student grades", error: err.message });
-  }
-};
+exports.getStudentGrades = handleAsync(async (req, res, next) => {
+  const grades = await studentService.getGrades(req.params.id);
+  if (!grades) return next(new ApiError(404, "Student not found"));
+  return res.json({ success: true, data: grades });
+});
