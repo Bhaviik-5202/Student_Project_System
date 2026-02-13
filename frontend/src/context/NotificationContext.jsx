@@ -79,7 +79,7 @@ export const NotificationProvider = ({ children }) => {
     }
 
     setNotifications((prevNotifications) =>
-      prevNotifications.filter((notification) => notification.id !== id)
+      prevNotifications.filter((notification) => notification.id !== id),
     );
   }, []);
 
@@ -101,7 +101,7 @@ export const NotificationProvider = ({ children }) => {
         ...options,
       });
     },
-    [addNotification]
+    [addNotification],
   );
 
   const error = useCallback(
@@ -113,7 +113,7 @@ export const NotificationProvider = ({ children }) => {
         ...options,
       });
     },
-    [addNotification]
+    [addNotification],
   );
 
   const warning = useCallback(
@@ -124,7 +124,7 @@ export const NotificationProvider = ({ children }) => {
         ...options,
       });
     },
-    [addNotification]
+    [addNotification],
   );
 
   const info = useCallback(
@@ -135,7 +135,7 @@ export const NotificationProvider = ({ children }) => {
         ...options,
       });
     },
-    [addNotification]
+    [addNotification],
   );
 
   // Memoize context value
@@ -160,7 +160,7 @@ export const NotificationProvider = ({ children }) => {
       error,
       warning,
       info,
-    ]
+    ],
   );
 
   return (

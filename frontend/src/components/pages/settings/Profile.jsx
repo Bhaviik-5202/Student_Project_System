@@ -38,7 +38,8 @@ const Profile = memo(() => {
         currentUser.department ||
         (currentUser.role === "student" ? "Computer Science" : "Faculty"),
       year:
-        currentUser.year || (currentUser.role === "student" ? "Final Year" : ""),
+        currentUser.year ||
+        (currentUser.role === "student" ? "Final Year" : ""),
       bio:
         currentUser.bio ||
         "Passionate about technology and education. Currently working on innovative projects and mentoring students.",
@@ -77,32 +78,32 @@ const Profile = memo(() => {
 
   const handleSubmit = useCallback(
     async (e) => {
-    e.preventDefault();
-    setLoading(true);
+      e.preventDefault();
+      setLoading(true);
 
-    try {
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      try {
+        // Simulate API call delay
+        await new Promise((resolve) => setTimeout(resolve, 800));
 
-      await updateProfile({
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        department: formData.department,
-        year: formData.year,
-        bio: formData.bio,
-        avatar: formData.avatar,
-      });
+        await updateProfile({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          department: formData.department,
+          year: formData.year,
+          bio: formData.bio,
+          avatar: formData.avatar,
+        });
 
-      setIsEditing(false);
-      alert("✅ Profile updated successfully!");
-    } catch (error) {
-      alert("❌ Failed to update profile. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+        setIsEditing(false);
+        alert("✅ Profile updated successfully!");
+      } catch (error) {
+        alert("❌ Failed to update profile. Please try again.");
+      } finally {
+        setLoading(false);
+      }
     },
-    [formData, updateProfile]
+    [formData, updateProfile],
   );
 
   const handleCancel = useCallback(() => {
@@ -116,16 +117,19 @@ const Profile = memo(() => {
     (path) => {
       navigate(path);
     },
-    [navigate]
+    [navigate],
   );
 
   const roleBadgeClass = useMemo(
     () => ({
-      admin: "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-200",
-      faculty: "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-200",
-      student: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200",
+      admin:
+        "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-200",
+      faculty:
+        "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-200",
+      student:
+        "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200",
     }),
-    []
+    [],
   );
 
   const roleLabel = useMemo(
@@ -134,7 +138,7 @@ const Profile = memo(() => {
       faculty: "Faculty Member",
       student: "Student",
     }),
-    []
+    [],
   );
 
   const quickStats = useMemo(() => {
@@ -188,7 +192,7 @@ const Profile = memo(() => {
         defaultChecked: false,
       },
     ],
-    []
+    [],
   );
 
   const connectedAccounts = useMemo(
@@ -197,28 +201,32 @@ const Profile = memo(() => {
         name: "Google",
         email: user?.email || "Not connected",
         icon: "fab fa-google",
-        badgeClass: "bg-rose-100 text-rose-600 dark:bg-rose-900/40 dark:text-rose-300",
+        badgeClass:
+          "bg-rose-100 text-rose-600 dark:bg-rose-900/40 dark:text-rose-300",
       },
       {
         name: "Microsoft",
         email: user?.email || "Not connected",
         icon: "fab fa-microsoft",
-        badgeClass: "bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300",
+        badgeClass:
+          "bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-300",
       },
       {
         name: "GitHub",
         email: "Not connected",
         icon: "fab fa-github",
-        badgeClass: "bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-200",
+        badgeClass:
+          "bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-200",
       },
       {
         name: "LinkedIn",
         email: "Not connected",
         icon: "fab fa-linkedin",
-        badgeClass: "bg-sky-100 text-sky-600 dark:bg-sky-900/40 dark:text-sky-300",
+        badgeClass:
+          "bg-sky-100 text-sky-600 dark:bg-sky-900/40 dark:text-sky-300",
       },
     ],
-    [user?.email]
+    [user?.email],
   );
 
   const inputBase =
@@ -730,7 +738,9 @@ const Profile = memo(() => {
                   className="flex items-center justify-between p-4 border border-slate-200 dark:border-slate-700 rounded-lg"
                 >
                   <div className="flex items-center">
-                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-4 ${account.badgeClass}`}>
+                    <div
+                      className={`w-10 h-10 rounded-lg flex items-center justify-center mr-4 ${account.badgeClass}`}
+                    >
                       <i className={account.icon}></i>
                     </div>
                     <div>
@@ -761,6 +771,6 @@ const Profile = memo(() => {
   );
 });
 
-Profile.displayName = 'Profile';
+Profile.displayName = "Profile";
 
 export default Profile;

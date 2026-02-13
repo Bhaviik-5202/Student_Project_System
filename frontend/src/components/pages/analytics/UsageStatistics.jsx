@@ -10,7 +10,7 @@ const UsageStatistics = memo(() => {
       pageViews: { current: "1.2K", change: "+15%" },
       storageUsed: { current: "45.2 GB", change: "+5%" },
     }),
-    []
+    [],
   );
 
   const usageData = useMemo(
@@ -22,7 +22,7 @@ const UsageStatistics = memo(() => {
       { feature: "Calendar", usage: 58, users: 90 },
       { feature: "Reports", usage: 42, users: 65 },
     ],
-    []
+    [],
   );
 
   const dailyUsers = useMemo(
@@ -35,7 +35,7 @@ const UsageStatistics = memo(() => {
       { day: "Sat", users: 142, trend: "down" },
       { day: "Sun", users: 135, trend: "down" },
     ],
-    []
+    [],
   );
 
   const peakHours = useMemo(
@@ -48,7 +48,7 @@ const UsageStatistics = memo(() => {
       { hour: "2 PM", usage: 95 },
       { hour: "3 PM", usage: 90 },
     ],
-    []
+    [],
   );
 
   return (
@@ -59,7 +59,9 @@ const UsageStatistics = memo(() => {
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
               Usage Statistics
             </h1>
-            <p className="text-slate-600 dark:text-slate-400">System usage and engagement metrics</p>
+            <p className="text-slate-600 dark:text-slate-400">
+              System usage and engagement metrics
+            </p>
           </div>
           <button className="px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-800">
             Download Report
@@ -112,8 +114,8 @@ const UsageStatistics = memo(() => {
                       feature.usage >= 80
                         ? "bg-emerald-500"
                         : feature.usage >= 60
-                        ? "bg-blue-500"
-                        : "bg-amber-500"
+                          ? "bg-blue-500"
+                          : "bg-amber-500"
                     }`}
                     style={{ width: `${feature.usage}%` }}
                   ></div>
@@ -132,23 +134,27 @@ const UsageStatistics = memo(() => {
             <div className="space-y-4">
               {dailyUsers.map((day, index) => (
                 <div key={index} className="flex items-center justify-between">
-                  <div className="font-medium text-slate-900 dark:text-white">{day.day}</div>
+                  <div className="font-medium text-slate-900 dark:text-white">
+                    {day.day}
+                  </div>
                   <div className="flex items-center">
-                    <div className="text-slate-900 dark:text-white mr-3">{day.users}</div>
+                    <div className="text-slate-900 dark:text-white mr-3">
+                      {day.users}
+                    </div>
                     <div
                       className={`text-sm ${
                         day.trend === "up"
                           ? "text-emerald-600 dark:text-emerald-400"
                           : day.trend === "down"
-                          ? "text-rose-600 dark:text-rose-400"
-                          : "text-slate-600 dark:text-slate-400"
+                            ? "text-rose-600 dark:text-rose-400"
+                            : "text-slate-600 dark:text-slate-400"
                       }`}
                     >
                       {day.trend === "up"
                         ? "↗"
                         : day.trend === "down"
-                        ? "↘"
-                        : "→"}
+                          ? "↘"
+                          : "→"}
                     </div>
                   </div>
                 </div>

@@ -41,7 +41,7 @@ const ProgressAnalytics = memo(() => {
         teamSize: 3,
       },
     ],
-    []
+    [],
   );
 
   return (
@@ -74,7 +74,7 @@ const ProgressAnalytics = memo(() => {
                     <div className="text-3xl font-bold text-slate-900 dark:text-white mr-3">
                       {Math.round(
                         projects.reduce((sum, p) => sum + p.progress, 0) /
-                          projects.length
+                          projects.length,
                       )}
                       %
                     </div>
@@ -99,14 +99,14 @@ const ProgressAnalytics = memo(() => {
                       {
                         label: "Slightly Behind",
                         count: projects.filter(
-                          (p) => p.timeline === "Slightly Behind"
+                          (p) => p.timeline === "Slightly Behind",
                         ).length,
                         color: "bg-amber-500",
                       },
                       {
                         label: "Behind Schedule",
                         count: projects.filter(
-                          (p) => p.timeline === "Behind Schedule"
+                          (p) => p.timeline === "Behind Schedule",
                         ).length,
                         color: "bg-rose-500",
                       },
@@ -129,7 +129,9 @@ const ProgressAnalytics = memo(() => {
                             {status.label}
                           </span>
                         </div>
-                        <span className="font-medium text-slate-900 dark:text-white">{status.count}</span>
+                        <span className="font-medium text-slate-900 dark:text-white">
+                          {status.count}
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -164,10 +166,10 @@ const ProgressAnalytics = memo(() => {
                           project.timeline === "On Track"
                             ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
                             : project.timeline === "Ahead"
-                            ? "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
-                            : project.timeline === "Slightly Behind"
-                            ? "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300"
-                            : "bg-rose-100 dark:bg-rose-900/30 text-rose-800 dark:text-rose-300"
+                              ? "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
+                              : project.timeline === "Slightly Behind"
+                                ? "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300"
+                                : "bg-rose-100 dark:bg-rose-900/30 text-rose-800 dark:text-rose-300"
                         }`}
                       >
                         {project.timeline}
@@ -185,10 +187,10 @@ const ProgressAnalytics = memo(() => {
                             project.progress >= 80
                               ? "bg-emerald-500"
                               : project.progress >= 60
-                              ? "bg-blue-500"
-                              : project.progress >= 40
-                              ? "bg-amber-500"
-                              : "bg-rose-500"
+                                ? "bg-blue-500"
+                                : project.progress >= 40
+                                  ? "bg-amber-500"
+                                  : "bg-rose-500"
                           }`}
                           style={{ width: `${project.progress}%` }}
                         ></div>

@@ -34,7 +34,7 @@ const TeamDirectory = memo(() => {
         lead: "Sarah Williams",
       },
     ],
-    []
+    [],
   );
 
   const members = useMemo(
@@ -72,7 +72,7 @@ const TeamDirectory = memo(() => {
         skills: ["Testing", "Automation", "Debugging"],
       },
     ],
-    []
+    [],
   );
 
   return (
@@ -80,8 +80,12 @@ const TeamDirectory = memo(() => {
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Team Directory</h1>
-            <p className="text-slate-600 dark:text-slate-400">Browse teams and team members</p>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+              Team Directory
+            </h1>
+            <p className="text-slate-600 dark:text-slate-400">
+              Browse teams and team members
+            </p>
           </div>
           <button className="px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-800">
             Create Team
@@ -91,7 +95,9 @@ const TeamDirectory = memo(() => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           {/* Teams List */}
           <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Teams</h3>
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
+              Teams
+            </h3>
             <div className="space-y-4">
               {teams.map((team) => (
                 <div

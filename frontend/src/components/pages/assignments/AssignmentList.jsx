@@ -5,62 +5,63 @@ const AssignmentList = memo(() => {
   const navigate = useNavigate();
   const assignments = useMemo(
     () => [
-    {
-      id: 1,
-      title: "Database Design",
-      course: "CS402",
-      dueDate: "Jan 20, 2024",
-      status: "Pending",
-      points: 100,
-    },
-    {
-      id: 2,
-      title: "Web App Prototype",
-      course: "CS403",
-      dueDate: "Jan 22, 2024",
-      status: "In Progress",
-      points: 150,
-    },
-    {
-      id: 3,
-      title: "Algorithm Analysis",
-      course: "CS404",
-      dueDate: "Jan 25, 2024",
-      status: "Not Started",
-      points: 120,
-    },
-    {
-      id: 4,
-      title: "Research Paper",
-      course: "CS401",
-      dueDate: "Jan 18, 2024",
-      status: "Submitted",
-      points: 200,
-    },
-    {
-      id: 5,
-      title: "ML Model Implementation",
-      course: "CS405",
-      dueDate: "Jan 30, 2024",
-      status: "Not Started",
-      points: 180,
-    },
-  ],
-  []
-);
-
-  const handleNavigate = useCallback(
-    (path) => navigate(path),
-    [navigate]
+      {
+        id: 1,
+        title: "Database Design",
+        course: "CS402",
+        dueDate: "Jan 20, 2024",
+        status: "Pending",
+        points: 100,
+      },
+      {
+        id: 2,
+        title: "Web App Prototype",
+        course: "CS403",
+        dueDate: "Jan 22, 2024",
+        status: "In Progress",
+        points: 150,
+      },
+      {
+        id: 3,
+        title: "Algorithm Analysis",
+        course: "CS404",
+        dueDate: "Jan 25, 2024",
+        status: "Not Started",
+        points: 120,
+      },
+      {
+        id: 4,
+        title: "Research Paper",
+        course: "CS401",
+        dueDate: "Jan 18, 2024",
+        status: "Submitted",
+        points: 200,
+      },
+      {
+        id: 5,
+        title: "ML Model Implementation",
+        course: "CS405",
+        dueDate: "Jan 30, 2024",
+        status: "Not Started",
+        points: 180,
+      },
+    ],
+    [],
   );
+
+  const handleNavigate = useCallback((path) => navigate(path), [navigate]);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Assignments</h1>
-            <p className="text-slate-600 dark:text-slate-400">View and manage all assignments</p>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+              Assignments
+            </h1>
+            <p className="text-slate-600 dark:text-slate-400">
+              View and manage all assignments
+            </p>
           </div>
           <button
             onClick={() => handleNavigate("/assignments/new")}
@@ -97,7 +98,10 @@ const AssignmentList = memo(() => {
               </thead>
               <tbody className="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
                 {assignments.map((assignment) => (
-                  <tr key={assignment.id} className="hover:bg-slate-50 dark:hover:bg-slate-700">
+                  <tr
+                    key={assignment.id}
+                    className="hover:bg-slate-50 dark:hover:bg-slate-700"
+                  >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="font-medium text-slate-900 dark:text-white">
                         {assignment.title}
@@ -115,10 +119,10 @@ const AssignmentList = memo(() => {
                           assignment.status === "Submitted"
                             ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
                             : assignment.status === "In Progress"
-                            ? "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
-                            : assignment.status === "Pending"
-                            ? "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300"
-                            : "bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200"
+                              ? "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
+                              : assignment.status === "Pending"
+                                ? "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300"
+                                : "bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200"
                         }`}
                       >
                         {assignment.status}

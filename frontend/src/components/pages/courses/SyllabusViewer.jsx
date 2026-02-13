@@ -4,76 +4,79 @@ import { useParams, useNavigate } from "react-router-dom";
 const SyllabusViewer = memo(() => {
   const { id } = useParams();
   const navigate = useNavigate();
-  
-  const syllabus = useMemo(() => ({
-    courseTitle: "Software Engineering",
-    courseCode: "CS401",
-    instructor: "Dr. John Smith",
-    semester: "Fall 2024",
-    weeks: [
-      {
-        week: 1,
-        title: "Introduction to Software Engineering",
-        topics: [
-          "Course Overview",
-          "Software Engineering Principles",
-          "SDLC Models",
-        ],
-        readings: ["Chapter 1: Fundamentals", "Article: Agile Manifesto"],
-        assignments: "Reading assignment: Review syllabus",
-      },
-      {
-        week: 2,
-        title: "Requirements Engineering",
-        topics: [
-          "Requirements Gathering",
-          "Use Case Modeling",
-          "Requirements Documentation",
-        ],
-        readings: ["Chapter 2: Requirements", "Case Study: Banking System"],
-        assignments: "Assignment 1: Requirements Document",
-      },
-      {
-        week: 3,
-        title: "System Design",
-        topics: ["Architectural Design", "UML Diagrams", "Design Patterns"],
-        readings: ["Chapter 3: System Design", "Book: Design Patterns"],
-        assignments: "Project: Design Proposal",
-      },
-      {
-        week: 4,
-        title: "Implementation",
-        topics: ["Coding Standards", "Version Control", "Code Review"],
-        readings: ["Chapter 4: Implementation", "Git Documentation"],
-        assignments: "Lab 1: Git Setup",
-      },
-      {
-        week: 5,
-        title: "Testing",
-        topics: ["Test Planning", "Unit Testing", "Integration Testing"],
-        readings: ["Chapter 5: Software Testing", "JUnit Guide"],
-        assignments: "Assignment 2: Test Cases",
-      },
-    ],
-    grading: [
-      {
-        component: "Assignments",
-        weight: "30%",
-        description: "Weekly assignments",
-      },
-      { component: "Project", weight: "40%", description: "Group project" },
-      {
-        component: "Midterm Exam",
-        weight: "15%",
-        description: "In-class exam",
-      },
-      {
-        component: "Final Exam",
-        weight: "15%",
-        description: "Comprehensive exam",
-      },
-    ],
-  }), []);
+
+  const syllabus = useMemo(
+    () => ({
+      courseTitle: "Software Engineering",
+      courseCode: "CS401",
+      instructor: "Dr. John Smith",
+      semester: "Fall 2024",
+      weeks: [
+        {
+          week: 1,
+          title: "Introduction to Software Engineering",
+          topics: [
+            "Course Overview",
+            "Software Engineering Principles",
+            "SDLC Models",
+          ],
+          readings: ["Chapter 1: Fundamentals", "Article: Agile Manifesto"],
+          assignments: "Reading assignment: Review syllabus",
+        },
+        {
+          week: 2,
+          title: "Requirements Engineering",
+          topics: [
+            "Requirements Gathering",
+            "Use Case Modeling",
+            "Requirements Documentation",
+          ],
+          readings: ["Chapter 2: Requirements", "Case Study: Banking System"],
+          assignments: "Assignment 1: Requirements Document",
+        },
+        {
+          week: 3,
+          title: "System Design",
+          topics: ["Architectural Design", "UML Diagrams", "Design Patterns"],
+          readings: ["Chapter 3: System Design", "Book: Design Patterns"],
+          assignments: "Project: Design Proposal",
+        },
+        {
+          week: 4,
+          title: "Implementation",
+          topics: ["Coding Standards", "Version Control", "Code Review"],
+          readings: ["Chapter 4: Implementation", "Git Documentation"],
+          assignments: "Lab 1: Git Setup",
+        },
+        {
+          week: 5,
+          title: "Testing",
+          topics: ["Test Planning", "Unit Testing", "Integration Testing"],
+          readings: ["Chapter 5: Software Testing", "JUnit Guide"],
+          assignments: "Assignment 2: Test Cases",
+        },
+      ],
+      grading: [
+        {
+          component: "Assignments",
+          weight: "30%",
+          description: "Weekly assignments",
+        },
+        { component: "Project", weight: "40%", description: "Group project" },
+        {
+          component: "Midterm Exam",
+          weight: "15%",
+          description: "In-class exam",
+        },
+        {
+          component: "Final Exam",
+          weight: "15%",
+          description: "Comprehensive exam",
+        },
+      ],
+    }),
+    [],
+  );
 
   const [activeWeek, setActiveWeek] = useState(0);
 
@@ -96,7 +99,9 @@ const SyllabusViewer = memo(() => {
                 <span className="text-slate-600 dark:text-slate-400">
                   {syllabus.courseCode} - {syllabus.courseTitle}
                 </span>
-                <span className="text-slate-600 dark:text-slate-400">{syllabus.semester}</span>
+                <span className="text-slate-600 dark:text-slate-400">
+                  {syllabus.semester}
+                </span>
               </div>
             </div>
             <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
@@ -214,10 +219,14 @@ const SyllabusViewer = memo(() => {
                             key={index}
                             className="flex items-center p-3 border border-slate-200 dark:border-slate-700 rounded-lg"
                           >
-                            <span className="text-slate-400 dark:text-slate-500 mr-3">📚</span>
-                            <span className="text-slate-700 dark:text-slate-200">{reading}</span>
+                            <span className="text-slate-400 dark:text-slate-500 mr-3">
+                              📚
+                            </span>
+                            <span className="text-slate-700 dark:text-slate-200">
+                              {reading}
+                            </span>
                           </div>
-                        )
+                        ),
                       )}
                     </div>
                   </div>
@@ -294,6 +303,6 @@ const SyllabusViewer = memo(() => {
   );
 });
 
-SyllabusViewer.displayName = 'SyllabusViewer';
+SyllabusViewer.displayName = "SyllabusViewer";
 
 export default SyllabusViewer;

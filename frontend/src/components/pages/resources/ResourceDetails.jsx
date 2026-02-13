@@ -19,7 +19,7 @@ const ResourceDetails = memo(() => {
         "Comprehensive guide covering HTML5, CSS3, JavaScript, React, and modern web development practices.",
       tags: ["Web Development", "HTML", "CSS", "JavaScript", "React"],
     }),
-    [id]
+    [id],
   );
 
   const relatedResources = useMemo(
@@ -28,7 +28,7 @@ const ResourceDetails = memo(() => {
       "JavaScript ES6 Cheatsheet.pdf",
       "React Hooks Tutorial.pdf",
     ],
-    []
+    [],
   );
 
   return (
@@ -147,7 +147,9 @@ const ResourceDetails = memo(() => {
             <div className="bg-slate-50 dark:bg-slate-700 h-64 rounded-lg flex items-center justify-center">
               <div className="text-center">
                 <div className="text-4xl mb-2">📄</div>
-                <p className="text-slate-600 dark:text-slate-300">PDF Preview</p>
+                <p className="text-slate-600 dark:text-slate-300">
+                  PDF Preview
+                </p>
                 <p className="text-sm text-slate-500 dark:text-slate-400">
                   Click to view full document
                 </p>

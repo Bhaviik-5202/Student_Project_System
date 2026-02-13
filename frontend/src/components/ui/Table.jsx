@@ -2,11 +2,14 @@ import { memo, useCallback } from "react";
 import PropTypes from "prop-types";
 
 const Table = memo(({ columns = [], data = [], onRowClick }) => {
-  const handleRowClick = useCallback((row) => {
-    if (onRowClick) {
-      onRowClick(row);
-    }
-  }, [onRowClick]);
+  const handleRowClick = useCallback(
+    (row) => {
+      if (onRowClick) {
+        onRowClick(row);
+      }
+    },
+    [onRowClick],
+  );
 
   return (
     <div className="overflow-x-auto bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-lg dark:shadow-gray-950">
@@ -60,7 +63,7 @@ Table.propTypes = {
       header: PropTypes.string.isRequired,
       accessor: PropTypes.string.isRequired,
       render: PropTypes.func,
-    })
+    }),
   ),
   data: PropTypes.arrayOf(PropTypes.object),
   onRowClick: PropTypes.func,

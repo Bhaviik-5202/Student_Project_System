@@ -21,34 +21,40 @@ const EvaluationForm = memo(() => {
   const [loading, setLoading] = useState(false);
 
   const calculateTotal = useCallback(() => {
-    setEvaluation(prev => {
+    setEvaluation((prev) => {
       const total = prev.criteria.reduce((sum, item) => sum + item.score, 0);
       return { ...prev, overallScore: total };
     });
   }, []);
 
-  const handleScoreChange = useCallback((index, value) => {
-    setEvaluation(prev => {
-      const newCriteria = [...prev.criteria];
-      newCriteria[index].score = Math.min(
-        Math.max(0, value),
-        newCriteria[index].maxScore
-      );
-      return { ...prev, criteria: newCriteria };
-    });
-    setTimeout(calculateTotal, 0);
-  }, [calculateTotal]);
+  const handleScoreChange = useCallback(
+    (index, value) => {
+      setEvaluation((prev) => {
+        const newCriteria = [...prev.criteria];
+        newCriteria[index].score = Math.min(
+          Math.max(0, value),
+          newCriteria[index].maxScore,
+        );
+        return { ...prev, criteria: newCriteria };
+      });
+      setTimeout(calculateTotal, 0);
+    },
+    [calculateTotal],
+  );
 
-  const handleSubmit = useCallback(async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+      setLoading(true);
 
-    setTimeout(() => {
-      toast.success("Evaluation submitted successfully");
-      setLoading(false);
-      navigate("/evaluations");
-    }, 1500);
-  }, [navigate]);
+      setTimeout(() => {
+        toast.success("Evaluation submitted successfully");
+        setLoading(false);
+        navigate("/evaluations");
+      }, 1500);
+    },
+    [navigate],
+  );
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
@@ -139,7 +145,7 @@ const EvaluationForm = memo(() => {
                         onChange={(e) =>
                           handleScoreChange(
                             index,
-                            parseInt(e.target.value) || 0
+                            parseInt(e.target.value) || 0,
                           )
                         }
                       />
@@ -159,13 +165,17 @@ const EvaluationForm = memo(() => {
                   <h4 className="text-lg font-semibold text-slate-900 dark:text-white">
                     Overall Score
                   </h4>
-                  <p className="text-slate-600 dark:text-slate-400">Total out of 100 points</p>
+                  <p className="text-slate-600 dark:text-slate-400">
+                    Total out of 100 points
+                  </p>
                 </div>
                 <div className="text-right">
                   <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
                     {evaluation.overallScore}
                   </div>
-                  <div className="text-slate-600 dark:text-slate-400">/ 100</div>
+                  <div className="text-slate-600 dark:text-slate-400">
+                    / 100
+                  </div>
                 </div>
               </div>
             </div>
@@ -209,6 +219,6 @@ const EvaluationForm = memo(() => {
   );
 });
 
-EvaluationForm.displayName = 'EvaluationForm';
+EvaluationForm.displayName = "EvaluationForm";
 
 export default EvaluationForm;

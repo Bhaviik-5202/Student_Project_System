@@ -42,26 +42,29 @@ const TeamChat = memo(() => {
       { name: "Mike Chen", role: "Database Admin", online: true },
       { name: "Emma Wilson", role: "UI/UX Designer", online: false },
     ],
-    []
+    [],
   );
 
-  const handleSendMessage = useCallback((e) => {
-    e.preventDefault();
-    if (newMessage.trim()) {
-      const newMsg = {
-        id: messages.length + 1,
-        user: "You",
-        text: newMessage,
-        time: new Date().toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-        isMe: true,
-      };
-      setMessages([...messages, newMsg]);
-      setNewMessage("");
-    }
-  }, [messages, newMessage]);
+  const handleSendMessage = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (newMessage.trim()) {
+        const newMsg = {
+          id: messages.length + 1,
+          user: "You",
+          text: newMessage,
+          time: new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+          isMe: true,
+        };
+        setMessages([...messages, newMsg]);
+        setNewMessage("");
+      }
+    },
+    [messages, newMessage],
+  );
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -71,7 +74,9 @@ const TeamChat = memo(() => {
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Team Chat</h1>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+            Team Chat
+          </h1>
           <p className="text-slate-600 dark:text-slate-400">
             Project: E-commerce Platform Development
           </p>
@@ -87,7 +92,9 @@ const TeamChat = memo(() => {
         {/* Team Members Sidebar */}
         <div className="lg:col-span-1">
           <div className="bg-white dark:bg-slate-800 rounded-xl shadow p-6">
-            <h3 className="font-medium text-slate-900 dark:text-white mb-4">Team Members</h3>
+            <h3 className="font-medium text-slate-900 dark:text-white mb-4">
+              Team Members
+            </h3>
             <div className="space-y-4">
               {teamMembers.map((member, index) => (
                 <div
@@ -101,8 +108,12 @@ const TeamChat = memo(() => {
                       }`}
                     ></div>
                     <div>
-                      <p className="font-medium text-sm text-slate-900 dark:text-white">{member.name}</p>
-                      <p className="text-xs text-slate-500 dark:text-slate-400">{member.role}</p>
+                      <p className="font-medium text-sm text-slate-900 dark:text-white">
+                        {member.name}
+                      </p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">
+                        {member.role}
+                      </p>
                     </div>
                   </div>
                   <button className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
@@ -120,7 +131,9 @@ const TeamChat = memo(() => {
             {/* Chat Header */}
             <div className="border-b border-slate-200 dark:border-slate-700 p-4">
               <div className="flex items-center justify-between">
-                <h3 className="font-medium text-slate-900 dark:text-white">Group Chat</h3>
+                <h3 className="font-medium text-slate-900 dark:text-white">
+                  Group Chat
+                </h3>
                 <div className="flex items-center space-x-4">
                   <button className="text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200">
                     <i className="fas fa-phone"></i>

@@ -3,9 +3,11 @@ import { useNavigate } from "react-router-dom";
 
 const MeetingRow = memo(({ meeting, onView }) => {
   const statusStyles = {
-    Upcoming: "bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200",
+    Upcoming:
+      "bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200",
     Cancelled: "bg-rose-100 dark:bg-rose-900 text-rose-800 dark:text-rose-200",
-    Completed: "bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200",
+    Completed:
+      "bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200",
   };
   const statusClass = statusStyles[meeting.status] || statusStyles.Completed;
 
@@ -51,39 +53,41 @@ const MeetingList = memo(() => {
   const navigate = useNavigate();
   const meetings = useMemo(
     () => [
-    {
-      id: 1,
-      title: "Project Review Meeting",
-      date: "2024-01-15",
-      time: "10:00 AM",
-      location: "Room 301",
-      attendees: ["Student A", "Student B", "Dr. Smith"],
-      status: "Upcoming",
-    },
-    {
-      id: 2,
-      title: "Weekly Sync",
-      date: "2024-01-16",
-      time: "2:00 PM",
-      location: "Conference Room",
-      attendees: ["All Team Members"],
-      status: "Upcoming",
-    },
+      {
+        id: 1,
+        title: "Project Review Meeting",
+        date: "2024-01-15",
+        time: "10:00 AM",
+        location: "Room 301",
+        attendees: ["Student A", "Student B", "Dr. Smith"],
+        status: "Upcoming",
+      },
+      {
+        id: 2,
+        title: "Weekly Sync",
+        date: "2024-01-16",
+        time: "2:00 PM",
+        location: "Conference Room",
+        attendees: ["All Team Members"],
+        status: "Upcoming",
+      },
     ],
-    []
+    [],
   );
 
   // Schedule Meeting button handler
   const handleCreate = useCallback(() => {
     // Simulate scheduling not available
-    alert("Scheduling meetings is currently unavailable. Please contact your administrator or try again later.");
+    alert(
+      "Scheduling meetings is currently unavailable. Please contact your administrator or try again later.",
+    );
   }, []);
 
   const handleView = useCallback(
     (id) => {
       navigate(`/meetings/${id}`);
     },
-    [navigate]
+    [navigate],
   );
 
   return (
@@ -95,7 +99,8 @@ const MeetingList = memo(() => {
               Meeting Management
             </h1>
             <p className="text-gray-600 dark:text-gray-400">
-              View and manage all meetings. Find useful resources and tips below.
+              View and manage all meetings. Find useful resources and tips
+              below.
             </p>
           </div>
           <button
@@ -108,11 +113,40 @@ const MeetingList = memo(() => {
 
         {/* Related Resources Section */}
         <div className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">Related Resources</h2>
+          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">
+            Related Resources
+          </h2>
           <ul className="list-disc pl-6 text-gray-700 dark:text-gray-300">
-            <li><a href="https://www.mindtools.com/meeting-management" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400">Effective Meeting Management Tips</a></li>
-            <li><a href="https://www.atlassian.com/work-management/meeting-notes" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400">How to Take Meeting Notes</a></li>
-            <li><a href="https://www.youtube.com/watch?v=O2Q2FZp4R6A" target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400">Video: Running Productive Meetings</a></li>
+            <li>
+              <a
+                href="https://www.mindtools.com/meeting-management"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 dark:text-blue-400"
+              >
+                Effective Meeting Management Tips
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.atlassian.com/work-management/meeting-notes"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 dark:text-blue-400"
+              >
+                How to Take Meeting Notes
+              </a>
+            </li>
+            <li>
+              <a
+                href="https://www.youtube.com/watch?v=O2Q2FZp4R6A"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 dark:text-blue-400"
+              >
+                Video: Running Productive Meetings
+              </a>
+            </li>
           </ul>
         </div>
 
@@ -141,7 +175,11 @@ const MeetingList = memo(() => {
               </thead>
               <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 {meetings.map((meeting) => (
-                  <MeetingRow key={meeting.id} meeting={meeting} onView={handleView} />
+                  <MeetingRow
+                    key={meeting.id}
+                    meeting={meeting}
+                    onView={handleView}
+                  />
                 ))}
               </tbody>
             </table>

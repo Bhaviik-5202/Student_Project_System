@@ -8,12 +8,15 @@ const StudentFilters = memo(({ onFilter }) => {
     status: "",
   });
 
-  const handleChange = useCallback((e) => {
-    setFilters({
-      ...filters,
-      [e.target.name]: e.target.value,
-    });
-  }, [filters]);
+  const handleChange = useCallback(
+    (e) => {
+      setFilters({
+        ...filters,
+        [e.target.name]: e.target.value,
+      });
+    },
+    [filters],
+  );
 
   const handleApply = useCallback(() => {
     onFilter(filters);
@@ -33,7 +36,7 @@ const StudentFilters = memo(({ onFilter }) => {
       { value: "3", label: "Third Year" },
       { value: "4", label: "Fourth Year" },
     ],
-    []
+    [],
   );
 
   const departmentOptions = useMemo(
@@ -43,7 +46,7 @@ const StudentFilters = memo(({ onFilter }) => {
       { value: "it", label: "Information Technology" },
       { value: "ece", label: "Electronics" },
     ],
-    []
+    [],
   );
 
   const statusOptions = useMemo(
@@ -52,7 +55,7 @@ const StudentFilters = memo(({ onFilter }) => {
       { value: "active", label: "Active" },
       { value: "inactive", label: "Inactive" },
     ],
-    []
+    [],
   );
 
   return (

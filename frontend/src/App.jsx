@@ -17,121 +17,267 @@ import LoadingSpinner from "./components/common/LoadingSpinner";
 // Auth Pages
 const Login = lazy(() => import("./components/pages/auth/Login"));
 const Register = lazy(() => import("./components/pages/auth/Register"));
-const ForgotPassword = lazy(() => import("./components/pages/auth/ForgotPassword"));
+const ForgotPassword = lazy(
+  () => import("./components/pages/auth/ForgotPassword"),
+);
 
 // Dashboard Pages
 const Dashboard = lazy(() => import("./components/pages/dashboard/Dashboard"));
-const AdminDashboard = lazy(() => import("./components/pages/admin/AdminDashboard"));
+const AdminDashboard = lazy(
+  () => import("./components/pages/admin/AdminDashboard"),
+);
 
 // Admin Pages
-const StudentsList = lazy(() => import("./components/pages/students/StudentsList"));
+const StudentsList = lazy(
+  () => import("./components/pages/students/StudentsList"),
+);
 const StaffManagement = lazy(() => import("./components/pages/students/Staff"));
-const UserManagement = lazy(() => import("./components/pages/admin/UserManagement"));
-const PermissionsManager = lazy(() => import("./components/pages/admin/PermissionsManager"));
-const SystemSettings = lazy(() => import("./components/pages/admin/SystemSettings"));
-const BackupRestore = lazy(() => import("./components/pages/admin/BackupRestore"));
+const UserManagement = lazy(
+  () => import("./components/pages/admin/UserManagement"),
+);
+const PermissionsManager = lazy(
+  () => import("./components/pages/admin/PermissionsManager"),
+);
+const SystemSettings = lazy(
+  () => import("./components/pages/admin/SystemSettings"),
+);
+const BackupRestore = lazy(
+  () => import("./components/pages/admin/BackupRestore"),
+);
 const AuditLog = lazy(() => import("./components/pages/admin/AuditLog"));
-const BatchOperations = lazy(() => import("./components/pages/admin/BatchOperations"));
+const BatchOperations = lazy(
+  () => import("./components/pages/admin/BatchOperations"),
+);
 
 // Student Pages
-const StudentAttendance = lazy(() => import("./components/pages/students/Attendance"));
-const StudentForm = lazy(() => import("./components/pages/students/StudentForm"));
-const StudentFilters = lazy(() => import("./components/pages/students/StudentFilters"));
+const StudentAttendance = lazy(
+  () => import("./components/pages/students/Attendance"),
+);
+const StudentForm = lazy(
+  () => import("./components/pages/students/StudentForm"),
+);
+const StudentFilters = lazy(
+  () => import("./components/pages/students/StudentFilters"),
+);
 
 // Project Pages
-const ProjectList = lazy(() => import("./components/pages/projects/ProjectList"));
-const ProjectDetails = lazy(() => import("./components/pages/projects/ProjectDetails"));
-const ProjectProposal = lazy(() => import("./components/pages/projects/ProjectProposal"));
-const ProjectTypes = lazy(() => import("./components/pages/projects/ProjectTypes"));
-const ProjectGroups = lazy(() => import("./components/pages/projects/ProjectGroups"));
-const GuideAllocation = lazy(() => import("./components/pages/projects/GuideAllocation"));
+const ProjectList = lazy(
+  () => import("./components/pages/projects/ProjectList"),
+);
+const ProjectDetails = lazy(
+  () => import("./components/pages/projects/ProjectDetails"),
+);
+const ProjectProposal = lazy(
+  () => import("./components/pages/projects/ProjectProposal"),
+);
+const ProjectTypes = lazy(
+  () => import("./components/pages/projects/ProjectTypes"),
+);
+const ProjectGroups = lazy(
+  () => import("./components/pages/projects/ProjectGroups"),
+);
+const GuideAllocation = lazy(
+  () => import("./components/pages/projects/GuideAllocation"),
+);
 
 // Meeting Pages
-const MeetingCalendar = lazy(() => import("./components/pages/meetings/MeetingCalendar"));
-const MeetingList = lazy(() => import("./components/pages/meetings/MeetingList"));
-const MeetingForm = lazy(() => import("./components/pages/meetings/MeetingForm"));
+const MeetingCalendar = lazy(
+  () => import("./components/pages/meetings/MeetingCalendar"),
+);
+const MeetingList = lazy(
+  () => import("./components/pages/meetings/MeetingList"),
+);
+const MeetingForm = lazy(
+  () => import("./components/pages/meetings/MeetingForm"),
+);
 
 // Settings Pages
 const Profile = lazy(() => import("./components/pages/settings/Profile"));
-const ProfileSettings = lazy(() => import("./components/pages/settings/ProfileSettings"));
+const ProfileSettings = lazy(
+  () => import("./components/pages/settings/ProfileSettings"),
+);
 const Settings = lazy(() => import("./components/pages/settings/Settings"));
 
 // Reports Pages
 const Reports = lazy(() => import("./components/pages/reports/Reports"));
-const ExportOptions = lazy(() => import("./components/pages/reports/ExportOptions"));
+const ExportOptions = lazy(
+  () => import("./components/pages/reports/ExportOptions"),
+);
 
 // Resource Pages
-const DocumentLibrary = lazy(() => import("./components/pages/resources/DocumentLibrary"));
-const ResourceBrowser = lazy(() => import("./components/pages/resources/ResourceBrowser"));
-const ResourceDetails = lazy(() => import("./components/pages/resources/ResourceDetails"));
-const ResourceUpload = lazy(() => import("./components/pages/resources/ResourceUpload"));
-const TemplateLibrary = lazy(() => import("./components/pages/resources/TemplateLibrary"));
-const TutorialVideos = lazy(() => import("./components/pages/resources/TutorialVideos"));
+const DocumentLibrary = lazy(
+  () => import("./components/pages/resources/DocumentLibrary"),
+);
+const ResourceBrowser = lazy(
+  () => import("./components/pages/resources/ResourceBrowser"),
+);
+const ResourceDetails = lazy(
+  () => import("./components/pages/resources/ResourceDetails"),
+);
+const ResourceUpload = lazy(
+  () => import("./components/pages/resources/ResourceUpload"),
+);
+const TemplateLibrary = lazy(
+  () => import("./components/pages/resources/TemplateLibrary"),
+);
+const TutorialVideos = lazy(
+  () => import("./components/pages/resources/TutorialVideos"),
+);
 
 // Portfolio Pages
-const AchievementBadges = lazy(() => import("./components/pages/portfolio/AchievementBadges"));
-const PortfolioBuilder = lazy(() => import("./components/pages/portfolio/PortfolioBuilder"));
-const PortfolioView = lazy(() => import("./components/pages/portfolio/PortfolioView"));
-const ProjectGallery = lazy(() => import("./components/pages/portfolio/ProjectGallery"));
-const SkillMatrix = lazy(() => import("./components/pages/portfolio/SkillMatrix"));
-const TranscriptViewer = lazy(() => import("./components/pages/portfolio/TranscriptViewer"));
+const AchievementBadges = lazy(
+  () => import("./components/pages/portfolio/AchievementBadges"),
+);
+const PortfolioBuilder = lazy(
+  () => import("./components/pages/portfolio/PortfolioBuilder"),
+);
+const PortfolioView = lazy(
+  () => import("./components/pages/portfolio/PortfolioView"),
+);
+const ProjectGallery = lazy(
+  () => import("./components/pages/portfolio/ProjectGallery"),
+);
+const SkillMatrix = lazy(
+  () => import("./components/pages/portfolio/SkillMatrix"),
+);
+const TranscriptViewer = lazy(
+  () => import("./components/pages/portfolio/TranscriptViewer"),
+);
 
 // Course Pages
-const CourseCatalog = lazy(() => import("./components/pages/courses/CourseCatalog"));
-const CourseDetails = lazy(() => import("./components/pages/courses/CourseDetails"));
-const CourseMaterials = lazy(() => import("./components/pages/courses/CourseMaterials"));
-const CourseRegistration = lazy(() => import("./components/pages/courses/CourseRegistration"));
-const CourseSchedule = lazy(() => import("./components/pages/courses/CourseSchedule"));
+const CourseCatalog = lazy(
+  () => import("./components/pages/courses/CourseCatalog"),
+);
+const CourseDetails = lazy(
+  () => import("./components/pages/courses/CourseDetails"),
+);
+const CourseMaterials = lazy(
+  () => import("./components/pages/courses/CourseMaterials"),
+);
+const CourseRegistration = lazy(
+  () => import("./components/pages/courses/CourseRegistration"),
+);
+const CourseSchedule = lazy(
+  () => import("./components/pages/courses/CourseSchedule"),
+);
 const MyCourses = lazy(() => import("./components/pages/courses/MyCourses"));
-const SyllabusViewer = lazy(() => import("./components/pages/courses/SyllabusViewer"));
+const SyllabusViewer = lazy(
+  () => import("./components/pages/courses/SyllabusViewer"),
+);
 
 // Assignment Pages
-const AssignmentList = lazy(() => import("./components/pages/assignments/AssignmentList"));
-const AssignmentDetails = lazy(() => import("./components/pages/assignments/AssignmentDetails"));
-const AssignmentSubmission = lazy(() => import("./components/pages/assignments/AssignmentSubmission"));
-const AssignmentUpload = lazy(() => import("./components/pages/assignments/AssignmentUpload"));
-const GradingRubric = lazy(() => import("./components/pages/assignments/GradingRubric"));
-const PeerReview = lazy(() => import("./components/pages/assignments/PeerReview"));
-const SubmissionHistory = lazy(() => import("./components/pages/assignments/SubmissionHistory"));
+const AssignmentList = lazy(
+  () => import("./components/pages/assignments/AssignmentList"),
+);
+const AssignmentDetails = lazy(
+  () => import("./components/pages/assignments/AssignmentDetails"),
+);
+const AssignmentSubmission = lazy(
+  () => import("./components/pages/assignments/AssignmentSubmission"),
+);
+const AssignmentUpload = lazy(
+  () => import("./components/pages/assignments/AssignmentUpload"),
+);
+const GradingRubric = lazy(
+  () => import("./components/pages/assignments/GradingRubric"),
+);
+const PeerReview = lazy(
+  () => import("./components/pages/assignments/PeerReview"),
+);
+const SubmissionHistory = lazy(
+  () => import("./components/pages/assignments/SubmissionHistory"),
+);
 
 // Collaboration Pages
-const ChatWindow = lazy(() => import("./components/pages/collaboration/ChatWindow"));
-const DiscussionBoard = lazy(() => import("./components/pages/collaboration/DiscussionBoard"));
-const DiscussionThread = lazy(() => import("./components/pages/collaboration/DiscussionThread"));
-const FileSharing = lazy(() => import("./components/pages/collaboration/FileSharing"));
-const TeamChat = lazy(() => import("./components/pages/collaboration/TeamChat"));
-const TeamDirectory = lazy(() => import("./components/pages/collaboration/TeamDirectory"));
-const Workspace = lazy(() => import("./components/pages/collaboration/Workspace"));
+const ChatWindow = lazy(
+  () => import("./components/pages/collaboration/ChatWindow"),
+);
+const DiscussionBoard = lazy(
+  () => import("./components/pages/collaboration/DiscussionBoard"),
+);
+const DiscussionThread = lazy(
+  () => import("./components/pages/collaboration/DiscussionThread"),
+);
+const FileSharing = lazy(
+  () => import("./components/pages/collaboration/FileSharing"),
+);
+const TeamChat = lazy(
+  () => import("./components/pages/collaboration/TeamChat"),
+);
+const TeamDirectory = lazy(
+  () => import("./components/pages/collaboration/TeamDirectory"),
+);
+const Workspace = lazy(
+  () => import("./components/pages/collaboration/Workspace"),
+);
 
 // Analytics Pages
-const AnalyticsDashboard = lazy(() => import("./components/pages/analytics/AnalyticsDashboard"));
-const GradeDistribution = lazy(() => import("./components/pages/analytics/GradeDistribution"));
-const PerformanceMetrics = lazy(() => import("./components/pages/analytics/PerformanceMetrics"));
-const ProgressAnalytics = lazy(() => import("./components/pages/analytics/ProgressAnalytics"));
-const UsageStatistics = lazy(() => import("./components/pages/analytics/UsageStatistics"));
-const Visualizations = lazy(() => import("./components/pages/analytics/Visualizations"));
+const AnalyticsDashboard = lazy(
+  () => import("./components/pages/analytics/AnalyticsDashboard"),
+);
+const GradeDistribution = lazy(
+  () => import("./components/pages/analytics/GradeDistribution"),
+);
+const PerformanceMetrics = lazy(
+  () => import("./components/pages/analytics/PerformanceMetrics"),
+);
+const ProgressAnalytics = lazy(
+  () => import("./components/pages/analytics/ProgressAnalytics"),
+);
+const UsageStatistics = lazy(
+  () => import("./components/pages/analytics/UsageStatistics"),
+);
+const Visualizations = lazy(
+  () => import("./components/pages/analytics/Visualizations"),
+);
 
 // Evaluation Pages
-const EvaluationCriteria = lazy(() => import("./components/pages/evaluation/EvaluationCriteria"));
-const EvaluationForm = lazy(() => import("./components/pages/evaluation/EvaluationForm"));
-const FeedbackDashboard = lazy(() => import("./components/pages/evaluation/FeedbackDashboard"));
-const PeerEvaluation = lazy(() => import("./components/pages/evaluation/PeerEvaluation"));
-const RubricBuilder = lazy(() => import("./components/pages/evaluation/RubricBuilder"));
-const SelfEvaluation = lazy(() => import("./components/pages/evaluation/SelfEvaluation"));
+const EvaluationCriteria = lazy(
+  () => import("./components/pages/evaluation/EvaluationCriteria"),
+);
+const EvaluationForm = lazy(
+  () => import("./components/pages/evaluation/EvaluationForm"),
+);
+const FeedbackDashboard = lazy(
+  () => import("./components/pages/evaluation/FeedbackDashboard"),
+);
+const PeerEvaluation = lazy(
+  () => import("./components/pages/evaluation/PeerEvaluation"),
+);
+const RubricBuilder = lazy(
+  () => import("./components/pages/evaluation/RubricBuilder"),
+);
+const SelfEvaluation = lazy(
+  () => import("./components/pages/evaluation/SelfEvaluation"),
+);
 
 // Timeline Pages
 const GanttChart = lazy(() => import("./components/pages/timeline/GanttChart"));
-const MilestoneTracker = lazy(() => import("./components/pages/timeline/MilestoneTracker"));
-const ProjectTimeline = lazy(() => import("./components/pages/timeline/ProjectTimeline"));
-const RoadmapViewer = lazy(() => import("./components/pages/timeline/RoadmapViewer"));
-const SprintPlanner = lazy(() => import("./components/pages/timeline/SprintPlanner"));
-const TimelineEditor = lazy(() => import("./components/pages/timeline/TimelineEditor"));
+const MilestoneTracker = lazy(
+  () => import("./components/pages/timeline/MilestoneTracker"),
+);
+const ProjectTimeline = lazy(
+  () => import("./components/pages/timeline/ProjectTimeline"),
+);
+const RoadmapViewer = lazy(
+  () => import("./components/pages/timeline/RoadmapViewer"),
+);
+const SprintPlanner = lazy(
+  () => import("./components/pages/timeline/SprintPlanner"),
+);
+const TimelineEditor = lazy(
+  () => import("./components/pages/timeline/TimelineEditor"),
+);
 
 // Help Pages
 const FAQ = lazy(() => import("./components/pages/help/FAQ"));
 const HelpCenter = lazy(() => import("./components/pages/help/HelpCenter"));
-const KnowledgeBase = lazy(() => import("./components/pages/help/KnowledgeBase"));
-const SupportTicket = lazy(() => import("./components/pages/help/SupportTicket"));
+const KnowledgeBase = lazy(
+  () => import("./components/pages/help/KnowledgeBase"),
+);
+const SupportTicket = lazy(
+  () => import("./components/pages/help/SupportTicket"),
+);
 const Tutorials = lazy(() => import("./components/pages/help/Tutorials"));
 const UserGuide = lazy(() => import("./components/pages/help/UserGuide"));
 
@@ -204,7 +350,7 @@ const PublicRoute = ({ children }) => {
  * @returns {React.ReactNode} Splash screen UI
  */
 const SplashScreen = () => (
-  <div 
+  <div
     className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 flex items-center justify-center overflow-hidden relative"
     role="status"
     aria-label="Loading application"
@@ -212,8 +358,14 @@ const SplashScreen = () => (
     {/* Animated background elements */}
     <div className="absolute inset-0 overflow-hidden">
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse" />
-      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-indigo-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '0.5s' }} />
+      <div
+        className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-indigo-500/20 rounded-full blur-3xl animate-pulse"
+        style={{ animationDelay: "1s" }}
+      />
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-500/10 rounded-full blur-3xl animate-pulse"
+        style={{ animationDelay: "0.5s" }}
+      />
     </div>
 
     {/* Main content */}
@@ -221,16 +373,22 @@ const SplashScreen = () => (
       {/* Logo container with glassmorphism */}
       <div className="relative mb-8">
         {/* Outer rotating ring */}
-        <div className="absolute inset-0 w-32 h-32 mx-auto rounded-full border-2 border-transparent border-t-blue-400 border-r-indigo-400 animate-spin" style={{ animationDuration: '3s' }} />
-        
+        <div
+          className="absolute inset-0 w-32 h-32 mx-auto rounded-full border-2 border-transparent border-t-blue-400 border-r-indigo-400 animate-spin"
+          style={{ animationDuration: "3s" }}
+        />
+
         {/* Inner rotating ring (opposite direction) */}
-        <div className="absolute inset-2 w-28 h-28 mx-auto rounded-full border-2 border-transparent border-b-purple-400 border-l-pink-400 animate-spin" style={{ animationDuration: '2s', animationDirection: 'reverse' }} />
-        
+        <div
+          className="absolute inset-2 w-28 h-28 mx-auto rounded-full border-2 border-transparent border-b-purple-400 border-l-pink-400 animate-spin"
+          style={{ animationDuration: "2s", animationDirection: "reverse" }}
+        />
+
         {/* Logo background with glass effect */}
         <div className="w-32 h-32 mx-auto rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl flex items-center justify-center relative">
           {/* Pulsing glow */}
           <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 to-indigo-600 opacity-50 animate-pulse blur-md" />
-          
+
           {/* Icon container */}
           <div className="relative z-10 w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 flex items-center justify-center shadow-lg">
             <svg
@@ -256,7 +414,7 @@ const SplashScreen = () => (
       <h1 className="text-3xl md:text-4xl font-bold mb-3 bg-gradient-to-r from-white via-blue-100 to-indigo-200 bg-clip-text text-transparent">
         Student Project System
       </h1>
-      
+
       {/* Subtitle */}
       <p className="text-blue-200/80 text-sm md:text-base mb-8 font-medium tracking-wide">
         Empowering Academic Excellence
@@ -273,8 +431,8 @@ const SplashScreen = () => (
                 key={i}
                 className="absolute w-2.5 h-2.5 rounded-full bg-gradient-to-r from-blue-400 to-indigo-400"
                 style={{
-                  top: '50%',
-                  left: '50%',
+                  top: "50%",
+                  left: "50%",
                   transform: `rotate(${i * 60}deg) translateY(-20px)`,
                   animation: `orbitFade 1.2s ease-in-out infinite`,
                   animationDelay: `${i * 0.1}s`,
@@ -295,19 +453,20 @@ const SplashScreen = () => (
           {/* Background track */}
           <div className="h-1 bg-white/10 rounded-full overflow-hidden backdrop-blur-sm">
             {/* Animated progress fill */}
-            <div 
+            <div
               className="h-full rounded-full animate-[loadingProgress_1.2s_ease-in-out_infinite]"
               style={{
-                background: 'linear-gradient(90deg, transparent, #60a5fa, #818cf8, #a78bfa, transparent)',
-                backgroundSize: '200% 100%',
+                background:
+                  "linear-gradient(90deg, transparent, #60a5fa, #818cf8, #a78bfa, transparent)",
+                backgroundSize: "200% 100%",
               }}
             />
           </div>
-          
+
           {/* Glowing dot on progress */}
-          <div 
+          <div
             className="absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-white shadow-lg shadow-blue-500/50 animate-[progressDot_1.2s_ease-in-out_infinite]"
-            style={{ left: '0%' }}
+            style={{ left: "0%" }}
           />
         </div>
 
@@ -329,21 +488,21 @@ const SplashScreen = () => (
 
         {/* Loading steps indicator */}
         <div className="mt-6 flex justify-center gap-2">
-          {['Initialize', 'Auth', 'Data', 'UI'].map((step, i) => (
+          {["Initialize", "Auth", "Data", "UI"].map((step, i) => (
             <div
               key={step}
               className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium animate-[stepPulse_2s_ease-in-out_infinite]"
               style={{
                 animationDelay: `${i * 0.5}s`,
-                background: 'rgba(255,255,255,0.05)',
-                border: '1px solid rgba(255,255,255,0.1)',
+                background: "rgba(255,255,255,0.05)",
+                border: "1px solid rgba(255,255,255,0.1)",
               }}
             >
-              <div 
+              <div
                 className="w-1.5 h-1.5 rounded-full animate-[dotGlow_2s_ease-in-out_infinite]"
-                style={{ 
+                style={{
                   animationDelay: `${i * 0.5}s`,
-                  backgroundColor: '#60a5fa',
+                  backgroundColor: "#60a5fa",
                 }}
               />
               <span className="text-blue-200/60">{step}</span>

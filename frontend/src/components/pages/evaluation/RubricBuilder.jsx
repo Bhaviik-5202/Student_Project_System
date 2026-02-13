@@ -46,7 +46,7 @@ const RubricBuilder = memo(() => {
   const [loading, setLoading] = useState(false);
 
   const addCriterion = useCallback(() => {
-    setRubric(prev => {
+    setRubric((prev) => {
       const newId = Math.max(...prev.criteria.map((c) => c.id)) + 1;
       return {
         ...prev,
@@ -63,7 +63,7 @@ const RubricBuilder = memo(() => {
   }, []);
 
   const removeCriterion = useCallback((id) => {
-    setRubric(prev => ({
+    setRubric((prev) => ({
       ...prev,
       criteria: prev.criteria.filter((criterion) => criterion.id !== id),
     }));
@@ -183,7 +183,10 @@ const RubricBuilder = memo(() => {
                 </thead>
                 <tbody>
                   {rubric.criteria.map((criterion) => (
-                    <tr key={criterion.id} className="hover:bg-slate-50 dark:hover:bg-slate-700">
+                    <tr
+                      key={criterion.id}
+                      className="hover:bg-slate-50 dark:hover:bg-slate-700"
+                    >
                       <td className="border border-slate-300 dark:border-slate-600 px-4 py-3">
                         <div className="font-medium text-slate-900 dark:text-white">
                           {criterion.name}
@@ -224,6 +227,6 @@ const RubricBuilder = memo(() => {
   );
 });
 
-RubricBuilder.displayName = 'RubricBuilder';
+RubricBuilder.displayName = "RubricBuilder";
 
 export default RubricBuilder;

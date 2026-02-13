@@ -14,69 +14,69 @@ const MeetingCalendar = memo(() => {
 
   const meetings = useMemo(
     () => [
-    {
-      id: 1,
-      title: "Project Review - Group B",
-      type: "review",
-      time: "Tomorrow • 10:00 AM - 11:30 AM",
-      description: "Review of project progress and technical implementation",
-      date: "2024-02-15",
-      location: "Room 302, Computer Science Building",
-      participants: 4,
-      color: "blue",
-    },
-    {
-      id: 2,
-      title: "Weekly Sync - Group D",
-      type: "sync",
-      time: "Nov 15 • 2:00 PM - 3:00 PM",
-      description: "Weekly progress update and task allocation",
-      date: "2024-02-16",
-      location: "Online - Zoom Meeting",
-      participants: 3,
-      color: "gray",
-    },
+      {
+        id: 1,
+        title: "Project Review - Group B",
+        type: "review",
+        time: "Tomorrow • 10:00 AM - 11:30 AM",
+        description: "Review of project progress and technical implementation",
+        date: "2024-02-15",
+        location: "Room 302, Computer Science Building",
+        participants: 4,
+        color: "blue",
+      },
+      {
+        id: 2,
+        title: "Weekly Sync - Group D",
+        type: "sync",
+        time: "Nov 15 • 2:00 PM - 3:00 PM",
+        description: "Weekly progress update and task allocation",
+        date: "2024-02-16",
+        location: "Online - Zoom Meeting",
+        participants: 3,
+        color: "gray",
+      },
     ],
-    []
+    [],
   );
 
   const calendarDays = useMemo(
     () => [
-    { day: 29, month: "prev", meetings: 0 },
-    { day: 30, month: "prev", meetings: 0 },
-    { day: 31, month: "prev", meetings: 0 },
-    { day: 1, month: "current", meetings: 2, current: true },
-    { day: 2, month: "current", meetings: 0 },
-    { day: 3, month: "current", meetings: 1 },
-    { day: 4, month: "current", meetings: 0 },
-    { day: 5, month: "current", meetings: 0 },
-    { day: 6, month: "current", meetings: 1 },
-    { day: 7, month: "current", meetings: 0 },
-    { day: 8, month: "current", meetings: 0 },
-    { day: 9, month: "current", meetings: 0 },
-    { day: 10, month: "current", meetings: 0 },
-    { day: 11, month: "current", meetings: 0 },
-    { day: 12, month: "current", meetings: 2 },
-    { day: 13, month: "current", meetings: 0 },
-    { day: 14, month: "current", meetings: 1 },
-    { day: 15, month: "current", meetings: 0 },
-    { day: 16, month: "current", meetings: 0 },
-    { day: 17, month: "current", meetings: 0 },
-    { day: 18, month: "current", meetings: 0 },
-    { day: 19, month: "current", meetings: 0 },
-    { day: 20, month: "current", meetings: 1 },
-    { day: 21, month: "current", meetings: 0 },
-    { day: 22, month: "current", meetings: 0 },
-    { day: 23, month: "current", meetings: 0 },
-    { day: 24, month: "current", meetings: 0 },
-    { day: 25, month: "current", meetings: 0 },
-    { day: 26, month: "current", meetings: 0 },
-    { day: 27, month: "current", meetings: 0 },
-    { day: 28, month: "current", meetings: 0 },
-    { day: 29, month: "next", meetings: 0 },
-    { day: 30, month: "next", meetings: 0 },
+      { day: 29, month: "prev", meetings: 0 },
+      { day: 30, month: "prev", meetings: 0 },
+      { day: 31, month: "prev", meetings: 0 },
+      { day: 1, month: "current", meetings: 2, current: true },
+      { day: 2, month: "current", meetings: 0 },
+      { day: 3, month: "current", meetings: 1 },
+      { day: 4, month: "current", meetings: 0 },
+      { day: 5, month: "current", meetings: 0 },
+      { day: 6, month: "current", meetings: 1 },
+      { day: 7, month: "current", meetings: 0 },
+      { day: 8, month: "current", meetings: 0 },
+      { day: 9, month: "current", meetings: 0 },
+      { day: 10, month: "current", meetings: 0 },
+      { day: 11, month: "current", meetings: 0 },
+      { day: 12, month: "current", meetings: 2 },
+      { day: 13, month: "current", meetings: 0 },
+      { day: 14, month: "current", meetings: 1 },
+      { day: 15, month: "current", meetings: 0 },
+      { day: 16, month: "current", meetings: 0 },
+      { day: 17, month: "current", meetings: 0 },
+      { day: 18, month: "current", meetings: 0 },
+      { day: 19, month: "current", meetings: 0 },
+      { day: 20, month: "current", meetings: 1 },
+      { day: 21, month: "current", meetings: 0 },
+      { day: 22, month: "current", meetings: 0 },
+      { day: 23, month: "current", meetings: 0 },
+      { day: 24, month: "current", meetings: 0 },
+      { day: 25, month: "current", meetings: 0 },
+      { day: 26, month: "current", meetings: 0 },
+      { day: 27, month: "current", meetings: 0 },
+      { day: 28, month: "current", meetings: 0 },
+      { day: 29, month: "next", meetings: 0 },
+      { day: 30, month: "next", meetings: 0 },
     ],
-    []
+    [],
   );
 
   const handleFormChange = useCallback((e) => {
@@ -156,8 +156,8 @@ const MeetingCalendar = memo(() => {
                 day.month === "current" && day.current
                   ? "bg-blue-50 dark:bg-blue-900/30"
                   : day.month === "prev" || day.month === "next"
-                  ? "bg-gray-50 dark:bg-gray-700"
-                  : ""
+                    ? "bg-gray-50 dark:bg-gray-700"
+                    : ""
               }`}
             >
               <div
@@ -235,8 +235,8 @@ const MeetingCalendar = memo(() => {
                               i === 0
                                 ? "bg-blue-100 dark:bg-blue-900"
                                 : i === 1
-                                ? "bg-green-100 dark:bg-green-900"
-                                : "bg-yellow-100 dark:bg-yellow-900"
+                                  ? "bg-green-100 dark:bg-green-900"
+                                  : "bg-yellow-100 dark:bg-yellow-900"
                             } rounded-full flex items-center justify-center border-2 border-white dark:border-gray-800`}
                           >
                             <i
@@ -244,12 +244,12 @@ const MeetingCalendar = memo(() => {
                                 i === 0
                                   ? "text-blue-600 dark:text-blue-300"
                                   : i === 1
-                                  ? "text-green-600 dark:text-green-300"
-                                  : "text-yellow-600 dark:text-yellow-300"
+                                    ? "text-green-600 dark:text-green-300"
+                                    : "text-yellow-600 dark:text-yellow-300"
                               } text-xs`}
                             />
                           </div>
-                        )
+                        ),
                       )}
                     </div>
                     <span className="text-sm text-gray-500 dark:text-gray-400 ml-3">

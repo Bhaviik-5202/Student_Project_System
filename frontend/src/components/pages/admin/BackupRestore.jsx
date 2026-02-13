@@ -39,7 +39,7 @@ const BackupRestore = memo(() => {
         status: "Completed",
       },
     ],
-    []
+    [],
   );
 
   const [backupType, setBackupType] = useState("full");
@@ -52,7 +52,7 @@ const BackupRestore = memo(() => {
       toast.success(
         `${
           backupType === "full" ? "Full" : "Incremental"
-        } backup initiated successfully`
+        } backup initiated successfully`,
       );
       setLoading(false);
     }, 2000);
@@ -137,7 +137,9 @@ const BackupRestore = memo(() => {
                         defaultChecked
                         className="h-4 w-4 text-blue-600 rounded focus:ring-blue-500 dark:focus:ring-blue-600"
                       />
-                      <span className="ml-2 text-slate-700 dark:text-slate-300">{item}</span>
+                      <span className="ml-2 text-slate-700 dark:text-slate-300">
+                        {item}
+                      </span>
                     </label>
                   ))}
                 </div>

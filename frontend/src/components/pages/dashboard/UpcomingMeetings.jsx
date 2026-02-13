@@ -86,8 +86,8 @@ const UpcomingMeetings = ({ userRole }) => {
               meeting.type === "review"
                 ? "border-blue-200 bg-blue-50 dark:border-blue-700 dark:bg-blue-900/30"
                 : meeting.type === "faculty"
-                ? "border-emerald-200 bg-emerald-50 dark:border-emerald-700 dark:bg-emerald-900/30"
-                : "border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-700/30"
+                  ? "border-emerald-200 bg-emerald-50 dark:border-emerald-700 dark:bg-emerald-900/30"
+                  : "border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-700/30"
             }`}
           >
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
@@ -98,15 +98,15 @@ const UpcomingMeetings = ({ userRole }) => {
                       meeting.type === "review"
                         ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
                         : meeting.type === "faculty"
-                        ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200"
-                        : "bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-200"
+                          ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200"
+                          : "bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-200"
                     } mr-3`}
                   >
                     {meeting.type === "review"
                       ? "Project Review"
                       : meeting.type === "faculty"
-                      ? "Faculty Meeting"
-                      : "Weekly Sync"}
+                        ? "Faculty Meeting"
+                        : "Weekly Sync"}
                   </span>
                   <span className="text-xs text-slate-500 dark:text-slate-400">
                     <i className="fas fa-users mr-1"></i>

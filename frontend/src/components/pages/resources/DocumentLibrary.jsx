@@ -49,48 +49,48 @@ DocumentRow.propTypes = {
 const DocumentLibrary = memo(() => {
   const documents = useMemo(
     () => [
-    {
-      id: 1,
-      title: "Project Guidelines",
-      category: "General",
-      uploadedBy: "Admin",
-      date: "Jan 5, 2024",
-      size: "1.2 MB",
-    },
-    {
-      id: 2,
-      title: "Research Paper Template",
-      category: "Templates",
-      uploadedBy: "Dr. Smith",
-      date: "Jan 7, 2024",
-      size: "0.8 MB",
-    },
-    {
-      id: 3,
-      title: "Coding Standards",
-      category: "Development",
-      uploadedBy: "Faculty",
-      date: "Jan 10, 2024",
-      size: "0.5 MB",
-    },
-    {
-      id: 4,
-      title: "Presentation Template",
-      category: "Templates",
-      uploadedBy: "Admin",
-      date: "Jan 12, 2024",
-      size: "2.1 MB",
-    },
-    {
-      id: 5,
-      title: "Lab Manual",
-      category: "General",
-      uploadedBy: "Dr. Johnson",
-      date: "Jan 15, 2024",
-      size: "3.4 MB",
-    },
+      {
+        id: 1,
+        title: "Project Guidelines",
+        category: "General",
+        uploadedBy: "Admin",
+        date: "Jan 5, 2024",
+        size: "1.2 MB",
+      },
+      {
+        id: 2,
+        title: "Research Paper Template",
+        category: "Templates",
+        uploadedBy: "Dr. Smith",
+        date: "Jan 7, 2024",
+        size: "0.8 MB",
+      },
+      {
+        id: 3,
+        title: "Coding Standards",
+        category: "Development",
+        uploadedBy: "Faculty",
+        date: "Jan 10, 2024",
+        size: "0.5 MB",
+      },
+      {
+        id: 4,
+        title: "Presentation Template",
+        category: "Templates",
+        uploadedBy: "Admin",
+        date: "Jan 12, 2024",
+        size: "2.1 MB",
+      },
+      {
+        id: 5,
+        title: "Lab Manual",
+        category: "General",
+        uploadedBy: "Dr. Johnson",
+        date: "Jan 15, 2024",
+        size: "3.4 MB",
+      },
     ],
-    []
+    [],
   );
 
   return (

@@ -8,13 +8,13 @@ const Calendar = memo(({ events = [], onDateClick }) => {
     const daysInMonth = new Date(
       currentDate.getFullYear(),
       currentDate.getMonth() + 1,
-      0
+      0,
     ).getDate();
 
     const firstDayOfMonth = new Date(
       currentDate.getFullYear(),
       currentDate.getMonth(),
-      1
+      1,
     ).getDay();
 
     const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
@@ -25,23 +25,26 @@ const Calendar = memo(({ events = [], onDateClick }) => {
 
   const handlePrevMonth = useCallback(() => {
     setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)
+      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1),
     );
   }, [currentDate]);
 
   const handleNextMonth = useCallback(() => {
     setCurrentDate(
-      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)
+      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1),
     );
   }, [currentDate]);
 
-  const handleDateClick = useCallback((day) => {
-    if (onDateClick) {
-      onDateClick(
-        new Date(currentDate.getFullYear(), currentDate.getMonth(), day)
-      );
-    }
-  }, [currentDate, onDateClick]);
+  const handleDateClick = useCallback(
+    (day) => {
+      if (onDateClick) {
+        onDateClick(
+          new Date(currentDate.getFullYear(), currentDate.getMonth(), day),
+        );
+      }
+    },
+    [currentDate, onDateClick],
+  );
 
   const monthYear = useMemo(
     () =>
@@ -49,12 +52,12 @@ const Calendar = memo(({ events = [], onDateClick }) => {
         month: "long",
         year: "numeric",
       }),
-    [currentDate]
+    [currentDate],
   );
 
   const daysOfWeek = useMemo(
     () => ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-    []
+    [],
   );
 
   return (
@@ -67,8 +70,18 @@ const Calendar = memo(({ events = [], onDateClick }) => {
           aria-label="Previous month"
           title="Previous month"
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
+            />
           </svg>
         </button>
         <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
@@ -80,12 +93,22 @@ const Calendar = memo(({ events = [], onDateClick }) => {
           aria-label="Next month"
           title="Next month"
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 5l7 7-7 7"
+            />
           </svg>
         </button>
       </div>
-      
+
       {/* Days of Week Header */}
       <div className="grid grid-cols-7 gap-1 mb-2">
         {daysOfWeek.map((day) => (
@@ -97,25 +120,26 @@ const Calendar = memo(({ events = [], onDateClick }) => {
           </div>
         ))}
       </div>
-      
+
       {/* Calendar Days Grid */}
       <div className="grid grid-cols-7 gap-1">
         {calendarData.emptyDays.map((_, index) => (
           <div key={`empty-${index}`} className="w-9 h-9 sm:w-10 sm:h-10" />
         ))}
         {calendarData.days.map((day) => {
-          const isToday = 
+          const isToday =
             day === new Date().getDate() &&
             currentDate.getMonth() === new Date().getMonth() &&
             currentDate.getFullYear() === new Date().getFullYear();
-          
+
           return (
             <button
               key={day}
               className={`w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center text-sm rounded-lg transition-all cursor-pointer
-                ${isToday 
-                  ? 'bg-blue-600 text-white font-semibold shadow-md shadow-blue-500/30 hover:bg-blue-700' 
-                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400'
+                ${
+                  isToday
+                    ? "bg-blue-600 text-white font-semibold shadow-md shadow-blue-500/30 hover:bg-blue-700"
+                    : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400"
                 }`}
               onClick={() => handleDateClick(day)}
               aria-label={`${day} ${monthYear}`}
@@ -125,7 +149,7 @@ const Calendar = memo(({ events = [], onDateClick }) => {
           );
         })}
       </div>
-      
+
       {/* Quick Actions Footer */}
       <div className="mt-4 pt-3 border-t border-gray-100 dark:border-gray-700 flex justify-between items-center">
         <button
@@ -138,7 +162,11 @@ const Calendar = memo(({ events = [], onDateClick }) => {
           Today
         </button>
         <span className="text-xs text-gray-500 dark:text-gray-400">
-          {new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+          {new Date().toLocaleDateString("en-US", {
+            weekday: "short",
+            month: "short",
+            day: "numeric",
+          })}
         </span>
       </div>
     </div>

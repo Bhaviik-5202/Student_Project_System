@@ -63,35 +63,35 @@ StudentRow.propTypes = {
 const StudentsList = memo(() => {
   const students = useMemo(
     () => [
-    {
-      id: "CS2021001",
-      name: "John Smith",
-      phone: "+1 (555) 123-4567",
-      department: "Computer Science",
-      year: "Final Year",
-      email: "john.smith@university.edu",
-      status: "Active",
-    },
-    {
-      id: "CS2021002",
-      name: "Sarah Johnson",
-      phone: "+1 (555) 987-6543",
-      department: "Computer Science",
-      year: "Third Year",
-      email: "sarah.j@university.edu",
-      status: "Active",
-    },
-    {
-      id: "IT2021001",
-      name: "Michael Chen",
-      phone: "+1 (555) 456-7890",
-      department: "Information Technology",
-      year: "Final Year",
-      email: "michael.c@university.edu",
-      status: "Active",
-    },
+      {
+        id: "CS2021001",
+        name: "John Smith",
+        phone: "+1 (555) 123-4567",
+        department: "Computer Science",
+        year: "Final Year",
+        email: "john.smith@university.edu",
+        status: "Active",
+      },
+      {
+        id: "CS2021002",
+        name: "Sarah Johnson",
+        phone: "+1 (555) 987-6543",
+        department: "Computer Science",
+        year: "Third Year",
+        email: "sarah.j@university.edu",
+        status: "Active",
+      },
+      {
+        id: "IT2021001",
+        name: "Michael Chen",
+        phone: "+1 (555) 456-7890",
+        department: "Information Technology",
+        year: "Final Year",
+        email: "michael.c@university.edu",
+        status: "Active",
+      },
     ],
-    []
+    [],
   );
 
   return (

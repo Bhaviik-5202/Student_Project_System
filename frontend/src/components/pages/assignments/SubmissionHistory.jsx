@@ -5,54 +5,54 @@ const SubmissionHistory = memo(() => {
   const navigate = useNavigate();
   const submissions = useMemo(
     () => [
-    {
-      id: 1,
-      assignment: "Database Design Project",
-      course: "CS402",
-      submittedDate: "2024-01-15 14:30:00",
-      grade: "A-",
-      status: "Graded",
-      files: 3,
-    },
-    {
-      id: 2,
-      assignment: "Web App Prototype",
-      course: "CS403",
-      submittedDate: "2024-01-14 11:45:00",
-      grade: "B+",
-      status: "Graded",
-      files: 2,
-    },
-    {
-      id: 3,
-      assignment: "Algorithm Analysis",
-      course: "CS404",
-      submittedDate: "2024-01-12 09:20:00",
-      grade: "A",
-      status: "Graded",
-      files: 1,
-    },
-    {
-      id: 4,
-      assignment: "Research Paper",
-      course: "CS401",
-      submittedDate: "2024-01-10 16:15:00",
-      grade: "Pending",
-      status: "Under Review",
-      files: 2,
-    },
-    {
-      id: 5,
-      assignment: "ML Model Implementation",
-      course: "CS405",
-      submittedDate: "2024-01-08 13:50:00",
-      grade: "B",
-      status: "Graded",
-      files: 4,
-    },
-  ],
-  []
-);
+      {
+        id: 1,
+        assignment: "Database Design Project",
+        course: "CS402",
+        submittedDate: "2024-01-15 14:30:00",
+        grade: "A-",
+        status: "Graded",
+        files: 3,
+      },
+      {
+        id: 2,
+        assignment: "Web App Prototype",
+        course: "CS403",
+        submittedDate: "2024-01-14 11:45:00",
+        grade: "B+",
+        status: "Graded",
+        files: 2,
+      },
+      {
+        id: 3,
+        assignment: "Algorithm Analysis",
+        course: "CS404",
+        submittedDate: "2024-01-12 09:20:00",
+        grade: "A",
+        status: "Graded",
+        files: 1,
+      },
+      {
+        id: 4,
+        assignment: "Research Paper",
+        course: "CS401",
+        submittedDate: "2024-01-10 16:15:00",
+        grade: "Pending",
+        status: "Under Review",
+        files: 2,
+      },
+      {
+        id: 5,
+        assignment: "ML Model Implementation",
+        course: "CS405",
+        submittedDate: "2024-01-08 13:50:00",
+        grade: "B",
+        status: "Graded",
+        files: 4,
+      },
+    ],
+    [],
+  );
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
@@ -101,7 +101,10 @@ const SubmissionHistory = memo(() => {
               </thead>
               <tbody className="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
                 {submissions.map((submission) => (
-                  <tr key={submission.id} className="hover:bg-slate-50 dark:hover:bg-slate-700">
+                  <tr
+                    key={submission.id}
+                    className="hover:bg-slate-50 dark:hover:bg-slate-700"
+                  >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="font-medium text-slate-900 dark:text-white">
                         {submission.assignment}
@@ -119,14 +122,14 @@ const SubmissionHistory = memo(() => {
                           submission.grade === "A"
                             ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
                             : submission.grade === "A-"
-                            ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
-                            : submission.grade === "B+"
-                            ? "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
-                            : submission.grade === "B"
-                            ? "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
-                            : submission.grade === "Pending"
-                            ? "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300"
-                            : "bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200"
+                              ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
+                              : submission.grade === "B+"
+                                ? "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
+                                : submission.grade === "B"
+                                  ? "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
+                                  : submission.grade === "Pending"
+                                    ? "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300"
+                                    : "bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200"
                         }`}
                       >
                         {submission.grade}
@@ -138,8 +141,8 @@ const SubmissionHistory = memo(() => {
                           submission.status === "Graded"
                             ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
                             : submission.status === "Under Review"
-                            ? "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300"
-                            : "bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200"
+                              ? "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300"
+                              : "bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200"
                         }`}
                       >
                         {submission.status}

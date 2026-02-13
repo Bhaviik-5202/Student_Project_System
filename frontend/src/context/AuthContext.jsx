@@ -12,9 +12,21 @@ const AuthContext = createContext(null);
 
 // Demo credentials for testing
 const DEMO_CREDENTIALS = Object.freeze({
-  "admin@university.edu": { password: "admin123", role: "admin", name: "Admin User" },
-  "faculty@university.edu": { password: "faculty123", role: "faculty", name: "Faculty Member" },
-  "student@university.edu": { password: "student123", role: "student", name: "Student User" },
+  "admin@university.edu": {
+    password: "admin123",
+    role: "admin",
+    name: "Admin User",
+  },
+  "faculty@university.edu": {
+    password: "faculty123",
+    role: "faculty",
+    name: "Faculty Member",
+  },
+  "student@university.edu": {
+    password: "student123",
+    role: "student",
+    name: "Student User",
+  },
 });
 
 // Token expiry time (24 hours in milliseconds)
@@ -85,7 +97,7 @@ export const AuthProvider = ({ children }) => {
         }
       },
     }),
-    []
+    [],
   );
 
   // Check if token is expired
@@ -162,13 +174,22 @@ export const AuthProvider = ({ children }) => {
       if (DEMO_CREDENTIALS[email]) {
         const expected = DEMO_CREDENTIALS[email];
         // Check password OR role mismatch
-        if (password !== expected.password || (role && role !== expected.role)) {
-          return { success: false, message: "Invalid email, password, or role" };
+        if (
+          password !== expected.password ||
+          (role && role !== expected.role)
+        ) {
+          return {
+            success: false,
+            message: "Invalid email, password, or role",
+          };
         }
         userRole = expected.role;
         userName = expected.name;
       } else if (!role) {
-        return { success: false, message: "Role is required for non-demo accounts" };
+        return {
+          success: false,
+          message: "Role is required for non-demo accounts",
+        };
       }
 
       const timestamp = Date.now();
@@ -194,7 +215,10 @@ export const AuthProvider = ({ children }) => {
       return { success: true, user: userData, token };
     } catch (error) {
       console.error("Login error:", error);
-      return { success: false, message: error.message || "Login failed. Please try again." };
+      return {
+        success: false,
+        message: error.message || "Login failed. Please try again.",
+      };
     } finally {
       setIsLoading(false);
     }
@@ -208,7 +232,7 @@ export const AuthProvider = ({ children }) => {
         toast.success("Logged out successfully");
       }
     },
-    [clearAuthData]
+    [clearAuthData],
   );
 
   // Register
@@ -229,7 +253,10 @@ export const AuthProvider = ({ children }) => {
 
       // Password validation
       if (password.length < 6) {
-        return { success: false, message: "Password must be at least 6 characters" };
+        return {
+          success: false,
+          message: "Password must be at least 6 characters",
+        };
       }
 
       // Simulate API delay
@@ -265,30 +292,43 @@ export const AuthProvider = ({ children }) => {
       return { success: true, user: userData, token };
     } catch (error) {
       console.error("Registration error:", error);
-      return { success: false, message: error.message || "Registration failed. Please try again." };
+      return {
+        success: false,
+        message: error.message || "Registration failed. Please try again.",
+      };
     } finally {
       setIsLoading(false);
     }
   }, []);
 
   // Update user profile
-  const updateUser = useCallback((updates) => {
-    try {
-      if (!user) {
-        return { success: false, message: "No user logged in" };
+  const updateUser = useCallback(
+    (updates) => {
+      try {
+        if (!user) {
+          return { success: false, message: "No user logged in" };
+        }
+
+        const updatedUser = {
+          ...user,
+          ...updates,
+          updatedAt: new Date().toISOString(),
+        };
+        safeLocalStorage.setItem(
+          STORAGE_KEYS.USER,
+          JSON.stringify(updatedUser),
+        );
+        setUser(updatedUser);
+
+        toast.success("Profile updated successfully");
+        return { success: true, user: updatedUser };
+      } catch (error) {
+        console.error("Update user error:", error);
+        return { success: false, message: "Failed to update user profile" };
       }
-
-      const updatedUser = { ...user, ...updates, updatedAt: new Date().toISOString() };
-      safeLocalStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(updatedUser));
-      setUser(updatedUser);
-
-      toast.success("Profile updated successfully");
-      return { success: true, user: updatedUser };
-    } catch (error) {
-      console.error("Update user error:", error);
-      return { success: false, message: "Failed to update user profile" };
-    }
-  }, [user]);
+    },
+    [user],
+  );
 
   // Check if user has specific role
   const hasRole = useCallback((role) => user?.role === role, [user]);
@@ -299,7 +339,7 @@ export const AuthProvider = ({ children }) => {
       if (!user?.role || !Array.isArray(roles)) return false;
       return roles.includes(user.role);
     },
-    [user]
+    [user],
   );
 
   // Refresh session (extend token validity)
@@ -367,13 +407,11 @@ export const AuthProvider = ({ children }) => {
       hasAnyRole,
       refreshSession,
       getSessionTimeRemaining,
-    ]
+    ],
   );
 
   return (
-    <AuthContext.Provider value={contextValue}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
 };
 

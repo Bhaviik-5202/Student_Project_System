@@ -33,7 +33,7 @@ const ProjectTimeline = memo(() => {
         team: 3,
       },
     ],
-    []
+    [],
   );
 
   const months = useMemo(() => ["Jan", "Feb", "Mar", "Apr", "May", "Jun"], []);
@@ -43,7 +43,7 @@ const ProjectTimeline = memo(() => {
     (path) => {
       navigate(path);
     },
-    [navigate]
+    [navigate],
   );
 
   return (
@@ -184,7 +184,10 @@ const ProjectTimeline = memo(() => {
               </thead>
               <tbody className="bg-white dark:bg-slate-900 divide-y divide-slate-200 dark:divide-slate-700">
                 {projects.map((project) => (
-                  <tr key={project.id} className="hover:bg-slate-50 dark:hover:bg-slate-800">
+                  <tr
+                    key={project.id}
+                    className="hover:bg-slate-50 dark:hover:bg-slate-800"
+                  >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="font-medium text-slate-900 dark:text-slate-100">
                         {project.name}
@@ -214,7 +217,9 @@ const ProjectTimeline = memo(() => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <button
-                        onClick={() => handleNavigate(`/projects/${project.id}`)}
+                        onClick={() =>
+                          handleNavigate(`/projects/${project.id}`)
+                        }
                         className="text-blue-600 dark:text-blue-300 hover:text-blue-900 dark:hover:text-blue-200 mr-3"
                       >
                         View

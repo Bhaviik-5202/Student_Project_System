@@ -124,59 +124,59 @@ AllocationRow.propTypes = {
 const GuideAllocationList = memo(() => {
   const allocations = useMemo(
     () => [
-    {
-      id: 1,
-      guide: "Dr. Sarah Johnson",
-      department: "Computer Science",
-      allocatedGroups: 3,
-      maxCapacity: 5,
-      students: 8,
-      status: "Available",
-    },
-    {
-      id: 2,
-      guide: "Prof. Michael Chen",
-      department: "Information Technology",
-      allocatedGroups: 2,
-      maxCapacity: 4,
-      students: 6,
-      status: "Available",
-    },
-    {
-      id: 3,
-      guide: "Dr. Emily Williams",
-      department: "Electronics",
-      allocatedGroups: 4,
-      maxCapacity: 4,
-      students: 10,
-      status: "Full",
-    },
+      {
+        id: 1,
+        guide: "Dr. Sarah Johnson",
+        department: "Computer Science",
+        allocatedGroups: 3,
+        maxCapacity: 5,
+        students: 8,
+        status: "Available",
+      },
+      {
+        id: 2,
+        guide: "Prof. Michael Chen",
+        department: "Information Technology",
+        allocatedGroups: 2,
+        maxCapacity: 4,
+        students: 6,
+        status: "Available",
+      },
+      {
+        id: 3,
+        guide: "Dr. Emily Williams",
+        department: "Electronics",
+        allocatedGroups: 4,
+        maxCapacity: 4,
+        students: 10,
+        status: "Full",
+      },
     ],
-    []
+    [],
   );
 
   const projects = useMemo(
     () => [
-    {
-      id: "P001",
-      name: "E-commerce Platform",
-      group: "Group A",
-      currentGuide: "Dr. Sarah Johnson",
-    },
-    {
-      id: "P002",
-      name: "AI Chatbot",
-      group: "Group B",
-      currentGuide: "Prof. Michael Chen",
-    },
-    {
-      id: "P003",
-      name: "IoT Smart Home",
-      group: "Group C",
-      currentGuide: "None",
-    },
+      {
+        id: "P001",
+        name: "E-commerce Platform",
+        group: "Group A",
+        currentGuide: "Dr. Sarah Johnson",
+      },
+      {
+        id: "P002",
+        name: "AI Chatbot",
+        group: "Group B",
+        currentGuide: "Prof. Michael Chen",
+      },
+      {
+        id: "P003",
+        name: "IoT Smart Home",
+        group: "Group C",
+        currentGuide: "None",
+      },
     ],
-    []
+    [],
   );
 
   return (

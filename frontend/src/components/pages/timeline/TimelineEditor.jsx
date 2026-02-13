@@ -46,7 +46,7 @@ const TimelineEditor = memo(() => {
     (path) => {
       navigate(path);
     },
-    [navigate]
+    [navigate],
   );
 
   const handleTimelineChange = useCallback((e) => {

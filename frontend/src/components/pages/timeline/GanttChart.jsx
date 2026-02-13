@@ -31,7 +31,7 @@ const GanttChart = memo(() => {
         ],
       },
     ],
-    []
+    [],
   );
 
   const months = useMemo(() => ["Jan", "Feb", "Mar", "Apr", "May", "Jun"], []);
@@ -40,15 +40,18 @@ const GanttChart = memo(() => {
   const statusStyles = {
     completed: {
       dot: "bg-emerald-500",
-      badge: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200",
+      badge:
+        "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200",
     },
     "in-progress": {
       dot: "bg-amber-500",
-      badge: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200",
+      badge:
+        "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200",
     },
     pending: {
       dot: "bg-slate-400",
-      badge: "bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200",
+      badge:
+        "bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200",
     },
   };
 

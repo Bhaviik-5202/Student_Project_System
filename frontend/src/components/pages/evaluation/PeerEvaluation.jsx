@@ -46,7 +46,7 @@ const PeerEvaluation = memo(() => {
   ]);
 
   const updateScore = useCallback((evalId, critIndex, newScore) => {
-    setEvaluations(prevEvaluations =>
+    setEvaluations((prevEvaluations) =>
       prevEvaluations.map((e) => {
         if (e.id === evalId) {
           const updatedCriteria = [...e.criteria];
@@ -57,34 +57,32 @@ const PeerEvaluation = memo(() => {
           return { ...e, criteria: updatedCriteria };
         }
         return e;
-      })
+      }),
     );
   }, []);
 
   const updateComments = useCallback((evalId, comments) => {
-    setEvaluations(prevEvaluations =>
-      prevEvaluations.map((e) =>
-        e.id === evalId ? { ...e, comments } : e
-      )
+    setEvaluations((prevEvaluations) =>
+      prevEvaluations.map((e) => (e.id === evalId ? { ...e, comments } : e)),
     );
   }, []);
 
   const submitEvaluation = useCallback((evalId) => {
-    setEvaluations(prevEvaluations =>
+    setEvaluations((prevEvaluations) =>
       prevEvaluations.map((e) =>
-        e.id === evalId ? { ...e, submitted: true } : e
-      )
+        e.id === evalId ? { ...e, submitted: true } : e,
+      ),
     );
   }, []);
 
-  const submittedCount = useMemo(() => 
-    evaluations.filter((e) => e.submitted).length,
-    [evaluations]
+  const submittedCount = useMemo(
+    () => evaluations.filter((e) => e.submitted).length,
+    [evaluations],
   );
 
-  const progressPercentage = useMemo(() => 
-    (submittedCount / evaluations.length) * 100,
-    [submittedCount, evaluations.length]
+  const progressPercentage = useMemo(
+    () => (submittedCount / evaluations.length) * 100,
+    [submittedCount, evaluations.length],
   );
 
   return (
@@ -113,7 +111,9 @@ const PeerEvaluation = memo(() => {
             <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
               {submittedCount}/{evaluations.length}
             </div>
-            <div className="text-sm text-slate-600 dark:text-slate-400">Submitted</div>
+            <div className="text-sm text-slate-600 dark:text-slate-400">
+              Submitted
+            </div>
           </div>
         </div>
         <div className="mt-4">
@@ -143,7 +143,9 @@ const PeerEvaluation = memo(() => {
                     <h3 className="font-medium text-slate-900 dark:text-white">
                       {evaluation.peer}
                     </h3>
-                    <p className="text-sm text-slate-600 dark:text-slate-400">{evaluation.role}</p>
+                    <p className="text-sm text-slate-600 dark:text-slate-400">
+                      {evaluation.role}
+                    </p>
                   </div>
                 </div>
                 <div>
@@ -168,7 +170,10 @@ const PeerEvaluation = memo(() => {
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {evaluation.criteria.map((criterion, index) => (
-                    <div key={index} className="border border-slate-200 dark:border-slate-600 rounded-lg p-4 bg-slate-50 dark:bg-slate-700/50">
+                    <div
+                      key={index}
+                      className="border border-slate-200 dark:border-slate-600 rounded-lg p-4 bg-slate-50 dark:bg-slate-700/50"
+                    >
                       <div className="flex justify-between items-center mb-2">
                         <span className="font-medium text-slate-900 dark:text-white">
                           {criterion.name}
@@ -264,6 +269,6 @@ const PeerEvaluation = memo(() => {
   );
 });
 
-PeerEvaluation.displayName = 'PeerEvaluation';
+PeerEvaluation.displayName = "PeerEvaluation";
 
 export default PeerEvaluation;

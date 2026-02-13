@@ -90,7 +90,7 @@ export const filterByDateRange = (
   array,
   startDate,
   endDate,
-  dateKey = "date"
+  dateKey = "date",
 ) => {
   const start = new Date(startDate);
   const end = new Date(endDate);

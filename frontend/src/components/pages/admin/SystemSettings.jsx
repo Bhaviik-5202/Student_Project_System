@@ -34,7 +34,9 @@ const SystemSettings = memo(() => {
           >
             ← Back to Admin
           </button>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">System Settings</h1>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+            System Settings
+          </h1>
           <p className="text-slate-600 dark:text-slate-400">
             Configure system preferences and options
           </p>

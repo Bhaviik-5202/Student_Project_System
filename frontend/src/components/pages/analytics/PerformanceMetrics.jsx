@@ -11,7 +11,7 @@ const PerformanceMetrics = memo(() => {
       projects: { current: 82, target: 80, trend: "up" },
       participation: { current: 78, target: 75, trend: "stable" },
     }),
-    []
+    [],
   );
 
   const [timeRange, setTimeRange] = useState("month");
@@ -67,15 +67,15 @@ const PerformanceMetrics = memo(() => {
                     metric.trend === "up"
                       ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
                       : metric.trend === "down"
-                      ? "bg-rose-100 dark:bg-rose-900/30 text-rose-800 dark:text-rose-300"
-                      : "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300"
+                        ? "bg-rose-100 dark:bg-rose-900/30 text-rose-800 dark:text-rose-300"
+                        : "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300"
                   }`}
                 >
                   {metric.trend === "up"
                     ? "↑ Improving"
                     : metric.trend === "down"
-                    ? "↓ Declining"
-                    : "→ Stable"}
+                      ? "↓ Declining"
+                      : "→ Stable"}
                 </div>
               </div>
 
@@ -96,7 +96,7 @@ const PerformanceMetrics = memo(() => {
                     style={{
                       width: `${Math.min(
                         100,
-                        (metric.current / metric.target) * 100
+                        (metric.current / metric.target) * 100,
                       )}%`,
                     }}
                   ></div>

@@ -13,16 +13,19 @@ const SupportTicket = memo(() => {
   });
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = useCallback(async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+      setLoading(true);
 
-    setTimeout(() => {
-      toast.success("Support ticket submitted successfully");
-      setLoading(false);
-      navigate("/help");
-    }, 1500);
-  }, [navigate]);
+      setTimeout(() => {
+        toast.success("Support ticket submitted successfully");
+        setLoading(false);
+        navigate("/help");
+      }, 1500);
+    },
+    [navigate],
+  );
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
@@ -178,6 +181,6 @@ const SupportTicket = memo(() => {
   );
 });
 
-SupportTicket.displayName = 'SupportTicket';
+SupportTicket.displayName = "SupportTicket";
 
 export default SupportTicket;

@@ -46,7 +46,7 @@ const AuditLog = memo(() => {
         status: "Success",
       },
     ],
-    []
+    [],
   );
 
   return (
@@ -54,7 +54,9 @@ const AuditLog = memo(() => {
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Audit Log</h1>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+              Audit Log
+            </h1>
             <p className="text-slate-600 dark:text-slate-400">
               Track system activities and user actions
             </p>
@@ -111,7 +113,10 @@ const AuditLog = memo(() => {
               </thead>
               <tbody className="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
                 {logs.map((log) => (
-                  <tr key={log.id} className="hover:bg-slate-50 dark:hover:bg-slate-700">
+                  <tr
+                    key={log.id}
+                    className="hover:bg-slate-50 dark:hover:bg-slate-700"
+                  >
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900 dark:text-white">
                       {log.timestamp}
                     </td>

@@ -46,25 +46,30 @@ const SprintPlanner = memo(() => {
         tasks: 20,
       },
     ],
-    []
+    [],
   );
 
   const [activeSprint, setActiveSprint] = useState(3);
 
   const activeSprintData = useMemo(
     () => sprints.find((s) => s.id === activeSprint),
-    [sprints, activeSprint]
+    [sprints, activeSprint],
   );
 
   const sprintStatusStyles = {
-    completed: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200",
-    "in-progress": "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200",
-    planned: "bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200",
+    completed:
+      "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200",
+    "in-progress":
+      "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200",
+    planned:
+      "bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200",
   };
 
   const taskStatusStyles = {
-    completed: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200",
-    "in-progress": "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200",
+    completed:
+      "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200",
+    "in-progress":
+      "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200",
     todo: "bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200",
   };
 
@@ -101,14 +106,14 @@ const SprintPlanner = memo(() => {
         status: "todo",
       },
     ],
-    []
+    [],
   );
 
   const handleNavigate = useCallback(
     (path) => {
       navigate(path);
     },
-    [navigate]
+    [navigate],
   );
 
   return (
@@ -244,7 +249,7 @@ const SprintPlanner = memo(() => {
                       {Math.round(
                         (activeSprintData.completed /
                           activeSprintData.velocity) *
-                          100
+                          100,
                       )}
                       %)
                     </span>
@@ -255,10 +260,10 @@ const SprintPlanner = memo(() => {
                         activeSprintData.completed >= activeSprintData.velocity
                           ? "bg-emerald-500"
                           : activeSprintData.completed /
-                              activeSprintData.velocity >=
-                            0.7
-                          ? "bg-amber-500"
-                          : "bg-blue-500"
+                                activeSprintData.velocity >=
+                              0.7
+                            ? "bg-amber-500"
+                            : "bg-blue-500"
                       }`}
                       style={{
                         width: `${

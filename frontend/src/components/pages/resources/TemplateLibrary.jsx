@@ -80,73 +80,73 @@ const TemplateLibrary = memo(() => {
       { id: "meeting", name: "Meeting Templates", count: 6 },
       { id: "other", name: "Other Templates", count: 4 },
     ],
-    []
+    [],
   );
 
   const templates = useMemo(
     () => [
-    {
-      id: 1,
-      name: "Project Proposal Template",
-      category: "proposal",
-      description: "Standard template for project proposals",
-      downloads: 156,
-      lastUpdated: "2024-01-15",
-      fileSize: "2.4 MB",
-      icon: "fas fa-file-alt text-blue-500",
-    },
-    {
-      id: 2,
-      name: "Weekly Progress Report",
-      category: "report",
-      description: "Template for weekly project updates",
-      downloads: 234,
-      lastUpdated: "2024-01-10",
-      fileSize: "1.8 MB",
-      icon: "fas fa-chart-line text-green-500",
-    },
-    {
-      id: 3,
-      name: "Meeting Minutes",
-      category: "meeting",
-      description: "Format for documenting meeting discussions",
-      downloads: 189,
-      lastUpdated: "2024-01-12",
-      fileSize: "1.2 MB",
-      icon: "fas fa-calendar-alt text-purple-500",
-    },
-    {
-      id: 4,
-      name: "Risk Assessment Matrix",
-      category: "project",
-      description: "Template for risk evaluation and management",
-      downloads: 145,
-      lastUpdated: "2024-01-05",
-      fileSize: "3.1 MB",
-      icon: "fas fa-exclamation-triangle text-yellow-500",
-    },
-    {
-      id: 5,
-      name: "Project Timeline",
-      category: "project",
-      description: "Gantt chart template for project scheduling",
-      downloads: 278,
-      lastUpdated: "2024-01-08",
-      fileSize: "4.2 MB",
-      icon: "fas fa-project-diagram text-indigo-500",
-    },
-    {
-      id: 6,
-      name: "Budget Proposal",
-      category: "proposal",
-      description: "Financial planning template",
-      downloads: 167,
-      lastUpdated: "2024-01-03",
-      fileSize: "2.8 MB",
-      icon: "fas fa-dollar-sign text-green-600",
-    },
+      {
+        id: 1,
+        name: "Project Proposal Template",
+        category: "proposal",
+        description: "Standard template for project proposals",
+        downloads: 156,
+        lastUpdated: "2024-01-15",
+        fileSize: "2.4 MB",
+        icon: "fas fa-file-alt text-blue-500",
+      },
+      {
+        id: 2,
+        name: "Weekly Progress Report",
+        category: "report",
+        description: "Template for weekly project updates",
+        downloads: 234,
+        lastUpdated: "2024-01-10",
+        fileSize: "1.8 MB",
+        icon: "fas fa-chart-line text-green-500",
+      },
+      {
+        id: 3,
+        name: "Meeting Minutes",
+        category: "meeting",
+        description: "Format for documenting meeting discussions",
+        downloads: 189,
+        lastUpdated: "2024-01-12",
+        fileSize: "1.2 MB",
+        icon: "fas fa-calendar-alt text-purple-500",
+      },
+      {
+        id: 4,
+        name: "Risk Assessment Matrix",
+        category: "project",
+        description: "Template for risk evaluation and management",
+        downloads: 145,
+        lastUpdated: "2024-01-05",
+        fileSize: "3.1 MB",
+        icon: "fas fa-exclamation-triangle text-yellow-500",
+      },
+      {
+        id: 5,
+        name: "Project Timeline",
+        category: "project",
+        description: "Gantt chart template for project scheduling",
+        downloads: 278,
+        lastUpdated: "2024-01-08",
+        fileSize: "4.2 MB",
+        icon: "fas fa-project-diagram text-indigo-500",
+      },
+      {
+        id: 6,
+        name: "Budget Proposal",
+        category: "proposal",
+        description: "Financial planning template",
+        downloads: 167,
+        lastUpdated: "2024-01-03",
+        fileSize: "2.8 MB",
+        icon: "fas fa-dollar-sign text-green-600",
+      },
     ],
-    []
+    [],
   );
 
   const filteredTemplates = useMemo(() => {
@@ -161,15 +161,21 @@ const TemplateLibrary = memo(() => {
     });
   }, [templates, searchTerm, selectedCategory]);
 
-  const handleDownload = useCallback((template) => {
-    showSuccess(`Downloading ${template.name}`);
-    // Download logic here
-  }, [showSuccess]);
+  const handleDownload = useCallback(
+    (template) => {
+      showSuccess(`Downloading ${template.name}`);
+      // Download logic here
+    },
+    [showSuccess],
+  );
 
-  const handlePreview = useCallback((template) => {
-    showSuccess(`Previewing ${template.name}`);
-    // Preview logic here
-  }, [showSuccess]);
+  const handlePreview = useCallback(
+    (template) => {
+      showSuccess(`Previewing ${template.name}`);
+      // Preview logic here
+    },
+    [showSuccess],
+  );
 
   const handleCategorySelect = useCallback((id) => {
     setSelectedCategory(id);
@@ -265,19 +271,27 @@ const TemplateLibrary = memo(() => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="text-center">
             <div className="text-2xl font-bold text-blue-600">48</div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Total Templates</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">
+              Total Templates
+            </div>
           </div>
           <div className="text-center">
             <div className="text-2xl font-bold text-green-600">1.2K</div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Total Downloads</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">
+              Total Downloads
+            </div>
           </div>
           <div className="text-center">
             <div className="text-2xl font-bold text-purple-600">18</div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Project Templates</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">
+              Project Templates
+            </div>
           </div>
           <div className="text-center">
             <div className="text-2xl font-bold text-yellow-600">15</div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Updated This Month</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">
+              Updated This Month
+            </div>
           </div>
         </div>
       </div>

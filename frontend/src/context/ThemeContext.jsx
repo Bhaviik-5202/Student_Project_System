@@ -70,7 +70,7 @@ export const ThemeProvider = ({ children }) => {
         }
       },
     }),
-    []
+    [],
   );
 
   // Get system theme preference
@@ -137,7 +137,7 @@ export const ThemeProvider = ({ children }) => {
       if (metaThemeColor) {
         metaThemeColor.setAttribute(
           "content",
-          appliedTheme === THEMES.DARK ? "#0f172a" : "#ffffff"
+          appliedTheme === THEMES.DARK ? "#0f172a" : "#ffffff",
         );
       }
     } catch (error) {
@@ -175,9 +175,13 @@ export const ThemeProvider = ({ children }) => {
     setThemeMode((prevMode) => {
       if (prevMode === THEME_MODES.AUTO) {
         // If in auto, toggle based on current applied theme
-        return appliedTheme === THEMES.LIGHT ? THEME_MODES.DARK : THEME_MODES.LIGHT;
+        return appliedTheme === THEMES.LIGHT
+          ? THEME_MODES.DARK
+          : THEME_MODES.LIGHT;
       }
-      return prevMode === THEME_MODES.LIGHT ? THEME_MODES.DARK : THEME_MODES.LIGHT;
+      return prevMode === THEME_MODES.LIGHT
+        ? THEME_MODES.DARK
+        : THEME_MODES.LIGHT;
     });
   }, [appliedTheme]);
 
@@ -206,7 +210,10 @@ export const ThemeProvider = ({ children }) => {
   const isAutoMode = useMemo(() => themeMode === THEME_MODES.AUTO, [themeMode]);
 
   // Check if dark mode is active (regardless of how it was set)
-  const isDarkMode = useMemo(() => appliedTheme === THEMES.DARK, [appliedTheme]);
+  const isDarkMode = useMemo(
+    () => appliedTheme === THEMES.DARK,
+    [appliedTheme],
+  );
 
   // Memoize context value
   const contextValue = useMemo(
@@ -239,7 +246,7 @@ export const ThemeProvider = ({ children }) => {
       setThemeModeValue,
       setAutoMode,
       resetTheme,
-    ]
+    ],
   );
 
   return (

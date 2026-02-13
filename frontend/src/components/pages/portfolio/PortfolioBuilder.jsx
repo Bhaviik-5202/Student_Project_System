@@ -55,10 +55,10 @@ const PortfolioBuilder = () => {
       type === "success"
         ? "bg-emerald-500 text-white"
         : type === "error"
-        ? "bg-rose-500 text-white"
-        : type === "warning"
-        ? "bg-amber-500 text-white"
-        : "bg-blue-500 text-white"
+          ? "bg-rose-500 text-white"
+          : type === "warning"
+            ? "bg-amber-500 text-white"
+            : "bg-blue-500 text-white"
     }`;
     notification.textContent = message;
     document.body.appendChild(notification);
@@ -74,7 +74,7 @@ const PortfolioBuilder = () => {
       sections: prev.sections.map((section) =>
         section.id === sectionId
           ? { ...section, enabled: !section.enabled }
-          : section
+          : section,
       ),
     }));
   }, []);
@@ -407,6 +407,6 @@ const PortfolioBuilder = () => {
   );
 };
 
-PortfolioBuilder.displayName = 'PortfolioBuilder';
+PortfolioBuilder.displayName = "PortfolioBuilder";
 
 export default React.memo(PortfolioBuilder);

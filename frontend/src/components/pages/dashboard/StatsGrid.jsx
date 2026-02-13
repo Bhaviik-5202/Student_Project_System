@@ -10,7 +10,9 @@ const StatsGrid = memo(({ stats = [] }) => {
           className="bg-white dark:bg-slate-800 p-4 rounded-lg shadow dark:shadow-md hover:shadow-lg dark:hover:shadow-lg transition-shadow"
         >
           <div className="flex items-center">
-            <div className={`p-2 rounded-full ${stat.bgColor || "bg-blue-100 dark:bg-blue-900"}`}>
+            <div
+              className={`p-2 rounded-full ${stat.bgColor || "bg-blue-100 dark:bg-blue-900"}`}
+            >
               {stat.icon}
             </div>
             <div className="ml-4">
@@ -24,7 +26,7 @@ const StatsGrid = memo(({ stats = [] }) => {
           </div>
         </div>
       )),
-    [stats]
+    [stats],
   );
 
   return (
@@ -44,7 +46,7 @@ StatsGrid.propTypes = {
         .isRequired,
       icon: PropTypes.node,
       bgColor: PropTypes.string,
-    })
+    }),
   ),
 };
 

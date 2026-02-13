@@ -8,12 +8,15 @@ const StudentForm = memo(({ onSubmit, initialData = {} }) => {
     rollNumber: initialData.rollNumber || "",
   });
 
-  const handleChange = useCallback((e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  }, [formData]);
+  const handleChange = useCallback(
+    (e) => {
+      setFormData({
+        ...formData,
+        [e.target.name]: e.target.value,
+      });
+    },
+    [formData],
+  );
 
   const handleSubmit = useCallback(
     (e) => {
@@ -21,7 +24,7 @@ const StudentForm = memo(({ onSubmit, initialData = {} }) => {
       onSubmit(formData);
       setFormData({ name: "", email: "", rollNumber: "" });
     },
-    [formData, onSubmit]
+    [formData, onSubmit],
   );
 
   return (

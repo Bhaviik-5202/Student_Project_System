@@ -86,7 +86,7 @@ const MyCourses = memo(() => {
         nextAssignment: "Jan 25",
       },
     ],
-    []
+    [],
   );
 
   return (

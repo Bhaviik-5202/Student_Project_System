@@ -57,12 +57,13 @@ const DiscussionThread = memo(() => {
         {
           id: 3,
           author: "Robert Johnson",
-          content: "Make sure to implement proper password hashing and salting.",
+          content:
+            "Make sure to implement proper password hashing and salting.",
           createdAt: "2024-01-15 14:15:00",
         },
       ],
     }),
-    []
+    [],
   );
 
   const handleReplyChange = useCallback((e) => {

@@ -6,7 +6,9 @@ const MilestoneMarker = memo(({ milestone, projectProgress }) => (
   <div key={milestone} className="flex flex-col items-center">
     <div
       className={`w-1 h-1 rounded-full ${
-        projectProgress >= milestone ? "bg-slate-600 dark:bg-slate-300" : "bg-slate-300 dark:bg-slate-600"
+        projectProgress >= milestone
+          ? "bg-slate-600 dark:bg-slate-300"
+          : "bg-slate-300 dark:bg-slate-600"
       }`}
     />
     <span className="text-xs text-slate-500 dark:text-slate-400 mt-1">
@@ -76,7 +78,7 @@ const ProgressVisualization = memo(({ userRole = "student" }) => {
               students: 32,
             },
           ],
-    [userRole]
+    [userRole],
   );
 
   return (
@@ -87,7 +89,7 @@ const ProgressVisualization = memo(({ userRole = "student" }) => {
             <div className="flex items-center">
               <div
                 className={`w-3 h-3 rounded-full mr-3 ${getColorClass(
-                  project.color
+                  project.color,
                 )}`}
               />
               <div>
@@ -117,7 +119,7 @@ const ProgressVisualization = memo(({ userRole = "student" }) => {
             <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-3">
               <div
                 className={`h-3 rounded-full ${getColorClass(
-                  project.color
+                  project.color,
                 )} transition-all duration-500`}
                 style={{ width: `${project.progress}%` }}
               />

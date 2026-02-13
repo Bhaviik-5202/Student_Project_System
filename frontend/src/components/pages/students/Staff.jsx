@@ -63,26 +63,26 @@ StaffRow.propTypes = {
 const Staff = memo(() => {
   const staffMembers = useMemo(
     () => [
-    {
-      id: "FAC001",
-      name: "Dr. Sarah Johnson",
-      role: "Professor",
-      department: "Computer Science",
-      email: "sarah.j@university.edu",
-      phone: "+1 (555) 111-2222",
-      status: "Active",
-    },
-    {
-      id: "FAC002",
-      name: "Prof. Michael Chen",
-      role: "Associate Professor",
-      department: "Information Technology",
-      email: "michael.c@university.edu",
-      phone: "+1 (555) 333-4444",
-      status: "Active",
-    },
+      {
+        id: "FAC001",
+        name: "Dr. Sarah Johnson",
+        role: "Professor",
+        department: "Computer Science",
+        email: "sarah.j@university.edu",
+        phone: "+1 (555) 111-2222",
+        status: "Active",
+      },
+      {
+        id: "FAC002",
+        name: "Prof. Michael Chen",
+        role: "Associate Professor",
+        department: "Information Technology",
+        email: "michael.c@university.edu",
+        phone: "+1 (555) 333-4444",
+        status: "Active",
+      },
     ],
-    []
+    [],
   );
 
   return (

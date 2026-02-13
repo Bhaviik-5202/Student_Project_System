@@ -25,11 +25,14 @@ const ProjectProposal = memo(() => {
     setFormData((prev) => ({ ...prev, document: e.target.files[0] }));
   }, []);
 
-  const handleSubmit = useCallback((e) => {
-    e.preventDefault();
-    console.log("Proposal submitted:", formData);
-    alert("Project proposal submitted successfully!");
-  }, [formData]);
+  const handleSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
+      console.log("Proposal submitted:", formData);
+      alert("Project proposal submitted successfully!");
+    },
+    [formData],
+  );
 
   return (
     <div className="animate-fade-in">

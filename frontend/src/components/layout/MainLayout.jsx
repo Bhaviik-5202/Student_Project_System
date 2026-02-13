@@ -1,4 +1,11 @@
-import React, { useState, useEffect, Suspense, useCallback, memo, Component } from "react";
+import React, {
+  useState,
+  useEffect,
+  Suspense,
+  useCallback,
+  memo,
+  Component,
+} from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Header from "../common/Header";
 import TopNav from "../common/TopNav";
@@ -8,7 +15,7 @@ import Breadcrumb from "../common/Breadcrumb";
 import LoadingSpinner from "../common/LoadingSpinner";
 import BackToTop from "../common/BackToTop.jsx";
 import useScreenSize from "../../hooks/useScreenSize";
-import { useAuth } from "../../context/AuthContext";  
+import { useAuth } from "../../context/AuthContext";
 
 // Memoized components for better performance
 const MemoizedTopNav = memo(TopNav);
@@ -28,7 +35,7 @@ const PageTransition = memo(({ children, pathname, shouldAnimate }) => {
       // Start exit animation
       setIsAnimating(true);
       setIsVisible(false);
-      
+
       // After exit animation, update content and start enter animation
       const exitTimer = setTimeout(() => {
         setCurrentPath(pathname);
@@ -39,7 +46,7 @@ const PageTransition = memo(({ children, pathname, shouldAnimate }) => {
           setTimeout(() => setIsAnimating(false), 300);
         });
       }, 200);
-      
+
       return () => clearTimeout(exitTimer);
     } else {
       // Initial mount
@@ -57,15 +64,15 @@ const PageTransition = memo(({ children, pathname, shouldAnimate }) => {
     <div
       key={currentPath}
       className={`page-transition ${
-        isVisible 
-          ? 'page-enter-active' 
-          : 'page-exit-active'
+        isVisible ? "page-enter-active" : "page-exit-active"
       }`}
       style={{
-        transition: 'opacity 0.3s ease-out, transform 0.3s ease-out',
+        transition: "opacity 0.3s ease-out, transform 0.3s ease-out",
         opacity: isVisible ? 1 : 0,
-        transform: isVisible ? 'translateY(0) scale(1)' : 'translateY(10px) scale(0.99)',
-        willChange: isAnimating ? 'opacity, transform' : 'auto',
+        transform: isVisible
+          ? "translateY(0) scale(1)"
+          : "translateY(10px) scale(0.99)",
+        willChange: isAnimating ? "opacity, transform" : "auto",
       }}
     >
       {children}
@@ -109,12 +116,12 @@ const MainLayout = () => {
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
     if (isMobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     }
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     };
   }, [isMobileMenuOpen]);
 
@@ -156,8 +163,8 @@ const MainLayout = () => {
       />
 
       {/* Top Navigation Bar - Sticky below header on desktop, slide-down on mobile */}
-      <MemoizedTopNav 
-        isScrolled={isScrolled} 
+      <MemoizedTopNav
+        isScrolled={isScrolled}
         isMobileMenuOpen={isMobileMenuOpen}
         onMobileMenuToggle={handleMobileMenuToggle}
         onCloseMobileMenu={handleCloseMobileMenu}
@@ -167,7 +174,10 @@ const MainLayout = () => {
       {/* Total fixed height at top = 120px, but TopNav starts at top-16, so content needs mt-14 */}
       <div className="flex flex-1 mt-14">
         {/* Main Content */}
-        <div className="flex-1 flex flex-col min-w-0 w-full relative" style={{ zIndex: 1 }}>
+        <div
+          className="flex-1 flex flex-col min-w-0 w-full relative"
+          style={{ zIndex: 1 }}
+        >
           {/* Breadcrumb Navigation */}
           {!isMobile && (
             <nav className="px-4 md:px-6 pt-4" aria-label="Breadcrumb">
@@ -180,7 +190,7 @@ const MainLayout = () => {
             id="main-content"
             className="flex-1 px-4 md:px-6 py-4 pb-6 relative z-0"
             tabIndex={-1}
-            style={{ minHeight: 'calc(100vh - 160px)' }}
+            style={{ minHeight: "calc(100vh - 160px)" }}
           >
             <ErrorBoundary>
               <Suspense
@@ -195,7 +205,10 @@ const MainLayout = () => {
                 }
               >
                 {/* Page Transition Wrapper */}
-                <PageTransition pathname={location.pathname} shouldAnimate={shouldAnimate}>
+                <PageTransition
+                  pathname={location.pathname}
+                  shouldAnimate={shouldAnimate}
+                >
                   <Outlet />
                 </PageTransition>
               </Suspense>

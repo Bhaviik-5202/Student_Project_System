@@ -75,68 +75,68 @@ CategoryButton.propTypes = {
 const ResourceBrowser = memo(() => {
   const resources = useMemo(
     () => [
-    {
-      id: 1,
-      name: "Web Development Guide.pdf",
-      type: "pdf",
-      size: "2.4 MB",
-      category: "Documents",
-      date: "2024-03-15",
-    },
-    {
-      id: 2,
-      name: "Database Design.pptx",
-      type: "ppt",
-      size: "5.1 MB",
-      category: "Presentations",
-      date: "2024-03-10",
-    },
-    {
-      id: 3,
-      name: "Project Template.zip",
-      type: "zip",
-      size: "12.3 MB",
-      category: "Templates",
-      date: "2024-03-05",
-    },
-    {
-      id: 4,
-      name: "API Documentation.pdf",
-      type: "pdf",
-      size: "3.2 MB",
-      category: "Documents",
-      date: "2024-02-28",
-    },
-    {
-      id: 5,
-      name: "UI Design Mockups.fig",
-      type: "fig",
-      size: "8.7 MB",
-      category: "Design",
-      date: "2024-02-25",
-    },
-    {
-      id: 6,
-      name: "Video Tutorial.mp4",
-      type: "video",
-      size: "45.2 MB",
-      category: "Videos",
-      date: "2024-02-20",
-    },
+      {
+        id: 1,
+        name: "Web Development Guide.pdf",
+        type: "pdf",
+        size: "2.4 MB",
+        category: "Documents",
+        date: "2024-03-15",
+      },
+      {
+        id: 2,
+        name: "Database Design.pptx",
+        type: "ppt",
+        size: "5.1 MB",
+        category: "Presentations",
+        date: "2024-03-10",
+      },
+      {
+        id: 3,
+        name: "Project Template.zip",
+        type: "zip",
+        size: "12.3 MB",
+        category: "Templates",
+        date: "2024-03-05",
+      },
+      {
+        id: 4,
+        name: "API Documentation.pdf",
+        type: "pdf",
+        size: "3.2 MB",
+        category: "Documents",
+        date: "2024-02-28",
+      },
+      {
+        id: 5,
+        name: "UI Design Mockups.fig",
+        type: "fig",
+        size: "8.7 MB",
+        category: "Design",
+        date: "2024-02-25",
+      },
+      {
+        id: 6,
+        name: "Video Tutorial.mp4",
+        type: "video",
+        size: "45.2 MB",
+        category: "Videos",
+        date: "2024-02-20",
+      },
     ],
-    []
+    [],
   );
 
   const categories = useMemo(
     () => [
-    "All",
-    "Documents",
-    "Presentations",
-    "Templates",
-    "Design",
-    "Videos",
+      "All",
+      "Documents",
+      "Presentations",
+      "Templates",
+      "Design",
+      "Videos",
     ],
-    []
+    [],
   );
   const [selectedCategory, setSelectedCategory] = useState("All");
 
@@ -162,7 +162,7 @@ const ResourceBrowser = memo(() => {
       selectedCategory === "All"
         ? resources
         : resources.filter((r) => r.category === selectedCategory),
-    [resources, selectedCategory]
+    [resources, selectedCategory],
   );
 
   const handleSelectCategory = useCallback((category) => {

@@ -20,42 +20,48 @@ const Register = memo(() => {
   // Use authService directly for backend registration
   const authService = require("../../../services/authService").default;
 
-  const handleSubmit = useCallback(async (e) => {
-    e.preventDefault();
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
 
-    if (formData.password !== formData.confirmPassword) {
-      toast.error("Passwords do not match");
-      return;
-    }
-
-    setLoading(true);
-    try {
-      // Send all required fields to backend
-      const res = await authService.register({
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-        role: formData.role
-      });
-      if (res.success) {
-        toast.success("Registration successful! Please login.");
-        navigate("/login");
-      } else {
-        toast.error(res.message || "Registration failed");
+      if (formData.password !== formData.confirmPassword) {
+        toast.error("Passwords do not match");
+        return;
       }
-    } catch (error) {
-      toast.error(error.message || "Registration failed");
-    } finally {
-      setLoading(false);
-    }
-  }, [formData, register, navigate]);
 
-  const handleChange = useCallback((e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  }, [formData]);
+      setLoading(true);
+      try {
+        // Send all required fields to backend
+        const res = await authService.register({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          role: formData.role,
+        });
+        if (res.success) {
+          toast.success("Registration successful! Please login.");
+          navigate("/login");
+        } else {
+          toast.error(res.message || "Registration failed");
+        }
+      } catch (error) {
+        toast.error(error.message || "Registration failed");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [formData, register, navigate],
+  );
+
+  const handleChange = useCallback(
+    (e) => {
+      setFormData({
+        ...formData,
+        [e.target.name]: e.target.value,
+      });
+    },
+    [formData],
+  );
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 py-12 px-4 sm:px-6 lg:px-8">

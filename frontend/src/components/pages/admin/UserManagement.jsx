@@ -5,49 +5,49 @@ const UserManagement = memo(() => {
   const navigate = useNavigate();
   const users = useMemo(
     () => [
-    {
-      id: 1,
-      name: "John Doe",
-      email: "john@example.com",
-      role: "Student",
-      status: "Active",
-      joined: "2023-09-01",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      email: "jane@example.com",
-      role: "Faculty",
-      status: "Active",
-      joined: "2023-08-15",
-    },
-    {
-      id: 3,
-      name: "Robert Johnson",
-      email: "robert@example.com",
-      role: "Admin",
-      status: "Active",
-      joined: "2023-07-20",
-    },
-    {
-      id: 4,
-      name: "Sarah Williams",
-      email: "sarah@example.com",
-      role: "Student",
-      status: "Inactive",
-      joined: "2023-10-10",
-    },
-    {
-      id: 5,
-      name: "Michael Brown",
-      email: "michael@example.com",
-      role: "Faculty",
-      status: "Active",
-      joined: "2023-06-05",
-    },
-  ],
-  []
-);
+      {
+        id: 1,
+        name: "John Doe",
+        email: "john@example.com",
+        role: "Student",
+        status: "Active",
+        joined: "2023-09-01",
+      },
+      {
+        id: 2,
+        name: "Jane Smith",
+        email: "jane@example.com",
+        role: "Faculty",
+        status: "Active",
+        joined: "2023-08-15",
+      },
+      {
+        id: 3,
+        name: "Robert Johnson",
+        email: "robert@example.com",
+        role: "Admin",
+        status: "Active",
+        joined: "2023-07-20",
+      },
+      {
+        id: 4,
+        name: "Sarah Williams",
+        email: "sarah@example.com",
+        role: "Student",
+        status: "Inactive",
+        joined: "2023-10-10",
+      },
+      {
+        id: 5,
+        name: "Michael Brown",
+        email: "michael@example.com",
+        role: "Faculty",
+        status: "Active",
+        joined: "2023-06-05",
+      },
+    ],
+    [],
+  );
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
@@ -57,7 +57,9 @@ const UserManagement = memo(() => {
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
               User Management
             </h1>
-            <p className="text-slate-600 dark:text-slate-400">Manage system users and permissions</p>
+            <p className="text-slate-600 dark:text-slate-400">
+              Manage system users and permissions
+            </p>
           </div>
           <button className="px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-800">
             Add User
@@ -91,7 +93,10 @@ const UserManagement = memo(() => {
               </thead>
               <tbody className="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
                 {users.map((user) => (
-                  <tr key={user.id} className="hover:bg-slate-50 dark:hover:bg-slate-700">
+                  <tr
+                    key={user.id}
+                    className="hover:bg-slate-50 dark:hover:bg-slate-700"
+                  >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="font-medium text-slate-900 dark:text-white">
                         {user.name}
@@ -106,8 +111,8 @@ const UserManagement = memo(() => {
                           user.role === "Admin"
                             ? "bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300"
                             : user.role === "Faculty"
-                            ? "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
-                            : "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
+                              ? "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
+                              : "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
                         }`}
                       >
                         {user.role}

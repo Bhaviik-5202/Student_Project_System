@@ -3,41 +3,48 @@ import { useNavigate } from "react-router-dom";
 
 const UserGuide = memo(() => {
   const navigate = useNavigate();
-  const chapters = useMemo(() => [
-    {
-      id: 1,
-      title: "Introduction",
-      sections: [
-        "Welcome to the System",
-        "System Requirements",
-        "Getting Started",
-      ],
-    },
-    {
-      id: 2,
-      title: "User Accounts",
-      sections: [
-        "Creating an Account",
-        "Profile Management",
-        "Security Settings",
-      ],
-    },
-    {
-      id: 3,
-      title: "Dashboard",
-      sections: ["Overview", "Navigation", "Quick Actions"],
-    },
-    {
-      id: 4,
-      title: "Projects",
-      sections: ["Creating Projects", "Managing Teams", "Project Submissions"],
-    },
-    {
-      id: 5,
-      title: "Assignments",
-      sections: ["Submitting Work", "Grading System", "Deadlines"],
-    },
-  ], []);
+  const chapters = useMemo(
+    () => [
+      {
+        id: 1,
+        title: "Introduction",
+        sections: [
+          "Welcome to the System",
+          "System Requirements",
+          "Getting Started",
+        ],
+      },
+      {
+        id: 2,
+        title: "User Accounts",
+        sections: [
+          "Creating an Account",
+          "Profile Management",
+          "Security Settings",
+        ],
+      },
+      {
+        id: 3,
+        title: "Dashboard",
+        sections: ["Overview", "Navigation", "Quick Actions"],
+      },
+      {
+        id: 4,
+        title: "Projects",
+        sections: [
+          "Creating Projects",
+          "Managing Teams",
+          "Project Submissions",
+        ],
+      },
+      {
+        id: 5,
+        title: "Assignments",
+        sections: ["Submitting Work", "Grading System", "Deadlines"],
+      },
+    ],
+    [],
+  );
 
   const [activeChapter, setActiveChapter] = useState(1);
 
@@ -206,7 +213,7 @@ const UserGuide = memo(() => {
                       <button
                         onClick={() =>
                           handleChapterChange(
-                            Math.min(chapters.length, activeChapter + 1)
+                            Math.min(chapters.length, activeChapter + 1),
                           )
                         }
                         className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
@@ -226,6 +233,6 @@ const UserGuide = memo(() => {
   );
 });
 
-UserGuide.displayName = 'UserGuide';
+UserGuide.displayName = "UserGuide";
 
 export default UserGuide;

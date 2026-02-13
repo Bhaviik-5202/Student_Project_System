@@ -21,7 +21,7 @@ const SelfEvaluation = memo(() => {
   const updateRating = useCallback((id, rating) => {
     setEvaluation((prev) => {
       const newCriteria = prev.criteria.map((criterion) =>
-        criterion.id === id ? { ...criterion, rating } : criterion
+        criterion.id === id ? { ...criterion, rating } : criterion,
       );
       const overall =
         newCriteria.reduce((sum, c) => sum + c.rating, 0) / newCriteria.length;
@@ -44,7 +44,9 @@ const SelfEvaluation = memo(() => {
           >
             ← Back to Evaluation
           </button>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Self-Evaluation</h1>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+            Self-Evaluation
+          </h1>
           <p className="text-slate-600 dark:text-slate-400">
             Evaluate your own performance and skills
           </p>
@@ -121,7 +123,7 @@ const SelfEvaluation = memo(() => {
                           const newCriteria = evaluation.criteria.map((c) =>
                             c.id === criterion.id
                               ? { ...c, comments: e.target.value }
-                              : c
+                              : c,
                           );
                           setEvaluation({
                             ...evaluation,
@@ -217,6 +219,6 @@ const SelfEvaluation = memo(() => {
   );
 });
 
-SelfEvaluation.displayName = 'SelfEvaluation';
+SelfEvaluation.displayName = "SelfEvaluation";
 
 export default SelfEvaluation;

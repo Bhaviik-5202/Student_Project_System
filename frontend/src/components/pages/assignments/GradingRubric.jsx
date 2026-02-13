@@ -46,7 +46,7 @@ const GradingRubric = memo(() => {
     setRubric((prev) => ({
       ...prev,
       criteria: prev.criteria.map((criterion) =>
-        criterion.id === id ? { ...criterion, [field]: value } : criterion
+        criterion.id === id ? { ...criterion, [field]: value } : criterion,
       ),
     }));
   }, []);
@@ -85,8 +85,9 @@ const GradingRubric = memo(() => {
   }, []);
 
   const totalPoints = useMemo(
-    () => rubric.criteria.reduce((sum, criterion) => sum + criterion.maxPoints, 0),
-    [rubric.criteria]
+    () =>
+      rubric.criteria.reduce((sum, criterion) => sum + criterion.maxPoints, 0),
+    [rubric.criteria],
   );
 
   return (
@@ -104,7 +105,9 @@ const GradingRubric = memo(() => {
               <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
                 Grading Rubric
               </h1>
-              <p className="text-slate-600 dark:text-slate-400">Create and manage grading rubrics</p>
+              <p className="text-slate-600 dark:text-slate-400">
+                Create and manage grading rubrics
+              </p>
             </div>
             <div className="flex gap-3">
               <button
@@ -163,7 +166,7 @@ const GradingRubric = memo(() => {
                           updateCriterion(
                             criterion.id,
                             "criterion",
-                            e.target.value
+                            e.target.value,
                           )
                         }
                       />
@@ -175,7 +178,7 @@ const GradingRubric = memo(() => {
                           updateCriterion(
                             criterion.id,
                             "description",
-                            e.target.value
+                            e.target.value,
                           )
                         }
                         placeholder="Criterion description"
@@ -195,7 +198,7 @@ const GradingRubric = memo(() => {
                             updateCriterion(
                               criterion.id,
                               "maxPoints",
-                              parseInt(e.target.value)
+                              parseInt(e.target.value),
                             )
                           }
                         />
@@ -219,7 +222,9 @@ const GradingRubric = memo(() => {
                 <div className="text-lg font-semibold text-slate-900 dark:text-white">
                   Total Points
                 </div>
-                <div className="text-slate-600 dark:text-slate-400">Sum of all criteria points</div>
+                <div className="text-slate-600 dark:text-slate-400">
+                  Sum of all criteria points
+                </div>
               </div>
               <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
                 {totalPoints}

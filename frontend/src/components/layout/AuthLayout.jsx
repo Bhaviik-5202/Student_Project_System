@@ -6,7 +6,10 @@ const AuthLayout = ({ children }) => {
   return (
     <div className="min-h-screen flex flex-col lg:flex-row bg-gradient-to-br from-blue-50 via-white to-indigo-100 relative overflow-hidden">
       {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-30 pointer-events-none" aria-hidden="true">
+      <div
+        className="absolute inset-0 opacity-30 pointer-events-none"
+        aria-hidden="true"
+      >
         <div className="absolute top-0 left-0 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl animate-subtle-float" />
         <div
           className="absolute top-0 right-0 w-96 h-96 bg-indigo-200 rounded-full mix-blend-multiply filter blur-3xl animate-subtle-float"
@@ -19,7 +22,10 @@ const AuthLayout = ({ children }) => {
       </div>
 
       {/* Left Side - Branding (Hidden on mobile) */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-600 to-indigo-800 relative overflow-hidden" role="presentation">
+      <div
+        className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-600 to-indigo-800 relative overflow-hidden"
+        role="presentation"
+      >
         {/* Decorative Elements */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-1/4 left-1/4 w-64 h-64 border-2 border-white rounded-full" />
@@ -78,10 +84,7 @@ const AuthLayout = ({ children }) => {
                 text: "Monitor analytics",
               },
             ].map((feature, index) => (
-              <div
-                key={index}
-                className="flex items-center gap-3 text-blue-50"
-              >
+              <div key={index} className="flex items-center gap-3 text-blue-50">
                 <svg
                   className="w-6 h-6 flex-shrink-0"
                   fill="none"

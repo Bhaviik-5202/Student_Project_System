@@ -54,7 +54,7 @@ const RoadmapViewer = memo(() => {
         },
       ],
     }),
-    []
+    [],
   );
 
   const statusStyles = {
@@ -82,7 +82,7 @@ const RoadmapViewer = memo(() => {
     (path) => {
       navigate(path);
     },
-    [navigate]
+    [navigate],
   );
 
   return (
@@ -160,8 +160,8 @@ const RoadmapViewer = memo(() => {
                                 phase.status === "completed"
                                   ? statusStyles.completed.bullet
                                   : phase.status === "in-progress" && idx < 2
-                                  ? statusStyles["in-progress"].bullet
-                                  : statusStyles.upcoming.bullet
+                                    ? statusStyles["in-progress"].bullet
+                                    : statusStyles.upcoming.bullet
                               }`}
                             >
                               {phase.status === "completed" ||

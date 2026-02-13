@@ -2,11 +2,14 @@ import React, { memo, useCallback } from "react";
 import PropTypes from "prop-types";
 
 const Modal = memo(({ isOpen, onClose, title, children }) => {
-  const handleBackdropClick = useCallback((e) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
-  }, [onClose]);
+  const handleBackdropClick = useCallback(
+    (e) => {
+      if (e.target === e.currentTarget) {
+        onClose();
+      }
+    },
+    [onClose],
+  );
 
   if (!isOpen) return null;
 
@@ -18,7 +21,9 @@ const Modal = memo(({ isOpen, onClose, title, children }) => {
     >
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl dark:shadow-2xl dark:shadow-gray-950 max-w-lg w-full mx-4">
         <div className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{title}</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+            {title}
+          </h3>
           <button
             onClick={onClose}
             className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"

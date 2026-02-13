@@ -4,131 +4,143 @@ const TranscriptViewer = () => {
   const [selectedYear, setSelectedYear] = useState("all");
   const [viewMode, setViewMode] = useState("detailed");
 
-  const studentInfo = useMemo(() => ({
-    name: "Alex Johnson",
-    studentId: "S2024001",
-    program: "Bachelor of Computer Science",
-    enrollmentDate: "Fall 2020",
-    expectedGraduation: "Spring 2024",
-    advisor: "Dr. Sarah Wilson",
-    department: "Computer Science",
-  }), []);
+  const studentInfo = useMemo(
+    () => ({
+      name: "Alex Johnson",
+      studentId: "S2024001",
+      program: "Bachelor of Computer Science",
+      enrollmentDate: "Fall 2020",
+      expectedGraduation: "Spring 2024",
+      advisor: "Dr. Sarah Wilson",
+      department: "Computer Science",
+    }),
+    [],
+  );
 
-  const academicYears = useMemo(() => [
-    { id: "all", name: "All Years" },
-    { id: "2023-2024", name: "2023-2024", gpa: 3.8 },
-    { id: "2022-2023", name: "2022-2023", gpa: 3.6 },
-    { id: "2021-2022", name: "2021-2022", gpa: 3.7 },
-    { id: "2020-2021", name: "2020-2021", gpa: 3.5 },
-  ], []);
+  const academicYears = useMemo(
+    () => [
+      { id: "all", name: "All Years" },
+      { id: "2023-2024", name: "2023-2024", gpa: 3.8 },
+      { id: "2022-2023", name: "2022-2023", gpa: 3.6 },
+      { id: "2021-2022", name: "2021-2022", gpa: 3.7 },
+      { id: "2020-2021", name: "2020-2021", gpa: 3.5 },
+    ],
+    [],
+  );
 
-  const courses = useMemo(() => [
-    {
-      id: 1,
-      code: "CS401",
-      name: "Advanced Algorithms",
-      semester: "Fall 2023",
-      credits: 3,
-      grade: "A",
-      points: 4.0,
-      status: "Completed",
-      instructor: "Dr. Robert Kim",
-    },
-    {
-      id: 2,
-      code: "CS402",
-      name: "Machine Learning",
-      semester: "Fall 2023",
-      credits: 4,
-      grade: "A-",
-      points: 3.7,
-      status: "Completed",
-      instructor: "Dr. Sarah Wilson",
-    },
-    {
-      id: 3,
-      code: "CS403",
-      name: "Software Engineering",
-      semester: "Fall 2023",
-      credits: 3,
-      grade: "B+",
-      points: 3.3,
-      status: "Completed",
-      instructor: "Prof. Mike Chen",
-    },
-    {
-      id: 4,
-      code: "MATH301",
-      name: "Discrete Mathematics",
-      semester: "Fall 2023",
-      credits: 3,
-      grade: "A",
-      points: 4.0,
-      status: "Completed",
-      instructor: "Dr. Lisa Park",
-    },
-    {
-      id: 5,
-      code: "CS301",
-      name: "Data Structures",
-      semester: "Spring 2023",
-      credits: 4,
-      grade: "A-",
-      points: 3.7,
-      status: "Completed",
-      instructor: "Dr. Robert Kim",
-    },
-    {
-      id: 6,
-      code: "CS302",
-      name: "Database Systems",
-      semester: "Spring 2023",
-      credits: 3,
-      grade: "B+",
-      points: 3.3,
-      status: "Completed",
-      instructor: "Prof. Emma Wilson",
-    },
-    {
-      id: 7,
-      code: "CS201",
-      name: "Object-Oriented Programming",
-      semester: "Fall 2022",
-      credits: 3,
-      grade: "A",
-      points: 4.0,
-      status: "Completed",
-      instructor: "Dr. Sarah Wilson",
-    },
-    {
-      id: 8,
-      code: "CS202",
-      name: "Computer Networks",
-      semester: "Fall 2022",
-      credits: 3,
-      grade: "B",
-      points: 3.0,
-      status: "Completed",
-      instructor: "Prof. David Lee",
-    },
-  ], []);
+  const courses = useMemo(
+    () => [
+      {
+        id: 1,
+        code: "CS401",
+        name: "Advanced Algorithms",
+        semester: "Fall 2023",
+        credits: 3,
+        grade: "A",
+        points: 4.0,
+        status: "Completed",
+        instructor: "Dr. Robert Kim",
+      },
+      {
+        id: 2,
+        code: "CS402",
+        name: "Machine Learning",
+        semester: "Fall 2023",
+        credits: 4,
+        grade: "A-",
+        points: 3.7,
+        status: "Completed",
+        instructor: "Dr. Sarah Wilson",
+      },
+      {
+        id: 3,
+        code: "CS403",
+        name: "Software Engineering",
+        semester: "Fall 2023",
+        credits: 3,
+        grade: "B+",
+        points: 3.3,
+        status: "Completed",
+        instructor: "Prof. Mike Chen",
+      },
+      {
+        id: 4,
+        code: "MATH301",
+        name: "Discrete Mathematics",
+        semester: "Fall 2023",
+        credits: 3,
+        grade: "A",
+        points: 4.0,
+        status: "Completed",
+        instructor: "Dr. Lisa Park",
+      },
+      {
+        id: 5,
+        code: "CS301",
+        name: "Data Structures",
+        semester: "Spring 2023",
+        credits: 4,
+        grade: "A-",
+        points: 3.7,
+        status: "Completed",
+        instructor: "Dr. Robert Kim",
+      },
+      {
+        id: 6,
+        code: "CS302",
+        name: "Database Systems",
+        semester: "Spring 2023",
+        credits: 3,
+        grade: "B+",
+        points: 3.3,
+        status: "Completed",
+        instructor: "Prof. Emma Wilson",
+      },
+      {
+        id: 7,
+        code: "CS201",
+        name: "Object-Oriented Programming",
+        semester: "Fall 2022",
+        credits: 3,
+        grade: "A",
+        points: 4.0,
+        status: "Completed",
+        instructor: "Dr. Sarah Wilson",
+      },
+      {
+        id: 8,
+        code: "CS202",
+        name: "Computer Networks",
+        semester: "Fall 2022",
+        credits: 3,
+        grade: "B",
+        points: 3.0,
+        status: "Completed",
+        instructor: "Prof. David Lee",
+      },
+    ],
+    [],
+  );
 
-  const filteredCourses = useMemo(() =>
-    selectedYear === "all"
-      ? courses
-      : courses.filter((course) =>
-          course.semester.includes(selectedYear.split("-")[0])
-        ), [courses, selectedYear]);
+  const filteredCourses = useMemo(
+    () =>
+      selectedYear === "all"
+        ? courses
+        : courses.filter((course) =>
+            course.semester.includes(selectedYear.split("-")[0]),
+          ),
+    [courses, selectedYear],
+  );
 
   const calculateStats = useCallback(() => {
     const relevantCourses = selectedYear === "all" ? courses : filteredCourses;
     const totalCredits = relevantCourses.reduce(
       (sum, course) => sum + course.credits,
-      0
+      0,
     );
     const totalPoints = relevantCourses.reduce(
       (sum, course) => sum + course.points * course.credits,
-      0
+      0,
     );
     const gpa = totalCredits > 0 ? (totalPoints / totalCredits).toFixed(2) : 0;
 
@@ -138,7 +150,7 @@ const TranscriptViewer = () => {
       "B+": relevantCourses.filter((c) => c.grade === "B+").length,
       B: relevantCourses.filter((c) => c.grade === "B").length,
       Other: relevantCourses.filter(
-        (c) => !["A", "A-", "B+", "B"].includes(c.grade)
+        (c) => !["A", "A-", "B+", "B"].includes(c.grade),
       ).length,
     };
 
@@ -357,7 +369,7 @@ const TranscriptViewer = () => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
                       className={`px-3 py-1 rounded-full text-sm font-medium ${getGradeColor(
-                        course.grade
+                        course.grade,
                       )}`}
                     >
                       {course.grade} ({course.points})
@@ -382,15 +394,15 @@ const TranscriptViewer = () => {
             .filter((year) => year.id !== "all")
             .map((year) => {
               const yearCourses = courses.filter((course) =>
-                course.semester.includes(year.id.split("-")[0])
+                course.semester.includes(year.id.split("-")[0]),
               );
               const yearCredits = yearCourses.reduce(
                 (sum, course) => sum + course.credits,
-                0
+                0,
               );
               const yearPoints = yearCourses.reduce(
                 (sum, course) => sum + course.points * course.credits,
-                0
+                0,
               );
               const yearGPA =
                 yearCredits > 0 ? (yearPoints / yearCredits).toFixed(2) : 0;
@@ -426,7 +438,7 @@ const TranscriptViewer = () => {
                           </div>
                           <span
                             className={`px-2 py-1 rounded text-xs ${getGradeColor(
-                              course.grade
+                              course.grade,
                             )}`}
                           >
                             {course.grade}
@@ -458,7 +470,7 @@ const TranscriptViewer = () => {
                   <div className="flex items-center">
                     <div
                       className={`w-8 h-8 ${getGradeColor(
-                        grade
+                        grade,
                       )} rounded-lg flex items-center justify-center mr-3`}
                     >
                       {grade}
@@ -550,6 +562,6 @@ const TranscriptViewer = () => {
   );
 };
 
-TranscriptViewer.displayName = 'TranscriptViewer';
+TranscriptViewer.displayName = "TranscriptViewer";
 
 export default React.memo(TranscriptViewer);

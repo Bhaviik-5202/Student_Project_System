@@ -3,59 +3,66 @@ import { useNavigate } from "react-router-dom";
 
 const HelpCenter = memo(() => {
   const navigate = useNavigate();
-  const faqs = useMemo(() => [
-    {
-      id: 1,
-      question: "How do I submit a project proposal?",
-      category: "Projects",
-      answer: "Navigate to Projects → New Proposal and fill out the form.",
-    },
-    {
-      id: 2,
-      question: "How can I view my grades?",
-      category: "Grades",
-      answer: "Go to Grades section to view all your course grades.",
-    },
-    {
-      id: 3,
-      question: "How do I schedule a meeting?",
-      category: "Meetings",
-      answer: "Navigate to Meetings → Schedule Meeting and select a time slot.",
-    },
-    {
-      id: 4,
-      question: "How can I reset my password?",
-      category: "Account",
-      answer:
-        "Click on Forgot Password on login page or go to Profile → Security.",
-    },
-    {
-      id: 5,
-      question: "How do I upload assignments?",
-      category: "Assignments",
-      answer: "Go to Assignments → Select assignment → Click Submit.",
-    },
-  ], []);
+  const faqs = useMemo(
+    () => [
+      {
+        id: 1,
+        question: "How do I submit a project proposal?",
+        category: "Projects",
+        answer: "Navigate to Projects → New Proposal and fill out the form.",
+      },
+      {
+        id: 2,
+        question: "How can I view my grades?",
+        category: "Grades",
+        answer: "Go to Grades section to view all your course grades.",
+      },
+      {
+        id: 3,
+        question: "How do I schedule a meeting?",
+        category: "Meetings",
+        answer:
+          "Navigate to Meetings → Schedule Meeting and select a time slot.",
+      },
+      {
+        id: 4,
+        question: "How can I reset my password?",
+        category: "Account",
+        answer:
+          "Click on Forgot Password on login page or go to Profile → Security.",
+      },
+      {
+        id: 5,
+        question: "How do I upload assignments?",
+        category: "Assignments",
+        answer: "Go to Assignments → Select assignment → Click Submit.",
+      },
+    ],
+    [],
+  );
 
   const [selectedCategory, setSelectedCategory] = useState("All");
 
-  const categories = useMemo(() => [
-    "All",
-    "Projects",
-    "Grades",
-    "Meetings",
-    "Account",
-    "Assignments",
-    "Technical",
-  ], []);
+  const categories = useMemo(
+    () => [
+      "All",
+      "Projects",
+      "Grades",
+      "Meetings",
+      "Account",
+      "Assignments",
+      "Technical",
+    ],
+    [],
+  );
 
-  const filteredFaqs = useMemo(() => 
-    faqs.filter(
-      (faq) =>
-        selectedCategory === "All" ||
-        faq.category === selectedCategory
-    ),
-    [faqs, selectedCategory]
+  const filteredFaqs = useMemo(
+    () =>
+      faqs.filter(
+        (faq) =>
+          selectedCategory === "All" || faq.category === selectedCategory,
+      ),
+    [faqs, selectedCategory],
   );
 
   const handleCategoryChange = useCallback((category) => {
@@ -66,7 +73,9 @@ const HelpCenter = memo(() => {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">Help Center</h1>
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
+            Help Center
+          </h1>
           <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
             Find answers to frequently asked questions and get support for
             common issues
@@ -81,7 +90,9 @@ const HelpCenter = memo(() => {
               placeholder="Search for help..."
               className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
             />
-            <button className="absolute right-3 top-3 text-slate-400 dark:text-slate-500">🔍</button>
+            <button className="absolute right-3 top-3 text-slate-400 dark:text-slate-500">
+              🔍
+            </button>
           </div>
         </div>
 
@@ -109,23 +120,25 @@ const HelpCenter = memo(() => {
           </h2>
           <div className="space-y-4">
             {filteredFaqs.map((faq) => (
-                <div
-                  key={faq.id}
-                  className="border-b border-slate-200 dark:border-slate-700 pb-4 last:border-b-0"
-                >
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="font-medium text-slate-900 dark:text-white mb-2">
-                        {faq.question}
-                      </h3>
-                      <p className="text-slate-600 dark:text-slate-400 text-sm">{faq.answer}</p>
-                    </div>
-                    <span className="px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs rounded-full">
-                      {faq.category}
-                    </span>
+              <div
+                key={faq.id}
+                className="border-b border-slate-200 dark:border-slate-700 pb-4 last:border-b-0"
+              >
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="font-medium text-slate-900 dark:text-white mb-2">
+                      {faq.question}
+                    </h3>
+                    <p className="text-slate-600 dark:text-slate-400 text-sm">
+                      {faq.answer}
+                    </p>
                   </div>
+                  <span className="px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs rounded-full">
+                    {faq.category}
+                  </span>
                 </div>
-              ))}
+              </div>
+            ))}
           </div>
         </div>
 
@@ -148,6 +161,6 @@ const HelpCenter = memo(() => {
   );
 });
 
-HelpCenter.displayName = 'HelpCenter';
+HelpCenter.displayName = "HelpCenter";
 
 export default HelpCenter;

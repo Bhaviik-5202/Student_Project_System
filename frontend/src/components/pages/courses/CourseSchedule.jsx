@@ -4,101 +4,100 @@ import React, { memo, useState, useMemo } from "react";
 const CourseSchedule = memo(() => {
   const [selectedDay, setSelectedDay] = useState("Monday");
 
-  const days = useMemo(() => [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ], []);
+  const days = useMemo(
+    () => ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+    [],
+  );
 
-  const scheduleData = useMemo(() => ({
-    Monday: [
-      {
-        time: "09:00 - 10:30",
-        course: "CS401 - Web Technologies",
-        room: "Room 301",
-        instructor: "Dr. Sarah Johnson",
-      },
-      {
-        time: "11:00 - 12:30",
-        course: "CS402 - Database Systems",
-        room: "Lab 204",
-        instructor: "Prof. Michael Brown",
-      },
-      {
-        time: "14:00 - 15:30",
-        course: "CS403 - Software Engineering",
-        room: "Room 305",
-        instructor: "Dr. Emily Davis",
-      },
-    ],
-    Tuesday: [
-      {
-        time: "10:00 - 11:30",
-        course: "CS404 - AI & Machine Learning",
-        room: "Lab 301",
-        instructor: "Dr. Robert Wilson",
-      },
-      {
-        time: "13:00 - 14:30",
-        course: "CS401 - Web Technologies",
-        room: "Room 301",
-        instructor: "Dr. Sarah Johnson",
-      },
-    ],
-    Wednesday: [
-      {
-        time: "09:00 - 12:00",
-        course: "Project Work",
-        room: "Project Lab",
-        instructor: "Team Supervisors",
-      },
-      {
-        time: "14:00 - 16:00",
-        course: "CS402 - Database Systems",
-        room: "Lab 204",
-        instructor: "Prof. Michael Brown",
-      },
-    ],
-    Thursday: [
-      {
-        time: "11:00 - 13:00",
-        course: "CS403 - Software Engineering",
-        room: "Room 305",
-        instructor: "Dr. Emily Davis",
-      },
-      {
-        time: "15:00 - 17:00",
-        course: "Elective: Cybersecurity",
-        room: "Room 402",
-        instructor: "Prof. James Miller",
-      },
-    ],
-    Friday: [
-      {
-        time: "10:00 - 12:00",
-        course: "CS404 - AI & Machine Learning",
-        room: "Lab 301",
-        instructor: "Dr. Robert Wilson",
-      },
-      {
-        time: "13:00 - 15:00",
-        course: "Guest Lecture",
-        room: "Auditorium",
-        instructor: "Industry Expert",
-      },
-    ],
-    Saturday: [
-      {
-        time: "09:00 - 12:00",
-        course: "Self Study / Project Work",
-        room: "Library/Lab",
-        instructor: "Self",
-      },
-    ],
-  }), []);
+  const scheduleData = useMemo(
+    () => ({
+      Monday: [
+        {
+          time: "09:00 - 10:30",
+          course: "CS401 - Web Technologies",
+          room: "Room 301",
+          instructor: "Dr. Sarah Johnson",
+        },
+        {
+          time: "11:00 - 12:30",
+          course: "CS402 - Database Systems",
+          room: "Lab 204",
+          instructor: "Prof. Michael Brown",
+        },
+        {
+          time: "14:00 - 15:30",
+          course: "CS403 - Software Engineering",
+          room: "Room 305",
+          instructor: "Dr. Emily Davis",
+        },
+      ],
+      Tuesday: [
+        {
+          time: "10:00 - 11:30",
+          course: "CS404 - AI & Machine Learning",
+          room: "Lab 301",
+          instructor: "Dr. Robert Wilson",
+        },
+        {
+          time: "13:00 - 14:30",
+          course: "CS401 - Web Technologies",
+          room: "Room 301",
+          instructor: "Dr. Sarah Johnson",
+        },
+      ],
+      Wednesday: [
+        {
+          time: "09:00 - 12:00",
+          course: "Project Work",
+          room: "Project Lab",
+          instructor: "Team Supervisors",
+        },
+        {
+          time: "14:00 - 16:00",
+          course: "CS402 - Database Systems",
+          room: "Lab 204",
+          instructor: "Prof. Michael Brown",
+        },
+      ],
+      Thursday: [
+        {
+          time: "11:00 - 13:00",
+          course: "CS403 - Software Engineering",
+          room: "Room 305",
+          instructor: "Dr. Emily Davis",
+        },
+        {
+          time: "15:00 - 17:00",
+          course: "Elective: Cybersecurity",
+          room: "Room 402",
+          instructor: "Prof. James Miller",
+        },
+      ],
+      Friday: [
+        {
+          time: "10:00 - 12:00",
+          course: "CS404 - AI & Machine Learning",
+          room: "Lab 301",
+          instructor: "Dr. Robert Wilson",
+        },
+        {
+          time: "13:00 - 15:00",
+          course: "Guest Lecture",
+          room: "Auditorium",
+          instructor: "Industry Expert",
+        },
+      ],
+      Saturday: [
+        {
+          time: "09:00 - 12:00",
+          course: "Self Study / Project Work",
+          room: "Library/Lab",
+          instructor: "Self",
+        },
+      ],
+    }),
+    [],
+  );
 
   return (
     <div className="p-6 min-h-screen bg-slate-50 dark:bg-slate-900">
@@ -106,7 +105,9 @@ const CourseSchedule = memo(() => {
         <h1 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">
           Course Schedule
         </h1>
-        <p className="text-slate-600 dark:text-slate-400">Spring Semester 2024</p>
+        <p className="text-slate-600 dark:text-slate-400">
+          Spring Semester 2024
+        </p>
       </div>
 
       {/* Day Selector */}
@@ -141,7 +142,10 @@ const CourseSchedule = memo(() => {
 
         <div className="divide-y divide-slate-200 dark:divide-slate-700">
           {scheduleData[selectedDay].map((classItem, index) => (
-            <div key={index} className="p-4 hover:bg-slate-50 dark:hover:bg-slate-700">
+            <div
+              key={index}
+              className="p-4 hover:bg-slate-50 dark:hover:bg-slate-700"
+            >
               <div className="flex items-start justify-between">
                 <div>
                   <div className="flex items-center mb-2">
@@ -189,7 +193,9 @@ const CourseSchedule = memo(() => {
             <div
               key={day}
               className={`bg-white dark:bg-slate-800 rounded-lg shadow p-4 text-center cursor-pointer hover:shadow-md transition-shadow ${
-                selectedDay === day ? "ring-2 ring-blue-500 dark:ring-blue-400" : ""
+                selectedDay === day
+                  ? "ring-2 ring-blue-500 dark:ring-blue-400"
+                  : ""
               }`}
               onClick={() => setSelectedDay(day)}
             >
@@ -199,7 +205,9 @@ const CourseSchedule = memo(() => {
               <div className="text-2xl font-bold text-slate-800 dark:text-white mb-2">
                 {scheduleData[day].length}
               </div>
-              <div className="text-xs text-slate-500 dark:text-slate-400">Classes</div>
+              <div className="text-xs text-slate-500 dark:text-slate-400">
+                Classes
+              </div>
             </div>
           ))}
         </div>
@@ -208,6 +216,6 @@ const CourseSchedule = memo(() => {
   );
 });
 
-CourseSchedule.displayName = 'CourseSchedule';
+CourseSchedule.displayName = "CourseSchedule";
 
 export default CourseSchedule;

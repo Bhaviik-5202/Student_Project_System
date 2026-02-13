@@ -4,7 +4,8 @@ const AttendanceRow = memo(({ record }) => {
   const statusStyles = {
     green: "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200",
     red: "bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200",
-    yellow: "bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200",
+    yellow:
+      "bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200",
   };
 
   const statusClass = statusStyles[record.statusColor] || statusStyles.green;
@@ -35,7 +36,9 @@ const AttendanceRow = memo(({ record }) => {
         {record.time}
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
-        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}`}>
+        <span
+          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}`}
+        >
           {record.status}
         </span>
       </td>
@@ -48,51 +51,51 @@ AttendanceRow.displayName = "AttendanceRow";
 const StudentAttendance = memo(() => {
   const attendanceRecords = useMemo(
     () => [
-    {
-      date: "2024-02-15",
-      day: "Thursday",
-      meeting: "Project Review Meeting",
-      time: "10:00 AM - 11:30 AM",
-      status: "Present",
-      statusColor: "green",
-    },
-    {
-      date: "2024-02-13",
-      day: "Tuesday",
-      meeting: "Weekly Sync",
-      time: "2:00 PM - 3:00 PM",
-      status: "Present",
-      statusColor: "green",
-    },
-    {
-      date: "2024-02-08",
-      day: "Thursday",
-      meeting: "Group Discussion",
-      time: "11:00 AM - 12:30 PM",
-      status: "Absent",
-      statusColor: "red",
-    },
-    {
-      date: "2024-02-06",
-      day: "Tuesday",
-      meeting: "Project Planning",
-      time: "3:00 PM - 4:00 PM",
-      status: "Present",
-      statusColor: "green",
-    },
+      {
+        date: "2024-02-15",
+        day: "Thursday",
+        meeting: "Project Review Meeting",
+        time: "10:00 AM - 11:30 AM",
+        status: "Present",
+        statusColor: "green",
+      },
+      {
+        date: "2024-02-13",
+        day: "Tuesday",
+        meeting: "Weekly Sync",
+        time: "2:00 PM - 3:00 PM",
+        status: "Present",
+        statusColor: "green",
+      },
+      {
+        date: "2024-02-08",
+        day: "Thursday",
+        meeting: "Group Discussion",
+        time: "11:00 AM - 12:30 PM",
+        status: "Absent",
+        statusColor: "red",
+      },
+      {
+        date: "2024-02-06",
+        day: "Tuesday",
+        meeting: "Project Planning",
+        time: "3:00 PM - 4:00 PM",
+        status: "Present",
+        statusColor: "green",
+      },
     ],
-    []
+    [],
   );
 
   const stats = useMemo(
     () => ({
-    totalMeetings: 12,
-    present: 10,
-    absent: 1,
-    late: 1,
-    attendancePercentage: 83.3,
+      totalMeetings: 12,
+      present: 10,
+      absent: 1,
+      late: 1,
+      attendancePercentage: 83.3,
     }),
-    []
+    [],
   );
 
   return (

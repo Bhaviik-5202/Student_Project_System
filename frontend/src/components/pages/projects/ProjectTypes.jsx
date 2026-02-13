@@ -59,33 +59,33 @@ ProjectTypeRow.propTypes = {
 const ProjectTypesList = memo(() => {
   const projectTypes = useMemo(
     () => [
-    {
-      id: 1,
-      name: "Research Project",
-      description: "Academic research-based projects",
-      duration: "6 months",
-      maxStudents: 2,
-      status: "Active",
-    },
-    {
-      id: 2,
-      name: "Software Development",
-      description: "Web and mobile application development",
-      duration: "4 months",
-      maxStudents: 4,
-      status: "Active",
-    },
-    {
-      id: 3,
-      name: "Hardware Project",
-      description: "IoT and embedded systems projects",
-      duration: "5 months",
-      maxStudents: 3,
-      status: "Active",
-    },
+      {
+        id: 1,
+        name: "Research Project",
+        description: "Academic research-based projects",
+        duration: "6 months",
+        maxStudents: 2,
+        status: "Active",
+      },
+      {
+        id: 2,
+        name: "Software Development",
+        description: "Web and mobile application development",
+        duration: "4 months",
+        maxStudents: 4,
+        status: "Active",
+      },
+      {
+        id: 3,
+        name: "Hardware Project",
+        description: "IoT and embedded systems projects",
+        duration: "5 months",
+        maxStudents: 3,
+        status: "Active",
+      },
     ],
-    []
-    );
+    [],
+  );
 
   return (
     <div className="animate-fade-in">

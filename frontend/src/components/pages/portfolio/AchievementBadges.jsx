@@ -74,19 +74,26 @@ const AchievementBadges = () => {
     },
   ]);
 
-  const filters = useMemo(() => [
-    { id: "all", name: "All Badges", count: 8 },
-    { id: "earned", name: "Earned", count: 5 },
-    { id: "available", name: "Available", count: 3 },
-    { id: "recent", name: "Recent", count: 2 },
-  ], []);
+  const filters = useMemo(
+    () => [
+      { id: "all", name: "All Badges", count: 8 },
+      { id: "earned", name: "Earned", count: 5 },
+      { id: "available", name: "Available", count: 3 },
+      { id: "recent", name: "Recent", count: 2 },
+    ],
+    [],
+  );
 
-  const filteredBadges = useMemo(() => userBadges.filter((badge) => {
-    if (selectedFilter === "earned") return badge.earned;
-    if (selectedFilter === "available") return !badge.earned;
-    if (selectedFilter === "recent") return badge.earned && badge.date;
-    return true;
-  }), [userBadges, selectedFilter]);
+  const filteredBadges = useMemo(
+    () =>
+      userBadges.filter((badge) => {
+        if (selectedFilter === "earned") return badge.earned;
+        if (selectedFilter === "available") return !badge.earned;
+        if (selectedFilter === "recent") return badge.earned && badge.date;
+        return true;
+      }),
+    [userBadges, selectedFilter],
+  );
 
   return (
     <div className="bg-white dark:bg-slate-900 rounded-lg shadow p-6\">
@@ -256,6 +263,6 @@ const AchievementBadges = () => {
   );
 };
 
-AchievementBadges.displayName = 'AchievementBadges';
+AchievementBadges.displayName = "AchievementBadges";
 
 export default React.memo(AchievementBadges);

@@ -52,26 +52,26 @@ import { Menu, Transition } from "@headlessui/react";
 const useAnimatedCounter = (endValue, duration = 1000) => {
   const [count, setCount] = useState(0);
   const numericValue = parseInt(endValue) || 0;
-  
+
   useEffect(() => {
     let startTime = null;
     let animationFrame;
-    
+
     const animate = (currentTime) => {
       if (!startTime) startTime = currentTime;
       const progress = Math.min((currentTime - startTime) / duration, 1);
       const easeOutQuad = 1 - (1 - progress) * (1 - progress);
       setCount(Math.floor(easeOutQuad * numericValue));
-      
+
       if (progress < 1) {
         animationFrame = requestAnimationFrame(animate);
       }
     };
-    
+
     animationFrame = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animationFrame);
   }, [numericValue, duration]);
-  
+
   return count;
 };
 
@@ -79,15 +79,15 @@ const useAnimatedCounter = (endValue, duration = 1000) => {
 const AnimatedStatCard = ({ stat, index, onClick }) => {
   const [isVisible, setIsVisible] = useState(false);
   const numericPart = parseInt(stat.value) || 0;
-  const suffix = stat.value.toString().replace(/[0-9]/g, '');
+  const suffix = stat.value.toString().replace(/[0-9]/g, "");
   const animatedValue = useAnimatedCounter(isVisible ? numericPart : 0, 1200);
   const Icon = stat.icon;
-  
+
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), index * 100);
     return () => clearTimeout(timer);
   }, [index]);
-  
+
   const bgColor =
     stat.color === "blue"
       ? "bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/30 dark:to-blue-800/20"
@@ -124,19 +124,25 @@ const AnimatedStatCard = ({ stat, index, onClick }) => {
   return (
     <div
       className={`group relative bg-white dark:bg-slate-800 rounded-2xl border ${borderColor} p-6 transition-all duration-300 cursor-pointer overflow-hidden ${
-        isVisible ? 'translate-y-0 opacity-100 hover:border-transparent hover:shadow-lg dark:hover:shadow-slate-700/30' : 'translate-y-4 opacity-0'
+        isVisible
+          ? "translate-y-0 opacity-100 hover:border-transparent hover:shadow-lg dark:hover:shadow-slate-700/30"
+          : "translate-y-4 opacity-0"
       }`}
       onClick={onClick}
     >
       {/* Background overlay - same as Quick Access */}
-      <div className={`absolute inset-0 ${bgColor} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
-      
+      <div
+        className={`absolute inset-0 ${bgColor} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
+      />
+
       <div className="relative z-10">
         <div className="flex items-center justify-between mb-6">
           <div
             className={`w-14 h-14 ${bgColor} rounded-xl flex items-center justify-center border ${borderColor}`}
           >
-            <Icon className={`w-7 h-7 ${iconColor} transform transition-transform duration-300 group-hover:scale-125 group-hover:-translate-y-1`} />
+            <Icon
+              className={`w-7 h-7 ${iconColor} transform transition-transform duration-300 group-hover:scale-125 group-hover:-translate-y-1`}
+            />
           </div>
           <span
             className={`text-xs font-semibold px-3 py-1.5 rounded-full ${
@@ -151,16 +157,17 @@ const AnimatedStatCard = ({ stat, index, onClick }) => {
           </span>
         </div>
         <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2 tabular-nums">
-          {numericPart > 0 ? animatedValue : ''}{suffix}
+          {numericPart > 0 ? animatedValue : ""}
+          {suffix}
         </div>
         <div className="text-lg text-gray-600 dark:text-gray-400 font-medium">
           {stat.title}
         </div>
         {/* Progress bar animation */}
         <div className={`h-1 mt-4 rounded-full ${bgColor} overflow-hidden`}>
-          <div 
+          <div
             className={`h-full ${progressColor} rounded-full transition-all duration-1000 ease-out`}
-            style={{ width: isVisible ? '100%' : '0%' }}
+            style={{ width: isVisible ? "100%" : "0%" }}
           />
         </div>
         <div className="mt-4 pt-4 border-t border-gray-100 dark:border-slate-700">
@@ -638,7 +645,9 @@ const Dashboard = () => {
                       {user?.name || "Student"}
                     </span>
                   </h1>
-                  <p className="text-gray-600 dark:text-gray-400 mt-1 text-lg">{greeting}</p>
+                  <p className="text-gray-600 dark:text-gray-400 mt-1 text-lg">
+                    {greeting}
+                  </p>
                   <div className="flex items-center gap-3 mt-3">
                     <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gradient-to-r from-blue-100 to-blue-50 dark:from-blue-900/40 dark:to-blue-800/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700">
                       {user?.role === "admin"
@@ -776,7 +785,9 @@ const Dashboard = () => {
                   ) : (
                     <RefreshIcon className="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-180" />
                   )}
-                  <span>{isLoading ? "Refreshing..." : "Refresh Dashboard"}</span>
+                  <span>
+                    {isLoading ? "Refreshing..." : "Refresh Dashboard"}
+                  </span>
                 </div>
               </button>
 
@@ -854,7 +865,9 @@ const Dashboard = () => {
                 className="group relative px-5 py-2.5 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-xl hover:shadow-xl transition-all duration-300 font-medium shadow-md overflow-hidden"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-red-700 to-red-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <span className="relative z-10 group-hover:scale-105 inline-block transition-transform duration-300">Start Now</span>
+                <span className="relative z-10 group-hover:scale-105 inline-block transition-transform duration-300">
+                  Start Now
+                </span>
               </button>
               <button
                 onClick={() => toast.info("Extension requested")}
@@ -1000,7 +1013,9 @@ const Dashboard = () => {
                       <div className="flex items-center mb-2">
                         <span
                           className={`w-2 h-2 rounded-full mr-2 ${
-                            notification.read ? "bg-gray-300 dark:bg-gray-600" : "bg-blue-500"
+                            notification.read
+                              ? "bg-gray-300 dark:bg-gray-600"
+                              : "bg-blue-500"
                           }`}
                         ></span>
                         <span className="text-xs font-semibold px-2 py-1 rounded bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300">
@@ -1012,7 +1027,9 @@ const Dashboard = () => {
                       </div>
                       <p
                         className={`font-medium ${
-                          notification.read ? "text-gray-700 dark:text-gray-300" : "text-gray-900 dark:text-white"
+                          notification.read
+                            ? "text-gray-700 dark:text-gray-300"
+                            : "text-gray-900 dark:text-white"
                         }`}
                       >
                         {notification.message}
@@ -1099,26 +1116,48 @@ const Dashboard = () => {
 
             <div className="grid grid-cols-2 gap-4">
               {[
-                { icon: DocumentTextIcon, label: "Materials", color: "blue", path: "/course-materials" },
-                { icon: CalendarDaysIcon, label: "Calendar", color: "purple", path: "/meetings" },
-                { icon: ChartBarSquareIcon, label: "Grades", color: "green", path: "/analytics/grades" },
-                { icon: AdjustmentsIcon, label: "Settings", color: "gray", path: "/settings" },
+                {
+                  icon: DocumentTextIcon,
+                  label: "Materials",
+                  color: "blue",
+                  path: "/course-materials",
+                },
+                {
+                  icon: CalendarDaysIcon,
+                  label: "Calendar",
+                  color: "purple",
+                  path: "/meetings",
+                },
+                {
+                  icon: ChartBarSquareIcon,
+                  label: "Grades",
+                  color: "green",
+                  path: "/analytics/grades",
+                },
+                {
+                  icon: AdjustmentsIcon,
+                  label: "Settings",
+                  color: "gray",
+                  path: "/settings",
+                },
               ].map((resource, index) => {
-                const bgColorClass = resource.color === "blue"
-                  ? "bg-blue-50 dark:bg-blue-900/20"
-                  : resource.color === "purple"
-                    ? "bg-purple-50 dark:bg-purple-900/20"
-                    : resource.color === "green"
-                      ? "bg-green-50 dark:bg-green-900/20"
-                      : "bg-gray-50 dark:bg-slate-700/30";
-                const iconColorClass = resource.color === "blue"
-                  ? "text-blue-600 dark:text-blue-400"
-                  : resource.color === "purple"
-                    ? "text-purple-600 dark:text-purple-400"
-                    : resource.color === "green"
-                      ? "text-green-600 dark:text-green-400"
-                      : "text-gray-600 dark:text-gray-400";
-                
+                const bgColorClass =
+                  resource.color === "blue"
+                    ? "bg-blue-50 dark:bg-blue-900/20"
+                    : resource.color === "purple"
+                      ? "bg-purple-50 dark:bg-purple-900/20"
+                      : resource.color === "green"
+                        ? "bg-green-50 dark:bg-green-900/20"
+                        : "bg-gray-50 dark:bg-slate-700/30";
+                const iconColorClass =
+                  resource.color === "blue"
+                    ? "text-blue-600 dark:text-blue-400"
+                    : resource.color === "purple"
+                      ? "text-purple-600 dark:text-purple-400"
+                      : resource.color === "green"
+                        ? "text-green-600 dark:text-green-400"
+                        : "text-gray-600 dark:text-gray-400";
+
                 return (
                   <button
                     key={index}
@@ -1126,12 +1165,18 @@ const Dashboard = () => {
                     className="group relative p-5 border border-gray-200 dark:border-slate-700 rounded-xl hover:border-transparent text-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-slate-800 overflow-hidden hover:shadow-lg dark:hover:shadow-slate-700/30"
                     aria-label={resource.label}
                   >
-                    <div className={`absolute inset-0 ${bgColorClass} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+                    <div
+                      className={`absolute inset-0 ${bgColorClass} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
+                    />
                     <div className="relative z-10">
-                      <div className={`${iconColorClass} flex justify-center mb-3 transform transition-transform duration-300 group-hover:scale-125 group-hover:-translate-y-1`}>
+                      <div
+                        className={`${iconColorClass} flex justify-center mb-3 transform transition-transform duration-300 group-hover:scale-125 group-hover:-translate-y-1`}
+                      >
                         <resource.icon className="w-7 h-7" aria-hidden="true" />
                       </div>
-                      <div className="font-semibold text-gray-900 dark:text-white transition-colors">{resource.label}</div>
+                      <div className="font-semibold text-gray-900 dark:text-white transition-colors">
+                        {resource.label}
+                      </div>
                     </div>
                   </button>
                 );
@@ -1172,11 +1217,17 @@ const Dashboard = () => {
           <div className="mb-6">
             <div className="flex justify-between mb-4">
               <div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">Average Completion</div>
-                <div className="text-3xl font-bold text-gray-900 dark:text-white">72.5%</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+                  Average Completion
+                </div>
+                <div className="text-3xl font-bold text-gray-900 dark:text-white">
+                  72.5%
+                </div>
               </div>
               <div className="text-right">
-                <div className="text-sm text-gray-600 dark:text-gray-400">On Track</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+                  On Track
+                </div>
                 <div className="flex items-center text-green-600 dark:text-green-400 font-bold">
                   <ArrowUpIcon className="w-4 h-4 mr-1" />
                   <span>+5.2%</span>

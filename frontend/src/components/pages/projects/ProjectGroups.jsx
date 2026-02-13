@@ -16,7 +16,9 @@ const GroupCard = memo(({ group }) => {
             <h3 className="text-xl font-semibold text-gray-900 dark:text-white mr-3">
               {group.name}
             </h3>
-            <span className={`px-3 py-1 text-xs font-medium rounded-full ${statusClass}`}>
+            <span
+              className={`px-3 py-1 text-xs font-medium rounded-full ${statusClass}`}
+            >
               {group.status}
             </span>
           </div>
@@ -56,11 +58,15 @@ const GroupCard = memo(({ group }) => {
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
           <div>
             <p className="text-gray-500 dark:text-gray-400">Group ID</p>
-            <p className="font-medium text-gray-900 dark:text-white">{group.id}</p>
+            <p className="font-medium text-gray-900 dark:text-white">
+              {group.id}
+            </p>
           </div>
           <div>
             <p className="text-gray-500 dark:text-gray-400">Project</p>
-            <p className="font-medium text-gray-900 dark:text-white">{group.project}</p>
+            <p className="font-medium text-gray-900 dark:text-white">
+              {group.project}
+            </p>
           </div>
           <div>
             <p className="text-gray-500 dark:text-gray-400">Members Count</p>
@@ -91,26 +97,26 @@ GroupCard.propTypes = {
 const ProjectGroupsList = memo(() => {
   const groups = useMemo(
     () => [
-    {
-      id: "G001",
-      name: "Group A - E-commerce Platform",
-      project: "E-commerce Platform",
-      guide: "Dr. Sarah Johnson",
-      members: ["John Smith", "Sarah Johnson", "Mike Chen"],
-      status: "Active",
-      progress: 65,
-    },
-    {
-      id: "G002",
-      name: "Group B - AI Chatbot",
-      project: "AI Chatbot",
-      guide: "Prof. Michael Chen",
-      members: ["Emily Davis", "David Wilson"],
-      status: "Completed",
-      progress: 100,
-    },
+      {
+        id: "G001",
+        name: "Group A - E-commerce Platform",
+        project: "E-commerce Platform",
+        guide: "Dr. Sarah Johnson",
+        members: ["John Smith", "Sarah Johnson", "Mike Chen"],
+        status: "Active",
+        progress: 65,
+      },
+      {
+        id: "G002",
+        name: "Group B - AI Chatbot",
+        project: "AI Chatbot",
+        guide: "Prof. Michael Chen",
+        members: ["Emily Davis", "David Wilson"],
+        status: "Completed",
+        progress: 100,
+      },
     ],
-    []
+    [],
   );
 
   return (

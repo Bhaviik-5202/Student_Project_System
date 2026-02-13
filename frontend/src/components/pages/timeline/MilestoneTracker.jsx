@@ -51,21 +51,24 @@ const MilestoneTracker = memo(() => {
         },
       ],
     }),
-    []
+    [],
   );
 
   const statusStyles = {
     completed: {
       dot: "bg-emerald-500",
-      badge: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200",
+      badge:
+        "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200",
     },
     "in-progress": {
       dot: "bg-amber-500",
-      badge: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200",
+      badge:
+        "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200",
     },
     pending: {
       dot: "bg-slate-400",
-      badge: "bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200",
+      badge:
+        "bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200",
     },
   };
 
@@ -76,9 +79,15 @@ const MilestoneTracker = memo(() => {
   };
 
   const stats = useMemo(() => {
-    const completed = project.milestones.filter((m) => m.status === "completed").length;
-    const inProgress = project.milestones.filter((m) => m.status === "in-progress").length;
-    const pending = project.milestones.filter((m) => m.status === "pending").length;
+    const completed = project.milestones.filter(
+      (m) => m.status === "completed",
+    ).length;
+    const inProgress = project.milestones.filter(
+      (m) => m.status === "in-progress",
+    ).length;
+    const pending = project.milestones.filter(
+      (m) => m.status === "pending",
+    ).length;
 
     return { completed, inProgress, pending };
   }, [project.milestones]);
@@ -87,7 +96,7 @@ const MilestoneTracker = memo(() => {
     (path) => {
       navigate(path);
     },
-    [navigate]
+    [navigate],
   );
 
   return (
@@ -164,8 +173,8 @@ const MilestoneTracker = memo(() => {
                             milestone.progress === 100
                               ? progressStyles.high
                               : milestone.progress >= 50
-                              ? progressStyles.medium
-                              : progressStyles.low
+                                ? progressStyles.medium
+                                : progressStyles.low
                           }`}
                           style={{ width: `${milestone.progress}%` }}
                         ></div>
@@ -201,7 +210,9 @@ const MilestoneTracker = memo(() => {
             <div className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">
               {stats.inProgress}
             </div>
-            <div className="text-slate-600 dark:text-slate-300">In Progress</div>
+            <div className="text-slate-600 dark:text-slate-300">
+              In Progress
+            </div>
           </div>
           <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
             <div className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">

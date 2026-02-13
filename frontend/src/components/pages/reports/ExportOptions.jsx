@@ -24,7 +24,7 @@ const ExportOptions = memo(() => {
       // Simulate export process
       setTimeout(() => {
         toast.success(
-          `Report exported successfully as ${exportType.toUpperCase()}`
+          `Report exported successfully as ${exportType.toUpperCase()}`,
         );
         setLoading(false);
       }, 1500);

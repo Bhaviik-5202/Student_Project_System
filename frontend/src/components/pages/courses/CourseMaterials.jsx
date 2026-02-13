@@ -4,44 +4,47 @@ import { useParams, useNavigate } from "react-router-dom";
 const CourseMaterials = memo(() => {
   const { id } = useParams();
   const navigate = useNavigate();
-  
-  const materials = useMemo(() => [
-    {
-      id: 1,
-      title: "Lecture 1: Introduction",
-      type: "PDF",
-      date: "Jan 10, 2024",
-      size: "2.4 MB",
-    },
-    {
-      id: 2,
-      title: "Assignment 1 Guidelines",
-      type: "PDF",
-      date: "Jan 12, 2024",
-      size: "1.1 MB",
-    },
-    {
-      id: 3,
-      title: "Week 1 Slides",
-      type: "PPT",
-      date: "Jan 8, 2024",
-      size: "5.3 MB",
-    },
-    {
-      id: 4,
-      title: "Reference Book Chapter",
-      type: "PDF",
-      date: "Jan 15, 2024",
-      size: "8.7 MB",
-    },
-    {
-      id: 5,
-      title: "Tutorial Video",
-      type: "Video",
-      date: "Jan 14, 2024",
-      size: "45.2 MB",
-    },
-  ], []);
+
+  const materials = useMemo(
+    () => [
+      {
+        id: 1,
+        title: "Lecture 1: Introduction",
+        type: "PDF",
+        date: "Jan 10, 2024",
+        size: "2.4 MB",
+      },
+      {
+        id: 2,
+        title: "Assignment 1 Guidelines",
+        type: "PDF",
+        date: "Jan 12, 2024",
+        size: "1.1 MB",
+      },
+      {
+        id: 3,
+        title: "Week 1 Slides",
+        type: "PPT",
+        date: "Jan 8, 2024",
+        size: "5.3 MB",
+      },
+      {
+        id: 4,
+        title: "Reference Book Chapter",
+        type: "PDF",
+        date: "Jan 15, 2024",
+        size: "8.7 MB",
+      },
+      {
+        id: 5,
+        title: "Tutorial Video",
+        type: "Video",
+        date: "Jan 14, 2024",
+        size: "45.2 MB",
+      },
+    ],
+    [],
+  );
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
@@ -53,7 +56,9 @@ const CourseMaterials = memo(() => {
           >
             ← Back to Courses
           </button>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Course Materials</h1>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+            Course Materials
+          </h1>
           <p className="text-slate-600 dark:text-slate-400">
             Access all learning materials and resources
           </p>
@@ -66,7 +71,9 @@ const CourseMaterials = memo(() => {
                 <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
                   Software Engineering (CS401)
                 </h2>
-                <p className="text-slate-600 dark:text-slate-400">Dr. John Smith • Fall 2024</p>
+                <p className="text-slate-600 dark:text-slate-400">
+                  Dr. John Smith • Fall 2024
+                </p>
               </div>
               <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
                 Upload Material
@@ -97,7 +104,10 @@ const CourseMaterials = memo(() => {
               </thead>
               <tbody className="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
                 {materials.map((material) => (
-                  <tr key={material.id} className="hover:bg-slate-50 dark:hover:bg-slate-700">
+                  <tr
+                    key={material.id}
+                    className="hover:bg-slate-50 dark:hover:bg-slate-700"
+                  >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="font-medium text-slate-900 dark:text-white">
                         {material.title}
@@ -109,8 +119,8 @@ const CourseMaterials = memo(() => {
                           material.type === "PDF"
                             ? "bg-rose-100 text-rose-800 dark:bg-rose-900 dark:text-rose-200"
                             : material.type === "Video"
-                            ? "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200"
-                            : "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                              ? "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200"
+                              : "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
                         }`}
                       >
                         {material.type}
@@ -141,6 +151,6 @@ const CourseMaterials = memo(() => {
   );
 });
 
-CourseMaterials.displayName = 'CourseMaterials';
+CourseMaterials.displayName = "CourseMaterials";
 
 export default CourseMaterials;

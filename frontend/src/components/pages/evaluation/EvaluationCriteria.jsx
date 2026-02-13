@@ -4,48 +4,54 @@ import { toast } from "react-hot-toast";
 
 const EvaluationCriteria = memo(() => {
   const navigate = useNavigate();
-  
-  const criteriaSets = useMemo(() => [
-    { id: 1, name: "Project Evaluation", criteria: 6, used: 12 },
-    { id: 2, name: "Assignment Rubric", criteria: 5, used: 24 },
-    { id: 3, name: "Presentation Scoring", criteria: 4, used: 8 },
-  ], []);
 
-  const currentSet = useMemo(() => ({
-    name: "Project Evaluation",
-    criteria: [
-      {
-        id: 1,
-        name: "Technical Implementation",
-        weight: 30,
-        description: "Quality of code and technical execution",
-      },
-      {
-        id: 2,
-        name: "Documentation",
-        weight: 20,
-        description: "Completeness and clarity of documentation",
-      },
-      {
-        id: 3,
-        name: "Presentation",
-        weight: 15,
-        description: "Quality of presentation and delivery",
-      },
-      {
-        id: 4,
-        name: "Teamwork",
-        weight: 15,
-        description: "Collaboration and team contribution",
-      },
-      {
-        id: 5,
-        name: "Innovation",
-        weight: 20,
-        description: "Creativity and innovation in solution",
-      },
+  const criteriaSets = useMemo(
+    () => [
+      { id: 1, name: "Project Evaluation", criteria: 6, used: 12 },
+      { id: 2, name: "Assignment Rubric", criteria: 5, used: 24 },
+      { id: 3, name: "Presentation Scoring", criteria: 4, used: 8 },
     ],
-  }), []);
+    [],
+  );
+
+  const currentSet = useMemo(
+    () => ({
+      name: "Project Evaluation",
+      criteria: [
+        {
+          id: 1,
+          name: "Technical Implementation",
+          weight: 30,
+          description: "Quality of code and technical execution",
+        },
+        {
+          id: 2,
+          name: "Documentation",
+          weight: 20,
+          description: "Completeness and clarity of documentation",
+        },
+        {
+          id: 3,
+          name: "Presentation",
+          weight: 15,
+          description: "Quality of presentation and delivery",
+        },
+        {
+          id: 4,
+          name: "Teamwork",
+          weight: 15,
+          description: "Collaboration and team contribution",
+        },
+        {
+          id: 5,
+          name: "Innovation",
+          weight: 20,
+          description: "Creativity and innovation in solution",
+        },
+      ],
+    }),
+    [],
+  );
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
@@ -147,7 +153,7 @@ const EvaluationCriteria = memo(() => {
                     <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                       {currentSet.criteria.reduce(
                         (sum, c) => sum + c.weight,
-                        0
+                        0,
                       )}
                       %
                     </div>
@@ -162,6 +168,6 @@ const EvaluationCriteria = memo(() => {
   );
 });
 
-EvaluationCriteria.displayName = 'EvaluationCriteria';
+EvaluationCriteria.displayName = "EvaluationCriteria";
 
 export default EvaluationCriteria;

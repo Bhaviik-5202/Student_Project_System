@@ -32,7 +32,7 @@ const Workspace = memo(() => {
         type: "FIG",
       },
     ],
-    []
+    [],
   );
 
   const tasks = useMemo(
@@ -58,7 +58,7 @@ const Workspace = memo(() => {
         status: "Pending",
       },
     ],
-    []
+    [],
   );
 
   return (
@@ -123,7 +123,9 @@ const Workspace = memo(() => {
                     className="flex items-center justify-between p-4 border border-slate-200 dark:border-slate-700 rounded-lg"
                   >
                     <div className="flex items-center">
-                      <span className="text-slate-400 dark:text-slate-500 mr-3 text-xl">📄</span>
+                      <span className="text-slate-400 dark:text-slate-500 mr-3 text-xl">
+                        📄
+                      </span>
                       <div>
                         <div className="font-medium text-slate-900 dark:text-white">
                           {file.name}
@@ -171,8 +173,8 @@ const Workspace = memo(() => {
                         task.status === "Completed"
                           ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
                           : task.status === "In Progress"
-                          ? "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
-                          : "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300"
+                            ? "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
+                            : "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300"
                       }`}
                     >
                       {task.status}

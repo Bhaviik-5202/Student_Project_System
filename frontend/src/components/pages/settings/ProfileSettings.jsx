@@ -55,27 +55,30 @@ const ProfileSettings = memo(() => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   }, []);
 
-  const handleSubmit = useCallback(async (e) => {
-    e.preventDefault();
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
 
-    if (
-      formData.newPassword &&
-      formData.newPassword !== formData.confirmPassword
-    ) {
-      toast.error("New passwords do not match");
-      return;
-    }
+      if (
+        formData.newPassword &&
+        formData.newPassword !== formData.confirmPassword
+      ) {
+        toast.error("New passwords do not match");
+        return;
+      }
 
-    setLoading(true);
-    try {
-      await updateProfile(formData);
-      toast.success("Profile updated successfully");
-    } catch (error) {
-      toast.error("Failed to update profile");
-    } finally {
-      setLoading(false);
-    }
-  }, [formData, updateProfile]);
+      setLoading(true);
+      try {
+        await updateProfile(formData);
+        toast.success("Profile updated successfully");
+      } catch (error) {
+        toast.error("Failed to update profile");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [formData, updateProfile],
+  );
 
   const inputClass =
     "w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500";
@@ -243,6 +246,6 @@ const ProfileSettings = memo(() => {
   );
 });
 
-ProfileSettings.displayName = 'ProfileSettings';
+ProfileSettings.displayName = "ProfileSettings";
 
 export default ProfileSettings;

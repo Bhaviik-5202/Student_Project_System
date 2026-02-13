@@ -52,7 +52,9 @@ const PerformanceTrendChart = memo(({ data }) => {
         <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
           📈 Performance Trend
         </h3>
-        <span className="text-sm text-slate-600 dark:text-slate-400">Last 5 months</span>
+        <span className="text-sm text-slate-600 dark:text-slate-400">
+          Last 5 months
+        </span>
       </div>
 
       <div className="relative h-48">
@@ -182,8 +184,8 @@ const PerformanceTrendChart = memo(({ data }) => {
                 data[data.length - 1].gpa > data[0].gpa
                   ? "text-green-600"
                   : data[data.length - 1].gpa < data[0].gpa
-                  ? "text-red-600"
-                  : "text-gray-600"
+                    ? "text-red-600"
+                    : "text-gray-600"
               }`}
             >
               {data[data.length - 1].gpa > data[0].gpa ? (
@@ -208,6 +210,6 @@ const PerformanceTrendChart = memo(({ data }) => {
       </div>
     </div>
   );
-};
+});
 
 export default PerformanceTrendChart;

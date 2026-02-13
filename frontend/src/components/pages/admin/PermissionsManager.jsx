@@ -20,7 +20,7 @@ const PermissionsManager = memo(() => {
         description: "Access to courses and projects",
       },
     ],
-    []
+    [],
   );
 
   const [permissions, setPermissions] = useState({
@@ -89,7 +89,9 @@ const PermissionsManager = memo(() => {
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
               Permissions Manager
             </h1>
-            <p className="text-slate-600 dark:text-slate-400">Manage user roles and permissions</p>
+            <p className="text-slate-600 dark:text-slate-400">
+              Manage user roles and permissions
+            </p>
           </div>
           <button
             onClick={savePermissions}
@@ -117,7 +119,9 @@ const PermissionsManager = memo(() => {
                         : "border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700"
                     }`}
                   >
-                    <div className="font-medium text-slate-900 dark:text-white">{role.name}</div>
+                    <div className="font-medium text-slate-900 dark:text-white">
+                      {role.name}
+                    </div>
                     <div className="text-sm text-slate-600 dark:text-slate-400">
                       {role.description}
                     </div>
@@ -169,7 +173,10 @@ const PermissionsManager = memo(() => {
                       reporting: "Access and generate reports",
                       backupRestore: "Perform backup and restore operations",
                     }).map(([key, description]) => (
-                      <tr key={key} className="hover:bg-slate-50 dark:hover:bg-slate-700">
+                      <tr
+                        key={key}
+                        className="hover:bg-slate-50 dark:hover:bg-slate-700"
+                      >
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="font-medium text-slate-900 dark:text-white">
                             {key
@@ -178,7 +185,9 @@ const PermissionsManager = memo(() => {
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <div className="text-slate-600 dark:text-slate-400">{description}</div>
+                          <div className="text-slate-600 dark:text-slate-400">
+                            {description}
+                          </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <button

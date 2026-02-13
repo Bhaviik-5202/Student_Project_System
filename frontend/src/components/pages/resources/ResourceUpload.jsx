@@ -16,7 +16,7 @@ const ResourceUpload = memo(() => {
       { value: "template", label: "Template", icon: "fas fa-layer-group" },
       { value: "other", label: "Other", icon: "fas fa-file" },
     ],
-    []
+    [],
   );
 
   const handleFileSelect = useCallback((e) => {
@@ -43,9 +43,12 @@ const ResourceUpload = memo(() => {
     }
   }, [files, showError, showSuccess]);
 
-  const removeFile = useCallback((index) => {
-    setFiles(files.filter((_, i) => i !== index));
-  }, [files]);
+  const removeFile = useCallback(
+    (index) => {
+      setFiles(files.filter((_, i) => i !== index));
+    },
+    [files],
+  );
 
   const handleSelectType = useCallback((value) => {
     setResourceType(value);
@@ -145,7 +148,9 @@ const ResourceUpload = memo(() => {
           {files.length === 0 ? (
             <div className="text-center py-12 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-lg">
               <i className="fas fa-folder-open text-gray-300 dark:text-gray-600 text-4xl mb-3" />
-              <p className="text-gray-500 dark:text-gray-400">No files selected</p>
+              <p className="text-gray-500 dark:text-gray-400">
+                No files selected
+              </p>
             </div>
           ) : (
             <div className="space-y-3 max-h-96 overflow-y-auto">

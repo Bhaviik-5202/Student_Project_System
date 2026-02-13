@@ -4,10 +4,10 @@ import { useLocation, Link } from "react-router-dom";
 
 const Breadcrumb = memo(() => {
   const location = useLocation();
-  
+
   const breadcrumbs = useMemo(() => {
     const pathnames = location.pathname.split("/").filter((x) => x);
-    
+
     const routeNames = {
       dashboard: "Dashboard",
       projects: "Projects",
@@ -45,9 +45,15 @@ const Breadcrumb = memo(() => {
 
       {breadcrumbs.map(({ name, routeTo, isLast, displayName }) => (
         <React.Fragment key={name}>
-          <i className="fas fa-chevron-right mx-2 text-gray-400 dark:text-gray-600" aria-hidden="true"></i>
+          <i
+            className="fas fa-chevron-right mx-2 text-gray-400 dark:text-gray-600"
+            aria-hidden="true"
+          ></i>
           {isLast ? (
-            <span className="font-medium text-gray-900 dark:text-white" aria-current="page">
+            <span
+              className="font-medium text-gray-900 dark:text-white"
+              aria-current="page"
+            >
               {displayName}
             </span>
           ) : (

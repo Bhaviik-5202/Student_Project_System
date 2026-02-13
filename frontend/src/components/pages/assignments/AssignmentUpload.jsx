@@ -30,16 +30,19 @@ const AssignmentUpload = memo(() => {
     });
   }, []);
 
-  const handleSubmit = useCallback(async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+      setLoading(true);
 
-    setTimeout(() => {
-      toast.success("Assignment created successfully");
-      setLoading(false);
-      navigate("/assignments");
-    }, 1500);
-  }, [navigate]);
+      setTimeout(() => {
+        toast.success("Assignment created successfully");
+        setLoading(false);
+        navigate("/assignments");
+      }, 1500);
+    },
+    [navigate],
+  );
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
@@ -54,7 +57,9 @@ const AssignmentUpload = memo(() => {
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
             Create Assignment
           </h1>
-          <p className="text-slate-600 dark:text-slate-400">Create a new assignment for students</p>
+          <p className="text-slate-600 dark:text-slate-400">
+            Create a new assignment for students
+          </p>
         </div>
 
         <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6 max-w-3xl">
@@ -191,7 +196,9 @@ const AssignmentUpload = memo(() => {
                         className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700 rounded-lg"
                       >
                         <div className="flex items-center">
-                          <span className="text-slate-400 dark:text-slate-500 mr-3">📎</span>
+                          <span className="text-slate-400 dark:text-slate-500 mr-3">
+                            📎
+                          </span>
                           <span className="text-sm text-slate-700 dark:text-slate-300">
                             {file.name}
                           </span>

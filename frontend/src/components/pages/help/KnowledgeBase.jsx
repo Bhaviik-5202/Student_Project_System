@@ -3,59 +3,65 @@ import { useNavigate } from "react-router-dom";
 
 const KnowledgeBase = memo(() => {
   const navigate = useNavigate();
-  const categories = useMemo(() => [
-    {
-      id: 1,
-      name: "Getting Started",
-      articles: [
-        { id: 1, title: "How to Create an Account", views: 245 },
-        { id: 2, title: "Navigating the Dashboard", views: 189 },
-        { id: 3, title: "First-Time Setup Guide", views: 156 },
-      ],
-    },
-    {
-      id: 2,
-      name: "Projects",
-      articles: [
-        { id: 4, title: "Creating a Project Proposal", views: 312 },
-        { id: 5, title: "Managing Project Teams", views: 278 },
-        { id: 6, title: "Project Submission Guide", views: 234 },
-      ],
-    },
-    {
-      id: 3,
-      name: "Assignments",
-      articles: [
-        { id: 7, title: "Submitting Assignments", views: 456 },
-        { id: 8, title: "Understanding Grading Rubrics", views: 321 },
-        { id: 9, title: "Late Submission Policy", views: 189 },
-      ],
-    },
-  ], []);
+  const categories = useMemo(
+    () => [
+      {
+        id: 1,
+        name: "Getting Started",
+        articles: [
+          { id: 1, title: "How to Create an Account", views: 245 },
+          { id: 2, title: "Navigating the Dashboard", views: 189 },
+          { id: 3, title: "First-Time Setup Guide", views: 156 },
+        ],
+      },
+      {
+        id: 2,
+        name: "Projects",
+        articles: [
+          { id: 4, title: "Creating a Project Proposal", views: 312 },
+          { id: 5, title: "Managing Project Teams", views: 278 },
+          { id: 6, title: "Project Submission Guide", views: 234 },
+        ],
+      },
+      {
+        id: 3,
+        name: "Assignments",
+        articles: [
+          { id: 7, title: "Submitting Assignments", views: 456 },
+          { id: 8, title: "Understanding Grading Rubrics", views: 321 },
+          { id: 9, title: "Late Submission Policy", views: 189 },
+        ],
+      },
+    ],
+    [],
+  );
 
-  const popularArticles = useMemo(() => [
-    {
-      title: "How to Reset Your Password",
-      category: "Account",
-      views: 512,
-    },
-    {
-      title: "Project Evaluation Process",
-      category: "Projects",
-      views: 489,
-    },
-    {
-      title: "Using the Calendar Feature",
-      category: "Features",
-      views: 421,
-    },
-    {
-      title: "Team Collaboration Tools",
-      category: "Collaboration",
-      views: 398,
-    },
-    { title: "Exporting Reports", category: "Reports", views: 356 },
-  ], []);
+  const popularArticles = useMemo(
+    () => [
+      {
+        title: "How to Reset Your Password",
+        category: "Account",
+        views: 512,
+      },
+      {
+        title: "Project Evaluation Process",
+        category: "Projects",
+        views: 489,
+      },
+      {
+        title: "Using the Calendar Feature",
+        category: "Features",
+        views: 421,
+      },
+      {
+        title: "Team Collaboration Tools",
+        category: "Collaboration",
+        views: 398,
+      },
+      { title: "Exporting Reports", category: "Reports", views: 356 },
+    ],
+    [],
+  );
 
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -90,7 +96,9 @@ const KnowledgeBase = memo(() => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <button className="absolute right-3 top-3 text-slate-400 dark:text-slate-500">🔍</button>
+            <button className="absolute right-3 top-3 text-slate-400 dark:text-slate-500">
+              🔍
+            </button>
           </div>
         </div>
 
@@ -155,6 +163,6 @@ const KnowledgeBase = memo(() => {
   );
 });
 
-KnowledgeBase.displayName = 'KnowledgeBase';
+KnowledgeBase.displayName = "KnowledgeBase";
 
 export default KnowledgeBase;

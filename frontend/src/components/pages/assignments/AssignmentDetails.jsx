@@ -8,7 +8,9 @@ const AssignmentDetails = memo(() => {
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-slate-800 dark:text-white">Assignment Details</h1>
+        <h1 className="text-2xl font-bold text-slate-800 dark:text-white">
+          Assignment Details
+        </h1>
         <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 rounded-full text-sm">
           ID: {id || "ASG-001"}
         </span>
@@ -20,21 +22,33 @@ const AssignmentDetails = memo(() => {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <h3 className="font-medium text-slate-800 dark:text-white mb-3">Basic Details</h3>
+            <h3 className="font-medium text-slate-800 dark:text-white mb-3">
+              Basic Details
+            </h3>
             <div className="space-y-3">
               <div>
-                <label className="text-sm text-slate-600 dark:text-slate-400">Title</label>
+                <label className="text-sm text-slate-600 dark:text-slate-400">
+                  Title
+                </label>
                 <p className="font-medium text-slate-900 dark:text-white">
                   Web Development Project - E-commerce Platform
                 </p>
               </div>
               <div>
-                <label className="text-sm text-slate-600 dark:text-slate-400">Course</label>
-                <p className="font-medium text-slate-900 dark:text-white">CS401 - Advanced Web Technologies</p>
+                <label className="text-sm text-slate-600 dark:text-slate-400">
+                  Course
+                </label>
+                <p className="font-medium text-slate-900 dark:text-white">
+                  CS401 - Advanced Web Technologies
+                </p>
               </div>
               <div>
-                <label className="text-sm text-slate-600 dark:text-slate-400">Due Date</label>
-                <p className="font-medium text-rose-600 dark:text-rose-400">April 30, 2024</p>
+                <label className="text-sm text-slate-600 dark:text-slate-400">
+                  Due Date
+                </label>
+                <p className="font-medium text-rose-600 dark:text-rose-400">
+                  April 30, 2024
+                </p>
               </div>
             </div>
           </div>
@@ -45,18 +59,28 @@ const AssignmentDetails = memo(() => {
             </h3>
             <div className="space-y-3">
               <div>
-                <label className="text-sm text-slate-600 dark:text-slate-400">Status</label>
+                <label className="text-sm text-slate-600 dark:text-slate-400">
+                  Status
+                </label>
                 <span className="ml-2 px-2 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300 rounded text-xs">
                   Pending
                 </span>
               </div>
               <div>
-                <label className="text-sm text-slate-600 dark:text-slate-400">Submitted Files</label>
-                <p className="font-medium text-slate-900 dark:text-white">3 files</p>
+                <label className="text-sm text-slate-600 dark:text-slate-400">
+                  Submitted Files
+                </label>
+                <p className="font-medium text-slate-900 dark:text-white">
+                  3 files
+                </p>
               </div>
               <div>
-                <label className="text-sm text-slate-600 dark:text-slate-400">Grade</label>
-                <p className="font-medium text-slate-900 dark:text-white">Not yet graded</p>
+                <label className="text-sm text-slate-600 dark:text-slate-400">
+                  Grade
+                </label>
+                <p className="font-medium text-slate-900 dark:text-white">
+                  Not yet graded
+                </p>
               </div>
             </div>
           </div>
@@ -77,16 +101,28 @@ const AssignmentDetails = memo(() => {
         </div>
 
         <div className="mt-8">
-          <h3 className="font-medium text-slate-800 dark:text-white mb-4">Requirements</h3>
+          <h3 className="font-medium text-slate-800 dark:text-white mb-4">
+            Requirements
+          </h3>
           <ul className="list-disc pl-5 space-y-2">
             <li className="text-slate-700 dark:text-slate-300">
               User registration and login system
             </li>
-            <li className="text-slate-700 dark:text-slate-300">Product catalog with categories</li>
-            <li className="text-slate-700 dark:text-slate-300">Shopping cart functionality</li>
-            <li className="text-slate-700 dark:text-slate-300">Payment gateway integration</li>
-            <li className="text-slate-700 dark:text-slate-300">Admin dashboard</li>
-            <li className="text-slate-700 dark:text-slate-300">Order management system</li>
+            <li className="text-slate-700 dark:text-slate-300">
+              Product catalog with categories
+            </li>
+            <li className="text-slate-700 dark:text-slate-300">
+              Shopping cart functionality
+            </li>
+            <li className="text-slate-700 dark:text-slate-300">
+              Payment gateway integration
+            </li>
+            <li className="text-slate-700 dark:text-slate-300">
+              Admin dashboard
+            </li>
+            <li className="text-slate-700 dark:text-slate-300">
+              Order management system
+            </li>
           </ul>
         </div>
 

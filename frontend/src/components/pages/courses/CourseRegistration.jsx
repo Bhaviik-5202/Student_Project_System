@@ -4,54 +4,57 @@ import { toast } from "react-hot-toast";
 
 const CourseRegistration = memo(() => {
   const navigate = useNavigate();
-  
-  const availableCourses = useMemo(() => [
-    {
-      id: 1,
-      code: "CS401",
-      title: "Software Engineering",
-      instructor: "Dr. Smith",
-      credits: 3,
-      schedule: "Mon/Wed 10:00 AM",
-      seats: 15,
-    },
-    {
-      id: 2,
-      code: "CS402",
-      title: "Database Systems",
-      instructor: "Dr. Johnson",
-      credits: 3,
-      schedule: "Tue/Thu 2:00 PM",
-      seats: 20,
-    },
-    {
-      id: 3,
-      code: "CS403",
-      title: "Web Development",
-      instructor: "Dr. Williams",
-      credits: 3,
-      schedule: "Mon/Wed 1:00 PM",
-      seats: 12,
-    },
-    {
-      id: 4,
-      code: "CS404",
-      title: "Data Structures",
-      instructor: "Dr. Brown",
-      credits: 4,
-      schedule: "Tue/Thu 9:00 AM",
-      seats: 18,
-    },
-    {
-      id: 5,
-      code: "CS405",
-      title: "Machine Learning",
-      instructor: "Dr. Davis",
-      credits: 4,
-      schedule: "Mon/Wed 3:00 PM",
-      seats: 10,
-    },
-  ], []);
+
+  const availableCourses = useMemo(
+    () => [
+      {
+        id: 1,
+        code: "CS401",
+        title: "Software Engineering",
+        instructor: "Dr. Smith",
+        credits: 3,
+        schedule: "Mon/Wed 10:00 AM",
+        seats: 15,
+      },
+      {
+        id: 2,
+        code: "CS402",
+        title: "Database Systems",
+        instructor: "Dr. Johnson",
+        credits: 3,
+        schedule: "Tue/Thu 2:00 PM",
+        seats: 20,
+      },
+      {
+        id: 3,
+        code: "CS403",
+        title: "Web Development",
+        instructor: "Dr. Williams",
+        credits: 3,
+        schedule: "Mon/Wed 1:00 PM",
+        seats: 12,
+      },
+      {
+        id: 4,
+        code: "CS404",
+        title: "Data Structures",
+        instructor: "Dr. Brown",
+        credits: 4,
+        schedule: "Tue/Thu 9:00 AM",
+        seats: 18,
+      },
+      {
+        id: 5,
+        code: "CS405",
+        title: "Machine Learning",
+        instructor: "Dr. Davis",
+        credits: 4,
+        schedule: "Mon/Wed 3:00 PM",
+        seats: 10,
+      },
+    ],
+    [],
+  );
 
   const [selectedCourses, setSelectedCourses] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -60,7 +63,7 @@ const CourseRegistration = memo(() => {
     setSelectedCourses((prev) =>
       prev.includes(courseId)
         ? prev.filter((id) => id !== courseId)
-        : [...prev, courseId]
+        : [...prev, courseId],
     );
   }, []);
 
@@ -74,7 +77,7 @@ const CourseRegistration = memo(() => {
 
     setTimeout(() => {
       toast.success(
-        `Successfully registered for ${selectedCourses.length} course(s)`
+        `Successfully registered for ${selectedCourses.length} course(s)`,
       );
       setLoading(false);
       setSelectedCourses([]);
@@ -82,12 +85,14 @@ const CourseRegistration = memo(() => {
     }, 1500);
   }, [selectedCourses, navigate]);
 
-  const totalCredits = useMemo(() => 
-    selectedCourses.reduce((total, courseId) => {
-      const course = availableCourses.find((c) => c.id === courseId);
-      return total + (course?.credits || 0);
-    }, 0)
-  , [selectedCourses, availableCourses]);
+  const totalCredits = useMemo(
+    () =>
+      selectedCourses.reduce((total, courseId) => {
+        const course = availableCourses.find((c) => c.id === courseId);
+        return total + (course?.credits || 0);
+      }, 0),
+    [selectedCourses, availableCourses],
+  );
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
@@ -169,16 +174,28 @@ const CourseRegistration = memo(() => {
 
               <div className="mb-6">
                 <div className="flex justify-between items-center mb-2">
-                  <div className="text-slate-600 dark:text-slate-400">Selected Courses</div>
-                  <div className="font-medium text-slate-900 dark:text-white">{selectedCourses.length}</div>
+                  <div className="text-slate-600 dark:text-slate-400">
+                    Selected Courses
+                  </div>
+                  <div className="font-medium text-slate-900 dark:text-white">
+                    {selectedCourses.length}
+                  </div>
                 </div>
                 <div className="flex justify-between items-center mb-2">
-                  <div className="text-slate-600 dark:text-slate-400">Total Credits</div>
-                  <div className="font-medium text-slate-900 dark:text-white">{totalCredits}</div>
+                  <div className="text-slate-600 dark:text-slate-400">
+                    Total Credits
+                  </div>
+                  <div className="font-medium text-slate-900 dark:text-white">
+                    {totalCredits}
+                  </div>
                 </div>
                 <div className="flex justify-between items-center">
-                  <div className="text-slate-600 dark:text-slate-400">Maximum Allowed</div>
-                  <div className="font-medium text-slate-900 dark:text-white">18 Credits</div>
+                  <div className="text-slate-600 dark:text-slate-400">
+                    Maximum Allowed
+                  </div>
+                  <div className="font-medium text-slate-900 dark:text-white">
+                    18 Credits
+                  </div>
                 </div>
               </div>
 
@@ -189,7 +206,7 @@ const CourseRegistration = memo(() => {
                 <div className="space-y-2 max-h-48 overflow-y-auto">
                   {selectedCourses.map((courseId) => {
                     const course = availableCourses.find(
-                      (c) => c.id === courseId
+                      (c) => c.id === courseId,
                     );
                     return (
                       <div
@@ -257,6 +274,6 @@ const CourseRegistration = memo(() => {
   );
 });
 
-CourseRegistration.displayName = 'CourseRegistration';
+CourseRegistration.displayName = "CourseRegistration";
 
 export default CourseRegistration;

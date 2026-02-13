@@ -34,7 +34,7 @@ const ChatWindow = memo(() => {
         isMe: false,
       },
     ],
-    []
+    [],
   );
   const [newMessage, setNewMessage] = useState("");
 
@@ -46,7 +46,7 @@ const ChatWindow = memo(() => {
       { name: "Sarah Williams", role: "Tester", online: true },
       { name: "You", role: "Developer", online: true },
     ],
-    []
+    [],
   );
 
   return (
@@ -61,8 +61,12 @@ const ChatWindow = memo(() => {
           </button>
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Team Chat</h1>
-              <p className="text-slate-600 dark:text-slate-400">Database Design Project Team</p>
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+                Team Chat
+              </h1>
+              <p className="text-slate-600 dark:text-slate-400">
+                Database Design Project Team
+              </p>
             </div>
             <div className="flex gap-3">
               <button className="px-3 py-1 bg-blue-600 dark:bg-blue-700 text-white text-sm rounded-lg hover:bg-blue-700 dark:hover:bg-blue-800">
@@ -97,7 +101,9 @@ const ChatWindow = memo(() => {
                       <div className="font-medium text-slate-900 dark:text-white">
                         {member.name}
                       </div>
-                      <div className="text-sm text-slate-600 dark:text-slate-400">{member.role}</div>
+                      <div className="text-sm text-slate-600 dark:text-slate-400">
+                        {member.role}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -126,7 +132,9 @@ const ChatWindow = memo(() => {
                           {message.sender}
                         </div>
                       )}
-                      <div className="text-slate-700 dark:text-slate-200">{message.text}</div>
+                      <div className="text-slate-700 dark:text-slate-200">
+                        {message.text}
+                      </div>
                       <div className="text-xs text-slate-500 dark:text-slate-400 mt-2">
                         {message.time}
                       </div>

@@ -13,16 +13,19 @@ const AssignmentSubmission = memo(() => {
   });
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = useCallback(async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+      setLoading(true);
 
-    setTimeout(() => {
-      toast.success("Assignment submitted successfully");
-      setLoading(false);
-      navigate("/assignments");
-    }, 1500);
-  }, [navigate]);
+      setTimeout(() => {
+        toast.success("Assignment submitted successfully");
+        setLoading(false);
+        navigate("/assignments");
+      }, 1500);
+    },
+    [navigate],
+  );
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
@@ -37,7 +40,9 @@ const AssignmentSubmission = memo(() => {
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
             Submit Assignment
           </h1>
-          <p className="text-slate-600 dark:text-slate-400">Web App Prototype • Due: Jan 22, 2024</p>
+          <p className="text-slate-600 dark:text-slate-400">
+            Web App Prototype • Due: Jan 22, 2024
+          </p>
         </div>
 
         <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6 max-w-3xl">
@@ -101,7 +106,9 @@ const AssignmentSubmission = memo(() => {
                         strokeLinejoin="round"
                       />
                     </svg>
-                    <p className="mt-2 text-slate-700 dark:text-slate-300">Click to upload or drag and drop</p>
+                    <p className="mt-2 text-slate-700 dark:text-slate-300">
+                      Click to upload or drag and drop
+                    </p>
                     <p className="text-sm text-slate-500 dark:text-slate-400">
                       PDF, DOC, ZIP up to 50MB
                     </p>
@@ -136,7 +143,7 @@ const AssignmentSubmission = memo(() => {
               <button
                 type="button"
                 onClick={() => navigate("/assignments")}
-                className="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700">
+                className="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700"
               >
                 Cancel
               </button>

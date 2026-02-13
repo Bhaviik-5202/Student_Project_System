@@ -56,14 +56,14 @@ const GradeDistribution = memo(() => {
         f: 1,
       },
     ],
-    []
+    [],
   );
 
   const [selectedCourse, setSelectedCourse] = useState(1);
 
   const selectedCourseData = useMemo(
     () => courses.find((c) => c.id === selectedCourse),
-    [courses, selectedCourse]
+    [courses, selectedCourse],
   );
 
   const gradeItems = useMemo(
@@ -94,7 +94,7 @@ const GradeDistribution = memo(() => {
         color: "bg-rose-500",
       },
     ],
-    [selectedCourseData]
+    [selectedCourseData],
   );
 
   return (
@@ -188,7 +188,9 @@ const GradeDistribution = memo(() => {
                     <div className="text-2xl font-bold text-slate-900 dark:text-white">
                       {selectedCourseData?.avgGrade}%
                     </div>
-                    <div className="text-sm text-slate-600 dark:text-slate-400">Average Grade</div>
+                    <div className="text-sm text-slate-600 dark:text-slate-400">
+                      Average Grade
+                    </div>
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-slate-900 dark:text-white">
@@ -204,7 +206,9 @@ const GradeDistribution = memo(() => {
                     <div className="text-2xl font-bold text-slate-900 dark:text-white">
                       {selectedCourseData?.f || 0}
                     </div>
-                    <div className="text-sm text-slate-600 dark:text-slate-400">Failed Students</div>
+                    <div className="text-sm text-slate-600 dark:text-slate-400">
+                      Failed Students
+                    </div>
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-slate-900 dark:text-white">
@@ -216,7 +220,9 @@ const GradeDistribution = memo(() => {
                           selectedCourseData.f
                         : 0}
                     </div>
-                    <div className="text-sm text-slate-600 dark:text-slate-400">Total Students</div>
+                    <div className="text-sm text-slate-600 dark:text-slate-400">
+                      Total Students
+                    </div>
                   </div>
                 </div>
               </div>

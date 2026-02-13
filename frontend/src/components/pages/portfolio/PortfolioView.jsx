@@ -3,101 +3,107 @@ import React, { useState, useMemo, useCallback } from "react";
 const PortfolioView = () => {
   const [activeTab, setActiveTab] = useState("overview");
 
-  const portfolioData = useMemo(() => ({
-    student: {
-      name: "Alex Johnson",
-      title: "Software Engineering Student",
-      university: "Tech University",
-      major: "Computer Science",
-      graduation: "May 2024",
-      email: "alex.johnson@techuniversity.edu",
-      avatar: "https://via.placeholder.com/150",
-    },
-    stats: {
-      projects: 12,
-      skills: 15,
-      achievements: 8,
-      contributions: 42,
-    },
-    projects: [
-      {
-        id: 1,
-        name: "E-Commerce Platform",
-        description: "Full-stack e-commerce solution with React and Node.js",
-        status: "Completed",
-        date: "Jan 2024",
-        technologies: ["React", "Node.js", "MongoDB"],
-        thumbnail: "https://via.placeholder.com/300x200",
+  const portfolioData = useMemo(
+    () => ({
+      student: {
+        name: "Alex Johnson",
+        title: "Software Engineering Student",
+        university: "Tech University",
+        major: "Computer Science",
+        graduation: "May 2024",
+        email: "alex.johnson@techuniversity.edu",
+        avatar: "https://via.placeholder.com/150",
       },
-      {
-        id: 2,
-        name: "AI Research Assistant",
-        description: "Machine learning model for research paper analysis",
-        status: "In Progress",
-        date: "Dec 2023",
-        technologies: ["Python", "TensorFlow", "NLP"],
-        thumbnail: "https://via.placeholder.com/300x200",
+      stats: {
+        projects: 12,
+        skills: 15,
+        achievements: 8,
+        contributions: 42,
       },
-      {
-        id: 3,
-        name: "Campus Navigation App",
-        description: "Mobile application for campus navigation and events",
-        status: "Completed",
-        date: "Nov 2023",
-        technologies: ["React Native", "Firebase"],
-        thumbnail: "https://via.placeholder.com/300x200",
-      },
-    ],
-    skills: [
-      { name: "JavaScript", level: 90, category: "Frontend" },
-      { name: "React", level: 85, category: "Frontend" },
-      { name: "Node.js", level: 80, category: "Backend" },
-      { name: "Python", level: 75, category: "Backend" },
-      { name: "UI/UX Design", level: 70, category: "Design" },
-      { name: "Project Management", level: 85, category: "Soft Skills" },
-    ],
-    achievements: [
-      {
-        id: 1,
-        title: "Best Project Award",
-        date: "2024",
-        issuer: "Tech University",
-      },
-      {
-        id: 2,
-        title: "Dean's List",
-        date: "2023",
-        issuer: "College of Engineering",
-      },
-      {
-        id: 3,
-        title: "Hackathon Winner",
-        date: "2023",
-        issuer: "Local Tech Community",
-      },
-    ],
-    education: [
-      {
-        degree: "B.S. Computer Science",
-        school: "Tech University",
-        year: "2020-2024",
-      },
-      {
-        degree: "High School Diploma",
-        school: "Central High",
-        year: "2016-2020",
-      },
-    ],
-  }), []);
+      projects: [
+        {
+          id: 1,
+          name: "E-Commerce Platform",
+          description: "Full-stack e-commerce solution with React and Node.js",
+          status: "Completed",
+          date: "Jan 2024",
+          technologies: ["React", "Node.js", "MongoDB"],
+          thumbnail: "https://via.placeholder.com/300x200",
+        },
+        {
+          id: 2,
+          name: "AI Research Assistant",
+          description: "Machine learning model for research paper analysis",
+          status: "In Progress",
+          date: "Dec 2023",
+          technologies: ["Python", "TensorFlow", "NLP"],
+          thumbnail: "https://via.placeholder.com/300x200",
+        },
+        {
+          id: 3,
+          name: "Campus Navigation App",
+          description: "Mobile application for campus navigation and events",
+          status: "Completed",
+          date: "Nov 2023",
+          technologies: ["React Native", "Firebase"],
+          thumbnail: "https://via.placeholder.com/300x200",
+        },
+      ],
+      skills: [
+        { name: "JavaScript", level: 90, category: "Frontend" },
+        { name: "React", level: 85, category: "Frontend" },
+        { name: "Node.js", level: 80, category: "Backend" },
+        { name: "Python", level: 75, category: "Backend" },
+        { name: "UI/UX Design", level: 70, category: "Design" },
+        { name: "Project Management", level: 85, category: "Soft Skills" },
+      ],
+      achievements: [
+        {
+          id: 1,
+          title: "Best Project Award",
+          date: "2024",
+          issuer: "Tech University",
+        },
+        {
+          id: 2,
+          title: "Dean's List",
+          date: "2023",
+          issuer: "College of Engineering",
+        },
+        {
+          id: 3,
+          title: "Hackathon Winner",
+          date: "2023",
+          issuer: "Local Tech Community",
+        },
+      ],
+      education: [
+        {
+          degree: "B.S. Computer Science",
+          school: "Tech University",
+          year: "2020-2024",
+        },
+        {
+          degree: "High School Diploma",
+          school: "Central High",
+          year: "2016-2020",
+        },
+      ],
+    }),
+    [],
+  );
 
-  const tabs = useMemo(() => [
-    { id: "overview", name: "Overview", icon: "fas fa-home" },
-    { id: "projects", name: "Projects", icon: "fas fa-project-diagram" },
-    { id: "skills", name: "Skills", icon: "fas fa-code" },
-    { id: "achievements", name: "Achievements", icon: "fas fa-trophy" },
-    { id: "education", name: "Education", icon: "fas fa-graduation-cap" },
-    { id: "contact", name: "Contact", icon: "fas fa-envelope" },
-  ], []);
+  const tabs = useMemo(
+    () => [
+      { id: "overview", name: "Overview", icon: "fas fa-home" },
+      { id: "projects", name: "Projects", icon: "fas fa-project-diagram" },
+      { id: "skills", name: "Skills", icon: "fas fa-code" },
+      { id: "achievements", name: "Achievements", icon: "fas fa-trophy" },
+      { id: "education", name: "Education", icon: "fas fa-graduation-cap" },
+      { id: "contact", name: "Contact", icon: "fas fa-envelope" },
+    ],
+    [],
+  );
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -276,15 +282,15 @@ const PortfolioView = () => {
                 {["Frontend", "Backend", "Design", "Soft Skills"].map(
                   (category) => {
                     const categorySkills = portfolioData.skills.filter(
-                      (s) => s.category === category
+                      (s) => s.category === category,
                     );
                     const avgLevel =
                       categorySkills.length > 0
                         ? Math.round(
                             categorySkills.reduce(
                               (sum, s) => sum + s.level,
-                              0
-                            ) / categorySkills.length
+                              0,
+                            ) / categorySkills.length,
                           )
                         : 0;
 
@@ -299,7 +305,7 @@ const PortfolioView = () => {
                         </div>
                       </div>
                     );
-                  }
+                  },
                 )}
               </div>
             </div>
@@ -481,7 +487,7 @@ const PortfolioView = () => {
                       <i className={`fab fa-${platform} mr-2`}></i>
                       {platform}
                     </button>
-                  )
+                  ),
                 )}
               </div>
             </div>
@@ -579,6 +585,6 @@ const PortfolioView = () => {
   );
 };
 
-PortfolioView.displayName = 'PortfolioView';
+PortfolioView.displayName = "PortfolioView";
 
 export default React.memo(PortfolioView);

@@ -28,78 +28,78 @@ const TutorialVideos = memo(() => {
       { id: "reports", name: "Reports", count: 4 },
       { id: "collaboration", name: "Collaboration", count: 6 },
     ],
-    []
+    [],
   );
 
   const videos = useMemo(
     () => [
-    {
-      id: 1,
-      title: "Getting Started with Project Management",
-      category: "getting-started",
-      duration: "12:45",
-      views: 1560,
-      date: "2024-01-10",
-      thumbnail: "https://via.placeholder.com/300x180",
-      description: "Learn the basics of using our project management system",
-    },
-    {
-      id: 2,
-      title: "Creating Your First Project",
-      category: "projects",
-      duration: "18:30",
-      views: 980,
-      date: "2024-01-12",
-      thumbnail: "https://via.placeholder.com/300x180",
-      description: "Step-by-step guide to creating and managing projects",
-    },
-    {
-      id: 3,
-      title: "Advanced Reporting Features",
-      category: "reports",
-      duration: "22:15",
-      views: 720,
-      date: "2024-01-08",
-      thumbnail: "https://via.placeholder.com/300x180",
-      description: "Master the reporting and analytics tools",
-    },
-    {
-      id: 4,
-      title: "Team Collaboration Tools",
-      category: "collaboration",
-      duration: "15:20",
-      views: 890,
-      date: "2024-01-05",
-      thumbnail: "https://via.placeholder.com/300x180",
-      description: "How to effectively collaborate with your team",
-    },
-    {
-      id: 5,
-      title: "Time Management & Deadlines",
-      category: "projects",
-      duration: "20:10",
-      views: 640,
-      date: "2024-01-03",
-      thumbnail: "https://via.placeholder.com/300x180",
-      description: "Manage project timelines and meet deadlines",
-    },
-    {
-      id: 6,
-      title: "Mobile App Tutorial",
-      category: "getting-started",
-      duration: "14:25",
-      views: 1120,
-      date: "2024-01-15",
-      thumbnail: "https://via.placeholder.com/300x180",
-      description: "Using the project management app on mobile devices",
-    },
+      {
+        id: 1,
+        title: "Getting Started with Project Management",
+        category: "getting-started",
+        duration: "12:45",
+        views: 1560,
+        date: "2024-01-10",
+        thumbnail: "https://via.placeholder.com/300x180",
+        description: "Learn the basics of using our project management system",
+      },
+      {
+        id: 2,
+        title: "Creating Your First Project",
+        category: "projects",
+        duration: "18:30",
+        views: 980,
+        date: "2024-01-12",
+        thumbnail: "https://via.placeholder.com/300x180",
+        description: "Step-by-step guide to creating and managing projects",
+      },
+      {
+        id: 3,
+        title: "Advanced Reporting Features",
+        category: "reports",
+        duration: "22:15",
+        views: 720,
+        date: "2024-01-08",
+        thumbnail: "https://via.placeholder.com/300x180",
+        description: "Master the reporting and analytics tools",
+      },
+      {
+        id: 4,
+        title: "Team Collaboration Tools",
+        category: "collaboration",
+        duration: "15:20",
+        views: 890,
+        date: "2024-01-05",
+        thumbnail: "https://via.placeholder.com/300x180",
+        description: "How to effectively collaborate with your team",
+      },
+      {
+        id: 5,
+        title: "Time Management & Deadlines",
+        category: "projects",
+        duration: "20:10",
+        views: 640,
+        date: "2024-01-03",
+        thumbnail: "https://via.placeholder.com/300x180",
+        description: "Manage project timelines and meet deadlines",
+      },
+      {
+        id: 6,
+        title: "Mobile App Tutorial",
+        category: "getting-started",
+        duration: "14:25",
+        views: 1120,
+        date: "2024-01-15",
+        thumbnail: "https://via.placeholder.com/300x180",
+        description: "Using the project management app on mobile devices",
+      },
     ],
-    []
+    [],
   );
 
   const currentVideo = useMemo(
     () => videos.find((video) => video.id === activeVideo),
-    [videos, activeVideo]
+    [videos, activeVideo],
   );
 
   const filteredVideos = useMemo(() => {
@@ -185,14 +185,18 @@ const TutorialVideos = memo(() => {
                 </span>
               </div>
               <div>
-                <span className="text-gray-600 dark:text-gray-400">Category:</span>
+                <span className="text-gray-600 dark:text-gray-400">
+                  Category:
+                </span>
                 <span className="font-medium ml-2 capitalize text-gray-800 dark:text-white">
                   {currentVideo?.category.replace("-", " ")}
                 </span>
               </div>
               <div>
                 <span className="text-gray-600 dark:text-gray-400">Likes:</span>
-                <span className="font-medium ml-2 text-gray-800 dark:text-white">142</span>
+                <span className="font-medium ml-2 text-gray-800 dark:text-white">
+                  142
+                </span>
               </div>
             </div>
           </div>
@@ -278,19 +282,27 @@ const TutorialVideos = memo(() => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="text-center p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
             <div className="text-2xl font-bold text-blue-600">24</div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Total Videos</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">
+              Total Videos
+            </div>
           </div>
           <div className="text-center p-4 bg-green-50 dark:bg-green-900/30 rounded-lg">
             <div className="text-2xl font-bold text-green-600">4.5K</div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Total Views</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">
+              Total Views
+            </div>
           </div>
           <div className="text-center p-4 bg-purple-50 dark:bg-purple-900/30 rounded-lg">
             <div className="text-2xl font-bold text-purple-600">6.2</div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Avg. Rating</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">
+              Avg. Rating
+            </div>
           </div>
           <div className="text-center p-4 bg-yellow-50 dark:bg-yellow-900/30 rounded-lg">
             <div className="text-2xl font-bold text-yellow-600">98%</div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">Satisfaction</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">
+              Satisfaction
+            </div>
           </div>
         </div>
       </div>

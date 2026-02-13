@@ -13,7 +13,7 @@ const Visualizations = memo(() => {
       { label: "D", value: 10, color: "bg-orange-500" },
       { label: "F", value: 5, color: "bg-rose-500" },
     ],
-    []
+    [],
   );
 
   const courseEnrollments = useMemo(
@@ -28,7 +28,7 @@ const Visualizations = memo(() => {
       { course: "Data Structures", enrollment: 40, capacity: 45 },
       { course: "Machine Learning", enrollment: 30, capacity: 35 },
     ],
-    []
+    [],
   );
 
   const performanceMonths = useMemo(
@@ -39,7 +39,7 @@ const Visualizations = memo(() => {
       { month: "Dec", overall: 78, attendance: 82, assignments: 75 },
       { month: "Jan", overall: 82, attendance: 85, assignments: 80 },
     ],
-    []
+    [],
   );
 
   return (
@@ -84,8 +84,12 @@ const Visualizations = memo(() => {
                     className={`w-12 ${bar.color} rounded-t-lg`}
                     style={{ height: `${bar.value * 2}px` }}
                   ></div>
-                  <div className="text-sm text-slate-600 dark:text-slate-400 mt-2">{bar.label}</div>
-                  <div className="text-xs text-slate-500 dark:text-slate-400">{bar.value}%</div>
+                  <div className="text-sm text-slate-600 dark:text-slate-400 mt-2">
+                    {bar.label}
+                  </div>
+                  <div className="text-xs text-slate-500 dark:text-slate-400">
+                    {bar.value}%
+                  </div>
                 </div>
               ))}
             </div>
@@ -111,8 +115,8 @@ const Visualizations = memo(() => {
                         course.enrollment / course.capacity >= 0.9
                           ? "bg-rose-500"
                           : course.enrollment / course.capacity >= 0.7
-                          ? "bg-amber-500"
-                          : "bg-emerald-500"
+                            ? "bg-amber-500"
+                            : "bg-emerald-500"
                       }`}
                       style={{
                         width: `${
@@ -159,15 +163,21 @@ const Visualizations = memo(() => {
           <div className="flex justify-center space-x-6 mt-8">
             <div className="flex items-center">
               <div className="w-3 h-3 bg-blue-500 rounded mr-2"></div>
-              <span className="text-sm text-slate-600 dark:text-slate-400">Overall</span>
+              <span className="text-sm text-slate-600 dark:text-slate-400">
+                Overall
+              </span>
             </div>
             <div className="flex items-center">
               <div className="w-3 h-3 bg-emerald-500 rounded mr-2"></div>
-              <span className="text-sm text-slate-600 dark:text-slate-400">Attendance</span>
+              <span className="text-sm text-slate-600 dark:text-slate-400">
+                Attendance
+              </span>
             </div>
             <div className="flex items-center">
               <div className="w-3 h-3 bg-purple-500 rounded mr-2"></div>
-              <span className="text-sm text-slate-600 dark:text-slate-400">Assignments</span>
+              <span className="text-sm text-slate-600 dark:text-slate-400">
+                Assignments
+              </span>
             </div>
           </div>
         </div>

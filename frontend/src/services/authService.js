@@ -44,7 +44,7 @@ const authService = {
 
       // Find matching user
       const foundUser = Object.values(mockUsers).find(
-        (user) => user.email === email && user.password === password
+        (user) => user.email === email && user.password === password,
       );
 
       if (foundUser) {
@@ -54,7 +54,7 @@ const authService = {
           name: foundUser.name,
           role: foundUser.role,
           avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(
-            foundUser.name
+            foundUser.name,
           )}&background=random`,
           department: "Computer Science",
           phone: "+1-234-567-8900",
@@ -64,10 +64,7 @@ const authService = {
         const token = `mock-jwt-token-${Date.now()}`;
 
         localStorage.setItem(LOCAL_STORAGE_KEYS.TOKEN, token);
-        localStorage.setItem(
-          LOCAL_STORAGE_KEYS.USER,
-          JSON.stringify(userData)
-        );
+        localStorage.setItem(LOCAL_STORAGE_KEYS.USER, JSON.stringify(userData));
         localStorage.setItem(LOCAL_STORAGE_KEYS.USER_ROLE, userData.role);
 
         return { success: true, data: { token, user: userData } };
@@ -232,7 +229,7 @@ const authService = {
       const response = await api.put("/auth/profile", userData);
       localStorage.setItem(
         LOCAL_STORAGE_KEYS.USER,
-        JSON.stringify(response.data.user)
+        JSON.stringify(response.data.user),
       );
       return { success: true, data: response.data };
     } catch (error) {
@@ -284,7 +281,7 @@ const authService = {
         if (response.data.refreshToken) {
           localStorage.setItem(
             LOCAL_STORAGE_KEYS.REFRESH_TOKEN,
-            response.data.refreshToken
+            response.data.refreshToken,
           );
         }
       }

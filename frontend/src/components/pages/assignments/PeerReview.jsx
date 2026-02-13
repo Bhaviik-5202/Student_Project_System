@@ -6,33 +6,33 @@ const PeerReview = memo(() => {
   const navigate = useNavigate();
   const reviews = useMemo(
     () => [
-    {
-      id: 1,
-      assignment: "Database Design Project",
-      reviewee: "John Doe",
-      reviewer: "Jane Smith",
-      status: "Pending",
-      dueDate: "2024-01-20",
-    },
-    {
-      id: 2,
-      assignment: "Web App Prototype",
-      reviewee: "Robert Johnson",
-      reviewer: "Sarah Williams",
-      status: "Completed",
-      dueDate: "2024-01-18",
-    },
-    {
-      id: 3,
-      assignment: "Algorithm Analysis",
-      reviewee: "Michael Brown",
-      reviewer: "Emily Davis",
-      status: "In Progress",
-      dueDate: "2024-01-22",
-    },
-  ],
-  []
-);
+      {
+        id: 1,
+        assignment: "Database Design Project",
+        reviewee: "John Doe",
+        reviewer: "Jane Smith",
+        status: "Pending",
+        dueDate: "2024-01-20",
+      },
+      {
+        id: 2,
+        assignment: "Web App Prototype",
+        reviewee: "Robert Johnson",
+        reviewer: "Sarah Williams",
+        status: "Completed",
+        dueDate: "2024-01-18",
+      },
+      {
+        id: 3,
+        assignment: "Algorithm Analysis",
+        reviewee: "Michael Brown",
+        reviewer: "Emily Davis",
+        status: "In Progress",
+        dueDate: "2024-01-22",
+      },
+    ],
+    [],
+  );
 
   const [currentReview, setCurrentReview] = useState({
     criteria: [
@@ -59,8 +59,12 @@ const PeerReview = memo(() => {
           >
             ← Back to Assignments
           </button>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Peer Review</h1>
-          <p className="text-slate-600 dark:text-slate-400">Review and evaluate peer submissions</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+            Peer Review
+          </h1>
+          <p className="text-slate-600 dark:text-slate-400">
+            Review and evaluate peer submissions
+          </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -78,8 +82,8 @@ const PeerReview = memo(() => {
                       review.status === "Pending"
                         ? "border-amber-300 dark:border-amber-600 bg-amber-50 dark:bg-amber-900/20"
                         : review.status === "Completed"
-                        ? "border-emerald-300 dark:border-emerald-600 bg-emerald-50 dark:bg-emerald-900/20"
-                        : "border-blue-300 dark:border-blue-600 bg-blue-50 dark:bg-blue-900/20"
+                          ? "border-emerald-300 dark:border-emerald-600 bg-emerald-50 dark:bg-emerald-900/20"
+                          : "border-blue-300 dark:border-blue-600 bg-blue-50 dark:bg-blue-900/20"
                     }`}
                   >
                     <div className="font-medium text-slate-900 dark:text-white">
@@ -94,8 +98,8 @@ const PeerReview = memo(() => {
                           review.status === "Pending"
                             ? "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300"
                             : review.status === "Completed"
-                            ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
-                            : "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
+                              ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
+                              : "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
                         }`}
                       >
                         {review.status}
@@ -156,7 +160,7 @@ const PeerReview = memo(() => {
                                 (c) =>
                                   c.id === criterion.id
                                     ? { ...c, rating: star }
-                                    : c
+                                    : c,
                               );
                               setCurrentReview({
                                 ...currentReview,
@@ -187,7 +191,7 @@ const PeerReview = memo(() => {
                           const newCriteria = currentReview.criteria.map((c) =>
                             c.id === criterion.id
                               ? { ...c, comments: e.target.value }
-                              : c
+                              : c,
                           );
                           setCurrentReview({
                             ...currentReview,

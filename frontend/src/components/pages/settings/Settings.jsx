@@ -37,10 +37,13 @@ const Settings = memo(() => {
   }, []);
 
   // Handle theme change separately through context
-  const handleThemeChange = useCallback((e) => {
-    const { value } = e.target;
-    setThemeMode(value);
-  }, [setThemeMode]);
+  const handleThemeChange = useCallback(
+    (e) => {
+      const { value } = e.target;
+      setThemeMode(value);
+    },
+    [setThemeMode],
+  );
 
   const handleSave = useCallback(() => {
     // In a real app, this would save to backend
@@ -78,7 +81,7 @@ const Settings = memo(() => {
       { id: "appearance", label: "Appearance", icon: "fa-palette" },
       { id: "account", label: "Account", icon: "fa-user-cog" },
     ],
-    []
+    [],
   );
 
   const notificationItems = useMemo(
@@ -109,7 +112,7 @@ const Settings = memo(() => {
         description: "Receive weekly summary reports",
       },
     ],
-    []
+    [],
   );
 
   const privacyOptions = useMemo(
@@ -130,7 +133,7 @@ const Settings = memo(() => {
         description: "Only you can see your profile",
       },
     ],
-    []
+    [],
   );
 
   const themes = useMemo(
@@ -139,7 +142,7 @@ const Settings = memo(() => {
       { value: "dark", label: "Dark", icon: "fa-moon" },
       { value: "auto", label: "Auto", icon: "fa-adjust" },
     ],
-    []
+    [],
   );
 
   const themeIconClass = {
@@ -327,7 +330,8 @@ const Settings = memo(() => {
           Theme
         </h4>
         <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
-          Choose how the application looks. Auto mode follows your system preference.
+          Choose how the application looks. Auto mode follows your system
+          preference.
         </p>
         <div className="grid grid-cols-3 gap-4">
           {themes.map((theme) => (
@@ -508,6 +512,6 @@ const Settings = memo(() => {
   );
 });
 
-Settings.displayName = 'Settings';
+Settings.displayName = "Settings";
 
 export default Settings;

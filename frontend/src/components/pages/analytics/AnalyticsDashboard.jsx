@@ -10,7 +10,7 @@ const AnalyticsDashboard = memo(() => {
       avgGrade: 82.5,
       completionRate: 74,
     }),
-    []
+    [],
   );
 
   const performanceData = useMemo(
@@ -21,7 +21,7 @@ const AnalyticsDashboard = memo(() => {
       { month: "Dec", projects: 20, grades: 84 },
       { month: "Jan", projects: 22, grades: 85 },
     ],
-    []
+    [],
   );
 
   const activityData = useMemo(
@@ -32,7 +32,7 @@ const AnalyticsDashboard = memo(() => {
       { label: "Meetings", value: 10, color: "bg-amber-500" },
       { label: "Other", value: 5, color: "bg-slate-500" },
     ],
-    []
+    [],
   );
 
   return (
@@ -60,7 +60,9 @@ const AnalyticsDashboard = memo(() => {
                 <div className="text-2xl font-bold text-slate-900 dark:text-white">
                   {stats.totalStudents}
                 </div>
-                <div className="text-slate-600 dark:text-slate-400">Total Students</div>
+                <div className="text-slate-600 dark:text-slate-400">
+                  Total Students
+                </div>
               </div>
             </div>
           </div>
@@ -74,7 +76,9 @@ const AnalyticsDashboard = memo(() => {
                 <div className="text-2xl font-bold text-slate-900 dark:text-white">
                   {stats.activeProjects}
                 </div>
-                <div className="text-slate-600 dark:text-slate-400">Active Projects</div>
+                <div className="text-slate-600 dark:text-slate-400">
+                  Active Projects
+                </div>
               </div>
             </div>
           </div>
@@ -88,7 +92,9 @@ const AnalyticsDashboard = memo(() => {
                 <div className="text-2xl font-bold text-slate-900 dark:text-white">
                   {stats.avgGrade}%
                 </div>
-                <div className="text-slate-600 dark:text-slate-400">Average Grade</div>
+                <div className="text-slate-600 dark:text-slate-400">
+                  Average Grade
+                </div>
               </div>
             </div>
           </div>
@@ -102,7 +108,9 @@ const AnalyticsDashboard = memo(() => {
                 <div className="text-2xl font-bold text-slate-900 dark:text-white">
                   {stats.completionRate}%
                 </div>
-                <div className="text-slate-600 dark:text-slate-400">Completion Rate</div>
+                <div className="text-slate-600 dark:text-slate-400">
+                  Completion Rate
+                </div>
               </div>
             </div>
           </div>
@@ -144,8 +152,12 @@ const AnalyticsDashboard = memo(() => {
               {activityData.map((item, index) => (
                 <div key={index}>
                   <div className="flex justify-between text-sm mb-1">
-                    <span className="text-slate-900 dark:text-white">{item.label}</span>
-                    <span className="text-slate-600 dark:text-slate-400">{item.value}%</span>
+                    <span className="text-slate-900 dark:text-white">
+                      {item.label}
+                    </span>
+                    <span className="text-slate-600 dark:text-slate-400">
+                      {item.value}%
+                    </span>
                   </div>
                   <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
                     <div

@@ -47,45 +47,52 @@ const BatchOperations = memo(() => {
         selected: false,
       },
     ],
-    []
+    [],
   );
 
   const toggleUserSelection = useCallback((userId) => {
     setSelectedUsers((prev) =>
-      prev.includes(userId) ? prev.filter((id) => id !== userId) : [...prev, userId]
+      prev.includes(userId)
+        ? prev.filter((id) => id !== userId)
+        : [...prev, userId],
     );
   }, []);
 
   const toggleSelectAll = useCallback(() => {
     setSelectedUsers((prev) =>
-      prev.length === users.length ? [] : users.map((user) => user.id)
+      prev.length === users.length ? [] : users.map((user) => user.id),
     );
   }, [users]);
 
-  const handleSubmit = useCallback((e) => {
-    e.preventDefault();
-    if (selectedUsers.length === 0) {
-      toast.error("Please select at least one user");
-      return;
-    }
+  const handleSubmit = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (selectedUsers.length === 0) {
+        toast.error("Please select at least one user");
+        return;
+      }
 
-    setLoading(true);
+      setLoading(true);
 
-    setTimeout(() => {
-      toast.success(
-        `${operation} operation completed for ${selectedUsers.length} users`
-      );
-      setLoading(false);
-      setMessage("");
-      setSelectedUsers([]);
-    }, 2000);
-  }, [operation, selectedUsers]);
+      setTimeout(() => {
+        toast.success(
+          `${operation} operation completed for ${selectedUsers.length} users`,
+        );
+        setLoading(false);
+        setMessage("");
+        setSelectedUsers([]);
+      }, 2000);
+    },
+    [operation, selectedUsers],
+  );
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Batch Operations</h1>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+            Batch Operations
+          </h1>
           <p className="text-slate-600 dark:text-slate-400">
             Perform operations on multiple users at once
           </p>
@@ -135,8 +142,8 @@ const BatchOperations = memo(() => {
                   {operation === "email"
                     ? "Email Message"
                     : operation === "notification"
-                    ? "Notification Message"
-                    : "Export Settings"}
+                      ? "Notification Message"
+                      : "Export Settings"}
                 </label>
                 {operation === "export" ? (
                   <div className="space-y-4">
@@ -167,7 +174,9 @@ const BatchOperations = memo(() => {
                               defaultChecked
                               className="h-4 w-4 text-blue-600 rounded focus:ring-blue-500 dark:focus:ring-blue-600"
                             />
-                            <span className="ml-2 text-slate-700 dark:text-slate-300">{item}</span>
+                            <span className="ml-2 text-slate-700 dark:text-slate-300">
+                              {item}
+                            </span>
                           </label>
                         ))}
                       </div>
@@ -221,8 +230,12 @@ const BatchOperations = memo(() => {
                       <div className="font-medium text-slate-900 dark:text-white">
                         {user.name}
                       </div>
-                      <div className="text-sm text-slate-600 dark:text-slate-400">{user.email}</div>
-                      <div className="text-xs text-slate-500 dark:text-slate-400">{user.role}</div>
+                      <div className="text-sm text-slate-600 dark:text-slate-400">
+                        {user.email}
+                      </div>
+                      <div className="text-xs text-slate-500 dark:text-slate-400">
+                        {user.role}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -247,8 +260,8 @@ const BatchOperations = memo(() => {
                       operation === "email"
                         ? "Email"
                         : operation === "notification"
-                        ? "Notification"
-                        : "Export"
+                          ? "Notification"
+                          : "Export"
                     } Operation`
                   )}
                 </button>

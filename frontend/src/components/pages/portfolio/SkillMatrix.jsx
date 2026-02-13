@@ -4,148 +4,158 @@ const SkillMatrix = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [sortBy, setSortBy] = useState("level");
 
-  const categories = useMemo(() => [
-    { id: "all", name: "All Skills", count: 15 },
-    { id: "technical", name: "Technical", count: 8 },
-    { id: "soft", name: "Soft Skills", count: 4 },
-    { id: "tools", name: "Tools", count: 3 },
-  ], []);
+  const categories = useMemo(
+    () => [
+      { id: "all", name: "All Skills", count: 15 },
+      { id: "technical", name: "Technical", count: 8 },
+      { id: "soft", name: "Soft Skills", count: 4 },
+      { id: "tools", name: "Tools", count: 3 },
+    ],
+    [],
+  );
 
-  const skills = useMemo(() => [
-    {
-      id: 1,
-      name: "JavaScript",
-      level: 90,
-      category: "technical",
-      lastUsed: "2024-01-15",
-      projects: 12,
-    },
-    {
-      id: 2,
-      name: "React",
-      level: 85,
-      category: "technical",
-      lastUsed: "2024-01-14",
-      projects: 8,
-    },
-    {
-      id: 3,
-      name: "Node.js",
-      level: 80,
-      category: "technical",
-      lastUsed: "2024-01-12",
-      projects: 6,
-    },
-    {
-      id: 4,
-      name: "Python",
-      level: 75,
-      category: "technical",
-      lastUsed: "2024-01-10",
-      projects: 4,
-    },
-    {
-      id: 5,
-      name: "UI/UX Design",
-      level: 70,
-      category: "technical",
-      lastUsed: "2024-01-08",
-      projects: 3,
-    },
-    {
-      id: 6,
-      name: "Project Management",
-      level: 85,
-      category: "soft",
-      lastUsed: "2024-01-15",
-      projects: 15,
-    },
-    {
-      id: 7,
-      name: "Communication",
-      level: 80,
-      category: "soft",
-      lastUsed: "2024-01-14",
-      projects: 15,
-    },
-    {
-      id: 8,
-      name: "Team Leadership",
-      level: 75,
-      category: "soft",
-      lastUsed: "2024-01-13",
-      projects: 8,
-    },
-    {
-      id: 9,
-      name: "Problem Solving",
-      level: 90,
-      category: "soft",
-      lastUsed: "2024-01-15",
-      projects: 15,
-    },
-    {
-      id: 10,
-      name: "Git",
-      level: 85,
-      category: "tools",
-      lastUsed: "2024-01-15",
-      projects: 15,
-    },
-    {
-      id: 11,
-      name: "VS Code",
-      level: 95,
-      category: "tools",
-      lastUsed: "2024-01-15",
-      projects: 15,
-    },
-    {
-      id: 12,
-      name: "Figma",
-      level: 70,
-      category: "tools",
-      lastUsed: "2024-01-08",
-      projects: 4,
-    },
-    {
-      id: 13,
-      name: "MongoDB",
-      level: 75,
-      category: "technical",
-      lastUsed: "2024-01-11",
-      projects: 5,
-    },
-    {
-      id: 14,
-      name: "AWS",
-      level: 65,
-      category: "technical",
-      lastUsed: "2024-01-05",
-      projects: 3,
-    },
-    {
-      id: 15,
-      name: "Agile/Scrum",
-      level: 80,
-      category: "soft",
-      lastUsed: "2024-01-14",
-      projects: 10,
-    },
-  ], []);
+  const skills = useMemo(
+    () => [
+      {
+        id: 1,
+        name: "JavaScript",
+        level: 90,
+        category: "technical",
+        lastUsed: "2024-01-15",
+        projects: 12,
+      },
+      {
+        id: 2,
+        name: "React",
+        level: 85,
+        category: "technical",
+        lastUsed: "2024-01-14",
+        projects: 8,
+      },
+      {
+        id: 3,
+        name: "Node.js",
+        level: 80,
+        category: "technical",
+        lastUsed: "2024-01-12",
+        projects: 6,
+      },
+      {
+        id: 4,
+        name: "Python",
+        level: 75,
+        category: "technical",
+        lastUsed: "2024-01-10",
+        projects: 4,
+      },
+      {
+        id: 5,
+        name: "UI/UX Design",
+        level: 70,
+        category: "technical",
+        lastUsed: "2024-01-08",
+        projects: 3,
+      },
+      {
+        id: 6,
+        name: "Project Management",
+        level: 85,
+        category: "soft",
+        lastUsed: "2024-01-15",
+        projects: 15,
+      },
+      {
+        id: 7,
+        name: "Communication",
+        level: 80,
+        category: "soft",
+        lastUsed: "2024-01-14",
+        projects: 15,
+      },
+      {
+        id: 8,
+        name: "Team Leadership",
+        level: 75,
+        category: "soft",
+        lastUsed: "2024-01-13",
+        projects: 8,
+      },
+      {
+        id: 9,
+        name: "Problem Solving",
+        level: 90,
+        category: "soft",
+        lastUsed: "2024-01-15",
+        projects: 15,
+      },
+      {
+        id: 10,
+        name: "Git",
+        level: 85,
+        category: "tools",
+        lastUsed: "2024-01-15",
+        projects: 15,
+      },
+      {
+        id: 11,
+        name: "VS Code",
+        level: 95,
+        category: "tools",
+        lastUsed: "2024-01-15",
+        projects: 15,
+      },
+      {
+        id: 12,
+        name: "Figma",
+        level: 70,
+        category: "tools",
+        lastUsed: "2024-01-08",
+        projects: 4,
+      },
+      {
+        id: 13,
+        name: "MongoDB",
+        level: 75,
+        category: "technical",
+        lastUsed: "2024-01-11",
+        projects: 5,
+      },
+      {
+        id: 14,
+        name: "AWS",
+        level: 65,
+        category: "technical",
+        lastUsed: "2024-01-05",
+        projects: 3,
+      },
+      {
+        id: 15,
+        name: "Agile/Scrum",
+        level: 80,
+        category: "soft",
+        lastUsed: "2024-01-14",
+        projects: 10,
+      },
+    ],
+    [],
+  );
 
-  const filteredSkills = useMemo(() => skills
-    .filter(
-      (skill) =>
-        selectedCategory === "all" || skill.category === selectedCategory
-    )
-    .sort((a, b) => {
-      if (sortBy === "level") return b.level - a.level;
-      if (sortBy === "name") return a.name.localeCompare(b.name);
-      if (sortBy === "recent")
-        return new Date(b.lastUsed) - new Date(a.lastUsed);
-      return 0;
-    }), [skills, selectedCategory, sortBy]);
+  const filteredSkills = useMemo(
+    () =>
+      skills
+        .filter(
+          (skill) =>
+            selectedCategory === "all" || skill.category === selectedCategory,
+        )
+        .sort((a, b) => {
+          if (sortBy === "level") return b.level - a.level;
+          if (sortBy === "name") return a.name.localeCompare(b.name);
+          if (sortBy === "recent")
+            return new Date(b.lastUsed) - new Date(a.lastUsed);
+          return 0;
+        }),
+    [skills, selectedCategory, sortBy],
+  );
 
   const getLevelColor = useCallback((level) => {
     if (level >= 80) return "bg-emerald-500 dark:bg-emerald-400";
@@ -173,23 +183,29 @@ const SkillMatrix = () => {
   }, []);
 
   // Calculate average level per category
-  const categoryStats = useMemo(() => categories.map((cat) => {
-    const categorySkills =
-      cat.id === "all" ? skills : skills.filter((s) => s.category === cat.id);
-    const avgLevel =
-      categorySkills.length > 0
-        ? Math.round(
-            categorySkills.reduce((sum, s) => sum + s.level, 0) /
-              categorySkills.length
-          )
-        : 0;
+  const categoryStats = useMemo(
+    () =>
+      categories.map((cat) => {
+        const categorySkills =
+          cat.id === "all"
+            ? skills
+            : skills.filter((s) => s.category === cat.id);
+        const avgLevel =
+          categorySkills.length > 0
+            ? Math.round(
+                categorySkills.reduce((sum, s) => sum + s.level, 0) /
+                  categorySkills.length,
+              )
+            : 0;
 
-    return {
-      ...cat,
-      avgLevel,
-      skillCount: categorySkills.length,
-    };
-  }), [categories, skills]);
+        return {
+          ...cat,
+          avgLevel,
+          skillCount: categorySkills.length,
+        };
+      }),
+    [categories, skills],
+  );
 
   return (
     <div className="bg-white dark:bg-slate-900 rounded-lg shadow p-6\">
@@ -234,7 +250,7 @@ const SkillMatrix = () => {
               <span className="font-medium text-gray-800">{cat.name}</span>
               <span
                 className={`px-2 py-1 text-xs rounded-full ${getCategoryColor(
-                  cat.id
+                  cat.id,
                 )}`}
               >
                 {cat.skillCount}
@@ -293,7 +309,7 @@ const SkillMatrix = () => {
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span
                     className={`px-3 py-1 text-xs rounded-full ${getCategoryColor(
-                      skill.category
+                      skill.category,
                     )}`}
                   >
                     {skill.category}
@@ -305,7 +321,7 @@ const SkillMatrix = () => {
                       <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                         <div
                           className={`h-full ${getLevelColor(
-                            skill.level
+                            skill.level,
                           )} rounded-full`}
                           style={{ width: `${skill.level}%` }}
                         ></div>
@@ -360,13 +376,13 @@ const SkillMatrix = () => {
                 .filter((c) => c.id !== "all")
                 .map((cat) => {
                   const categorySkills = skills.filter(
-                    (s) => s.category === cat.id
+                    (s) => s.category === cat.id,
                   );
                   const avgLevel =
                     categorySkills.length > 0
                       ? Math.round(
                           categorySkills.reduce((sum, s) => sum + s.level, 0) /
-                            categorySkills.length
+                            categorySkills.length,
                         )
                       : 0;
 
@@ -383,7 +399,7 @@ const SkillMatrix = () => {
                         <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                           <div
                             className={`h-full ${getLevelColor(
-                              avgLevel
+                              avgLevel,
                             )} rounded-full`}
                             style={{ width: `${avgLevel}%` }}
                           ></div>
@@ -443,7 +459,7 @@ const SkillMatrix = () => {
               <div className="bg-blue-50 p-4 rounded-lg">
                 <div className="text-2xl font-bold text-blue-600">
                   {Math.round(
-                    skills.reduce((sum, s) => sum + s.level, 0) / skills.length
+                    skills.reduce((sum, s) => sum + s.level, 0) / skills.length,
                   )}
                   %
                 </div>
@@ -463,6 +479,6 @@ const SkillMatrix = () => {
   );
 };
 
-SkillMatrix.displayName = 'SkillMatrix';
+SkillMatrix.displayName = "SkillMatrix";
 
 export default React.memo(SkillMatrix);

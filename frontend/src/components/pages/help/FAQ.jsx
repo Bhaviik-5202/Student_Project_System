@@ -5,62 +5,65 @@ const FAQ = memo(() => {
   const navigate = useNavigate();
   const [activeIndex, setActiveIndex] = useState(null);
 
-  const faqs = useMemo(() => [
-    {
-      category: "Getting Started",
-      questions: [
-        {
-          q: "How do I create an account?",
-          a: "Click on Register button on login page and fill out the registration form.",
-        },
-        {
-          q: "What information do I need to register?",
-          a: "You need your full name, email address, student ID, and department information.",
-        },
-        {
-          q: "How do I access my dashboard?",
-          a: "After login, you will be automatically redirected to your dashboard.",
-        },
-      ],
-    },
-    {
-      category: "Projects",
-      questions: [
-        {
-          q: "How do I submit a project proposal?",
-          a: "Navigate to Projects → New Proposal, fill out the form, and submit for review.",
-        },
-        {
-          q: "What is the project submission deadline?",
-          a: "Deadlines vary by course. Check your course materials for specific dates.",
-        },
-        {
-          q: "Can I edit my project after submission?",
-          a: "Yes, until the deadline. After deadline, contact your instructor.",
-        },
-      ],
-    },
-    {
-      category: "Grades",
-      questions: [
-        {
-          q: "How often are grades updated?",
-          a: "Grades are typically updated within 2 weeks of assignment submission.",
-        },
-        {
-          q: "How can I dispute a grade?",
-          a: "Contact your instructor directly through the messaging system.",
-        },
-        {
-          q: "Where can I see my GPA?",
-          a: "Your GPA is displayed on your profile and grades dashboard.",
-        },
-      ],
-    },
-  ], []);
+  const faqs = useMemo(
+    () => [
+      {
+        category: "Getting Started",
+        questions: [
+          {
+            q: "How do I create an account?",
+            a: "Click on Register button on login page and fill out the registration form.",
+          },
+          {
+            q: "What information do I need to register?",
+            a: "You need your full name, email address, student ID, and department information.",
+          },
+          {
+            q: "How do I access my dashboard?",
+            a: "After login, you will be automatically redirected to your dashboard.",
+          },
+        ],
+      },
+      {
+        category: "Projects",
+        questions: [
+          {
+            q: "How do I submit a project proposal?",
+            a: "Navigate to Projects → New Proposal, fill out the form, and submit for review.",
+          },
+          {
+            q: "What is the project submission deadline?",
+            a: "Deadlines vary by course. Check your course materials for specific dates.",
+          },
+          {
+            q: "Can I edit my project after submission?",
+            a: "Yes, until the deadline. After deadline, contact your instructor.",
+          },
+        ],
+      },
+      {
+        category: "Grades",
+        questions: [
+          {
+            q: "How often are grades updated?",
+            a: "Grades are typically updated within 2 weeks of assignment submission.",
+          },
+          {
+            q: "How can I dispute a grade?",
+            a: "Contact your instructor directly through the messaging system.",
+          },
+          {
+            q: "Where can I see my GPA?",
+            a: "Your GPA is displayed on your profile and grades dashboard.",
+          },
+        ],
+      },
+    ],
+    [],
+  );
 
   const toggleFAQ = useCallback((index) => {
-    setActiveIndex(prev => prev === index ? null : index);
+    setActiveIndex((prev) => (prev === index ? null : index));
   }, []);
 
   return (
@@ -108,7 +111,9 @@ const FAQ = memo(() => {
                       </button>
                       {activeIndex === index && (
                         <div className="px-4 py-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/50">
-                          <p className="text-slate-600 dark:text-slate-400">{faq.a}</p>
+                          <p className="text-slate-600 dark:text-slate-400">
+                            {faq.a}
+                          </p>
                         </div>
                       )}
                     </div>
@@ -123,6 +128,6 @@ const FAQ = memo(() => {
   );
 });
 
-FAQ.displayName = 'FAQ';
+FAQ.displayName = "FAQ";
 
 export default FAQ;

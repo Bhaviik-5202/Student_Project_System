@@ -19,22 +19,25 @@ const MeetingForm = memo(() => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   }, []);
 
-  const handleSubmit = useCallback(async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+      setLoading(true);
 
-    try {
-      // Simulate API call
-      setTimeout(() => {
-        toast.success("Meeting scheduled successfully");
+      try {
+        // Simulate API call
+        setTimeout(() => {
+          toast.success("Meeting scheduled successfully");
+          setLoading(false);
+          navigate("/meetings");
+        }, 1000);
+      } catch (error) {
+        toast.error("Failed to schedule meeting");
         setLoading(false);
-        navigate("/meetings");
-      }, 1000);
-    } catch (error) {
-      toast.error("Failed to schedule meeting");
-      setLoading(false);
-    }
-  }, [navigate]);
+      }
+    },
+    [navigate],
+  );
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">

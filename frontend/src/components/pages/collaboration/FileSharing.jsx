@@ -46,7 +46,7 @@ const FileSharing = memo(() => {
         downloads: 15,
       },
     ],
-    []
+    [],
   );
 
   return (
@@ -54,7 +54,9 @@ const FileSharing = memo(() => {
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">File Sharing</h1>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+              File Sharing
+            </h1>
             <p className="text-slate-600 dark:text-slate-400">
               Share and access files with your team
             </p>
@@ -91,7 +93,10 @@ const FileSharing = memo(() => {
               </thead>
               <tbody className="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
                 {files.map((file) => (
-                  <tr key={file.id} className="hover:bg-slate-50 dark:hover:bg-slate-700">
+                  <tr
+                    key={file.id}
+                    className="hover:bg-slate-50 dark:hover:bg-slate-700"
+                  >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="font-medium text-slate-900 dark:text-white">
                         {file.name}

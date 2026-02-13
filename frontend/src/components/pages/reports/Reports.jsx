@@ -58,7 +58,7 @@ const Reports = memo(() => {
         roles: ["admin"],
       },
     ],
-    []
+    [],
   );
 
   const exportOptions = useMemo(
@@ -96,7 +96,7 @@ const Reports = memo(() => {
         features: ["Editable", "Comments", "Track changes"],
       },
     ],
-    []
+    [],
   );
 
   const dateRanges = useMemo(
@@ -109,16 +109,31 @@ const Reports = memo(() => {
       { id: "lastmonth", label: "Last Month" },
       { id: "custom", label: "Custom Range" },
     ],
-    []
+    [],
   );
 
   const projectStats = useMemo(
     () => ({
       total: 48,
       byStatus: [
-        { status: "Active", count: 32, color: "bg-green-500", percentage: 66.7 },
-        { status: "Pending", count: 7, color: "bg-yellow-500", percentage: 14.6 },
-        { status: "Completed", count: 9, color: "bg-blue-500", percentage: 18.7 },
+        {
+          status: "Active",
+          count: 32,
+          color: "bg-green-500",
+          percentage: 66.7,
+        },
+        {
+          status: "Pending",
+          count: 7,
+          color: "bg-yellow-500",
+          percentage: 14.6,
+        },
+        {
+          status: "Completed",
+          count: 9,
+          color: "bg-blue-500",
+          percentage: 18.7,
+        },
       ],
       byDepartment: [
         { department: "Computer Science", count: 18, percentage: 37.5 },
@@ -127,7 +142,7 @@ const Reports = memo(() => {
         { department: "Mechanical", count: 8, percentage: 16.7 },
       ],
     }),
-    []
+    [],
   );
 
   const monthlyData = useMemo(
@@ -145,7 +160,7 @@ const Reports = memo(() => {
       { month: "Nov", submissions: 9, completions: 7 },
       { month: "Dec", submissions: 7, completions: 5 },
     ],
-    []
+    [],
   );
 
   const colorStyles = useMemo(
@@ -193,12 +208,15 @@ const Reports = memo(() => {
         hoverSoft: "hover:bg-gray-100 dark:hover:bg-gray-600",
       },
     }),
-    []
+    [],
   );
 
   const maxValue = useMemo(
-    () => Math.max(...monthlyData.map((d) => Math.max(d.submissions, d.completions))),
-    [monthlyData]
+    () =>
+      Math.max(
+        ...monthlyData.map((d) => Math.max(d.submissions, d.completions)),
+      ),
+    [monthlyData],
   );
 
   const generateReport = useCallback((reportId) => {
@@ -214,7 +232,7 @@ const Reports = memo(() => {
   // Filter reports based on user role
   const filteredReports = useMemo(
     () => reportTypes.filter((report) => report.roles.includes(user?.role)),
-    [reportTypes, user?.role]
+    [reportTypes, user?.role],
   );
 
   return (
@@ -433,13 +451,17 @@ const Reports = memo(() => {
               <div className="text-2xl font-bold text-blue-600">
                 {monthlyData.reduce((sum, month) => sum + month.submissions, 0)}
               </div>
-              <div className="text-gray-600 dark:text-gray-400">Total Submissions</div>
+              <div className="text-gray-600 dark:text-gray-400">
+                Total Submissions
+              </div>
             </div>
             <div className="text-center p-3 bg-green-50 dark:bg-green-900/30 rounded-lg">
               <div className="text-2xl font-bold text-green-600">
                 {monthlyData.reduce((sum, month) => sum + month.completions, 0)}
               </div>
-              <div className="text-gray-600 dark:text-gray-400">Total Completions</div>
+              <div className="text-gray-600 dark:text-gray-400">
+                Total Completions
+              </div>
             </div>
           </div>
         </div>

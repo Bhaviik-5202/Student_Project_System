@@ -8,15 +8,18 @@ const ProjectCard = memo(({ project }) => {
       progress: "bg-blue-500",
     },
     green: {
-      badge: "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200",
+      badge:
+        "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200",
       progress: "bg-green-500",
     },
     yellow: {
-      badge: "bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200",
+      badge:
+        "bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200",
       progress: "bg-yellow-500",
     },
     purple: {
-      badge: "bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200",
+      badge:
+        "bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200",
       progress: "bg-purple-500",
     },
   };
@@ -86,7 +89,9 @@ const ProjectCard = memo(({ project }) => {
           </div>
           <div>
             <p className="text-gray-500 dark:text-gray-400">Last Updated</p>
-            <p className="font-medium text-gray-900 dark:text-white">2 days ago</p>
+            <p className="font-medium text-gray-900 dark:text-white">
+              2 days ago
+            </p>
           </div>
         </div>
       </div>
@@ -113,31 +118,31 @@ ProjectCard.propTypes = {
 const ProjectList = memo(() => {
   const projects = useMemo(
     () => [
-    {
-      id: 1,
-      title: "E-commerce Platform",
-      status: "In Progress",
-      statusColor: "blue",
-      description: "Full-stack e-commerce website with payment integration",
-      startDate: "2024-01-15",
-      endDate: "2024-05-30",
-      guide: "Dr. Sarah Johnson",
-      progress: 65,
-    },
-    {
-      id: 2,
-      title: "AI Chatbot",
-      status: "Completed",
-      statusColor: "green",
-      description: "Intelligent chatbot for customer service",
-      startDate: "2023-09-01",
-      endDate: "2023-12-15",
-      guide: "Prof. Michael Chen",
-      progress: 100,
-    },
+      {
+        id: 1,
+        title: "E-commerce Platform",
+        status: "In Progress",
+        statusColor: "blue",
+        description: "Full-stack e-commerce website with payment integration",
+        startDate: "2024-01-15",
+        endDate: "2024-05-30",
+        guide: "Dr. Sarah Johnson",
+        progress: 65,
+      },
+      {
+        id: 2,
+        title: "AI Chatbot",
+        status: "Completed",
+        statusColor: "green",
+        description: "Intelligent chatbot for customer service",
+        startDate: "2023-09-01",
+        endDate: "2023-12-15",
+        guide: "Prof. Michael Chen",
+        progress: 100,
+      },
     ],
-    []
-    );
+    [],
+  );
 
   return (
     <div className="animate-fade-in">

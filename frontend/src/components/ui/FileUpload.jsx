@@ -5,14 +5,20 @@ const FileUpload = memo(({ onUpload, accept = "*", multiple = false }) => {
   const [files, setFiles] = useState([]);
   const [isDragActive, setIsDragActive] = useState(false);
 
-  const handleFileChange = useCallback((selectedFiles) => {
-    setFiles(Array.from(selectedFiles));
-    onUpload?.(Array.from(selectedFiles));
-  }, [onUpload]);
+  const handleFileChange = useCallback(
+    (selectedFiles) => {
+      setFiles(Array.from(selectedFiles));
+      onUpload?.(Array.from(selectedFiles));
+    },
+    [onUpload],
+  );
 
-  const handleInputChange = useCallback((e) => {
-    handleFileChange(e.target.files);
-  }, [handleFileChange]);
+  const handleInputChange = useCallback(
+    (e) => {
+      handleFileChange(e.target.files);
+    },
+    [handleFileChange],
+  );
 
   const handleDrag = useCallback((e) => {
     e.preventDefault();
@@ -24,14 +30,17 @@ const FileUpload = memo(({ onUpload, accept = "*", multiple = false }) => {
     }
   }, []);
 
-  const handleDrop = useCallback((e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragActive(false);
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleFileChange(e.dataTransfer.files);
-    }
-  }, [handleFileChange]);
+  const handleDrop = useCallback(
+    (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsDragActive(false);
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        handleFileChange(e.dataTransfer.files);
+      }
+    },
+    [handleFileChange],
+  );
 
   return (
     <div
@@ -70,16 +79,25 @@ const FileUpload = memo(({ onUpload, accept = "*", multiple = false }) => {
               d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
             />
           </svg>
-          <p className="mt-2 text-gray-900 dark:text-white">Click to upload files</p>
-          <p className="text-sm text-gray-500 dark:text-gray-400">or drag and drop</p>
+          <p className="mt-2 text-gray-900 dark:text-white">
+            Click to upload files
+          </p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            or drag and drop
+          </p>
         </div>
       </label>
       {files.length > 0 && (
         <div className="mt-4">
-          <p className="text-sm font-medium text-gray-900 dark:text-white">Selected files:</p>
+          <p className="text-sm font-medium text-gray-900 dark:text-white">
+            Selected files:
+          </p>
           <ul className="mt-2 space-y-1">
             {files.map((file, index) => (
-              <li key={index} className="text-sm text-gray-600 dark:text-gray-400">
+              <li
+                key={index}
+                className="text-sm text-gray-600 dark:text-gray-400"
+              >
                 <i className="fas fa-file mr-2" aria-hidden="true"></i>
                 {file.name}
               </li>
