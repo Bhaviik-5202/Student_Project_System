@@ -30,3 +30,11 @@ exports.join = async (id, userId) => {
   }
   return meeting;
 };
+
+exports.leave = async (id, userId) => {
+  const meeting = await Meeting.findById(id);
+  if (!meeting) return null;
+  meeting.participants.pull(userId);
+  await meeting.save();
+  return meeting;
+};

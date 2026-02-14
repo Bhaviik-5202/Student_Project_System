@@ -38,3 +38,44 @@ exports.addMember = async (id, studentId) => {
   }
   return project;
 };
+
+exports.removeMember = async (id, studentId) => {
+  const project = await Project.findById(id);
+  if (!project) return null;
+  project.members.pull(studentId);
+  await project.save();
+  return project;
+};
+
+exports.setGuide = async (id, guideId) => {
+  const project = await Project.findById(id);
+  if (!project) return null;
+  project.guide = guideId;
+  await project.save();
+  return project;
+};
+
+exports.removeGuide = async (id) => {
+  const project = await Project.findById(id);
+  if (!project) return null;
+  project.guide = null;
+  await project.save();
+  return project;
+};
+
+exports.getGuide = async (id) => {
+  const project = await Project.findById(id).populate("guide");
+  return project ? project.guide : null;
+};
+
+exports.getProjectsByStudent = async (studentId) => {
+  return Project.find({ members: studentId }).populate("members guide");
+};
+
+exports.getProjectsByGuide = async (guideId) => {
+  return Project.find({ guide: guideId }).populate("members guide");
+};
+
+exports.getProjectCount = async () => {
+  return Project.countDocuments();
+};

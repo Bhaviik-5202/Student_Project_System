@@ -32,3 +32,32 @@ exports.getStudents = async (id) => {
   const course = await Course.findById(id).populate("students");
   return course ? course.students : null;
 };
+
+exports.enrollStudent = async (courseId, studentId) => {
+  const course = await Course.findById(courseId);
+  const student = await Student.findById(studentId);
+  if (!course || !student) return null;
+  if (!course.students.includes(student._id)) {
+    course.students.push(student._id);
+    await course.save();
+  }
+  return course;
+};
+
+exports.addAssignment = async (courseId, assignmentData) => {
+  const course = await Course.findById(courseId);
+  if (!course) return null;
+  const assignment = new Assignment({ ...assignmentData, course: course._id });
+  await assignment.save();
+  course.assignments.push(assignment._id);
+  await course.save();
+  return assignment;
+};
+
+exports.removeAssignment = async (courseId, assignmentId) => {
+  const course = await Course.findById(courseId);
+  if (!course) return null;
+  course.assignments.pull(assignmentId);
+  await course.save();
+  return Assignment.findByIdAndDelete(assignmentId);
+};

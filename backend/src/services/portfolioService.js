@@ -25,3 +25,7 @@ exports.saveOrUpdate = async (data) => {
   }
   return portfolio;
 };
+
+exports.remove = async (id) => {
+  return Portfolio.findByIdAndDelete(id);
+};

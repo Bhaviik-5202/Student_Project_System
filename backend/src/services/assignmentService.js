@@ -28,3 +28,15 @@ exports.getSubmissions = async (id) => {
   });
   return assignment ? assignment.submissions : null;
 };
+
+exports.getCourse = async (id) => {
+  const assignment = await Assignment.findById(id).populate("course");
+  return assignment ? assignment.course : null;
+};
+
+exports.submitAssignment = async (assignmentId, data) => {
+  const assignment = await Assignment.findById(assignmentId);
+  if (!assignment) return null;
+  assignment.submissions.push(data);
+  return assignment.save();
+};

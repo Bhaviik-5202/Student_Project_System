@@ -22,3 +22,7 @@ exports.set = async (data) => {
   }
   return permission;
 };
+
+exports.remove = async (id) => {
+  return Permission.findByIdAndDelete(id);
+};
