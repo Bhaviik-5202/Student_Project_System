@@ -1,8 +1,9 @@
 
 # Student Project System – Backend
 
-![Node.js CI](https://img.shields.io/github/workflow/status/<your-org>/<your-repo>/Node.js%20CI?style=flat-square)
-![License](https://img.shields.io/github/license/<your-org>/<your-repo>?style=flat-square)
+![Node.js CI](https://img.shields.io/github/actions/workflow/status/Bhaviik-5202/Student_Project_System/node.js.yml?style=flat-square)
+![License](https://img.shields.io/github/license/Bhaviik-5202/Student_Project_System?style=flat-square)
+
 
 Backend API for managing student projects, users, assignments, and more. Built with Node.js, Express, and MongoDB.
 
