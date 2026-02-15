@@ -3,7 +3,7 @@ const staffRepository = require("../repositories/staff.repository");
 function response(error, data, message) {
   return { error, data, message };
 }
-F
+
 /**
  * Create a new staff member
  * @param {Object} data - Staff data
