@@ -1,0 +1,10 @@
+const express = require("express");
+const router = express.Router();
+const staffController = require("../controllers/staff.controller");
+const auth = require("../middleware/auth.middleware");
+router.post("/", auth, staffController.createStaff);
+router.get("/", auth, staffController.getAllStaff);
+router.get("/:id", auth, staffController.getStaffById);
+router.put("/:id", auth, staffController.updateStaff);
+router.delete("/:id", auth, staffController.deleteStaff);
+module.exports = router;

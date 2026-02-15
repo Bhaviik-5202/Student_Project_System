@@ -1,0 +1,10 @@
+const express = require("express");
+const router = express.Router();
+const auditLogController = require("../controllers/auditlog.controller");
+const auth = require("../middleware/auth.middleware");
+router.post("/", auth, auditLogController.createAuditLog);
+router.get("/", auth, auditLogController.getAllAuditLogs);
+router.get("/:id", auth, auditLogController.getAuditLogById);
+router.put("/:id", auth, auditLogController.updateAuditLog);
+router.delete("/:id", auth, auditLogController.deleteAuditLog);
+module.exports = router;
