@@ -9,6 +9,15 @@ function response(error, data, message) {
   return { error, data, message };
 }
 
+/**
+ * Register a new user
+ * @param {Object} param0 - User registration data
+ * @param {string} param0.name - User name
+ * @param {string} param0.email - User email
+ * @param {string} param0.password - User password
+ * @param {string} param0.role - User role
+ * @returns {Promise<Object>} Registration response
+ */
 exports.register = async ({ name, email, password, role }) => {
   try {
     const existing = await User.findOne({ email });
@@ -22,6 +31,13 @@ exports.register = async ({ name, email, password, role }) => {
   }
 };
 
+/**
+ * Login a user
+ * @param {Object} param0 - Login data
+ * @param {string} param0.email - User email
+ * @param {string} param0.password - User password
+ * @returns {Promise<Object>} Login response with JWT token and user info
+ */
 exports.login = async ({ email, password }) => {
   try {
     const user = await User.findOne({ email });

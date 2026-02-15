@@ -1,7 +1,14 @@
 const timelineRepository = require("../repositories/timeline.repository");
+
 function response(error, data, message) {
   return { error, data, message };
 }
+
+/**
+ * Create a new timeline event
+ * @param {Object} data - Timeline data
+ * @returns {Promise<Object>} Created timeline event
+ */
 exports.create = async (data) => {
   try {
     const timeline = await timelineRepository.create(data);
@@ -10,6 +17,11 @@ exports.create = async (data) => {
     return response(true, null, err.message || "Failed to create timeline");
   }
 };
+
+/**
+ * Get all timeline events
+ * @returns {Promise<Array>} List of timeline events
+ */
 exports.getAll = async () => {
   try {
     const timelines = await timelineRepository.findAll();
@@ -18,6 +30,12 @@ exports.getAll = async () => {
     return response(true, null, err.message || "Failed to fetch timelines");
   }
 };
+
+/**
+ * Get a timeline event by ID
+ * @param {string} id - Timeline ID
+ * @returns {Promise<Object|null>} Timeline event or null
+ */
 exports.getById = async (id) => {
   try {
     const timeline = await timelineRepository.findById(id);
@@ -27,6 +45,13 @@ exports.getById = async (id) => {
     return response(true, null, err.message || "Failed to fetch timeline");
   }
 };
+
+/**
+ * Update a timeline event by ID
+ * @param {string} id - Timeline ID
+ * @param {Object} data - Update data
+ * @returns {Promise<Object|null>} Updated timeline event or null
+ */
 exports.update = async (id, data) => {
   try {
     const timeline = await timelineRepository.update(id, data);
@@ -36,6 +61,12 @@ exports.update = async (id, data) => {
     return response(true, null, err.message || "Failed to update timeline");
   }
 };
+
+/**
+ * Delete a timeline event by ID
+ * @param {string} id - Timeline ID
+ * @returns {Promise<Object|null>} Deleted timeline event or null
+ */
 exports.remove = async (id) => {
   try {
     const timeline = await timelineRepository.remove(id);

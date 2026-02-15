@@ -1,7 +1,14 @@
 const submissionRepository = require("../repositories/submission.repository");
+
 function response(error, data, message) {
   return { error, data, message };
 }
+
+/**
+ * Create a new submission
+ * @param {Object} data - Submission data
+ * @returns {Promise<Object>} Created submission
+ */
 exports.create = async (data) => {
   try {
     const submission = await submissionRepository.create(data);
@@ -10,6 +17,11 @@ exports.create = async (data) => {
     return response(true, null, err.message || "Failed to create submission");
   }
 };
+
+/**
+ * Get all submissions
+ * @returns {Promise<Array>} List of submissions
+ */
 exports.getAll = async () => {
   try {
     const submissions = await submissionRepository.findAll();
@@ -18,6 +30,12 @@ exports.getAll = async () => {
     return response(true, null, err.message || "Failed to fetch submissions");
   }
 };
+
+/**
+ * Get a submission by ID
+ * @param {string} id - Submission ID
+ * @returns {Promise<Object|null>} Submission or null
+ */
 exports.getById = async (id) => {
   try {
     const submission = await submissionRepository.findById(id);
@@ -27,6 +45,13 @@ exports.getById = async (id) => {
     return response(true, null, err.message || "Failed to fetch submission");
   }
 };
+
+/**
+ * Update a submission by ID
+ * @param {string} id - Submission ID
+ * @param {Object} data - Update data
+ * @returns {Promise<Object|null>} Updated submission or null
+ */
 exports.update = async (id, data) => {
   try {
     const submission = await submissionRepository.update(id, data);
@@ -36,6 +61,12 @@ exports.update = async (id, data) => {
     return response(true, null, err.message || "Failed to update submission");
   }
 };
+
+/**
+ * Delete a submission by ID
+ * @param {string} id - Submission ID
+ * @returns {Promise<Object|null>} Deleted submission or null
+ */
 exports.remove = async (id) => {
   try {
     const submission = await submissionRepository.remove(id);

@@ -9,9 +9,17 @@ const sendResponse = require("../utils/response");
 exports.markAttendance = async (req, res) => {
   try {
     const attendance = await attendanceService.markAttendance(req.body);
-    sendResponse(res, { error: false, data: attendance, message: "Attendance marked" }, 201);
+    sendResponse(
+      res,
+      { error: false, data: attendance, message: "Attendance marked" },
+      201,
+    );
   } catch (err) {
-    sendResponse(res, { error: err.message, data: null, message: "Failed to mark attendance" }, 400);
+    sendResponse(
+      res,
+      { error: err.message, data: null, message: "Failed to mark attendance" },
+      400,
+    );
   }
 };
 
@@ -24,9 +32,21 @@ exports.markAttendance = async (req, res) => {
 exports.getAllAttendance = async (req, res) => {
   try {
     const records = await attendanceService.getAllAttendance();
-    sendResponse(res, { error: false, data: records, message: "Attendance records fetched" }, 200);
+    sendResponse(
+      res,
+      { error: false, data: records, message: "Attendance records fetched" },
+      200,
+    );
   } catch (err) {
-    sendResponse(res, { error: err.message, data: null, message: "Failed to fetch attendance records" }, 400);
+    sendResponse(
+      res,
+      {
+        error: err.message,
+        data: null,
+        message: "Failed to fetch attendance records",
+      },
+      400,
+    );
   }
 };
 
@@ -37,9 +57,23 @@ exports.getAllAttendance = async (req, res) => {
  */
 exports.getAttendanceByStudent = async (req, res) => {
   try {
-    const records = await attendanceService.getAttendanceByStudent(req.params.studentId);
-    sendResponse(res, { error: false, data: records, message: "Attendance by student fetched" }, 200);
+    const records = await attendanceService.getAttendanceByStudent(
+      req.params.studentId,
+    );
+    sendResponse(
+      res,
+      { error: false, data: records, message: "Attendance by student fetched" },
+      200,
+    );
   } catch (err) {
-    sendResponse(res, { error: err.message, data: null, message: "Failed to fetch attendance by student" }, 400);
+    sendResponse(
+      res,
+      {
+        error: err.message,
+        data: null,
+        message: "Failed to fetch attendance by student",
+      },
+      400,
+    );
   }
 };

@@ -1,4 +1,3 @@
-
 const userService = require("../services/user.service");
 const sendResponse = require("../utils/response");
 const { validationResult } = require("express-validator");
@@ -11,7 +10,18 @@ const { validationResult } = require("express-validator");
 exports.createUser = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return sendResponse(res, { error: true, data: null, message: errors.array().map(e => e.msg).join(", ") }, 400);
+    return sendResponse(
+      res,
+      {
+        error: true,
+        data: null,
+        message: errors
+          .array()
+          .map((e) => e.msg)
+          .join(", "),
+      },
+      400,
+    );
   }
   const result = await userService.create(req.body);
   sendResponse(res, result, result.error ? 400 : 201);
@@ -46,7 +56,18 @@ exports.getUserById = async (req, res) => {
 exports.updateUser = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return sendResponse(res, { error: true, data: null, message: errors.array().map(e => e.msg).join(", ") }, 400);
+    return sendResponse(
+      res,
+      {
+        error: true,
+        data: null,
+        message: errors
+          .array()
+          .map((e) => e.msg)
+          .join(", "),
+      },
+      400,
+    );
   }
   const result = await userService.update(req.params.id, req.body);
   sendResponse(res, result, result.error ? 404 : 200);

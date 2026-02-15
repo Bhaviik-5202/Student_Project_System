@@ -1,3 +1,7 @@
+// Main server entry point for the Student Project System backend
+// Sets up Express app, middleware, API routes, error handling, and server startup
+
+// Load environment variables and dependencies
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
@@ -7,32 +11,24 @@ const rateLimit = require("express-rate-limit");
 const compression = require("compression");
 const morganLogger = require("./middleware/logger");
 const connectDB = require("./config/db");
-const path = require("path");
 const sendResponse = require("./utils/response");
 
-const app = express();
+const app = express(); // Create Express app
 
-// Trust proxy (for deployments behind reverse proxies like Heroku, Nginx)
-app.set("trust proxy", 1);
+// Middleware setup
+app.set("trust proxy", 1); // Trust proxy for deployments
 
-// Enable gzip compression
-app.use(compression());
+app.use(compression()); // Enable gzip compression
 
-// Security headers
 app.use(
   helmet({
     contentSecurityPolicy:
       process.env.NODE_ENV === "production" ? undefined : false,
   }),
 );
-// Enable CORS with config
-app.use(
-  cors({
-    origin: process.env.CORS_ORIGIN || "*",
-    credentials: true,
-  }),
-);
-// Rate limiting
+
+app.use(cors({ origin: process.env.CORS_ORIGIN || "*", credentials: true }));
+
 app.use(
   rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -41,20 +37,19 @@ app.use(
     legacyHeaders: false,
   }),
 );
-// JSON body parsing
-app.use(express.json());
 
-// Logger middleware
-app.use(morganLogger);
+app.use(express.json()); // Parse JSON bodies
+
+app.use(morganLogger); // HTTP request logging
 
 // Swagger API docs
-require("./config/swagger")(app);
+require("./config/swagger")(app); // Sets up Swagger UI at /api-docs
 
-// Centralized route loader
+// API routes
 const apiRoutes = require("./routes/index.js");
-app.use("/api/v1", apiRoutes);
+app.use("/api/v1", apiRoutes); // Mount all API v1 routes
 
-// 404 handler (centralized response)
+// 404 handler for undefined API endpoints
 app.use((req, res, next) => {
   sendResponse(
     res,
@@ -65,29 +60,58 @@ app.use((req, res, next) => {
 
 // Global error handler
 const errorHandler = require("./middleware/errorHandler");
-app.use(errorHandler);
 
-// Always connect to DB (for both server and tests)
+app.use(errorHandler); // Handles all uncaught errors
+
+// Database connection & server startup
 const startServer = async () => {
-  await connectDB();
-  if (require.main === module) {
-    const PORT = process.env.PORT || 5000;
-    const server = app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
-    // Graceful shutdown
-    process.on("SIGINT", async () => {
-      console.log("Shutting down server...");
-      await mongoose.disconnect();
-      server.close(() => {
-        console.log("Server closed");
-        process.exit(0);
+  try {
+    await connectDB();
+    if (require.main === module) {
+      const PORT = process.env.PORT || 5000;
+      const server = app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
       });
-    });
+      // Graceful shutdown on SIGINT
+      process.on("SIGINT", async () => {
+        console.log("Shutting down server...");
+        await mongoose.disconnect();
+        server.close(() => {
+          console.log("Server closed");
+          process.exit(0);
+        });
+      });
+    }
+  } catch (err) {
+    console.error("Failed to start server:", err);
+    process.exit(1);
   }
 };
 
 startServer();
 
-// Export app for testing
+// Export Express app for testing (e.g., with supertest)
 module.exports = app;
+
+// Request flow through middleware and routes:
+/*
+Request
+   ↓
+Security (helmet)
+   ↓
+CORS
+   ↓
+Rate limit
+   ↓
+JSON parser
+   ↓
+Logger
+   ↓
+Routes
+   ↓
+404 handler
+   ↓
+Error handler
+   ↓
+Response
+*/

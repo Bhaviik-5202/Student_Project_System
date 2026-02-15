@@ -5,7 +5,6 @@ const router = express.Router();
 const resourceController = require("../controllers/resource.controller");
 const auth = require("../middleware/auth.middleware");
 
-// Create resource (protected)
 router.post(
   "/",
   auth,
@@ -21,11 +20,8 @@ router.post(
   validateRequest,
   resourceController.createResource,
 );
-// Get all resources (protected)
 router.get("/", auth, resourceController.getAllResources);
-// Get resource by ID (protected)
 router.get("/:id", auth, resourceController.getResourceById);
-// Delete resource (protected)
 router.delete("/:id", auth, resourceController.deleteResource);
 
 module.exports = router;

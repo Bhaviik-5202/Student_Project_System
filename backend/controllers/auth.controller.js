@@ -27,7 +27,15 @@ exports.login = async (req, res) => {
  * @access Public
  */
 exports.forgotPassword = (req, res) => {
-  sendResponse(res, { error: false, data: null, message: "Password reset link sent (demo only)" }, 200);
+  sendResponse(
+    res,
+    {
+      error: false,
+      data: null,
+      message: "Password reset link sent (demo only)",
+    },
+    200,
+  );
 };
 
 /**
@@ -36,5 +44,13 @@ exports.forgotPassword = (req, res) => {
  * @access Public
  */
 exports.resetPassword = (req, res) => {
-  sendResponse(res, { error: false, data: null, message: "Password reset successful (demo only)" }, 200);
+  sendResponse(
+    res,
+    {
+      error: false,
+      data: null,
+      message: "Password reset successful (demo only)",
+    },
+    200,
+  );
 };

@@ -1,4 +1,3 @@
-
 const assignmentService = require("../services/assignment.service");
 const sendResponse = require("../utils/response");
 const { validationResult } = require("express-validator");
@@ -11,7 +10,18 @@ const { validationResult } = require("express-validator");
 exports.createAssignment = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return sendResponse(res, { error: true, data: null, message: errors.array().map(e => e.msg).join(", ") }, 400);
+    return sendResponse(
+      res,
+      {
+        error: true,
+        data: null,
+        message: errors
+          .array()
+          .map((e) => e.msg)
+          .join(", "),
+      },
+      400,
+    );
   }
   const result = await assignmentService.create(req.body);
   if (result.error) {
@@ -49,7 +59,18 @@ exports.getAssignmentById = async (req, res) => {
 exports.updateAssignment = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return sendResponse(res, { error: true, data: null, message: errors.array().map(e => e.msg).join(", ") }, 400);
+    return sendResponse(
+      res,
+      {
+        error: true,
+        data: null,
+        message: errors
+          .array()
+          .map((e) => e.msg)
+          .join(", "),
+      },
+      400,
+    );
   }
   const result = await assignmentService.update(req.params.id, req.body);
   if (result.error) {

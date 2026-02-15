@@ -19,7 +19,7 @@ exports.create = async (data) => {
 };
 
 /**
- * Get all assignments with optional filters
+ * Get all assignments
  * @returns {Promise<Array>} List of assignments
  */
 exports.getAll = async () => {

@@ -1,4 +1,3 @@
-// services/resource.service.js
 const Resource = require("../models/resource.model");
 
 /**
@@ -7,28 +6,40 @@ const Resource = require("../models/resource.model");
  * @returns {Promise<Object>} Created resource
  */
 exports.createResource = async (data) => {
-  const resource = new Resource(data);
-  return await resource.save();
+  try {
+    const resource = new Resource(data);
+    const savedResource = await resource.save();
+    return savedResource;
+  } catch (err) {
+    throw new Error(err.message || "Failed to create resource");
+  }
 };
 
 /**
  * Get all resources with pagination and filters
  * @param {Object} params - Pagination and filter params
+ * @param {number} params.page - Page number
+ * @param {number} params.limit - Number of items per page
+ * @param {Object} params.filters - Filter object
  * @returns {Promise<Object>} Paginated resources
  */
 exports.getAllResources = async ({ page = 1, limit = 10, filters = {} }) => {
-  const skip = (page - 1) * limit;
-  const [resources, total] = await Promise.all([
-    Resource.find(filters).skip(skip).limit(limit),
-    Resource.countDocuments(filters),
-  ]);
-  return {
-    resources,
-    total,
-    page,
-    limit,
-    totalPages: Math.ceil(total / limit),
-  };
+  try {
+    const skip = (page - 1) * limit;
+    const [resources, total] = await Promise.all([
+      Resource.find(filters).skip(skip).limit(limit),
+      Resource.countDocuments(filters),
+    ]);
+    return {
+      resources,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
+  } catch (err) {
+    throw new Error(err.message || "Failed to fetch resources");
+  }
 };
 
 /**
@@ -37,7 +48,11 @@ exports.getAllResources = async ({ page = 1, limit = 10, filters = {} }) => {
  * @returns {Promise<Object|null>} Resource or null
  */
 exports.getResourceById = async (id) => {
-  return await Resource.findById(id);
+  try {
+    return await Resource.findById(id);
+  } catch (err) {
+    throw new Error(err.message || "Failed to fetch resource");
+  }
 };
 
 /**
@@ -46,5 +61,9 @@ exports.getResourceById = async (id) => {
  * @returns {Promise<Object|null>} Deleted resource or null
  */
 exports.deleteResource = async (id) => {
-  return await Resource.findByIdAndDelete(id);
+  try {
+    return await Resource.findByIdAndDelete(id);
+  } catch (err) {
+    throw new Error(err.message || "Failed to delete resource");
+  }
 };
