@@ -1,94 +1,89 @@
-# Student Project System Backend
 
-## Architecture Overview
+# Student Project System – Backend
 
-- **Clean Architecture**: Controllers handle HTTP, delegate to services for business logic, and services interact with models.
-- **Centralized Routing**: All routes are loaded via `src/routes/index.js` and mounted under `/api/v1`.
-- **Middleware**: Global error handler, request validation, authentication, authorization, logging, and security (helmet, CORS, rate limiting).
-- **Consistent API Response**: All endpoints return `{ success, data, message, errors }`.
-- **Environment Config**: Use `.env` for secrets and environment-specific settings.
+![Node.js CI](https://img.shields.io/github/workflow/status/<your-org>/<your-repo>/Node.js%20CI?style=flat-square)
+![License](https://img.shields.io/github/license/<your-org>/<your-repo>?style=flat-square)
 
+Backend API for managing student projects, users, assignments, and more. Built with Node.js, Express, and MongoDB.
+
+---
+
+## 🚀 Features
+
+- **Clean Architecture**: Controllers → Services → Models
+- **Role-Based Access Control (RBAC)**: Restrict endpoints by user role
+- **JWT Authentication**: Secure protected routes
+- **Consistent API Response**: `{ success, data, message, errors }`
+- **Swagger/OpenAPI Docs**: Interactive docs at `/api-docs`
+- **Pagination & Filtering**: For all list endpoints
+- **Centralized Error Handling**: Robust error and validation middleware
+- **Logging & Security**: Helmet, CORS, rate limiting, and audit logs
+- **Automated Tests**: Mocha, Chai, Supertest
+
+---
+
+## 📁 Folder Structure
+
+See [STRUCTURE.md](STRUCTURE.md) for a detailed breakdown.
+
+Key folders:
+
+- `controllers/` – HTTP layer (request/response, validation)
+- `services/` – Business logic (data processing, DB access)
+- `models/` – Mongoose models (schema definitions)
+- `routes/` – Route definitions (REST endpoints)
+- `middleware/` – Middleware (auth, error, logger, validation, RBAC)
+- `repositories/` – Data access layer
+- `utils/` – Utilities (ApiError, response, helpers)
+- `tests/` – Automated tests (Mocha/Chai/Supertest)
+
+---
+
+## 🛠️ Getting Started
 
 ### Prerequisites
 
-- Node.js (v18+ recommended)
-- MongoDB (local or Atlas)
+- [Node.js](https://nodejs.org/) (v18+ recommended)
+- [MongoDB](https://www.mongodb.com/) (local or Atlas)
 
 ### Installation
 
-1. Clone the repository:
-
+1. **Clone the repository**
    ```sh
    git clone <your-repo-url>
    cd backend
    ```
-
-2. Install dependencies:
-
+2. **Install dependencies**
    ```sh
    npm install
    ```
-
-3. Copy `.env.example` to `.env` and fill in your values (see below).
-
-4. Start the server:
-
+3. **Configure environment variables**
+   - Copy `.env.example` to `.env` and fill in your values (see `.env.example` for required keys)
+4. **Start the server**
    ```sh
    npm start
    # or for development
    npm run dev
    ```
-
-5. Run tests:
-
+5. **API Documentation**
+   - Visit [http://localhost:3000/api-docs](http://localhost:3000/api-docs) for Swagger UI
+6. **Run tests**
    ```sh
    npm test
    ```
 
-### Example .env
+---
 
-```env
-MONGO_URI=mongodb://localhost:27017/student_project_system
-JWT_SECRET=supersecretkey
-PORT=5000
-API_BASE_URL=http://localhost:5000/api/v1
+## 🔒 Authentication & Authorization
 
-TOKEN_EXPIRES_IN=1d
-```
-	```sh
-	npm start
-	# or for development
-	npm run dev
-	```
-5. Visit Swagger docs at [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
-6. Run tests:
-	```sh
-	npm test
-	```
+- All protected endpoints require a JWT in the `Authorization` header: `Bearer <token>`
+- Role-based access enforced via middleware (see `middleware/roleMiddleware.js`)
 
-### Example .env
-```
-PORT=3000
-MONGODB_URI=mongodb://localhost:27017/student_project_system
-JWT_SECRET=your_jwt_secret
-```
+---
 
+## 📚 API Usage
 
-
-## Folder Structure
-
-- `controllers/` — HTTP layer (request/response, validation)
-- `services/` — Business logic (data processing, DB access)
-- `models/` — Mongoose models (schema definitions)
-- `routes/` — Route definitions (REST endpoints)
-- `middleware/` — Middleware (auth, error, logger, validation, RBAC)
-- `utils/` — Utilities (ApiError, response, helpers)
-- `tests/` — Automated tests (Mocha/Chai/Supertest)
-## API Usage
-
-- All endpoints are prefixed with `/api/v1` (or as configured in `server.js`).
-- Use JWT authentication for protected routes (see `/auth/login`).
-- See live API docs and try endpoints at `/api-docs` (Swagger UI).
+All endpoints are prefixed with `/api/v1` (see `server.js`).
 
 ### Example: Create Project (admin/faculty only)
 ```http
@@ -97,9 +92,9 @@ Authorization: Bearer <token>
 Content-Type: application/json
 
 {
-	"title": "AI Research Portal",
-	"description": "A portal for AI student projects",
-	"status": "planning"
+  "title": "AI Research Portal",
+  "description": "A portal for AI student projects",
+  "status": "planning"
 }
 ```
 
@@ -109,85 +104,54 @@ GET /api/v1/projects?page=2&limit=5&status=completed
 Authorization: Bearer <token>
 ```
 
+---
 
+## 🚀 Deployment Guide
 
-## Deployment Guide
-
-Follow these steps to deploy the backend to a production environment:
-
-1. **Clone the repository**
-	```sh
-	git clone <your-repo-url>
-	cd backend
-	```
-2. **Install dependencies**
-	```sh
-	npm install
-	```
-3. **Set up environment variables**
-	- Copy `.env.example` to `.env` and fill in production values (MongoDB URI, JWT secret, etc.)
-4. **Set up MongoDB**
-	- Use a managed service (MongoDB Atlas) or self-hosted MongoDB instance
-	- Ensure your database is accessible from your server
-5. **Run database migrations/seed (if any)**
-	- (Optional) Add scripts for initial data or indexes
-6. **Start the server with a process manager**
-	- Recommended: [PM2](https://pm2.keymetrics.io/)
-	```sh
-	npm install -g pm2
-	pm2 start server.js --name student-project-system
-	pm2 save
-	pm2 startup
-	```
-7. **Configure HTTPS and reverse proxy**
-	- Use Nginx or Apache to proxy requests to Node.js and enable SSL
-	- Example Nginx config:
-	  ```nginx
-	  server {
-		 listen 80;
-		 server_name your-domain.com;
-		 location / {
-			proxy_pass http://localhost:3000;
-			proxy_set_header Host $host;
-			proxy_set_header X-Real-IP $remote_addr;
-			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-			proxy_set_header X-Forwarded-Proto $scheme;
-		 }
-	  }
-	  ```
-	- Use Let's Encrypt for free SSL certificates
-8. **Set up environment hardening**
-	- Set `NODE_ENV=production`
-	- Enable CORS, Helmet, and rate limiting (already included)
-	- Use strong secrets and secure cookies
-9. **Monitor and log**
-	- Use PM2 logs, or integrate with a logging/monitoring service
-10. **Automate with CI/CD (optional)**
-	 - Use GitHub Actions, GitLab CI, or similar for automated testing and deployment
+1. **Clone the repository & install dependencies**
+2. **Set up environment variables** (`.env`)
+3. **Set up MongoDB** (Atlas or self-hosted)
+4. **(Optional) Run database seed/migrations**
+5. **Start the server with a process manager** (e.g., [PM2](https://pm2.keymetrics.io/))
+   ```sh
+   npm install -g pm2
+   pm2 start server.js --name student-project-system
+   pm2 save
+   pm2 startup
+   ```
+6. **Configure HTTPS & reverse proxy** (Nginx/Apache)
+7. **Set `NODE_ENV=production` and harden environment**
+8. **Monitor and log** (PM2 logs, or integrate with a logging/monitoring service)
+9. **Automate with CI/CD (optional)**
 
 ---
 
-For troubleshooting and advanced deployment (Docker, cloud platforms), see the official Node.js and MongoDB documentation.
+## 🤝 Contributing
+
+1. Fork the repo and create a feature branch
+2. Write clear, maintainable code with comments for all exported functions and complex logic
+3. Add/modify tests for new features
+4. Open a pull request with a clear description
 
 ---
 
+## 📝 License
 
-## Contributing
-
-1. Fork the repo and create a feature branch.
-2. Write clear, maintainable code with comments for all exported functions and complex logic.
-3. Add/modify tests for new features.
-4. Open a pull request with a clear description.
+Distributed under the MIT License. See `LICENSE` for more information.
 
 ---
 
-For more details, see code comments and individual module documentation.
+## 🙋‍♂️ Support & Questions
+
+For troubleshooting, see code comments, module docs, or open an issue.
 
 ---
 
-### Key Features
-- Role-based access control (RBAC) for sensitive endpoints
+## ⭐ Highlights
+
+- Role-based access control (RBAC)
 - Pagination and filtering for all list endpoints
 - Swagger/OpenAPI documentation at `/api-docs`
 - Centralized error and validation handling
 - Inline code comments for maintainability
+- Automated tests with Mocha, Chai, Supertest
