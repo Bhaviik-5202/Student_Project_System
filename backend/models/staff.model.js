@@ -1,0 +1,12 @@
+const mongoose = require("mongoose");
+
+const staffSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  department: String,
+  role: { type: String, default: "faculty" },
+  createdAt: { type: Date, default: Date.now },
+});
+
+// Staff model for MongoDB
+module.exports = mongoose.model("Staff", staffSchema);

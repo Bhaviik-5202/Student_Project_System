@@ -1,14 +1,22 @@
 require("dotenv").config();
-
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
-const morganLogger = require("./src/middleware/logger");
+const compression = require("compression");
+const morganLogger = require("./middleware/logger");
+const connectDB = require("./config/db");
 const path = require("path");
+const sendResponse = require("./utils/response");
 
 const app = express();
+
+// Trust proxy (for deployments behind reverse proxies like Heroku, Nginx)
+app.set("trust proxy", 1);
+
+// Enable gzip compression
+app.use(compression());
 
 // Security headers
 app.use(
@@ -39,40 +47,34 @@ app.use(express.json());
 // Logger middleware
 app.use(morganLogger);
 
-// Centralized API route loader
-const apiRoutes = require("./src/routes");
+// Swagger API docs
+require("./config/swagger")(app);
+
+// Centralized route loader
+const apiRoutes = require("./routes/index.js");
 app.use("/api/v1", apiRoutes);
 
-// Health check endpoint (versioned)
-app.get("/api/v1/health", (req, res) => {
-  res.json({ status: "Backend running" });
-});
-
-// 404 handler
+// 404 handler (centralized response)
 app.use((req, res, next) => {
-  res.status(404).json({ success: false, message: "API endpoint not found" });
+  sendResponse(
+    res,
+    { error: true, data: null, message: "API endpoint not found" },
+    404,
+  );
 });
 
 // Global error handler
-const errorHandler = require("./src/middleware/errorHandler");
+const errorHandler = require("./middleware/errorHandler");
 app.use(errorHandler);
 
-// Async MongoDB connection and server start
-async function startServer() {
-  try {
-    const mongoUri =
-      process.env.MONGO_URI ||
-      "mongodb://localhost:27017/student_project_system";
-    if (!mongoUri) {
-      throw new Error("MongoDB URI not set in environment variables.");
-    }
-    await mongoose.connect(mongoUri);
-    console.log("MongoDB connected");
+// Always connect to DB (for both server and tests)
+const startServer = async () => {
+  await connectDB();
+  if (require.main === module) {
     const PORT = process.env.PORT || 5000;
     const server = app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
     });
-
     // Graceful shutdown
     process.on("SIGINT", async () => {
       console.log("Shutting down server...");
@@ -82,16 +84,10 @@ async function startServer() {
         process.exit(0);
       });
     });
-  } catch (err) {
-    console.error("MongoDB connection error:", err.message);
-    process.exit(1);
   }
-}
+};
 
-if (require.main === module) {
-  startServer();
-}
+startServer();
 
 // Export app for testing
 module.exports = app;
-
