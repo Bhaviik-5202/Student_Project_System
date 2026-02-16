@@ -1,34 +1,67 @@
+/**
+ * Attendance Routes
+ * ------------------------------------------------------------------
+ * Handles attendance management APIs.
+ * All routes are protected using authentication middleware.
+ */
+
 const express = require("express");
 const { body } = require("express-validator");
-const validateRequest = require("../middleware/validateRequest");
-const router = express.Router();
-const attendanceController = require("../controllers/attendance.controller");
-const auth = require("../middleware/auth.middleware");
 
-// Mark attendance (protected)
+const router = express.Router();
+
+// Controller
+const attendanceController = require("../controllers/attendance.controller");
+
+// Middlewares
+const authMiddleware = require("../middleware/auth.middleware");
+const validateRequest = require("../middleware/validateRequest");
+
+/**
+ * Validation rules for marking attendance
+ */
+const markAttendanceValidation = [
+  body("student").notEmpty().withMessage("Student is required"),
+
+  body("date")
+    .notEmpty()
+    .isISO8601()
+    .withMessage("Date must be a valid ISO8601 date"),
+
+  body("status")
+    .notEmpty()
+    .isIn(["present", "absent", "late", "excused"])
+    .withMessage("Status must be present, absent, late, or excused"),
+];
+
+/**
+ * @route   POST /api/v1/attendance
+ * @desc    Mark attendance for a student
+ * @access  Private (Authenticated Users)
+ */
 router.post(
   "/",
-  auth,
-  [
-    body("student").notEmpty().withMessage("Student is required"),
-    body("date")
-      .notEmpty()
-      .isISO8601()
-      .withMessage("Date must be a valid ISO8601 date"),
-    body("status")
-      .notEmpty()
-      .isIn(["present", "absent", "late", "excused"])
-      .withMessage("Status must be present, absent, late, or excused"),
-  ],
+  authMiddleware,
+  markAttendanceValidation,
   validateRequest,
   attendanceController.markAttendance,
 );
-// Get all attendance records (protected)
-router.get("/", auth, attendanceController.getAllAttendance);
-// Get attendance by student ID (protected)
+
+/**
+ * @route   GET /api/v1/attendance
+ * @desc    Retrieve all attendance records
+ * @access  Private (Authenticated Users)
+ */
+router.get("/", authMiddleware, attendanceController.getAllAttendance);
+
+/**
+ * @route   GET /api/v1/attendance/student/:studentId
+ * @desc    Retrieve attendance records by student ID
+ * @access  Private (Authenticated Users)
+ */
 router.get(
   "/student/:studentId",
-  auth,
+  authMiddleware,
   attendanceController.getAttendanceByStudent,
 );
 

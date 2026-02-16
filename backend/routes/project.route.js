@@ -1,83 +1,95 @@
+/**
+ * Project Routes
+ * ------------------------------------------------------------------
+ * Handles CRUD operations for projects.
+ * Project creation, update, and deletion are restricted
+ * to Admin and Faculty roles.
+ * All routes require authentication.
+ */
+
 const express = require("express");
 const { body } = require("express-validator");
-const validateRequest = require("../middleware/validateRequest");
-const router = express.Router();
-const projectController = require("../controllers/project.controller");
-const auth = require("../middleware/auth.middleware");
-const roleMiddleware = require("../middleware/roleMiddleware");
 
-// Create project (protected)
+const router = express.Router();
+
+// Controllers
+const projectController = require("../controllers/project.controller");
+
+// Middlewares
+const authMiddleware = require("../middleware/auth.middleware");
+const roleMiddleware = require("../middleware/roleMiddleware");
+const validateRequest = require("../middleware/validateRequest");
+
+/**
+ * Validation rules for creating/updating a project
+ */
+const projectValidation = [
+  body("title").optional().notEmpty().withMessage("Title cannot be empty"),
+
+  body("description")
+    .optional()
+    .isString()
+    .withMessage("Description must be a string"),
+
+  body("status")
+    .optional()
+    .isIn(["planning", "in_progress", "completed", "on_hold", "cancelled"])
+    .withMessage("Invalid status"),
+];
+
+/**
+ * @route   POST /api/v1/projects
+ * @desc    Create a new project
+ * @access  Private (Admin, Faculty)
+ */
 router.post(
   "/",
-  auth,
+  authMiddleware,
+  roleMiddleware(["admin", "faculty"]),
   [
     body("title").notEmpty().withMessage("Title is required"),
-    body("description").optional().isString(),
-    body("status")
-      .optional()
-      .isIn(["planning", "in_progress", "completed", "on_hold", "cancelled"])
-      .withMessage("Invalid status"),
+    ...projectValidation.slice(1),
   ],
   validateRequest,
   projectController.createProject,
 );
-// Create project (protected, admin/faculty only)
-router.post(
-  "/",
-  auth,
-  roleMiddleware(["admin", "faculty"]),
-  [
-    body("title").notEmpty().withMessage("Title is required"),
-    body("description").optional().isString(),
-    body("status")
-      .optional()
-      .isIn(["planning", "in_progress", "completed", "on_hold", "cancelled"])
-      .withMessage("Invalid status"),
-  ],
-  validateRequest,
-  projectController.createProject,
-);
-// Get all projects (protected)
-router.get("/", auth, projectController.getAllProjects);
-// Get project by ID (protected)
-router.get("/:id", auth, projectController.getProjectById);
-// Update project (protected)
+
+/**
+ * @route   GET /api/v1/projects
+ * @desc    Retrieve all projects
+ * @access  Private (Authenticated Users)
+ */
+router.get("/", authMiddleware, projectController.getAllProjects);
+
+/**
+ * @route   GET /api/v1/projects/:id
+ * @desc    Retrieve a single project by ID
+ * @access  Private (Authenticated Users)
+ */
+router.get("/:id", authMiddleware, projectController.getProjectById);
+
+/**
+ * @route   PUT /api/v1/projects/:id
+ * @desc    Update an existing project
+ * @access  Private (Admin, Faculty)
+ */
 router.put(
-  ":id",
-  auth,
-  [
-    body("title").optional().notEmpty().withMessage("Title cannot be empty"),
-    body("description").optional().isString(),
-    body("status")
-      .optional()
-      .isIn(["planning", "in_progress", "completed", "on_hold", "cancelled"])
-      .withMessage("Invalid status"),
-  ],
+  "/:id",
+  authMiddleware,
+  roleMiddleware(["admin", "faculty"]),
+  projectValidation,
   validateRequest,
   projectController.updateProject,
 );
-// Update project (protected, admin/faculty only)
-router.put(
-  ":id",
-  auth,
-  roleMiddleware(["admin", "faculty"]),
-  [
-    body("title").optional().notEmpty().withMessage("Title cannot be empty"),
-    body("description").optional().isString(),
-    body("status")
-      .optional()
-      .isIn(["planning", "in_progress", "completed", "on_hold", "cancelled"])
-      .withMessage("Invalid status"),
-  ],
-  validateRequest,
-  projectController.updateProject,
-);
-// Delete project (protected)
-router.delete("/:id", auth, projectController.deleteProject);
-// Delete project (protected, admin/faculty only)
+
+/**
+ * @route   DELETE /api/v1/projects/:id
+ * @desc    Delete a project
+ * @access  Private (Admin, Faculty)
+ */
 router.delete(
   "/:id",
-  auth,
+  authMiddleware,
   roleMiddleware(["admin", "faculty"]),
   projectController.deleteProject,
 );

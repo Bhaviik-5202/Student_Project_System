@@ -1,9 +1,30 @@
+/**
+ * Analytics Routes
+ * ------------------------------------------------------------------
+ * Provides system analytics and dashboard statistics.
+ * Primarily intended for administrative insights.
+ */
+
 const express = require("express");
 const router = express.Router();
-const analyticsController = require("../controllers/analytics.controller");
-const auth = require("../middleware/auth.middleware");
 
-// GET /api/v1/analytics/dashboard - Admin dashboard stats
-router.get("/dashboard", auth, analyticsController.getDashboardStats);
+// Controller
+const analyticsController = require("../controllers/analytics.controller");
+
+// Middlewares
+const authMiddleware = require("../middleware/auth.middleware");
+const roleMiddleware = require("../middleware/roleMiddleware");
+
+/**
+ * @route   GET /api/v1/analytics/dashboard
+ * @desc    Retrieve admin dashboard statistics
+ * @access  Private (Admin Only)
+ */
+router.get(
+  "/dashboard",
+  authMiddleware,
+  roleMiddleware(["admin"]),
+  analyticsController.getDashboardStats,
+);
 
 module.exports = router;

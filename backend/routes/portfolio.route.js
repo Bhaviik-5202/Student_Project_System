@@ -1,39 +1,85 @@
+/**
+ * Portfolio Routes
+ * ------------------------------------------------------------------
+ * Handles student portfolio management.
+ * Allows creating, retrieving, and updating portfolio records.
+ * All routes are protected via authentication middleware.
+ */
+
 const express = require("express");
 const { body } = require("express-validator");
-const validateRequest = require("../middleware/validateRequest");
-const router = express.Router();
-const portfolioController = require("../controllers/portfolio.controller");
-const auth = require("../middleware/auth.middleware");
 
-// Create portfolio (protected)
+const router = express.Router();
+
+// Controller
+const portfolioController = require("../controllers/portfolio.controller");
+
+// Middlewares
+const authMiddleware = require("../middleware/auth.middleware");
+const validateRequest = require("../middleware/validateRequest");
+
+/**
+ * @route   POST /api/v1/portfolios
+ * @desc    Create a new student portfolio
+ * @access  Private (Authenticated Users)
+ */
 router.post(
   "/",
-  auth,
+  authMiddleware,
   [
     body("student").notEmpty().withMessage("Student is required"),
-    body("projects").optional().isArray(),
-    body("skills").optional().isArray(),
-    body("badges").optional().isArray(),
-    body("transcriptUrl").optional().isString(),
+
+    body("projects")
+      .optional()
+      .isArray()
+      .withMessage("Projects must be an array"),
+
+    body("skills").optional().isArray().withMessage("Skills must be an array"),
+
+    body("badges").optional().isArray().withMessage("Badges must be an array"),
+
+    body("transcriptUrl")
+      .optional()
+      .isString()
+      .withMessage("Transcript URL must be a string"),
   ],
   validateRequest,
   portfolioController.createPortfolio,
 );
-// Get portfolio by student (protected)
+
+/**
+ * @route   GET /api/v1/portfolios/student/:studentId
+ * @desc    Retrieve portfolio by student ID
+ * @access  Private (Authenticated Users)
+ */
 router.get(
   "/student/:studentId",
-  auth,
+  authMiddleware,
   portfolioController.getPortfolioByStudent,
 );
-// Update portfolio (protected)
+
+/**
+ * @route   PUT /api/v1/portfolios/:id
+ * @desc    Update an existing portfolio
+ * @access  Private (Authenticated Users)
+ */
 router.put(
   "/:id",
-  auth,
+  authMiddleware,
   [
-    body("projects").optional().isArray(),
-    body("skills").optional().isArray(),
-    body("badges").optional().isArray(),
-    body("transcriptUrl").optional().isString(),
+    body("projects")
+      .optional()
+      .isArray()
+      .withMessage("Projects must be an array"),
+
+    body("skills").optional().isArray().withMessage("Skills must be an array"),
+
+    body("badges").optional().isArray().withMessage("Badges must be an array"),
+
+    body("transcriptUrl")
+      .optional()
+      .isString()
+      .withMessage("Transcript URL must be a string"),
   ],
   validateRequest,
   portfolioController.updatePortfolio,

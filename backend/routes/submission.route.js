@@ -1,11 +1,52 @@
+/**
+ * Submission Routes
+ * ------------------------------------------------------------------
+ * Handles CRUD operations for assignment submissions.
+ * All routes are protected via authentication middleware.
+ */
+
 const express = require("express");
 const router = express.Router();
-const submissionController = require("../controllers/submission.controller");
-const auth = require("../middleware/auth.middleware");
 
-router.post("/", auth, submissionController.createSubmission);
-router.get("/", auth, submissionController.getAllSubmissions);
-router.get("/:id", auth, submissionController.getSubmissionById);
-router.put("/:id", auth, submissionController.updateSubmission);
-router.delete("/:id", auth, submissionController.deleteSubmission);
+// Controller
+const submissionController = require("../controllers/submission.controller");
+
+// Authentication Middleware
+const authMiddleware = require("../middleware/auth.middleware");
+
+/**
+ * @route   POST /api/v1/submissions
+ * @desc    Create a new submission
+ * @access  Private (Authenticated Users)
+ */
+router.post("/", authMiddleware, submissionController.createSubmission);
+
+/**
+ * @route   GET /api/v1/submissions
+ * @desc    Retrieve all submissions
+ * @access  Private (Authenticated Users)
+ */
+router.get("/", authMiddleware, submissionController.getAllSubmissions);
+
+/**
+ * @route   GET /api/v1/submissions/:id
+ * @desc    Retrieve a specific submission by ID
+ * @access  Private (Authenticated Users)
+ */
+router.get("/:id", authMiddleware, submissionController.getSubmissionById);
+
+/**
+ * @route   PUT /api/v1/submissions/:id
+ * @desc    Update an existing submission
+ * @access  Private (Authenticated Users)
+ */
+router.put("/:id", authMiddleware, submissionController.updateSubmission);
+
+/**
+ * @route   DELETE /api/v1/submissions/:id
+ * @desc    Delete a submission
+ * @access  Private (Authenticated Users)
+ */
+router.delete("/:id", authMiddleware, submissionController.deleteSubmission);
+
 module.exports = router;

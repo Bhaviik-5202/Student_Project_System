@@ -1,8 +1,14 @@
-// Centralized route loader for all API endpoints
+/**
+ * Centralized Route Loader
+ * ------------------------------------------------------------------
+ * Mounts all API endpoints under /api/v1
+ * Maintains consistent RESTful naming conventions.
+ */
+
 const express = require("express");
 const router = express.Router();
 
-// Import all route modules
+// Import route modules
 const activityRoutes = require("./activity.route");
 const assignmentRoutes = require("./assignment.route");
 const attendanceRoutes = require("./attendance.route");
@@ -21,55 +27,55 @@ const userRoutes = require("./user.route");
 const healthRoutes = require("./health.route");
 const analyticsRoutes = require("./analytics.route");
 
-// Mount all routes under /api/v1
-router.use("/activity", activityRoutes);
-router.use("/assignment", assignmentRoutes);
-router.use("/attendance", attendanceRoutes);
-router.use("/auditlog", auditlogRoutes);
-router.use("/auth", authRoutes);
+/**
+ * Mount routes (Plural REST Convention)
+ */
+router.use("/activities", activityRoutes);
 router.use("/assignments", assignmentRoutes);
+router.use("/attendance", attendanceRoutes);
+router.use("/auditlogs", auditlogRoutes);
+router.use("/auth", authRoutes);
+router.use("/portfolios", portfolioRoutes);
+router.use("/courses", coursesRoutes);
 router.use("/projects", projectRoutes);
 router.use("/resources", resourceRoutes);
-router.use("/portfolio", portfolioRoutes);
-router.use("/courses", coursesRoutes);
-router.use("/project", projectRoutes);
-router.use("/resource", resourceRoutes);
 router.use("/staff", staffRoutes);
-router.use("/student", studentRoutes);
 router.use("/students", studentRoutes);
-router.use("/portfolios", portfolioRoutes);
-router.use("/submission", submissionRoutes);
 router.use("/submissions", submissionRoutes);
-router.use("/timeline", timelineRoutes);
-router.use("/dashboard/notifications", notificationRoutes);
+router.use("/timelines", timelineRoutes);
 router.use("/notifications", notificationRoutes);
 router.use("/users", userRoutes);
-
 router.use("/health", healthRoutes);
 router.use("/analytics", analyticsRoutes);
 
-// Root API info endpoint
+/**
+ * Root API Information Endpoint
+ * GET /api/v1
+ */
 router.get("/", (req, res) => {
-  res.json({
+  res.status(200).json({
     success: true,
     message: "Student Project System API",
     version: "v1",
-    availableRoutes: [
-      "/activity",
-      "/assignment",
+    baseUrl: "/api/v1",
+    endpoints: [
+      "/activities",
+      "/assignments",
       "/attendance",
-      "/auditlog",
+      "/auditlogs",
       "/auth",
-      "/portfolio",
-      "/project",
-      "/resource",
-      "/staff",
-      "/student",
-      "/submission",
-      "/timeline",
-      "/user",
-      "/health",
+      "/portfolios",
       "/courses",
+      "/projects",
+      "/resources",
+      "/staff",
+      "/students",
+      "/submissions",
+      "/timelines",
+      "/notifications",
+      "/users",
+      "/health",
+      "/analytics",
     ],
   });
 });
