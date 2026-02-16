@@ -8,6 +8,7 @@ const staffSchema = new mongoose.Schema(
       trim: true,
       maxlength: [150, "Name cannot exceed 150 characters"],
     },
+
     email: {
       type: String,
       required: [true, "Email is required"],
@@ -15,26 +16,27 @@ const staffSchema = new mongoose.Schema(
       trim: true,
       lowercase: true,
       maxlength: [200, "Email cannot exceed 200 characters"],
-      index: true,
+      match: [/^\S+@\S+\.\S+$/, "Please provide a valid email address"],
     },
+
     department: {
       type: String,
       trim: true,
       default: null,
     },
+
     role: {
       type: String,
+      enum: ["faculty", "admin", "coordinator", "hod"],
       default: "faculty",
       trim: true,
       lowercase: true,
-      enum: ["faculty", "admin", "coordinator", "hod"],
+      index: true,
     },
   },
   {
     timestamps: true,
   },
 );
-
-staffSchema.index({ email: 1 }, { unique: true });
 
 module.exports = mongoose.model("Staff", staffSchema);

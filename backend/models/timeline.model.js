@@ -6,7 +6,6 @@ const timelineSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Project",
       required: [true, "Project is required"],
-      index: true,
     },
     milestones: [
       {
@@ -28,7 +27,6 @@ const timelineSchema = new mongoose.Schema(
         completed: {
           type: Boolean,
           default: false,
-          index: true,
         },
       },
     ],

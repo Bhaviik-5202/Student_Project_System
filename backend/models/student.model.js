@@ -8,6 +8,7 @@ const studentSchema = new mongoose.Schema(
       trim: true,
       maxlength: [150, "Name cannot exceed 150 characters"],
     },
+
     email: {
       type: String,
       required: [true, "Email is required"],
@@ -15,7 +16,7 @@ const studentSchema = new mongoose.Schema(
       trim: true,
       lowercase: true,
       maxlength: [200, "Email cannot exceed 200 characters"],
-      index: true,
+      match: [/^\S+@\S+\.\S+$/, "Please provide a valid email address"],
     },
     rollNumber: {
       type: String,
@@ -24,14 +25,15 @@ const studentSchema = new mongoose.Schema(
       trim: true,
       uppercase: true,
       maxlength: [50, "Roll number cannot exceed 50 characters"],
-      index: true,
     },
+
     department: {
       type: String,
       required: [true, "Department is required"],
       trim: true,
       maxlength: [100, "Department cannot exceed 100 characters"],
     },
+
     year: {
       type: Number,
       required: [true, "Year is required"],
@@ -39,12 +41,14 @@ const studentSchema = new mongoose.Schema(
       max: [5, "Year cannot exceed 5"],
       index: true,
     },
+
     projects: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Project",
       },
     ],
+
     grades: [
       {
         project: {
@@ -66,7 +70,5 @@ const studentSchema = new mongoose.Schema(
 );
 
 studentSchema.index({ department: 1, year: 1 });
-studentSchema.index({ rollNumber: 1 }, { unique: true });
-studentSchema.index({ email: 1 }, { unique: true });
 
 module.exports = mongoose.model("Student", studentSchema);

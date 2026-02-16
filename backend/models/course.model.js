@@ -24,7 +24,6 @@ const courseSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Staff",
       required: [true, "Faculty is required"],
-      index: true,
     },
   },
   {
