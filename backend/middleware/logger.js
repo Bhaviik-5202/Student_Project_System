@@ -1,15 +1,16 @@
 const morgan = require("morgan");
 
+const isProduction = process.env.NODE_ENV === "production";
+const isTest = process.env.NODE_ENV === "test";
+
 /**
  * Logger middleware for HTTP requests using morgan.
- * Uses 'combined' format in production and 'dev' in development.
- * Skips logging in test environment.
- * @type {import('express').RequestHandler}
+ * - 'dev' format in development
+ * - 'combined' format in production
+ * - Disabled in test environment
  */
-const format = process.env.NODE_ENV === "production" ? "combined" : "dev";
-
-const logger = morgan(format, {
-  skip: (req, res) => process.env.NODE_ENV === "test",
+const logger = morgan(isProduction ? "combined" : "dev", {
+  skip: () => isTest,
 });
 
 module.exports = logger;

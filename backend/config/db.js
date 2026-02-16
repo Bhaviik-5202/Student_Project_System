@@ -7,7 +7,7 @@ const connectDB = async () => {
     }
 
     await mongoose.connect(process.env.MONGO_URI, {
-      autoIndex: true, // Disable in production if needed
+      autoIndex: true,
     });
 
     console.log("MongoDB connected successfully");

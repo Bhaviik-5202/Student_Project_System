@@ -1,29 +1,50 @@
 const jwt = require("jsonwebtoken");
+const sendResponse = require("../utils/response");
+
 const JWT_SECRET = process.env.JWT_SECRET;
 
 /**
  * Middleware to authenticate JWT tokens.
- * Attaches decoded user to req.user if valid, else sends 401 response.
- * @function
- * @param {import('express').Request} req - Express request object
- * @param {import('express').Response} res - Express response object
- * @param {import('express').NextFunction} next - Express next middleware function
+ * Attaches decoded user to req.user if valid.
  */
 module.exports = function (req, res, next) {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res
-      .status(401)
-      .json({ error: true, data: null, message: "No token provided" });
-  }
-  const token = authHeader.split(" ")[1];
   try {
+    if (!JWT_SECRET) {
+      throw new Error("JWT_SECRET is not defined");
+    }
+
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return sendResponse(
+        res,
+        {
+          success: false,
+          message: "No token provided",
+          data: null,
+          error: "Authorization header missing",
+        },
+        401,
+      );
+    }
+
+    const token = authHeader.split(" ")[1];
+
     const decoded = jwt.verify(token, JWT_SECRET);
+
     req.user = decoded;
+
     next();
-  } catch (err) {
-    return res
-      .status(401)
-      .json({ error: true, data: null, message: "Invalid token" });
+  } catch (error) {
+    return sendResponse(
+      res,
+      {
+        success: false,
+        message: "Invalid or expired token",
+        data: null,
+        error: error.message,
+      },
+      401,
+    );
   }
 };
