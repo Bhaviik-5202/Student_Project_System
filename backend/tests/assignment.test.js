@@ -3,35 +3,35 @@ const { expect } = require("chai");
 const app = require("../server");
 
 let token;
+let assignmentId;
 
 before(async function () {
-  this.timeout(20000); // Increase timeout for debug
-  console.log("[TEST] Starting assignment test setup...");
+  this.timeout(20000);
+
   const user = {
     name: "Test User",
     email: `testuser+assign+${Date.now()}@example.com`,
     password: "testpass123",
     role: "faculty",
   };
-  try {
-    const regRes = await request(app).post("/api/v1/auth/register").send(user);
-    console.log("[TEST] Registration response:", regRes.body);
-    const res = await request(app).post("/api/v1/auth/login").send({
-      email: user.email,
-      password: user.password,
-    });
-    console.log("[TEST] Login response:", res.body);
-    token = res.body.data && res.body.data.token;
-    if (!token) throw new Error("No token received");
-    console.log("[TEST] Token acquired");
-  } catch (err) {
-    console.error("[TEST] Setup error:", err);
-    throw err;
-  }
+
+  // Register
+  await request(app).post("/api/v1/auth/register").send(user);
+
+  // Login
+  const loginRes = await request(app).post("/api/v1/auth/login").send({
+    email: user.email,
+    password: user.password,
+  });
+
+  expect(loginRes.statusCode).to.equal(200);
+  expect(loginRes.body).to.have.property("data");
+  expect(loginRes.body.data).to.have.property("token");
+
+  token = loginRes.body.data.token;
 });
 
-describe("Assignment Service & API", function () {
-  let assignmentId;
+describe("Assignment API", function () {
   const assignmentData = {
     title: "Test Assignment",
     description: "A test assignment",
@@ -42,9 +42,11 @@ describe("Assignment Service & API", function () {
       .post("/api/v1/assignments")
       .set("Authorization", `Bearer ${token}`)
       .send(assignmentData);
+
     expect(res.statusCode).to.equal(201);
-    expect(res.body.success || res.body.error === false).to.be.true;
+    expect(res.body.success).to.be.true;
     expect(res.body.data).to.have.property("_id");
+
     assignmentId = res.body.data._id;
   });
 
@@ -52,8 +54,9 @@ describe("Assignment Service & API", function () {
     const res = await request(app)
       .get("/api/v1/assignments")
       .set("Authorization", `Bearer ${token}`);
+
     expect(res.statusCode).to.equal(200);
-    expect(res.body.success || res.body.error === false).to.be.true;
+    expect(res.body.success).to.be.true;
     expect(res.body.data).to.be.an("array");
   });
 
@@ -61,9 +64,10 @@ describe("Assignment Service & API", function () {
     const res = await request(app)
       .get(`/api/v1/assignments/${assignmentId}`)
       .set("Authorization", `Bearer ${token}`);
+
     expect(res.statusCode).to.equal(200);
-    expect(res.body.success || res.body.error === false).to.be.true;
-    expect(res.body.data).to.have.property("_id", assignmentId);
+    expect(res.body.success).to.be.true;
+    expect(res.body.data._id).to.equal(assignmentId);
   });
 
   it("should update an assignment", async function () {
@@ -71,20 +75,24 @@ describe("Assignment Service & API", function () {
       .put(`/api/v1/assignments/${assignmentId}`)
       .set("Authorization", `Bearer ${token}`)
       .send({ title: "Updated Assignment" });
-    if (res.statusCode === 404) {
-      expect(res.body.error).to.be.true;
-    } else {
-      expect(res.statusCode).to.equal(200);
-      expect(res.body.success || res.body.error === false).to.be.true;
-      expect(res.body.data.title).to.equal("Updated Assignment");
-    }
+
+    expect(res.statusCode).to.equal(200);
+    expect(res.body.success).to.be.true;
+    expect(res.body.data.title).to.equal("Updated Assignment");
   });
 
   it("should delete an assignment", async function () {
     const res = await request(app)
       .delete(`/api/v1/assignments/${assignmentId}`)
       .set("Authorization", `Bearer ${token}`);
+
     expect(res.statusCode).to.equal(200);
-    expect(res.body.success || res.body.error === false).to.be.true;
+    expect(res.body.success).to.be.true;
+  });
+
+  it("should fail without authentication", async function () {
+    const res = await request(app).get("/api/v1/assignments");
+
+    expect(res.statusCode).to.equal(401);
   });
 });

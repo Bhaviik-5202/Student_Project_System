@@ -1,25 +1,45 @@
-// Main server entry point for the Student Project System backend
-// Sets up Express app, middleware, API routes, error handling, and server startup
+/**
+ * Student Project System - Backend Server
+ * ------------------------------------------------------------------
+ * Initializes Express application with:
+ *  - Security middleware
+ *  - Rate limiting
+ *  - Compression
+ *  - Logging
+ *  - Swagger docs
+ *  - API routes
+ *  - Error handling
+ *  - Graceful shutdown
+ */
 
-// Load environment variables and dependencies
 require("dotenv").config();
+require("./config/validateEnv");
+
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const compression = require("compression");
-const morganLogger = require("./middleware/logger");
+
 const connectDB = require("./config/db");
+const morganLogger = require("./middleware/logger");
+const errorHandler = require("./middleware/errorHandler");
 const sendResponse = require("./utils/response");
 
-const app = express(); // Create Express app
+const app = express();
 
-// Middleware setup
-app.set("trust proxy", 1); // Trust proxy for deployments
+/* ==========================================================
+   Security & Core Middleware
+========================================================== */
 
-app.use(compression()); // Enable gzip compression
+// Trust proxy (important for deployment behind reverse proxy)
+app.set("trust proxy", 1);
 
+// Enable gzip compression
+app.use(compression());
+
+// Secure HTTP headers
 app.use(
   helmet({
     contentSecurityPolicy:
@@ -27,91 +47,116 @@ app.use(
   }),
 );
 
-app.use(cors({ origin: process.env.CORS_ORIGIN || "*", credentials: true }));
+// CORS configuration
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN || "*",
+    credentials: true,
+  }),
+);
 
+// Rate limiting
 app.use(
   rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // limit each IP to 100 requests per windowMs
+    max: Number(process.env.RATE_LIMIT_MAX) || 100,
     standardHeaders: true,
     legacyHeaders: false,
   }),
 );
 
-app.use(express.json()); // Parse JSON bodies
+// Parse JSON requests
+app.use(express.json());
 
-app.use(morganLogger); // HTTP request logging
+// HTTP request logger
+app.use(morganLogger);
 
-// Swagger API docs
-require("./config/swagger")(app); // Sets up Swagger UI at /api-docs
+/* ==========================================================
+   Swagger Documentation
+========================================================== */
 
-// API routes
-const apiRoutes = require("./routes/index.js");
-app.use("/api/v1", apiRoutes); // Mount all API v1 routes
+require("./config/swagger")(app);
 
-// 404 handler for undefined API endpoints
-app.use((req, res, next) => {
+/* ==========================================================
+   API Routes
+========================================================== */
+
+const apiRoutes = require("./routes");
+app.use("/api/v1", apiRoutes);
+
+/* ==========================================================
+   404 Handler
+========================================================== */
+
+app.use((req, res) => {
   sendResponse(
     res,
-    { error: true, data: null, message: "API endpoint not found" },
+    {
+      success: false,
+      message: "API endpoint not found",
+    },
     404,
   );
 });
 
-// Global error handler
-const errorHandler = require("./middleware/errorHandler");
+/* ==========================================================
+   Global Error Handler
+========================================================== */
 
-app.use(errorHandler); // Handles all uncaught errors
+app.use(errorHandler);
 
-// Database connection & server startup
+/* ==========================================================
+   Server Startup
+========================================================== */
+
 const startServer = async () => {
   try {
     await connectDB();
+
     if (require.main === module) {
       const PORT = process.env.PORT || 5000;
+
       const server = app.listen(PORT, () => {
-        console.log(`Server running on port ${PORT}`);
+        console.log(`🚀 Server running on port ${PORT}`);
       });
-      // Graceful shutdown on SIGINT
-      process.on("SIGINT", async () => {
-        console.log("Shutting down server...");
+
+      /* Graceful Shutdown */
+      const shutdown = async () => {
+        console.log("🔻 Shutting down server...");
         await mongoose.disconnect();
         server.close(() => {
-          console.log("Server closed");
+          console.log("✅ Server closed cleanly");
           process.exit(0);
         });
-      });
+      };
+
+      process.on("SIGINT", shutdown);
+      process.on("SIGTERM", shutdown);
     }
-  } catch (err) {
-    console.error("Failed to start server:", err);
+  } catch (error) {
+    console.error("❌ Failed to start server:", error);
     process.exit(1);
   }
 };
 
 startServer();
 
-// Export Express app for testing (e.g., with supertest)
-module.exports = app;
+/* ==========================================================
+   Process-Level Error Handling
+========================================================== */
 
-// Request flow through middleware and routes:
-/*
-Request
-   ↓
-Security (helmet)
-   ↓
-CORS
-   ↓
-Rate limit
-   ↓
-JSON parser
-   ↓
-Logger
-   ↓
-Routes
-   ↓
-404 handler
-   ↓
-Error handler
-   ↓
-Response
-*/
+process.on("unhandledRejection", (err) => {
+  console.error("Unhandled Rejection:", err);
+  process.exit(1);
+});
+
+process.on("uncaughtException", (err) => {
+  console.error("Uncaught Exception:", err);
+  process.exit(1);
+});
+
+/* ==========================================================
+   Export App (for testing)
+========================================================== */
+
+module.exports = app;

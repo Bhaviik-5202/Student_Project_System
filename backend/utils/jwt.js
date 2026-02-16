@@ -1,30 +1,54 @@
 /**
- * Utility functions for JWT token generation and verification.
- * @module utils/jwt
+ * JWT Utility
+ * ------------------------------------------------------------------
+ * Handles JSON Web Token generation and verification.
+ * Uses environment-based secret and expiration settings.
+ * Required Environment Variables:
+ *   JWT_SECRET
+ *   JWT_EXPIRES_IN (optional, default: 1d)
  */
+
 const jwt = require("jsonwebtoken");
 
 /**
- * Generates a JWT token for the given payload.
+ * Generate a signed JWT token.
  * @param {Object} payload - Data to encode in the token
- * @param {string} [expiresIn="1d"] - Expiration time (e.g., '1d', '2h')
- * @returns {string} The signed JWT token
+ * @param {string} [expiresIn] - Token expiration (overrides env)
+ * @returns {string} Signed JWT token
  */
-const generateToken = (payload, expiresIn = "1d") => {
-  return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn });
+const generateToken = (payload, expiresIn) => {
+  if (!process.env.JWT_SECRET) {
+    throw new Error("JWT_SECRET is not defined in environment variables");
+  }
+
+  if (!payload || typeof payload !== "object") {
+    throw new Error("Payload must be a valid object");
+  }
+
+  return jwt.sign(payload, process.env.JWT_SECRET, {
+    expiresIn: expiresIn || process.env.JWT_EXPIRES_IN || "1d",
+  });
 };
 
 /**
- * Verifies a JWT token and returns the decoded payload if valid.
- * @param {string} token - JWT token to verify
- * @returns {Object|null} Decoded payload if valid, otherwise null
+ * Verify and decode a JWT token.
+ * @param {string} token - JWT token
+ * @returns {Object} Decoded payload
+ * @throws {Error} If token is invalid or expired
  */
 const verifyToken = (token) => {
-  try {
-    return jwt.verify(token, process.env.JWT_SECRET);
-  } catch (err) {
-    return null;
+  if (!process.env.JWT_SECRET) {
+    throw new Error("JWT_SECRET is not defined in environment variables");
   }
+
+  if (!token) {
+    throw new Error("Token is required");
+  }
+
+  return jwt.verify(token, process.env.JWT_SECRET);
 };
 
-module.exports = { generateToken, verifyToken };
+module.exports = {
+  generateToken,
+  verifyToken,
+};

@@ -3,27 +3,35 @@ const { expect } = require("chai");
 const app = require("../server");
 
 let token;
+let studentId;
+let attendanceId;
 
 before(async function () {
-  // Register and login a test user
+  this.timeout(20000);
+
   const user = {
     name: "Test User",
-    email: "testuser+attendance@example.com",
+    email: `testuser+attendance+${Date.now()}@example.com`,
     password: "testpass123",
     role: "faculty",
   };
+
+  // Register
   await request(app).post("/api/v1/auth/register").send(user);
-  const res = await request(app).post("/api/v1/auth/login").send({
+
+  // Login
+  const loginRes = await request(app).post("/api/v1/auth/login").send({
     email: user.email,
     password: user.password,
   });
-  token = res.body.data && res.body.data.token;
+
+  expect(loginRes.statusCode).to.equal(200);
+  expect(loginRes.body.data).to.have.property("token");
+
+  token = loginRes.body.data.token;
 });
 
-describe("Attendance Service & API", function () {
-  this.timeout(10000);
-  let attendanceId;
-  let studentId;
+describe("Attendance API", function () {
   const studentData = {
     name: "Attendance Student",
     email: `attendstudent+${Date.now()}@example.com`,
@@ -33,22 +41,31 @@ describe("Attendance Service & API", function () {
   };
 
   before(async function () {
-    // Create a student for attendance
     const res = await request(app)
       .post("/api/v1/students")
       .set("Authorization", `Bearer ${token}`)
       .send(studentData);
-    studentId = res.body.data && res.body.data._id;
+
+    expect(res.statusCode).to.equal(201);
+    expect(res.body.success).to.be.true;
+
+    studentId = res.body.data._id;
   });
 
   it("should mark attendance for a student", async function () {
     const res = await request(app)
       .post("/api/v1/attendance")
       .set("Authorization", `Bearer ${token}`)
-      .send({ student: studentId, date: new Date(), status: "present" });
+      .send({
+        student: studentId,
+        date: new Date().toISOString(),
+        status: "present",
+      });
+
     expect(res.statusCode).to.equal(201);
-    expect(res.body.success || res.body.error === false).to.be.true;
+    expect(res.body.success).to.be.true;
     expect(res.body.data).to.have.property("_id");
+
     attendanceId = res.body.data._id;
   });
 
@@ -56,8 +73,9 @@ describe("Attendance Service & API", function () {
     const res = await request(app)
       .get("/api/v1/attendance")
       .set("Authorization", `Bearer ${token}`);
+
     expect(res.statusCode).to.equal(200);
-    expect(res.body.success || res.body.error === false).to.be.true;
+    expect(res.body.success).to.be.true;
     expect(res.body.data).to.be.an("array");
   });
 
@@ -65,8 +83,15 @@ describe("Attendance Service & API", function () {
     const res = await request(app)
       .get(`/api/v1/attendance/student/${studentId}`)
       .set("Authorization", `Bearer ${token}`);
+
     expect(res.statusCode).to.equal(200);
-    expect(res.body.success || res.body.error === false).to.be.true;
+    expect(res.body.success).to.be.true;
     expect(res.body.data).to.be.an("array");
+  });
+
+  it("should fail without authentication", async function () {
+    const res = await request(app).get("/api/v1/attendance");
+
+    expect(res.statusCode).to.equal(401);
   });
 });

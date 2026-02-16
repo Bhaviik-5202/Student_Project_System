@@ -3,30 +3,38 @@ const { expect } = require("chai");
 const app = require("../server");
 
 let token;
+let userId;
 
 before(async function () {
-  // Register and login a test user
+  this.timeout(20000);
+
   const user = {
-    name: "Test User",
-    email: "testuser+user@example.com",
+    name: "Auth User",
+    email: `authuser+${Date.now()}@example.com`,
     password: "testpass123",
     role: "faculty",
   };
+
+  // Register
   await request(app).post("/api/v1/auth/register").send(user);
-  const res = await request(app).post("/api/v1/auth/login").send({
+
+  // Login
+  const loginRes = await request(app).post("/api/v1/auth/login").send({
     email: user.email,
     password: user.password,
   });
-  token = res.body.data && res.body.data.token;
+
+  expect(loginRes.statusCode).to.equal(200);
+  expect(loginRes.body.data).to.have.property("token");
+
+  token = loginRes.body.data.token;
 });
 
-describe("User Service & API", function () {
-  this.timeout(10000);
-  let userId;
+describe("User API", function () {
   const userData = {
     name: "Test User",
-    email: "testuser@example.com",
-    password: "testpass",
+    email: `testuser+${Date.now()}@example.com`,
+    password: "testpass123",
     role: "faculty",
   };
 
@@ -35,9 +43,11 @@ describe("User Service & API", function () {
       .post("/api/v1/users")
       .set("Authorization", `Bearer ${token}`)
       .send(userData);
+
     expect(res.statusCode).to.equal(201);
-    expect(res.body.success || res.body.error === false).to.be.true;
+    expect(res.body.success).to.be.true;
     expect(res.body.data).to.have.property("_id");
+
     userId = res.body.data._id;
   });
 
@@ -45,8 +55,9 @@ describe("User Service & API", function () {
     const res = await request(app)
       .get("/api/v1/users")
       .set("Authorization", `Bearer ${token}`);
+
     expect(res.statusCode).to.equal(200);
-    expect(res.body.success || res.body.error === false).to.be.true;
+    expect(res.body.success).to.be.true;
     expect(res.body.data).to.be.an("array");
   });
 
@@ -54,9 +65,10 @@ describe("User Service & API", function () {
     const res = await request(app)
       .get(`/api/v1/users/${userId}`)
       .set("Authorization", `Bearer ${token}`);
+
     expect(res.statusCode).to.equal(200);
-    expect(res.body.success || res.body.error === false).to.be.true;
-    expect(res.body.data).to.have.property("_id", userId);
+    expect(res.body.success).to.be.true;
+    expect(res.body.data._id).to.equal(userId);
   });
 
   it("should update a user", async function () {
@@ -64,8 +76,9 @@ describe("User Service & API", function () {
       .put(`/api/v1/users/${userId}`)
       .set("Authorization", `Bearer ${token}`)
       .send({ name: "Updated User" });
+
     expect(res.statusCode).to.equal(200);
-    expect(res.body.success || res.body.error === false).to.be.true;
+    expect(res.body.success).to.be.true;
     expect(res.body.data.name).to.equal("Updated User");
   });
 
@@ -73,7 +86,14 @@ describe("User Service & API", function () {
     const res = await request(app)
       .delete(`/api/v1/users/${userId}`)
       .set("Authorization", `Bearer ${token}`);
+
     expect(res.statusCode).to.equal(200);
-    expect(res.body.success || res.body.error === false).to.be.true;
+    expect(res.body.success).to.be.true;
+  });
+
+  it("should fail without authentication", async function () {
+    const res = await request(app).get("/api/v1/users");
+
+    expect(res.statusCode).to.equal(401);
   });
 });

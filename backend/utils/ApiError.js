@@ -1,21 +1,35 @@
 /**
- * Centralized error class for API errors.
- * Extends the built-in Error class to include status code and additional error details.
- * @module utils/ApiError
+ * ApiError
+ * ------------------------------------------------------------------
+ * Centralized custom error class for handling operational API errors.
+ * Extends the native Error object by adding:
+ *  - HTTP status code
+ *  - Optional validation/details object
+ *  - Operational flag for error classification
+ *
+ * Usage:
+ *   throw new ApiError(400, "Invalid request");
+ *   throw new ApiError(404, "User not found");
  */
+
 class ApiError extends Error {
   /**
-   * Creates an ApiError instance.
+   * Create an API error instance.
    * @param {number} statusCode - HTTP status code
-   * @param {string} message - Error message
-   * @param {any} [errors=null] - Additional error details
+   * @param {string} message - Human-readable error message
+   * @param {any} [errors=null] - Optional additional error details
    */
   constructor(statusCode, message, errors = null) {
     super(message);
-    this.statusCode = statusCode;
+
+    this.name = this.constructor.name;
+    this.statusCode = statusCode || 500;
     this.errors = errors;
     this.isOperational = true;
-    Error.captureStackTrace(this, this.constructor);
+
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, this.constructor);
+    }
   }
 }
 

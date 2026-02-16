@@ -1,14 +1,38 @@
 /**
- * Centralized response utility for consistent API responses.
- * Sends a JSON response with error, data, and message fields.
+ * Centralized Response Utility
+ * ------------------------------------------------------------------
+ * Ensures consistent API response structure across the application.
+ * Standard Response Format:
+ * {
+ *   success: boolean,
+ *   message: string,
+ *   data: any,
+ *   meta?: object
+ * }
  *
- * @param {import('express').Response} res - Express response object
- * @param {Object} options - Response options
- * @param {boolean} [options.error] - Indicates if there was an error
- * @param {any} [options.data] - Data to send in the response
- * @param {string} [options.message] - Message to send in the response
- * @param {number} [status=200] - HTTP status code
+ * @param {import("express").Response} res
+ * @param {Object} options
+ * @param {boolean} [options.success=true]
+ * @param {any} [options.data=null]
+ * @param {string} [options.message=""]
+ * @param {Object} [options.meta]
+ * @param {number} [status=200]
  */
-module.exports = function (res, { error, data, message }, status = 200) {
-  res.status(status).json({ error, data, message });
+
+module.exports = function sendResponse(
+  res,
+  { success = true, data = null, message = "", meta } = {},
+  status = 200,
+) {
+  const response = {
+    success,
+    message,
+    data,
+  };
+
+  if (meta) {
+    response.meta = meta;
+  }
+
+  return res.status(status).json(response);
 };

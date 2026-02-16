@@ -1,40 +1,61 @@
 /**
- * Utility for handling file uploads using multer.
- * Configures storage engine and exports upload middleware.
- * @module utils/upload
+ * File Upload Utility
+ * ------------------------------------------------------------------
+ * Secure multer configuration for file uploads.
+ *
+ * Features:
+ *  - Automatic upload directory creation
+ *  - File size limits
+ *  - File type validation
+ *  - Sanitized filenames
+ *
+ * Environment Variables:
+ *   MAX_FILE_SIZE (bytes, default: 5MB)
  */
+
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
 
-/**
- * Multer storage engine configuration for disk storage.
- * @type {import('multer').StorageEngine}
- */
+const uploadDir = path.join(__dirname, "../uploads");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+// File type whitelist
+const allowedMimeTypes = [
+  "image/jpeg",
+  "image/png",
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+];
+
 const storage = multer.diskStorage({
-  /**
-   * Set the destination folder for uploaded files.
-   * @param {Object} req - Express request object
-   * @param {Object} file - File object
-   * @param {Function} cb - Callback to set destination
-   */
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "../uploads/"));
+    cb(null, uploadDir);
   },
-  /**
-   * Set the filename for uploaded files.
-   * @param {Object} req - Express request object
-   * @param {Object} file - File object
-   * @param {Function} cb - Callback to set filename
-   */
+
   filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
+    const safeName = file.originalname.replace(/\s+/g, "_");
+    const uniqueName = `${Date.now()}-${safeName}`;
+    cb(null, uniqueName);
   },
 });
 
-/**
- * Multer upload middleware instance.
- * @type {import('multer').Multer}
- */
-const upload = multer({ storage });
+const fileFilter = (req, file, cb) => {
+  if (!allowedMimeTypes.includes(file.mimetype)) {
+    return cb(new Error("Invalid file type"));
+  }
+  cb(null, true);
+};
+
+const upload = multer({
+  storage,
+  limits: {
+    fileSize: Number(process.env.MAX_FILE_SIZE) || 5 * 1024 * 1024, // 5MB default
+  },
+  fileFilter,
+});
 
 module.exports = upload;

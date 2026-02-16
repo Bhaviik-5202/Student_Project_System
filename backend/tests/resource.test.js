@@ -3,53 +3,50 @@ const { expect } = require("chai");
 const app = require("../server");
 
 let token;
-let userId;
+let resourceId;
 
 before(async function () {
-  // Register and login a test user
+  this.timeout(20000);
+
   const user = {
     name: "Test User",
     email: `testuser+resource+${Date.now()}@example.com`,
     password: "testpass123",
     role: "faculty",
   };
-  const regRes = await request(app).post("/api/v1/auth/register").send(user);
-  // Get userId from registration (if returned), otherwise fetch after login
-  let createdUserId = regRes.body.data && regRes.body.data._id;
-  const res = await request(app).post("/api/v1/auth/login").send({
+
+  // Register
+  await request(app).post("/api/v1/auth/register").send(user);
+
+  // Login
+  const loginRes = await request(app).post("/api/v1/auth/login").send({
     email: user.email,
     password: user.password,
   });
-  token = res.body.data && res.body.data.token;
-  if (!createdUserId) {
-    // Fetch userId from /api/v1/users
-    const usersRes = await request(app)
-      .get("/api/v1/users")
-      .set("Authorization", `Bearer ${token}`);
-    const found = usersRes.body.data.find((u) => u.email === user.email);
-    createdUserId = found && found._id;
-  }
-  userId = createdUserId;
+
+  expect(loginRes.statusCode).to.equal(200);
+  expect(loginRes.body.data).to.have.property("token");
+
+  token = loginRes.body.data.token;
 });
 
-describe("Resource Service & API", function () {
-  this.timeout(10000);
-  let resourceId;
+describe("Resource API", function () {
   const resourceData = {
     title: "Test Resource",
     type: "document",
     url: "http://example.com/resource.pdf",
-    uploadedBy: null,
   };
 
   it("should create a new resource", async function () {
     const res = await request(app)
       .post("/api/v1/resources")
       .set("Authorization", `Bearer ${token}`)
-      .send({ ...resourceData, uploadedBy: userId });
+      .send(resourceData);
+
     expect(res.statusCode).to.equal(201);
-    expect(res.body.success || res.body.error === false).to.be.true;
+    expect(res.body.success).to.be.true;
     expect(res.body.data).to.have.property("_id");
+
     resourceId = res.body.data._id;
   });
 
@@ -57,25 +54,34 @@ describe("Resource Service & API", function () {
     const res = await request(app)
       .get("/api/v1/resources")
       .set("Authorization", `Bearer ${token}`);
+
     expect(res.statusCode).to.equal(200);
-    expect(res.body.success || res.body.error === false).to.be.true;
+    expect(res.body.success).to.be.true;
     expect(res.body.data).to.be.an("array");
   });
 
-  it("should fetch a resource by ID", async function () {
+  it("should fetch resource by ID", async function () {
     const res = await request(app)
       .get(`/api/v1/resources/${resourceId}`)
       .set("Authorization", `Bearer ${token}`);
+
     expect(res.statusCode).to.equal(200);
-    expect(res.body.success || res.body.error === false).to.be.true;
-    expect(res.body.data).to.have.property("_id", resourceId);
+    expect(res.body.success).to.be.true;
+    expect(res.body.data._id).to.equal(resourceId);
   });
 
   it("should delete a resource", async function () {
     const res = await request(app)
       .delete(`/api/v1/resources/${resourceId}`)
       .set("Authorization", `Bearer ${token}`);
+
     expect(res.statusCode).to.equal(200);
-    expect(res.body.success || res.body.error === false).to.be.true;
+    expect(res.body.success).to.be.true;
+  });
+
+  it("should fail without authentication", async function () {
+    const res = await request(app).get("/api/v1/resources");
+
+    expect(res.statusCode).to.equal(401);
   });
 });
