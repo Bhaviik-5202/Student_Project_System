@@ -14,71 +14,16 @@ const authService = {
    */
   login: async (email, password) => {
     try {
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 800));
-
-      // Mock users database
-      const mockUsers = {
-        admin: {
-          id: "1",
-          email: "admin@university.edu",
-          password: "admin123",
-          role: "admin",
-          name: "Admin User",
-        },
-        faculty: {
-          id: "2",
-          email: "faculty@university.edu",
-          password: "faculty123",
-          role: "faculty",
-          name: "Faculty Member",
-        },
-        student: {
-          id: "3",
-          email: "student@university.edu",
-          password: "student123",
-          role: "student",
-          name: "Student User",
-        },
-      };
-
-      // Find matching user
-      const foundUser = Object.values(mockUsers).find(
-        (user) => user.email === email && user.password === password,
-      );
-
-      if (foundUser) {
-        const userData = {
-          id: foundUser.id,
-          email: foundUser.email,
-          name: foundUser.name,
-          role: foundUser.role,
-          avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(
-            foundUser.name,
-          )}&background=random`,
-          department: "Computer Science",
-          phone: "+1-234-567-8900",
-          createdAt: new Date().toISOString(),
-        };
-
-        const token = `mock-jwt-token-${Date.now()}`;
-
-        localStorage.setItem(LOCAL_STORAGE_KEYS.TOKEN, token);
-        localStorage.setItem(LOCAL_STORAGE_KEYS.USER, JSON.stringify(userData));
-        localStorage.setItem(LOCAL_STORAGE_KEYS.USER_ROLE, userData.role);
-
-        return { success: true, data: { token, user: userData } };
-      } else {
-        return {
-          success: false,
-          message: "Invalid email or password",
-        };
-      }
+      const response = await api.post("/auth/login", { email, password });
+      const { token, user } = response.data;
+      localStorage.setItem(LOCAL_STORAGE_KEYS.TOKEN, token);
+      localStorage.setItem(LOCAL_STORAGE_KEYS.USER, JSON.stringify(user));
+      localStorage.setItem(LOCAL_STORAGE_KEYS.USER_ROLE, user.role);
+      return { success: true, data: { token, user } };
     } catch (error) {
-      console.error("Login error:", error);
       return {
         success: false,
-        message: error.message || "Login failed",
+        message: error.response?.data?.message || "Login failed",
       };
     }
   },

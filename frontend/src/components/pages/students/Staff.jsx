@@ -1,5 +1,7 @@
-import React, { memo, useMemo } from "react";
+import React, { memo, useEffect, useState } from "react";
 import PropTypes from "prop-types";
+
+import staffService from "../../../services/staffService";
 
 const StaffRow = memo(({ staff }) => (
   <tr>
@@ -60,30 +62,37 @@ StaffRow.propTypes = {
   }).isRequired,
 };
 
+
 const Staff = memo(() => {
-  const staffMembers = useMemo(
-    () => [
-      {
-        id: "FAC001",
-        name: "Dr. Sarah Johnson",
-        role: "Professor",
-        department: "Computer Science",
-        email: "sarah.j@university.edu",
-        phone: "+1 (555) 111-2222",
-        status: "Active",
-      },
-      {
-        id: "FAC002",
-        name: "Prof. Michael Chen",
-        role: "Associate Professor",
-        department: "Information Technology",
-        email: "michael.c@university.edu",
-        phone: "+1 (555) 333-4444",
-        status: "Active",
-      },
-    ],
-    [],
-  );
+  const [staffMembers, setStaffMembers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchStaff = async () => {
+      setLoading(true);
+      setError(null);
+      const res = await staffService.getAllStaff();
+      if (res.success) {
+        // Normalize data for table
+        setStaffMembers(
+          (res.data.data || []).map((staff) => ({
+            id: staff._id || staff.id,
+            name: staff.name,
+            role: staff.role || "Faculty",
+            department: staff.department || "",
+            email: staff.email,
+            phone: staff.phone || "",
+            status: "Active", // You may want to use a real status if available
+          }))
+        );
+      } else {
+        setError(res.message || "Failed to load staff");
+      }
+      setLoading(false);
+    };
+    fetchStaff();
+  }, []);
 
   return (
     <div className="animate-fade-in">
@@ -103,38 +112,44 @@ const Staff = memo(() => {
 
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm dark:shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead className="bg-gray-50 dark:bg-gray-700">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Staff ID
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Name
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Role
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Department
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Email
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-              {staffMembers.map((staff) => (
-                <StaffRow key={staff.id} staff={staff} />
-              ))}
-            </tbody>
-          </table>
+          {loading ? (
+            <div className="p-6 text-center text-gray-500 dark:text-gray-400">Loading staff...</div>
+          ) : error ? (
+            <div className="p-6 text-center text-red-500">{error}</div>
+          ) : (
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead className="bg-gray-50 dark:bg-gray-700">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Staff ID
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Name
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Role
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Department
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Email
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                {staffMembers.map((staff) => (
+                  <StaffRow key={staff.id} staff={staff} />
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </div>

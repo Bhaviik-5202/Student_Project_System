@@ -1,5 +1,7 @@
-import React, { memo, useMemo } from "react";
+import React, { memo, useEffect, useState } from "react";
 import PropTypes from "prop-types";
+
+import studentService from "../../../services/studentService";
 
 const StudentRow = memo(({ student }) => (
   <tr>
@@ -61,38 +63,34 @@ StudentRow.propTypes = {
 };
 
 const StudentsList = memo(() => {
-  const students = useMemo(
-    () => [
-      {
-        id: "CS2021001",
-        name: "John Smith",
-        phone: "+1 (555) 123-4567",
-        department: "Computer Science",
-        year: "Final Year",
-        email: "john.smith@university.edu",
-        status: "Active",
-      },
-      {
-        id: "CS2021002",
-        name: "Sarah Johnson",
-        phone: "+1 (555) 987-6543",
-        department: "Computer Science",
-        year: "Third Year",
-        email: "sarah.j@university.edu",
-        status: "Active",
-      },
-      {
-        id: "IT2021001",
-        name: "Michael Chen",
-        phone: "+1 (555) 456-7890",
-        department: "Information Technology",
-        year: "Final Year",
-        email: "michael.c@university.edu",
-        status: "Active",
-      },
-    ],
-    [],
-  );
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchStudents = async () => {
+      setLoading(true);
+      setError(null);
+      const res = await studentService.getAllStudents();
+      if (res.success) {
+        setStudents(
+          (res.data.data || []).map((student) => ({
+            id: student._id || student.id,
+            name: student.name,
+            phone: student.phone || "",
+            department: student.department || "",
+            year: student.year ? String(student.year) : "",
+            email: student.email,
+            status: "Active", // You may want to use a real status if available
+          }))
+        );
+      } else {
+        setError(res.message || "Failed to load students");
+      }
+      setLoading(false);
+    };
+    fetchStudents();
+  }, []);
 
   return (
     <div className="animate-fade-in">
@@ -157,61 +155,44 @@ const StudentsList = memo(() => {
       {/* Students Table */}
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm dark:shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead className="bg-gray-50 dark:bg-gray-700">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Student ID
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Name
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Department
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Year
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Email
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-              {students.map((student) => (
-                <StudentRow key={student.id} student={student} />
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
-          <div className="flex items-center justify-between">
-            <div className="text-sm text-gray-500 dark:text-gray-400">
-              Showing <span className="font-medium">1</span> to{" "}
-              <span className="font-medium">3</span> of{" "}
-              <span className="font-medium">156</span> students
-            </div>
-            <div className="flex space-x-2">
-              <button className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
-                Previous
-              </button>
-              <button className="px-3 py-1 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">
-                1
-              </button>
-              <button className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
-                2
-              </button>
-              <button className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
-                Next
-              </button>
-            </div>
-          </div>
+          {loading ? (
+            <div className="p-6 text-center text-gray-500 dark:text-gray-400">Loading students...</div>
+          ) : error ? (
+            <div className="p-6 text-center text-red-500">{error}</div>
+          ) : (
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead className="bg-gray-50 dark:bg-gray-700">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Student ID
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Name
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Department
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Year
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Email
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                {students.map((student) => (
+                  <StudentRow key={student.id} student={student} />
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </div>

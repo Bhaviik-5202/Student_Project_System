@@ -1,58 +1,52 @@
-import { useState, useMemo, memo } from "react";
+import { useState, useEffect, memo } from "react";
 import { useNavigate } from "react-router-dom";
+
+import submissionService from "../../../services/submissionService";
 
 const SubmissionHistory = memo(() => {
   const navigate = useNavigate();
-  const submissions = useMemo(
-    () => [
-      {
-        id: 1,
-        assignment: "Database Design Project",
-        course: "CS402",
-        submittedDate: "2024-01-15 14:30:00",
-        grade: "A-",
-        status: "Graded",
-        files: 3,
-      },
-      {
-        id: 2,
-        assignment: "Web App Prototype",
-        course: "CS403",
-        submittedDate: "2024-01-14 11:45:00",
-        grade: "B+",
-        status: "Graded",
-        files: 2,
-      },
-      {
-        id: 3,
-        assignment: "Algorithm Analysis",
-        course: "CS404",
-        submittedDate: "2024-01-12 09:20:00",
-        grade: "A",
-        status: "Graded",
-        files: 1,
-      },
-      {
-        id: 4,
-        assignment: "Research Paper",
-        course: "CS401",
-        submittedDate: "2024-01-10 16:15:00",
-        grade: "Pending",
-        status: "Under Review",
-        files: 2,
-      },
-      {
-        id: 5,
-        assignment: "ML Model Implementation",
-        course: "CS405",
-        submittedDate: "2024-01-08 13:50:00",
-        grade: "B",
-        status: "Graded",
-        files: 4,
-      },
-    ],
-    [],
-  );
+  const [submissions, setSubmissions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchSubmissions = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const res = await submissionService.getAllSubmissions();
+
+        if (res?.success) {
+          const formattedData = (res?.data?.data || []).map((submission) => ({
+            id: submission._id || submission.id,
+            assignment: submission.assignment || "-",
+            course: submission.course || "-",
+            submittedDate: submission.submittedDate
+              ? new Date(submission.submittedDate).toLocaleDateString()
+              : submission.createdAt
+                ? new Date(submission.createdAt).toLocaleDateString()
+                : "-",
+            grade: submission.grade || "Pending",
+            status: submission.status || "Under Review",
+            files: Array.isArray(submission.files)
+              ? submission.files.length
+              : 0,
+          }));
+
+          setSubmissions(formattedData);
+        } else {
+          setError(res?.message || "Failed to load submissions");
+        }
+      } catch (err) {
+        setError(err?.message || "Something went wrong");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSubmissions();
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
@@ -73,96 +67,113 @@ const SubmissionHistory = memo(() => {
 
         <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
-              <thead className="bg-slate-50 dark:bg-slate-700">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                    Assignment
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                    Course
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                    Submitted Date
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                    Grade
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                    Files
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
-                {submissions.map((submission) => (
-                  <tr
-                    key={submission.id}
-                    className="hover:bg-slate-50 dark:hover:bg-slate-700"
-                  >
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="font-medium text-slate-900 dark:text-white">
-                        {submission.assignment}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
-                      {submission.course}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
-                      {submission.submittedDate}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`px-2 py-1 text-xs rounded-full ${
-                          submission.grade === "A"
-                            ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
-                            : submission.grade === "A-"
-                              ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
-                              : submission.grade === "B+"
-                                ? "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
-                                : submission.grade === "B"
-                                  ? "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
-                                  : submission.grade === "Pending"
-                                    ? "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300"
-                                    : "bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200"
-                        }`}
-                      >
-                        {submission.grade}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`px-2 py-1 text-xs rounded-full ${
-                          submission.status === "Graded"
-                            ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
-                            : submission.status === "Under Review"
-                              ? "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300"
-                              : "bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200"
-                        }`}
-                      >
-                        {submission.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
-                      {submission.files} file(s)
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 mr-3">
-                        View
-                      </button>
-                      <button className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
-                        Download
-                      </button>
-                    </td>
+            {loading ? (
+              <div className="p-6 text-center text-slate-500 dark:text-slate-400">
+                Loading submissions...
+              </div>
+            ) : error ? (
+              <div className="p-6 text-center text-red-500">{error}</div>
+            ) : submissions.length === 0 ? (
+              <div className="p-6 text-center text-slate-500 dark:text-slate-400">
+                No submissions found.
+              </div>
+            ) : (
+              <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+                <thead className="bg-slate-50 dark:bg-slate-700">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
+                      Assignment
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
+                      Course
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
+                      Submitted Date
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
+                      Grade
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
+                      Files
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
+                      Actions
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+
+                <tbody className="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
+                  {submissions.map((submission) => (
+                    <tr
+                      key={submission.id}
+                      className="hover:bg-slate-50 dark:hover:bg-slate-700"
+                    >
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="font-medium text-slate-900 dark:text-white">
+                          {submission.assignment}
+                        </div>
+                      </td>
+
+                      <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
+                        {submission.course}
+                      </td>
+
+                      <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
+                        {submission.submittedDate}
+                      </td>
+
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span
+                          className={`px-2 py-1 text-xs rounded-full ${
+                            submission.grade === "A" ||
+                            submission.grade === "A-"
+                              ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
+                              : submission.grade === "B+" ||
+                                submission.grade === "B"
+                                ? "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
+                                : submission.grade === "Pending"
+                                  ? "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300"
+                                  : "bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200"
+                          }`}
+                        >
+                          {submission.grade}
+                        </span>
+                      </td>
+
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span
+                          className={`px-2 py-1 text-xs rounded-full ${
+                            submission.status === "Graded"
+                              ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
+                              : submission.status === "Under Review"
+                                ? "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300"
+                                : "bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200"
+                          }`}
+                        >
+                          {submission.status}
+                        </span>
+                      </td>
+
+                      <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
+                        {submission.files} file(s)
+                      </td>
+
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 mr-3">
+                          View
+                        </button>
+                        <button className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+                          Download
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
       </div>
