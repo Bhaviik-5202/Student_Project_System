@@ -1,10 +1,25 @@
 const mongoose = require("mongoose");
 
-const settingSchema = new mongoose.Schema({
-  key: { type: String, required: true, unique: true },
-  value: mongoose.Schema.Types.Mixed,
-  updatedAt: { type: Date, default: Date.now },
-});
+const settingSchema = new mongoose.Schema(
+  {
+    key: {
+      type: String,
+      required: [true, "Setting key is required"],
+      unique: true,
+      trim: true,
+      maxlength: [150, "Key cannot exceed 150 characters"],
+      index: true,
+    },
+    value: {
+      type: mongoose.Schema.Types.Mixed,
+      required: [true, "Setting value is required"],
+    },
+  },
+  {
+    timestamps: true,
+  },
+);
 
-// Setting model for MongoDB
+settingSchema.index({ key: 1 }, { unique: true });
+
 module.exports = mongoose.model("Setting", settingSchema);

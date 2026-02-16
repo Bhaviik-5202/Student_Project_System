@@ -1,17 +1,42 @@
 const mongoose = require("mongoose");
 
-const portfolioSchema = new mongoose.Schema({
-  student: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Student",
-    required: true,
+const portfolioSchema = new mongoose.Schema(
+  {
+    student: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Student",
+      required: [true, "Student is required"],
+      index: true,
+    },
+    projects: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Project",
+      },
+    ],
+    skills: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
+    badges: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
+    transcriptUrl: {
+      type: String,
+      trim: true,
+      default: null,
+    },
   },
-  projects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project" }],
-  skills: [String],
-  badges: [String],
-  transcriptUrl: String,
-  createdAt: { type: Date, default: Date.now },
-});
+  {
+    timestamps: true,
+  },
+);
 
-// Portfolio model for MongoDB
+portfolioSchema.index({ student: 1 }, { unique: true });
+
 module.exports = mongoose.model("Portfolio", portfolioSchema);

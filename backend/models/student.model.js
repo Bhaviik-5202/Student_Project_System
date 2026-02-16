@@ -1,20 +1,72 @@
 const mongoose = require("mongoose");
 
-const studentSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  rollNumber: { type: String, required: true, unique: true },
-  department: { type: String, required: true },
-  year: { type: Number, required: true },
-  projects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project" }],
-  grades: [
-    {
-      project: { type: mongoose.Schema.Types.ObjectId, ref: "Project" },
-      grade: String,
+const studentSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, "Name is required"],
+      trim: true,
+      maxlength: [150, "Name cannot exceed 150 characters"],
     },
-  ],
-  createdAt: { type: Date, default: Date.now },
-});
+    email: {
+      type: String,
+      required: [true, "Email is required"],
+      unique: true,
+      trim: true,
+      lowercase: true,
+      maxlength: [200, "Email cannot exceed 200 characters"],
+      index: true,
+    },
+    rollNumber: {
+      type: String,
+      required: [true, "Roll number is required"],
+      unique: true,
+      trim: true,
+      uppercase: true,
+      maxlength: [50, "Roll number cannot exceed 50 characters"],
+      index: true,
+    },
+    department: {
+      type: String,
+      required: [true, "Department is required"],
+      trim: true,
+      maxlength: [100, "Department cannot exceed 100 characters"],
+    },
+    year: {
+      type: Number,
+      required: [true, "Year is required"],
+      min: [1, "Year must be at least 1"],
+      max: [5, "Year cannot exceed 5"],
+      index: true,
+    },
+    projects: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Project",
+      },
+    ],
+    grades: [
+      {
+        project: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Project",
+          required: true,
+        },
+        grade: {
+          type: String,
+          trim: true,
+          maxlength: [5, "Grade cannot exceed 5 characters"],
+        },
+      },
+    ],
+  },
+  {
+    timestamps: true,
+  },
+);
 
-// Student model for MongoDB
+studentSchema.index({ department: 1, year: 1 });
+studentSchema.index({ rollNumber: 1 }, { unique: true });
+studentSchema.index({ email: 1 }, { unique: true });
+
 module.exports = mongoose.model("Student", studentSchema);

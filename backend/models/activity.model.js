@@ -1,11 +1,29 @@
 const mongoose = require("mongoose");
 
-const activitySchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  action: { type: String, required: true },
-  details: { type: String },
-  createdAt: { type: Date, default: Date.now },
-});
+const activitySchema = new mongoose.Schema(
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
+    },
+    action: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    details: {
+      type: String,
+      trim: true,
+      default: null,
+    },
+  },
+  {
+    timestamps: true,
+  },
+);
 
-// Activity model for MongoDB
+activitySchema.index({ user: 1, createdAt: -1 });
+
 module.exports = mongoose.model("Activity", activitySchema);
