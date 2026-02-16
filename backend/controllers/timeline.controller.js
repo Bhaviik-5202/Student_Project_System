@@ -7,8 +7,33 @@ const sendResponse = require("../utils/response");
  * @access Admin, Faculty
  */
 exports.createTimeline = async (req, res) => {
-  const result = await timelineService.create(req.body);
-  sendResponse(res, result, result.error ? 400 : 201);
+  try {
+    const result = await timelineService.create(req.body);
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? "Failed to create timeline event"
+          : "Timeline event created successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 400 : 201,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
 };
 
 /**
@@ -17,8 +42,33 @@ exports.createTimeline = async (req, res) => {
  * @access Authenticated
  */
 exports.getAllTimelines = async (req, res) => {
-  const result = await timelineService.getAll();
-  sendResponse(res, result, result.error ? 400 : 200);
+  try {
+    const result = await timelineService.getAll();
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? "Failed to fetch timeline events"
+          : "Timeline events fetched successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 400 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
 };
 
 /**
@@ -27,8 +77,33 @@ exports.getAllTimelines = async (req, res) => {
  * @access Authenticated
  */
 exports.getTimelineById = async (req, res) => {
-  const result = await timelineService.getById(req.params.id);
-  sendResponse(res, result, result.error ? 404 : 200);
+  try {
+    const result = await timelineService.getById(req.params.id);
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? "Timeline event not found"
+          : "Timeline event fetched successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 404 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
 };
 
 /**
@@ -37,8 +112,33 @@ exports.getTimelineById = async (req, res) => {
  * @access Admin, Faculty
  */
 exports.updateTimeline = async (req, res) => {
-  const result = await timelineService.update(req.params.id, req.body);
-  sendResponse(res, result, result.error ? 404 : 200);
+  try {
+    const result = await timelineService.update(req.params.id, req.body);
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? "Failed to update timeline event"
+          : "Timeline event updated successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 404 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
 };
 
 /**
@@ -47,6 +147,31 @@ exports.updateTimeline = async (req, res) => {
  * @access Admin, Faculty
  */
 exports.deleteTimeline = async (req, res) => {
-  const result = await timelineService.remove(req.params.id);
-  sendResponse(res, result, result.error ? 404 : 200);
+  try {
+    const result = await timelineService.remove(req.params.id);
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? "Failed to delete timeline event"
+          : "Timeline event deleted successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 404 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
 };

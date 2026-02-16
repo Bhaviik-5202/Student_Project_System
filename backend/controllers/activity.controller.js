@@ -7,8 +7,44 @@ const sendResponse = require("../utils/response");
  * @access Admin, Faculty
  */
 exports.createActivity = async (req, res) => {
-  const result = await activityService.create(req.body);
-  sendResponse(res, result, result.error ? 400 : 201);
+  try {
+    const result = await activityService.create(req.body);
+
+    if (!result) {
+      return sendResponse(
+        res,
+        {
+          success: false,
+          message: "Failed to create activity",
+          data: null,
+          error: "Activity creation failed",
+        },
+        400,
+      );
+    }
+
+    sendResponse(
+      res,
+      {
+        success: true,
+        message: "Activity created successfully",
+        data: result,
+        error: null,
+      },
+      201,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
 };
 
 /**
@@ -17,8 +53,31 @@ exports.createActivity = async (req, res) => {
  * @access Authenticated
  */
 exports.getAllActivities = async (req, res) => {
-  const result = await activityService.getAll();
-  sendResponse(res, result, result.error ? 400 : 200);
+  try {
+    const result = await activityService.getAll();
+
+    sendResponse(
+      res,
+      {
+        success: true,
+        message: "Activities fetched successfully",
+        data: result,
+        error: null,
+      },
+      200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Failed to fetch activities",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
 };
 
 /**
@@ -27,8 +86,44 @@ exports.getAllActivities = async (req, res) => {
  * @access Authenticated
  */
 exports.getActivityById = async (req, res) => {
-  const result = await activityService.getById(req.params.id);
-  sendResponse(res, result, result.error ? 404 : 200);
+  try {
+    const result = await activityService.getById(req.params.id);
+
+    if (!result) {
+      return sendResponse(
+        res,
+        {
+          success: false,
+          message: "Activity not found",
+          data: null,
+          error: "Invalid activity ID",
+        },
+        404,
+      );
+    }
+
+    sendResponse(
+      res,
+      {
+        success: true,
+        message: "Activity fetched successfully",
+        data: result,
+        error: null,
+      },
+      200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
 };
 
 /**
@@ -37,8 +132,44 @@ exports.getActivityById = async (req, res) => {
  * @access Admin, Faculty
  */
 exports.updateActivity = async (req, res) => {
-  const result = await activityService.update(req.params.id, req.body);
-  sendResponse(res, result, result.error ? 404 : 200);
+  try {
+    const result = await activityService.update(req.params.id, req.body);
+
+    if (!result) {
+      return sendResponse(
+        res,
+        {
+          success: false,
+          message: "Activity not found",
+          data: null,
+          error: "Invalid activity ID",
+        },
+        404,
+      );
+    }
+
+    sendResponse(
+      res,
+      {
+        success: true,
+        message: "Activity updated successfully",
+        data: result,
+        error: null,
+      },
+      200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
 };
 
 /**
@@ -47,6 +178,42 @@ exports.updateActivity = async (req, res) => {
  * @access Admin, Faculty
  */
 exports.deleteActivity = async (req, res) => {
-  const result = await activityService.remove(req.params.id);
-  sendResponse(res, result, result.error ? 404 : 200);
+  try {
+    const result = await activityService.remove(req.params.id);
+
+    if (!result) {
+      return sendResponse(
+        res,
+        {
+          success: false,
+          message: "Activity not found",
+          data: null,
+          error: "Invalid activity ID",
+        },
+        404,
+      );
+    }
+
+    sendResponse(
+      res,
+      {
+        success: true,
+        message: "Activity deleted successfully",
+        data: result,
+        error: null,
+      },
+      200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
 };

@@ -8,15 +8,26 @@ const sendResponse = require("../utils/response");
 exports.createResource = async (req, res) => {
   try {
     const resource = await resourceService.createResource(req.body);
+
     sendResponse(
       res,
-      { error: false, data: resource, message: "Resource created" },
+      {
+        success: true,
+        message: "Resource created successfully",
+        data: resource,
+        error: null,
+      },
       201,
     );
-  } catch (err) {
+  } catch (error) {
     sendResponse(
       res,
-      { error: err.message, data: null, message: "Failed to create resource" },
+      {
+        success: false,
+        message: "Failed to create resource",
+        data: null,
+        error: error.message,
+      },
       400,
     );
   }
@@ -25,26 +36,28 @@ exports.createResource = async (req, res) => {
 /**
  * Get all resources with pagination and filtering
  * @route GET /resources
- * @access Authenticated
- * @query page, limit, type, title
  */
 exports.getAllResources = async (req, res) => {
   try {
     const { page = 1, limit = 10, type, title } = req.query;
+
     const filters = {};
     if (type) filters.type = type;
     if (title) filters.title = { $regex: title, $options: "i" };
+
     const result = await resourceService.getAllResources({
       page: parseInt(page, 10),
       limit: parseInt(limit, 10),
       filters,
     });
+
     sendResponse(
       res,
       {
-        error: false,
+        success: true,
+        message: "Resources fetched successfully",
         data: result.resources,
-        message: "Resources fetched",
+        error: null,
         pagination: {
           total: result.total,
           page: result.page,
@@ -54,10 +67,15 @@ exports.getAllResources = async (req, res) => {
       },
       200,
     );
-  } catch (err) {
+  } catch (error) {
     sendResponse(
       res,
-      { error: err.message, data: null, message: "Failed to fetch resources" },
+      {
+        success: false,
+        message: "Failed to fetch resources",
+        data: null,
+        error: error.message,
+      },
       400,
     );
   }
@@ -66,20 +84,30 @@ exports.getAllResources = async (req, res) => {
 /**
  * Get a resource by its ID
  * @route GET /resources/:id
- * @access Authenticated
  */
 exports.getResourceById = async (req, res) => {
   try {
     const resource = await resourceService.getResourceById(req.params.id);
+
     sendResponse(
       res,
-      { error: false, data: resource, message: "Resource fetched" },
+      {
+        success: true,
+        message: "Resource fetched successfully",
+        data: resource,
+        error: null,
+      },
       200,
     );
-  } catch (err) {
+  } catch (error) {
     sendResponse(
       res,
-      { error: err.message, data: null, message: "Failed to fetch resource" },
+      {
+        success: false,
+        message: "Failed to fetch resource",
+        data: null,
+        error: error.message,
+      },
       400,
     );
   }
@@ -88,20 +116,30 @@ exports.getResourceById = async (req, res) => {
 /**
  * Delete a resource by its ID
  * @route DELETE /resources/:id
- * @access Authenticated
  */
 exports.deleteResource = async (req, res) => {
   try {
     const resource = await resourceService.deleteResource(req.params.id);
+
     sendResponse(
       res,
-      { error: false, data: resource, message: "Resource deleted" },
+      {
+        success: true,
+        message: "Resource deleted successfully",
+        data: resource,
+        error: null,
+      },
       200,
     );
-  } catch (err) {
+  } catch (error) {
     sendResponse(
       res,
-      { error: err.message, data: null, message: "Failed to delete resource" },
+      {
+        success: false,
+        message: "Failed to delete resource",
+        data: null,
+        error: error.message,
+      },
       400,
     );
   }

@@ -9,15 +9,26 @@ const sendResponse = require("../utils/response");
 exports.createPortfolio = async (req, res) => {
   try {
     const portfolio = await portfolioService.createPortfolio(req.body);
+
     sendResponse(
       res,
-      { error: false, data: portfolio, message: "Portfolio created" },
+      {
+        success: true,
+        message: "Portfolio created successfully",
+        data: portfolio,
+        error: null,
+      },
       201,
     );
-  } catch (err) {
+  } catch (error) {
     sendResponse(
       res,
-      { error: err.message, data: null, message: "Failed to create portfolio" },
+      {
+        success: false,
+        message: "Failed to create portfolio",
+        data: null,
+        error: error.message,
+      },
       400,
     );
   }
@@ -33,15 +44,26 @@ exports.getPortfolioByStudent = async (req, res) => {
     const portfolio = await portfolioService.getPortfolioByStudent(
       req.params.studentId,
     );
+
     sendResponse(
       res,
-      { error: false, data: portfolio, message: "Portfolio fetched" },
+      {
+        success: true,
+        message: "Portfolio fetched successfully",
+        data: portfolio,
+        error: null,
+      },
       200,
     );
-  } catch (err) {
+  } catch (error) {
     sendResponse(
       res,
-      { error: err.message, data: null, message: "Failed to fetch portfolio" },
+      {
+        success: false,
+        message: "Failed to fetch portfolio",
+        data: null,
+        error: error.message,
+      },
       400,
     );
   }
@@ -58,15 +80,26 @@ exports.updatePortfolio = async (req, res) => {
       req.params.id,
       req.body,
     );
+
     sendResponse(
       res,
-      { error: false, data: portfolio, message: "Portfolio updated" },
+      {
+        success: true,
+        message: "Portfolio updated successfully",
+        data: portfolio,
+        error: null,
+      },
       200,
     );
-  } catch (err) {
+  } catch (error) {
     sendResponse(
       res,
-      { error: err.message, data: null, message: "Failed to update portfolio" },
+      {
+        success: false,
+        message: "Failed to update portfolio",
+        data: null,
+        error: error.message,
+      },
       400,
     );
   }

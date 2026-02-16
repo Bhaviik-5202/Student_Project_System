@@ -1,4 +1,5 @@
 const Notification = require("../models/notification.model");
+const sendResponse = require("../utils/response");
 
 /**
  * Mark a notification as read
@@ -8,23 +9,47 @@ const Notification = require("../models/notification.model");
 exports.markAsRead = async (req, res) => {
   try {
     const { id } = req.params;
+
     const notification = await Notification.findByIdAndUpdate(
       id,
       { read: true },
       { new: true },
     );
+
     if (!notification) {
-      return res
-        .status(404)
-        .json({ error: true, data: null, message: "Notification not found" });
+      return sendResponse(
+        res,
+        {
+          success: false,
+          message: "Notification not found",
+          data: null,
+          error: "Invalid notification ID",
+        },
+        404,
+      );
     }
-    res.status(200).json({
-      error: false,
-      data: notification,
-      message: "Notification marked as read",
-    });
-  } catch (err) {
-    res.status(500).json({ error: true, data: null, message: err.message });
+
+    sendResponse(
+      res,
+      {
+        success: true,
+        message: "Notification marked as read",
+        data: notification,
+        error: null,
+      },
+      200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
   }
 };
 
@@ -36,22 +61,44 @@ exports.markAsRead = async (req, res) => {
 exports.createNotification = async (req, res) => {
   try {
     const { user, message, type } = req.body;
+
     if (!user || !message) {
-      return res.status(400).json({
-        error: true,
-        data: null,
-        message: "User and message are required",
-      });
+      return sendResponse(
+        res,
+        {
+          success: false,
+          message: "User and message are required",
+          data: null,
+          error: "Validation error",
+        },
+        400,
+      );
     }
+
     const notification = new Notification({ user, message, type });
     await notification.save();
-    res.status(201).json({
-      error: false,
-      data: notification,
-      message: "Notification created successfully",
-    });
-  } catch (err) {
-    res.status(500).json({ error: true, data: null, message: err.message });
+
+    sendResponse(
+      res,
+      {
+        success: true,
+        message: "Notification created successfully",
+        data: notification,
+        error: null,
+      },
+      201,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
   }
 };
 
@@ -63,20 +110,44 @@ exports.createNotification = async (req, res) => {
 exports.getNotifications = async (req, res) => {
   try {
     const { user } = req.query;
+
     if (!user) {
-      return res
-        .status(400)
-        .json({ error: true, data: null, message: "User is required" });
+      return sendResponse(
+        res,
+        {
+          success: false,
+          message: "User is required",
+          data: null,
+          error: "Validation error",
+        },
+        400,
+      );
     }
+
     const notifications = await Notification.find({ user }).sort({
       createdAt: -1,
     });
-    res.status(200).json({
-      error: false,
-      data: notifications,
-      message: "Notifications fetched successfully",
-    });
-  } catch (err) {
-    res.status(500).json({ error: true, data: null, message: err.message });
+
+    sendResponse(
+      res,
+      {
+        success: true,
+        message: "Notifications fetched successfully",
+        data: notifications,
+        error: null,
+      },
+      200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
   }
 };

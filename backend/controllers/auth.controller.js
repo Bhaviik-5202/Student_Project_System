@@ -7,8 +7,33 @@ const sendResponse = require("../utils/response");
  * @access Public
  */
 exports.register = async (req, res) => {
-  const result = await userService.register(req.body);
-  sendResponse(res, result, result.error ? 400 : 201);
+  try {
+    const result = await userService.register(req.body);
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? "Registration failed"
+          : "User registered successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 400 : 201,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
 };
 
 /**
@@ -17,8 +42,31 @@ exports.register = async (req, res) => {
  * @access Public
  */
 exports.login = async (req, res) => {
-  const result = await userService.login(req.body);
-  sendResponse(res, result, result.error ? 400 : 200);
+  try {
+    const result = await userService.login(req.body);
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error ? "Login failed" : "Login successful",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 400 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
 };
 
 /**
@@ -30,9 +78,10 @@ exports.forgotPassword = (req, res) => {
   sendResponse(
     res,
     {
-      error: false,
-      data: null,
+      success: true,
       message: "Password reset link sent (demo only)",
+      data: null,
+      error: null,
     },
     200,
   );
@@ -47,9 +96,10 @@ exports.resetPassword = (req, res) => {
   sendResponse(
     res,
     {
-      error: false,
-      data: null,
+      success: true,
       message: "Password reset successful (demo only)",
+      data: null,
+      error: null,
     },
     200,
   );

@@ -7,8 +7,33 @@ const sendResponse = require("../utils/response");
  * @access Authenticated
  */
 exports.createSupportTicket = async (req, res) => {
-  const result = await supportTicketService.create(req.body);
-  sendResponse(res, result, result.error ? 400 : 201);
+  try {
+    const result = await supportTicketService.create(req.body);
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? "Failed to create support ticket"
+          : "Support ticket created successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 400 : 201,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
 };
 
 /**
@@ -17,8 +42,33 @@ exports.createSupportTicket = async (req, res) => {
  * @access Admin, Support
  */
 exports.getAllSupportTickets = async (req, res) => {
-  const result = await supportTicketService.getAll();
-  sendResponse(res, result, result.error ? 400 : 200);
+  try {
+    const result = await supportTicketService.getAll();
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? "Failed to fetch support tickets"
+          : "Support tickets fetched successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 400 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
 };
 
 /**
@@ -27,8 +77,33 @@ exports.getAllSupportTickets = async (req, res) => {
  * @access Admin, Support
  */
 exports.getSupportTicketById = async (req, res) => {
-  const result = await supportTicketService.getById(req.params.id);
-  sendResponse(res, result, result.error ? 404 : 200);
+  try {
+    const result = await supportTicketService.getById(req.params.id);
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? "Support ticket not found"
+          : "Support ticket fetched successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 404 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
 };
 
 /**
@@ -37,8 +112,33 @@ exports.getSupportTicketById = async (req, res) => {
  * @access Admin, Support
  */
 exports.updateSupportTicket = async (req, res) => {
-  const result = await supportTicketService.update(req.params.id, req.body);
-  sendResponse(res, result, result.error ? 404 : 200);
+  try {
+    const result = await supportTicketService.update(req.params.id, req.body);
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? "Failed to update support ticket"
+          : "Support ticket updated successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 404 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
 };
 
 /**
@@ -47,6 +147,31 @@ exports.updateSupportTicket = async (req, res) => {
  * @access Admin, Support
  */
 exports.deleteSupportTicket = async (req, res) => {
-  const result = await supportTicketService.remove(req.params.id);
-  sendResponse(res, result, result.error ? 404 : 200);
+  try {
+    const result = await supportTicketService.remove(req.params.id);
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? "Failed to delete support ticket"
+          : "Support ticket deleted successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 404 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
 };

@@ -8,79 +8,207 @@ const { validationResult } = require("express-validator");
  * @access Admin, Faculty
  */
 exports.createStudent = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return sendResponse(
+  try {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return sendResponse(
+        res,
+        {
+          success: false,
+          message: errors
+            .array()
+            .map((e) => e.msg)
+            .join(", "),
+          data: null,
+          error: "Validation error",
+        },
+        400,
+      );
+    }
+
+    const result = await studentService.create(req.body);
+
+    sendResponse(
       res,
       {
-        error: true,
-        data: null,
-        message: errors
-          .array()
-          .map((e) => e.msg)
-          .join(", "),
+        success: !result.error,
+        message: result.error
+          ? "Failed to create student"
+          : "Student created successfully",
+        data: result.data || null,
+        error: result.error || null,
       },
-      400,
+      result.error ? 400 : 201,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
     );
   }
-  const result = await studentService.create(req.body);
-  sendResponse(res, result, result.error ? 400 : 201);
 };
+
 /**
- * Get all students with pagination and filtering
+ * Get all students
  * @route GET /students
  * @access Authenticated
- * @query page, limit, name, email, etc.
  */
 exports.getAllStudents = async (req, res) => {
-  const result = await studentService.getAll();
-  sendResponse(res, result, result.error ? 400 : 200);
+  try {
+    const result = await studentService.getAll();
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? "Failed to fetch students"
+          : "Students fetched successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 400 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
 };
+
 /**
  * Get a student by ID
  * @route GET /students/:id
  * @access Authenticated
  */
 exports.getStudentById = async (req, res) => {
-  const result = await studentService.getById(req.params.id);
-  sendResponse(res, result, result.error ? 404 : 200);
+  try {
+    const result = await studentService.getById(req.params.id);
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? "Student not found"
+          : "Student fetched successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 404 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
 };
+
 /**
  * Update a student by ID
  * @route PUT /students/:id
  * @access Admin, Faculty
  */
 exports.updateStudent = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return sendResponse(
+  try {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return sendResponse(
+        res,
+        {
+          success: false,
+          message: errors
+            .array()
+            .map((e) => e.msg)
+            .join(", "),
+          data: null,
+          error: "Validation error",
+        },
+        400,
+      );
+    }
+
+    const result = await studentService.update(req.params.id, req.body);
+
+    sendResponse(
       res,
       {
-        error: true,
-        data: null,
-        message: errors
-          .array()
-          .map((e) => e.msg)
-          .join(", "),
+        success: !result.error,
+        message: result.error
+          ? "Student not found"
+          : "Student updated successfully",
+        data: result.data || null,
+        error: result.error || null,
       },
-      400,
+      result.error ? 404 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
     );
   }
-  const result = await studentService.update(req.params.id, req.body);
-  if (result.error) {
-    return sendResponse(res, result, 404);
-  }
-  sendResponse(res, result, 200);
 };
+
 /**
  * Delete a student by ID
  * @route DELETE /students/:id
  * @access Admin, Faculty
  */
 exports.deleteStudent = async (req, res) => {
-  const result = await studentService.remove(req.params.id);
-  if (result.error) {
-    return sendResponse(res, result, 404);
+  try {
+    const result = await studentService.remove(req.params.id);
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? "Student not found"
+          : "Student deleted successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 404 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
   }
-  sendResponse(res, result, 200);
 };

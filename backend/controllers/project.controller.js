@@ -9,15 +9,26 @@ const sendResponse = require("../utils/response");
 exports.createProject = async (req, res) => {
   try {
     const project = await projectService.createProject(req.body);
+
     sendResponse(
       res,
-      { error: false, data: project, message: "Project created" },
+      {
+        success: true,
+        message: "Project created successfully",
+        data: project,
+        error: null,
+      },
       201,
     );
-  } catch (err) {
+  } catch (error) {
     sendResponse(
       res,
-      { error: err.message, data: null, message: "Failed to create project" },
+      {
+        success: false,
+        message: "Failed to create project",
+        data: null,
+        error: error.message,
+      },
       400,
     );
   }
@@ -27,25 +38,28 @@ exports.createProject = async (req, res) => {
  * Get all projects with pagination and filtering
  * @route GET /projects
  * @access Authenticated
- * @query page, limit, status, title
  */
 exports.getAllProjects = async (req, res) => {
   try {
     const { page = 1, limit = 10, status, title } = req.query;
+
     const filters = {};
     if (status) filters.status = status;
     if (title) filters.title = { $regex: title, $options: "i" };
+
     const result = await projectService.getAllProjects({
       page: parseInt(page, 10),
       limit: parseInt(limit, 10),
       filters,
     });
+
     sendResponse(
       res,
       {
-        error: false,
+        success: true,
+        message: "Projects fetched successfully",
         data: result.projects,
-        message: "Projects fetched",
+        error: null,
         pagination: {
           total: result.total,
           page: result.page,
@@ -55,10 +69,15 @@ exports.getAllProjects = async (req, res) => {
       },
       200,
     );
-  } catch (err) {
+  } catch (error) {
     sendResponse(
       res,
-      { error: err.message, data: null, message: "Failed to fetch projects" },
+      {
+        success: false,
+        message: "Failed to fetch projects",
+        data: null,
+        error: error.message,
+      },
       400,
     );
   }
@@ -72,15 +91,26 @@ exports.getAllProjects = async (req, res) => {
 exports.getProjectById = async (req, res) => {
   try {
     const project = await projectService.getProjectById(req.params.id);
+
     sendResponse(
       res,
-      { error: false, data: project, message: "Project fetched" },
+      {
+        success: true,
+        message: "Project fetched successfully",
+        data: project,
+        error: null,
+      },
       200,
     );
-  } catch (err) {
+  } catch (error) {
     sendResponse(
       res,
-      { error: err.message, data: null, message: "Failed to fetch project" },
+      {
+        success: false,
+        message: "Failed to fetch project",
+        data: null,
+        error: error.message,
+      },
       400,
     );
   }
@@ -94,22 +124,39 @@ exports.getProjectById = async (req, res) => {
 exports.updateProject = async (req, res) => {
   try {
     const project = await projectService.updateProject(req.params.id, req.body);
+
     if (!project) {
       return sendResponse(
         res,
-        { error: true, data: null, message: "Project not found" },
+        {
+          success: false,
+          message: "Project not found",
+          data: null,
+          error: "Invalid project ID",
+        },
         404,
       );
     }
+
     sendResponse(
       res,
-      { error: false, data: project, message: "Project updated" },
+      {
+        success: true,
+        message: "Project updated successfully",
+        data: project,
+        error: null,
+      },
       200,
     );
-  } catch (err) {
+  } catch (error) {
     sendResponse(
       res,
-      { error: err.message, data: null, message: "Failed to update project" },
+      {
+        success: false,
+        message: "Failed to update project",
+        data: null,
+        error: error.message,
+      },
       400,
     );
   }
@@ -123,22 +170,39 @@ exports.updateProject = async (req, res) => {
 exports.deleteProject = async (req, res) => {
   try {
     const project = await projectService.deleteProject(req.params.id);
+
     if (!project) {
       return sendResponse(
         res,
-        { error: true, data: null, message: "Project not found" },
+        {
+          success: false,
+          message: "Project not found",
+          data: null,
+          error: "Invalid project ID",
+        },
         404,
       );
     }
+
     sendResponse(
       res,
-      { error: false, data: project, message: "Project deleted" },
+      {
+        success: true,
+        message: "Project deleted successfully",
+        data: project,
+        error: null,
+      },
       200,
     );
-  } catch (err) {
+  } catch (error) {
     sendResponse(
       res,
-      { error: err.message, data: null, message: "Failed to delete project" },
+      {
+        success: false,
+        message: "Failed to delete project",
+        data: null,
+        error: error.message,
+      },
       400,
     );
   }

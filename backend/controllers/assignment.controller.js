@@ -4,30 +4,33 @@ const { validationResult } = require("express-validator");
 
 /**
  * Create a new assignment
- * @route POST /assignments
- * @access Admin, Faculty
  */
 exports.createAssignment = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return sendResponse(
+  try {
+    const result = await assignmentService.create(req.body);
+
+    sendResponse(
       res,
       {
-        error: true,
+        success: true,
+        message: "Assignment created successfully",
+        data: result,
+        error: null,
+      },
+      201,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Failed to create assignment",
         data: null,
-        message: errors
-          .array()
-          .map((e) => e.msg)
-          .join(", "),
+        error: error.message,
       },
       400,
     );
   }
-  const result = await assignmentService.create(req.body);
-  if (result.error) {
-    return sendResponse(res, result, 400);
-  }
-  sendResponse(res, result, 201);
 };
 
 /**
@@ -37,8 +40,34 @@ exports.createAssignment = async (req, res) => {
  * @query page, limit, title, etc.
  */
 exports.getAllAssignments = async (req, res) => {
-  const result = await assignmentService.getAll();
-  sendResponse(res, result, result.error ? 400 : 200);
+  try {
+    const { page = 1, limit = 10, ...filters } = req.query;
+    const result = await assignmentService.getAll({ page, limit, filters });
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? "Failed to fetch assignments"
+          : "Assignments fetched successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 400 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
 };
 
 /**
@@ -47,8 +76,33 @@ exports.getAllAssignments = async (req, res) => {
  * @access Authenticated
  */
 exports.getAssignmentById = async (req, res) => {
-  const result = await assignmentService.getById(req.params.id);
-  sendResponse(res, result, result.error ? 404 : 200);
+  try {
+    const result = await assignmentService.getById(req.params.id);
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? "Failed to fetch assignment"
+          : "Assignment fetched successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 404 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
 };
 
 /**
@@ -57,26 +111,66 @@ exports.getAssignmentById = async (req, res) => {
  * @access Admin, Faculty
  */
 exports.updateAssignment = async (req, res) => {
+  try {
+    const result = await assignmentService.update(req.params.id, req.body);
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? "Failed to update assignment"
+          : "Assignment updated successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 400 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
+};
+
+/**
+ * Validate assignment input
+ * @route POST /assignments/validate
+ * @access Admin, Faculty
+ */
+exports.validateAssignment = (req, res) => {
   const errors = validationResult(req);
+
   if (!errors.isEmpty()) {
     return sendResponse(
       res,
       {
-        error: true,
+        success: false,
+        message: "Validation failed",
         data: null,
-        message: errors
-          .array()
-          .map((e) => e.msg)
-          .join(", "),
+        error: errors.array(),
       },
       400,
     );
   }
-  const result = await assignmentService.update(req.params.id, req.body);
-  if (result.error) {
-    return sendResponse(res, result, 404);
-  }
-  sendResponse(res, result, 200);
+
+  sendResponse(
+    res,
+    {
+      success: true,
+      message: "Validation successful",
+      data: null,
+      error: null,
+    },
+    200,
+  );
 };
 
 /**
@@ -85,9 +179,107 @@ exports.updateAssignment = async (req, res) => {
  * @access Admin, Faculty
  */
 exports.deleteAssignment = async (req, res) => {
-  const result = await assignmentService.remove(req.params.id);
-  if (result.error) {
-    return sendResponse(res, result, 404);
+  try {
+    const result = await assignmentService.remove(req.params.id);
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? "Failed to delete assignment"
+          : "Assignment deleted successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 400 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
   }
-  sendResponse(res, result, 200);
+};
+
+/**
+ * Get all assignments for a specific student
+ * @route GET /assignments/student/:studentId
+ * @access Authenticated
+ */
+exports.getAssignmentsByStudentId = async (req, res) => {
+  try {
+    const result = await assignmentService.getByStudentId(req.params.studentId);
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? "Failed to fetch assignments for student"
+          : "Assignments fetched successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 404 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
+};
+
+/**
+ * Get all assignments for a specific activity
+ * @route GET /assignments/activity/:activityId
+ * @access Authenticated
+ * @query page, limit
+ */
+exports.getAssignmentsByActivityId = async (req, res) => {
+  try {
+    const { page = 1, limit = 10 } = req.query;
+
+    const result = await assignmentService.getByActivityId(
+      req.params.activityId,
+      { page, limit },
+    );
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? "Failed to fetch assignments for activity"
+          : "Assignments fetched successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 404 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
 };

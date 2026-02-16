@@ -1,4 +1,5 @@
 const Course = require("../models/course.model");
+const sendResponse = require("../utils/response");
 
 /**
  * Create a new course
@@ -8,14 +9,36 @@ const Course = require("../models/course.model");
 exports.createCourse = async (req, res) => {
   try {
     const { name, code, description, faculty } = req.body;
-    const course = new Course({ name, code, description, faculty });
-    await course.save();
-    res.status(201).json({
-      error: false,
-      data: course,
-      message: "Course created successfully",
+
+    const course = new Course({
+      name,
+      code,
+      description,
+      faculty,
     });
+
+    await course.save();
+
+    sendResponse(
+      res,
+      {
+        success: true,
+        message: "Course created successfully",
+        data: course,
+        error: null,
+      },
+      201,
+    );
   } catch (error) {
-    res.status(500).json({ error: true, data: null, message: error.message });
-  }
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Failed to create course",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }f
 };
