@@ -2,6 +2,91 @@ const projectService = require("../services/project.service");
 const sendResponse = require("../utils/response");
 
 /**
+ * Get all members of a project
+ * @route GET /projects/:id/members
+ * @access Authenticated
+ */
+exports.getProjectMembers = async (req, res) => {
+  try {
+    const result = await projectService.getMembers(req.params.id);
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? "Failed to fetch project members"
+          : "Project members fetched successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 404 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
+};
+
+/**
+ * Add a member to a project
+ * @route POST /projects/:id/members
+ * @access Admin, Faculty
+ */
+exports.addProjectMember = async (req, res) => {
+  try {
+    const { userId, role } = req.body;
+
+    if (!userId || !role) {
+      return sendResponse(
+        res,
+        {
+          success: false,
+          message: "userId and role are required",
+          data: null,
+          error: "Validation error",
+        },
+        400,
+      );
+    }
+
+    const result = await projectService.addMember(req.params.id, userId, role);
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? "Failed to add member"
+          : "Member added successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 400 : 201,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
+};
+
+/**
  * Create a new project
  * @route POST /projects
  * @access Admin, Faculty

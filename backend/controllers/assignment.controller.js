@@ -4,6 +4,8 @@ const { validationResult } = require("express-validator");
 
 /**
  * Create a new assignment
+ * @route POST /assignments
+ * @access Admin, Faculty
  */
 exports.createAssignment = async (req, res) => {
   try {
@@ -264,6 +266,120 @@ exports.getAssignmentsByActivityId = async (req, res) => {
         success: !result.error,
         message: result.error
           ? "Failed to fetch assignments for activity"
+          : "Assignments fetched successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 404 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
+};
+
+/** Get all assignments for a specific faculty
+ * @route GET /assignments/faculty/:facultyId
+ * @access Authenticated
+ * @query page, limit
+ * */
+exports.getAssignmentsByFacultyId = async (req, res) => {
+  try {
+    const { page = 1, limit = 10 } = req.query;
+    const result = await assignmentService.getByFacultyId(
+      req.params.facultyId,
+      { page, limit },
+    );
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? "Failed to fetch assignments for faculty"
+          : "Assignments fetched successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 404 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
+};
+
+/** Get all assignments for a specific course
+ * @route GET /assignments/course/:courseId
+ * @access Authenticated
+ * @query page, limit
+ * */
+exports.getAssignmentsByCourseId = async (req, res) => {
+  try {
+    const { page = 1, limit = 10 } = req.query;
+    const result = await assignmentService.getByCourseId(req.params.courseId, {
+      page,
+      limit,
+    });
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? "Failed to fetch assignments for course"
+          : "Assignments fetched successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 404 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
+};
+
+/** Get all assignments for a specific batch
+ * @route GET /assignments/batch/:batchId
+ * @access Authenticated
+ * @query page, limit
+ * */
+exports.getAssignmentsByBatchId = async (req, res) => {
+  try {
+    const { page = 1, limit = 10 } = req.query;
+    const result = await assignmentService.getByBatchId(req.params.batchId, {
+      page,
+      limit,
+    });
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? "Failed to fetch assignments for batch"
           : "Assignments fetched successfully",
         data: result.data || null,
         error: result.error || null,

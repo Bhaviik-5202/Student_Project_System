@@ -3,61 +3,159 @@ const swaggerUi = require("swagger-ui-express");
 
 const options = {
   definition: {
-    openapi: '3.0.0',
+    openapi: "3.0.0",
     info: {
-      title: 'Student Project System API',
-      version: '1.0.0',
-      description: `Professional API documentation for the Student Project System backend.\n\n**Features:**\n- Clean architecture\n- Consistent error handling\n- JWT authentication\n- Pagination, filtering, and more.\n\n**Error Response Example:**\n\n\u0060\u0060\u0060json\n{\n  "error": true,\n  "data": null,\n  "message": "Validation failed",\n  "details": ["Email is required"]\n}\n\u0060\u0060\u0060\n`,
+      title: "Student Project System API",
+      version: "1.0.0",
+      description: `
+Professional API documentation for the Student Project System backend.
+
+### Features
+- Clean MVC architecture
+- Standardized response format
+- JWT Authentication (Bearer Token)
+- Pagination & Filtering
+- Centralized error handling
+
+### Standard Success Response
+\`\`\`json
+{
+  "success": true,
+  "message": "Operation successful",
+  "data": {},
+  "error": null
+}
+\`\`\`
+
+### Standard Error Response
+\`\`\`json
+{
+  "success": false,
+  "message": "Validation failed",
+  "data": null,
+  "error": "Email is required"
+}
+\`\`\`
+      `,
       contact: {
-        name: 'API Support',
-        email: 'support@example.com',
+        name: "API Support",
+        email: "support@example.com",
       },
     },
+
     servers: [
       {
-        url: 'http://localhost:5000/api/v1',
-        description: 'Local server',
+        url: "http://localhost:5000/api/v1",
+        description: "Development Server",
+      },
+      {
+        url: "https://your-production-domain.com/api/v1",
+        description: "Production Server",
       },
     ],
+
     components: {
       securitySchemes: {
         BearerAuth: {
-          type: 'http',
-          scheme: 'bearer',
-          bearerFormat: 'JWT',
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
         },
       },
+
       schemas: {
-        ErrorResponse: {
-          type: 'object',
+        // 🔹 Base Success Response
+        BaseSuccessResponse: {
+          type: "object",
           properties: {
-            error: { type: 'boolean', example: true },
-            data: { type: 'null', example: null },
-            message: { type: 'string', example: 'Validation failed' },
-            details: {
-              type: 'array',
-              items: { type: 'string' },
-              example: ['Email is required'],
+            success: { type: "boolean", example: true },
+            message: { type: "string", example: "Operation successful" },
+            data: { type: "object", nullable: true },
+            error: { type: "string", nullable: true, example: null },
+          },
+        },
+
+        // 🔹 Base Error Response
+        BaseErrorResponse: {
+          type: "object",
+          properties: {
+            success: { type: "boolean", example: false },
+            message: { type: "string", example: "Validation failed" },
+            data: { type: "null", example: null },
+            error: { type: "string", example: "Email is required" },
+          },
+        },
+
+        // 🔹 Pagination Structure
+        Pagination: {
+          type: "object",
+          properties: {
+            total: { type: "integer", example: 100 },
+            page: { type: "integer", example: 1 },
+            limit: { type: "integer", example: 10 },
+            totalPages: { type: "integer", example: 10 },
+          },
+        },
+
+        // 🔹 Paginated Response
+        PaginatedResponse: {
+          type: "object",
+          properties: {
+            success: { type: "boolean", example: true },
+            message: { type: "string", example: "Data fetched successfully" },
+            data: {
+              type: "array",
+              items: { type: "object" },
+            },
+            error: { type: "string", nullable: true, example: null },
+            pagination: {
+              $ref: "#/components/schemas/Pagination",
             },
           },
         },
-        SuccessResponse: {
-          type: 'object',
+
+        // 🔹 Example User Schema
+        User: {
+          type: "object",
           properties: {
-            error: { type: 'boolean', example: false },
-            data: { type: 'object', example: { id: '123', name: 'John Doe' } },
-            message: { type: 'string', example: 'Operation successful' },
+            _id: { type: "string", example: "64f123abc456def789012345" },
+            name: { type: "string", example: "John Doe" },
+            email: { type: "string", example: "john@example.com" },
+            role: { type: "string", example: "admin" },
+            createdAt: { type: "string", format: "date-time" },
+            updatedAt: { type: "string", format: "date-time" },
           },
         },
       },
     },
+
     security: [{ BearerAuth: [] }],
+
+    tags: [
+      { name: "Auth", description: "Authentication APIs" },
+      { name: "Users", description: "User management" },
+      { name: "Students", description: "Student management" },
+      { name: "Projects", description: "Project management" },
+      { name: "Assignments", description: "Assignment management" },
+      { name: "Submissions", description: "Submission management" },
+      { name: "Resources", description: "Learning resources" },
+      { name: "SupportTickets", description: "Support ticket system" },
+      { name: "Settings", description: "System configuration" },
+    ],
   },
-  apis: ['./routes/*.js', './models/*.js'],
+
+  apis: ["./routes/*.js"], // Only route files needed
 };
 
 const swaggerSpec = swaggerJsdoc(options);
 
 module.exports = (app) => {
-  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+  app.use(
+    "/api-docs",
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerSpec, {
+      explorer: true,
+      customSiteTitle: "Student Project System API Docs",
+    }),
+  );
 };

@@ -2,6 +2,41 @@ const meetingService = require("../services/meeting.service");
 const sendResponse = require("../utils/response");
 
 /**
+ * Join a meeting
+ * @route POST /meetings/:id/join
+ * @access Authenticated
+ */
+exports.joinMeeting = async (req, res) => {
+  try {
+    const result = await meetingService.join(req.params.id, req.user);
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? "Failed to join meeting"
+          : "Joined meeting successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 400 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
+};
+
+/**
  * Create a new meeting
  * @route POST /meetings
  * @access Faculty, Admin

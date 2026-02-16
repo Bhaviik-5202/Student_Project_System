@@ -3,6 +3,76 @@ const sendResponse = require("../utils/response");
 const { validationResult } = require("express-validator");
 
 /**
+ * Get all projects for a student
+ * @route GET /students/:id/projects
+ * @access Authenticated
+ */
+exports.getStudentProjects = async (req, res) => {
+  try {
+    const result = await studentService.getProjects(req.params.id);
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? "Failed to fetch student projects"
+          : "Student projects fetched successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 404 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
+};
+
+/**
+ * Get all grades for a student
+ * @route GET /students/:id/grades
+ * @access Authenticated
+ */
+exports.getStudentGrades = async (req, res) => {
+  try {
+    const result = await studentService.getGrades(req.params.id);
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? "Failed to fetch student grades"
+          : "Student grades fetched successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 404 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
+};
+
+/**
  * Create a new student
  * @route POST /students
  * @access Admin, Faculty
