@@ -29,6 +29,7 @@ exports.createCourse = async (req, res) => {
       },
       201,
     );
+    return;
   } catch (error) {
     sendResponse(
       res,
@@ -40,8 +41,8 @@ exports.createCourse = async (req, res) => {
       },
       500,
     );
+    return;
   }
-  f;
 };
 
 /** Get all courses
@@ -62,6 +63,7 @@ exports.getAllCourses = async (req, res) => {
       200,
     );
   } catch (error) {
+    console.log("Error fetching courses:", error);
     sendResponse(
       res,
       {

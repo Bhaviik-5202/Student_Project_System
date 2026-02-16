@@ -26,6 +26,7 @@ const notificationRoutes = require("./notification.route");
 const userRoutes = require("./user.route");
 const healthRoutes = require("./health.route");
 const analyticsRoutes = require("./analytics.route");
+const meetingsRoutes = require("./meetings.route");
 
 /**
  * Mount routes (Plural REST Convention)
@@ -47,6 +48,7 @@ router.use("/notifications", notificationRoutes);
 router.use("/users", userRoutes);
 router.use("/health", healthRoutes);
 router.use("/analytics", analyticsRoutes);
+router.use("/meetings", meetingsRoutes);
 
 /**
  * Root API Information Endpoint

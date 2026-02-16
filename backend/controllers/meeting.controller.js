@@ -2,28 +2,28 @@ const meetingService = require("../services/meeting.service");
 const sendResponse = require("../utils/response");
 
 /**
- * Join a meeting
- * @route POST /meetings/:id/join
- * @access Authenticated
+ * Create a new meeting
+ * @route POST /api/v1/meetings
+ * @access Faculty, Admin
  */
-exports.joinMeeting = async (req, res) => {
+exports.createMeeting = async (req, res) => {
   try {
-    const result = await meetingService.join(req.params.id, req.user);
+    const result = await meetingService.create(req.body);
 
-    sendResponse(
+    return sendResponse(
       res,
       {
         success: !result.error,
         message: result.error
-          ? "Failed to join meeting"
-          : "Joined meeting successfully",
+          ? "Failed to create meeting"
+          : "Meeting created successfully",
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 200,
+      result.error ? 400 : 201,
     );
   } catch (error) {
-    sendResponse(
+    return sendResponse(
       res,
       {
         success: false,
@@ -37,28 +37,28 @@ exports.joinMeeting = async (req, res) => {
 };
 
 /**
- * Create a new meeting
- * @route POST /meetings
- * @access Faculty, Admin
+ * Join a meeting
+ * @route POST /api/v1/meetings/:id/join
+ * @access Authenticated
  */
-exports.createMeeting = async (req, res) => {
+exports.joinMeeting = async (req, res) => {
   try {
-    const result = await meetingService.create(req.body);
+    const result = await meetingService.join(req.params.id, req.user);
 
-    sendResponse(
+    return sendResponse(
       res,
       {
         success: !result.error,
         message: result.error
-          ? "Failed to create meeting"
-          : "Meeting created successfully",
+          ? "Failed to join meeting"
+          : "Joined meeting successfully",
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 201,
+      result.error ? 400 : 200,
     );
   } catch (error) {
-    sendResponse(
+    return sendResponse(
       res,
       {
         success: false,
@@ -73,14 +73,14 @@ exports.createMeeting = async (req, res) => {
 
 /**
  * Get all meetings
- * @route GET /meetings
+ * @route GET /api/v1/meetings
  * @access Authenticated
  */
 exports.getAllMeetings = async (req, res) => {
   try {
     const result = await meetingService.getAll();
 
-    sendResponse(
+    return sendResponse(
       res,
       {
         success: !result.error,
@@ -93,7 +93,7 @@ exports.getAllMeetings = async (req, res) => {
       result.error ? 400 : 200,
     );
   } catch (error) {
-    sendResponse(
+    return sendResponse(
       res,
       {
         success: false,
@@ -108,14 +108,14 @@ exports.getAllMeetings = async (req, res) => {
 
 /**
  * Get a meeting by ID
- * @route GET /meetings/:id
+ * @route GET /api/v1/meetings/:id
  * @access Authenticated
  */
 exports.getMeetingById = async (req, res) => {
   try {
     const result = await meetingService.getById(req.params.id);
 
-    sendResponse(
+    return sendResponse(
       res,
       {
         success: !result.error,
@@ -128,7 +128,7 @@ exports.getMeetingById = async (req, res) => {
       result.error ? 404 : 200,
     );
   } catch (error) {
-    sendResponse(
+    return sendResponse(
       res,
       {
         success: false,
@@ -142,15 +142,15 @@ exports.getMeetingById = async (req, res) => {
 };
 
 /**
- * Update a meeting by ID
- * @route PUT /meetings/:id
+ * Update a meeting
+ * @route PUT /api/v1/meetings/:id
  * @access Faculty, Admin
  */
 exports.updateMeeting = async (req, res) => {
   try {
     const result = await meetingService.update(req.params.id, req.body);
 
-    sendResponse(
+    return sendResponse(
       res,
       {
         success: !result.error,
@@ -163,7 +163,7 @@ exports.updateMeeting = async (req, res) => {
       result.error ? 404 : 200,
     );
   } catch (error) {
-    sendResponse(
+    return sendResponse(
       res,
       {
         success: false,
@@ -177,15 +177,15 @@ exports.updateMeeting = async (req, res) => {
 };
 
 /**
- * Delete a meeting by ID
- * @route DELETE /meetings/:id
+ * Delete a meeting
+ * @route DELETE /api/v1/meetings/:id
  * @access Faculty, Admin
  */
 exports.deleteMeeting = async (req, res) => {
   try {
     const result = await meetingService.remove(req.params.id);
 
-    sendResponse(
+    return sendResponse(
       res,
       {
         success: !result.error,
@@ -198,7 +198,7 @@ exports.deleteMeeting = async (req, res) => {
       result.error ? 404 : 200,
     );
   } catch (error) {
-    sendResponse(
+    return sendResponse(
       res,
       {
         success: false,

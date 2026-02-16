@@ -22,8 +22,7 @@ exports.register = async ({ name, email, password, role }) => {
   try {
     const existing = await User.findOne({ email });
     if (existing) return response(true, null, "Email already registered");
-    const hashed = await bcrypt.hash(password, 10);
-    const user = new User({ name, email, password: hashed, role });
+    const user = new User({ name, email, password, role });
     await user.save();
     return response(false, null, "User registered");
   } catch (err) {
@@ -40,17 +39,22 @@ exports.register = async ({ name, email, password, role }) => {
  */
 exports.login = async ({ email, password }) => {
   try {
-    const user = await User.findOne({ email });
-    if (!user) return response(true, null, "Invalid credentials");
+    const user = await User.findOne({ email }).select("+password");
+    if (!user || !user.password)
+      return response(true, null, "Invalid credentials");
     const match = await bcrypt.compare(password, user.password);
     if (!match) return response(true, null, "Invalid credentials");
+    // Ensure expiresIn is a valid string or number for JWT
+    let expiresIn = TOKEN_EXPIRES_IN;
+    if (
+      !expiresIn ||
+      (isNaN(Number(expiresIn)) && typeof expiresIn !== "string")
+    ) {
+      expiresIn = "1d"; // default to 1 day
+    }
     const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, {
-      expiresIn: TOKEN_EXPIRES_IN,
+      expiresIn,
     });
-
-    console.log("user ==>>>>=", user);
-    
-
     return response(
       false,
       {
@@ -64,8 +68,8 @@ exports.login = async ({ email, password }) => {
       },
       "Login successful",
     );
-    
   } catch (err) {
+    console.error("Login error:", err);
     return response(true, null, err.message || "Login failed");
   }
 };

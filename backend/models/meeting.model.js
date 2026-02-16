@@ -16,7 +16,6 @@ const meetingSchema = new mongoose.Schema(
     date: {
       type: Date,
       required: [true, "Meeting date is required"],
-      index: true,
     },
     type: {
       type: String,
