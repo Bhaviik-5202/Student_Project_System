@@ -1,4 +1,5 @@
-import api from "./api";
+import api from "../utils/api";
+
 
 const meetingService = {
   getAllMeetings: async (params = {}) => {

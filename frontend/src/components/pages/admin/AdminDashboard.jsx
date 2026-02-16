@@ -423,75 +423,65 @@ const SERVICE_ICONS = {
 
 const AdminDashboard = memo(() => {
   const navigate = useNavigate();
+  const handleNavigate = useCallback((path) => () => navigate(path), [navigate]);
 
-  // Navigation handler with useCallback for performance
-  const handleNavigate = useCallback(
-    (path) => () => navigate(path),
-    [navigate],
-  );
+  // State for real dashboard data
+  const [stats, setStats] = useState({
+    totalUsers: 0,
+    activeProjects: 0,
+    pendingApprovals: 0,
+    systemHealth: 0,
+  });
+  const [recentActivities, setRecentActivities] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Stats data - could be fetched from API in real implementation
-  const stats = useMemo(
-    () => ({
-      totalUsers: 156,
-      activeProjects: 48,
-      pendingApprovals: 7,
-      systemHealth: 95,
-    }),
-    [],
-  );
-
-  // Recent activities data - could be fetched from API
-  const recentActivities = useMemo(
-    () => [
-      {
-        id: 1,
-        user: "John Doe",
-        action: "Created new project",
-        time: "2 hours ago",
-      },
-      {
-        id: 2,
-        user: "Admin",
-        action: "Updated system settings",
-        time: "5 hours ago",
-      },
-      {
-        id: 3,
-        user: "Jane Smith",
-        action: "Submitted project proposal",
-        time: "1 day ago",
-      },
-      {
-        id: 4,
-        user: "System",
-        action: "Automatic backup completed",
-        time: "2 days ago",
-      },
-    ],
-    [],
-  );
-
-  // System services data - could be fetched from API
+  // Optionally, keep static system services for now
   const systemServices = useMemo(
     () => [
       { id: "db", service: "Database", status: "Online", uptime: "99.9%" },
-      {
-        id: "storage",
-        service: "File Storage",
-        status: "Online",
-        uptime: "99.8%",
-      },
-      {
-        id: "email",
-        service: "Email Service",
-        status: "Online",
-        uptime: "99.7%",
-      },
+      { id: "storage", service: "File Storage", status: "Online", uptime: "99.8%" },
+      { id: "email", service: "Email Service", status: "Online", uptime: "99.7%" },
       { id: "api", service: "API Server", status: "Online", uptime: "99.9%" },
     ],
     [],
   );
+
+  useEffect(() => {
+    let mounted = true;
+    setLoading(true);
+    analyticsService.getDashboardStats()
+      .then((res) => {
+        if (mounted && res && res.data) {
+          setStats({
+            totalUsers: res.data.totalUsers,
+            activeProjects: res.data.activeProjects,
+            pendingApprovals: res.data.pendingApprovals,
+            systemHealth: res.data.systemHealth,
+          });
+          setRecentActivities(
+            (res.data.recentActivities || []).map((a, idx) => ({
+              id: idx + 1,
+              user: a.owner?.name || "Unknown",
+              action: `${a.status === "pending" ? "Pending approval for" : a.status === "active" ? "Active project:" : "Project updated:"} ${a.title}`,
+              time: new Date(a.updatedAt).toLocaleString(),
+            }))
+          );
+        }
+      })
+      .catch((err) => {
+        setError("Failed to load dashboard data");
+      })
+      .finally(() => setLoading(false));
+    return () => { mounted = false; };
+  }, []);
+
+  if (loading) {
+    return <div className="p-8 text-center text-lg">Loading dashboard...</div>;
+  }
+  if (error) {
+    return <div className="p-8 text-center text-red-600">{error}</div>;
+  }
 
   return (
     <main className="min-h-screen bg-slate-50 dark:bg-slate-900" role="main">

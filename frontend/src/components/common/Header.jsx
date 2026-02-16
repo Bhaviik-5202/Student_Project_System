@@ -188,7 +188,7 @@ const Header = memo(
       (e) => {
         e.preventDefault();
         if (searchQuery.trim()) {
-          console.log("Searching for:", searchQuery);
+          // ...existing code...
           setSearchQuery("");
           setShowSearch(false);
         }
@@ -277,7 +277,7 @@ const Header = memo(
 
     const handleDateClick = useCallback(
       (date) => {
-        console.log("Selected date:", date);
+        // ...existing code...
         setShowCalendar(false);
         navigate(`/meetings?date=${date.toISOString().split("T")[0]}`);
       },

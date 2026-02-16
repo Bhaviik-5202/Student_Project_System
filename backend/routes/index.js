@@ -19,6 +19,7 @@ const timelineRoutes = require("./timeline.route");
 const notificationRoutes = require("./notification.route");
 const userRoutes = require("./user.route");
 const healthRoutes = require("./health.route");
+const analyticsRoutes = require("./analytics.route");
 
 // Mount all routes under /api/v1
 router.use("/activity", activityRoutes);
@@ -43,7 +44,9 @@ router.use("/timeline", timelineRoutes);
 router.use("/dashboard/notifications", notificationRoutes);
 router.use("/notifications", notificationRoutes);
 router.use("/users", userRoutes);
+
 router.use("/health", healthRoutes);
+router.use("/analytics", analyticsRoutes);
 
 // Root API info endpoint
 router.get("/", (req, res) => {

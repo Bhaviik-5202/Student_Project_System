@@ -72,60 +72,29 @@ CategoryButton.propTypes = {
   onSelect: PropTypes.func.isRequired,
 };
 
+import { useEffect } from "react";
+import resourceService from "../../services/resourceService";
+
 const ResourceBrowser = memo(() => {
-  const resources = useMemo(
-    () => [
-      {
-        id: 1,
-        name: "Web Development Guide.pdf",
-        type: "pdf",
-        size: "2.4 MB",
-        category: "Documents",
-        date: "2024-03-15",
-      },
-      {
-        id: 2,
-        name: "Database Design.pptx",
-        type: "ppt",
-        size: "5.1 MB",
-        category: "Presentations",
-        date: "2024-03-10",
-      },
-      {
-        id: 3,
-        name: "Project Template.zip",
-        type: "zip",
-        size: "12.3 MB",
-        category: "Templates",
-        date: "2024-03-05",
-      },
-      {
-        id: 4,
-        name: "API Documentation.pdf",
-        type: "pdf",
-        size: "3.2 MB",
-        category: "Documents",
-        date: "2024-02-28",
-      },
-      {
-        id: 5,
-        name: "UI Design Mockups.fig",
-        type: "fig",
-        size: "8.7 MB",
-        category: "Design",
-        date: "2024-02-25",
-      },
-      {
-        id: 6,
-        name: "Video Tutorial.mp4",
-        type: "video",
-        size: "45.2 MB",
-        category: "Videos",
-        date: "2024-02-20",
-      },
-    ],
-    [],
-  );
+  const [resources, setResources] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchResources = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await resourceService.getResources();
+        setResources(data);
+      } catch (err) {
+        setError("Failed to load resources.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchResources();
+  }, []);
 
   const categories = useMemo(
     () => [
@@ -198,38 +167,46 @@ const ResourceBrowser = memo(() => {
 
       <div className="bg-white dark:bg-slate-800 rounded-xl shadow dark:shadow-md overflow-hidden">
         <div className="p-6">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="text-lg font-semibold text-slate-800 dark:text-white">
-                {selectedCategory === "All"
-                  ? "All Resources"
-                  : `${selectedCategory} Resources`}
-              </h2>
-              <p className="text-slate-600 dark:text-slate-400">
-                {filteredResources.length} items found
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <input
-                type="text"
-                placeholder="Search resources..."
-                className="px-4 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg"
-              />
-              <button className="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700">
-                Sort By
-              </button>
-            </div>
-          </div>
+          {loading ? (
+            <div className="text-center py-8 text-slate-500 dark:text-slate-400">Loading resources...</div>
+          ) : error ? (
+            <div className="text-center py-8 text-red-500">{error}</div>
+          ) : (
+            <>
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-lg font-semibold text-slate-800 dark:text-white">
+                    {selectedCategory === "All"
+                      ? "All Resources"
+                      : `${selectedCategory} Resources`}
+                  </h2>
+                  <p className="text-slate-600 dark:text-slate-400">
+                    {filteredResources.length} items found
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    placeholder="Search resources..."
+                    className="px-4 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg"
+                  />
+                  <button className="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700">
+                    Sort By
+                  </button>
+                </div>
+              </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredResources.map((resource) => (
-              <ResourceCard
-                key={resource.id}
-                resource={resource}
-                icon={getIcon(resource.type)}
-              />
-            ))}
-          </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {filteredResources.map((resource) => (
+                  <ResourceCard
+                    key={resource.id}
+                    resource={resource}
+                    icon={getIcon(resource.type)}
+                  />
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
-import React, { useState, useMemo, useCallback, memo } from "react";
+import React, { useState, useMemo, useCallback, memo, useEffect } from "react";
+import templateService from "../../services/templateService";
 import useNotification from "../../../hooks/useNotification";
 
 const CategoryTab = memo(({ category, isActive, onSelect }) => (
@@ -71,83 +72,38 @@ const TemplateLibrary = memo(() => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const { showSuccess } = useNotification();
 
-  const categories = useMemo(
-    () => [
-      { id: "all", name: "All Templates", count: 48 },
-      { id: "project", name: "Project Templates", count: 18 },
-      { id: "report", name: "Report Templates", count: 12 },
-      { id: "proposal", name: "Proposal Templates", count: 8 },
-      { id: "meeting", name: "Meeting Templates", count: 6 },
-      { id: "other", name: "Other Templates", count: 4 },
-    ],
-    [],
-  );
+  const [templates, setTemplates] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const templates = useMemo(
-    () => [
-      {
-        id: 1,
-        name: "Project Proposal Template",
-        category: "proposal",
-        description: "Standard template for project proposals",
-        downloads: 156,
-        lastUpdated: "2024-01-15",
-        fileSize: "2.4 MB",
-        icon: "fas fa-file-alt text-blue-500",
-      },
-      {
-        id: 2,
-        name: "Weekly Progress Report",
-        category: "report",
-        description: "Template for weekly project updates",
-        downloads: 234,
-        lastUpdated: "2024-01-10",
-        fileSize: "1.8 MB",
-        icon: "fas fa-chart-line text-green-500",
-      },
-      {
-        id: 3,
-        name: "Meeting Minutes",
-        category: "meeting",
-        description: "Format for documenting meeting discussions",
-        downloads: 189,
-        lastUpdated: "2024-01-12",
-        fileSize: "1.2 MB",
-        icon: "fas fa-calendar-alt text-purple-500",
-      },
-      {
-        id: 4,
-        name: "Risk Assessment Matrix",
-        category: "project",
-        description: "Template for risk evaluation and management",
-        downloads: 145,
-        lastUpdated: "2024-01-05",
-        fileSize: "3.1 MB",
-        icon: "fas fa-exclamation-triangle text-yellow-500",
-      },
-      {
-        id: 5,
-        name: "Project Timeline",
-        category: "project",
-        description: "Gantt chart template for project scheduling",
-        downloads: 278,
-        lastUpdated: "2024-01-08",
-        fileSize: "4.2 MB",
-        icon: "fas fa-project-diagram text-indigo-500",
-      },
-      {
-        id: 6,
-        name: "Budget Proposal",
-        category: "proposal",
-        description: "Financial planning template",
-        downloads: 167,
-        lastUpdated: "2024-01-03",
-        fileSize: "2.8 MB",
-        icon: "fas fa-dollar-sign text-green-600",
-      },
-    ],
-    [],
-  );
+  useEffect(() => {
+    const fetchTemplates = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await templateService.getTemplates();
+        setTemplates(data);
+        // Extract categories from templates
+        const cats = data.reduce((acc, t) => {
+          const cat = t.category;
+          if (!acc[cat]) acc[cat] = { id: cat, name: cat.charAt(0).toUpperCase() + cat.slice(1) + ' Templates', count: 0 };
+          acc[cat].count++;
+          return acc;
+        }, {});
+        const catArr = [
+          { id: "all", name: "All Templates", count: data.length },
+          ...Object.values(cats)
+        ];
+        setCategories(catArr);
+      } catch (err) {
+        setError("Failed to load templates.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTemplates();
+  }, []);
 
   const filteredTemplates = useMemo(() => {
     const lowered = searchTerm.toLowerCase();
@@ -198,103 +154,111 @@ const TemplateLibrary = memo(() => {
         </button>
       </div>
 
-      {/* Search and Filter */}
-      <div className="mb-6">
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="flex-1">
-            <div className="relative">
-              <i className="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" />
-              <input
-                type="text"
-                placeholder="Search templates..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400"
+      {loading ? (
+        <div className="text-center py-12 text-gray-500 dark:text-gray-400">Loading templates...</div>
+      ) : error ? (
+        <div className="text-center py-12 text-red-500">{error}</div>
+      ) : (
+        <>
+          {/* Search and Filter */}
+          <div className="mb-6">
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="flex-1">
+                <div className="relative">
+                  <i className="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+                  <input
+                    type="text"
+                    placeholder="Search templates..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400"
+                  />
+                </div>
+              </div>
+              <div className="w-full md:w-64">
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400"
+                >
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name} ({category.count})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Category Tabs */}
+          <div className="flex space-x-2 mb-6 overflow-x-auto pb-2">
+            {categories.map((category) => (
+              <CategoryTab
+                key={category.id}
+                category={category}
+                isActive={selectedCategory === category.id}
+                onSelect={handleCategorySelect}
               />
+            ))}
+          </div>
+
+          {/* Template Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredTemplates.map((template) => (
+              <TemplateCard
+                key={template.id}
+                template={template}
+                onDownload={handleDownload}
+                onPreview={handlePreview}
+              />
+            ))}
+          </div>
+
+          {/* Empty State */}
+          {filteredTemplates.length === 0 && (
+            <div className="text-center py-12">
+              <i className="fas fa-search text-gray-300 dark:text-gray-600 text-4xl mb-3" />
+              <h3 className="text-lg font-medium text-gray-700 dark:text-gray-200 mb-2">
+                No templates found
+              </h3>
+              <p className="text-gray-500 dark:text-gray-400">
+                Try adjusting your search or filter criteria
+              </p>
+            </div>
+          )}
+
+          {/* Stats */}
+          <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-blue-600">{templates.length}</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+                  Total Templates
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-green-600">{templates.reduce((acc, t) => acc + (t.downloads || 0), 0)}</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+                  Total Downloads
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-purple-600">{categories.find(c => c.id === 'project')?.count || 0}</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+                  Project Templates
+                </div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-yellow-600">{templates.filter(t => t.lastUpdated && new Date(t.lastUpdated).getMonth() === new Date().getMonth()).length}</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+                  Updated This Month
+                </div>
+              </div>
             </div>
           </div>
-          <div className="w-full md:w-64">
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400"
-            >
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name} ({category.count})
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-      </div>
-
-      {/* Category Tabs */}
-      <div className="flex space-x-2 mb-6 overflow-x-auto pb-2">
-        {categories.map((category) => (
-          <CategoryTab
-            key={category.id}
-            category={category}
-            isActive={selectedCategory === category.id}
-            onSelect={handleCategorySelect}
-          />
-        ))}
-      </div>
-
-      {/* Template Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredTemplates.map((template) => (
-          <TemplateCard
-            key={template.id}
-            template={template}
-            onDownload={handleDownload}
-            onPreview={handlePreview}
-          />
-        ))}
-      </div>
-
-      {/* Empty State */}
-      {filteredTemplates.length === 0 && (
-        <div className="text-center py-12">
-          <i className="fas fa-search text-gray-300 dark:text-gray-600 text-4xl mb-3" />
-          <h3 className="text-lg font-medium text-gray-700 dark:text-gray-200 mb-2">
-            No templates found
-          </h3>
-          <p className="text-gray-500 dark:text-gray-400">
-            Try adjusting your search or filter criteria
-          </p>
-        </div>
+        </>
       )}
-
-      {/* Stats */}
-      <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="text-center">
-            <div className="text-2xl font-bold text-blue-600">48</div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">
-              Total Templates
-            </div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-green-600">1.2K</div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">
-              Total Downloads
-            </div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-purple-600">18</div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">
-              Project Templates
-            </div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-yellow-600">15</div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">
-              Updated This Month
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 });

@@ -15,7 +15,7 @@ const authService = {
   login: async (email, password) => {
     try {
       const response = await api.post("/auth/login", { email, password });
-      const { token, user } = response.data;
+      const { token, user } = response.data.data;
       localStorage.setItem(LOCAL_STORAGE_KEYS.TOKEN, token);
       localStorage.setItem(LOCAL_STORAGE_KEYS.USER, JSON.stringify(user));
       localStorage.setItem(LOCAL_STORAGE_KEYS.USER_ROLE, user.role);
@@ -36,7 +36,7 @@ const authService = {
   register: async (formData) => {
     try {
       const response = await api.post("/auth/register", formData);
-      return { success: true, data: response.data };
+      return { success: true, data: response.data.data };
     } catch (error) {
       return {
         success: false,

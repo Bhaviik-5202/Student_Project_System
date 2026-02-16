@@ -46,52 +46,31 @@ DocumentRow.propTypes = {
   }).isRequired,
 };
 
+
+import { useEffect, useState } from "react";
+import documentService from "../../../services/documentService";
+
 const DocumentLibrary = memo(() => {
-  const documents = useMemo(
-    () => [
-      {
-        id: 1,
-        title: "Project Guidelines",
-        category: "General",
-        uploadedBy: "Admin",
-        date: "Jan 5, 2024",
-        size: "1.2 MB",
-      },
-      {
-        id: 2,
-        title: "Research Paper Template",
-        category: "Templates",
-        uploadedBy: "Dr. Smith",
-        date: "Jan 7, 2024",
-        size: "0.8 MB",
-      },
-      {
-        id: 3,
-        title: "Coding Standards",
-        category: "Development",
-        uploadedBy: "Faculty",
-        date: "Jan 10, 2024",
-        size: "0.5 MB",
-      },
-      {
-        id: 4,
-        title: "Presentation Template",
-        category: "Templates",
-        uploadedBy: "Admin",
-        date: "Jan 12, 2024",
-        size: "2.1 MB",
-      },
-      {
-        id: 5,
-        title: "Lab Manual",
-        category: "General",
-        uploadedBy: "Dr. Johnson",
-        date: "Jan 15, 2024",
-        size: "3.4 MB",
-      },
-    ],
-    [],
-  );
+  const [documents, setDocuments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchDocuments = async () => {
+      setLoading(true);
+      setError("");
+      try {
+        const data = await documentService.getAll();
+        setDocuments(data.documents || []);
+      } catch (err) {
+        setError("Failed to load documents");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDocuments();
+  }, []);
+
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
@@ -112,35 +91,41 @@ const DocumentLibrary = memo(() => {
 
         <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
-              <thead className="bg-slate-50 dark:bg-slate-700">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                    Document Title
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                    Category
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                    Uploaded By
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                    Date
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                    Size
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
-                {documents.map((doc) => (
-                  <DocumentRow key={doc.id} doc={doc} />
-                ))}
-              </tbody>
-            </table>
+            {loading ? (
+              <div className="p-8 text-center text-slate-500 dark:text-slate-400">Loading documents...</div>
+            ) : error ? (
+              <div className="p-8 text-center text-red-500">{error}</div>
+            ) : (
+              <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+                <thead className="bg-slate-50 dark:bg-slate-700">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
+                      Document Title
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
+                      Category
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
+                      Uploaded By
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
+                      Date
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
+                      Size
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
+                  {documents.map((doc) => (
+                    <DocumentRow key={doc.id || doc._id} doc={doc} />
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
       </div>

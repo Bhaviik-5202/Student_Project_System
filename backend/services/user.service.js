@@ -47,6 +47,10 @@ exports.login = async ({ email, password }) => {
     const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, {
       expiresIn: TOKEN_EXPIRES_IN,
     });
+
+    console.log("user ==>>>>=", user);
+    
+
     return response(
       false,
       {
@@ -60,6 +64,7 @@ exports.login = async ({ email, password }) => {
       },
       "Login successful",
     );
+    
   } catch (err) {
     return response(true, null, err.message || "Login failed");
   }

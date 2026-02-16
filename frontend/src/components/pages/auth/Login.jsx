@@ -6,7 +6,6 @@ import { useAuth } from "../../../context/AuthContext";
 const Login = memo(() => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("");
   const [loading, setLoading] = useState(false);
   const [showContent, setShowContent] = useState(false);
   const [error, setError] = useState("");
@@ -28,11 +27,13 @@ const Login = memo(() => {
       setError("");
       setLoading(true);
 
-      if (!email || !password || !role) {
+
+      if (!email || !password) {
         setError("Please fill in all fields");
         setLoading(false);
         return;
       }
+
 
       const result = await login(email, password);
 
@@ -46,7 +47,7 @@ const Login = memo(() => {
         setLoading(false);
       }
     },
-    [email, password, role, login, navigate],
+    [email, password, login, navigate],
   );
 
   const fillDemoCredentials = useCallback((userType) => {
@@ -54,28 +55,20 @@ const Login = memo(() => {
       admin: {
         email: "admin@university.edu",
         password: "admin123",
-        role: "admin",
       },
       faculty: {
         email: "faculty@university.edu",
         password: "faculty123",
-        role: "faculty",
       },
       student: {
         email: "student@university.edu",
         password: "student123",
-        role: "student",
       },
     };
 
-    const {
-      email: demoEmail,
-      password: demoPassword,
-      role: demoRole,
-    } = credentials[userType];
+    const { email: demoEmail, password: demoPassword } = credentials[userType];
     setEmail(demoEmail);
     setPassword(demoPassword);
-    setRole(demoRole);
 
     // Add subtle feedback animation
     const demoBtn = document.querySelector(`[data-user="${userType}"]`);
@@ -312,41 +305,6 @@ const Login = memo(() => {
                   </div>
                 </div>
 
-                {/* Role Selection */}
-                <div
-                  className={`animate-slide-up ${
-                    showContent ? "visible" : "invisible"
-                  }`}
-                  style={{ animationDelay: "0.3s" }}
-                >
-                  <label
-                    htmlFor="role"
-                    className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2"
-                  >
-                    Select Your Role
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <i className="fas fa-user-tag text-slate-400 dark:text-slate-500 text-sm"></i>
-                    </div>
-                    <select
-                      id="role"
-                      name="role"
-                      required
-                      value={role}
-                      onChange={(e) => setRole(e.target.value)}
-                      className="pl-11 appearance-none relative block w-full px-4 py-3 border border-slate-200 dark:border-slate-600 placeholder-slate-500 dark:placeholder-slate-400 text-slate-900 dark:text-white dark:bg-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent dark:focus:border-transparent sm:text-sm transition-all duration-200 hover:border-slate-300 dark:hover:border-slate-500 bg-white dark:bg-slate-700 cursor-pointer"
-                    >
-                      <option value="">Choose your role...</option>
-                      <option value="admin">Administrator</option>
-                      <option value="faculty">Faculty Member</option>
-                      <option value="student">Student</option>
-                    </select>
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-                      <i className="fas fa-chevron-down text-slate-400 dark:text-slate-500 text-xs"></i>
-                    </div>
-                  </div>
-                </div>
 
                 {/* Remember Me */}
                 <div

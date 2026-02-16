@@ -21,6 +21,7 @@ router.post(
   validateRequest,
   authController.register,
 );
+
 // Login
 router.post(
   "/login",

@@ -222,7 +222,7 @@ const Reports = memo(() => {
   const generateReport = useCallback((reportId) => {
     setSelectedReport(reportId);
     // In real app, this would trigger API call
-    console.log(`Generating ${reportId} report...`);
+    // ...existing code...
   }, []);
 
   const handleExport = useCallback(() => {

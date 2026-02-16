@@ -85,7 +85,7 @@ const MeetingCalendar = memo(() => {
   }, []);
 
   const handleScheduleMeeting = useCallback(() => {
-    console.log("Meeting scheduled:", meetingForm);
+    // ...existing code...
     alert("Meeting scheduled successfully!");
     setShowModal(false);
     setMeetingForm({

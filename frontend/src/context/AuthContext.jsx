@@ -8,26 +8,11 @@ import React, {
 } from "react";
 import toast from "react-hot-toast";
 
+import { LOCAL_STORAGE_KEYS } from "../utils/constants";
+
 const AuthContext = createContext(null);
 
-// Demo credentials for testing
-const DEMO_CREDENTIALS = Object.freeze({
-  "admin@university.edu": {
-    password: "admin123",
-    role: "admin",
-    name: "Admin User",
-  },
-  "faculty@university.edu": {
-    password: "faculty123",
-    role: "faculty",
-    name: "Faculty Member",
-  },
-  "student@university.edu": {
-    password: "student123",
-    role: "student",
-    name: "Student User",
-  },
-});
+import authService from "../services/authService";
 
 // Token expiry time (24 hours in milliseconds)
 const TOKEN_EXPIRY_TIME = 24 * 60 * 60 * 1000;
@@ -35,11 +20,13 @@ const TOKEN_EXPIRY_TIME = 24 * 60 * 60 * 1000;
 // Refresh warning time (1 hour before expiry)
 const TOKEN_REFRESH_WARNING = 60 * 60 * 1000;
 
-// Storage keys
+// Storage keys (use global constants)
 const STORAGE_KEYS = Object.freeze({
-  TOKEN: "auth_token",
-  USER: "user",
-  TIMESTAMP: "token_timestamp",
+  TOKEN: LOCAL_STORAGE_KEYS.TOKEN,
+  USER: LOCAL_STORAGE_KEYS.USER,
+  USER_ROLE: LOCAL_STORAGE_KEYS.USER_ROLE,
+  REFRESH_TOKEN: LOCAL_STORAGE_KEYS.REFRESH_TOKEN,
+  TIMESTAMP: "token_timestamp", // keep for session expiry logic
 });
 
 export const useAuth = () => {
@@ -123,25 +110,30 @@ export const AuthProvider = ({ children }) => {
         const storedUser = safeLocalStorage.getItem(STORAGE_KEYS.USER);
         const tokenTimestamp = safeLocalStorage.getItem(STORAGE_KEYS.TIMESTAMP);
 
+        // Prevent clearing auth if already on /login or /register
+        const isAuthPage = ["/login", "/register"].includes(
+          window.location.pathname,
+        );
+
         if (token && storedUser && tokenTimestamp) {
           const timestamp = parseInt(tokenTimestamp, 10);
-
-          // Check if token is expired
           if (isTokenExpired(timestamp)) {
-            console.warn("Token expired, clearing auth data");
-            clearAuthData();
-            toast.error("Your session has expired. Please login again.");
+            if (!isAuthPage) {
+              console.warn("Token expired, clearing auth data");
+              clearAuthData();
+              toast.error("Your session has expired. Please login again.");
+            }
           } else {
             const parsedUser = JSON.parse(storedUser);
             setUser(parsedUser);
             setIsAuthenticated(true);
-
-            // Check if session is expiring soon
             const timeRemaining = TOKEN_EXPIRY_TIME - (Date.now() - timestamp);
             if (timeRemaining <= TOKEN_REFRESH_WARNING) {
               setSessionExpiringSoon(true);
             }
           }
+        } else if (!isAuthPage) {
+          clearAuthData();
         }
       } catch (error) {
         console.error("Auth initialization error:", error);
@@ -150,71 +142,29 @@ export const AuthProvider = ({ children }) => {
         setIsLoading(false);
       }
     };
-
     initAuth();
   }, [clearAuthData, isTokenExpired, safeLocalStorage]);
 
   // Login
   const login = useCallback(async (email, password, role) => {
+    console
     try {
       setIsLoading(true);
-
-      // Input validation
       if (!email || !password) {
         return { success: false, message: "Email and password are required" };
       }
-
-      // Simulate API delay
-      await new Promise((res) => setTimeout(res, 1000));
-
-      // Check demo credentials
-      let userRole = role;
-      let userName = email.split("@")[0].replace(/[.-]/g, " ");
-
-      if (DEMO_CREDENTIALS[email]) {
-        const expected = DEMO_CREDENTIALS[email];
-        // Check password OR role mismatch
-        if (
-          password !== expected.password ||
-          (role && role !== expected.role)
-        ) {
-          return {
-            success: false,
-            message: "Invalid email, password, or role",
-          };
-        }
-        userRole = expected.role;
-        userName = expected.name;
-      } else if (!role) {
-        return {
-          success: false,
-          message: "Role is required for non-demo accounts",
-        };
+      const res = await authService.login(email, password);
+      if (res.success) {
+        const { user, token } = res.data;
+        setUser(user);
+        setIsAuthenticated(true);
+        // Optionally store timestamp for session expiry logic
+        safeLocalStorage.setItem("token_timestamp", Date.now().toString());
+        return { success: true, user, token };
+      } else {
+        return { success: false, message: res.message || "Login failed" };
       }
-
-      const timestamp = Date.now();
-      const userData = {
-        id: timestamp,
-        email,
-        role: userRole,
-        name: userName,
-        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}&background=random`,
-        createdAt: new Date().toISOString(),
-      };
-
-      const token = `mock-jwt-${timestamp}-${btoa(email)}`;
-
-      // Store auth data
-      safeLocalStorage.setItem("auth_token", token);
-      safeLocalStorage.setItem("user", JSON.stringify(userData));
-      safeLocalStorage.setItem("token_timestamp", timestamp.toString());
-
-      setUser(userData);
-      setIsAuthenticated(true);
-
-      return { success: true, user: userData, token };
     } catch (error) {
-      console.error("Login error:", error);
       return {
         success: false,
         message: error.message || "Login failed. Please try again.",
@@ -236,62 +186,20 @@ export const AuthProvider = ({ children }) => {
   );
 
   // Register
-  const register = useCallback(async (email, password, name, role) => {
+  const register = useCallback(async (formData) => {
     try {
       setIsLoading(true);
-
-      // Input validation
-      if (!email || !password || !name || !role) {
-        return { success: false, message: "All fields are required" };
-      }
-
-      // Email validation
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        return { success: false, message: "Invalid email format" };
-      }
-
-      // Password validation
-      if (password.length < 6) {
+      const res = await authService.register(formData);
+      if (res.success) {
+        toast.success("Registration successful! Please login.");
+        return { success: true, data: res.data };
+      } else {
         return {
           success: false,
-          message: "Password must be at least 6 characters",
+          message: res.message || "Registration failed",
         };
       }
-
-      // Simulate API delay
-      await new Promise((res) => setTimeout(res, 1000));
-
-      // Check if email already exists (demo only)
-      if (DEMO_CREDENTIALS[email]) {
-        return { success: false, message: "Email already registered" };
-      }
-
-      const timestamp = Date.now();
-      const userData = {
-        id: timestamp,
-        email,
-        role,
-        name,
-        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`,
-        createdAt: new Date().toISOString(),
-      };
-
-      const token = `mock-jwt-${timestamp}-${btoa(email)}`;
-
-      // Store auth data
-      safeLocalStorage.setItem("auth_token", token);
-      safeLocalStorage.setItem("user", JSON.stringify(userData));
-      safeLocalStorage.setItem("token_timestamp", timestamp.toString());
-
-      setUser(userData);
-      setIsAuthenticated(true);
-      setSessionExpiringSoon(false);
-
-      toast.success(`Welcome, ${name}! Your account has been created.`);
-      return { success: true, user: userData, token };
     } catch (error) {
-      console.error("Registration error:", error);
       return {
         success: false,
         message: error.message || "Registration failed. Please try again.",

@@ -115,34 +115,30 @@ ProjectCard.propTypes = {
   }).isRequired,
 };
 
+
+import { useEffect, useState } from "react";
+import projectService from "../../../services/projectService";
+
 const ProjectList = memo(() => {
-  const projects = useMemo(
-    () => [
-      {
-        id: 1,
-        title: "E-commerce Platform",
-        status: "In Progress",
-        statusColor: "blue",
-        description: "Full-stack e-commerce website with payment integration",
-        startDate: "2024-01-15",
-        endDate: "2024-05-30",
-        guide: "Dr. Sarah Johnson",
-        progress: 65,
-      },
-      {
-        id: 2,
-        title: "AI Chatbot",
-        status: "Completed",
-        statusColor: "green",
-        description: "Intelligent chatbot for customer service",
-        startDate: "2023-09-01",
-        endDate: "2023-12-15",
-        guide: "Prof. Michael Chen",
-        progress: 100,
-      },
-    ],
-    [],
-  );
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      setLoading(true);
+      setError("");
+      const res = await projectService.getAllProjects();
+      if (res.success) {
+        setProjects(res.data.projects || []);
+      } else {
+        setError(res.message || "Failed to load projects");
+      }
+      setLoading(false);
+    };
+    fetchProjects();
+  }, []);
+
 
   return (
     <div className="animate-fade-in">
@@ -160,11 +156,17 @@ const ProjectList = memo(() => {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 gap-6">
-        {projects.map((project) => (
-          <ProjectCard key={project.id} project={project} />
-        ))}
-      </div>
+      {loading ? (
+        <div className="p-8 text-center text-slate-500 dark:text-slate-400">Loading projects...</div>
+      ) : error ? (
+        <div className="p-8 text-center text-red-500">{error}</div>
+      ) : (
+        <div className="grid grid-cols-1 gap-6">
+          {projects.map((project) => (
+            <ProjectCard key={project.id || project._id} project={project} />
+          ))}
+        </div>
+      )}
     </div>
   );
 });

@@ -28,7 +28,7 @@ const ProjectProposal = memo(() => {
   const handleSubmit = useCallback(
     (e) => {
       e.preventDefault();
-      console.log("Proposal submitted:", formData);
+      // ...existing code...
       alert("Project proposal submitted successfully!");
     },
     [formData],
