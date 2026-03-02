@@ -12,6 +12,7 @@
  *  - Graceful shutdown
  */
 
+
 require("dotenv").config();
 require("./config/validateEnv");
 
@@ -28,10 +29,6 @@ const errorHandler = require("./middleware/errorHandler");
 const sendResponse = require("./utils/response");
 
 const app = express();
-
-/* ==========================================================
-   Security & Core Middleware
-========================================================== */
 
 // Trust proxy (important for deployment behind reverse proxy)
 app.set("trust proxy", 1);
@@ -71,23 +68,14 @@ app.use(express.json());
 // HTTP request logger
 app.use(morganLogger);
 
-/* ==========================================================
-   Swagger Documentation
-========================================================== */
-
+//  Swagger Documentation
 require("./config/swagger")(app);
 
-/* ==========================================================
-   API Routes
-========================================================== */
-
+//  API Routes
 const apiRoutes = require("./routes");
 app.use("/api/v1", apiRoutes);
 
-/* ==========================================================
-   404 Handler
-========================================================== */
-
+//  404 Handler
 app.use((req, res) => {
   sendResponse(
     res,
@@ -99,15 +87,9 @@ app.use((req, res) => {
   );
 });
 
-/* ==========================================================
-   Global Error Handler
-========================================================== */
-
+//  Global Error Handler
 app.use(errorHandler);
 
-/* ==========================================================
-   Server Startup
-========================================================== */
 
 const startServer = async () => {
   try {
@@ -117,7 +99,7 @@ const startServer = async () => {
       const PORT = process.env.PORT || 5000;
 
       const server = app.listen(PORT, () => {
-        console.log(`🚀 Server running on port ${PORT}`);
+        console.log(`Server running on port ${PORT}`);
       });
 
       /* Graceful Shutdown */
@@ -125,7 +107,7 @@ const startServer = async () => {
         console.log("🔻 Shutting down server...");
         await mongoose.disconnect();
         server.close(() => {
-          console.log("✅ Server closed cleanly");
+          console.log("Server closed cleanly");
           process.exit(0);
         });
       };
@@ -134,16 +116,12 @@ const startServer = async () => {
       process.on("SIGTERM", shutdown);
     }
   } catch (error) {
-    console.error("❌ Failed to start server:", error);
+    console.error("Failed to start server:", error);
     process.exit(1);
   }
 };
 
 startServer();
-
-/* ==========================================================
-   Process-Level Error Handling
-========================================================== */
 
 process.on("unhandledRejection", (err) => {
   console.error("Unhandled Rejection:", err);
@@ -155,8 +133,5 @@ process.on("uncaughtException", (err) => {
   process.exit(1);
 });
 
-/* ==========================================================
-   Export App (for testing)
-========================================================== */
 
 module.exports = app;

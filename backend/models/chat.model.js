@@ -8,6 +8,7 @@ const chatSchema = new mongoose.Schema(
       maxlength: [150, "Chat name cannot exceed 150 characters"],
       default: null,
     },
+
     members: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -15,10 +16,12 @@ const chatSchema = new mongoose.Schema(
         required: true,
       },
     ],
+
     isGroup: {
       type: Boolean,
       default: false,
     },
+
     messages: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -32,6 +35,6 @@ const chatSchema = new mongoose.Schema(
 );
 
 chatSchema.index({ members: 1 });
-chatSchema.index({ createdAt: -1 });
+chatSchema.index({ updatedAt: -1 });
 
 module.exports = mongoose.model("Chat", chatSchema);

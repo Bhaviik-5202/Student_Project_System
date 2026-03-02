@@ -1,6 +1,7 @@
 // src/components/pages/resources/ResourceBrowser.jsx
-import { useState, useMemo, useCallback, memo } from "react";
+import { useState, useMemo, useCallback, useEffect, memo } from "react";
 import PropTypes from "prop-types";
+import resourceService from "../../../services/resourceService";
 
 const ResourceCard = memo(({ resource, icon }) => (
   <div className="border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-md hover:border-blue-300 dark:hover:border-blue-500 transition-all bg-white dark:bg-slate-800">
@@ -71,9 +72,6 @@ CategoryButton.propTypes = {
   isActive: PropTypes.bool.isRequired,
   onSelect: PropTypes.func.isRequired,
 };
-
-import { useEffect } from "react";
-import resourceService from "../../services/resourceService";
 
 const ResourceBrowser = memo(() => {
   const [resources, setResources] = useState([]);

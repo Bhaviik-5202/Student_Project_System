@@ -27,6 +27,8 @@ const userRoutes = require("./user.route");
 const healthRoutes = require("./health.route");
 const analyticsRoutes = require("./analytics.route");
 const meetingsRoutes = require("./meetings.route");
+const chatroutes = require("./chat.route");
+const messageRoutes = require("./message.route");
 
 /**
  * Mount routes (Plural REST Convention)
@@ -49,7 +51,8 @@ router.use("/users", userRoutes);
 router.use("/health", healthRoutes);
 router.use("/analytics", analyticsRoutes);
 router.use("/meetings", meetingsRoutes);
-
+router.use("/chats", chatroutes);
+router.use("/messages", messageRoutes);
 /**
  * Root API Information Endpoint
  * GET /api/v1
@@ -60,25 +63,6 @@ router.get("/", (req, res) => {
     message: "Student Project System API",
     version: "v1",
     baseUrl: "/api/v1",
-    endpoints: [
-      "/activities",
-      "/assignments",
-      "/attendance",
-      "/auditlogs",
-      "/auth",
-      "/portfolios",
-      "/courses",
-      "/projects",
-      "/resources",
-      "/staff",
-      "/students",
-      "/submissions",
-      "/timelines",
-      "/notifications",
-      "/users",
-      "/health",
-      "/analytics",
-    ],
   });
 });
 
