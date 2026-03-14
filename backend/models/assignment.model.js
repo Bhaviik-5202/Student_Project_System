@@ -16,7 +16,7 @@ const assignmentSchema = new mongoose.Schema(
     },
 
     dueDate: {
-      type: Date,
+      type: Number,
       default: null,
     },
 

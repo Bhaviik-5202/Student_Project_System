@@ -1,0 +1,1150 @@
+{
+  "info": {
+    "name": "Student Project System API",
+    "description": "Postman collection for Student Project System backend endpoints.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api/v1"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Root",
+      "item": [
+        {
+          "name": "API Info",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Aarav Patel\",\n  \"email\": \"aarav@example.com\",\n  \"password\": \"secret123\",\n  \"role\": \"student\"\n}"
+            },
+            "url": "{{baseUrl}}/auth/register"
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"aarav@example.com\",\n  \"password\": \"secret123\"\n}"
+            },
+            "url": "{{baseUrl}}/auth/login"
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"aarav@example.com\"\n}"
+            },
+            "url": "{{baseUrl}}/auth/forgot-password"
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"reset-token\",\n  \"newPassword\": \"newSecret123\"\n}"
+            },
+            "url": "{{baseUrl}}/auth/reset-password"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "url": "{{baseUrl}}/health"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Activities",
+      "item": [
+        {
+          "name": "Create Activity",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"project_update\",\n  \"message\": \"Initial submission completed\",\n  \"entityId\": \"67f1a2b3c4d5e6f7a8b9c0d1\"\n}"
+            },
+            "url": "{{baseUrl}}/activities"
+          }
+        },
+        {
+          "name": "Get Activities",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/activities"
+          }
+        },
+        {
+          "name": "Get Activity By ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/activities/:id"
+          }
+        },
+        {
+          "name": "Update Activity",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"Updated activity note\"\n}"
+            },
+            "url": "{{baseUrl}}/activities/:id"
+          }
+        },
+        {
+          "name": "Delete Activity",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/activities/:id"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Assignments",
+      "item": [
+        {
+          "name": "Create Assignment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"DBMS Mini Project\",\n  \"description\": \"Design ER diagram\",\n  \"dueDate\": \"2026-03-20T10:00:00.000Z\"\n}"
+            },
+            "url": "{{baseUrl}}/assignments"
+          }
+        },
+        {
+          "name": "Get Assignments",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/assignments"
+          }
+        },
+        {
+          "name": "Get Assignment By ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/assignments/:id"
+          }
+        },
+        {
+          "name": "Update Assignment",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"DBMS Mini Project v2\",\n  \"description\": \"Include normalization\",\n  \"dueDate\": \"2026-03-25T10:00:00.000Z\"\n}"
+            },
+            "url": "{{baseUrl}}/assignments/:id"
+          }
+        },
+        {
+          "name": "Delete Assignment",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/assignments/:id"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Attendance",
+      "item": [
+        {
+          "name": "Mark Attendance",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"student\": \"67f1a2b3c4d5e6f7a8b9c001\",\n  \"date\": \"2026-03-10\",\n  \"status\": \"present\"\n}"
+            },
+            "url": "{{baseUrl}}/attendance"
+          }
+        },
+        {
+          "name": "Get Attendance",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/attendance"
+          }
+        },
+        {
+          "name": "Get Attendance By Student",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/attendance/student/:studentId"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Audit Logs",
+      "item": [
+        {
+          "name": "Create Audit Log",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"USER_LOGIN\",\n  \"actor\": \"67f1a2b3c4d5e6f7a8b9c002\",\n  \"meta\": {\n    \"ip\": \"127.0.0.1\"\n  }\n}"
+            },
+            "url": "{{baseUrl}}/auditlogs"
+          }
+        },
+        {
+          "name": "Get Audit Logs",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/auditlogs"
+          }
+        },
+        {
+          "name": "Get Audit Log By ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/auditlogs/:id"
+          }
+        },
+        {
+          "name": "Update Audit Log",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"USER_LOGIN_CORRECTED\"\n}"
+            },
+            "url": "{{baseUrl}}/auditlogs/:id"
+          }
+        },
+        {
+          "name": "Delete Audit Log",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/auditlogs/:id"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Portfolios",
+      "item": [
+        {
+          "name": "Create Portfolio",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"student\": \"67f1a2b3c4d5e6f7a8b9c001\",\n  \"projects\": [],\n  \"skills\": [\"Node.js\", \"MongoDB\"],\n  \"badges\": [\"Top Performer\"],\n  \"transcriptUrl\": \"https://example.com/transcript.pdf\"\n}"
+            },
+            "url": "{{baseUrl}}/portfolios"
+          }
+        },
+        {
+          "name": "Get Portfolio By Student",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/portfolios/student/:studentId"
+          }
+        },
+        {
+          "name": "Update Portfolio",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skills\": [\"Node.js\", \"MongoDB\", \"React\"],\n  \"badges\": [\"Top Performer\", \"Hackathon Winner\"]\n}"
+            },
+            "url": "{{baseUrl}}/portfolios/:id"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Courses",
+      "item": [
+        {
+          "name": "Get Courses",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "url": "{{baseUrl}}/courses"
+          }
+        },
+        {
+          "name": "Create Course",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Software Engineering\",\n  \"code\": \"SE401\",\n  \"credits\": 4\n}"
+            },
+            "url": "{{baseUrl}}/courses"
+          }
+        },
+        {
+          "name": "Get Course By ID",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "url": "{{baseUrl}}/courses/:id"
+          }
+        },
+        {
+          "name": "Update Course",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Software Engineering - Advanced\",\n  \"credits\": 5\n}"
+            },
+            "url": "{{baseUrl}}/courses/:id"
+          }
+        },
+        {
+          "name": "Delete Course",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "DELETE",
+            "url": "{{baseUrl}}/courses/:id"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Projects",
+      "item": [
+        {
+          "name": "Create Project",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Student Portal\",\n  \"description\": \"End-to-end portal\",\n  \"status\": \"planning\"\n}"
+            },
+            "url": "{{baseUrl}}/projects"
+          }
+        },
+        {
+          "name": "Get Projects",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/projects"
+          }
+        },
+        {
+          "name": "Get Project By ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/projects/:id"
+          }
+        },
+        {
+          "name": "Update Project",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Student Portal v2\",\n  \"status\": \"in_progress\"\n}"
+            },
+            "url": "{{baseUrl}}/projects/:id"
+          }
+        },
+        {
+          "name": "Delete Project",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/projects/:id"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Resources",
+      "item": [
+        {
+          "name": "Create Resource",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"API Guide\",\n  \"type\": \"document\",\n  \"description\": \"REST usage guide\",\n  \"url\": \"https://example.com/api-guide.pdf\"\n}"
+            },
+            "url": "{{baseUrl}}/resources"
+          }
+        },
+        {
+          "name": "Get Resources",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/resources"
+          }
+        },
+        {
+          "name": "Get Resource By ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/resources/:id"
+          }
+        },
+        {
+          "name": "Delete Resource",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/resources/:id"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Staff",
+      "item": [
+        {
+          "name": "Create Staff",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Dr. Mehta\",\n  \"email\": \"mehta@example.com\",\n  \"department\": \"CSE\"\n}"
+            },
+            "url": "{{baseUrl}}/staff"
+          }
+        },
+        {
+          "name": "Get Staff",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/staff"
+          }
+        },
+        {
+          "name": "Get Staff By ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/staff/:id"
+          }
+        },
+        {
+          "name": "Update Staff",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"department\": \"IT\"\n}"
+            },
+            "url": "{{baseUrl}}/staff/:id"
+          }
+        },
+        {
+          "name": "Delete Staff",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/staff/:id"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Students",
+      "item": [
+        {
+          "name": "Create Student",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Riya Shah\",\n  \"email\": \"riya@example.com\",\n  \"rollNumber\": \"CSE24001\",\n  \"department\": \"CSE\",\n  \"year\": 2\n}"
+            },
+            "url": "{{baseUrl}}/students"
+          }
+        },
+        {
+          "name": "Get Students",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/students"
+          }
+        },
+        {
+          "name": "Get Student By ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/students/:id"
+          }
+        },
+        {
+          "name": "Update Student",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"year\": 3,\n  \"department\": \"CSE\"\n}"
+            },
+            "url": "{{baseUrl}}/students/:id"
+          }
+        },
+        {
+          "name": "Delete Student",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/students/:id"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Submissions",
+      "item": [
+        {
+          "name": "Create Submission",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"assignment\": \"67f1a2b3c4d5e6f7a8b9c101\",\n  \"student\": \"67f1a2b3c4d5e6f7a8b9c001\",\n  \"content\": \"GitHub repo link\"\n}"
+            },
+            "url": "{{baseUrl}}/submissions"
+          }
+        },
+        {
+          "name": "Get Submissions",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/submissions"
+          }
+        },
+        {
+          "name": "Get Submission By ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/submissions/:id"
+          }
+        },
+        {
+          "name": "Update Submission",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Updated repo + report\"\n}"
+            },
+            "url": "{{baseUrl}}/submissions/:id"
+          }
+        },
+        {
+          "name": "Delete Submission",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/submissions/:id"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Timelines",
+      "item": [
+        {
+          "name": "Create Timeline",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Semester Milestone\",\n  \"startDate\": \"2026-04-01\",\n  \"endDate\": \"2026-04-30\"\n}"
+            },
+            "url": "{{baseUrl}}/timelines"
+          }
+        },
+        {
+          "name": "Get Timelines",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/timelines"
+          }
+        },
+        {
+          "name": "Get Timeline By ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/timelines/:id"
+          }
+        },
+        {
+          "name": "Update Timeline",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Milestone\"\n}"
+            },
+            "url": "{{baseUrl}}/timelines/:id"
+          }
+        },
+        {
+          "name": "Delete Timeline",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/timelines/:id"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "Create Notification",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user\": \"67f1a2b3c4d5e6f7a8b9c001\",\n  \"title\": \"New Assignment\",\n  \"message\": \"Assignment 3 published\"\n}"
+            },
+            "url": "{{baseUrl}}/notifications"
+          }
+        },
+        {
+          "name": "Get Notifications",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/notifications"
+          }
+        },
+        {
+          "name": "Get Unread Notifications",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/notifications/unread"
+          }
+        },
+        {
+          "name": "Get Notification By ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/notifications/:id"
+          }
+        },
+        {
+          "name": "Mark Notification As Read",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": "{{baseUrl}}/notifications/:id/read"
+          }
+        },
+        {
+          "name": "Mark All Notifications As Read",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": "{{baseUrl}}/notifications/mark-all-read"
+          }
+        },
+        {
+          "name": "Delete Notification",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/notifications/:id"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Admin User\",\n  \"email\": \"admin@example.com\",\n  \"password\": \"admin123\",\n  \"role\": \"admin\"\n}"
+            },
+            "url": "{{baseUrl}}/users"
+          }
+        },
+        {
+          "name": "Get Users",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/users"
+          }
+        },
+        {
+          "name": "Get User By ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/users/:id"
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Admin\",\n  \"email\": \"admin2@example.com\",\n  \"password\": \"admin456\",\n  \"role\": \"faculty\"\n}"
+            },
+            "url": "{{baseUrl}}/users/:id"
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/users/:id"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Analytics",
+      "item": [
+        {
+          "name": "Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/analytics/dashboard"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Meetings",
+      "item": [
+        {
+          "name": "Create Meeting",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Project Review\",\n  \"agenda\": \"Sprint demo\",\n  \"scheduledAt\": \"2026-03-15T11:00:00.000Z\"\n}"
+            },
+            "url": "{{baseUrl}}/meetings"
+          }
+        },
+        {
+          "name": "Get Meetings",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/meetings"
+          }
+        },
+        {
+          "name": "Get Meeting By ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/meetings/:id"
+          }
+        },
+        {
+          "name": "Join Meeting",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": "{{baseUrl}}/meetings/:id/join"
+          }
+        },
+        {
+          "name": "Update Meeting",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Project Review - Rescheduled\"\n}"
+            },
+            "url": "{{baseUrl}}/meetings/:id"
+          }
+        },
+        {
+          "name": "Delete Meeting",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/meetings/:id"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Chats",
+      "item": [
+        {
+          "name": "Create Chat",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"members\": [\"67f1a2b3c4d5e6f7a8b9c001\", \"67f1a2b3c4d5e6f7a8b9c002\"],\n  \"isGroup\": true,\n  \"groupName\": \"Team Alpha\"\n}"
+            },
+            "url": "{{baseUrl}}/chats"
+          }
+        },
+        {
+          "name": "Get Chats",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/chats"
+          }
+        },
+        {
+          "name": "Get Chat By ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/chats/:chatId"
+          }
+        },
+        {
+          "name": "Update Chat",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"groupName\": \"Team Alpha Updated\"\n}"
+            },
+            "url": "{{baseUrl}}/chats/:chatId"
+          }
+        },
+        {
+          "name": "Delete Chat",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/chats/:chatId"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Messages",
+      "item": [
+        {
+          "name": "Send Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"chatId\": \"67f1a2b3c4d5e6f7a8b9c201\",\n  \"content\": \"Hello team\"\n}"
+            },
+            "url": "{{baseUrl}}/messages"
+          }
+        },
+        {
+          "name": "Get Messages By Chat",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/messages/:chatId"
+          }
+        },
+        {
+          "name": "Delete Message",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/messages/:messageId"
+          }
+        }
+      ]
+    }
+  ]
+}
