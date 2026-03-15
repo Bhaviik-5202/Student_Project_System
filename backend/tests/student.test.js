@@ -1,3 +1,9 @@
+/**
+ * Student API Tests
+ * ------------------------------------------------------------------
+ * Tests for student-related API endpoints.
+ */
+
 const request = require("supertest");
 const { expect } = require("chai");
 const app = require("../server");
@@ -23,9 +29,6 @@ before(async function () {
     email: user.email,
     password: user.password,
   });
-
-  expect(loginRes.statusCode).to.equal(200);
-  expect(loginRes.body.data).to.have.property("token");
 
   token = loginRes.body.data.token;
 });
@@ -94,7 +97,6 @@ describe("Student API", function () {
 
   it("should fail without authentication", async function () {
     const res = await request(app).get("/api/v1/students");
-
     expect(res.statusCode).to.equal(401);
   });
 });

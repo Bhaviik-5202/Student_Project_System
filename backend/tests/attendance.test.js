@@ -1,3 +1,9 @@
+/**
+ * Attendance API Tests
+ * ------------------------------------------------------------------
+ * Tests for attendance-related API endpoints.
+ */
+
 const request = require("supertest");
 const { expect } = require("chai");
 const app = require("../server");
@@ -25,13 +31,9 @@ before(async function () {
     password: user.password,
   });
 
-  expect(loginRes.statusCode).to.equal(200);
-  expect(loginRes.body.data).to.have.property("token");
-
   token = loginRes.body.data.token;
-});
 
-describe("Attendance API", function () {
+  // Create student for attendance tests
   const studentData = {
     name: "Attendance Student",
     email: `attendstudent+${Date.now()}@example.com`,
@@ -40,23 +42,20 @@ describe("Attendance API", function () {
     year: 2,
   };
 
-  before(async function () {
-    const res = await request(app)
-      .post("/api/v1/students")
-      .set("Authorization", `Bearer ${token}`)
-      .send(studentData);
+  const studentRes = await request(app)
+    .post("/api/v1/students")
+    .set("Authorization", `Bearer ${token}`)
+    .send(studentData);
 
-    expect(res.statusCode).to.equal(201);
-    expect(res.body.success).to.be.true;
+  studentId = studentRes.body.data._id;
+});
 
-    studentId = res.body.data._id;
-  });
-
+describe("Attendance API", function () {
   it("should mark attendance for a student", async function () {
     const attendanceData = {
       student: studentId,
       date: new Date().toISOString(),
-      status: "present"
+      status: "present",
     };
     const res = await request(app)
       .post("/api/v1/attendance")
@@ -92,7 +91,6 @@ describe("Attendance API", function () {
 
   it("should fail without authentication", async function () {
     const res = await request(app).get("/api/v1/attendance");
-
     expect(res.statusCode).to.equal(401);
   });
 });

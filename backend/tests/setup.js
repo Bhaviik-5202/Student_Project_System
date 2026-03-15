@@ -6,7 +6,7 @@ before(async function () {
   console.log("Waiting for MongoDB Memory Server to connect...");
   // Wait until mongoose is connected
   while (mongoose.connection.readyState !== 1) {
-    await new Promise(res => setTimeout(res, 100));
+    await new Promise((res) => setTimeout(res, 100));
   }
   console.log("MongoDB is connected for tests.");
 });

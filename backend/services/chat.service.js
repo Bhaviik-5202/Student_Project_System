@@ -37,6 +37,20 @@ exports.getAll = async () => {
 };
 
 /**
+ * Retrieve all chats associated with a specific user
+ * @param {string} userId - User identifier
+ * @returns {Promise<Object>} Formatted service response with user's chats
+ */
+exports.getByUserId = async (userId) => {
+  try {
+    const chats = await chatRepository.findAll({ members: userId });
+    return response(false, chats, "User chats fetched successfully");
+  } catch (err) {
+    return response(true, null, err.message || "Failed to fetch user chats");
+  }
+};
+
+/**
  * Get detailed chat room information by ID
  * @param {string} id - Chat identifier
  * @returns {Promise<Object>} Formatted service response with chat data

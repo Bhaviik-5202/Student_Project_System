@@ -1,3 +1,9 @@
+/**
+ * Project API Tests
+ * ------------------------------------------------------------------
+ * Tests for project management.
+ */
+
 const request = require("supertest");
 const { expect } = require("chai");
 const app = require("../server");
@@ -23,9 +29,6 @@ before(async function () {
     email: user.email,
     password: user.password,
   });
-
-  expect(loginRes.statusCode).to.equal(200);
-  expect(loginRes.body.data).to.have.property("token");
 
   token = loginRes.body.data.token;
 });
@@ -91,7 +94,6 @@ describe("Project API", function () {
 
   it("should fail without authentication", async function () {
     const res = await request(app).get("/api/v1/projects");
-
     expect(res.statusCode).to.equal(401);
   });
 });

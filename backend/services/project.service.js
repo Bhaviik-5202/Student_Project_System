@@ -31,7 +31,7 @@ exports.create = async (data) => {
  * @param {Object} params.filters - Mongoose filter object
  * @returns {Promise<Object>} Formatted service response with paginated results
  */
-exports.getAll = async ({ page = 1, limit = 10, filters = {} }) => {
+exports.getAll = async ({ page = 1, limit = 10, filters = {} } = {}) => {
   try {
     const skip = (page - 1) * limit;
     const [projects, total] = await Promise.all([

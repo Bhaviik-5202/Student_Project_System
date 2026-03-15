@@ -13,7 +13,11 @@ const sendResponse = require("../utils/response");
  */
 exports.createResource = async (req, res) => {
   try {
-    const result = await resourceService.create(req.body);
+    const resourceData = {
+      ...req.body,
+      uploadedBy: req.user.id,
+    };
+    const result = await resourceService.create(resourceData);
 
     sendResponse(
       res,
@@ -48,7 +52,12 @@ exports.createResource = async (req, res) => {
  */
 exports.getAllResources = async (req, res) => {
   try {
-    const result = await resourceService.getAll();
+    const { page = 1, limit = 10, ...filters } = req.query;
+    const result = await resourceService.getAll({
+      page: parseInt(page),
+      limit: parseInt(limit),
+      filters,
+    });
 
     sendResponse(
       res,
@@ -57,8 +66,16 @@ exports.getAllResources = async (req, res) => {
         message: result.error
           ? "Failed to fetch resources"
           : "Resources fetched successfully",
-        data: result.data || null,
+        data: result.data ? result.data.resources : null,
         error: result.error || null,
+        pagination: result.data
+          ? {
+              total: result.data.total,
+              page: result.data.page,
+              limit: result.data.limit,
+              totalPages: result.data.totalPages,
+            }
+          : null,
       },
       result.error ? 400 : 200,
     );

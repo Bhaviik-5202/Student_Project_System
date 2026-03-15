@@ -46,8 +46,7 @@ exports.createStudent = async (req, res) => {
  */
 exports.getAllStudents = async (req, res) => {
   try {
-    const { page = 1, limit = 10, ...filters } = req.query;
-    const result = await studentService.getAll({ page, limit, filters });
+    const result = await studentService.getAll();
 
     sendResponse(
       res,
@@ -56,16 +55,8 @@ exports.getAllStudents = async (req, res) => {
         message: result.error
           ? "Failed to fetch students"
           : "Students fetched successfully",
-        data: result.data ? result.data.students : null,
+        data: result.data || null,
         error: result.error || null,
-        pagination: result.data
-          ? {
-              total: result.data.total,
-              page: result.data.page,
-              limit: result.data.limit,
-              totalPages: result.data.totalPages,
-            }
-          : null,
       },
       result.error ? 400 : 200,
     );

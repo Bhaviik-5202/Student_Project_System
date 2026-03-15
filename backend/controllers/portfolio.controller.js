@@ -13,19 +13,23 @@ const sendResponse = require("../utils/response");
  */
 exports.createPortfolio = async (req, res) => {
   try {
-    const result = await portfolioService.upsert(req.user.id, req.body);
+    const portfolioData = {
+      ...req.body,
+      student: req.body.student || req.user.id,
+    };
+    const result = await portfolioService.createPortfolio(portfolioData);
 
     sendResponse(
       res,
       {
         success: !result.error,
         message: result.error
-          ? "Failed to update portfolio"
-          : "Portfolio updated successfully",
+          ? result.message
+          : "Portfolio created successfully",
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 200,
+      result.error ? 400 : 201,
     );
   } catch (error) {
     sendResponse(
@@ -48,7 +52,9 @@ exports.createPortfolio = async (req, res) => {
  */
 exports.getPortfolioByStudent = async (req, res) => {
   try {
-    const result = await portfolioService.getByUserId(req.params.userId);
+    const result = await portfolioService.getPortfolioByStudent(
+      req.params.studentId,
+    );
 
     sendResponse(
       res,
@@ -82,7 +88,10 @@ exports.getPortfolioByStudent = async (req, res) => {
  */
 exports.updatePortfolio = async (req, res) => {
   try {
-    const result = await portfolioService.update(req.params.id, req.body);
+    const result = await portfolioService.updatePortfolio(
+      req.params.id,
+      req.body,
+    );
 
     sendResponse(
       res,

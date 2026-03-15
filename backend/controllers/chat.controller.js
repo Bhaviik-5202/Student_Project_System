@@ -81,7 +81,7 @@ exports.getUserChats = async (req, res) => {
  */
 exports.getChatById = async (req, res) => {
   try {
-    const result = await chatService.getById(req.params.id);
+    const result = await chatService.getById(req.params.chatId);
 
     sendResponse(
       res,
@@ -114,7 +114,7 @@ exports.getChatById = async (req, res) => {
  */
 exports.updateChat = async (req, res) => {
   try {
-    const result = await chatService.update(req.params.id, req.body);
+    const result = await chatService.update(req.params.chatId, req.body);
 
     sendResponse(
       res,
@@ -146,7 +146,7 @@ exports.updateChat = async (req, res) => {
  */
 exports.deleteChat = async (req, res) => {
   try {
-    const result = await chatService.remove(req.params.id);
+    const result = await chatService.remove(req.params.chatId);
 
     sendResponse(
       res,

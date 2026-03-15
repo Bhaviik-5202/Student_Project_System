@@ -31,7 +31,7 @@ exports.create = async (data) => {
  * @param {Object} params.filters - Filter conditions
  * @returns {Promise<Object>} Formatted service response with paginated resources
  */
-exports.getAll = async ({ page = 1, limit = 10, filters = {} }) => {
+exports.getAll = async ({ page = 1, limit = 10, filters = {} } = {}) => {
   try {
     const skip = (page - 1) * limit;
     const [resources, total] = await Promise.all([

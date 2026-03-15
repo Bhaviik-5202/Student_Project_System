@@ -48,7 +48,12 @@ exports.createNotification = async (req, res) => {
  */
 exports.getNotifications = async (req, res) => {
   try {
-    const result = await notificationService.getByUserId(req.user.id);
+    const { page = 1, limit = 10 } = req.query;
+    const result = await notificationService.getByUserId(
+      req.user.id,
+      parseInt(page),
+      parseInt(limit),
+    );
 
     sendResponse(
       res,
@@ -57,8 +62,16 @@ exports.getNotifications = async (req, res) => {
         message: result.error
           ? "Failed to fetch notifications"
           : "Notifications fetched successfully",
-        data: result.data || null,
+        data: result.data ? result.data.notifications : null,
         error: result.error || null,
+        pagination: result.data
+          ? {
+              total: result.data.total,
+              page: result.data.page,
+              limit: result.data.limit,
+              totalPages: result.data.pages,
+            }
+          : null,
       },
       result.error ? 400 : 200,
     );
@@ -83,7 +96,10 @@ exports.getNotifications = async (req, res) => {
  */
 exports.markAsRead = async (req, res) => {
   try {
-    const result = await notificationService.markAsRead(req.params.id);
+    const result = await notificationService.markAsRead(
+      req.params.id,
+      req.user.id,
+    );
 
     sendResponse(
       res,
@@ -118,7 +134,7 @@ exports.markAsRead = async (req, res) => {
  */
 exports.markAllAsRead = async (req, res) => {
   try {
-    const result = await notificationService.markAllRead(req.user.id);
+    const result = await notificationService.markAllAsRead(req.user.id);
 
     sendResponse(
       res,
@@ -153,7 +169,7 @@ exports.markAllAsRead = async (req, res) => {
  */
 exports.deleteNotification = async (req, res) => {
   try {
-    const result = await notificationService.remove(req.params.id);
+    const result = await notificationService.remove(req.params.id, req.user.id);
 
     sendResponse(
       res,
@@ -222,7 +238,10 @@ exports.getUnreadNotifications = async (req, res) => {
  */
 exports.getNotificationById = async (req, res) => {
   try {
-    const result = await notificationService.getById(req.params.id);
+    const result = await notificationService.getById(
+      req.params.id,
+      req.user.id,
+    );
 
     sendResponse(
       res,

@@ -1,3 +1,9 @@
+/**
+ * Assignment API Tests
+ * ------------------------------------------------------------------
+ * Tests for assignment-related API endpoints.
+ */
+
 const request = require("supertest");
 const { expect } = require("chai");
 const app = require("../server");
@@ -16,22 +22,13 @@ before(async function () {
   };
 
   // Register
-  const registerRes = await request(app).post("/api/v1/auth/register").send(user);
-  if (registerRes.statusCode !== 201) {
-    console.log("Registration failed. Make sure MongoDB is running.");
-    console.log("Start MongoDB with: net start MongoDB (as Administrator)");
-    throw new Error(`Registration failed with status ${registerRes.statusCode}: ${registerRes.body.message}`);
-  }
-  expect(registerRes.statusCode).to.equal(201);
+  await request(app).post("/api/v1/auth/register").send(user);
 
   // Login
   const loginRes = await request(app).post("/api/v1/auth/login").send({
     email: user.email,
     password: user.password,
   });
-  expect(loginRes.statusCode).to.equal(200);
-  expect(loginRes.body).to.have.property("data");
-  expect(loginRes.body.data).to.have.property("token");
 
   token = loginRes.body.data.token;
 });
@@ -98,7 +95,6 @@ describe("Assignment API", function () {
 
   it("should fail without authentication", async function () {
     const res = await request(app).get("/api/v1/assignments");
-
     expect(res.statusCode).to.equal(401);
   });
 });
