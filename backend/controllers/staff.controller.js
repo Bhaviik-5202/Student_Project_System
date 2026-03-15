@@ -3,8 +3,7 @@ const sendResponse = require("../utils/response");
 
 /**
  * Staff Controller
- * Manages faculty and administrator profiles, departmental assignments,
- * and professional information.
+ * Manages faculty and administrator profiles, departmental assignments, and professional information.
  */
 
 /**
@@ -88,7 +87,9 @@ exports.getStaffById = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Staff member not found" : "Staff member fetched successfully",
+        message: result.error
+          ? "Staff member not found"
+          : "Staff member fetched successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -121,7 +122,9 @@ exports.updateStaff = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Staff member not found" : "Staff member updated successfully",
+        message: result.error
+          ? "Staff member not found"
+          : "Staff member updated successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -154,7 +157,9 @@ exports.deleteStaff = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Staff member not found" : "Staff member deleted successfully",
+        message: result.error
+          ? "Staff member not found"
+          : "Staff member deleted successfully",
         data: result.data || null,
         error: result.error || null,
       },

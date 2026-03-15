@@ -16,7 +16,7 @@ const connectDB = async () => {
 
     await mongoose.connect(mongoUri, {
       autoIndex: true,
-      serverSelectionTimeoutMS: process.env.NODE_ENV === "test" ? 30000 : 5000, // 30s for tests, 5s for prod
+      serverSelectionTimeoutMS: process.env.NODE_ENV === "test" ? 30000 : 5000,
       connectTimeoutMS: process.env.NODE_ENV === "test" ? 30000 : 10000,
     });
 
@@ -26,7 +26,7 @@ const connectDB = async () => {
     if (process.env.NODE_ENV !== "test") {
       process.exit(1);
     }
-    throw error; // Re-throw so tests can handle it
+    throw error;
   }
 };
 

@@ -19,7 +19,9 @@ exports.createTimeline = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? result.message : "Timeline event created successfully",
+        message: result.error
+          ? result.message
+          : "Timeline event created successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -87,7 +89,9 @@ exports.getTimelineById = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Timeline event not found" : "Timeline event fetched successfully",
+        message: result.error
+          ? "Timeline event not found"
+          : "Timeline event fetched successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -155,7 +159,9 @@ exports.updateTimeline = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Timeline event not found" : "Timeline event updated successfully",
+        message: result.error
+          ? "Timeline event not found"
+          : "Timeline event updated successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -188,7 +194,9 @@ exports.deleteTimeline = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Timeline event not found" : "Timeline event deleted successfully",
+        message: result.error
+          ? "Timeline event not found"
+          : "Timeline event deleted successfully",
         data: result.data || null,
         error: result.error || null,
       },

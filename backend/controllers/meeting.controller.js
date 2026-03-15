@@ -19,7 +19,9 @@ exports.createMeeting = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? result.message : "Meeting scheduled successfully",
+        message: result.error
+          ? result.message
+          : "Meeting scheduled successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -88,7 +90,9 @@ exports.getMeetingById = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Meeting not found" : "Meeting fetched successfully",
+        message: result.error
+          ? "Meeting not found"
+          : "Meeting fetched successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -121,7 +125,9 @@ exports.updateMeeting = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Meeting not found" : "Meeting updated successfully",
+        message: result.error
+          ? "Meeting not found"
+          : "Meeting updated successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -154,7 +160,9 @@ exports.deleteMeeting = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Meeting not found" : "Meeting deleted successfully",
+        message: result.error
+          ? "Meeting not found"
+          : "Meeting deleted successfully",
         data: result.data || null,
         error: result.error || null,
       },

@@ -50,9 +50,7 @@ exports.getAllCourses = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error
-          ? result.message
-          : "Courses fetched successfully",
+        message: result.error ? result.message : "Courses fetched successfully",
         data: result.data || null,
         error: result.error || null,
       },

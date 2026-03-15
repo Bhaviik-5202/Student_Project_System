@@ -19,7 +19,9 @@ exports.markAttendance = async (req, res) => {
       res,
       {
         success: !attendance.error,
-        message: attendance.error ? attendance.message : "Attendance marked successfully",
+        message: attendance.error
+          ? attendance.message
+          : "Attendance marked successfully",
         data: attendance.data || null,
         error: attendance.error || null,
       },
@@ -52,7 +54,9 @@ exports.getAllAttendance = async (req, res) => {
       res,
       {
         success: !records.error,
-        message: records.error ? records.message : "Attendance records fetched successfully",
+        message: records.error
+          ? records.message
+          : "Attendance records fetched successfully",
         data: records.data || null,
         error: records.error || null,
       },
@@ -87,7 +91,9 @@ exports.getAttendanceByStudent = async (req, res) => {
       res,
       {
         success: !records.error,
-        message: records.error ? records.message : "Attendance by student fetched successfully",
+        message: records.error
+          ? records.message
+          : "Attendance by student fetched successfully",
         data: records.data || null,
         error: records.error || null,
       },
@@ -122,7 +128,9 @@ exports.getAttendanceByDate = async (req, res) => {
       res,
       {
         success: !records.error,
-        message: records.error ? records.message : "Attendance by date fetched successfully",
+        message: records.error
+          ? records.message
+          : "Attendance by date fetched successfully",
         data: records.data || null,
         error: records.error || null,
       },
@@ -168,7 +176,9 @@ exports.getAttendanceById = async (req, res) => {
       res,
       {
         success: !record.error,
-        message: record.error ? record.message : "Attendance record fetched successfully",
+        message: record.error
+          ? record.message
+          : "Attendance record fetched successfully",
         data: record.data || null,
         error: record.error || null,
       },
@@ -217,7 +227,9 @@ exports.updateAttendance = async (req, res) => {
       res,
       {
         success: !updatedRecord.error,
-        message: updatedRecord.error ? updatedRecord.message : "Attendance updated successfully",
+        message: updatedRecord.error
+          ? updatedRecord.message
+          : "Attendance updated successfully",
         data: updatedRecord.data || null,
         error: updatedRecord.error || null,
       },

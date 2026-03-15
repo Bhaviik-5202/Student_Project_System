@@ -1,5 +1,17 @@
 const userService = require("../services/user.service");
 const sendResponse = require("../utils/response");
+/**
+ * Auth Controller
+ * Handles user authentication, registration, and password management.
+ * This controller provides endpoints for user registration, login, password reset requests, and password updates.
+ * It interacts with the user service to perform authentication logic and manages responses using a standardized format.
+ * Note: Password reset functionality is currently a stub and should be implemented with proper token management and email integration for production use.
+ * Endpoints:
+ * - POST /auth/register: Register a new user (Public)
+ * - POST /auth/login: Authenticate a user and return a JWT (Public)
+ * - POST /auth/forgot-password: Request a password reset link (Public)
+ * - POST /auth/reset-password: Reset password using a token (Public)
+ */
 
 /**
  * Register a new user
@@ -77,13 +89,14 @@ exports.login = async (req, res) => {
 exports.forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
-    // NOTE: This is a stub implementation. Integration with an email service 
+    // NOTE: This is a stub implementation. Integration with an email service
     // and reset-token storage should be implemented here for production use.
     sendResponse(
       res,
       {
         success: true,
-        message: "If the account exists, a password reset link has been dispatched to your email.",
+        message:
+          "If the account exists, a password reset link has been dispatched to your email.",
         data: null,
         error: null,
       },
@@ -111,7 +124,7 @@ exports.forgotPassword = async (req, res) => {
 exports.resetPassword = async (req, res) => {
   try {
     const { token, password } = req.body;
-    // NOTE: This is a stub implementation. Token verification and password 
+    // NOTE: This is a stub implementation. Token verification and password
     // update logic should be implemented here for production use.
     sendResponse(
       res,

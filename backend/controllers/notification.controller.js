@@ -19,7 +19,9 @@ exports.createNotification = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? result.message : "Notification created successfully",
+        message: result.error
+          ? result.message
+          : "Notification created successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -87,7 +89,9 @@ exports.markAsRead = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Notification not found" : "Notification marked as read",
+        message: result.error
+          ? "Notification not found"
+          : "Notification marked as read",
         data: result.data || null,
         error: result.error || null,
       },
@@ -120,7 +124,9 @@ exports.markAllAsRead = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? result.message : "All notifications marked as read",
+        message: result.error
+          ? result.message
+          : "All notifications marked as read",
         data: result.data || null,
         error: result.error || null,
       },
@@ -153,7 +159,9 @@ exports.deleteNotification = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Notification not found" : "Notification deleted successfully",
+        message: result.error
+          ? "Notification not found"
+          : "Notification deleted successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -220,7 +228,9 @@ exports.getNotificationById = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Notification not found" : "Notification fetched successfully",
+        message: result.error
+          ? "Notification not found"
+          : "Notification fetched successfully",
         data: result.data || null,
         error: result.error || null,
       },

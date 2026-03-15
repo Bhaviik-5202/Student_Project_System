@@ -3,8 +3,7 @@ const sendResponse = require("../utils/response");
 
 /**
  * Student Controller
- * Manages comprehensive student profile data, academic records, 
- * and student-specific project associations.
+ * Manages comprehensive student profile data, academic records, and student-specific project associations.
  */
 
 /**
@@ -59,12 +58,14 @@ exports.getAllStudents = async (req, res) => {
           : "Students fetched successfully",
         data: result.data ? result.data.students : null,
         error: result.error || null,
-        pagination: result.data ? {
-          total: result.data.total,
-          page: result.data.page,
-          limit: result.data.limit,
-          totalPages: result.data.totalPages,
-        } : null,
+        pagination: result.data
+          ? {
+              total: result.data.total,
+              page: result.data.page,
+              limit: result.data.limit,
+              totalPages: result.data.totalPages,
+            }
+          : null,
       },
       result.error ? 400 : 200,
     );
@@ -95,7 +96,9 @@ exports.getStudentById = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Student not found" : "Student fetched successfully",
+        message: result.error
+          ? "Student not found"
+          : "Student fetched successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -128,7 +131,9 @@ exports.updateStudent = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Student not found" : "Student updated successfully",
+        message: result.error
+          ? "Student not found"
+          : "Student updated successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -161,7 +166,9 @@ exports.deleteStudent = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Student not found" : "Student deleted successfully",
+        message: result.error
+          ? "Student not found"
+          : "Student deleted successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -188,7 +195,7 @@ exports.deleteStudent = async (req, res) => {
 exports.verifyStudentId = async (req, res) => {
   try {
     const result = await studentService.getById(req.params.studentId);
-    
+
     sendResponse(
       res,
       {

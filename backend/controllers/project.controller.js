@@ -2,6 +2,11 @@ const projectService = require("../services/project.service");
 const sendResponse = require("../utils/response");
 
 /**
+ * Project Controller
+ * Manages student projects, including creation, listing, updates, and member management.
+ */
+
+/**
  * Get all members of a project
  * @route GET /projects/:id/members
  * @access Authenticated
@@ -14,7 +19,9 @@ exports.getProjectMembers = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? result.message : "Project members fetched successfully",
+        message: result.error
+          ? result.message
+          : "Project members fetched successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -129,25 +136,29 @@ exports.getAllProjects = async (req, res) => {
   try {
     const { page = 1, limit = 10, ...filters } = req.query;
 
-    const result = await projectService.getAll({ 
-        page: parseInt(page), 
-        limit: parseInt(limit), 
-        filters 
+    const result = await projectService.getAll({
+      page: parseInt(page),
+      limit: parseInt(limit),
+      filters,
     });
 
     sendResponse(
       res,
       {
         success: !result.error,
-        message: result.error ? result.message : "Projects fetched successfully",
+        message: result.error
+          ? result.message
+          : "Projects fetched successfully",
         data: result.data ? result.data.projects : null,
         error: result.error || null,
-        pagination: result.data ? {
-          total: result.data.total,
-          page: result.data.page,
-          limit: result.data.limit,
-          totalPages: result.data.totalPages,
-        } : null,
+        pagination: result.data
+          ? {
+              total: result.data.total,
+              page: result.data.page,
+              limit: result.data.limit,
+              totalPages: result.data.totalPages,
+            }
+          : null,
       },
       result.error ? 400 : 200,
     );

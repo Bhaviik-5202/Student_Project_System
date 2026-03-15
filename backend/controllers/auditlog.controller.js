@@ -55,7 +55,9 @@ exports.getAuditLogById = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Audit log not found" : "Audit log fetched successfully",
+        message: result.error
+          ? "Audit log not found"
+          : "Audit log fetched successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -83,10 +85,13 @@ exports.getAuditLogById = async (req, res) => {
 exports.getAuditLogsByResourceId = async (req, res) => {
   try {
     const { page = 1, limit = 20 } = req.query;
-    const result = await auditLogService.getByResourceId(req.params.resourceId, {
-      page,
-      limit,
-    });
+    const result = await auditLogService.getByResourceId(
+      req.params.resourceId,
+      {
+        page,
+        limit,
+      },
+    );
 
     sendResponse(
       res,
@@ -159,7 +164,9 @@ exports.updateAuditLog = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Audit log not found" : "Audit log updated successfully",
+        message: result.error
+          ? "Audit log not found"
+          : "Audit log updated successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -192,7 +199,9 @@ exports.deleteAuditLog = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Audit log not found" : "Audit log deleted successfully",
+        message: result.error
+          ? "Audit log not found"
+          : "Audit log deleted successfully",
         data: result.data || null,
         error: result.error || null,
       },

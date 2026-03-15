@@ -54,7 +54,9 @@ exports.getPortfolioByStudent = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Portfolio not found" : "Portfolio fetched successfully",
+        message: result.error
+          ? "Portfolio not found"
+          : "Portfolio fetched successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -86,7 +88,9 @@ exports.updatePortfolio = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Portfolio not found" : "Portfolio updated successfully",
+        message: result.error
+          ? "Portfolio not found"
+          : "Portfolio updated successfully",
         data: result.data || null,
         error: result.error || null,
       },

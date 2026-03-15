@@ -19,7 +19,9 @@ exports.createSupportTicket = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? result.message : "Support ticket created successfully",
+        message: result.error
+          ? result.message
+          : "Support ticket created successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -88,7 +90,9 @@ exports.getSupportTicketById = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Ticket not found" : "Support ticket fetched successfully",
+        message: result.error
+          ? "Ticket not found"
+          : "Support ticket fetched successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -121,7 +125,9 @@ exports.updateSupportTicket = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Ticket not found" : "Support ticket updated successfully",
+        message: result.error
+          ? "Ticket not found"
+          : "Support ticket updated successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -154,7 +160,9 @@ exports.deleteSupportTicket = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Ticket not found" : "Support ticket deleted successfully",
+        message: result.error
+          ? "Ticket not found"
+          : "Support ticket deleted successfully",
         data: result.data || null,
         error: result.error || null,
       },

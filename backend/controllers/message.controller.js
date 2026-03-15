@@ -47,7 +47,10 @@ exports.sendMessage = async (req, res) => {
  */
 exports.getMessagesByChat = async (req, res) => {
   try {
-    const result = await messageService.getMessagesByChat(req.params.chatId, req.user.id);
+    const result = await messageService.getMessagesByChat(
+      req.params.chatId,
+      req.user.id,
+    );
 
     sendResponse(
       res,
@@ -114,7 +117,10 @@ exports.markAsRead = async (req, res) => {
  */
 exports.deleteMessage = async (req, res) => {
   try {
-    const result = await messageService.deleteMessage(req.params.messageId, req.user.id);
+    const result = await messageService.deleteMessage(
+      req.params.messageId,
+      req.user.id,
+    );
 
     sendResponse(
       res,

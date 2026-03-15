@@ -3,6 +3,12 @@ const sendResponse = require("../utils/response");
 const { validationResult } = require("express-validator");
 
 /**
+ * User Controller
+ * Handles user management operations, including creation, retrieval, updates,
+ * and deletion of user accounts with role-based access control.
+ */
+
+/**
  * Create a new user
  * @route POST /users
  * @access Admin

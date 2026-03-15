@@ -87,7 +87,9 @@ exports.getKnowledgeBaseById = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Article not found" : "Article fetched successfully",
+        message: result.error
+          ? "Article not found"
+          : "Article fetched successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -120,7 +122,9 @@ exports.updateKnowledgeBase = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Article not found" : "Article updated successfully",
+        message: result.error
+          ? "Article not found"
+          : "Article updated successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -153,7 +157,9 @@ exports.deleteKnowledgeBase = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Article not found" : "Article deleted successfully",
+        message: result.error
+          ? "Article not found"
+          : "Article deleted successfully",
         data: result.data || null,
         error: result.error || null,
       },

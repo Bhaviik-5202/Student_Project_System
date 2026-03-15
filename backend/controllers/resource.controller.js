@@ -19,7 +19,9 @@ exports.createResource = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? result.message : "Resource created successfully",
+        message: result.error
+          ? result.message
+          : "Resource created successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -87,7 +89,9 @@ exports.getResourceById = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Resource not found" : "Resource fetched successfully",
+        message: result.error
+          ? "Resource not found"
+          : "Resource fetched successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -120,7 +124,9 @@ exports.updateResource = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Resource not found" : "Resource updated successfully",
+        message: result.error
+          ? "Resource not found"
+          : "Resource updated successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -153,7 +159,9 @@ exports.deleteResource = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Resource not found" : "Resource deleted successfully",
+        message: result.error
+          ? "Resource not found"
+          : "Resource deleted successfully",
         data: result.data || null,
         error: result.error || null,
       },

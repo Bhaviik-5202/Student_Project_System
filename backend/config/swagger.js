@@ -30,7 +30,10 @@ const options = {
     servers: [
       {
         url: process.env.API_BASE_URL || "http://localhost:5000/api/v1",
-        description: process.env.NODE_ENV === "production" ? "Production Server" : "Development Server",
+        description:
+          process.env.NODE_ENV === "production"
+            ? "Production Server"
+            : "Development Server",
       },
     ],
 
@@ -49,7 +52,11 @@ const options = {
           properties: {
             _id: { type: "string" },
             name: { type: "string", example: "John Doe" },
-            email: { type: "string", format: "email", example: "john@example.com" },
+            email: {
+              type: "string",
+              format: "email",
+              example: "john@example.com",
+            },
             role: { type: "string", enum: ["admin", "faculty", "student"] },
             avatar: { type: "string", nullable: true },
             createdAt: { type: "string", format: "date-time" },
@@ -75,7 +82,16 @@ const options = {
             _id: { type: "string" },
             title: { type: "string" },
             description: { type: "string", nullable: true },
-            status: { type: "string", enum: ["planning", "in_progress", "completed", "on_hold", "cancelled"] },
+            status: {
+              type: "string",
+              enum: [
+                "planning",
+                "in_progress",
+                "completed",
+                "on_hold",
+                "cancelled",
+              ],
+            },
             progress: { type: "integer", minimum: 0, maximum: 100 },
             members: { type: "array", items: { type: "string" } },
             guide: { type: "string", nullable: true },
@@ -101,8 +117,14 @@ const options = {
       { name: "Auth", description: "Identity & Session Management" },
       { name: "Dashboard", description: "Aggregated System Statistics" },
       { name: "Core", description: "Students, Projects, and Staff management" },
-      { name: "Academic", description: "Assignments, Courses, and Submissions" },
-      { name: "Communication", description: "Messaging, Meetings, and Notifications" },
+      {
+        name: "Academic",
+        description: "Assignments, Courses, and Submissions",
+      },
+      {
+        name: "Communication",
+        description: "Messaging, Meetings, and Notifications",
+      },
       { name: "System", description: "Settings, Audit Logs, and Support" },
     ],
   },

@@ -23,7 +23,9 @@ exports.createAssignment = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? result.message : "Assignment created successfully",
+        message: result.error
+          ? result.message
+          : "Assignment created successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -295,7 +297,7 @@ exports.getAssignmentsByActivityId = async (req, res) => {
   }
 };
 
-/** 
+/**
  * List assignments published by a specific faculty member
  * @route GET /assignments/faculty/:facultyId
  * @access Authenticated
@@ -333,7 +335,7 @@ exports.getAssignmentsByFacultyId = async (req, res) => {
   }
 };
 
-/** 
+/**
  * List all assignments for a specific academic course
  * @route GET /assignments/course/:courseId
  * @access Authenticated
@@ -371,7 +373,7 @@ exports.getAssignmentsByCourseId = async (req, res) => {
   }
 };
 
-/** 
+/**
  * List assignments for a specific student batch
  * @route GET /assignments/batch/:batchId
  * @access Authenticated

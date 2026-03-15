@@ -88,7 +88,9 @@ exports.getActivityById = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Activity not found" : "Activity fetched successfully",
+        message: result.error
+          ? "Activity not found"
+          : "Activity fetched successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -159,7 +161,9 @@ exports.updateActivity = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Activity not found" : "Activity updated successfully",
+        message: result.error
+          ? "Activity not found"
+          : "Activity updated successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -192,7 +196,9 @@ exports.deleteActivity = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Activity not found" : "Activity deleted successfully",
+        message: result.error
+          ? "Activity not found"
+          : "Activity deleted successfully",
         data: result.data || null,
         error: result.error || null,
       },
