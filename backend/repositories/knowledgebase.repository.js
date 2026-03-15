@@ -40,7 +40,7 @@ exports.create = (data) => KnowledgeBase.create(data);
  */
 exports.update = (id, data) =>
   KnowledgeBase.findByIdAndUpdate(id, data, {
-    new: true,
+    returnDocument: 'after',
     runValidators: true,
   });
 

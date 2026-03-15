@@ -40,7 +40,7 @@ exports.create = (data) => Message.create(data);
  */
 exports.update = (id, data) =>
   Message.findByIdAndUpdate(id, data, {
-    new: true,
+    returnDocument: 'after',
     runValidators: true,
   });
 

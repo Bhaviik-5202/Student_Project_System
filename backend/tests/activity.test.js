@@ -1,7 +1,7 @@
 /**
  * Activity API Tests
  * ------------------------------------------------------------------
- * Tests for activity tracking and logs.
+ * Tests for logging and retrieving academic and system activities.
  */
 
 const request = require("supertest");

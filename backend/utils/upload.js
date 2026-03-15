@@ -1,16 +1,7 @@
 /**
  * File Upload Utility
  * ------------------------------------------------------------------
- * Secure multer configuration for file uploads.
- *
- * Features:
- *  - Automatic upload directory creation
- *  - File size limits
- *  - File type validation
- *  - Sanitized filenames
- *
- * Environment Variables:
- *   MAX_FILE_SIZE (bytes, default: 5MB)
+ * Configures Multer for secure and standardized file upload handling.
  */
 
 const multer = require("multer");

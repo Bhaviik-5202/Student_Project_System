@@ -40,7 +40,7 @@ exports.create = (data) => Chat.create(data);
  */
 exports.update = (id, data) =>
   Chat.findByIdAndUpdate(id, data, {
-    new: true,
+    returnDocument: 'after',
     runValidators: true,
   });
 

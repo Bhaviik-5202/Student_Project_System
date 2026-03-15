@@ -40,7 +40,7 @@ exports.create = (data) => Attendance.create(data);
  */
 exports.update = (id, data) =>
   Attendance.findByIdAndUpdate(id, data, {
-    new: true,
+    returnDocument: 'after',
     runValidators: true,
   });
 

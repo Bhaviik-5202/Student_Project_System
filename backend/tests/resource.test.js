@@ -1,7 +1,7 @@
 /**
  * Resource API Tests
  * ------------------------------------------------------------------
- * Tests for resource management (documents, templates, videos).
+ * Tests for academic asset management (documents, templates, videos).
  */
 
 const request = require("supertest");

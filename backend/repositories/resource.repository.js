@@ -40,7 +40,7 @@ exports.create = (data) => Resource.create(data);
  */
 exports.update = (id, data) =>
   Resource.findByIdAndUpdate(id, data, {
-    new: true,
+    returnDocument: 'after',
     runValidators: true,
   });
 

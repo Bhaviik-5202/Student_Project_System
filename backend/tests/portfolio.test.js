@@ -1,7 +1,7 @@
 /**
  * Portfolio API Tests
  * ------------------------------------------------------------------
- * Tests for student portfolio management.
+ * Tests for student professional portfolio and skill showcase management.
  */
 
 const request = require("supertest");

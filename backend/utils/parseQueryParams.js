@@ -1,25 +1,18 @@
 /**
- * parseQueryParams
+ * Query Parameter Parser Utility
  * ------------------------------------------------------------------
- * Parses pagination and filter parameters from request query.
- * Features:
- *  - Safe numeric parsing
- *  - Max limit protection (anti-abuse)
- *  - Allowed filter whitelisting
- *  - Optional sorting support
- *
- * @param {Object} query - Express req.query object
- * @param {Object} options
+ * Extract and sanitize pagination and filter parameters from 
+ * request query strings for database queries.
+ */
+
+/**
+ * Parse pagination and filter parameters from request query
+ * @param {Object} query - Express request query object
+ * @param {Object} options - Configuration for parsing
  * @param {string[]} [options.allowedFilters=[]] - Whitelisted filter fields
  * @param {number} [options.defaultLimit=10] - Default results per page
  * @param {number} [options.maxLimit=100] - Maximum allowed limit
- * @returns {{
- *   page: number,
- *   limit: number,
- *   skip: number,
- *   filters: Object,
- *   sort: Object
- * }}
+ * @returns {Object} { page, limit, skip, filters, sort }
  */
 
 function parseQueryParams(query, options = {}) {

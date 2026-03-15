@@ -1,9 +1,9 @@
 /**
  * User API Tests
  * ------------------------------------------------------------------
- * Tests for user-related API endpoints.
+ * Tests for user profile management and administrative actions.
  */
-f
+
 const request = require("supertest");
 const { expect } = require("chai");
 const app = require("../server");

@@ -145,7 +145,7 @@ exports.updateSetting = async (req, res) => {
     const setting = await Setting.findOneAndUpdate(
       { key },
       { value, description, category },
-      { new: true, upsert: true, runValidators: true },
+      { returnDocument: 'after', upsert: true, runValidators: true },
     );
 
     sendResponse(

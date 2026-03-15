@@ -40,7 +40,7 @@ exports.create = (data) => Permission.create(data);
  */
 exports.update = (id, data) =>
   Permission.findByIdAndUpdate(id, data, {
-    new: true,
+    returnDocument: 'after',
     runValidators: true,
   });
 

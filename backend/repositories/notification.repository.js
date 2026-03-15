@@ -40,7 +40,7 @@ exports.create = (data) => Notification.create(data);
  */
 exports.update = (id, data) =>
   Notification.findByIdAndUpdate(id, data, {
-    new: true,
+    returnDocument: 'after',
     runValidators: true,
   });
 

@@ -1,3 +1,10 @@
+/**
+ * Test Environment Setup
+ * ------------------------------------------------------------------
+ * Global configuration for the test suite, including database
+ * connection management and timing settings.
+ */
+
 const app = require("../server");
 const mongoose = require("mongoose");
 

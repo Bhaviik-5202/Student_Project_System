@@ -40,7 +40,7 @@ exports.create = (data) => Activity.create(data);
  */
 exports.update = (id, data) =>
   Activity.findByIdAndUpdate(id, data, {
-    new: true,
+    returnDocument: 'after',
     runValidators: true,
   });
 

@@ -1,7 +1,7 @@
 /**
  * Student API Tests
  * ------------------------------------------------------------------
- * Tests for student-related API endpoints.
+ * Tests for student registration and record management.
  */
 
 const request = require("supertest");

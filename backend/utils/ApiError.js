@@ -1,15 +1,8 @@
 /**
- * ApiError
+ * ApiError Utility
  * ------------------------------------------------------------------
  * Centralized custom error class for handling operational API errors.
- * Extends the native Error object by adding:
- *  - HTTP status code
- *  - Optional validation/details object
- *  - Operational flag for error classification
- *
- * Usage:
- *   throw new ApiError(400, "Invalid request");
- *   throw new ApiError(404, "User not found");
+ * Extends the native Error object by adding HTTP status codes and details.
  */
 
 class ApiError extends Error {

@@ -3,9 +3,6 @@ const sendResponse = require("../utils/response");
 /**
  * Auth Controller
  * Handles user authentication, registration, and password management.
- * This controller provides endpoints for user registration, login, password reset requests, and password updates.
- * It interacts with the user service to perform authentication logic and manages responses using a standardized format.
- * Note: Password reset functionality is currently a stub and should be implemented with proper token management and email integration for production use.
  * Endpoints:
  * - POST /auth/register: Register a new user (Public)
  * - POST /auth/login: Authenticate a user and return a JWT (Public)

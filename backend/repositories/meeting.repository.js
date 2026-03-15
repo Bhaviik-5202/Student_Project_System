@@ -40,7 +40,7 @@ exports.create = (data) => Meeting.create(data);
  */
 exports.update = (id, data) =>
   Meeting.findByIdAndUpdate(id, data, {
-    new: true,
+    returnDocument: 'after',
     runValidators: true,
   });
 

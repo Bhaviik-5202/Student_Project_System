@@ -40,7 +40,7 @@ exports.create = (data) => Setting.create(data);
  */
 exports.update = (id, data) =>
   Setting.findByIdAndUpdate(id, data, {
-    new: true,
+    returnDocument: 'after',
     runValidators: true,
   });
 

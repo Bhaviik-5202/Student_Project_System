@@ -40,7 +40,7 @@ exports.create = (data) => Timeline.create(data);
  */
 exports.update = (id, data) =>
   Timeline.findByIdAndUpdate(id, data, {
-    new: true,
+    returnDocument: 'after',
     runValidators: true,
   });
 

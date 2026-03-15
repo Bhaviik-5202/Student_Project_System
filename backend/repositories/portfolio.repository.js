@@ -40,7 +40,7 @@ exports.create = (data) => Portfolio.create(data);
  */
 exports.update = (id, data) =>
   Portfolio.findByIdAndUpdate(id, data, {
-    new: true,
+    returnDocument: 'after',
     runValidators: true,
   });
 

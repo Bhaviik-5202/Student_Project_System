@@ -40,7 +40,7 @@ exports.create = (data) => Staff.create(data);
  */
 exports.update = (id, data) =>
   Staff.findByIdAndUpdate(id, data, {
-    new: true,
+    returnDocument: 'after',
     runValidators: true,
   });
 

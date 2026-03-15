@@ -40,7 +40,7 @@ exports.create = (data) => User.create(data);
  */
 exports.update = (id, data) =>
   User.findByIdAndUpdate(id, data, {
-    new: true,
+    returnDocument: 'after',
     runValidators: true,
   });
 

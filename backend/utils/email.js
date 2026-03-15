@@ -1,18 +1,21 @@
 /**
  * Email Utility
  * ------------------------------------------------------------------
- * Sends emails using Nodemailer (production-ready).
- * Falls back to console logging in development if no SMTP is configured.
- * Environment Variables Required (for SMTP):
- *   EMAIL_HOST
- *   EMAIL_PORT
- *   EMAIL_USER
- *   EMAIL_PASS
- *   EMAIL_FROM
+ * Sends emails using Nodemailer. Falls back to console logging in 
+ * development if no SMTP configuration is present.
  */
 
 const nodemailer = require("nodemailer");
 
+/**
+ * Dispatch an email message
+ * @param {Object} options - Email recipient and content details
+ * @param {string} options.to - Recipient email address
+ * @param {string} options.subject - Email subject line
+ * @param {string} [options.text] - Plain text body
+ * @param {string} [options.html] - HTML body content
+ * @returns {Promise<void>}
+ */
 async function sendEmail({ to, subject, text, html }) {
   if (!to || !subject) {
     throw new Error("Email 'to' and 'subject' are required");

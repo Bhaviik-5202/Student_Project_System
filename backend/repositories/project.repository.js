@@ -40,7 +40,7 @@ exports.create = (data) => Project.create(data);
  */
 exports.update = (id, data) =>
   Project.findByIdAndUpdate(id, data, {
-    new: true,
+    returnDocument: 'after',
     runValidators: true,
   });
 

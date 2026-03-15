@@ -1,9 +1,7 @@
 /**
  * Password Utility
  * ------------------------------------------------------------------
- * Handles password hashing and comparison using bcrypt.
- * Environment Variables:
- *   BCRYPT_SALT_ROUNDS (optional, default: 10)
+ * Handles secure password hashing and comparison using bcrypt.
  */
 
 const bcrypt = require("bcrypt");

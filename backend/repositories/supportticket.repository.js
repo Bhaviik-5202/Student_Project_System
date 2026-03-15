@@ -40,7 +40,7 @@ exports.create = (data) => SupportTicket.create(data);
  */
 exports.update = (id, data) =>
   SupportTicket.findByIdAndUpdate(id, data, {
-    new: true,
+    returnDocument: 'after',
     runValidators: true,
   });
 

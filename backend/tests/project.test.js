@@ -1,7 +1,7 @@
 /**
  * Project API Tests
  * ------------------------------------------------------------------
- * Tests for project management.
+ * Tests for academic project creation and management.
  */
 
 const request = require("supertest");

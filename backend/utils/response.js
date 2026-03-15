@@ -1,22 +1,19 @@
 /**
- * Centralized Response Utility
+ * API Response Utility
  * ------------------------------------------------------------------
- * Ensures consistent API response structure across the application.
- * Standard Response Format:
- * {
- *   success: boolean,
- *   message: string,
- *   data: any,
- *   meta?: object
- * }
- *
- * @param {import("express").Response} res
- * @param {Object} options
- * @param {boolean} [options.success=true]
- * @param {any} [options.data=null]
- * @param {string} [options.message=""]
- * @param {Object} [options.meta]
- * @param {number} [status=200]
+ * Ensures consistent structure for all API responses across the platform.
+ */
+
+/**
+ * Send a standardized API response
+ * @param {Object} res - Express response object
+ * @param {Object} payload - Response data and metadata
+ * @param {boolean} [payload.success=true] - Operation success status
+ * @param {any} [payload.data=null] - Payload content
+ * @param {string} [payload.message=""] - Status description
+ * @param {Object} [payload.meta] - Additional metadata
+ * @param {number} [status=200] - HTTP status code
+ * @returns {Object} Standardized JSON response
  */
 
 module.exports = function sendResponse(

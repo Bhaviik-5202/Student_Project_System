@@ -1,7 +1,7 @@
 /**
  * Notification API Tests
  * ------------------------------------------------------------------
- * Tests for user notifications.
+ * Tests for automated system alerts and user notification delivery.
  */
 
 const request = require("supertest");

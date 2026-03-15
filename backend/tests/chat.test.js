@@ -1,7 +1,7 @@
 /**
  * Chat API Tests
  * ------------------------------------------------------------------
- * Tests for messaging and chat communications.
+ * Tests for real-time communication channels and messaging sessions.
  */
 
 const request = require("supertest");

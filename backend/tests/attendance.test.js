@@ -1,7 +1,7 @@
 /**
  * Attendance API Tests
  * ------------------------------------------------------------------
- * Tests for attendance-related API endpoints.
+ * Tests for student and faculty attendance tracking.
  */
 
 const request = require("supertest");

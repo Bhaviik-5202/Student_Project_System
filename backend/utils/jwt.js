@@ -1,11 +1,8 @@
 /**
  * JWT Utility
  * ------------------------------------------------------------------
- * Handles JSON Web Token generation and verification.
- * Uses environment-based secret and expiration settings.
- * Required Environment Variables:
- *   JWT_SECRET
- *   JWT_EXPIRES_IN (optional, default: 1d)
+ * Handles JSON Web Token generation and verification using 
+ * environment-based secrets and configuration.
  */
 
 const jwt = require("jsonwebtoken");

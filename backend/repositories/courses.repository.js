@@ -40,7 +40,7 @@ exports.create = (data) => Course.create(data);
  */
 exports.update = (id, data) =>
   Course.findByIdAndUpdate(id, data, {
-    new: true,
+    returnDocument: 'after',
     runValidators: true,
   });
 

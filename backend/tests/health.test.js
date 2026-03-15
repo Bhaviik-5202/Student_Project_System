@@ -1,7 +1,7 @@
 /**
  * Health & Error Handling API Tests
  * ------------------------------------------------------------------
- * Tests for health check and general error handling.
+ * Tests for system connectivity and global exception handling.
  */
 
 const request = require("supertest");

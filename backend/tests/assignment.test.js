@@ -1,7 +1,7 @@
 /**
  * Assignment API Tests
  * ------------------------------------------------------------------
- * Tests for assignment-related API endpoints.
+ * Tests for student assignment distribution and management.
  */
 
 const request = require("supertest");
