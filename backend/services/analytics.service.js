@@ -1,5 +1,7 @@
 const projectRepository = require("../repositories/project.repository");
 const userRepository = require("../repositories/user.repository");
+const assignmentRepository = require("../repositories/assignment.repository");
+const meetingRepository = require("../repositories/meeting.repository");
 
 /**
  * Standardized response helper for services
@@ -17,14 +19,11 @@ const response = (error, data, message) => ({ error, data, message });
 exports.getDashboardStats = async () => {
   try {
     const totalUsers = await userRepository.count();
-    const activeProjects = await projectRepository.findAll({
-      status: "active",
-    });
-    const pendingApprovals = await projectRepository.findAll({
-      status: "pending",
-    });
+    const activeProjects = await projectRepository.count({ status: "active" });
+    const pendingApprovals = await projectRepository.count({ status: "pending" });
+    const totalAssignments = await assignmentRepository.count();
+    const totalMeetings = await meetingRepository.count();
 
-    // Recent activities (mapped from projects)
     const recentProjects = await projectRepository.findAll(
       {},
       {
@@ -38,9 +37,11 @@ exports.getDashboardStats = async () => {
       false,
       {
         totalUsers,
-        activeProjects: activeProjects.length,
-        pendingApprovals: pendingApprovals.length,
-        systemHealth: 99,
+        activeProjects,
+        pendingApprovals,
+        totalAssignments,
+        totalMeetings,
+        systemHealth: 100,
         recentActivities: recentProjects.map((p) => ({
           title: p.title,
           updatedAt: p.updatedAt,
@@ -60,20 +61,69 @@ exports.getDashboardStats = async () => {
 };
 
 /**
+ * Align with controller expected methods
+ */
+exports.getGlobalStats = exports.getDashboardStats;
+
+exports.getProjectStats = async () => {
+  try {
+    const total = await projectRepository.count();
+    const completed = await projectRepository.count({ status: "completed" });
+    const inProgress = await projectRepository.count({ status: "in_progress" });
+    
+    return response(false, {
+      total,
+      completed,
+      inProgress,
+      completionRate: total > 0 ? (completed / total) * 100 : 0
+    }, "Project statistics fetched successfully");
+  } catch (err) {
+    return response(true, null, err.message);
+  }
+};
+
+exports.getUserStats = async () => {
+  try {
+    const total = await userRepository.count();
+    const admins = await userRepository.count({ role: "admin" });
+    const faculty = await userRepository.count({ role: "faculty" });
+    const students = await userRepository.count({ role: "student" });
+    
+    return response(false, {
+      total,
+      roles: {
+        admins,
+        faculty,
+        students
+      }
+    }, "User statistics fetched successfully");
+  } catch (err) {
+    return response(true, null, err.message);
+  }
+};
+
+/**
  * Generate dashboard metrics for a specific faculty member
  * @param {string} facultyId - Faculty identifier
  * @returns {Promise<Object>} Formatted service response with faculty stats
  */
 exports.getFacultyDashboardStats = async (facultyId) => {
   try {
-    const myProjects = await projectRepository.findAll({ faculty: facultyId });
+    const myProjectsCount = await projectRepository.count({ faculty: facultyId });
     const activeStudents = await userRepository.count({
       role: "student",
       status: "active",
     });
-    const pendingReviews = await projectRepository.findAll({
+    const pendingReviewsCount = await projectRepository.count({
       faculty: facultyId,
       status: "submitted",
+    });
+    const todayMeetingsCount = await meetingRepository.count({
+      faculty: facultyId,
+      date: {
+        $gte: new Date().setHours(0, 0, 0, 0),
+        $lte: new Date().setHours(23, 59, 59, 999),
+      },
     });
 
     const recentProjects = await projectRepository.findAll(
@@ -88,10 +138,10 @@ exports.getFacultyDashboardStats = async (facultyId) => {
     return response(
       false,
       {
-        myProjects: myProjects.length,
+        myProjects: myProjectsCount,
         activeStudents,
-        pendingReviews: pendingReviews.length,
-        todayMeetings: 2,
+        pendingReviews: pendingReviewsCount,
+        todayMeetings: todayMeetingsCount,
         recentActivities: recentProjects.map((p) => ({
           title: p.title,
           updatedAt: p.updatedAt,
@@ -117,7 +167,15 @@ exports.getFacultyDashboardStats = async (facultyId) => {
  */
 exports.getStudentDashboardStats = async (studentId) => {
   try {
-    const myProjects = await projectRepository.findAll({ owner: studentId });
+    const myProjectsCount = await projectRepository.count({ owner: studentId });
+    const completedAssignmentsCount = await assignmentRepository.count({
+      student: studentId,
+      status: "completed",
+    });
+    const upcomingDeadlinesCount = await assignmentRepository.count({
+      student: studentId,
+      dueDate: { $gte: new Date() },
+    });
 
     const recentProjects = await projectRepository.findAll(
       { owner: studentId },
@@ -130,10 +188,10 @@ exports.getStudentDashboardStats = async (studentId) => {
     return response(
       false,
       {
-        myProjects: myProjects.length,
-        completedAssignments: 15,
-        upcomingDeadlines: 3,
-        currentGrade: "A-",
+        myProjects: myProjectsCount,
+        completedAssignments: completedAssignmentsCount,
+        upcomingDeadlines: upcomingDeadlinesCount,
+        currentGrade: "A-", // This might still be hardcoded or derived from another service
         recentActivities: recentProjects.map((p) => ({
           title: p.title,
           updatedAt: p.updatedAt,

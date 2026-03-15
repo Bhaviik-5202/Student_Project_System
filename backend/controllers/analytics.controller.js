@@ -13,13 +13,15 @@ const sendResponse = require("../utils/response");
  */
 exports.getDashboardStats = async (req, res) => {
   try {
-    const stats = await analyticsService.getGlobalStats();
+    const { error, data, message } = await analyticsService.getGlobalStats();
+    if (error) throw new Error(message);
+    
     sendResponse(
       res,
       {
         success: true,
-        message: "Dashboard statistics fetched successfully",
-        data: stats,
+        message: message || "Dashboard statistics fetched successfully",
+        data: data,
         error: null,
       },
       200,
@@ -29,7 +31,7 @@ exports.getDashboardStats = async (req, res) => {
       res,
       {
         success: false,
-        message: "Failed to fetch dashboard statistics",
+        message: error.message || "Failed to fetch dashboard statistics",
         data: null,
         error: error.message,
       },
@@ -45,13 +47,15 @@ exports.getDashboardStats = async (req, res) => {
  */
 exports.getProjectAnalytics = async (req, res) => {
   try {
-    const analytics = await analyticsService.getProjectStats();
+    const { error, data, message } = await analyticsService.getProjectStats();
+    if (error) throw new Error(message);
+
     sendResponse(
       res,
       {
         success: true,
-        message: "Project analytics fetched successfully",
-        data: analytics,
+        message: message || "Project analytics fetched successfully",
+        data: data,
         error: null,
       },
       200,
@@ -61,7 +65,7 @@ exports.getProjectAnalytics = async (req, res) => {
       res,
       {
         success: false,
-        message: "Failed to fetch project analytics",
+        message: error.message || "Failed to fetch project analytics",
         data: null,
         error: error.message,
       },
@@ -77,13 +81,15 @@ exports.getProjectAnalytics = async (req, res) => {
  */
 exports.getUserAnalytics = async (req, res) => {
   try {
-    const analytics = await analyticsService.getUserStats();
+    const { error, data, message } = await analyticsService.getUserStats();
+    if (error) throw new Error(message);
+
     sendResponse(
       res,
       {
         success: true,
-        message: "User analytics fetched successfully",
-        data: analytics,
+        message: message || "User analytics fetched successfully",
+        data: data,
         error: null,
       },
       200,
@@ -93,7 +99,7 @@ exports.getUserAnalytics = async (req, res) => {
       res,
       {
         success: false,
-        message: "Failed to fetch user analytics",
+        message: error.message || "Failed to fetch user analytics",
         data: null,
         error: error.message,
       },
@@ -108,13 +114,15 @@ exports.getUserAnalytics = async (req, res) => {
  */
 exports.getFacultyDashboardStats = async (req, res) => {
   try {
-    const stats = await analyticsService.getFacultyDashboardStats(req.user.id);
+    const { error, data, message } = await analyticsService.getFacultyDashboardStats(req.user.id);
+    if (error) throw new Error(message);
+
     sendResponse(
       res,
       {
         success: true,
-        message: "Faculty dashboard statistics fetched successfully",
-        data: stats,
+        message: message || "Faculty dashboard statistics fetched successfully",
+        data: data,
         error: null,
       },
       200,
@@ -124,7 +132,7 @@ exports.getFacultyDashboardStats = async (req, res) => {
       res,
       {
         success: false,
-        message: "Failed to fetch faculty statistics",
+        message: error.message || "Failed to fetch faculty statistics",
         data: null,
         error: error.message,
       },
@@ -140,13 +148,15 @@ exports.getFacultyDashboardStats = async (req, res) => {
  */
 exports.getStudentDashboardStats = async (req, res) => {
   try {
-    const stats = await analyticsService.getStudentDashboardStats(req.user.id);
+    const { error, data, message } = await analyticsService.getStudentDashboardStats(req.user.id);
+    if (error) throw new Error(message);
+
     sendResponse(
       res,
       {
         success: true,
-        message: "Student dashboard statistics fetched successfully",
-        data: stats,
+        message: message || "Student dashboard statistics fetched successfully",
+        data: data,
         error: null,
       },
       200,
@@ -156,7 +166,7 @@ exports.getStudentDashboardStats = async (req, res) => {
       res,
       {
         success: false,
-        message: "Failed to fetch student statistics",
+        message: error.message || "Failed to fetch student statistics",
         data: null,
         error: error.message,
       },

@@ -1,35 +1,76 @@
 import api from "../utils/api";
 
+/**
+ * Analytics Service
+ * Handles dashboard statistics and insights for different user roles
+ */
 const analyticsService = {
-  getStats: async (params = {}) => {
+  /**
+   * Get main dashboard statistics (Admin)
+   */
+  getDashboardStats: async () => {
     try {
-      return await api.get("/analytics/stats", { params });
+      return await api.get("/analytics/dashboard");
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to fetch statistics",
+        message: error.response?.data?.message || "Failed to fetch dashboard stats",
       };
     }
   },
 
-  getChartData: async (type, params = {}) => {
+  /**
+   * Get faculty-specific dashboard statistics
+   */
+  getFacultyStats: async () => {
     try {
-      return await api.get(`/analytics/charts/${type}`, { params });
+      return await api.get("/analytics/faculty-dashboard");
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to fetch chart data",
+        message: error.response?.data?.message || "Failed to fetch faculty stats",
       };
     }
   },
 
-  getSummary: async () => {
+  /**
+   * Get student-specific dashboard statistics
+   */
+  getStudentStats: async () => {
     try {
-      return await api.get("/analytics/summary");
+      return await api.get("/analytics/student-dashboard");
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to fetch summary",
+        message: error.response?.data?.message || "Failed to fetch student stats",
+      };
+    }
+  },
+
+  /**
+   * Get project-specific analytics (Admin/Faculty)
+   */
+  getProjectAnalytics: async () => {
+    try {
+      return await api.get("/analytics/projects");
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || "Failed to fetch project analytics",
+      };
+    }
+  },
+
+  /**
+   * Get user engagement analytics (Admin)
+   */
+  getUserAnalytics: async () => {
+    try {
+      return await api.get("/analytics/users");
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || "Failed to fetch user analytics",
       };
     }
   },

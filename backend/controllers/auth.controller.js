@@ -86,18 +86,17 @@ exports.login = async (req, res) => {
 exports.forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
-    // NOTE: This is a stub implementation. Integration with an email service
-    // and reset-token storage should be implemented here for production use.
+    const result = await userService.forgotPassword(email);
+
     sendResponse(
       res,
       {
-        success: true,
-        message:
-          "If the account exists, a password reset link has been dispatched to your email.",
-        data: null,
-        error: null,
+        success: !result.error,
+        message: result.message,
+        data: result.data || null,
+        error: result.error || null,
       },
-      200,
+      result.error ? 400 : 200,
     );
   } catch (error) {
     sendResponse(
@@ -121,17 +120,17 @@ exports.forgotPassword = async (req, res) => {
 exports.resetPassword = async (req, res) => {
   try {
     const { token, password } = req.body;
-    // NOTE: This is a stub implementation. Token verification and password
-    // update logic should be implemented here for production use.
+    const result = await userService.resetPassword(token, password);
+
     sendResponse(
       res,
       {
-        success: true,
-        message: "Your password has been reset successfully.",
-        data: null,
-        error: null,
+        success: !result.error,
+        message: result.message,
+        data: result.data || null,
+        error: result.error || null,
       },
-      200,
+      result.error ? 400 : 200,
     );
   } catch (error) {
     sendResponse(

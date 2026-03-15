@@ -15,6 +15,17 @@ exports.findAll = (filter = {}, options = {}) =>
     .select(options.select || "");
 
 /**
+ * Find a single portfolio matching a specific filter
+ * @param {Object} filter - Mongoose filter object
+ * @param {Object} options - Query options (populate, select)
+ * @returns {Promise<Object|null>} Portfolio document or null
+ */
+exports.findOne = (filter = {}, options = {}) =>
+  Portfolio.findOne(filter)
+    .populate(options.populate || "")
+    .select(options.select || "");
+
+/**
  * Locate a single portfolio by its unique identifier
  * @param {string} id - Portfolio ID
  * @param {Object} options - Query options (populate, select)

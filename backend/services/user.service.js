@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const JWT_SECRET = process.env.JWT_SECRET;
 const TOKEN_EXPIRES_IN = process.env.TOKEN_EXPIRES_IN;
+const crypto = require("crypto");
 
 /**
  * Standardized response helper for services
@@ -150,5 +151,74 @@ exports.remove = async (id) => {
     return response(false, null, "User deleted successfully");
   } catch (err) {
     return response(true, null, err.message || "Failed to delete user");
+  }
+};
+
+/**
+ * Handle password reset request
+ * @param {string} email - User email
+ * @returns {Promise<Object>} Formatted service response
+ */
+exports.forgotPassword = async (email) => {
+  try {
+    const user = await userRepository.findByEmail(email);
+    if (!user) {
+      // Return success to avoid email enumeration
+      return response(true, null, "If the account exists, a reset link has been sent.");
+    }
+
+    const resetToken = crypto.randomBytes(20).toString("hex");
+    const resetTokenHash = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+
+    await userRepository.update(user._id, {
+      resetPasswordToken: resetTokenHash,
+      resetPasswordExpires: Date.now() + 3600000, // 1 hour
+    });
+
+    // In a real app, send email here. For now, we'll log it or return it for testing.
+    console.log(`Password reset token for ${email}: ${resetToken}`);
+
+    return response(false, null, "Password reset link sent to email");
+  } catch (err) {
+    console.error("Forgot password error:", err);
+    return response(true, null, err.message || "Failed to process forgot password");
+  }
+};
+
+/**
+ * Reset password using token
+ * @param {string} token - Reset token
+ * @param {string} newPassword - New password
+ * @returns {Promise<Object>} Formatted service response
+ */
+exports.resetPassword = async (token, newPassword) => {
+  try {
+    const resetTokenHash = crypto
+      .createHash("sha256")
+      .update(token)
+      .digest("hex");
+
+    const user = await userRepository.findAll({
+      resetPasswordToken: resetTokenHash,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
+
+    if (!user || user.length === 0) {
+      return response(true, null, "Invalid or expired reset token");
+    }
+
+    const targetUser = user[0];
+    targetUser.password = newPassword;
+    targetUser.resetPasswordToken = undefined;
+    targetUser.resetPasswordExpires = undefined;
+    await targetUser.save();
+
+    return response(false, null, "Password has been reset successfully");
+  } catch (err) {
+    console.error("Reset password error:", err);
+    return response(true, null, err.message || "Failed to reset password");
   }
 };

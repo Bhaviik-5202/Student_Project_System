@@ -75,8 +75,13 @@ exports.getAttendanceByStudent = async (studentId) => {
  */
 exports.getAttendanceByDate = async (date) => {
   try {
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+
     const attendance = await attendanceRepository.findAll({
-      date: new Date(date),
+      date: { $gte: startOfDay, $lte: endOfDay },
     });
     return response(
       false,

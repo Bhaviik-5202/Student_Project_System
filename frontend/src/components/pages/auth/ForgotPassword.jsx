@@ -1,6 +1,7 @@
 import { useState, memo, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import authService from "../../../services/authService";
 
 /**
  * ForgotPassword Component - Password recovery form
@@ -14,15 +15,18 @@ const ForgotPassword = memo(() => {
     setLoading(true);
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      toast.success("Password reset link sent to your email");
+      const result = await authService.requestPasswordReset(email);
+      if (result.success) {
+        toast.success(result.message || "Password reset link sent to your email");
+      } else {
+        toast.error(result.message || "Failed to send reset link");
+      }
     } catch (error) {
-      toast.error("Failed to send reset link");
+      toast.error("An unexpected error occurred. Please try again.");
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [email]);
 
   return (
     <div className="space-y-6">

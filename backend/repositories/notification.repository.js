@@ -52,6 +52,15 @@ exports.update = (id, data) =>
 exports.remove = (id) => Notification.findByIdAndDelete(id);
 
 /**
+ * Update multiple notification records matching a specific filter
+ * @param {Object} filter - Mongoose filter object
+ * @param {Object} data - Attributes to update
+ * @returns {Promise<Object>} Update operation status
+ */
+exports.updateMany = (filter, data) =>
+  Notification.updateMany(filter, data);
+
+/**
  * Count all notifications matching a specific filter
  * @param {Object} filter - Mongoose filter object
  * @returns {Promise<number>} Record count

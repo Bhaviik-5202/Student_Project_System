@@ -92,10 +92,15 @@ exports.join = async (id, user) => {
   try {
     const meeting = await meetingRepository.findById(id);
     if (!meeting) return response(true, null, "Meeting not found");
-    // Stub logic — extend later with participants array implementation
+
+    // Add user to participants if not already present
+    const updatedMeeting = await meetingRepository.update(id, {
+      $addToSet: { participants: user.id || user._id }
+    });
+
     return response(
       false,
-      { meetingId: id, user },
+      updatedMeeting,
       "Joined meeting successfully",
     );
   } catch (err) {

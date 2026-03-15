@@ -274,7 +274,7 @@ const authService = {
     try {
       return await api.post("/auth/reset-password", {
         token,
-        newPassword,
+        password: newPassword,
       });
     } catch (error) {
       return {

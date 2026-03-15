@@ -30,10 +30,9 @@ exports.createPortfolio = async (data) => {
  */
 exports.getPortfolioByStudent = async (studentId) => {
   try {
-    const portfolios = await portfolioRepository.findAll({
+    const portfolio = await portfolioRepository.findOne({
       student: studentId,
     });
-    const portfolio = portfolios.length > 0 ? portfolios[0] : null;
     if (!portfolio) return response(true, null, "Portfolio not found");
     return response(false, portfolio, "Portfolio fetched successfully");
   } catch (err) {

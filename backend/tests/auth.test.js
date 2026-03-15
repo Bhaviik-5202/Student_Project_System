@@ -61,5 +61,16 @@ describe("Authentication API", function () {
 
     expect(res.statusCode).to.equal(200);
     expect(res.body.success).to.be.true;
+    expect(res.body.message).to.equal("Password reset link sent to email");
+  });
+
+  it("should fail password reset with invalid token", async function () {
+    const res = await request(app)
+      .post("/api/v1/auth/reset-password")
+      .send({ token: "invalidtoken", password: "newpassword123" });
+
+    expect(res.statusCode).to.equal(400);
+    expect(res.body.success).to.be.false;
+    expect(res.body.message).to.equal("Invalid or expired reset token");
   });
 });

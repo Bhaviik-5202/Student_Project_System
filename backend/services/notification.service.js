@@ -112,12 +112,9 @@ exports.markAsRead = async (id, userId) => {
  */
 exports.markAllAsRead = async (userId) => {
   try {
-    const unread = await notificationRepository.findAll({
-      user: userId,
-      read: false,
-    });
-    await Promise.all(
-      unread.map((n) => notificationRepository.update(n._id, { read: true })),
+    await notificationRepository.updateMany(
+      { user: userId, read: false },
+      { read: true },
     );
     return response(
       false,

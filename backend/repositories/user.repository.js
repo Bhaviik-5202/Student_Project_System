@@ -15,6 +15,17 @@ exports.findAll = (filter = {}, options = {}) =>
     .select(options.select || "");
 
 /**
+ * Find a single user matching a specific filter
+ * @param {Object} filter - Mongoose filter object
+ * @param {Object} options - Query options (populate, select)
+ * @returns {Promise<Object|null>} User document or null
+ */
+exports.findOne = (filter = {}, options = {}) =>
+  User.findOne(filter)
+    .populate(options.populate || "")
+    .select(options.select || "");
+
+/**
  * Locate a single user by its unique identifier
  * @param {string} id - User ID
  * @param {Object} options - Query options (populate, select)

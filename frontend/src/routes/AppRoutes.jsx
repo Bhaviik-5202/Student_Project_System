@@ -11,6 +11,7 @@ import { ROLE_COMBINATIONS } from "../config/roles";
 const Login = lazy(() => import("../components/pages/auth/Login"));
 const Register = lazy(() => import("../components/pages/auth/Register"));
 const ForgotPassword = lazy(() => import("../components/pages/auth/ForgotPassword"));
+const ResetPassword = lazy(() => import("../components/pages/auth/ResetPassword"));
 
 // Dashboard Pages
 const Dashboard = lazy(() => import("../components/pages/dashboard/Dashboard"));
@@ -135,6 +136,7 @@ const AppRoutes = () => {
       <Route path="/login" element={<PublicRoute><AuthLayout><Login /></AuthLayout></PublicRoute>} />
       <Route path="/register" element={<PublicRoute><AuthLayout><Register /></AuthLayout></PublicRoute>} />
       <Route path="/forgot-password" element={<PublicRoute><AuthLayout><ForgotPassword /></AuthLayout></PublicRoute>} />
+      <Route path="/reset-password/:token" element={<PublicRoute><AuthLayout><ResetPassword /></AuthLayout></PublicRoute>} />
 
       {/* Protected Routes with MainLayout */}
       <Route path="/" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><MainLayout /></ProtectedRoute>}>
