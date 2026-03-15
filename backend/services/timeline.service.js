@@ -1,77 +1,82 @@
 const timelineRepository = require("../repositories/timeline.repository");
 
-function response(error, data, message) {
-  return { error, data, message };
-}
+/**
+ * Standardized response helper for services
+ * @param {boolean} error - Whether the operation failed
+ * @param {any} data - The payload to return
+ * @param {string} message - Descriptive status message
+ * @returns {Object} { error, data, message }
+ */
+const response = (error, data, message) => ({ error, data, message });
 
 /**
- * Create a new timeline event
- * @param {Object} data - Timeline data
- * @returns {Promise<Object>} Created timeline event
+ * Persist a new timeline event
+ * @param {Object} data - Timeline event data payload
+ * @returns {Promise<Object>} Formatted service response
  */
 exports.create = async (data) => {
   try {
     const timeline = await timelineRepository.create(data);
-    return response(false, timeline, "Timeline created");
+    return response(false, timeline, "Timeline created successfully");
   } catch (err) {
     return response(true, null, err.message || "Failed to create timeline");
   }
 };
 
 /**
- * Get all timeline events
- * @returns {Promise<Array>} List of timeline events
+ * Fetch all timeline events
+ * @returns {Promise<Object>} Formatted service response with events list
  */
 exports.getAll = async () => {
   try {
     const timelines = await timelineRepository.findAll();
-    return response(false, timelines, "Timelines fetched");
+    return response(false, timelines, "Timelines fetched successfully");
   } catch (err) {
     return response(true, null, err.message || "Failed to fetch timelines");
   }
 };
 
 /**
- * Get a timeline event by ID
- * @param {string} id - Timeline ID
- * @returns {Promise<Object|null>} Timeline event or null
+ * Get detailed timeline event by ID
+ * @param {string} id - Timeline identifier
+ * @returns {Promise<Object>} Formatted service response with event data
  */
 exports.getById = async (id) => {
   try {
     const timeline = await timelineRepository.findById(id);
     if (!timeline) return response(true, null, "Timeline not found");
-    return response(false, timeline, "Timeline fetched");
+    return response(false, timeline, "Timeline fetched successfully");
   } catch (err) {
     return response(true, null, err.message || "Failed to fetch timeline");
   }
 };
 
 /**
- * Update a timeline event by ID
- * @param {string} id - Timeline ID
- * @param {Object} data - Update data
- * @returns {Promise<Object|null>} Updated timeline event or null
+ * Update timeline event attributes or timing
+ * @param {string} id - Timeline identifier
+ * @param {Object} data - Attributes to update
+ * @returns {Promise<Object>} Formatted service response with updated event
  */
 exports.update = async (id, data) => {
   try {
     const timeline = await timelineRepository.update(id, data);
     if (!timeline) return response(true, null, "Timeline not found");
-    return response(false, timeline, "Timeline updated");
+    return response(false, timeline, "Timeline updated successfully");
   } catch (err) {
     return response(true, null, err.message || "Failed to update timeline");
   }
 };
 
 /**
- * Delete a timeline event by ID
- * @param {string} id - Timeline ID
- * @returns {Promise<Object|null>} Deleted timeline event or null
+ * Delete a timeline event from the system
+ * @param {string} id - Timeline identifier
+ * @returns {Promise<Object>} Formatted service response
  */
 exports.remove = async (id) => {
   try {
     const timeline = await timelineRepository.remove(id);
     if (!timeline) return response(true, null, "Timeline not found");
-    return response(false, null, "Timeline deleted");
+    return response(false, null, "Timeline deleted successfully");
   } catch (err) {
     return response(true, null, err.message || "Failed to delete timeline");
   }

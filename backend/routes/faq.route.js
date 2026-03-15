@@ -2,25 +2,21 @@
  * FAQ Routes
  * ------------------------------------------------------------------
  * Handles CRUD operations for FAQs.
- * All routes require authentication.
  */
 
 const express = require("express");
 const { body } = require("express-validator");
-
 const router = express.Router();
 
-// Controller
+// Controllers and Middlewares
 const faqController = require("../controllers/faq.controller");
-
-// Middlewares
 const authMiddleware = require("../middleware/auth.middleware");
 const validateRequest = require("../middleware/validateRequest");
 
 /**
  * @route   POST /api/v1/faqs
  * @desc    Create a new FAQ
- * @access  Private (Admin)
+ * @access  Private (Authenticated Users)
  */
 router.post("/", authMiddleware, faqController.createFAQ);
 
@@ -41,7 +37,7 @@ router.get("/:id", authMiddleware, faqController.getFAQById);
 /**
  * @route   PUT /api/v1/faqs/:id
  * @desc    Update an existing FAQ
- * @access  Private (Admin)
+ * @access  Private (Authenticated Users)
  */
 router.put(
   "/:id",
@@ -57,7 +53,7 @@ router.put(
 /**
  * @route   DELETE /api/v1/faqs/:id
  * @desc    Delete a FAQ
- * @access  Private (Admin)
+ * @access  Private (Authenticated Users)
  */
 router.delete("/:id", authMiddleware, faqController.deleteFAQ);
 

@@ -2,18 +2,14 @@
  * Resource Routes
  * ------------------------------------------------------------------
  * Handles resource management (documents, templates, videos).
- * All routes are protected via authentication middleware.
  */
 
 const express = require("express");
 const { body } = require("express-validator");
-
 const router = express.Router();
 
-// Controller
+// Controllers and Middlewares
 const resourceController = require("../controllers/resource.controller");
-
-// Middlewares
 const authMiddleware = require("../middleware/auth.middleware");
 const validateRequest = require("../middleware/validateRequest");
 

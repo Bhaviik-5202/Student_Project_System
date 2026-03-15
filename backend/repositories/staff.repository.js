@@ -3,20 +3,27 @@ const Staff = require("../models/staff.model");
 /**
  * Find all staff members matching a specific filter
  * @param {Object} filter - Mongoose filter object
- * @param {Object} options - Query options (sort, skip, limit)
+ * @param {Object} options - Query options (sort, skip, limit, populate, select)
  * @returns {Promise<Array>} List of staff members
  */
 exports.findAll = (filter = {}, options = {}) =>
   Staff.find(filter)
     .sort(options.sort || { createdAt: -1 })
     .skip(options.skip || 0)
-    .limit(options.limit || 0);
+    .limit(options.limit || 0)
+    .populate(options.populate || "")
+    .select(options.select || "");
 
 /**
  * Locate a single staff member by their unique identifier
+ * @param {string} id - Staff ID
+ * @param {Object} options - Query options (populate, select)
  * @returns {Promise<Object|null>} Staff document or null
  */
-exports.findById = (id) => Staff.findById(id);
+exports.findById = (id, options = {}) =>
+  Staff.findById(id)
+    .populate(options.populate || "")
+    .select(options.select || "");
 
 /**
  * Persist a new staff record to the database

@@ -2,18 +2,14 @@
  * Attendance Routes
  * ------------------------------------------------------------------
  * Handles attendance management APIs.
- * All routes are protected using authentication middleware.
  */
 
 const express = require("express");
 const { body } = require("express-validator");
-
 const router = express.Router();
 
-// Controller
+// Controllers and Middlewares
 const attendanceController = require("../controllers/attendance.controller");
-
-// Middlewares
 const authMiddleware = require("../middleware/auth.middleware");
 const validateRequest = require("../middleware/validateRequest");
 

@@ -2,25 +2,21 @@
  * Knowledge Base Routes
  * ------------------------------------------------------------------
  * Handles CRUD operations for knowledge base articles.
- * All routes require authentication.
  */
 
 const express = require("express");
 const { body } = require("express-validator");
-
 const router = express.Router();
 
-// Controller
+// Controllers and Middlewares
 const knowledgeBaseController = require("../controllers/knowledgebase.controller");
-
-// Middlewares
 const authMiddleware = require("../middleware/auth.middleware");
 const validateRequest = require("../middleware/validateRequest");
 
 /**
  * @route   POST /api/v1/knowledgebase
  * @desc    Create a new knowledge base article
- * @access  Private (Admin, Faculty)
+ * @access  Private (Authenticated Users)
  */
 router.post("/", authMiddleware, knowledgeBaseController.createKnowledgeBase);
 
@@ -41,7 +37,7 @@ router.get("/:id", authMiddleware, knowledgeBaseController.getKnowledgeBaseById)
 /**
  * @route   PUT /api/v1/knowledgebase/:id
  * @desc    Update an existing knowledge base article
- * @access  Private (Admin, Faculty)
+ * @access  Private (Authenticated Users)
  */
 router.put(
   "/:id",
@@ -57,7 +53,7 @@ router.put(
 /**
  * @route   DELETE /api/v1/knowledgebase/:id
  * @desc    Delete a knowledge base article
- * @access  Private (Admin, Faculty)
+ * @access  Private (Authenticated Users)
  */
 router.delete("/:id", authMiddleware, knowledgeBaseController.deleteKnowledgeBase);
 

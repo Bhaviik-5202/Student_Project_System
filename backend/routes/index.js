@@ -2,7 +2,6 @@
  * Centralized Route Loader
  * ------------------------------------------------------------------
  * Mounts all API endpoints under /api/v1
- * Maintains consistent RESTful naming conventions.
  */
 
 const express = require("express");
@@ -36,7 +35,7 @@ const faqRoutes = require("./faq.route");
 const knowledgeBaseRoutes = require("./knowledgebase.route");
 
 /**
- * Mount routes (Plural REST Convention)
+ * Mount routes
  */
 router.use("/activities", activityRoutes);
 router.use("/assignments", assignmentRoutes);
@@ -63,9 +62,11 @@ router.use("/supporttickets", supportTicketRoutes);
 router.use("/settings", settingRoutes);
 router.use("/faqs", faqRoutes);
 router.use("/knowledgebase", knowledgeBaseRoutes);
+
 /**
- * Root API Information Endpoint
- * GET /api/v1
+ * @route   GET /api/v1
+ * @desc    Root API Information Endpoint
+ * @access  Public
  */
 router.get("/", (req, res) => {
   res.status(200).json({

@@ -76,7 +76,7 @@ exports.remove = async (id) => {
   try {
     const course = await coursesRepository.remove(id);
     if (!course) return response(true, null, "Course not found");
-    return response(false, course, "Course deleted successfully");
+    return response(false, null, "Course deleted successfully");
   } catch (err) {
     return response(true, null, err.message || "Failed to delete course");
   }

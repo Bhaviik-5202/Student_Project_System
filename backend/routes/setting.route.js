@@ -2,18 +2,14 @@
  * Setting Routes
  * ------------------------------------------------------------------
  * Handles CRUD operations for settings.
- * All routes require authentication.
  */
 
 const express = require("express");
 const { body } = require("express-validator");
-
 const router = express.Router();
 
-// Controller
+// Controllers and Middlewares
 const settingController = require("../controllers/setting.controller");
-
-// Middlewares
 const authMiddleware = require("../middleware/auth.middleware");
 const validateRequest = require("../middleware/validateRequest");
 

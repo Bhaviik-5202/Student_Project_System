@@ -3,7 +3,7 @@ const Student = require("../models/student.model");
 /**
  * Find all students matching a specific filter
  * @param {Object} filter - Mongoose filter object
- * @param {Object} options - Query options (sort, skip, limit, populate)
+ * @param {Object} options - Query options (sort, skip, limit, populate, select)
  * @returns {Promise<Array>} List of students
  */
 exports.findAll = (filter = {}, options = {}) =>
@@ -11,16 +11,19 @@ exports.findAll = (filter = {}, options = {}) =>
     .sort(options.sort || { createdAt: -1 })
     .skip(options.skip || 0)
     .limit(options.limit || 0)
-    .populate(options.populate || "");
+    .populate(options.populate || "")
+    .select(options.select || "");
 
 /**
  * Locate a single student by their unique identifier
  * @param {string} id - Student ID
- * @param {Object} options - Query options (populate)
+ * @param {Object} options - Query options (populate, select)
  * @returns {Promise<Object|null>} Student document or null
  */
 exports.findById = (id, options = {}) =>
-  Student.findById(id).populate(options.populate || "");
+  Student.findById(id)
+    .populate(options.populate || "")
+    .select(options.select || "");
 
 /**
  * Persist a new student record to the database

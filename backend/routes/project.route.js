@@ -2,20 +2,14 @@
  * Project Routes
  * ------------------------------------------------------------------
  * Handles CRUD operations for projects.
- * Project creation, update, and deletion are restricted
- * to Admin and Faculty roles.
- * All routes require authentication.
  */
 
 const express = require("express");
 const { body } = require("express-validator");
-
 const router = express.Router();
 
-// Controllers
+// Controllers and Middlewares
 const projectController = require("../controllers/project.controller");
-
-// Middlewares
 const authMiddleware = require("../middleware/auth.middleware");
 const roleMiddleware = require("../middleware/roleMiddleware");
 const validateRequest = require("../middleware/validateRequest");
@@ -40,7 +34,7 @@ const projectValidation = [
 /**
  * @route   POST /api/v1/projects
  * @desc    Create a new project
- * @access  Private (Admin, Faculty)
+ * @access  Private (Admin/Faculty)
  */
 router.post(
   "/",
@@ -71,7 +65,7 @@ router.get("/:id", authMiddleware, projectController.getProjectById);
 /**
  * @route   PUT /api/v1/projects/:id
  * @desc    Update an existing project
- * @access  Private (Admin, Faculty)
+ * @access  Private (Admin/Faculty)
  */
 router.put(
   "/:id",
@@ -85,7 +79,7 @@ router.put(
 /**
  * @route   DELETE /api/v1/projects/:id
  * @desc    Delete a project
- * @access  Private (Admin, Faculty)
+ * @access  Private (Admin/Faculty)
  */
 router.delete(
   "/:id",

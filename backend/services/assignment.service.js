@@ -95,9 +95,9 @@ exports.remove = async (id) => {
 exports.getByStudentId = async (studentId) => {
     try {
         const assignments = await assignmentRepository.findAll({ student: studentId });
-        return response(false, assignments, "Assignments fetched successfully");
+        return response(false, assignments, "Student assignments fetched successfully");
     } catch (err) {
-        return response(true, null, err.message);
+        return response(true, null, err.message || "Failed to fetch student assignments");
     }
 };
 
@@ -110,9 +110,9 @@ exports.getByStudentId = async (studentId) => {
 exports.getByActivityId = async (activityId, options = {}) => {
     try {
         const assignments = await assignmentRepository.findAll({ activity: activityId }, options);
-        return response(false, assignments, "Assignments fetched successfully");
+        return response(false, assignments, "Activity assignments fetched successfully");
     } catch (err) {
-        return response(true, null, err.message);
+        return response(true, null, err.message || "Failed to fetch activity assignments");
     }
 };
 
@@ -125,9 +125,9 @@ exports.getByActivityId = async (activityId, options = {}) => {
 exports.getByFacultyId = async (facultyId, options = {}) => {
     try {
         const assignments = await assignmentRepository.findAll({ faculty: facultyId }, options);
-        return response(false, assignments, "Assignments fetched successfully");
+        return response(false, assignments, "Faculty assignments fetched successfully");
     } catch (err) {
-        return response(true, null, err.message);
+        return response(true, null, err.message || "Failed to fetch faculty assignments");
     }
 };
 
@@ -140,9 +140,9 @@ exports.getByFacultyId = async (facultyId, options = {}) => {
 exports.getByCourseId = async (courseId, options = {}) => {
     try {
         const assignments = await assignmentRepository.findAll({ course: courseId }, options);
-        return response(false, assignments, "Assignments fetched successfully");
+        return response(false, assignments, "Course assignments fetched successfully");
     } catch (err) {
-        return response(true, null, err.message);
+        return response(true, null, err.message || "Failed to fetch course assignments");
     }
 };
 
@@ -155,8 +155,8 @@ exports.getByCourseId = async (courseId, options = {}) => {
 exports.getByBatchId = async (batchId, options = {}) => {
     try {
         const assignments = await assignmentRepository.findAll({ batch: batchId }, options);
-        return response(false, assignments, "Assignments fetched successfully");
+        return response(false, assignments, "Batch assignments fetched successfully");
     } catch (err) {
-        return response(true, null, err.message);
+        return response(true, null, err.message || "Failed to fetch batch assignments");
     }
 };

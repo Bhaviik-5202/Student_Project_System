@@ -42,7 +42,7 @@ exports.sendMessage = async (chatId, senderId, content) => {
 
         return response(false, populatedMessage, "Message sent successfully");
     } catch (err) {
-        return response(true, null, err.message);
+        return response(true, null, err.message || "Failed to send message");
     }
 };
 
@@ -68,7 +68,7 @@ exports.getMessagesByChat = async (chatId, userId) => {
 
         return response(false, messages, "Messages fetched successfully");
     } catch (err) {
-        return response(true, null, err.message);
+        return response(true, null, err.message || "Failed to fetch messages");
     }
 };
 
@@ -90,7 +90,7 @@ exports.deleteMessage = async (messageId, userId) => {
         await messageRepository.remove(messageId);
         return response(false, null, "Message deleted successfully");
     } catch (err) {
-        return response(true, null, err.message);
+        return response(true, null, err.message || "Failed to delete message");
     }
 };
 

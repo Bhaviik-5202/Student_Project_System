@@ -3,7 +3,7 @@ const Submission = require("../models/submission.model");
 /**
  * Find all submissions matching a specific filter
  * @param {Object} filter - Mongoose filter object
- * @param {Object} options - Query options (sort, skip, limit, populate)
+ * @param {Object} options - Query options (sort, skip, limit, populate, select)
  * @returns {Promise<Array>} List of submissions
  */
 exports.findAll = (filter = {}, options = {}) =>
@@ -11,16 +11,19 @@ exports.findAll = (filter = {}, options = {}) =>
     .sort(options.sort || { createdAt: -1 })
     .skip(options.skip || 0)
     .limit(options.limit || 0)
-    .populate(options.populate || "");
+    .populate(options.populate || "")
+    .select(options.select || "");
 
 /**
  * Locate a single submission by its unique identifier
  * @param {string} id - Submission ID
- * @param {Object} options - Query options (populate)
+ * @param {Object} options - Query options (populate, select)
  * @returns {Promise<Object|null>} Submission document or null
  */
 exports.findById = (id, options = {}) =>
-  Submission.findById(id).populate(options.populate || "");
+  Submission.findById(id)
+    .populate(options.populate || "")
+    .select(options.select || "");
 
 /**
  * Persist a new submission record to the database

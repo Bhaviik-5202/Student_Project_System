@@ -2,18 +2,14 @@
  * Student Routes
  * ------------------------------------------------------------------
  * Handles CRUD operations for students.
- * Most routes require authentication.
  */
 
 const express = require("express");
 const { body } = require("express-validator");
-
 const router = express.Router();
 
-// Controller
+// Controllers and Middlewares
 const studentController = require("../controllers/student.controller");
-
-// Middlewares
 const authMiddleware = require("../middleware/auth.middleware");
 const validateRequest = require("../middleware/validateRequest");
 

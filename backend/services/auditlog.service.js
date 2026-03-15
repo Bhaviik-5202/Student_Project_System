@@ -1,77 +1,82 @@
 const auditLogRepository = require("../repositories/auditlog.repository");
 
-function response(error, data, message) {
-  return { error, data, message };
-}
+/**
+ * Standardized response helper for services
+ * @param {boolean} error - Whether the operation failed
+ * @param {any} data - The payload to return
+ * @param {string} message - Descriptive status message
+ * @returns {Object} { error, data, message }
+ */
+const response = (error, data, message) => ({ error, data, message });
 
 /**
- * Create a new audit log entry
- * @param {Object} data - Audit log data
- * @returns {Promise<Object>} Created audit log entry
+ * Persist a new audit log entry
+ * @param {Object} data - Audit log payload
+ * @returns {Promise<Object>} Formatted service response
  */
 exports.create = async (data) => {
   try {
     const auditLog = await auditLogRepository.create(data);
-    return response(false, auditLog, "Audit log created");
+    return response(false, auditLog, "Audit log created successfully");
   } catch (err) {
     return response(true, null, err.message || "Failed to create audit log");
   }
 };
 
 /**
- * Get all audit log entries
- * @returns {Promise<Array>} List of audit logs
+ * Fetch all audit log entries
+ * @returns {Promise<Object>} Formatted service response with log list
  */
 exports.getAll = async () => {
   try {
     const auditLogs = await auditLogRepository.findAll();
-    return response(false, auditLogs, "Audit logs fetched");
+    return response(false, auditLogs, "Audit logs fetched successfully");
   } catch (err) {
     return response(true, null, err.message || "Failed to fetch audit logs");
   }
 };
 
 /**
- * Get an audit log entry by ID
+ * Get detailed audit log by ID
  * @param {string} id - Audit log ID
- * @returns {Promise<Object|null>} Audit log or null
+ * @returns {Promise<Object>} Formatted service response with log data
  */
 exports.getById = async (id) => {
   try {
     const auditLog = await auditLogRepository.findById(id);
     if (!auditLog) return response(true, null, "Audit log not found");
-    return response(false, auditLog, "Audit log fetched");
+    return response(false, auditLog, "Audit log fetched successfully");
   } catch (err) {
     return response(true, null, err.message || "Failed to fetch audit log");
   }
 };
 
 /**
- * Update an audit log entry by ID
+ * Update audit log attributes
  * @param {string} id - Audit log ID
- * @param {Object} data - Update data
- * @returns {Promise<Object|null>} Updated audit log or null
+ * @param {Object} data - Attributes to update
+ * @returns {Promise<Object>} Formatted service response with updated log
  */
 exports.update = async (id, data) => {
   try {
     const auditLog = await auditLogRepository.update(id, data);
     if (!auditLog) return response(true, null, "Audit log not found");
-    return response(false, auditLog, "Audit log updated");
+    return response(false, auditLog, "Audit log updated successfully");
   } catch (err) {
     return response(true, null, err.message || "Failed to update audit log");
   }
 };
 
 /**
- * Delete an audit log entry by ID
+ * Delete an audit log entry
  * @param {string} id - Audit log ID
- * @returns {Promise<Object|null>} Deleted audit log or null
+ * @returns {Promise<Object>} Formatted service response
  */
 exports.remove = async (id) => {
   try {
     const auditLog = await auditLogRepository.remove(id);
     if (!auditLog) return response(true, null, "Audit log not found");
-    return response(false, auditLog, "Audit log deleted");
+    return response(false, null, "Audit log deleted successfully");
   } catch (err) {
     return response(true, null, err.message || "Failed to delete audit log");
   }

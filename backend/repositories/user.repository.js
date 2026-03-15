@@ -15,7 +15,7 @@ exports.findAll = (filter = {}, options = {}) =>
     .select(options.select || "");
 
 /**
- * Locate a single user by their unique identifier
+ * Locate a single user by its unique identifier
  * @param {string} id - User ID
  * @param {Object} options - Query options (populate, select)
  * @returns {Promise<Object|null>} User document or null

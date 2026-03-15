@@ -1,18 +1,26 @@
+/**
+ * Message Routes
+ * ------------------------------------------------------------------
+ * Handles individual chat messages.
+ */
+
 const express = require("express");
 const { body, param } = require("express-validator");
-
-const auth = require("../middleware/auth.middleware");
-const validateRequest = require("../middleware/validateRequest");
-const messageController = require("../controllers/message.controller");
-
 const router = express.Router();
 
+// Controllers and Middlewares
+const messageController = require("../controllers/message.controller");
+const authMiddleware = require("../middleware/auth.middleware");
+const validateRequest = require("../middleware/validateRequest");
+
 /**
- * POST /api/v1/messages
+ * @route   POST /api/v1/messages
+ * @desc    Send a new message
+ * @access  Private (Authenticated Users)
  */
 router.post(
   "/",
-  auth,
+  authMiddleware,
   [
     body("chatId").isMongoId().withMessage("Valid chat ID is required"),
     body("content").notEmpty().withMessage("Message content is required"),
@@ -22,22 +30,26 @@ router.post(
 );
 
 /**
- * GET /api/v1/messages/:chatId
+ * @route   GET /api/v1/messages/:chatId
+ * @desc    Retrieve messages from a specific chat
+ * @access  Private (Authenticated Users)
  */
 router.get(
   "/:chatId",
-  auth,
+  authMiddleware,
   [param("chatId").isMongoId().withMessage("Invalid Chat ID")],
   validateRequest,
   messageController.getMessagesByChat,
 );
 
 /**
- * DELETE /api/v1/messages/:messageId
+ * @route   DELETE /api/v1/messages/:messageId
+ * @desc    Delete a message
+ * @access  Private (Authenticated Users)
  */
 router.delete(
   "/:messageId",
-  auth,
+  authMiddleware,
   [param("messageId").isMongoId().withMessage("Invalid Message ID")],
   validateRequest,
   messageController.deleteMessage,

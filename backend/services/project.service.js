@@ -107,7 +107,7 @@ exports.getMembers = async (id) => {
         if (!project) return response(true, null, "Project not found");
         return response(false, project.members, "Members fetched successfully");
     } catch (err) {
-        return response(true, null, err.message);
+        return response(true, null, err.message || "Failed to fetch members");
     }
 }
 
@@ -128,6 +128,6 @@ exports.addMember = async (id, userId) => {
         const updatedProject = await projectRepository.findById(id, { populate: "members" });
         return response(false, updatedProject, "Member added successfully");
     } catch (err) {
-        return response(true, null, err.message);
+        return response(true, null, err.message || "Failed to add member");
     }
 }

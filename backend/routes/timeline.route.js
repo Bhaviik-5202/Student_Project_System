@@ -2,18 +2,13 @@
  * Timeline Routes
  * ------------------------------------------------------------------
  * Handles CRUD operations for timelines.
- * Timelines may represent academic schedules, project milestones,
- * or event tracking within the system.
- * All routes are protected via authentication middleware.
  */
 
 const express = require("express");
 const router = express.Router();
 
-// Controller
+// Controllers and Middlewares
 const timelineController = require("../controllers/timeline.controller");
-
-// Authentication Middleware
 const authMiddleware = require("../middleware/auth.middleware");
 
 /**

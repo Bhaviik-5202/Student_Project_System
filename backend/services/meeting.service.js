@@ -7,7 +7,7 @@ const meetingRepository = require("../repositories/meeting.repository");
  * @param {string} message - Descriptive status message
  * @returns {Object} { error, data, message }
  */
-const response = (error, data = null, message = "") => ({ error, data, message });
+const response = (error, data, message) => ({ error, data, message });
 
 /**
  * Schedule a new project meeting or consultation

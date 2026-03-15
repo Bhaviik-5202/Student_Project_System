@@ -1,20 +1,26 @@
+/**
+ * Chat Routes
+ * ------------------------------------------------------------------
+ * Handles interpersonal and group chat communications.
+ */
+
 const express = require("express");
 const { body, param } = require("express-validator");
-
-const auth = require("../middleware/auth.middleware");
-const validateRequest = require("../middleware/validateRequest");
-const chatController = require("../controllers/chat.controller");
-
 const router = express.Router();
+
+// Controllers and Middlewares
+const chatController = require("../controllers/chat.controller");
+const authMiddleware = require("../middleware/auth.middleware");
+const validateRequest = require("../middleware/validateRequest");
 
 /**
  * @route   POST /api/v1/chats
  * @desc    Create new chat (private or group)
- * @access  Private
+ * @access  Private (Authenticated Users)
  */
 router.post(
   "/",
-  auth,
+  authMiddleware,
   [
     body("members")
       .isArray({ min: 1 })
@@ -38,44 +44,44 @@ router.post(
 /**
  * @route   GET /api/v1/chats
  * @desc    Get all chats of logged-in user
- * @access  Private
+ * @access  Private (Authenticated Users)
  */
-router.get("/", auth, chatController.getUserChats);
+router.get("/", authMiddleware, chatController.getUserChats);
 
 /**
  * @route   GET /api/v1/chats/:chatId
  * @desc    Get a specific chat by ID
- * @access  Private
+ * @access  Private (Authenticated Users)
  */
 router.get(
   "/:chatId",
-  auth,
+  authMiddleware,
   [param("chatId").isMongoId().withMessage("Invalid Chat ID")],
   validateRequest,
   chatController.getChatById,
 );
 
 /**
- * PUT /api/v1/chats/:chatId
- * @desc Update chat details (e.g., group name, members)
- * @access Private
+ * @route   PUT /api/v1/chats/:chatId
+ * @desc    Update chat details (e.g., group name, members)
+ * @access  Private (Authenticated Users)
  */
 router.put(
   "/:chatId",
-  auth,
+  authMiddleware,
   [param("chatId").isMongoId().withMessage("Invalid Chat ID")],
   validateRequest,
   chatController.updateChat,
 );
 
 /**
- * @route DELETE /api/v1/chats/:chatId
- * @desc Delete a chat
- * @access Private
+ * @route   DELETE /api/v1/chats/:chatId
+ * @desc    Delete a chat
+ * @access  Private (Authenticated Users)
  */
 router.delete(
   "/:chatId",
-  auth,
+  authMiddleware,
   [param("chatId").isMongoId().withMessage("Invalid Chat ID")],
   validateRequest,
   chatController.deleteChat,

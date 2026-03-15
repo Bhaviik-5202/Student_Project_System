@@ -3,7 +3,7 @@ const Project = require("../models/project.model");
 /**
  * Find all projects matching a specific filter
  * @param {Object} filter - Mongoose filter object
- * @param {Object} options - Query options (sort, skip, limit, populate)
+ * @param {Object} options - Query options (sort, skip, limit, populate, select)
  * @returns {Promise<Array>} List of projects
  */
 exports.findAll = (filter = {}, options = {}) =>
@@ -11,16 +11,19 @@ exports.findAll = (filter = {}, options = {}) =>
     .sort(options.sort || { createdAt: -1 })
     .skip(options.skip || 0)
     .limit(options.limit || 0)
-    .populate(options.populate || "");
+    .populate(options.populate || "")
+    .select(options.select || "");
 
 /**
  * Locate a single project by its unique identifier
  * @param {string} id - Project ID
- * @param {Object} options - Query options (populate)
+ * @param {Object} options - Query options (populate, select)
  * @returns {Promise<Object|null>} Project document or null
  */
 exports.findById = (id, options = {}) =>
-  Project.findById(id).populate(options.populate || "");
+  Project.findById(id)
+    .populate(options.populate || "")
+    .select(options.select || "");
 
 /**
  * Persist a new project record to the database

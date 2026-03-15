@@ -3,7 +3,7 @@ const Resource = require("../models/resource.model");
 /**
  * Find all resources matching a specific filter
  * @param {Object} filter - Mongoose filter object
- * @param {Object} options - Query options (sort, skip, limit, populate)
+ * @param {Object} options - Query options (sort, skip, limit, populate, select)
  * @returns {Promise<Array>} List of resources
  */
 exports.findAll = (filter = {}, options = {}) =>
@@ -11,16 +11,19 @@ exports.findAll = (filter = {}, options = {}) =>
     .sort(options.sort || { createdAt: -1 })
     .skip(options.skip || 0)
     .limit(options.limit || 0)
-    .populate(options.populate || "");
+    .populate(options.populate || "")
+    .select(options.select || "");
 
 /**
  * Locate a single resource by its unique identifier
  * @param {string} id - Resource ID
- * @param {Object} options - Query options (populate)
+ * @param {Object} options - Query options (populate, select)
  * @returns {Promise<Object|null>} Resource document or null
  */
 exports.findById = (id, options = {}) =>
-  Resource.findById(id).populate(options.populate || "");
+  Resource.findById(id)
+    .populate(options.populate || "")
+    .select(options.select || "");
 
 /**
  * Persist a new resource record to the database

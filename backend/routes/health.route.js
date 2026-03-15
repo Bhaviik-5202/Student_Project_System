@@ -1,13 +1,7 @@
 /**
- * Health Check Route
+ * Health Check Routes
  * ------------------------------------------------------------------
- * Used for:
- * - CI/CD pipeline verification
- * - Load balancer health checks
- * - Uptime monitoring
- * - Deployment validation
- *
- * This endpoint should remain lightweight and publicly accessible.
+ * Used for system health monitoring and verification.
  */
 
 const express = require("express");

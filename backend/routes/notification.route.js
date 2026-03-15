@@ -2,66 +2,64 @@
  * Notification Routes
  * ------------------------------------------------------------------
  * Handles notification-related API endpoints.
- * All routes are protected via authentication middleware.
  */
 
 const express = require("express");
 const router = express.Router();
 
-// Controller
+// Controllers and Middlewares
 const notificationController = require("../controllers/notification.controller");
-
-// Middleware
 const authMiddleware = require("../middleware/auth.middleware");
 
+// Protect all routes
 router.use(authMiddleware);
 
 /**
  * @route   POST /api/v1/notifications
  * @desc    Create a new notification
- * @access  Private
+ * @access  Private (Authenticated Users)
  */
 router.post("/", notificationController.createNotification);
 
 /**
  * @route   GET /api/v1/notifications
  * @desc    Retrieve all notifications for authenticated user
- * @access  Private
+ * @access  Private (Authenticated Users)
  */
 router.get("/", notificationController.getNotifications);
 
 /**
  * @route   GET /api/v1/notifications/unread
  * @desc    Retrieve unread notifications
- * @access  Private
+ * @access  Private (Authenticated Users)
  */
 router.get("/unread", notificationController.getUnreadNotifications);
 
 /**
  * @route   GET /api/v1/notifications/:id
  * @desc    Retrieve notification by ID
- * @access  Private
+ * @access  Private (Authenticated Users)
  */
 router.get("/:id", notificationController.getNotificationById);
 
 /**
  * @route   PATCH /api/v1/notifications/:id/read
  * @desc    Mark notification as read
- * @access  Private
+ * @access  Private (Authenticated Users)
  */
 router.patch("/:id/read", notificationController.markAsRead);
 
 /**
  * @route   PATCH /api/v1/notifications/mark-all-read
  * @desc    Mark all notifications as read
- * @access  Private
+ * @access  Private (Authenticated Users)
  */
 router.patch("/mark-all-read", notificationController.markAllAsRead);
 
 /**
  * @route   DELETE /api/v1/notifications/:id
  * @desc    Delete a notification
- * @access  Private
+ * @access  Private (Authenticated Users)
  */
 router.delete("/:id", notificationController.deleteNotification);
 

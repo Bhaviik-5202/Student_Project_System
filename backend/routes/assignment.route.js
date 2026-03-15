@@ -2,20 +2,15 @@
  * Assignment Routes
  * ------------------------------------------------------------------
  * Handles all assignment-related API endpoints.
- * All routes are protected using authentication middleware.
  */
 
 const express = require("express");
 const { body } = require("express-validator");
-
 const router = express.Router();
 
-// Controller
+// Controllers and Middlewares
 const assignmentController = require("../controllers/assignment.controller");
-
-// Authentication Middleware
 const authMiddleware = require("../middleware/auth.middleware");
-
 
 /**
  * Validation rules for creating an assignment

@@ -7,49 +7,50 @@
 const express = require("express");
 const router = express.Router();
 
-// Controller
+// Controllers and Middlewares
 const meetingController = require("../controllers/meeting.controller");
+const authMiddleware = require("../middleware/auth.middleware");
 
 /**
  * @route   POST /api/v1/meetings
  * @desc    Create a new meeting
- * @access  Faculty, Admin
+ * @access  Private (Authenticated Users)
  */
-router.post("/", meetingController.createMeeting);
+router.post("/", authMiddleware, meetingController.createMeeting);
 
 /**
  * @route   GET /api/v1/meetings
  * @desc    Get all meetings
- * @access  Authenticated
+ * @access  Private (Authenticated Users)
  */
-router.get("/", meetingController.getAllMeetings);
+router.get("/", authMiddleware, meetingController.getAllMeetings);
 
 /**
  * @route   GET /api/v1/meetings/:id
  * @desc    Get meeting by ID
- * @access  Authenticated
+ * @access  Private (Authenticated Users)
  */
-router.get("/:id", meetingController.getMeetingById);
+router.get("/:id", authMiddleware, meetingController.getMeetingById);
 
 /**
  * @route   POST /api/v1/meetings/:id/join
  * @desc    Join a meeting
- * @access  Authenticated
+ * @access  Private (Authenticated Users)
  */
-router.post("/:id/join", meetingController.joinMeeting);
+router.post("/:id/join", authMiddleware, meetingController.joinMeeting);
 
 /**
  * @route   PUT /api/v1/meetings/:id
  * @desc    Update a meeting
- * @access  Faculty, Admin
+ * @access  Private (Authenticated Users)
  */
-router.put("/:id", meetingController.updateMeeting);
+router.put("/:id", authMiddleware, meetingController.updateMeeting);
 
 /**
  * @route   DELETE /api/v1/meetings/:id
  * @desc    Delete a meeting
- * @access  Faculty, Admin
+ * @access  Private (Authenticated Users)
  */
-router.delete("/:id", meetingController.deleteMeeting);
+router.delete("/:id", authMiddleware, meetingController.deleteMeeting);
 
 module.exports = router;

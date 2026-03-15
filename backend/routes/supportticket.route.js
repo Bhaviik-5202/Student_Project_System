@@ -2,18 +2,14 @@
  * Support Ticket Routes
  * ------------------------------------------------------------------
  * Handles CRUD operations for support tickets.
- * All routes require authentication.
  */
 
 const express = require("express");
 const { body } = require("express-validator");
-
 const router = express.Router();
 
-// Controller
+// Controllers and Middlewares
 const supportTicketController = require("../controllers/supportticket.controller");
-
-// Middlewares
 const authMiddleware = require("../middleware/auth.middleware");
 const validateRequest = require("../middleware/validateRequest");
 
@@ -27,7 +23,7 @@ router.post("/", authMiddleware, supportTicketController.createSupportTicket);
 /**
  * @route   GET /api/v1/supporttickets
  * @desc    Retrieve all support tickets
- * @access  Private (Admin, Support)
+ * @access  Private (Authenticated Users)
  */
 router.get("/", authMiddleware, supportTicketController.getAllSupportTickets);
 
@@ -41,7 +37,7 @@ router.get("/:id", authMiddleware, supportTicketController.getSupportTicketById)
 /**
  * @route   PUT /api/v1/supporttickets/:id
  * @desc    Update an existing support ticket
- * @access  Private (Admin, Support)
+ * @access  Private (Authenticated Users)
  */
 router.put(
   "/:id",
@@ -57,7 +53,7 @@ router.put(
 /**
  * @route   DELETE /api/v1/supporttickets/:id
  * @desc    Delete a support ticket
- * @access  Private (Admin, Support)
+ * @access  Private (Authenticated Users)
  */
 router.delete("/:id", authMiddleware, supportTicketController.deleteSupportTicket);
 

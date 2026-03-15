@@ -2,18 +2,14 @@
  * Authentication Routes
  * ------------------------------------------------------------------
  * Handles user authentication and authorization processes.
- * Includes registration, login, and password reset operations.
  */
 
 const express = require("express");
 const { body } = require("express-validator");
-
 const router = express.Router();
 
-// Controller
+// Controllers and Middlewares
 const authController = require("../controllers/auth.controller");
-
-// Middleware
 const validateRequest = require("../middleware/validateRequest");
 
 /**
@@ -59,14 +55,14 @@ router.post(
 
 /**
  * @route   POST /api/v1/auth/forgot-password
- * @desc    Handle forgot password request (Demo / Placeholder)
+ * @desc    Handle forgot password request
  * @access  Public
  */
 router.post("/forgot-password", authController.forgotPassword);
 
 /**
  * @route   POST /api/v1/auth/reset-password
- * @desc    Reset user password (Demo / Placeholder)
+ * @desc    Reset user password
  * @access  Public
  */
 router.post("/reset-password", authController.resetPassword);

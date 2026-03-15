@@ -3,7 +3,7 @@ const Meeting = require("../models/meeting.model");
 /**
  * Find all meetings matching a specific filter
  * @param {Object} filter - Mongoose filter object
- * @param {Object} options - Query options (sort, skip, limit, populate)
+ * @param {Object} options - Query options (sort, skip, limit, populate, select)
  * @returns {Promise<Array>} List of meetings
  */
 exports.findAll = (filter = {}, options = {}) =>
@@ -11,16 +11,19 @@ exports.findAll = (filter = {}, options = {}) =>
     .sort(options.sort || { date: 1 })
     .skip(options.skip || 0)
     .limit(options.limit || 0)
-    .populate(options.populate || "");
+    .populate(options.populate || "")
+    .select(options.select || "");
 
 /**
  * Locate a single meeting by its unique identifier
  * @param {string} id - Meeting ID
- * @param {Object} options - Query options (populate)
+ * @param {Object} options - Query options (populate, select)
  * @returns {Promise<Object|null>} Meeting document or null
  */
 exports.findById = (id, options = {}) =>
-  Meeting.findById(id).populate(options.populate || "");
+  Meeting.findById(id)
+    .populate(options.populate || "")
+    .select(options.select || "");
 
 /**
  * Persist a new meeting record to the database

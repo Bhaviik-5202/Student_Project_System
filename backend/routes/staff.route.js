@@ -2,16 +2,13 @@
  * Staff Routes
  * ------------------------------------------------------------------
  * Handles CRUD operations for staff members.
- * All routes are protected via authentication middleware.
  */
 
 const express = require("express");
 const router = express.Router();
 
-// Controller
+// Controllers and Middlewares
 const staffController = require("../controllers/staff.controller");
-
-// Authentication Middleware
 const authMiddleware = require("../middleware/auth.middleware");
 
 /**

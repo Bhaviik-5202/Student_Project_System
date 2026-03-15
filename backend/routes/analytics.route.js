@@ -2,16 +2,13 @@
  * Analytics Routes
  * ------------------------------------------------------------------
  * Provides system analytics and dashboard statistics.
- * Primarily intended for administrative insights.
  */
 
 const express = require("express");
 const router = express.Router();
 
-// Controller
+// Controllers and Middlewares
 const analyticsController = require("../controllers/analytics.controller");
-
-// Middlewares
 const authMiddleware = require("../middleware/auth.middleware");
 const roleMiddleware = require("../middleware/roleMiddleware");
 

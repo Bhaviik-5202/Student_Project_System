@@ -2,19 +2,14 @@
  * Portfolio Routes
  * ------------------------------------------------------------------
  * Handles student portfolio management.
- * Allows creating, retrieving, and updating portfolio records.
- * All routes are protected via authentication middleware.
  */
 
 const express = require("express");
 const { body } = require("express-validator");
-
 const router = express.Router();
 
-// Controller
+// Controllers and Middlewares
 const portfolioController = require("../controllers/portfolio.controller");
-
-// Middlewares
 const authMiddleware = require("../middleware/auth.middleware");
 const validateRequest = require("../middleware/validateRequest");
 

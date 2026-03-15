@@ -2,25 +2,21 @@
  * Evaluation Routes
  * ------------------------------------------------------------------
  * Handles CRUD operations for evaluations.
- * All routes require authentication.
  */
 
 const express = require("express");
 const { body } = require("express-validator");
-
 const router = express.Router();
 
-// Controller
+// Controllers and Middlewares
 const evaluationController = require("../controllers/evaluation.controller");
-
-// Middlewares
 const authMiddleware = require("../middleware/auth.middleware");
 const validateRequest = require("../middleware/validateRequest");
 
 /**
  * @route   POST /api/v1/evaluations
  * @desc    Create a new evaluation
- * @access  Private (Faculty, Admin)
+ * @access  Private (Authenticated Users)
  */
 router.post("/", authMiddleware, evaluationController.createEvaluation);
 
@@ -41,7 +37,7 @@ router.get("/:id", authMiddleware, evaluationController.getEvaluationById);
 /**
  * @route   PUT /api/v1/evaluations/:id
  * @desc    Update an existing evaluation
- * @access  Private (Faculty, Admin)
+ * @access  Private (Authenticated Users)
  */
 router.put(
   "/:id",
@@ -57,7 +53,7 @@ router.put(
 /**
  * @route   DELETE /api/v1/evaluations/:id
  * @desc    Delete an evaluation
- * @access  Private (Faculty, Admin)
+ * @access  Private (Authenticated Users)
  */
 router.delete("/:id", authMiddleware, evaluationController.deleteEvaluation);
 
