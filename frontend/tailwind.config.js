@@ -217,8 +217,6 @@ export default {
         "warning-pulse": "warningPulse 2s ease-in-out infinite",
         "error-shake": "errorShake 0.5s ease-in-out",
 
-        // Loading
-        "spin-slow": "spin 3s linear infinite",
         "ping-slow": "pingSlow 1.5s cubic-bezier(0, 0, 0.2, 1) infinite",
       },
 
@@ -418,7 +416,7 @@ export default {
     require("@tailwindcss/aspect-ratio"), // Aspect ratio utilities
 
     // Custom plugin for animation utilities
-    function ({ addUtilities, theme }) {
+    function ({ addUtilities }) {
       const delays = {
         100: "100ms",
         200: "200ms",

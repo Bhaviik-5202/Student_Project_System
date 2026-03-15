@@ -1,53 +1,26 @@
-import { useCallback, useMemo, useState, memo } from "react";
+import { useCallback, useState, useEffect, useMemo, memo } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../../../utils/api";
 
 const SprintPlanner = memo(() => {
   const navigate = useNavigate();
-  const sprints = useMemo(
-    () => [
-      {
-        id: 1,
-        name: "Sprint 1: Foundation",
-        start: "2024-01-01",
-        end: "2024-01-14",
-        velocity: 32,
-        completed: 28,
-        status: "completed",
-        tasks: 12,
-      },
-      {
-        id: 2,
-        name: "Sprint 2: Development",
-        start: "2024-01-15",
-        end: "2024-01-28",
-        velocity: 40,
-        completed: 35,
-        status: "completed",
-        tasks: 15,
-      },
-      {
-        id: 3,
-        name: "Sprint 3: Refinement",
-        start: "2024-01-29",
-        end: "2024-02-11",
-        velocity: 45,
-        completed: 30,
-        status: "in-progress",
-        tasks: 18,
-      },
-      {
-        id: 4,
-        name: "Sprint 4: Finalization",
-        start: "2024-02-12",
-        end: "2024-02-25",
-        velocity: 50,
-        completed: 0,
-        status: "planned",
-        tasks: 20,
-      },
-    ],
-    [],
-  );
+  const [sprints, setSprints] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSprints = async () => {
+      try {
+        const response = await api.get('/timeline/sprints');
+        const data = response.data?.data || [];
+        setSprints(data);
+      } catch (error) {
+        console.error("Failed to fetch sprints", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSprints();
+  }, []);
 
   const [activeSprint, setActiveSprint] = useState(3);
 
@@ -73,41 +46,21 @@ const SprintPlanner = memo(() => {
     todo: "bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200",
   };
 
-  const sprintTasks = useMemo(
-    () => [
-      {
-        task: "Design database schema",
-        assignee: "John Doe",
-        points: 8,
-        status: "completed",
-      },
-      {
-        task: "Create ER diagram",
-        assignee: "Jane Smith",
-        points: 5,
-        status: "completed",
-      },
-      {
-        task: "Implement user authentication",
-        assignee: "Robert Johnson",
-        points: 13,
-        status: "in-progress",
-      },
-      {
-        task: "Write API documentation",
-        assignee: "Sarah Williams",
-        points: 8,
-        status: "todo",
-      },
-      {
-        task: "Set up testing environment",
-        assignee: "Michael Brown",
-        points: 6,
-        status: "todo",
-      },
-    ],
-    [],
-  );
+  const [sprintTasks, setSprintTasks] = useState([]);
+
+  useEffect(() => {
+    if (!activeSprintData) return;
+    const fetchSprintTasks = async () => {
+      try {
+        const response = await api.get(`/timeline/sprints/${activeSprintData.id}/tasks`);
+        const data = response.data?.data || [];
+        setSprintTasks(data);
+      } catch (error) {
+        console.error("Failed to fetch sprint tasks", error);
+      }
+    };
+    fetchSprintTasks();
+  }, [activeSprintData]);
 
   const handleNavigate = useCallback(
     (path) => {
@@ -141,7 +94,10 @@ const SprintPlanner = memo(() => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        {loading ? (
+          <div className="p-8 text-center text-slate-500">Loading sprints...</div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           {/* Sprint List */}
           <div className="lg:col-span-1">
             <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
@@ -315,6 +271,7 @@ const SprintPlanner = memo(() => {
             )}
           </div>
         </div>
+        )}
       </div>
     </div>
   );

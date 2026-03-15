@@ -27,4 +27,28 @@ router.get(
   analyticsController.getDashboardStats,
 );
 
+/**
+ * @route   GET /api/v1/analytics/faculty-dashboard
+ * @desc    Retrieve faculty dashboard statistics
+ * @access  Private (Faculty Only)
+ */
+router.get(
+  "/faculty-dashboard",
+  authMiddleware,
+  roleMiddleware(["faculty"]),
+  analyticsController.getFacultyDashboardStats,
+);
+
+/**
+ * @route   GET /api/v1/analytics/student-dashboard
+ * @desc    Retrieve student dashboard statistics
+ * @access  Private (Student Only)
+ */
+router.get(
+  "/student-dashboard",
+  authMiddleware,
+  roleMiddleware(["student"]),
+  analyticsController.getStudentDashboardStats,
+);
+
 module.exports = router;

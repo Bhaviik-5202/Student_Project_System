@@ -1,11 +1,27 @@
-import api from '../utils/api';
+import api from "../utils/api";
 
-// Fetch all resources
 const resourceService = {
-	async getResources() {
-		const response = await api.get('/resources');
-		return response.data;
-	},
+  getAll: async (params = {}) => {
+    try {
+      return await api.get("/resources", { params });
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || "Failed to fetch resources",
+      };
+    }
+  },
+
+  getById: async (id) => {
+    try {
+      return await api.get(`/resources/${id}`);
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || "Failed to fetch resource",
+      };
+    }
+  },
 };
 
 export default resourceService;

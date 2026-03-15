@@ -1,6 +1,13 @@
 import React, { memo, useCallback } from "react";
 import PropTypes from "prop-types";
 
+/**
+ * Modal Component
+ * 
+ * A reusable, accessible modal dialog box. Features backdrop-blur 
+ * overlays, outside-click termination, and theme-adaptive styling 
+ * for consistent user interaction.
+ */
 const Modal = memo(({ isOpen, onClose, title, children }) => {
   const handleBackdropClick = useCallback(
     (e) => {

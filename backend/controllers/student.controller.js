@@ -1,111 +1,26 @@
 const studentService = require("../services/student.service");
 const sendResponse = require("../utils/response");
-const { validationResult } = require("express-validator");
 
 /**
- * Get all projects for a student
- * @route GET /students/:id/projects
- * @access Authenticated
+ * Student Controller
+ * Manages comprehensive student profile data, academic records, 
+ * and student-specific project associations.
  */
-exports.getStudentProjects = async (req, res) => {
-  try {
-    const result = await studentService.getProjects(req.params.id);
-
-    sendResponse(
-      res,
-      {
-        success: !result.error,
-        message: result.error
-          ? "Failed to fetch student projects"
-          : "Student projects fetched successfully",
-        data: result.data || null,
-        error: result.error || null,
-      },
-      result.error ? 404 : 200,
-    );
-  } catch (error) {
-    sendResponse(
-      res,
-      {
-        success: false,
-        message: "Internal server error",
-        data: null,
-        error: error.message,
-      },
-      500,
-    );
-  }
-};
 
 /**
- * Get all grades for a student
- * @route GET /students/:id/grades
- * @access Authenticated
- */
-exports.getStudentGrades = async (req, res) => {
-  try {
-    const result = await studentService.getGrades(req.params.id);
-
-    sendResponse(
-      res,
-      {
-        success: !result.error,
-        message: result.error
-          ? "Failed to fetch student grades"
-          : "Student grades fetched successfully",
-        data: result.data || null,
-        error: result.error || null,
-      },
-      result.error ? 404 : 200,
-    );
-  } catch (error) {
-    sendResponse(
-      res,
-      {
-        success: false,
-        message: "Internal server error",
-        data: null,
-        error: error.message,
-      },
-      500,
-    );
-  }
-};
-
-/**
- * Create a new student
+ * Register a new student profile
  * @route POST /students
- * @access Admin, Faculty
+ * @access Admin
  */
 exports.createStudent = async (req, res) => {
   try {
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-      return sendResponse(
-        res,
-        {
-          success: false,
-          message: errors
-            .array()
-            .map((e) => e.msg)
-            .join(", "),
-          data: null,
-          error: "Validation error",
-        },
-        400,
-      );
-    }
-
     const result = await studentService.create(req.body);
 
     sendResponse(
       res,
       {
         success: !result.error,
-        message: result.error
-          ? "Failed to create student"
-          : "Student created successfully",
+        message: result.error ? result.message : "Student created successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -126,13 +41,14 @@ exports.createStudent = async (req, res) => {
 };
 
 /**
- * Get all students
+ * Fetch all student profiles with pagination and filters
  * @route GET /students
- * @access Authenticated
+ * @access Admin, Faculty
  */
 exports.getAllStudents = async (req, res) => {
   try {
-    const result = await studentService.getAll();
+    const { page = 1, limit = 10, ...filters } = req.query;
+    const result = await studentService.getAll({ page, limit, filters });
 
     sendResponse(
       res,
@@ -141,8 +57,14 @@ exports.getAllStudents = async (req, res) => {
         message: result.error
           ? "Failed to fetch students"
           : "Students fetched successfully",
-        data: result.data || null,
+        data: result.data ? result.data.students : null,
         error: result.error || null,
+        pagination: result.data ? {
+          total: result.data.total,
+          page: result.data.page,
+          limit: result.data.limit,
+          totalPages: result.data.totalPages,
+        } : null,
       },
       result.error ? 400 : 200,
     );
@@ -161,7 +83,7 @@ exports.getAllStudents = async (req, res) => {
 };
 
 /**
- * Get a student by ID
+ * Get detailed profile information for a specific student
  * @route GET /students/:id
  * @access Authenticated
  */
@@ -173,9 +95,7 @@ exports.getStudentById = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error
-          ? "Student not found"
-          : "Student fetched successfully",
+        message: result.error ? "Student not found" : "Student fetched successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -196,39 +116,19 @@ exports.getStudentById = async (req, res) => {
 };
 
 /**
- * Update a student by ID
+ * Update student academic or profile information
  * @route PUT /students/:id
- * @access Admin, Faculty
+ * @access Admin, Student (own profile)
  */
 exports.updateStudent = async (req, res) => {
   try {
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-      return sendResponse(
-        res,
-        {
-          success: false,
-          message: errors
-            .array()
-            .map((e) => e.msg)
-            .join(", "),
-          data: null,
-          error: "Validation error",
-        },
-        400,
-      );
-    }
-
     const result = await studentService.update(req.params.id, req.body);
 
     sendResponse(
       res,
       {
         success: !result.error,
-        message: result.error
-          ? "Student not found"
-          : "Student updated successfully",
+        message: result.error ? "Student not found" : "Student updated successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -249,9 +149,9 @@ exports.updateStudent = async (req, res) => {
 };
 
 /**
- * Delete a student by ID
+ * Deactivate or remove a student record
  * @route DELETE /students/:id
- * @access Admin, Faculty
+ * @access Admin
  */
 exports.deleteStudent = async (req, res) => {
   try {
@@ -261,9 +161,7 @@ exports.deleteStudent = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error
-          ? "Student not found"
-          : "Student deleted successfully",
+        message: result.error ? "Student not found" : "Student deleted successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -275,6 +173,38 @@ exports.deleteStudent = async (req, res) => {
       {
         success: false,
         message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
+};
+
+/**
+ * Verify if a student ID exists (Internal/Direct check)
+ * @route GET /students/verify/:studentId
+ */
+exports.verifyStudentId = async (req, res) => {
+  try {
+    const result = await studentService.getById(req.params.studentId);
+    
+    sendResponse(
+      res,
+      {
+        success: !!result.data,
+        message: result.data ? "Student ID verified" : "Student ID not found",
+        data: { exists: !!result.data },
+        error: null,
+      },
+      result.data ? 200 : 404,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Verification failed",
         data: null,
         error: error.message,
       },

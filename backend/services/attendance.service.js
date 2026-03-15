@@ -1,4 +1,4 @@
-const Attendance = require("../models/attendance.model");
+const attendanceRepository = require("../repositories/attendance.repository");
 
 function response(error, data, message) {
   return { error, data, message };
@@ -11,9 +11,8 @@ function response(error, data, message) {
  */
 exports.markAttendance = async (data) => {
   try {
-    const attendance = new Attendance(data);
-    const savedAttendance = await attendance.save();
-    return response(false, savedAttendance, "Attendance marked");
+    const attendance = await attendanceRepository.create(data);
+    return response(false, attendance, "Attendance marked");
   } catch (err) {
     return response(true, null, err.message || "Failed to mark attendance");
   }
@@ -25,7 +24,7 @@ exports.markAttendance = async (data) => {
  */
 exports.getAllAttendance = async () => {
   try {
-    const attendance = await Attendance.find();
+    const attendance = await attendanceRepository.findAll();
     return response(false, attendance, "Attendance records fetched");
   } catch (err) {
     return response(
@@ -43,7 +42,7 @@ exports.getAllAttendance = async () => {
  */
 exports.getAttendanceByStudent = async (studentId) => {
   try {
-    const attendance = await Attendance.find({ student: studentId });
+    const attendance = await attendanceRepository.findAll({ student: studentId });
     return response(false, attendance, "Attendance records fetched");
   } catch (err) {
     return response(
@@ -52,4 +51,68 @@ exports.getAttendanceByStudent = async (studentId) => {
       err.message || "Failed to fetch attendance records",
     );
   }
+};
+
+/**
+ * Get attendance records by date
+ * @param {string} date - Date string
+ * @returns {Promise<Array>} List of attendance records for the date
+ */
+exports.getAttendanceByDate = async (date) => {
+    try {
+        const attendance = await attendanceRepository.findAll({ date: new Date(date) });
+        return response(false, attendance, "Attendance records fetched");
+    } catch (err) {
+        return response(
+            true,
+            null,
+            err.message || "Failed to fetch attendance records",
+        );
+    }
+};
+
+/**
+ * Get attendance record by ID
+ * @param {string} id - Attendance ID
+ * @returns {Promise<Object>} Attendance record
+ */
+exports.getAttendanceById = async (id) => {
+    try {
+        const attendance = await attendanceRepository.findById(id);
+        if (!attendance) return response(true, null, "Attendance record not found");
+        return response(false, attendance, "Attendance record fetched");
+    } catch (err) {
+        return response(true, null, err.message || "Failed to fetch attendance record");
+    }
+};
+
+/**
+ * Update attendance record by ID
+ * @param {string} id - Attendance ID
+ * @param {Object} data - Update data
+ * @returns {Promise<Object>} Updated attendance record
+ */
+exports.updateAttendance = async (id, data) => {
+    try {
+        const attendance = await attendanceRepository.update(id, data);
+        if (!attendance) return response(true, null, "Attendance record not found");
+        return response(false, attendance, "Attendance updated");
+    } catch (err) {
+        return response(true, null, err.message || "Failed to update attendance");
+    }
+};
+
+/**
+ * Delete attendance record by ID
+ * @param {string} id - Attendance ID
+ * @returns {Promise<Boolean>} Success status
+ */
+exports.deleteAttendance = async (id) => {
+    try {
+        const attendance = await attendanceRepository.remove(id);
+        if (!attendance) return response(true, null, "Attendance record not found");
+        return response(false, true, "Attendance deleted");
+    } catch (err) {
+        return response(true, null, err.message || "Failed to delete attendance");
+    }
 };

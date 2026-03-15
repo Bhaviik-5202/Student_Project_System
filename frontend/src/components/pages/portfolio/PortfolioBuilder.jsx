@@ -1,4 +1,5 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
+import projectService from "../../../services/projectService";
 
 const PortfolioBuilder = () => {
   const [portfolio, setPortfolio] = useState({
@@ -48,6 +49,17 @@ const PortfolioBuilder = () => {
   });
 
   const [activeSection, setActiveSection] = useState(1);
+  const [realProjects, setRealProjects] = useState([]);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      const res = await projectService.getAllProjects();
+      if (res.success) {
+        setRealProjects(res.data?.data || []);
+      }
+    };
+    fetchProjects();
+  }, []);
 
   const showNotification = useCallback((type, message) => {
     const notification = document.createElement("div");
@@ -319,19 +331,25 @@ const PortfolioBuilder = () => {
 
                       {section.type === "projects" && (
                         <div className="grid grid-cols-2 gap-4">
-                          {[1, 2].map((proj) => (
-                            <div
-                              key={proj}
-                              className="border border-gray-200 rounded-lg p-4"
-                            >
-                              <h3 className="font-bold mb-2">
-                                Sample Project {proj}
-                              </h3>
-                              <p className="text-sm text-gray-600">
-                                Project description goes here...
-                              </p>
+                          {realProjects.length > 0 ? (
+                            realProjects.map((proj) => (
+                              <div
+                                key={proj._id || proj.id}
+                                className="border border-gray-200 rounded-lg p-4"
+                              >
+                                <h3 className="font-bold mb-2">
+                                  {proj.title}
+                                </h3>
+                                <p className="text-sm text-gray-600 line-clamp-2">
+                                  {proj.abstract || proj.description || "No description provided."}
+                                </p>
+                              </div>
+                            ))
+                          ) : (
+                            <div className="col-span-2 text-center text-gray-500 py-4">
+                              No projects available to display.
                             </div>
-                          ))}
+                          )}
                         </div>
                       )}
 

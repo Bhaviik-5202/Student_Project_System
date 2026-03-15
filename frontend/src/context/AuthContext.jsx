@@ -9,26 +9,30 @@ import React, {
 import toast from "react-hot-toast";
 
 import { LOCAL_STORAGE_KEYS } from "../utils/constants";
-
-const AuthContext = createContext(null);
-
 import authService from "../services/authService";
 
-// Token expiry time (24 hours in milliseconds)
-const TOKEN_EXPIRY_TIME = 24 * 60 * 60 * 1000;
+/**
+ * Authentication Context for managing user sessions and permissions
+ */
+const AuthContext = createContext(null);
 
-// Refresh warning time (1 hour before expiry)
+// Token expiry configuration
+const TOKEN_EXPIRY_TIME = 24 * 60 * 60 * 1000;
 const TOKEN_REFRESH_WARNING = 60 * 60 * 1000;
 
-// Storage keys (use global constants)
 const STORAGE_KEYS = Object.freeze({
   TOKEN: LOCAL_STORAGE_KEYS.TOKEN,
   USER: LOCAL_STORAGE_KEYS.USER,
   USER_ROLE: LOCAL_STORAGE_KEYS.USER_ROLE,
   REFRESH_TOKEN: LOCAL_STORAGE_KEYS.REFRESH_TOKEN,
-  TIMESTAMP: "token_timestamp", // keep for session expiry logic
+  TIMESTAMP: "token_timestamp",
 });
 
+/**
+ * Custom hook to access authentication state and methods
+ * @throws {Error} If used outside of AuthProvider
+ * @returns {Object} Auth context value
+ */
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -37,13 +41,18 @@ export const useAuth = () => {
   return context;
 };
 
+/**
+ * AuthProvider component that wraps the application and provides auth state
+ */
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [sessionExpiringSoon, setSessionExpiringSoon] = useState(false);
 
-  // Safe localStorage wrapper (memoized)
+  /**
+   * Safe localStorage wrapper with error handling
+   */
   const safeLocalStorage = useMemo(
     () => ({
       getItem: (key) => {
@@ -87,14 +96,20 @@ export const AuthProvider = ({ children }) => {
     [],
   );
 
-  // Check if token is expired
+  /**
+   * Check if the authentication token has expired
+   * @param {number} tokenTimestamp - The timestamp when the token was issued
+   * @returns {boolean} True if expired
+   */
   const isTokenExpired = useCallback((tokenTimestamp) => {
     if (!tokenTimestamp) return true;
     const now = Date.now();
     return now - tokenTimestamp > TOKEN_EXPIRY_TIME;
   }, []);
 
-  // Clear authentication data
+  /**
+   * Clear all authentication data from state and storage
+   */
   const clearAuthData = useCallback(() => {
     safeLocalStorage.clear();
     setUser(null);
@@ -102,7 +117,9 @@ export const AuthProvider = ({ children }) => {
     setSessionExpiringSoon(false);
   }, [safeLocalStorage]);
 
-  // Initialize auth state
+  /**
+   * Initialize authentication status on mount
+   */
   useEffect(() => {
     const initAuth = () => {
       try {
@@ -110,7 +127,6 @@ export const AuthProvider = ({ children }) => {
         const storedUser = safeLocalStorage.getItem(STORAGE_KEYS.USER);
         const tokenTimestamp = safeLocalStorage.getItem(STORAGE_KEYS.TIMESTAMP);
 
-        // Prevent clearing auth if already on /login or /register
         const isAuthPage = ["/login", "/register"].includes(
           window.location.pathname,
         );
@@ -145,9 +161,13 @@ export const AuthProvider = ({ children }) => {
     initAuth();
   }, [clearAuthData, isTokenExpired, safeLocalStorage]);
 
-  // Login
-  const login = useCallback(async (email, password, role) => {
-    console
+  /**
+   * Log into the application
+   * @param {string} email - User email
+   * @param {string} password - User password
+   * @returns {Promise<Object>} Status of the login attempt
+   */
+  const login = useCallback(async (email, password) => {
     try {
       setIsLoading(true);
       if (!email || !password) {
@@ -158,8 +178,7 @@ export const AuthProvider = ({ children }) => {
         const { user, token } = res.data;
         setUser(user);
         setIsAuthenticated(true);
-        // Optionally store timestamp for session expiry logic
-        safeLocalStorage.setItem("token_timestamp", Date.now().toString());
+        safeLocalStorage.setItem(STORAGE_KEYS.TIMESTAMP, Date.now().toString());
         return { success: true, user, token };
       } else {
         return { success: false, message: res.message || "Login failed" };
@@ -172,9 +191,12 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [safeLocalStorage]);
 
-  // Logout
+  /**
+   * Log out from the application
+   * @param {boolean} showMessage - Whether to display a logout toast
+   */
   const logout = useCallback(
     (showMessage = true) => {
       clearAuthData();
@@ -185,7 +207,11 @@ export const AuthProvider = ({ children }) => {
     [clearAuthData],
   );
 
-  // Register
+  /**
+   * Register a new user account
+   * @param {Object} formData - New user data
+   * @returns {Promise<Object>} Status of the registration attempt
+   */
   const register = useCallback(async (formData) => {
     try {
       setIsLoading(true);
@@ -209,7 +235,11 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  // Update user profile
+  /**
+   * Update the current user's locally stored profile data
+   * @param {Object} updates - Attributes to update
+   * @returns {Object} Updated status and user data
+   */
   const updateUser = useCallback(
     (updates) => {
       try {
@@ -235,13 +265,21 @@ export const AuthProvider = ({ children }) => {
         return { success: false, message: "Failed to update user profile" };
       }
     },
-    [user],
+    [user, safeLocalStorage],
   );
 
-  // Check if user has specific role
+  /**
+   * Check if the authenticated user has a specific role
+   * @param {string} role - The role to check for
+   * @returns {boolean} True if user has the role
+   */
   const hasRole = useCallback((role) => user?.role === role, [user]);
 
-  // Check if user has any of the specified roles
+  /**
+   * Check if the authenticated user has any of the specified roles
+   * @param {string[]} roles - Array of roles to check against
+   * @returns {boolean} True if user has any of the roles
+   */
   const hasAnyRole = useCallback(
     (roles) => {
       if (!user?.role || !Array.isArray(roles)) return false;
@@ -250,7 +288,10 @@ export const AuthProvider = ({ children }) => {
     [user],
   );
 
-  // Refresh session (extend token validity)
+  /**
+   * Extend the current session duration
+   * @returns {Object} Session refresh status
+   */
   const refreshSession = useCallback(() => {
     try {
       if (!user || !isAuthenticated) {
@@ -269,7 +310,10 @@ export const AuthProvider = ({ children }) => {
     }
   }, [user, isAuthenticated, safeLocalStorage]);
 
-  // Get session time remaining
+  /**
+   * Calculate session time remaining in milliseconds
+   * @returns {number} Time remaining
+   */
   const getSessionTimeRemaining = useCallback(() => {
     try {
       const tokenTimestamp = safeLocalStorage.getItem(STORAGE_KEYS.TIMESTAMP);
@@ -286,7 +330,6 @@ export const AuthProvider = ({ children }) => {
     }
   }, [safeLocalStorage]);
 
-  // Memoize context value to prevent unnecessary re-renders
   const contextValue = useMemo(
     () => ({
       user,

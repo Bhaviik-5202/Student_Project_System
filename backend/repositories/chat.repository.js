@@ -19,3 +19,4 @@ exports.update = (id, data) =>
   });
 
 exports.remove = (id) => Chat.findByIdAndDelete(id);
+exports.count = (filter = {}) => Chat.countDocuments(filter);

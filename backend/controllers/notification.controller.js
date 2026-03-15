@@ -1,110 +1,67 @@
-const mongoose = require("mongoose");
-const Notification = require("../models/notification.model");
+const notificationService = require("../services/notification.service");
 const sendResponse = require("../utils/response");
 
 /**
- * Create Notification
- * @route   POST /api/v1/notifications
- * @access  Private (Admin/System recommended)
+ * Notification Controller
+ * Manages system alerts, user notifications, and message broadcasts.
+ */
+
+/**
+ * Disseminate a new notification alert
+ * @route POST /notifications
+ * @access admin, faculty
  */
 exports.createNotification = async (req, res) => {
   try {
-    const { user, message, type } = req.body;
+    const result = await notificationService.create(req.body);
 
-    if (!user || !message) {
-      return sendResponse(
-        res,
-        {
-          success: false,
-          message: "User and message are required",
-          data: null,
-          error: "Validation error",
-        },
-        400,
-      );
-    }
-
-    if (!mongoose.Types.ObjectId.isValid(user)) {
-      return sendResponse(
-        res,
-        {
-          success: false,
-          message: "Invalid user ID",
-          data: null,
-          error: "Invalid ObjectId",
-        },
-        400,
-      );
-    }
-
-    const notification = await Notification.create({
-      user,
-      message,
-      type: type || "general",
-    });
-
-    return sendResponse(
+    sendResponse(
       res,
       {
-        success: true,
-        message: "Notification created successfully",
-        data: notification,
-        error: null,
+        success: !result.error,
+        message: result.error ? result.message : "Notification created successfully",
+        data: result.data || null,
+        error: result.error || null,
       },
-      201,
+      result.error ? 400 : 201,
     );
   } catch (error) {
-    return sendResponse(
+    sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: "Failed to create notification",
         data: null,
         error: error.message,
       },
-      500,
+      400,
     );
   }
 };
 
 /**
- * Get All Notifications (Pagination Supported)
- * @route   GET /api/v1/notifications
- * @access  Private
+ * Fetch all notifications for the authenticated user
+ * @route GET /notifications
+ * @access Authenticated
  */
 exports.getNotifications = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const result = await notificationService.getByUserId(req.user.id);
 
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-
-    const skip = (page - 1) * limit;
-
-    const notifications = await Notification.find({ user: userId })
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
-
-    const total = await Notification.countDocuments({ user: userId });
-
-    return sendResponse(
+    sendResponse(
       res,
       {
-        success: true,
-        message: "Notifications fetched successfully",
-        data: {
-          total,
-          page,
-          pages: Math.ceil(total / limit),
-          notifications,
-        },
-        error: null,
+        success: !result.error,
+        message: result.error
+          ? "Failed to fetch notifications"
+          : "Notifications fetched successfully",
+        data: result.data || null,
+        error: result.error || null,
       },
-      200,
+      result.error ? 400 : 200,
     );
   } catch (error) {
-    return sendResponse(
+    sendResponse(
       res,
       {
         success: false,
@@ -118,162 +75,26 @@ exports.getNotifications = async (req, res) => {
 };
 
 /**
- * Get Unread Notifications
- * @route   GET /api/v1/notifications/unread
- * @access  Private
- */
-exports.getUnreadNotifications = async (req, res) => {
-  try {
-    const userId = req.user.id;
-
-    const notifications = await Notification.find({
-      user: userId,
-      read: false,
-    }).sort({ createdAt: -1 });
-
-    return sendResponse(
-      res,
-      {
-        success: true,
-        message: "Unread notifications fetched successfully",
-        data: notifications,
-        error: null,
-      },
-      200,
-    );
-  } catch (error) {
-    return sendResponse(
-      res,
-      {
-        success: false,
-        message: "Internal server error",
-        data: null,
-        error: error.message,
-      },
-      500,
-    );
-  }
-};
-
-/**
- * Get Notification By ID
- * @route   GET /api/v1/notifications/:id
- * @access  Private
- */
-exports.getNotificationById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const userId = req.user.id;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return sendResponse(
-        res,
-        {
-          success: false,
-          message: "Invalid notification ID",
-          data: null,
-          error: "Invalid ObjectId",
-        },
-        400,
-      );
-    }
-
-    const notification = await Notification.findOne({
-      _id: id,
-      user: userId,
-    });
-
-    if (!notification) {
-      return sendResponse(
-        res,
-        {
-          success: false,
-          message: "Notification not found",
-          data: null,
-          error: "Not found",
-        },
-        404,
-      );
-    }
-
-    return sendResponse(
-      res,
-      {
-        success: true,
-        message: "Notification fetched successfully",
-        data: notification,
-        error: null,
-      },
-      200,
-    );
-  } catch (error) {
-    return sendResponse(
-      res,
-      {
-        success: false,
-        message: "Internal server error",
-        data: null,
-        error: error.message,
-      },
-      500,
-    );
-  }
-};
-
-/**
- * Mark Single Notification As Read
- * @route   PATCH /api/v1/notifications/:id/read
- * @access  Private
+ * Mark a specific notification as read by the user
+ * @route PUT /notifications/:id/read
+ * @access Authenticated
  */
 exports.markAsRead = async (req, res) => {
   try {
-    const { id } = req.params;
-    const userId = req.user.id;
+    const result = await notificationService.markAsRead(req.params.id);
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return sendResponse(
-        res,
-        {
-          success: false,
-          message: "Invalid notification ID",
-          data: null,
-          error: "Invalid ObjectId",
-        },
-        400,
-      );
-    }
-
-    const notification = await Notification.findOneAndUpdate(
-      { _id: id, user: userId },
-      { read: true },
-      { new: true },
-    );
-
-    if (!notification) {
-      return sendResponse(
-        res,
-        {
-          success: false,
-          message: "Notification not found",
-          data: null,
-          error: "Not found",
-        },
-        404,
-      );
-    }
-
-    return sendResponse(
+    sendResponse(
       res,
       {
-        success: true,
-        message: "Notification marked as read",
-        data: notification,
-        error: null,
+        success: !result.error,
+        message: result.error ? "Notification not found" : "Notification marked as read",
+        data: result.data || null,
+        error: result.error || null,
       },
-      200,
+      result.error ? 404 : 200,
     );
   } catch (error) {
-    return sendResponse(
+    sendResponse(
       res,
       {
         success: false,
@@ -287,31 +108,26 @@ exports.markAsRead = async (req, res) => {
 };
 
 /**
- * Mark All Notifications As Read
- * @route   PATCH /api/v1/notifications/mark-all-read
- * @access  Private
+ * Bulk mark all unread notifications as read for current user
+ * @route PUT /notifications/mark-all-read
+ * @access Authenticated
  */
 exports.markAllAsRead = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const result = await notificationService.markAllRead(req.user.id);
 
-    await Notification.updateMany(
-      { user: userId, read: false },
-      { read: true },
-    );
-
-    return sendResponse(
+    sendResponse(
       res,
       {
-        success: true,
-        message: "All notifications marked as read",
-        data: null,
-        error: null,
+        success: !result.error,
+        message: result.error ? result.message : "All notifications marked as read",
+        data: result.data || null,
+        error: result.error || null,
       },
-      200,
+      result.error ? 400 : 200,
     );
   } catch (error) {
-    return sendResponse(
+    sendResponse(
       res,
       {
         success: false,
@@ -325,58 +141,93 @@ exports.markAllAsRead = async (req, res) => {
 };
 
 /**
- * Delete Notification
- * @route   DELETE /api/v1/notifications/:id
- * @access  Private
+ * Terminate a notification entry
+ * @route DELETE /notifications/:id
+ * @access admin, user (own)
  */
 exports.deleteNotification = async (req, res) => {
   try {
-    const { id } = req.params;
-    const userId = req.user.id;
+    const result = await notificationService.remove(req.params.id);
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return sendResponse(
-        res,
-        {
-          success: false,
-          message: "Invalid notification ID",
-          data: null,
-          error: "Invalid ObjectId",
-        },
-        400,
-      );
-    }
-
-    const notification = await Notification.findOneAndDelete({
-      _id: id,
-      user: userId,
-    });
-
-    if (!notification) {
-      return sendResponse(
-        res,
-        {
-          success: false,
-          message: "Notification not found",
-          data: null,
-          error: "Not found",
-        },
-        404,
-      );
-    }
-
-    return sendResponse(
+    sendResponse(
       res,
       {
-        success: true,
-        message: "Notification deleted successfully",
-        data: notification,
-        error: null,
+        success: !result.error,
+        message: result.error ? "Notification not found" : "Notification deleted successfully",
+        data: result.data || null,
+        error: result.error || null,
       },
-      200,
+      result.error ? 404 : 200,
     );
   } catch (error) {
-    return sendResponse(
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
+};
+/**
+ * Fetch only unread notifications for the user
+ * @route GET /notifications/unread
+ * @access Authenticated
+ */
+exports.getUnreadNotifications = async (req, res) => {
+  try {
+    const result = await notificationService.getUnreadByUserId(req.user.id);
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? "Failed to fetch unread notifications"
+          : "Unread notifications fetched successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 400 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
+};
+
+/**
+ * Fetch specific notification details by ID
+ * @route GET /notifications/:id
+ * @access Authenticated (Owner)
+ */
+exports.getNotificationById = async (req, res) => {
+  try {
+    const result = await notificationService.getById(req.params.id);
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error ? "Notification not found" : "Notification fetched successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 404 : 200,
+    );
+  } catch (error) {
+    sendResponse(
       res,
       {
         success: false,

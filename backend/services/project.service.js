@@ -1,83 +1,133 @@
-const Project = require("../models/project.model");
+const projectRepository = require("../repositories/project.repository");
 
 /**
- * Create a new project
- * @param {Object} data - Project data
- * @returns {Promise<Object>} Created project
+ * Standardized response helper for services
+ * @param {boolean} error - Whether the operation failed
+ * @param {any} data - The payload to return
+ * @param {string} message - Descriptive status message
+ * @returns {Object} { error, data, message }
  */
-exports.createProject = async (data) => {
+const response = (error, data, message) => ({ error, data, message });
+
+/**
+ * Create a new project record
+ * @param {Object} data - Project data payload
+ * @returns {Promise<Object>} Formatted service response with new project data
+ */
+exports.create = async (data) => {
   try {
-    const project = new Project(data);
-    const savedProject = await project.save();
-    return savedProject;
+    const project = await projectRepository.create(data);
+    return response(false, project, "Project created successfully");
   } catch (err) {
-    throw new Error(err.message || "Failed to create project");
+    return response(true, null, err.message || "Failed to create project");
   }
 };
 
 /**
- * Get all projects with pagination and filters
- * @param {Object} params - Pagination and filter params
- * @param {number} params.page - Page number
- * @param {number} params.limit - Number of items per page
- * @param {Object} params.filters - Filter object
- * @returns {Promise<Object>} Paginated projects
+ * Retrieve all projects with pagination and active filtering
+ * @param {Object} params - Query parameters
+ * @param {number} params.page - Current page number
+ * @param {number} params.limit - Records per page
+ * @param {Object} params.filters - Mongoose filter object
+ * @returns {Promise<Object>} Formatted service response with paginated results
  */
-exports.getAllProjects = async ({ page = 1, limit = 10, filters = {} }) => {
+exports.getAll = async ({ page = 1, limit = 10, filters = {} }) => {
   try {
     const skip = (page - 1) * limit;
     const [projects, total] = await Promise.all([
-      Project.find(filters).skip(skip).limit(limit),
-      Project.countDocuments(filters),
+      projectRepository.findAll(filters, { skip, limit, sort: { createdAt: -1 } }),
+      projectRepository.count(filters),
     ]);
-    return {
+    return response(false, {
       projects,
       total,
       page,
       limit,
       totalPages: Math.ceil(total / limit),
-    };
+    }, "Projects fetched successfully");
   } catch (err) {
-    throw new Error(err.message || "Failed to fetch projects");
+    return response(true, null, err.message || "Failed to fetch projects");
   }
 };
 
 /**
- * Get a project by ID
+ * Fetch a single project by its unique ID
  * @param {string} id - Project ID
- * @returns {Promise<Object|null>} Project or null
+ * @returns {Promise<Object>} Formatted service response with project details
  */
-exports.getProjectById = async (id) => {
+exports.getById = async (id) => {
   try {
-    return await Project.findById(id);
+    const project = await projectRepository.findById(id);
+    if (!project) return response(true, null, "Project not found");
+    return response(false, project, "Project fetched successfully");
   } catch (err) {
-    throw new Error(err.message || "Failed to fetch project");
+    return response(true, null, err.message || "Failed to fetch project");
   }
 };
 
 /**
- * Update a project by ID
+ * Update existing project metadata or state
  * @param {string} id - Project ID
- * @param {Object} data - Update data
- * @returns {Promise<Object|null>} Updated project or null
+ * @param {Object} data - Updated attributes
+ * @returns {Promise<Object>} Formatted service response with updated project
  */
-exports.updateProject = async (id, data) => {
+exports.update = async (id, data) => {
   try {
-    return await Project.findByIdAndUpdate(id, data, { new: true });
+    const project = await projectRepository.update(id, data);
+    if (!project) return response(true, null, "Project not found");
+    return response(false, project, "Project updated successfully");
   } catch (err) {
-    throw new Error(err.message || "Failed to update project");
+    return response(true, null, err.message || "Failed to update project");
   }
 };
 
 /**
- * Delete a project by ID
+ * Permanently remove a project from the system
  * @param {string} id - Project ID
- * @returns {Promise<Object|null>} Deleted project or null
+ * @returns {Promise<Object>} Formatted service response
  */
-exports.deleteProject = async (id) => {
+exports.remove = async (id) => {
   try {
-    return await Project.findByIdAndDelete(id);
+    const project = await projectRepository.remove(id);
+    if (!project) return response(true, null, "Project not found");
+    return response(false, null, "Project deleted successfully");
   } catch (err) {
-    throw new Error(err.message || "Failed to delete project");
+    return response(true, null, err.message || "Failed to delete project");
   }
 };
+
+/**
+ * Retrieve a list of all members associated with a project
+ * @param {string} id - Project ID
+ * @returns {Promise<Object>} Formatted service response with members list
+ */
+exports.getMembers = async (id) => {
+    try {
+        const project = await projectRepository.findById(id, { populate: "members" });
+        if (!project) return response(true, null, "Project not found");
+        return response(false, project.members, "Members fetched successfully");
+    } catch (err) {
+        return response(true, null, err.message);
+    }
+}
+
+/**
+ * Add a user to the project's member list
+ * @param {string} id - Project ID
+ * @param {string} userId - User ID to add
+ * @returns {Promise<Object>} Formatted service response with updated project details
+ */
+exports.addMember = async (id, userId) => {
+    try {
+        const project = await projectRepository.update(
+            id,
+            { $addToSet: { members: userId } }
+        );
+        if (!project) return response(true, null, "Project not found");
+        // Re-populate members
+        const updatedProject = await projectRepository.findById(id, { populate: "members" });
+        return response(false, updatedProject, "Member added successfully");
+    } catch (err) {
+        return response(true, null, err.message);
+    }
+}

@@ -2,9 +2,14 @@ const knowledgeBaseService = require("../services/knowledgebase.service");
 const sendResponse = require("../utils/response");
 
 /**
- * Create a new knowledge base entry
- * @route POST /knowledgebase
- * @access Admin, Faculty
+ * KnowledgeBase Controller
+ * Manages documentation, articles, and knowledge sharing assets for the system.
+ */
+
+/**
+ * Create a new article or document in the knowledge base
+ * @route POST /knowledge-base
+ * @access admin, faculty
  */
 exports.createKnowledgeBase = async (req, res) => {
   try {
@@ -14,9 +19,7 @@ exports.createKnowledgeBase = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error
-          ? "Failed to create knowledge base entry"
-          : "Knowledge base entry created successfully",
+        message: result.error ? result.message : "Article created successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -27,18 +30,18 @@ exports.createKnowledgeBase = async (req, res) => {
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: "Failed to create article",
         data: null,
         error: error.message,
       },
-      500,
+      400,
     );
   }
 };
 
 /**
- * Get all knowledge base entries
- * @route GET /knowledgebase
+ * Fetch all articles from the knowledge base
+ * @route GET /knowledge-base
  * @access Authenticated
  */
 exports.getAllKnowledgeBases = async (req, res) => {
@@ -50,8 +53,8 @@ exports.getAllKnowledgeBases = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to fetch knowledge base entries"
-          : "Knowledge base entries fetched successfully",
+          ? "Failed to fetch articles"
+          : "Articles fetched successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -72,8 +75,8 @@ exports.getAllKnowledgeBases = async (req, res) => {
 };
 
 /**
- * Get a knowledge base entry by ID
- * @route GET /knowledgebase/:id
+ * Get detailed content for a specific knowledge base article
+ * @route GET /knowledge-base/:id
  * @access Authenticated
  */
 exports.getKnowledgeBaseById = async (req, res) => {
@@ -84,9 +87,7 @@ exports.getKnowledgeBaseById = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error
-          ? "Knowledge base entry not found"
-          : "Knowledge base entry fetched successfully",
+        message: result.error ? "Article not found" : "Article fetched successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -107,9 +108,9 @@ exports.getKnowledgeBaseById = async (req, res) => {
 };
 
 /**
- * Update a knowledge base entry by ID
- * @route PUT /knowledgebase/:id
- * @access Admin, Faculty
+ * Update article content or metadata
+ * @route PUT /knowledge-base/:id
+ * @access admin, faculty
  */
 exports.updateKnowledgeBase = async (req, res) => {
   try {
@@ -119,9 +120,7 @@ exports.updateKnowledgeBase = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error
-          ? "Failed to update knowledge base entry"
-          : "Knowledge base entry updated successfully",
+        message: result.error ? "Article not found" : "Article updated successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -142,9 +141,9 @@ exports.updateKnowledgeBase = async (req, res) => {
 };
 
 /**
- * Delete a knowledge base entry by ID
- * @route DELETE /knowledgebase/:id
- * @access Admin, Faculty
+ * Permanently remove an article from the knowledge base
+ * @route DELETE /knowledge-base/:id
+ * @access admin
  */
 exports.deleteKnowledgeBase = async (req, res) => {
   try {
@@ -154,9 +153,7 @@ exports.deleteKnowledgeBase = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error
-          ? "Failed to delete knowledge base entry"
-          : "Knowledge base entry deleted successfully",
+        message: result.error ? "Article not found" : "Article deleted successfully",
         data: result.data || null,
         error: result.error || null,
       },

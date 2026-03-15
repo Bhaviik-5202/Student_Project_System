@@ -1,58 +1,27 @@
-import { useCallback, useMemo, memo } from "react";
+import { useCallback, useState, useEffect, useMemo, memo } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../../../utils/api";
 
 const MilestoneTracker = memo(() => {
   const navigate = useNavigate();
-  const project = useMemo(
-    () => ({
-      name: "Database Design Project",
-      milestones: [
-        {
-          id: 1,
-          name: "Project Proposal",
-          dueDate: "2024-01-10",
-          status: "completed",
-          progress: 100,
-        },
-        {
-          id: 2,
-          name: "Requirements Gathering",
-          dueDate: "2024-01-20",
-          status: "in-progress",
-          progress: 75,
-        },
-        {
-          id: 3,
-          name: "Database Design",
-          dueDate: "2024-02-01",
-          status: "pending",
-          progress: 25,
-        },
-        {
-          id: 4,
-          name: "Implementation",
-          dueDate: "2024-02-15",
-          status: "pending",
-          progress: 0,
-        },
-        {
-          id: 5,
-          name: "Testing",
-          dueDate: "2024-02-28",
-          status: "pending",
-          progress: 0,
-        },
-        {
-          id: 6,
-          name: "Final Submission",
-          dueDate: "2024-03-15",
-          status: "pending",
-          progress: 0,
-        },
-      ],
-    }),
-    [],
-  );
+  const [project, setProject] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchMilestones = async () => {
+      try {
+        const response = await api.get('/timeline/milestones/current');
+        if (response.data?.data) {
+          setProject(response.data.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch milestone data", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMilestones();
+  }, []);
 
   const statusStyles = {
     completed: {
@@ -79,6 +48,7 @@ const MilestoneTracker = memo(() => {
   };
 
   const stats = useMemo(() => {
+    if (!project || !project.milestones) return { completed: 0, inProgress: 0, pending: 0 };
     const completed = project.milestones.filter(
       (m) => m.status === "completed",
     ).length;
@@ -90,7 +60,7 @@ const MilestoneTracker = memo(() => {
     ).length;
 
     return { completed, inProgress, pending };
-  }, [project.milestones]);
+  }, [project]);
 
   const handleNavigate = useCallback(
     (path) => {
@@ -115,7 +85,7 @@ const MilestoneTracker = memo(() => {
                 Milestone Tracker
               </h1>
               <p className="text-slate-600 dark:text-slate-300">
-                {project.name}
+                {project ? project.name : "Loading..."}
               </p>
             </div>
             <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
@@ -125,8 +95,14 @@ const MilestoneTracker = memo(() => {
         </div>
 
         {/* Timeline Visualization */}
-        <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 p-6 mb-8">
-          <div className="relative">
+        {loading ? (
+          <div className="p-8 text-center text-slate-500">Loading milestones...</div>
+        ) : !project ? (
+          <div className="p-8 text-center text-slate-500">No milestone data found</div>
+        ) : (
+          <>
+            <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 p-6 mb-8">
+              <div className="relative">
             {/* Timeline Line */}
             <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-slate-300 dark:bg-slate-700"></div>
 
@@ -218,9 +194,11 @@ const MilestoneTracker = memo(() => {
             <div className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">
               {stats.pending}
             </div>
-            <div className="text-slate-600 dark:text-slate-300">Pending</div>
+              <div className="text-slate-600 dark:text-slate-300">Pending</div>
+            </div>
           </div>
-        </div>
+        </>
+        )}
       </div>
     </div>
   );

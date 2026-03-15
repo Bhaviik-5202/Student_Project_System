@@ -33,8 +33,9 @@ before(async function () {
 describe("Resource API", function () {
   const resourceData = {
     title: "Test Resource",
+    description: "A test resource",
     type: "document",
-    url: "http://example.com/resource.pdf",
+    url: "https://example.com/test",
   };
 
   it("should create a new resource", async function () {

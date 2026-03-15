@@ -1,63 +1,25 @@
-import { useState, useMemo, memo } from "react";
+import { useState, useEffect, useMemo, memo } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../../../utils/api";
 
 const GradeDistribution = memo(() => {
   const navigate = useNavigate();
-  const courses = useMemo(
-    () => [
-      {
-        id: 1,
-        name: "Software Engineering",
-        avgGrade: 85,
-        a: 12,
-        b: 15,
-        c: 8,
-        d: 3,
-        f: 2,
-      },
-      {
-        id: 2,
-        name: "Database Systems",
-        avgGrade: 82,
-        a: 10,
-        b: 18,
-        c: 9,
-        d: 2,
-        f: 1,
-      },
-      {
-        id: 3,
-        name: "Web Development",
-        avgGrade: 88,
-        a: 15,
-        b: 12,
-        c: 5,
-        d: 2,
-        f: 1,
-      },
-      {
-        id: 4,
-        name: "Data Structures",
-        avgGrade: 80,
-        a: 8,
-        b: 14,
-        c: 10,
-        d: 5,
-        f: 3,
-      },
-      {
-        id: 5,
-        name: "Machine Learning",
-        avgGrade: 84,
-        a: 11,
-        b: 13,
-        c: 7,
-        d: 3,
-        f: 1,
-      },
-    ],
-    [],
-  );
+  const [courses, setCourses] = useState([]);
+  const [coursesLoading, setCoursesLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const response = await api.get("/analytics/grade-distribution");
+        setCourses(response.data?.data || []);
+      } catch (error) {
+        console.error("Failed to fetch grade distribution", error);
+      } finally {
+        setCoursesLoading(false);
+      }
+    };
+    fetchCourses();
+  }, []);
 
   const [selectedCourse, setSelectedCourse] = useState(1);
 
@@ -121,25 +83,31 @@ const GradeDistribution = memo(() => {
               <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
                 Select Course
               </h3>
-              <div className="space-y-3">
-                {courses.map((course) => (
-                  <button
-                    key={course.id}
-                    onClick={() => setSelectedCourse(course.id)}
-                    className={`w-full p-4 text-left rounded-lg transition-colors ${
-                      selectedCourse === course.id
-                        ? "bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700 border"
-                        : "border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700"
-                    }`}
-                  >
-                    <div className="font-medium text-slate-900 dark:text-white">
-                      {course.name}
-                    </div>
-                    <div className="text-sm text-slate-600 dark:text-slate-400">
-                      Average Grade: {course.avgGrade}%
-                    </div>
-                  </button>
-                ))}
+              <div className="space-y-3 max-h-96 overflow-y-auto">
+                {coursesLoading ? (
+                  <div className="text-center py-4 text-slate-500">Loading courses...</div>
+                ) : courses.length === 0 ? (
+                  <div className="text-center py-4 text-slate-500">No course data found.</div>
+                ) : (
+                  courses.map((course) => (
+                    <button
+                      key={course.id || course._id}
+                      onClick={() => setSelectedCourse(course.id || course._id)}
+                      className={`w-full p-4 text-left rounded-lg transition-colors ${
+                        selectedCourse === (course.id || course._id)
+                          ? "bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700 border"
+                          : "border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700"
+                      }`}
+                    >
+                      <div className="font-medium text-slate-900 dark:text-white">
+                        {course.name || course.courseName}
+                      </div>
+                      <div className="text-sm text-slate-600 dark:text-slate-400">
+                        Average Grade: {course.avgGrade}%
+                      </div>
+                    </button>
+                  ))
+                )}
               </div>
             </div>
           </div>

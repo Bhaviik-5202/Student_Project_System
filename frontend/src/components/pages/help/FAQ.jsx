@@ -1,66 +1,27 @@
-import React, { memo, useMemo, useState, useCallback } from "react";
+import React, { memo, useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../../../utils/api";
 
 const FAQ = memo(() => {
   const navigate = useNavigate();
   const [activeIndex, setActiveIndex] = useState(null);
 
-  const faqs = useMemo(
-    () => [
-      {
-        category: "Getting Started",
-        questions: [
-          {
-            q: "How do I create an account?",
-            a: "Click on Register button on login page and fill out the registration form.",
-          },
-          {
-            q: "What information do I need to register?",
-            a: "You need your full name, email address, student ID, and department information.",
-          },
-          {
-            q: "How do I access my dashboard?",
-            a: "After login, you will be automatically redirected to your dashboard.",
-          },
-        ],
-      },
-      {
-        category: "Projects",
-        questions: [
-          {
-            q: "How do I submit a project proposal?",
-            a: "Navigate to Projects → New Proposal, fill out the form, and submit for review.",
-          },
-          {
-            q: "What is the project submission deadline?",
-            a: "Deadlines vary by course. Check your course materials for specific dates.",
-          },
-          {
-            q: "Can I edit my project after submission?",
-            a: "Yes, until the deadline. After deadline, contact your instructor.",
-          },
-        ],
-      },
-      {
-        category: "Grades",
-        questions: [
-          {
-            q: "How often are grades updated?",
-            a: "Grades are typically updated within 2 weeks of assignment submission.",
-          },
-          {
-            q: "How can I dispute a grade?",
-            a: "Contact your instructor directly through the messaging system.",
-          },
-          {
-            q: "Where can I see my GPA?",
-            a: "Your GPA is displayed on your profile and grades dashboard.",
-          },
-        ],
-      },
-    ],
-    [],
-  );
+  const [faqs, setFaqs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchFaqs = async () => {
+      try {
+        const response = await api.get("/help/faq");
+        setFaqs(response.data?.data || []);
+      } catch (error) {
+        console.error("Failed to fetch FAQs", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchFaqs();
+  }, []);
 
   const toggleFAQ = useCallback((index) => {
     setActiveIndex((prev) => (prev === index ? null : index));
@@ -85,43 +46,49 @@ const FAQ = memo(() => {
         </div>
 
         <div className="max-w-4xl mx-auto">
-          {faqs.map((section, sectionIndex) => (
-            <div key={sectionIndex} className="mb-8">
-              <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
-                {section.category}
-              </h2>
-              <div className="space-y-3">
-                {section.questions.map((faq, faqIndex) => {
-                  const index = sectionIndex * 10 + faqIndex;
-                  return (
-                    <div
-                      key={index}
-                      className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg"
-                    >
-                      <button
-                        onClick={() => toggleFAQ(index)}
-                        className="w-full px-4 py-3 text-left flex justify-between items-center hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg"
+          {loading ? (
+            <div className="text-center py-12 text-slate-500">Loading FAQs...</div>
+          ) : faqs.length === 0 ? (
+            <div className="text-center py-12 text-slate-500">No FAQs available.</div>
+          ) : (
+            faqs.map((section, sectionIndex) => (
+              <div key={sectionIndex} className="mb-8">
+                <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
+                  {section.category}
+                </h2>
+                <div className="space-y-3">
+                  {section.questions?.map((faq, faqIndex) => {
+                    const index = sectionIndex * 10 + faqIndex;
+                    return (
+                      <div
+                        key={index}
+                        className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg"
                       >
-                        <span className="font-medium text-slate-900 dark:text-white">
-                          {faq.q}
-                        </span>
-                        <span className="text-slate-500 dark:text-slate-400">
-                          {activeIndex === index ? "−" : "+"}
-                        </span>
-                      </button>
-                      {activeIndex === index && (
-                        <div className="px-4 py-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/50">
-                          <p className="text-slate-600 dark:text-slate-400">
-                            {faq.a}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
+                        <button
+                          onClick={() => toggleFAQ(index)}
+                          className="w-full px-4 py-3 text-left flex justify-between items-center hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg"
+                        >
+                          <span className="font-medium text-slate-900 dark:text-white">
+                            {faq.q || faq.question}
+                          </span>
+                          <span className="text-slate-500 dark:text-slate-400">
+                            {activeIndex === index ? "−" : "+"}
+                          </span>
+                        </button>
+                        {activeIndex === index && (
+                          <div className="px-4 py-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/50">
+                            <p className="text-slate-600 dark:text-slate-400">
+                              {faq.a || faq.answer}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
     </div>

@@ -1,53 +1,25 @@
-import { useState, useMemo, memo } from "react";
+import { useState, useEffect, memo } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../../../utils/api";
 
 const AuditLog = memo(() => {
   const navigate = useNavigate();
-  const logs = useMemo(
-    () => [
-      {
-        id: 1,
-        user: "Admin",
-        action: "Login",
-        ip: "192.168.1.1",
-        timestamp: "2024-01-15 10:30:00",
-        status: "Success",
-      },
-      {
-        id: 2,
-        user: "John Doe",
-        action: "File Upload",
-        ip: "192.168.1.2",
-        timestamp: "2024-01-15 11:15:00",
-        status: "Success",
-      },
-      {
-        id: 3,
-        user: "Jane Smith",
-        action: "Project Creation",
-        ip: "192.168.1.3",
-        timestamp: "2024-01-15 14:20:00",
-        status: "Success",
-      },
-      {
-        id: 4,
-        user: "Unknown",
-        action: "Login Attempt",
-        ip: "192.168.1.100",
-        timestamp: "2024-01-15 16:45:00",
-        status: "Failed",
-      },
-      {
-        id: 5,
-        user: "Admin",
-        action: "User Role Change",
-        ip: "192.168.1.1",
-        timestamp: "2024-01-15 18:30:00",
-        status: "Success",
-      },
-    ],
-    [],
-  );
+  const [logs, setLogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchLogs = async () => {
+      try {
+        const response = await api.get("/admin/audit-logs");
+        setLogs(response.data?.data || []);
+      } catch (error) {
+        console.error("Failed to fetch audit logs", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchLogs();
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
@@ -112,43 +84,53 @@ const AuditLog = memo(() => {
                 </tr>
               </thead>
               <tbody className="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
-                {logs.map((log) => (
-                  <tr
-                    key={log.id}
-                    className="hover:bg-slate-50 dark:hover:bg-slate-700"
-                  >
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900 dark:text-white">
-                      {log.timestamp}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="font-medium text-slate-900 dark:text-white">
-                        {log.user}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
-                      {log.action}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
-                      {log.ip}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`px-2 py-1 text-xs rounded-full ${
-                          log.status === "Success"
-                            ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
-                            : "bg-rose-100 dark:bg-rose-900/30 text-rose-800 dark:text-rose-300"
-                        }`}
-                      >
-                        {log.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300">
-                        View Details
-                      </button>
-                    </td>
+                {loading ? (
+                  <tr>
+                    <td colSpan="6" className="px-6 py-4 text-center text-slate-500">Loading logs...</td>
                   </tr>
-                ))}
+                ) : logs.length === 0 ? (
+                  <tr>
+                    <td colSpan="6" className="px-6 py-4 text-center text-slate-500">No logs found.</td>
+                  </tr>
+                ) : (
+                  logs.map((log) => (
+                    <tr
+                      key={log.id || log._id}
+                      className="hover:bg-slate-50 dark:hover:bg-slate-700"
+                    >
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900 dark:text-white">
+                        {log.timestamp || new Date(log.createdAt).toLocaleString()}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="font-medium text-slate-900 dark:text-white">
+                          {log.user || "Unknown"}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
+                        {log.action}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
+                        {log.ip || "N/A"}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span
+                          className={`px-2 py-1 text-xs rounded-full ${
+                            log.status === "Success"
+                              ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
+                              : "bg-rose-100 dark:bg-rose-900/30 text-rose-800 dark:text-rose-300"
+                          }`}
+                        >
+                          {log.status || "Unknown"}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300">
+                          View Details
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

@@ -19,3 +19,4 @@ exports.update = (id, data) =>
   });
 
 exports.remove = (id) => Message.findByIdAndDelete(id);
+exports.count = (filter = {}) => Message.countDocuments(filter);

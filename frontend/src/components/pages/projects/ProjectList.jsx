@@ -1,7 +1,14 @@
+/**
+ * ProjectList Component
+ * 
+ * Displays a filterable grid of student projects. Provides a summary 
+ * of project status, progress tracks, and quick action links for 
+ * both students and faculty.
+ */
 import React, { memo, useMemo } from "react";
 import PropTypes from "prop-types";
 
-const ProjectCard = memo(({ project }) => {
+const ProjectCard = memo(({ project, onNavigate }) => {
   const statusStyles = {
     blue: {
       badge: "bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200",
@@ -45,10 +52,10 @@ const ProjectCard = memo(({ project }) => {
           </p>
         </div>
         <div className="flex space-x-2">
-          <button className="px-3 py-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
+          <button onClick={() => onNavigate(`/projects/${project.id || project._id}`)} className="px-3 py-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
             View Details
           </button>
-          <button className="px-3 py-1 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
+          <button onClick={() => onNavigate(`/projects/${project.id || project._id}/edit`)} className="px-3 py-1 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
             Edit
           </button>
         </div>
@@ -113,13 +120,16 @@ ProjectCard.propTypes = {
     guide: PropTypes.string.isRequired,
     progress: PropTypes.number.isRequired,
   }).isRequired,
+  onNavigate: PropTypes.func.isRequired,
 };
 
 
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import projectService from "../../../services/projectService";
 
 const ProjectList = memo(() => {
+  const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -130,7 +140,7 @@ const ProjectList = memo(() => {
       setError("");
       const res = await projectService.getAllProjects();
       if (res.success) {
-        setProjects(res.data.projects || []);
+        setProjects(res.data || []);
       } else {
         setError(res.message || "Failed to load projects");
       }
@@ -151,7 +161,7 @@ const ProjectList = memo(() => {
             Track and manage your projects
           </p>
         </div>
-        <button className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white rounded-lg transition duration-150 flex items-center focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
+        <button onClick={() => navigate("/projects/new")} className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white rounded-lg transition duration-150 flex items-center focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
           <i className="fas fa-plus mr-2" /> New Project
         </button>
       </div>
@@ -163,7 +173,7 @@ const ProjectList = memo(() => {
       ) : (
         <div className="grid grid-cols-1 gap-6">
           {projects.map((project) => (
-            <ProjectCard key={project.id || project._id} project={project} />
+            <ProjectCard key={project.id || project._id} project={project} onNavigate={navigate} />
           ))}
         </div>
       )}

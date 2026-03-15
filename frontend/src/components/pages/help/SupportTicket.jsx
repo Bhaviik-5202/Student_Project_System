@@ -1,6 +1,7 @@
 import React, { memo, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import api from "../../../utils/api";
 
 const SupportTicket = memo(() => {
   const navigate = useNavigate();
@@ -18,13 +19,18 @@ const SupportTicket = memo(() => {
       e.preventDefault();
       setLoading(true);
 
-      setTimeout(() => {
+      try {
+        await api.post("/help/tickets", ticket);
         toast.success("Support ticket submitted successfully");
-        setLoading(false);
         navigate("/help");
-      }, 1500);
+      } catch (error) {
+        console.error("Failed to submit ticket", error);
+        toast.error(error.response?.data?.message || "Failed to submit ticket");
+      } finally {
+        setLoading(false);
+      }
     },
-    [navigate],
+    [ticket, navigate],
   );
 
   return (

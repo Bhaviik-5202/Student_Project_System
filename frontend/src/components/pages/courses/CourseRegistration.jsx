@@ -1,60 +1,27 @@
-import React, { memo, useState, useMemo, useCallback } from "react";
+import React, { memo, useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import api from "../../../utils/api";
 
 const CourseRegistration = memo(() => {
   const navigate = useNavigate();
 
-  const availableCourses = useMemo(
-    () => [
-      {
-        id: 1,
-        code: "CS401",
-        title: "Software Engineering",
-        instructor: "Dr. Smith",
-        credits: 3,
-        schedule: "Mon/Wed 10:00 AM",
-        seats: 15,
-      },
-      {
-        id: 2,
-        code: "CS402",
-        title: "Database Systems",
-        instructor: "Dr. Johnson",
-        credits: 3,
-        schedule: "Tue/Thu 2:00 PM",
-        seats: 20,
-      },
-      {
-        id: 3,
-        code: "CS403",
-        title: "Web Development",
-        instructor: "Dr. Williams",
-        credits: 3,
-        schedule: "Mon/Wed 1:00 PM",
-        seats: 12,
-      },
-      {
-        id: 4,
-        code: "CS404",
-        title: "Data Structures",
-        instructor: "Dr. Brown",
-        credits: 4,
-        schedule: "Tue/Thu 9:00 AM",
-        seats: 18,
-      },
-      {
-        id: 5,
-        code: "CS405",
-        title: "Machine Learning",
-        instructor: "Dr. Davis",
-        credits: 4,
-        schedule: "Mon/Wed 3:00 PM",
-        seats: 10,
-      },
-    ],
-    [],
-  );
+  const [availableCourses, setAvailableCourses] = useState([]);
+  const [coursesLoading, setCoursesLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const response = await api.get("/courses");
+        setAvailableCourses(response.data?.data || []);
+      } catch (error) {
+        console.error("Failed to fetch courses", error);
+      } finally {
+        setCoursesLoading(false);
+      }
+    };
+    fetchCourses();
+  }, []);
 
   const [selectedCourses, setSelectedCourses] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -119,48 +86,54 @@ const CourseRegistration = memo(() => {
               <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
                 Available Courses
               </h3>
-              <div className="space-y-4">
-                {availableCourses.map((course) => (
-                  <div
-                    key={course.id}
-                    className="border border-slate-200 dark:border-slate-700 rounded-lg p-4"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-start">
-                        <input
-                          type="checkbox"
-                          checked={selectedCourses.includes(course.id)}
-                          onChange={() => toggleCourseSelection(course.id)}
-                          className="h-4 w-4 text-blue-600 rounded focus:ring-blue-500 mt-1"
-                        />
-                        <div className="ml-3">
-                          <div className="font-medium text-slate-900 dark:text-white">
-                            {course.title}
-                          </div>
-                          <div className="text-sm text-slate-600 dark:text-slate-400">
-                            {course.code} • {course.instructor}
-                          </div>
-                          <div className="text-sm text-slate-500 dark:text-slate-500 mt-1">
-                            {course.schedule} • {course.credits} Credits •{" "}
-                            {course.seats} seats available
+              <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
+                {coursesLoading ? (
+                  <div className="text-center py-4 text-slate-500">Loading available courses...</div>
+                ) : availableCourses.length === 0 ? (
+                  <div className="text-center py-4 text-slate-500">No courses available.</div>
+                ) : (
+                  availableCourses.map((course) => (
+                    <div
+                      key={course.id || course._id}
+                      className="border border-slate-200 dark:border-slate-700 rounded-lg p-4"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-start">
+                          <input
+                            type="checkbox"
+                            checked={selectedCourses.includes(course.id || course._id)}
+                            onChange={() => toggleCourseSelection(course.id || course._id)}
+                            className="h-4 w-4 text-blue-600 rounded focus:ring-blue-500 mt-1"
+                          />
+                          <div className="ml-3">
+                            <div className="font-medium text-slate-900 dark:text-white">
+                              {course.title || course.courseName}
+                            </div>
+                            <div className="text-sm text-slate-600 dark:text-slate-400">
+                              {course.code || course.courseCode} • {course.instructor || (course.instructorId ? course.instructorId.name : "TBA")}
+                            </div>
+                            <div className="text-sm text-slate-500 dark:text-slate-500 mt-1">
+                              {course.schedule || "TBA"} • {course.credits || 3} Credits •{" "}
+                              {course.seats || 30} seats available
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-medium text-gray-900">
-                          {course.credits} Credits
-                        </div>
-                        <div
-                          className={`text-sm ${
-                            course.seats > 5 ? "text-green-600" : "text-red-600"
-                          }`}
-                        >
-                          {course.seats} seats left
+                        <div className="text-right">
+                          <div className="font-medium text-gray-900 dark:text-gray-100">
+                            {course.credits || 3} Credits
+                          </div>
+                          <div
+                            className={`text-sm ${
+                              (course.seats !== undefined ? course.seats : 30) > 5 ? "text-green-600" : "text-red-600"
+                            }`}
+                          >
+                            {course.seats !== undefined ? course.seats : 30} seats left
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
           </div>

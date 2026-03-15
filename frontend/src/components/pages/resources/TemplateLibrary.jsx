@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback, memo, useEffect } from "react";
-import templateService from "../../services/templateService";
+import templateService from "../../../services/templateService";
 import useNotification from "../../../hooks/useNotification";
 
 const CategoryTab = memo(({ category, isActive, onSelect }) => (

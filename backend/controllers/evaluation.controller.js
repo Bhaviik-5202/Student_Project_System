@@ -2,7 +2,12 @@ const evaluationService = require("../services/evaluation.service");
 const sendResponse = require("../utils/response");
 
 /**
- * Create a new evaluation
+ * Evaluation Controller
+ * Handles academic grading, performance reviews, and assessment feedback.
+ */
+
+/**
+ * Record a new evaluation or grade
  * @route POST /evaluations
  * @access Faculty, Admin
  */
@@ -15,7 +20,7 @@ exports.createEvaluation = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to create evaluation"
+          ? result.message
           : "Evaluation created successfully",
         data: result.data || null,
         error: result.error || null,
@@ -37,7 +42,7 @@ exports.createEvaluation = async (req, res) => {
 };
 
 /**
- * Get all evaluations
+ * Fetch all evaluation records with optional filters
  * @route GET /evaluations
  * @access Authenticated
  */
@@ -50,7 +55,7 @@ exports.getAllEvaluations = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to fetch evaluations"
+          ? result.message
           : "Evaluations fetched successfully",
         data: result.data || null,
         error: result.error || null,
@@ -72,7 +77,7 @@ exports.getAllEvaluations = async (req, res) => {
 };
 
 /**
- * Get an evaluation by ID
+ * Get detailed feedback and scores for a specific evaluation
  * @route GET /evaluations/:id
  * @access Authenticated
  */
@@ -85,7 +90,7 @@ exports.getEvaluationById = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Evaluation not found"
+          ? result.message
           : "Evaluation fetched successfully",
         data: result.data || null,
         error: result.error || null,
@@ -107,7 +112,7 @@ exports.getEvaluationById = async (req, res) => {
 };
 
 /**
- * Update an evaluation by ID
+ * Update scores or feedback for an existing evaluation
  * @route PUT /evaluations/:id
  * @access Faculty, Admin
  */
@@ -120,7 +125,7 @@ exports.updateEvaluation = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to update evaluation"
+          ? result.message
           : "Evaluation updated successfully",
         data: result.data || null,
         error: result.error || null,
@@ -142,7 +147,7 @@ exports.updateEvaluation = async (req, res) => {
 };
 
 /**
- * Delete an evaluation by ID
+ * Permanently remove an evaluation record
  * @route DELETE /evaluations/:id
  * @access Faculty, Admin
  */
@@ -155,7 +160,7 @@ exports.deleteEvaluation = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to delete evaluation"
+          ? result.message
           : "Evaluation deleted successfully",
         data: result.data || null,
         error: result.error || null,

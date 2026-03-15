@@ -1,6 +1,13 @@
 import { useCallback, useMemo, useState, memo, useEffect } from "react";
 import { useTheme } from "../../../context/ThemeContext";
 
+/**
+ * Settings Component
+ * 
+ * The central configuration engine for user preferences. Manages global 
+ * language/region defaults, notification subscription matrices, 
+ * granular privacy controls, and application-wide appearance themes.
+ */
 const Settings = memo(() => {
   const { themeMode, setThemeMode, THEME_MODES } = useTheme();
   const [activeTab, setActiveTab] = useState("general");

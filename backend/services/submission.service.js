@@ -1,77 +1,82 @@
 const submissionRepository = require("../repositories/submission.repository");
 
-function response(error, data, message) {
-  return { error, data, message };
-}
+/**
+ * Standardized response helper for services
+ * @param {boolean} error - Whether the operation failed
+ * @param {any} data - The payload to return
+ * @param {string} message - Descriptive status message
+ * @returns {Object} { error, data, message }
+ */
+const response = (error, data, message) => ({ error, data, message });
 
 /**
- * Create a new submission
- * @param {Object} data - Submission data
- * @returns {Promise<Object>} Created submission
+ * File a new project/assignment submission
+ * @param {Object} data - Submission payload
+ * @returns {Promise<Object>} Formatted service response with new submission data
  */
 exports.create = async (data) => {
   try {
     const submission = await submissionRepository.create(data);
-    return response(false, submission, "Submission created");
+    return response(false, submission, "Submission filed successfully");
   } catch (err) {
     return response(true, null, err.message || "Failed to create submission");
   }
 };
 
 /**
- * Get all submissions
- * @returns {Promise<Array>} List of submissions
+ * Retrieve all submissions across the system
+ * @returns {Promise<Object>} Formatted service response with submission list
  */
 exports.getAll = async () => {
   try {
     const submissions = await submissionRepository.findAll();
-    return response(false, submissions, "Submissions fetched");
+    return response(false, submissions, "Submissions fetched successfully");
   } catch (err) {
     return response(true, null, err.message || "Failed to fetch submissions");
   }
 };
 
 /**
- * Get a submission by ID
- * @param {string} id - Submission ID
- * @returns {Promise<Object|null>} Submission or null
+ * Get detailed submission information by ID
+ * @param {string} id - Submission identifier
+ * @returns {Promise<Object>} Formatted service response with submission details
  */
 exports.getById = async (id) => {
   try {
     const submission = await submissionRepository.findById(id);
     if (!submission) return response(true, null, "Submission not found");
-    return response(false, submission, "Submission fetched");
+    return response(false, submission, "Submission fetched successfully");
   } catch (err) {
     return response(true, null, err.message || "Failed to fetch submission");
   }
 };
 
 /**
- * Update a submission by ID
- * @param {string} id - Submission ID
- * @param {Object} data - Update data
- * @returns {Promise<Object|null>} Updated submission or null
+ * Update submission record (e.g., status, links, files)
+ * @param {string} id - Submission identifier
+ * @param {Object} data - Attributes to update
+ * @returns {Promise<Object>} Formatted service response with updated submission
  */
 exports.update = async (id, data) => {
   try {
     const submission = await submissionRepository.update(id, data);
     if (!submission) return response(true, null, "Submission not found");
-    return response(false, submission, "Submission updated");
+    return response(false, submission, "Submission updated successfully");
   } catch (err) {
     return response(true, null, err.message || "Failed to update submission");
   }
 };
 
 /**
- * Delete a submission by ID
- * @param {string} id - Submission ID
- * @returns {Promise<Object|null>} Deleted submission or null
+ * Permanently remove a submission record
+ * @param {string} id - Submission identifier
+ * @returns {Promise<Object>} Formatted service response
  */
 exports.remove = async (id) => {
   try {
     const submission = await submissionRepository.remove(id);
     if (!submission) return response(true, null, "Submission not found");
-    return response(false, null, "Submission deleted");
+    return response(false, null, "Submission deleted successfully");
   } catch (err) {
     return response(true, null, err.message || "Failed to delete submission");
   }

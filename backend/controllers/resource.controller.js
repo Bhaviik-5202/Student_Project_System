@@ -2,22 +2,28 @@ const resourceService = require("../services/resource.service");
 const sendResponse = require("../utils/response");
 
 /**
- * Create a new resource
+ * Resource Controller
+ * Manages shared learning materials, project documentation, and digital assets.
+ */
+
+/**
+ * Register a new learning resource or document
  * @route POST /resources
+ * @access Admin, Faculty
  */
 exports.createResource = async (req, res) => {
   try {
-    const resource = await resourceService.createResource(req.body);
+    const result = await resourceService.create(req.body);
 
     sendResponse(
       res,
       {
-        success: true,
-        message: "Resource created successfully",
-        data: resource,
-        error: null,
+        success: !result.error,
+        message: result.error ? result.message : "Resource created successfully",
+        data: result.data || null,
+        error: result.error || null,
       },
-      201,
+      result.error ? 400 : 201,
     );
   } catch (error) {
     sendResponse(
@@ -34,113 +40,135 @@ exports.createResource = async (req, res) => {
 };
 
 /**
- * Get all resources with pagination and filtering
+ * Fetch all available resources across all categories
  * @route GET /resources
+ * @access Authenticated
  */
 exports.getAllResources = async (req, res) => {
   try {
-    const { page = 1, limit = 10, type, title } = req.query;
-
-    const filters = {};
-    if (type) filters.type = type;
-    if (title) filters.title = { $regex: title, $options: "i" };
-
-    const result = await resourceService.getAllResources({
-      page: parseInt(page, 10),
-      limit: parseInt(limit, 10),
-      filters,
-    });
+    const result = await resourceService.getAll();
 
     sendResponse(
       res,
       {
-        success: true,
-        message: "Resources fetched successfully",
-        data: result.resources,
-        error: null,
-        pagination: {
-          total: result.total,
-          page: result.page,
-          limit: result.limit,
-          totalPages: result.totalPages,
-        },
+        success: !result.error,
+        message: result.error
+          ? "Failed to fetch resources"
+          : "Resources fetched successfully",
+        data: result.data || null,
+        error: result.error || null,
       },
-      200,
+      result.error ? 400 : 200,
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to fetch resources",
+        message: "Internal server error",
         data: null,
         error: error.message,
       },
-      400,
+      500,
     );
   }
 };
 
 /**
- * Get a resource by its ID
+ * Get detailed information for a specific resource
  * @route GET /resources/:id
+ * @access Authenticated
  */
 exports.getResourceById = async (req, res) => {
   try {
-    const resource = await resourceService.getResourceById(req.params.id);
+    const result = await resourceService.getById(req.params.id);
 
     sendResponse(
       res,
       {
-        success: true,
-        message: "Resource fetched successfully",
-        data: resource,
-        error: null,
+        success: !result.error,
+        message: result.error ? "Resource not found" : "Resource fetched successfully",
+        data: result.data || null,
+        error: result.error || null,
       },
-      200,
+      result.error ? 404 : 200,
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to fetch resource",
+        message: "Internal server error",
         data: null,
         error: error.message,
       },
-      400,
+      500,
     );
   }
 };
 
 /**
- * Delete a resource by its ID
- * @route DELETE /resources/:id
+ * Update resource metadata or download link
+ * @route PUT /resources/:id
+ * @access Admin, Faculty
  */
-exports.deleteResource = async (req, res) => {
+exports.updateResource = async (req, res) => {
   try {
-    const resource = await resourceService.deleteResource(req.params.id);
+    const result = await resourceService.update(req.params.id, req.body);
 
     sendResponse(
       res,
       {
-        success: true,
-        message: "Resource deleted successfully",
-        data: resource,
-        error: null,
+        success: !result.error,
+        message: result.error ? "Resource not found" : "Resource updated successfully",
+        data: result.data || null,
+        error: result.error || null,
       },
-      200,
+      result.error ? 404 : 200,
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to delete resource",
+        message: "Internal server error",
         data: null,
         error: error.message,
       },
-      400,
+      500,
+    );
+  }
+};
+
+/**
+ * Permanently remove a resource
+ * @route DELETE /resources/:id
+ * @access Admin
+ */
+exports.deleteResource = async (req, res) => {
+  try {
+    const result = await resourceService.remove(req.params.id);
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error ? "Resource not found" : "Resource deleted successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 404 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
     );
   }
 };

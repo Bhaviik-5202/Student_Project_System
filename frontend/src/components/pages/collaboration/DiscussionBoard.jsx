@@ -1,53 +1,25 @@
-import { useState, useMemo, memo } from "react";
+import { useState, useEffect, useMemo, memo } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../../../utils/api";
 
 const DiscussionBoard = memo(() => {
   const navigate = useNavigate();
-  const discussions = useMemo(
-    () => [
-      {
-        id: 1,
-        title: "Project Proposal Questions",
-        author: "Student A",
-        replies: 12,
-        lastActivity: "2 hours ago",
-        category: "Projects",
-      },
-      {
-        id: 2,
-        title: "Database Design Help",
-        author: "Student B",
-        replies: 5,
-        lastActivity: "5 hours ago",
-        category: "Technical",
-      },
-      {
-        id: 3,
-        title: "Meeting Schedule Updates",
-        author: "Dr. Smith",
-        replies: 8,
-        lastActivity: "1 day ago",
-        category: "Announcements",
-      },
-      {
-        id: 4,
-        title: "Web Development Resources",
-        author: "Student C",
-        replies: 3,
-        lastActivity: "2 days ago",
-        category: "Resources",
-      },
-      {
-        id: 5,
-        title: "Grading Policy Clarification",
-        author: "Student D",
-        replies: 15,
-        lastActivity: "3 days ago",
-        category: "General",
-      },
-    ],
-    [],
-  );
+  const [discussions, setDiscussions] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDiscussions = async () => {
+      try {
+        const response = await api.get("/collaboration/discussions");
+        setDiscussions(response.data?.data || []);
+      } catch (error) {
+        console.error("Failed to fetch discussions", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDiscussions();
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
@@ -92,50 +64,60 @@ const DiscussionBoard = memo(() => {
                 </tr>
               </thead>
               <tbody className="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
-                {discussions.map((discussion) => (
-                  <tr
-                    key={discussion.id}
-                    className="hover:bg-slate-50 dark:hover:bg-slate-700"
-                  >
-                    <td className="px-6 py-4">
-                      <div className="font-medium text-slate-900 dark:text-white">
-                        {discussion.title}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
-                      {discussion.author}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`px-2 py-1 text-xs rounded-full ${
-                          discussion.category === "Projects"
-                            ? "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
-                            : discussion.category === "Technical"
-                              ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
-                              : discussion.category === "Announcements"
-                                ? "bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300"
-                                : "bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-300"
-                        }`}
-                      >
-                        {discussion.category}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
-                      {discussion.replies}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
-                      {discussion.lastActivity}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 mr-3">
-                        View
-                      </button>
-                      <button className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
-                        Reply
-                      </button>
-                    </td>
+                {loading ? (
+                  <tr>
+                    <td colSpan="6" className="px-6 py-4 text-center text-slate-500">Loading discussions...</td>
                   </tr>
-                ))}
+                ) : discussions.length === 0 ? (
+                  <tr>
+                    <td colSpan="6" className="px-6 py-4 text-center text-slate-500">No discussions found.</td>
+                  </tr>
+                ) : (
+                  discussions.map((discussion) => (
+                    <tr
+                      key={discussion.id || discussion._id}
+                      className="hover:bg-slate-50 dark:hover:bg-slate-700"
+                    >
+                      <td className="px-6 py-4">
+                        <div className="font-medium text-slate-900 dark:text-white">
+                          {discussion.title}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
+                        {discussion.author || (discussion.authorId ? discussion.authorId.name : "Anonymous")}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span
+                          className={`px-2 py-1 text-xs rounded-full ${
+                            discussion.category === "Projects"
+                              ? "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
+                              : discussion.category === "Technical"
+                                ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
+                                : discussion.category === "Announcements"
+                                  ? "bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300"
+                                  : "bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-300"
+                          }`}
+                        >
+                          {discussion.category || "General"}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
+                        {discussion.replies || 0}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
+                        {discussion.lastActivity || new Date(discussion.updatedAt || Date.now()).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 mr-3">
+                          View
+                        </button>
+                        <button className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+                          Reply
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

@@ -1,11 +1,9 @@
 import api from "../utils/api";
 
-
 const meetingService = {
-  getAllMeetings: async (params = {}) => {
+  getMeetings: async (params = {}) => {
     try {
-      const response = await api.get("/meetings", { params });
-      return { success: true, data: response.data };
+      return await api.get("/meetings", { params });
     } catch (error) {
       return {
         success: false,
@@ -16,8 +14,7 @@ const meetingService = {
 
   getMeetingById: async (id) => {
     try {
-      const response = await api.get(`/meetings/${id}`);
-      return { success: true, data: response.data };
+      return await api.get(`/meetings/${id}`);
     } catch (error) {
       return {
         success: false,
@@ -28,8 +25,7 @@ const meetingService = {
 
   createMeeting: async (meetingData) => {
     try {
-      const response = await api.post("/meetings", meetingData);
-      return { success: true, data: response.data };
+      return await api.post("/meetings", meetingData);
     } catch (error) {
       return {
         success: false,
@@ -40,8 +36,7 @@ const meetingService = {
 
   updateMeeting: async (id, meetingData) => {
     try {
-      const response = await api.put(`/meetings/${id}`, meetingData);
-      return { success: true, data: response.data };
+      return await api.put(`/meetings/${id}`, meetingData);
     } catch (error) {
       return {
         success: false,
@@ -52,24 +47,11 @@ const meetingService = {
 
   deleteMeeting: async (id) => {
     try {
-      await api.delete(`/meetings/${id}`);
-      return { success: true };
+      return await api.delete(`/meetings/${id}`);
     } catch (error) {
       return {
         success: false,
         message: error.response?.data?.message || "Failed to delete meeting",
-      };
-    }
-  },
-
-  joinMeeting: async (meetingId) => {
-    try {
-      const response = await api.post(`/meetings/${meetingId}/join`);
-      return { success: true, data: response.data };
-    } catch (error) {
-      return {
-        success: false,
-        message: error.response?.data?.message || "Failed to join meeting",
       };
     }
   },

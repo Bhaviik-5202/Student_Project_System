@@ -1,50 +1,25 @@
-import React, { memo, useMemo, useState, useCallback } from "react";
+import React, { memo, useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../../../utils/api";
 
 const UserGuide = memo(() => {
   const navigate = useNavigate();
-  const chapters = useMemo(
-    () => [
-      {
-        id: 1,
-        title: "Introduction",
-        sections: [
-          "Welcome to the System",
-          "System Requirements",
-          "Getting Started",
-        ],
-      },
-      {
-        id: 2,
-        title: "User Accounts",
-        sections: [
-          "Creating an Account",
-          "Profile Management",
-          "Security Settings",
-        ],
-      },
-      {
-        id: 3,
-        title: "Dashboard",
-        sections: ["Overview", "Navigation", "Quick Actions"],
-      },
-      {
-        id: 4,
-        title: "Projects",
-        sections: [
-          "Creating Projects",
-          "Managing Teams",
-          "Project Submissions",
-        ],
-      },
-      {
-        id: 5,
-        title: "Assignments",
-        sections: ["Submitting Work", "Grading System", "Deadlines"],
-      },
-    ],
-    [],
-  );
+  const [chapters, setChapters] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchGuide = async () => {
+      try {
+        const response = await api.get("/help/guide");
+        setChapters(response.data?.data || []);
+      } catch (error) {
+        console.error("Failed to fetch user guide", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchGuide();
+  }, []);
 
   const [activeChapter, setActiveChapter] = useState(1);
 
@@ -81,12 +56,14 @@ const UserGuide = memo(() => {
                 Chapters
               </h3>
               <div className="space-y-2">
-                {chapters.map((chapter) => (
+                {loading ? (
+                  <div className="text-slate-500 text-sm">Loading chapters...</div>
+                ) : chapters.map((chapter, idx) => (
                   <button
-                    key={chapter.id}
-                    onClick={() => handleChapterChange(chapter.id)}
+                    key={chapter.id || chapter._id || idx}
+                    onClick={() => handleChapterChange(chapter.id || idx + 1)}
                     className={`w-full text-left p-3 rounded-lg transition-colors ${
-                      activeChapter === chapter.id
+                      activeChapter === (chapter.id || idx + 1)
                         ? "bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800"
                         : "text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700"
                     }`}
@@ -101,102 +78,29 @@ const UserGuide = memo(() => {
           {/* Chapter Content */}
           <div className="lg:col-span-3">
             <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
-              {chapters.find((ch) => ch.id === activeChapter) && (
+              {chapters.find((ch, idx) => (ch.id || idx + 1) === activeChapter) && (
                 <>
                   <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">
-                    {chapters.find((ch) => ch.id === activeChapter)?.title}
+                    {chapters.find((ch, idx) => (ch.id || idx + 1) === activeChapter)?.title}
                   </h2>
 
-                  <div className="prose max-w-none">
-                    {activeChapter === 1 && (
-                      <div className="space-y-6">
-                        <div>
-                          <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-3">
-                            Welcome to the System
-                          </h3>
-                          <p className="text-slate-700 dark:text-slate-300">
-                            Welcome to the Project Management System for
-                            Students. This platform is designed to help
-                            students, faculty, and administrators manage
-                            academic projects efficiently.
-                          </p>
-                        </div>
-                        <div>
-                          <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-3">
-                            System Requirements
-                          </h3>
-                          <ul className="list-disc pl-5 text-slate-700 dark:text-slate-300 space-y-2">
-                            <li>
-                              Modern web browser (Chrome, Firefox, Safari, Edge)
-                            </li>
-                            <li>Internet connection</li>
-                            <li>JavaScript enabled</li>
-                            <li>Minimum screen resolution: 1024x768</li>
-                          </ul>
-                        </div>
-                        <div>
-                          <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-3">
-                            Getting Started
-                          </h3>
-                          <p className="text-slate-700 dark:text-slate-300">
-                            To get started, create an account using your
-                            institutional email. Once registered, you can access
-                            your dashboard and begin using the system features.
-                          </p>
-                        </div>
+                  <div className="prose max-w-none space-y-6">
+                    {chapters.find((ch, idx) => (ch.id || idx + 1) === activeChapter)?.sections?.map((section, idx) => (
+                      <div key={idx}>
+                        <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-3">
+                          {section.title || section}
+                        </h3>
+                        {section.content && (
+                          <div
+                            className="text-slate-700 dark:text-slate-300"
+                            dangerouslySetInnerHTML={{ __html: section.content }}
+                          />
+                        )}
+                        {!section.content && section.body && (
+                          <p className="text-slate-700 dark:text-slate-300">{section.body}</p>
+                        )}
                       </div>
-                    )}
-
-                    {activeChapter === 2 && (
-                      <div className="space-y-6">
-                        <div>
-                          <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-3">
-                            Creating an Account
-                          </h3>
-                          <p className="text-slate-700 dark:text-slate-300">
-                            Click on the Register button and fill out the
-                            registration form with your details. You'll need to
-                            verify your email address to activate your account.
-                          </p>
-                        </div>
-                        <div>
-                          <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-3">
-                            Profile Management
-                          </h3>
-                          <p className="text-slate-700 dark:text-slate-300">
-                            Update your profile information, upload a profile
-                            picture, and manage your personal settings from the
-                            Profile section.
-                          </p>
-                        </div>
-                      </div>
-                    )}
-
-                    {activeChapter === 3 && (
-                      <div className="space-y-6">
-                        <div>
-                          <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-3">
-                            Dashboard Overview
-                          </h3>
-                          <p className="text-slate-700 dark:text-slate-300">
-                            Your dashboard provides an overview of your
-                            activities, upcoming deadlines, recent
-                            notifications, and quick access to important
-                            features.
-                          </p>
-                        </div>
-                        <div>
-                          <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-3">
-                            Navigation
-                          </h3>
-                          <p className="text-slate-700 dark:text-slate-300">
-                            Use the sidebar navigation to access different
-                            sections of the system. The main sections include
-                            Projects, Assignments, Meetings, and Reports.
-                          </p>
-                        </div>
-                      </div>
-                    )}
+                    ))}
                   </div>
 
                   <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">

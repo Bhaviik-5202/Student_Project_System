@@ -1,144 +1,29 @@
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
+import api from "../../../utils/api";
 
 const SkillMatrix = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [sortBy, setSortBy] = useState("level");
 
-  const categories = useMemo(
-    () => [
-      { id: "all", name: "All Skills", count: 15 },
-      { id: "technical", name: "Technical", count: 8 },
-      { id: "soft", name: "Soft Skills", count: 4 },
-      { id: "tools", name: "Tools", count: 3 },
-    ],
-    [],
-  );
+  const [categories, setCategories] = useState([{ id: "all", name: "All Skills", count: 0 }]);
+  const [skills, setSkills] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const skills = useMemo(
-    () => [
-      {
-        id: 1,
-        name: "JavaScript",
-        level: 90,
-        category: "technical",
-        lastUsed: "2024-01-15",
-        projects: 12,
-      },
-      {
-        id: 2,
-        name: "React",
-        level: 85,
-        category: "technical",
-        lastUsed: "2024-01-14",
-        projects: 8,
-      },
-      {
-        id: 3,
-        name: "Node.js",
-        level: 80,
-        category: "technical",
-        lastUsed: "2024-01-12",
-        projects: 6,
-      },
-      {
-        id: 4,
-        name: "Python",
-        level: 75,
-        category: "technical",
-        lastUsed: "2024-01-10",
-        projects: 4,
-      },
-      {
-        id: 5,
-        name: "UI/UX Design",
-        level: 70,
-        category: "technical",
-        lastUsed: "2024-01-08",
-        projects: 3,
-      },
-      {
-        id: 6,
-        name: "Project Management",
-        level: 85,
-        category: "soft",
-        lastUsed: "2024-01-15",
-        projects: 15,
-      },
-      {
-        id: 7,
-        name: "Communication",
-        level: 80,
-        category: "soft",
-        lastUsed: "2024-01-14",
-        projects: 15,
-      },
-      {
-        id: 8,
-        name: "Team Leadership",
-        level: 75,
-        category: "soft",
-        lastUsed: "2024-01-13",
-        projects: 8,
-      },
-      {
-        id: 9,
-        name: "Problem Solving",
-        level: 90,
-        category: "soft",
-        lastUsed: "2024-01-15",
-        projects: 15,
-      },
-      {
-        id: 10,
-        name: "Git",
-        level: 85,
-        category: "tools",
-        lastUsed: "2024-01-15",
-        projects: 15,
-      },
-      {
-        id: 11,
-        name: "VS Code",
-        level: 95,
-        category: "tools",
-        lastUsed: "2024-01-15",
-        projects: 15,
-      },
-      {
-        id: 12,
-        name: "Figma",
-        level: 70,
-        category: "tools",
-        lastUsed: "2024-01-08",
-        projects: 4,
-      },
-      {
-        id: 13,
-        name: "MongoDB",
-        level: 75,
-        category: "technical",
-        lastUsed: "2024-01-11",
-        projects: 5,
-      },
-      {
-        id: 14,
-        name: "AWS",
-        level: 65,
-        category: "technical",
-        lastUsed: "2024-01-05",
-        projects: 3,
-      },
-      {
-        id: 15,
-        name: "Agile/Scrum",
-        level: 80,
-        category: "soft",
-        lastUsed: "2024-01-14",
-        projects: 10,
-      },
-    ],
-    [],
-  );
+  useEffect(() => {
+    const fetchSkills = async () => {
+      try {
+        const response = await api.get('/portfolio/skills');
+        const data = response.data?.data || {};
+        if (data.categories) setCategories([{ id: "all", name: "All Skills", count: data.skills?.length || 0 }, ...data.categories]);
+        if (data.skills) setSkills(data.skills);
+      } catch (error) {
+        console.error("Failed to fetch skills", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSkills();
+  }, []);
 
   const filteredSkills = useMemo(
     () =>
@@ -206,6 +91,8 @@ const SkillMatrix = () => {
       }),
     [categories, skills],
   );
+
+  if (loading) return <div className="p-6 text-center text-slate-500">Loading skills...</div>;
 
   return (
     <div className="bg-white dark:bg-slate-900 rounded-lg shadow p-6\">

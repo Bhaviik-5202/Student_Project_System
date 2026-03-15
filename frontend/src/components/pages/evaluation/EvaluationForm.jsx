@@ -1,6 +1,7 @@
-import React, { memo, useState, useCallback } from "react";
+import React, { memo, useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import api from "../../../utils/api";
 
 const EvaluationForm = memo(() => {
   const navigate = useNavigate();
@@ -19,6 +20,27 @@ const EvaluationForm = memo(() => {
     overallScore: 0,
   });
   const [loading, setLoading] = useState(false);
+  const [students, setStudents] = useState([]);
+  const [projects, setProjects] = useState([]);
+  const [loadingData, setLoadingData] = useState(true);
+
+  useEffect(() => {
+    const fetchFormData = async () => {
+      try {
+        const [studentsRes, projectsRes] = await Promise.all([
+          api.get("/users?role=student").catch(() => ({ data: { data: [] } })),
+          api.get("/projects").catch(() => ({ data: { data: [] } }))
+        ]);
+        setStudents(studentsRes.data?.data?.users || studentsRes.data?.data || []);
+        setProjects(projectsRes.data?.data?.projects || projectsRes.data?.data || []);
+      } catch (error) {
+        console.error("Failed to fetch form data", error);
+      } finally {
+        setLoadingData(false);
+      }
+    };
+    fetchFormData();
+  }, []);
 
   const calculateTotal = useCallback(() => {
     setEvaluation((prev) => {
@@ -47,13 +69,18 @@ const EvaluationForm = memo(() => {
       e.preventDefault();
       setLoading(true);
 
-      setTimeout(() => {
+      try {
+        await api.post("/evaluations", evaluation);
         toast.success("Evaluation submitted successfully");
-        setLoading(false);
         navigate("/evaluations");
-      }, 1500);
+      } catch (error) {
+        console.error("Evaluation submission failed", error);
+        toast.error(error.response?.data?.message || "Failed to submit evaluation");
+      } finally {
+        setLoading(false);
+      }
     },
-    [navigate],
+    [evaluation, navigate],
   );
 
   return (
@@ -88,11 +115,14 @@ const EvaluationForm = memo(() => {
                   onChange={(e) =>
                     setEvaluation({ ...evaluation, student: e.target.value })
                   }
+                  disabled={loadingData}
                 >
-                  <option value="">Select Student</option>
-                  <option value="John Doe">John Doe</option>
-                  <option value="Jane Smith">Jane Smith</option>
-                  <option value="Robert Johnson">Robert Johnson</option>
+                  <option value="">{loadingData ? "Loading students..." : "Select Student"}</option>
+                  {students.map((student) => (
+                    <option key={student.id || student._id} value={student.id || student._id}>
+                      {student.name}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div>
@@ -105,13 +135,14 @@ const EvaluationForm = memo(() => {
                   onChange={(e) =>
                     setEvaluation({ ...evaluation, project: e.target.value })
                   }
+                  disabled={loadingData}
                 >
-                  <option value="">Select Project</option>
-                  <option value="E-Commerce Platform">
-                    E-Commerce Platform
-                  </option>
-                  <option value="Inventory System">Inventory System</option>
-                  <option value="Mobile App">Mobile App</option>
+                  <option value="">{loadingData ? "Loading projects..." : "Select Project"}</option>
+                  {projects.map((project) => (
+                    <option key={project.id || project._id} value={project.id || project._id}>
+                      {project.title || project.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>

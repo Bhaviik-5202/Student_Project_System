@@ -14,9 +14,7 @@ exports.getProjectMembers = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error
-          ? "Failed to fetch project members"
-          : "Project members fetched successfully",
+        message: result.error ? result.message : "Project members fetched successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -43,14 +41,14 @@ exports.getProjectMembers = async (req, res) => {
  */
 exports.addProjectMember = async (req, res) => {
   try {
-    const { userId, role } = req.body;
+    const { userId } = req.body;
 
-    if (!userId || !role) {
+    if (!userId) {
       return sendResponse(
         res,
         {
           success: false,
-          message: "userId and role are required",
+          message: "userId is required",
           data: null,
           error: "Validation error",
         },
@@ -58,15 +56,13 @@ exports.addProjectMember = async (req, res) => {
       );
     }
 
-    const result = await projectService.addMember(req.params.id, userId, role);
+    const result = await projectService.addMember(req.params.id, userId);
 
     sendResponse(
       res,
       {
         success: !result.error,
-        message: result.error
-          ? "Failed to add member"
-          : "Member added successfully",
+        message: result.error ? result.message : "Member added successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -93,28 +89,33 @@ exports.addProjectMember = async (req, res) => {
  */
 exports.createProject = async (req, res) => {
   try {
-    const project = await projectService.createProject(req.body);
+    const projectData = {
+      ...req.body,
+      createdBy: req.user.id,
+    };
+
+    const result = await projectService.create(projectData);
 
     sendResponse(
       res,
       {
-        success: true,
-        message: "Project created successfully",
-        data: project,
-        error: null,
+        success: !result.error,
+        message: result.error ? result.message : "Project created successfully",
+        data: result.data || null,
+        error: result.error || null,
       },
-      201,
+      result.error ? 400 : 201,
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to create project",
+        message: "Internal server error",
         data: null,
         error: error.message,
       },
-      400,
+      500,
     );
   }
 };
@@ -126,44 +127,40 @@ exports.createProject = async (req, res) => {
  */
 exports.getAllProjects = async (req, res) => {
   try {
-    const { page = 1, limit = 10, status, title } = req.query;
+    const { page = 1, limit = 10, ...filters } = req.query;
 
-    const filters = {};
-    if (status) filters.status = status;
-    if (title) filters.title = { $regex: title, $options: "i" };
-
-    const result = await projectService.getAllProjects({
-      page: parseInt(page, 10),
-      limit: parseInt(limit, 10),
-      filters,
+    const result = await projectService.getAll({ 
+        page: parseInt(page), 
+        limit: parseInt(limit), 
+        filters 
     });
 
     sendResponse(
       res,
       {
-        success: true,
-        message: "Projects fetched successfully",
-        data: result.projects,
-        error: null,
-        pagination: {
-          total: result.total,
-          page: result.page,
-          limit: result.limit,
-          totalPages: result.totalPages,
-        },
+        success: !result.error,
+        message: result.error ? result.message : "Projects fetched successfully",
+        data: result.data ? result.data.projects : null,
+        error: result.error || null,
+        pagination: result.data ? {
+          total: result.data.total,
+          page: result.data.page,
+          limit: result.data.limit,
+          totalPages: result.data.totalPages,
+        } : null,
       },
-      200,
+      result.error ? 400 : 200,
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to fetch projects",
+        message: "Internal server error",
         data: null,
         error: error.message,
       },
-      400,
+      500,
     );
   }
 };
@@ -175,28 +172,28 @@ exports.getAllProjects = async (req, res) => {
  */
 exports.getProjectById = async (req, res) => {
   try {
-    const project = await projectService.getProjectById(req.params.id);
+    const result = await projectService.getById(req.params.id);
 
     sendResponse(
       res,
       {
-        success: true,
-        message: "Project fetched successfully",
-        data: project,
-        error: null,
+        success: !result.error,
+        message: result.error ? result.message : "Project fetched successfully",
+        data: result.data || null,
+        error: result.error || null,
       },
-      200,
+      result.error ? 404 : 200,
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to fetch project",
+        message: "Internal server error",
         data: null,
         error: error.message,
       },
-      400,
+      500,
     );
   }
 };
@@ -208,41 +205,28 @@ exports.getProjectById = async (req, res) => {
  */
 exports.updateProject = async (req, res) => {
   try {
-    const project = await projectService.updateProject(req.params.id, req.body);
-
-    if (!project) {
-      return sendResponse(
-        res,
-        {
-          success: false,
-          message: "Project not found",
-          data: null,
-          error: "Invalid project ID",
-        },
-        404,
-      );
-    }
+    const result = await projectService.update(req.params.id, req.body);
 
     sendResponse(
       res,
       {
-        success: true,
-        message: "Project updated successfully",
-        data: project,
-        error: null,
+        success: !result.error,
+        message: result.error ? result.message : "Project updated successfully",
+        data: result.data || null,
+        error: result.error || null,
       },
-      200,
+      result.error ? 404 : 200,
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to update project",
+        message: "Internal server error",
         data: null,
         error: error.message,
       },
-      400,
+      500,
     );
   }
 };
@@ -254,41 +238,28 @@ exports.updateProject = async (req, res) => {
  */
 exports.deleteProject = async (req, res) => {
   try {
-    const project = await projectService.deleteProject(req.params.id);
-
-    if (!project) {
-      return sendResponse(
-        res,
-        {
-          success: false,
-          message: "Project not found",
-          data: null,
-          error: "Invalid project ID",
-        },
-        404,
-      );
-    }
+    const result = await projectService.remove(req.params.id);
 
     sendResponse(
       res,
       {
-        success: true,
-        message: "Project deleted successfully",
-        data: project,
-        error: null,
+        success: !result.error,
+        message: result.error ? result.message : "Project deleted successfully",
+        data: result.data || null,
+        error: result.error || null,
       },
-      200,
+      result.error ? 404 : 200,
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to delete project",
+        message: "Internal server error",
         data: null,
         error: error.message,
       },
-      400,
+      500,
     );
   }
 };

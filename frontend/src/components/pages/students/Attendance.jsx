@@ -1,3 +1,9 @@
+/**
+ * Attendance Component
+ * 
+ * Interface for tracking and reporting student attendance.
+ * Provides calendar-based views and statistical summaries.
+ */
 import React, { memo, useMemo } from "react";
 
 const AttendanceRow = memo(({ record }) => {

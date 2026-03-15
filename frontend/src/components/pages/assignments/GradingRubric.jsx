@@ -1,46 +1,45 @@
-import { useState, useCallback, useMemo, memo } from "react";
+import { useState, useCallback, useMemo, useEffect, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import api from "../../../utils/api";
 
 const GradingRubric = memo(() => {
   const navigate = useNavigate();
   const [rubric, setRubric] = useState({
     name: "Project Evaluation Rubric",
-    criteria: [
-      {
-        id: 1,
-        criterion: "Technical Implementation",
-        maxPoints: 30,
-        description: "Quality of code and technical execution",
-      },
-      {
-        id: 2,
-        criterion: "Documentation",
-        maxPoints: 20,
-        description: "Completeness and clarity of documentation",
-      },
-      {
-        id: 3,
-        criterion: "Presentation",
-        maxPoints: 15,
-        description: "Quality of presentation and delivery",
-      },
-      {
-        id: 4,
-        criterion: "Teamwork",
-        maxPoints: 15,
-        description: "Collaboration and team contribution",
-      },
-      {
-        id: 5,
-        criterion: "Innovation",
-        maxPoints: 20,
-        description: "Creativity and innovation in solution",
-      },
-    ],
+    criteria: [],
   });
-
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchRubric = async () => {
+      try {
+        const response = await api.get("/assignments/rubric");
+        if (response.data?.data) {
+          setRubric(response.data.data);
+        } else {
+          // Provide fallback if empty
+          setRubric({
+            name: "Project Evaluation Rubric",
+            criteria: [
+              {
+                id: 1,
+                criterion: "Technical Implementation",
+                maxPoints: 30,
+                description: "Quality of code and technical execution",
+              },
+            ],
+          });
+        }
+      } catch (error) {
+        console.error("Failed to fetch rubric", error);
+      } finally {
+        setInitialLoading(false);
+      }
+    };
+    fetchRubric();
+  }, []);
 
   const updateCriterion = useCallback((id, field, value) => {
     setRubric((prev) => ({
@@ -150,7 +149,10 @@ const GradingRubric = memo(() => {
               </button>
             </div>
 
-            <div className="space-y-4">
+            {initialLoading ? (
+              <div className="text-center py-4 text-slate-500">Loading rubric...</div>
+            ) : (
+              <div className="space-y-4">
               {rubric.criteria.map((criterion) => (
                 <div
                   key={criterion.id}
@@ -214,6 +216,7 @@ const GradingRubric = memo(() => {
                 </div>
               ))}
             </div>
+            )}
           </div>
 
           <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">

@@ -1,4 +1,5 @@
-import React, { memo, useMemo } from "react";
+import React, { memo, useMemo, useState, useEffect } from "react";
+import api from "../../../utils/api";
 import PropTypes from "prop-types";
 
 const GroupCard = memo(({ group }) => {
@@ -95,29 +96,23 @@ GroupCard.propTypes = {
 };
 
 const ProjectGroupsList = memo(() => {
-  const groups = useMemo(
-    () => [
-      {
-        id: "G001",
-        name: "Group A - E-commerce Platform",
-        project: "E-commerce Platform",
-        guide: "Dr. Sarah Johnson",
-        members: ["John Smith", "Sarah Johnson", "Mike Chen"],
-        status: "Active",
-        progress: 65,
-      },
-      {
-        id: "G002",
-        name: "Group B - AI Chatbot",
-        project: "AI Chatbot",
-        guide: "Prof. Michael Chen",
-        members: ["Emily Davis", "David Wilson"],
-        status: "Completed",
-        progress: 100,
-      },
-    ],
-    [],
-  );
+  const [groups, setGroups] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchGroups = async () => {
+      try {
+        const response = await api.get('/projects/groups');
+        const data = response.data?.data || [];
+        setGroups(data);
+      } catch (error) {
+        console.error("Failed to fetch project groups", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchGroups();
+  }, []);
 
   return (
     <div className="animate-fade-in">
@@ -135,11 +130,15 @@ const ProjectGroupsList = memo(() => {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 gap-6">
-        {groups.map((group) => (
-          <GroupCard key={group.id} group={group} />
-        ))}
-      </div>
+      {loading ? (
+        <div className="p-8 text-center text-slate-500">Loading project groups...</div>
+      ) : (
+        <div className="grid grid-cols-1 gap-6">
+          {groups.map((group) => (
+            <GroupCard key={group.id || group._id} group={group} />
+          ))}
+        </div>
+      )}
     </div>
   );
 });

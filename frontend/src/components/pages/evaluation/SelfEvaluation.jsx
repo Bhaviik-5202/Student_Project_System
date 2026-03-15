@@ -1,6 +1,7 @@
 import React, { memo, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import api from "../../../utils/api";
 
 const SelfEvaluation = memo(() => {
   const navigate = useNavigate();
@@ -29,20 +30,26 @@ const SelfEvaluation = memo(() => {
     });
   }, []);
 
-  const submitEvaluation = useCallback(() => {
-    toast.success("Self-evaluation submitted successfully");
-    navigate("/evaluation");
-  }, [navigate]);
+  const submitEvaluation = useCallback(async () => {
+    try {
+      await api.post("/evaluations/self", evaluation);
+      toast.success("Self-evaluation submitted successfully");
+      navigate("/evaluations");
+    } catch (error) {
+      console.error("Failed to submit self-evaluation", error);
+      toast.error(error.response?.data?.message || "Failed to submit self-evaluation");
+    }
+  }, [evaluation, navigate]);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6">
           <button
-            onClick={() => navigate("/evaluation")}
+            onClick={() => navigate("/evaluations")}
             className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 flex items-center mb-4"
           >
-            ← Back to Evaluation
+            ← Back to Evaluations
           </button>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
             Self-Evaluation
@@ -206,7 +213,7 @@ const SelfEvaluation = memo(() => {
                 Submit Self-Evaluation
               </button>
               <button
-                onClick={() => navigate("/evaluation")}
+                onClick={() => navigate("/evaluations")}
                 className="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700"
               >
                 Save Draft

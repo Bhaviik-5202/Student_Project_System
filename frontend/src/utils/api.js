@@ -25,7 +25,13 @@ api.interceptors.request.use(
 
 // Response interceptor
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // If the response has the standardized structure, return the inner object
+    if (response.data && typeof response.data.success !== "undefined") {
+      return response.data;
+    }
+    return response.data;
+  },
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem(LOCAL_STORAGE_KEYS.TOKEN);

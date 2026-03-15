@@ -2,7 +2,12 @@ const submissionService = require("../services/submission.service");
 const sendResponse = require("../utils/response");
 
 /**
- * Create a new submission
+ * Submission Controller
+ * Handles student work submissions, including file uploads and status tracking.
+ */
+
+/**
+ * Create a new work submission
  * @route POST /submissions
  * @access Student
  */
@@ -37,7 +42,7 @@ exports.createSubmission = async (req, res) => {
 };
 
 /**
- * Get all submissions
+ * Fetch all submissions across all students and projects
  * @route GET /submissions
  * @access Faculty, Admin
  */
@@ -72,7 +77,7 @@ exports.getAllSubmissions = async (req, res) => {
 };
 
 /**
- * Get a submission by ID
+ * Retrieve a specific submission by its ID
  * @route GET /submissions/:id
  * @access Faculty, Admin
  */
@@ -107,7 +112,7 @@ exports.getSubmissionById = async (req, res) => {
 };
 
 /**
- * Update a submission by ID
+ * Update submission contents or status
  * @route PUT /submissions/:id
  * @access Faculty, Admin
  */
@@ -142,7 +147,7 @@ exports.updateSubmission = async (req, res) => {
 };
 
 /**
- * Delete a submission by ID
+ * Delete a submission from the record
  * @route DELETE /submissions/:id
  * @access Faculty, Admin
  */

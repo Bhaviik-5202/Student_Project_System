@@ -1,112 +1,141 @@
-const Message = require("../models/message.model");
-const Chat = require("../models/chat.model");
-const ApiError = require("../utils/ApiError");
+const messageService = require("../services/message.service");
 const sendResponse = require("../utils/response");
 
 /**
- * Send a message in a chat
- * @route POST /api/v1/messages
+ * Message Controller
+ * Handles real-time messaging, chat history, and direct communication
+ * between users.
+ */
+
+/**
+ * Send a new direct or group message
+ * @route POST /messages
  * @access Authenticated
  */
-exports.sendMessage = async (req, res, next) => {
+exports.sendMessage = async (req, res) => {
   try {
-    const { chatId, content } = req.body;
+    const result = await messageService.send(req.body);
 
-    const chat = await Chat.findById(chatId);
-    if (!chat) {
-      throw new ApiError(404, "Chat not found");
-    }
-
-    if (!chat.members.map((id) => id.toString()).includes(req.user.id)) {
-      throw new ApiError(403, "Access denied");
-    }
-
-    const message = await Message.create({
-      sender: req.user.id,
-      chat: chatId,
-      content,
-      readBy: [req.user.id],
-    });
-
-    chat.messages.push(message._id);
-    await chat.save();
-
-    const populatedMessage = await Message.findById(message._id).populate(
-      "sender",
-      "name email avatar",
-    );
-
-    return sendResponse(
+    sendResponse(
       res,
       {
-        success: true,
-        message: "Message sent successfully",
-        data: populatedMessage,
+        success: !result.error,
+        message: result.error ? result.message : "Message sent successfully",
+        data: result.data || null,
+        error: result.error || null,
       },
-      201,
+      result.error ? 400 : 201,
     );
   } catch (error) {
-    next(error);
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Failed to send message",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
   }
 };
 
 /**
- * Get messages for a chat
- * @route GET /api/v1/messages/:chatId
+ * Fetch chat history for an authenticated user
+ * @route GET /messages/:chatId
  * @access Authenticated
  */
-exports.getMessagesByChat = async (req, res, next) => {
+exports.getMessagesByChat = async (req, res) => {
   try {
-    const { chatId } = req.params;
-    if (!chatId.match(/^[0-9a-fA-F]{24}$/)) {
-      throw new ApiError(400, "Invalid Chat ID");
-    }
-    const chat = await Chat.findById(chatId);
-    if (!chat) {
-      throw new ApiError(404, "Chat not found");
-    }
-    if (!chat.members.map((id) => id.toString()).includes(req.user.id)) {
-      throw new ApiError(403, "Access denied");
-    }
+    const result = await messageService.getMessagesByChat(req.params.chatId, req.user.id);
 
-    const messages = await Message.find({ chat: chatId })
-      .populate("sender", "name email avatar")
-      .sort({ createdAt: 1 });
-
-    return sendResponse(res, {
-      success: true,
-      data: messages,
-    });
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? "Failed to fetch messages"
+          : "Messages fetched successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 400 : 200,
+    );
   } catch (error) {
-    next(error);
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
   }
 };
 
 /**
- * Delete a message
- * @route DELETE /api/v1/messages/:messageId
+ * Mark a specific message as read
+ * @route PUT /messages/:id/read
  * @access Authenticated
  */
-exports.deleteMessage = async (req, res, next) => {
+exports.markAsRead = async (req, res) => {
   try {
-    const { messageId } = req.params;
+    const result = await messageService.markAsRead(req.params.id);
 
-    const message = await Message.findById(messageId);
-    if (!message) {
-      throw new ApiError(404, "Message not found");
-    }
-
-    if (message.sender.toString() !== req.user.id) {
-      throw new ApiError(403, "You can only delete your own messages");
-    }
-
-    await message.deleteOne();
-
-    return sendResponse(res, {
-      success: true,
-      message: "Message deleted successfully",
-    });
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error ? "Message not found" : "Message marked as read",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 404 : 200,
+    );
   } catch (error) {
-    next(error);
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
+};
+/**
+ * Remove a specific message from history
+ * @route DELETE /messages/:id
+ * @access Authenticated (Sender)
+ */
+exports.deleteMessage = async (req, res) => {
+  try {
+    const result = await messageService.deleteMessage(req.params.messageId, req.user.id);
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error ? result.message : "Message deleted successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 404 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
   }
 };

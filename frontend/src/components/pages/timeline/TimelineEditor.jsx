@@ -1,39 +1,32 @@
-import { useCallback, useState, memo } from "react";
+import { useCallback, useState, useEffect, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import api from "../../../utils/api";
 
 const TimelineEditor = memo(() => {
   const navigate = useNavigate();
   const [timeline, setTimeline] = useState({
-    name: "Project Development Timeline",
-    description: "Timeline for the database design project",
-    milestones: [
-      {
-        id: 1,
-        name: "Project Kickoff",
-        date: "2024-01-10",
-        description: "Initial project meeting",
-      },
-      {
-        id: 2,
-        name: "Requirements Finalized",
-        date: "2024-01-20",
-        description: "Finalize project requirements",
-      },
-      {
-        id: 3,
-        name: "Design Complete",
-        date: "2024-02-01",
-        description: "Complete system design",
-      },
-      {
-        id: 4,
-        name: "Development Complete",
-        date: "2024-02-15",
-        description: "Finish development phase",
-      },
-    ],
+    name: "",
+    description: "",
+    milestones: [],
   });
+  const [fetching, setFetching] = useState(true);
+
+  useEffect(() => {
+    const fetchTimeline = async () => {
+      try {
+        const response = await api.get('/timeline/editor');
+        if (response.data?.data) {
+          setTimeline(response.data.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch timeline data", error);
+      } finally {
+        setFetching(false);
+      }
+    };
+    fetchTimeline();
+  }, []);
 
   const [newMilestone, setNewMilestone] = useState({
     name: "",
@@ -82,14 +75,22 @@ const TimelineEditor = memo(() => {
     toast.success("Milestone removed");
   }, []);
 
-  const saveTimeline = useCallback(() => {
+  const saveTimeline = useCallback(async () => {
     setLoading(true);
-    setTimeout(() => {
-      toast.success("Timeline saved successfully");
+    try {
+      const response = await api.post('/timeline', timeline);
+      if (response.data?.success) {
+        toast.success("Timeline saved successfully");
+        handleNavigate("/timeline");
+      } else {
+        toast.error(response.data?.message || "Failed to save timeline");
+      }
+    } catch (error) {
+      toast.error("Failed to save timeline");
+    } finally {
       setLoading(false);
-      handleNavigate("/timeline");
-    }, 1000);
-  }, [handleNavigate]);
+    }
+  }, [timeline, handleNavigate]);
 
   const inputClass =
     "w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500";
@@ -128,7 +129,11 @@ const TimelineEditor = memo(() => {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 p-6 mb-8">
+        {fetching ? (
+          <div className="p-8 text-center text-slate-500">Loading timeline editor...</div>
+        ) : (
+          <>
+            <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 p-6 mb-8">
           {/* Timeline Info */}
           <div className="mb-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -288,8 +293,10 @@ const TimelineEditor = memo(() => {
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </>
+    )}
+  </div>
+</div>
   );
 });
 

@@ -1,46 +1,26 @@
-import { useState, useMemo, useCallback, memo } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import api from "../../../utils/api";
 
 const BackupRestore = memo(() => {
   const navigate = useNavigate();
-  const backups = useMemo(
-    () => [
-      {
-        id: 1,
-        name: "Backup_2024-01-15",
-        type: "Full",
-        size: "2.4 GB",
-        date: "2024-01-15 02:00:00",
-        status: "Completed",
-      },
-      {
-        id: 2,
-        name: "Backup_2024-01-14",
-        type: "Incremental",
-        size: "450 MB",
-        date: "2024-01-14 02:00:00",
-        status: "Completed",
-      },
-      {
-        id: 3,
-        name: "Backup_2024-01-13",
-        type: "Full",
-        size: "2.3 GB",
-        date: "2024-01-13 02:00:00",
-        status: "Completed",
-      },
-      {
-        id: 4,
-        name: "Backup_2024-01-12",
-        type: "Incremental",
-        size: "520 MB",
-        date: "2024-01-12 02:00:00",
-        status: "Completed",
-      },
-    ],
-    [],
-  );
+  const [backups, setBackups] = useState([]);
+  const [backupsLoading, setBackupsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchBackups = async () => {
+      try {
+        const response = await api.get("/admin/backups");
+        setBackups(response.data?.data || []);
+      } catch (error) {
+        console.error("Failed to fetch backups", error);
+      } finally {
+        setBackupsLoading(false);
+      }
+    };
+    fetchBackups();
+  }, []);
 
   const [backupType, setBackupType] = useState("full");
   const [loading, setLoading] = useState(false);
@@ -170,32 +150,38 @@ const BackupRestore = memo(() => {
               Available Backups
             </h3>
             <div className="space-y-4">
-              {backups.map((backup) => (
-                <div
-                  key={backup.id}
-                  className="flex items-center justify-between p-4 border border-slate-200 dark:border-slate-700 rounded-lg"
-                >
-                  <div>
-                    <div className="font-medium text-slate-900 dark:text-white">
-                      {backup.name}
+              {backupsLoading ? (
+                <div className="text-center py-4 text-slate-500">Loading backups...</div>
+              ) : backups.length === 0 ? (
+                <div className="text-center py-4 text-slate-500">No backups found.</div>
+              ) : (
+                backups.map((backup) => (
+                  <div
+                    key={backup.id || backup._id}
+                    className="flex items-center justify-between p-4 border border-slate-200 dark:border-slate-700 rounded-lg"
+                  >
+                    <div>
+                      <div className="font-medium text-slate-900 dark:text-white">
+                        {backup.name}
+                      </div>
+                      <div className="text-sm text-slate-600 dark:text-slate-400">
+                        {backup.type} • {backup.size} • {backup.date || new Date().toLocaleString()}
+                      </div>
                     </div>
-                    <div className="text-sm text-slate-600 dark:text-slate-400">
-                      {backup.type} • {backup.size} • {backup.date}
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleRestore(backup.id || backup._id)}
+                        className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-sm rounded-lg hover:bg-blue-200 dark:hover:bg-blue-900/50"
+                      >
+                        Restore
+                      </button>
+                      <button className="px-3 py-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-sm rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600">
+                        Download
+                      </button>
                     </div>
                   </div>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => handleRestore(backup.id)}
-                      className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-sm rounded-lg hover:bg-blue-200 dark:hover:bg-blue-900/50"
-                    >
-                      Restore
-                    </button>
-                    <button className="px-3 py-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-sm rounded-lg hover:bg-slate-200 dark:hover:bg-slate-600">
-                      Download
-                    </button>
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
         </div>

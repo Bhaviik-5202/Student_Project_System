@@ -2,9 +2,14 @@ const permissionService = require("../services/permission.service");
 const sendResponse = require("../utils/response");
 
 /**
- * Create a new permission
+ * Permission Controller
+ * Manages fine-grained access control, role permissions, and security policies.
+ */
+
+/**
+ * Define a new security permission or role policy
  * @route POST /permissions
- * @access Admin
+ * @access admin
  */
 exports.createPermission = async (req, res) => {
   try {
@@ -14,9 +19,7 @@ exports.createPermission = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error
-          ? "Failed to create permission"
-          : "Permission created successfully",
+        message: result.error ? result.message : "Permission created successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -27,19 +30,19 @@ exports.createPermission = async (req, res) => {
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: "Failed to create permission",
         data: null,
         error: error.message,
       },
-      500,
+      400,
     );
   }
 };
 
 /**
- * Get all permissions
+ * Fetch all defined permissions and security roles
  * @route GET /permissions
- * @access Admin
+ * @access admin
  */
 exports.getAllPermissions = async (req, res) => {
   try {
@@ -72,9 +75,9 @@ exports.getAllPermissions = async (req, res) => {
 };
 
 /**
- * Get a permission by ID
+ * Get detailed metadata for a specific security permission
  * @route GET /permissions/:id
- * @access Admin
+ * @access admin
  */
 exports.getPermissionById = async (req, res) => {
   try {
@@ -84,9 +87,7 @@ exports.getPermissionById = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error
-          ? "Permission not found"
-          : "Permission fetched successfully",
+        message: result.error ? "Permission not found" : "Permission fetched successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -107,9 +108,9 @@ exports.getPermissionById = async (req, res) => {
 };
 
 /**
- * Update a permission by ID
+ * Update security permission rules or descriptive metadata
  * @route PUT /permissions/:id
- * @access Admin
+ * @access admin
  */
 exports.updatePermission = async (req, res) => {
   try {
@@ -119,9 +120,7 @@ exports.updatePermission = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error
-          ? "Failed to update permission"
-          : "Permission updated successfully",
+        message: result.error ? "Permission not found" : "Permission updated successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -142,9 +141,9 @@ exports.updatePermission = async (req, res) => {
 };
 
 /**
- * Delete a permission by ID
+ * Revoke and permanently remove a security permission
  * @route DELETE /permissions/:id
- * @access Admin
+ * @access admin
  */
 exports.deletePermission = async (req, res) => {
   try {
@@ -154,9 +153,7 @@ exports.deletePermission = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error
-          ? "Failed to delete permission"
-          : "Permission deleted successfully",
+        message: result.error ? "Permission not found" : "Permission deleted successfully",
         data: result.data || null,
         error: result.error || null,
       },

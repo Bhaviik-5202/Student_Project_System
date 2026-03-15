@@ -2,48 +2,19 @@ const auditLogService = require("../services/auditlog.service");
 const sendResponse = require("../utils/response");
 
 /**
- * Create a new audit log entry
- * @route POST /auditlogs
- * @access Admin
+ * Audit Log Controller
+ * Maintains a secure, immutable record of critical system actions for security and compliance.
  */
-exports.createAuditLog = async (req, res) => {
-  try {
-    const result = await auditLogService.create(req.body);
-
-    sendResponse(
-      res,
-      {
-        success: !result.error,
-        message: result.error
-          ? "Failed to create audit log"
-          : "Audit log created successfully",
-        data: result.data || null,
-        error: result.error || null,
-      },
-      result.error ? 400 : 201,
-    );
-  } catch (error) {
-    sendResponse(
-      res,
-      {
-        success: false,
-        message: "Internal server error",
-        data: null,
-        error: error.message,
-      },
-      500,
-    );
-  }
-};
 
 /**
- * Get all audit log entries
- * @route GET /auditlogs
+ * Fetch all audit logs with pagination and filters
+ * @route GET /audit-logs
  * @access Admin
  */
 exports.getAllAuditLogs = async (req, res) => {
   try {
-    const result = await auditLogService.getAll();
+    const { page = 1, limit = 20, ...filters } = req.query;
+    const result = await auditLogService.getAll({ page, limit, filters });
 
     sendResponse(
       res,
@@ -72,8 +43,8 @@ exports.getAllAuditLogs = async (req, res) => {
 };
 
 /**
- * Get an audit log entry by ID
- * @route GET /auditlogs/:id
+ * Retrieve a specific audit log entry by its ID
+ * @route GET /audit-logs/:id
  * @access Admin
  */
 exports.getAuditLogById = async (req, res) => {
@@ -84,9 +55,7 @@ exports.getAuditLogById = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error
-          ? "Audit log not found"
-          : "Audit log fetched successfully",
+        message: result.error ? "Audit log not found" : "Audit log fetched successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -107,9 +76,80 @@ exports.getAuditLogById = async (req, res) => {
 };
 
 /**
- * Update an audit log entry by ID
- * @route PUT /auditlogs/:id
+ * Fetch audit history for a specific system resource or entity
+ * @route GET /audit-logs/resource/:resourceId
  * @access Admin
+ */
+exports.getAuditLogsByResourceId = async (req, res) => {
+  try {
+    const { page = 1, limit = 20 } = req.query;
+    const result = await auditLogService.getByResourceId(req.params.resourceId, {
+      page,
+      limit,
+    });
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? "Failed to fetch resource audit logs"
+          : "Resource audit logs fetched successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 404 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
+};
+/**
+ * Record a new system-level audit entry
+ * @route POST /audit-logs
+ * @access System, Admin
+ */
+exports.createAuditLog = async (req, res) => {
+  try {
+    const result = await auditLogService.create(req.body);
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error ? result.message : "Audit log entry created",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 400 : 201,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Failed to create audit log",
+        data: null,
+        error: error.message,
+      },
+      400,
+    );
+  }
+};
+
+/**
+ * Modify an existing audit log (restricted use)
+ * @route PUT /audit-logs/:id
+ * @access Admin (Super)
  */
 exports.updateAuditLog = async (req, res) => {
   try {
@@ -119,9 +159,7 @@ exports.updateAuditLog = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error
-          ? "Failed to update audit log"
-          : "Audit log updated successfully",
+        message: result.error ? "Audit log not found" : "Audit log updated successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -142,9 +180,9 @@ exports.updateAuditLog = async (req, res) => {
 };
 
 /**
- * Delete an audit log entry by ID
- * @route DELETE /auditlogs/:id
- * @access Admin
+ * Remove an audit log entry from the database
+ * @route DELETE /audit-logs/:id
+ * @access Admin (Super)
  */
 exports.deleteAuditLog = async (req, res) => {
   try {
@@ -154,9 +192,7 @@ exports.deleteAuditLog = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error
-          ? "Failed to delete audit log"
-          : "Audit log deleted successfully",
+        message: result.error ? "Audit log not found" : "Audit log deleted successfully",
         data: result.data || null,
         error: result.error || null,
       },

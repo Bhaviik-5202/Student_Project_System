@@ -2,7 +2,12 @@ const attendanceService = require("../services/attendance.service");
 const sendResponse = require("../utils/response");
 
 /**
- * Mark attendance for a student
+ * Attendance Controller
+ * Manages student attendance tracking, reporting, and updates.
+ */
+
+/**
+ * Mark or update attendance for a student
  * @route POST /attendance
  * @access Faculty
  */
@@ -13,12 +18,12 @@ exports.markAttendance = async (req, res) => {
     sendResponse(
       res,
       {
-        success: true,
-        message: "Attendance marked successfully",
-        data: attendance,
-        error: null,
+        success: !attendance.error,
+        message: attendance.error ? attendance.message : "Attendance marked successfully",
+        data: attendance.data || null,
+        error: attendance.error || null,
       },
-      201,
+      attendance.error ? 400 : 201,
     );
   } catch (error) {
     sendResponse(
@@ -35,7 +40,7 @@ exports.markAttendance = async (req, res) => {
 };
 
 /**
- * Get all attendance records
+ * Fetch all attendance records in the system
  * @route GET /attendance
  * @access Authenticated
  */
@@ -46,12 +51,12 @@ exports.getAllAttendance = async (req, res) => {
     sendResponse(
       res,
       {
-        success: true,
-        message: "Attendance records fetched successfully",
-        data: records,
-        error: null,
+        success: !records.error,
+        message: records.error ? records.message : "Attendance records fetched successfully",
+        data: records.data || null,
+        error: records.error || null,
       },
-      200,
+      records.error ? 400 : 200,
     );
   } catch (error) {
     sendResponse(
@@ -68,8 +73,9 @@ exports.getAllAttendance = async (req, res) => {
 };
 
 /**
- * Get attendance records by student ID
+ * Fetch attendance statistics for a specific student
  * @route GET /attendance/student/:studentId
+ * @access Authenticated
  */
 exports.getAttendanceByStudent = async (req, res) => {
   try {
@@ -80,12 +86,12 @@ exports.getAttendanceByStudent = async (req, res) => {
     sendResponse(
       res,
       {
-        success: true,
-        message: "Attendance by student fetched successfully",
-        data: records,
-        error: null,
+        success: !records.error,
+        message: records.error ? records.message : "Attendance by student fetched successfully",
+        data: records.data || null,
+        error: records.error || null,
       },
-      200,
+      records.error ? 400 : 200,
     );
   } catch (error) {
     sendResponse(
@@ -102,8 +108,9 @@ exports.getAttendanceByStudent = async (req, res) => {
 };
 
 /**
- * Get attendance records by date
+ * Fetch all attendance records for a specific date
  * @route GET /attendance/date/:date
+ * @access Authenticated
  */
 exports.getAttendanceByDate = async (req, res) => {
   try {
@@ -114,12 +121,12 @@ exports.getAttendanceByDate = async (req, res) => {
     sendResponse(
       res,
       {
-        success: true,
-        message: "Attendance by date fetched successfully",
-        data: records,
-        error: null,
+        success: !records.error,
+        message: records.error ? records.message : "Attendance by date fetched successfully",
+        data: records.data || null,
+        error: records.error || null,
       },
-      200,
+      records.error ? 400 : 200,
     );
   } catch (error) {
     sendResponse(
@@ -136,8 +143,9 @@ exports.getAttendanceByDate = async (req, res) => {
 };
 
 /**
- * Get attendance record by ID
+ * Retrieve a specific attendance record by its ID
  * @route GET /attendance/:id
+ * @access Authenticated
  */
 exports.getAttendanceById = async (req, res) => {
   try {
@@ -159,12 +167,12 @@ exports.getAttendanceById = async (req, res) => {
     sendResponse(
       res,
       {
-        success: true,
-        message: "Attendance record fetched successfully",
-        data: record,
-        error: null,
+        success: !record.error,
+        message: record.error ? record.message : "Attendance record fetched successfully",
+        data: record.data || null,
+        error: record.error || null,
       },
-      200,
+      record.error ? 400 : 200,
     );
   } catch (error) {
     sendResponse(
@@ -181,8 +189,9 @@ exports.getAttendanceById = async (req, res) => {
 };
 
 /**
- * Update attendance record by ID
+ * Modify an existing attendance record
  * @route PUT /attendance/:id
+ * @access Faculty, Admin
  */
 exports.updateAttendance = async (req, res) => {
   try {
@@ -207,12 +216,12 @@ exports.updateAttendance = async (req, res) => {
     sendResponse(
       res,
       {
-        success: true,
-        message: "Attendance updated successfully",
-        data: updatedRecord,
-        error: null,
+        success: !updatedRecord.error,
+        message: updatedRecord.error ? updatedRecord.message : "Attendance updated successfully",
+        data: updatedRecord.data || null,
+        error: updatedRecord.error || null,
       },
-      200,
+      updatedRecord.error ? 400 : 200,
     );
   } catch (error) {
     sendResponse(
@@ -229,8 +238,9 @@ exports.updateAttendance = async (req, res) => {
 };
 
 /**
- * Delete attendance record by ID
+ * Delete an attendance record from the system
  * @route DELETE /attendance/:id
+ * @access Admin
  */
 exports.deleteAttendance = async (req, res) => {
   try {

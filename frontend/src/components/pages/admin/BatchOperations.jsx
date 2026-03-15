@@ -1,6 +1,7 @@
-import { useState, useMemo, useCallback, memo } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import api from "../../../utils/api";
 
 const BatchOperations = memo(() => {
   const navigate = useNavigate();
@@ -9,46 +10,28 @@ const BatchOperations = memo(() => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const users = useMemo(
-    () => [
-      {
-        id: 1,
-        name: "John Doe",
-        email: "john@example.com",
-        role: "Student",
-        selected: false,
-      },
-      {
-        id: 2,
-        name: "Jane Smith",
-        email: "jane@example.com",
-        role: "Faculty",
-        selected: false,
-      },
-      {
-        id: 3,
-        name: "Robert Johnson",
-        email: "robert@example.com",
-        role: "Student",
-        selected: false,
-      },
-      {
-        id: 4,
-        name: "Sarah Williams",
-        email: "sarah@example.com",
-        role: "Student",
-        selected: false,
-      },
-      {
-        id: 5,
-        name: "Michael Brown",
-        email: "michael@example.com",
-        role: "Faculty",
-        selected: false,
-      },
-    ],
-    [],
-  );
+  const [users, setUsers] = useState([]);
+  const [usersLoading, setUsersLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await api.get("/admin/users");
+        setUsers(
+          (response.data?.data || []).map((u) => ({
+            ...u,
+            id: u._id || u.id,
+            selected: false,
+          })),
+        );
+      } catch (error) {
+        console.error("Failed to fetch users", error);
+      } finally {
+        setUsersLoading(false);
+      }
+    };
+    fetchUsers();
+  }, []);
 
   const toggleUserSelection = useCallback((userId) => {
     setSelectedUsers((prev) =>
@@ -215,30 +198,36 @@ const BatchOperations = memo(() => {
               </div>
 
               <div className="space-y-3 max-h-96 overflow-y-auto">
-                {users.map((user) => (
-                  <div
-                    key={user.id}
-                    className="flex items-center p-3 border border-slate-200 dark:border-slate-700 rounded-lg"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={selectedUsers.includes(user.id)}
-                      onChange={() => toggleUserSelection(user.id)}
-                      className="h-4 w-4 text-blue-600 rounded focus:ring-blue-500 dark:focus:ring-blue-600"
-                    />
-                    <div className="ml-3">
-                      <div className="font-medium text-slate-900 dark:text-white">
-                        {user.name}
-                      </div>
-                      <div className="text-sm text-slate-600 dark:text-slate-400">
-                        {user.email}
-                      </div>
-                      <div className="text-xs text-slate-500 dark:text-slate-400">
-                        {user.role}
+                {usersLoading ? (
+                  <div className="text-center py-4 text-slate-500">Loading users...</div>
+                ) : users.length === 0 ? (
+                  <div className="text-center py-4 text-slate-500">No users found.</div>
+                ) : (
+                  users.map((user) => (
+                    <div
+                      key={user.id}
+                      className="flex items-center p-3 border border-slate-200 dark:border-slate-700 rounded-lg"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selectedUsers.includes(user.id)}
+                        onChange={() => toggleUserSelection(user.id)}
+                        className="h-4 w-4 text-blue-600 rounded focus:ring-blue-500 dark:focus:ring-blue-600"
+                      />
+                      <div className="ml-3">
+                        <div className="font-medium text-slate-900 dark:text-white">
+                          {user.name || (user.firstName + " " + user.lastName)}
+                        </div>
+                        <div className="text-sm text-slate-600 dark:text-slate-400">
+                          {user.email}
+                        </div>
+                        <div className="text-xs text-slate-500 dark:text-slate-400">
+                          {user.role}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
 
               <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700">

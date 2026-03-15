@@ -1,9 +1,11 @@
 import { useState, memo, useCallback } from "react";
-import PropTypes from "prop-types";
 import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "../../../context/AuthContext";
 import { toast } from "react-hot-toast";
+import authService from "../../../services/authService";
 
+/**
+ * Register Component - Account creation form
+ */
 const Register = memo(() => {
   const [formData, setFormData] = useState({
     name: "",
@@ -11,150 +13,124 @@ const Register = memo(() => {
     password: "",
     confirmPassword: "",
     role: "student",
-    studentId: "",
-    department: "",
   });
 
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  // Use authService directly for backend registration
-  const authService = require("../../../services/authService").default;
 
-  const handleSubmit = useCallback(
-    async (e) => {
-      e.preventDefault();
+  const handleSubmit = useCallback(async (e) => {
+    e.preventDefault();
 
-      if (formData.password !== formData.confirmPassword) {
-        toast.error("Passwords do not match");
-        return;
-      }
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
 
-      setLoading(true);
-      try {
-        // Send all required fields to backend
-        const res = await authService.register({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-          role: formData.role,
-        });
-        if (res.success) {
-          toast.success("Registration successful! Please login.");
-          navigate("/login");
-        } else {
-          toast.error(res.message || "Registration failed");
-        }
-      } catch (error) {
-        toast.error(error.message || "Registration failed");
-      } finally {
-        setLoading(false);
-      }
-    },
-    [formData, register, navigate],
-  );
-
-  const handleChange = useCallback(
-    (e) => {
-      setFormData({
-        ...formData,
-        [e.target.name]: e.target.value,
+    setLoading(true);
+    try {
+      const res = await authService.register({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        role: formData.role,
       });
-    },
-    [formData],
-  );
+      if (res.success) {
+        toast.success("Account created! Please sign in.");
+        navigate("/login");
+      } else {
+        toast.error(res.message || "Registration failed");
+      }
+    } catch (error) {
+      toast.error(error.message || "Registration failed");
+    } finally {
+      setLoading(false);
+    }
+  }, [formData, navigate]);
+
+  const handleChange = useCallback((e) => {
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  }, []);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-slate-900 dark:text-white">
-            Create your account
-          </h2>
-          <p className="mt-2 text-center text-sm text-slate-600 dark:text-slate-400">
-            Or{" "}
-            <Link
-              to="/login"
-              className="font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300"
-            >
-              sign in to existing account
-            </Link>
-          </p>
+    <div className="space-y-6">
+      <div className="text-center">
+        <div className="flex justify-center mb-4">
+          <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-xl">
+            <i className="fas fa-user-plus text-white text-2xl"></i>
+          </div>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="name" className="sr-only">
-                Full Name
-              </label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-slate-300 dark:border-slate-600 placeholder-slate-500 dark:placeholder-slate-400 text-slate-900 dark:text-white dark:bg-slate-800 rounded-t-md focus:outline-none focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 focus:z-10 sm:text-sm"
-                placeholder="Full Name"
-                value={formData.name}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label htmlFor="email" className="sr-only">
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-slate-300 dark:border-slate-600 placeholder-slate-500 dark:placeholder-slate-400 text-slate-900 dark:text-white dark:bg-slate-800 focus:outline-none focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 focus:z-10 sm:text-sm"
-                placeholder="Email address"
-                value={formData.email}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-slate-300 dark:border-slate-600 placeholder-slate-500 dark:placeholder-slate-400 text-slate-900 dark:text-white dark:bg-slate-800 focus:outline-none focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 focus:z-10 sm:text-sm"
-                placeholder="Password"
-                value={formData.password}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label htmlFor="confirmPassword" className="sr-only">
-                Confirm Password
-              </label>
-              <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-slate-300 dark:border-slate-600 placeholder-slate-500 dark:placeholder-slate-400 text-slate-900 dark:text-white dark:bg-slate-800 rounded-b-md focus:outline-none focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400 focus:z-10 sm:text-sm"
-                placeholder="Confirm Password"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Join Us</h2>
+        <p className="mt-2 text-slate-600 dark:text-slate-400">Create your academic account</p>
+      </div>
 
+      <form className="space-y-4" onSubmit={handleSubmit}>
+        <div>
+          <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Full Name</label>
+          <input
+            name="name"
+            type="text"
+            required
+            value={formData.name}
+            onChange={handleChange}
+            className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-blue-500 dark:text-white transition-all"
+            placeholder="John Doe"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Email Address</label>
+          <input
+            name="email"
+            type="email"
+            required
+            value={formData.email}
+            onChange={handleChange}
+            className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-blue-500 dark:text-white transition-all"
+            placeholder="john@university.edu"
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
           <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-slate-900 focus:ring-blue-500 dark:focus:ring-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? "Creating account..." : "Create account"}
-            </button>
+            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Password</label>
+            <input
+              name="password"
+              type="password"
+              required
+              value={formData.password}
+              onChange={handleChange}
+              className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-blue-500 dark:text-white transition-all"
+              placeholder="••••••••"
+            />
           </div>
-        </form>
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">Confirm</label>
+            <input
+              name="confirmPassword"
+              type="password"
+              required
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-blue-500 dark:text-white transition-all"
+              placeholder="••••••••"
+            />
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg transition-all active:scale-[0.98] disabled:opacity-50 mt-2"
+        >
+          {loading ? "Creating Account..." : "Create Account"}
+        </button>
+      </form>
+
+      <div className="text-center pt-2">
+        <p className="text-sm text-slate-600 dark:text-slate-400">
+          Already have an account?{" "}
+          <Link to="/login" className="font-bold text-blue-600 dark:text-blue-400 hover:underline">Sign In</Link>
+        </p>
       </div>
     </div>
   );

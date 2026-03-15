@@ -1,6 +1,14 @@
 import React, { useState, useMemo, useCallback, memo } from "react";
 import { useAuth } from "../../../context/AuthContext";
 
+/**
+ * Reports Component
+ * 
+ * A powerful data intelligence and export utility. Generates multi-role 
+ * reports (Project Status, Student Performance, Attendance) with 
+ * interactive status distributions, longitudinal charts, and 
+ * versatile export capabilities (PDF, Excel, CSV).
+ */
 const Reports = memo(() => {
   const { user } = useAuth();
   const [selectedReport, setSelectedReport] = useState(null);

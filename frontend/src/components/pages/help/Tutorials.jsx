@@ -1,76 +1,30 @@
-import React, { memo, useMemo, useState, useCallback } from "react";
+import React, { memo, useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../../../utils/api";
 
 const Tutorials = memo(() => {
   const navigate = useNavigate();
-  const tutorials = useMemo(
-    () => [
-      {
-        id: 1,
-        title: "Getting Started Guide",
-        description: "Learn the basics of using the system",
-        duration: "15 min",
-        category: "Basics",
-        completed: true,
-      },
-      {
-        id: 2,
-        title: "Project Management",
-        description: "How to create and manage projects",
-        duration: "25 min",
-        category: "Projects",
-        completed: true,
-      },
-      {
-        id: 3,
-        title: "Team Collaboration",
-        description: "Working with teams and discussions",
-        duration: "20 min",
-        category: "Collaboration",
-        completed: false,
-      },
-      {
-        id: 4,
-        title: "Assignment Submission",
-        description: "How to submit assignments properly",
-        duration: "10 min",
-        category: "Assignments",
-        completed: false,
-      },
-      {
-        id: 5,
-        title: "Using the Calendar",
-        description: "Managing meetings and deadlines",
-        duration: "12 min",
-        category: "Features",
-        completed: false,
-      },
-      {
-        id: 6,
-        title: "Reporting and Analytics",
-        description: "Understanding your progress data",
-        duration: "18 min",
-        category: "Analytics",
-        completed: false,
-      },
-    ],
-    [],
-  );
+  const [tutorials, setTutorials] = useState([]);
+  const [categories, setCategories] = useState(["All"]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTutorials = async () => {
+      try {
+        const response = await api.get("/help/tutorials");
+        const data = response.data?.data || {};
+        if (data.tutorials) setTutorials(data.tutorials);
+        if (data.categories) setCategories(["All", ...data.categories]);
+      } catch (error) {
+        console.error("Failed to fetch tutorials", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTutorials();
+  }, []);
 
   const [selectedCategory, setSelectedCategory] = useState("All");
-
-  const categories = useMemo(
-    () => [
-      "All",
-      "Basics",
-      "Projects",
-      "Collaboration",
-      "Assignments",
-      "Features",
-      "Analytics",
-    ],
-    [],
-  );
 
   const filteredTutorials = useMemo(
     () =>
@@ -134,48 +88,52 @@ const Tutorials = memo(() => {
         </div>
 
         {/* Tutorials Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {filteredTutorials.map((tutorial) => (
-            <div
-              key={tutorial.id}
-              className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6"
-            >
-              <div className="relative mb-4">
-                <div className="aspect-video bg-slate-200 dark:bg-slate-700 rounded-lg flex items-center justify-center">
-                  <div className="text-center">
-                    <div className="text-4xl mb-2">🎬</div>
-                    <div className="text-sm text-slate-600 dark:text-slate-400">
-                      {tutorial.duration}
+        {loading ? (
+          <div className="text-center py-12 text-slate-500">Loading tutorials...</div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            {filteredTutorials.map((tutorial) => (
+              <div
+                key={tutorial.id || tutorial._id}
+                className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6"
+              >
+                <div className="relative mb-4">
+                  <div className="aspect-video bg-slate-200 dark:bg-slate-700 rounded-lg flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="text-4xl mb-2">🎬</div>
+                      <div className="text-sm text-slate-600 dark:text-slate-400">
+                        {tutorial.duration}
+                      </div>
                     </div>
                   </div>
+                  {tutorial.completed && (
+                    <div className="absolute top-2 right-2 px-2 py-1 bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 text-xs rounded-full">
+                      Completed
+                    </div>
+                  )}
                 </div>
-                {tutorial.completed && (
-                  <div className="absolute top-2 right-2 px-2 py-1 bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200 text-xs rounded-full">
-                    Completed
-                  </div>
-                )}
-              </div>
 
-              <div className="mb-4">
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
-                  {tutorial.title}
-                </h3>
-                <p className="text-slate-600 dark:text-slate-400 text-sm">
-                  {tutorial.description}
-                </p>
-              </div>
+                <div className="mb-4">
+                  <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
+                    {tutorial.title}
+                  </h3>
+                  <p className="text-slate-600 dark:text-slate-400 text-sm">
+                    {tutorial.description}
+                  </p>
+                </div>
 
-              <div className="flex justify-between items-center">
-                <span className="px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs rounded">
-                  {tutorial.category}
-                </span>
-                <button className="px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
-                  {tutorial.completed ? "Watch Again" : "Start Tutorial"}
-                </button>
+                <div className="flex justify-between items-center">
+                  <span className="px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs rounded">
+                    {tutorial.category}
+                  </span>
+                  <button className="px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
+                    {tutorial.completed ? "Watch Again" : "Start Tutorial"}
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         {/* Progress */}
         <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">

@@ -1,6 +1,20 @@
-import React, { useState, useCallback, memo } from "react";
+/**
+ * ProjectProposal Component
+ * 
+ * A comprehensive form for submitting or editing project proposals.
+ * Includes sections for basic info, abstract, objectives, timeline, 
+ * and document attachments.
+ */
+import React, { useState, useCallback, useEffect, memo } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import projectService from "../../../services/projectService";
 
 const ProjectProposal = memo(() => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const isEditing = Boolean(id);
+
   const [formData, setFormData] = useState({
     title: "",
     type: "",
@@ -16,6 +30,44 @@ const ProjectProposal = memo(() => {
     document: null,
   });
 
+  const [loading, setLoading] = useState(isEditing);
+
+  useEffect(() => {
+    if (isEditing) {
+      const fetchProject = async () => {
+        try {
+          const res = await projectService.getProjectById(id);
+          if (res.success && res.data) {
+            const data = res.data;
+            setFormData({
+              title: data.title || "",
+              type: data.type || "",
+              teamMembers: data.teamMembers || "",
+              guide: data.guide || "",
+              abstract: data.abstract || "",
+              objectives: data.objectives || "",
+              outcomes: data.outcomes || "",
+              startDate: data.startDate ? data.startDate.split('T')[0] : "",
+              endDate: data.endDate ? data.endDate.split('T')[0] : "",
+              resources: data.resources || "",
+              budget: data.budget || "",
+              document: null, 
+            });
+          } else {
+            toast.error("Failed to fetch project details");
+            navigate("/projects");
+          }
+        } catch (error) {
+          toast.error("Error fetching project");
+          navigate("/projects");
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchProject();
+    }
+  }, [id, isEditing, navigate]);
+
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -26,13 +78,31 @@ const ProjectProposal = memo(() => {
   }, []);
 
   const handleSubmit = useCallback(
-    (e) => {
+    async (e) => {
       e.preventDefault();
-      // ...existing code...
-      alert("Project proposal submitted successfully!");
+      const toastId = toast.loading(isEditing ? "Updating project..." : "Submitting proposal...");
+      
+      try {
+        const res = isEditing
+          ? await projectService.updateProject(id, formData)
+          : await projectService.createProject(formData);
+          
+        if (res.success) {
+          toast.success(`Project ${isEditing ? "updated" : "submitted"} successfully!`, { id: toastId });
+          navigate("/projects");
+        } else {
+          toast.error(res.message || "Failed to save project", { id: toastId });
+        }
+      } catch (error) {
+        toast.error("An error occurred", { id: toastId });
+      }
     },
-    [formData],
+    [formData, id, isEditing, navigate]
   );
+
+  if (loading) {
+    return <div className="p-8 text-center">Loading...</div>;
+  }
 
   return (
     <div className="animate-fade-in">

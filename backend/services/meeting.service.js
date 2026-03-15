@@ -1,106 +1,99 @@
-const Meeting = require("../models/meeting.model");
-
-function response(error, data = null, message = "") {
-  return { error, data, message };
-}
+const meetingRepository = require("../repositories/meeting.repository");
 
 /**
- * Create a new meeting
- * @param {Object} data
+ * Standardized response helper for services
+ * @param {boolean} error - Whether the operation failed
+ * @param {any} data - The payload to return
+ * @param {string} message - Descriptive status message
+ * @returns {Object} { error, data, message }
+ */
+const response = (error, data = null, message = "") => ({ error, data, message });
+
+/**
+ * Schedule a new project meeting or consultation
+ * @param {Object} data - Meeting details (title, time, participants)
+ * @returns {Promise<Object>} Formatted service response with new meeting data
  */
 exports.create = async (data) => {
   try {
-    const meeting = await Meeting.create(data);
-    return response(false, meeting, "Meeting created");
+    const meeting = await meetingRepository.create(data);
+    return response(false, meeting, "Meeting created successfully");
   } catch (err) {
     return response(true, null, err.message || "Failed to create meeting");
   }
 };
 
 /**
- * Get all meetings
+ * Fetch all scheduled meetings recorded in the system
+ * @returns {Promise<Object>} Formatted service response with meeting list
  */
 exports.getAll = async () => {
   try {
-    const meetings = await Meeting.find();
-    return response(false, meetings, "Meetings fetched");
+    const meetings = await meetingRepository.findAll();
+    return response(false, meetings, "Meetings fetched successfully");
   } catch (err) {
     return response(true, null, err.message || "Failed to fetch meetings");
   }
 };
 
 /**
- * Get meeting by ID
- * @param {string} id
+ * Get detailed information for a specific meeting
+ * @param {string} id - Meeting identifier
+ * @returns {Promise<Object>} Formatted service response with meeting data
  */
 exports.getById = async (id) => {
   try {
-    const meeting = await Meeting.findById(id);
-
-    if (!meeting) {
-      return response(true, null, "Meeting not found");
-    }
-
-    return response(false, meeting, "Meeting fetched");
+    const meeting = await meetingRepository.findById(id);
+    if (!meeting) return response(true, null, "Meeting not found");
+    return response(false, meeting, "Meeting fetched successfully");
   } catch (err) {
     return response(true, null, err.message || "Failed to fetch meeting");
   }
 };
 
 /**
- * Update meeting by ID
- * @param {string} id
- * @param {Object} data
+ * Update meeting details or reschedule
+ * @param {string} id - Meeting identifier
+ * @param {Object} data - Updated attributes
+ * @returns {Promise<Object>} Formatted service response with updated meeting
  */
 exports.update = async (id, data) => {
   try {
-    const meeting = await Meeting.findByIdAndUpdate(id, data, {
-      new: true,
-      runValidators: true,
-    });
-    if (!meeting) {
-      return response(true, null, "Meeting not found");
-    }
-
-    return response(false, meeting, "Meeting updated");
+    const meeting = await meetingRepository.update(id, data);
+    if (!meeting) return response(true, null, "Meeting not found");
+    return response(false, meeting, "Meeting updated successfully");
   } catch (err) {
     return response(true, null, err.message || "Failed to update meeting");
   }
 };
 
 /**
- * Delete meeting by ID
- * @param {string} id
+ * Cancel and remove a meeting record
+ * @param {string} id - Meeting identifier
+ * @returns {Promise<Object>} Formatted service response
  */
 exports.remove = async (id) => {
   try {
-    const meeting = await Meeting.findByIdAndDelete(id);
-
-    if (!meeting) {
-      return response(true, null, "Meeting not found");
-    }
-
-    return response(false, meeting, "Meeting deleted");
+    const meeting = await meetingRepository.remove(id);
+    if (!meeting) return response(true, null, "Meeting not found");
+    return response(false, null, "Meeting deleted successfully");
   } catch (err) {
     return response(true, null, err.message || "Failed to delete meeting");
   }
 };
 
 /**
- * Join a meeting (stub)
- * @param {string} id
- * @param {Object} user
+ * Register a user's intent to partipate in a meeting
+ * @param {string} id - Meeting identifier
+ * @param {Object} user - User profile data
+ * @returns {Promise<Object>} Formatted service response with join confirmation
  */
 exports.join = async (id, user) => {
   try {
-    const meeting = await Meeting.findById(id);
-
-    if (!meeting) {
-      return response(true, null, "Meeting not found");
-    }
-
-    // Stub logic — extend later with participants array
-    return response(false, { meetingId: id, user }, "Joined meeting");
+    const meeting = await meetingRepository.findById(id);
+    if (!meeting) return response(true, null, "Meeting not found");
+    // Stub logic — extend later with participants array implementation
+    return response(false, { meetingId: id, user }, "Joined meeting successfully");
   } catch (err) {
     return response(true, null, err.message || "Failed to join meeting");
   }

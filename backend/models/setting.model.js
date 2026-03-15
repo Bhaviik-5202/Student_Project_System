@@ -8,7 +8,6 @@ const settingSchema = new mongoose.Schema(
       unique: true,
       trim: true,
       maxlength: [150, "Key cannot exceed 150 characters"],
-      index: true,
     },
     value: {
       type: mongoose.Schema.Types.Mixed,
@@ -19,7 +18,5 @@ const settingSchema = new mongoose.Schema(
     timestamps: true,
   },
 );
-
-settingSchema.index({ key: 1 }, { unique: true });
 
 module.exports = mongoose.model("Setting", settingSchema);

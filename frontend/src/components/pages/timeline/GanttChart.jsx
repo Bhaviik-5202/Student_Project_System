@@ -1,38 +1,24 @@
-import { useMemo, memo } from "react";
+import { useState, useEffect, useMemo, memo } from "react";
+import api from "../../../utils/api";
 
 const GanttChart = memo(() => {
-  const projects = useMemo(
-    () => [
-      {
-        id: 1,
-        name: "E-Commerce Platform",
-        start: "2024-01-01",
-        end: "2024-03-31",
-        progress: 65,
-        milestones: [
-          { name: "Planning", date: "2024-01-15", status: "completed" },
-          { name: "Design", date: "2024-02-15", status: "completed" },
-          { name: "Development", date: "2024-03-15", status: "in-progress" },
-          { name: "Testing", date: "2024-03-25", status: "pending" },
-          { name: "Deployment", date: "2024-03-31", status: "pending" },
-        ],
-      },
-      {
-        id: 2,
-        name: "Mobile App",
-        start: "2024-02-01",
-        end: "2024-04-30",
-        progress: 40,
-        milestones: [
-          { name: "Planning", date: "2024-02-15", status: "completed" },
-          { name: "Design", date: "2024-03-01", status: "in-progress" },
-          { name: "Development", date: "2024-04-01", status: "pending" },
-          { name: "Testing", date: "2024-04-20", status: "pending" },
-        ],
-      },
-    ],
-    [],
-  );
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchGanttData = async () => {
+      try {
+        const response = await api.get('/timeline/gantt');
+        const data = response.data?.data || [];
+        setProjects(data);
+      } catch (error) {
+        console.error("Failed to fetch Gantt data", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchGanttData();
+  }, []);
 
   const months = useMemo(() => ["Jan", "Feb", "Mar", "Apr", "May", "Jun"], []);
   const gridLines = useMemo(() => Array.from({ length: 180 }), []);
@@ -100,7 +86,10 @@ const GanttChart = memo(() => {
         </div>
 
         {/* Projects Timeline */}
-        <div className="space-y-6">
+        {loading ? (
+          <div className="p-8 text-center text-slate-500">Loading Gantt chart...</div>
+        ) : (
+          <div className="space-y-6">
           {projects.map((project) => (
             <div
               key={project.id}
@@ -177,16 +166,17 @@ const GanttChart = memo(() => {
                           {milestone.status}
                         </span>
                       </div>
-                      <div className="text-xs text-slate-600 dark:text-slate-300">
-                        Due: {milestone.date}
+                        <div className="text-xs text-slate-600 dark:text-slate-300">
+                          Due: {milestone.date}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

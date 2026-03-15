@@ -1,61 +1,27 @@
-import { useCallback, useMemo, memo } from "react";
+import { useCallback, useState, useEffect, useMemo, memo } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../../../utils/api";
 
 const RoadmapViewer = memo(() => {
   const navigate = useNavigate();
-  const roadmap = useMemo(
-    () => ({
-      title: "Software Engineering Roadmap",
-      description: "Complete learning path for software engineering students",
-      phases: [
-        {
-          id: 1,
-          name: "Foundation",
-          quarter: "Q1 2024",
-          objectives: [
-            "Learn programming fundamentals",
-            "Understand basic algorithms",
-            "Master version control with Git",
-          ],
-          status: "completed",
-        },
-        {
-          id: 2,
-          name: "Web Development",
-          quarter: "Q2 2024",
-          objectives: [
-            "Learn HTML, CSS, JavaScript",
-            "Master React framework",
-            "Build responsive web applications",
-          ],
-          status: "in-progress",
-        },
-        {
-          id: 3,
-          name: "Backend Development",
-          quarter: "Q3 2024",
-          objectives: [
-            "Learn Node.js and Express",
-            "Understand databases (SQL & NoSQL)",
-            "Build RESTful APIs",
-          ],
-          status: "upcoming",
-        },
-        {
-          id: 4,
-          name: "Advanced Topics",
-          quarter: "Q4 2024",
-          objectives: [
-            "Learn cloud computing",
-            "Understand DevOps practices",
-            "Study system design",
-          ],
-          status: "upcoming",
-        },
-      ],
-    }),
-    [],
-  );
+  const [roadmap, setRoadmap] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchRoadmap = async () => {
+      try {
+        const response = await api.get('/timeline/roadmap');
+        if (response.data?.data) {
+          setRoadmap(response.data.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch roadmap data", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchRoadmap();
+  }, []);
 
   const statusStyles = {
     completed: {
@@ -97,15 +63,20 @@ const RoadmapViewer = memo(() => {
           </button>
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-4">
-              {roadmap.title}
+              {roadmap ? roadmap.title : "Loading..."}
             </h1>
             <p className="text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-              {roadmap.description}
+              {roadmap ? roadmap.description : ""}
             </p>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
+        {loading ? (
+          <div className="p-8 text-center text-slate-500">Loading roadmap...</div>
+        ) : !roadmap ? (
+          <div className="p-8 text-center text-slate-500">No roadmap data found</div>
+        ) : (
+          <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
           <div className="relative">
             {/* Progress Line */}
             <div className="absolute left-0 right-0 top-8 h-1 bg-slate-300 dark:bg-slate-700"></div>
@@ -207,6 +178,7 @@ const RoadmapViewer = memo(() => {
             </div>
           </div>
         </div>
+        )}
       </div>
     </div>
   );

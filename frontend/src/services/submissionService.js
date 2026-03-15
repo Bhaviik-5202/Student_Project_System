@@ -1,10 +1,9 @@
 import api from "../utils/api";
 
 const submissionService = {
-  getAllSubmissions: async () => {
+  getSubmissions: async (params = {}) => {
     try {
-      const response = await api.get("/submissions");
-      return { success: true, data: response.data };
+      return await api.get("/submissions", { params });
     } catch (error) {
       return {
         success: false,
@@ -15,8 +14,7 @@ const submissionService = {
 
   getSubmissionById: async (id) => {
     try {
-      const response = await api.get(`/submissions/${id}`);
-      return { success: true, data: response.data };
+      return await api.get(`/submissions/${id}`);
     } catch (error) {
       return {
         success: false,
@@ -27,8 +25,7 @@ const submissionService = {
 
   createSubmission: async (submissionData) => {
     try {
-      const response = await api.post("/submissions", submissionData);
-      return { success: true, data: response.data };
+      return await api.post("/submissions", submissionData);
     } catch (error) {
       return {
         success: false,
@@ -39,8 +36,7 @@ const submissionService = {
 
   updateSubmission: async (id, submissionData) => {
     try {
-      const response = await api.put(`/submissions/${id}`, submissionData);
-      return { success: true, data: response.data };
+      return await api.put(`/submissions/${id}`, submissionData);
     } catch (error) {
       return {
         success: false,
@@ -51,8 +47,7 @@ const submissionService = {
 
   deleteSubmission: async (id) => {
     try {
-      await api.delete(`/submissions/${id}`);
-      return { success: true };
+      return await api.delete(`/submissions/${id}`);
     } catch (error) {
       return {
         success: false,

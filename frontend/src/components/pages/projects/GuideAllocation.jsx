@@ -1,5 +1,7 @@
-import React, { memo, useMemo } from "react";
+import React, { memo, useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import projectService from "../../../services/projectService";
+import staffService from "../../../services/staffService";
 
 const GuideCard = memo(({ guide }) => {
   const statusClass =
@@ -122,62 +124,50 @@ AllocationRow.propTypes = {
 };
 
 const GuideAllocationList = memo(() => {
-  const allocations = useMemo(
-    () => [
-      {
-        id: 1,
-        guide: "Dr. Sarah Johnson",
-        department: "Computer Science",
-        allocatedGroups: 3,
-        maxCapacity: 5,
-        students: 8,
-        status: "Available",
-      },
-      {
-        id: 2,
-        guide: "Prof. Michael Chen",
-        department: "Information Technology",
-        allocatedGroups: 2,
-        maxCapacity: 4,
-        students: 6,
-        status: "Available",
-      },
-      {
-        id: 3,
-        guide: "Dr. Emily Williams",
-        department: "Electronics",
-        allocatedGroups: 4,
-        maxCapacity: 4,
-        students: 10,
-        status: "Full",
-      },
-    ],
-    [],
-  );
+  const [allocations, setAllocations] = useState([]);
+  const [projects, setProjects] = useState([]);
+  const [loadingGuides, setLoadingGuides] = useState(true);
+  const [loadingProjects, setLoadingProjects] = useState(true);
 
-  const projects = useMemo(
-    () => [
-      {
-        id: "P001",
-        name: "E-commerce Platform",
-        group: "Group A",
-        currentGuide: "Dr. Sarah Johnson",
-      },
-      {
-        id: "P002",
-        name: "AI Chatbot",
-        group: "Group B",
-        currentGuide: "Prof. Michael Chen",
-      },
-      {
-        id: "P003",
-        name: "IoT Smart Home",
-        group: "Group C",
-        currentGuide: "None",
-      },
-    ],
-    [],
-  );
+  useEffect(() => {
+    const fetchGuides = async () => {
+      setLoadingGuides(true);
+      const res = await staffService.getAllStaff();
+      if (res.success) {
+        setAllocations(
+          (res.data.data || []).filter(s => s.role === "Faculty" || s.role === "Guide").map(g => ({
+            id: g._id || g.id,
+            guide: g.name,
+            department: g.department || "General",
+            allocatedGroups: g.allocatedGroups || 0,
+            maxCapacity: g.maxCapacity || 5,
+            students: g.studentsCount || 0,
+            status: (g.allocatedGroups || 0) < (g.maxCapacity || 5) ? "Available" : "Full",
+          }))
+        );
+      }
+      setLoadingGuides(false);
+    };
+
+    const fetchProjects = async () => {
+      setLoadingProjects(true);
+      const res = await projectService.getAllProjects();
+      if (res.success) {
+        setProjects(
+          (res.data.data || []).map(p => ({
+            id: p._id || p.id,
+            name: p.title,
+            group: p.teamMembers || "Ungrouped",
+            currentGuide: p.guide || "None",
+          }))
+        );
+      }
+      setLoadingProjects(false);
+    };
+
+    fetchGuides();
+    fetchProjects();
+  }, []);
 
   return (
     <div className="animate-fade-in">
@@ -196,11 +186,17 @@ const GuideAllocationList = memo(() => {
       </div>
 
       {/* Guides Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        {allocations.map((guide) => (
-          <GuideCard key={guide.id} guide={guide} />
-        ))}
-      </div>
+      {loadingGuides ? (
+        <div className="p-8 text-center text-gray-500">Loading guides...</div>
+      ) : allocations.length === 0 ? (
+        <div className="p-8 text-center text-gray-500">No guides found.</div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          {allocations.map((guide) => (
+            <GuideCard key={guide.id} guide={guide} />
+          ))}
+        </div>
+      )}
 
       {/* Projects for Allocation */}
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm dark:shadow-md border border-gray-200 dark:border-gray-700 p-6">
@@ -229,9 +225,19 @@ const GuideAllocationList = memo(() => {
               </tr>
             </thead>
             <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-              {projects.map((project) => (
-                <AllocationRow key={project.id} project={project} />
-              ))}
+              {loadingProjects ? (
+                <tr>
+                  <td colSpan="5" className="p-8 text-center text-gray-500">Loading projects...</td>
+                </tr>
+              ) : projects.length === 0 ? (
+                <tr>
+                   <td colSpan="5" className="p-8 text-center text-gray-500">No projects pending allocation.</td>
+                </tr>
+              ) : (
+                projects.map((project) => (
+                  <AllocationRow key={project.id} project={project} />
+                ))
+              )}
             </tbody>
           </table>
         </div>

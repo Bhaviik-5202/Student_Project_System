@@ -4,48 +4,7 @@ import { useNavigate } from "react-router-dom";
 const CourseCatalog = memo(() => {
   const navigate = useNavigate();
   const courses = useMemo(
-    () => [
-      {
-        id: 1,
-        title: "Software Engineering",
-        code: "CS401",
-        instructor: "Dr. Smith",
-        semester: "Fall 2024",
-        credits: 3,
-      },
-      {
-        id: 2,
-        title: "Database Systems",
-        code: "CS402",
-        instructor: "Dr. Johnson",
-        semester: "Fall 2024",
-        credits: 3,
-      },
-      {
-        id: 3,
-        title: "Web Development",
-        code: "CS403",
-        instructor: "Dr. Williams",
-        semester: "Spring 2024",
-        credits: 3,
-      },
-      {
-        id: 4,
-        title: "Data Structures",
-        code: "CS404",
-        instructor: "Dr. Brown",
-        semester: "Spring 2024",
-        credits: 4,
-      },
-      {
-        id: 5,
-        title: "Machine Learning",
-        code: "CS405",
-        instructor: "Dr. Davis",
-        semester: "Fall 2024",
-        credits: 4,
-      },
-    ],
+    () => [],
     [],
   );
 

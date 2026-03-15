@@ -45,7 +45,7 @@ export const validateNumber = (value, fieldName) => {
 };
 
 export const validatePhone = (phone) => {
-  const phoneRegex = /^[\+]?[1-9][\d]{1,14}$/;
+  const phoneRegex = /^[+]?[1-9][\d]{1,14}$/;
   if (!phone) return "Phone number is required";
   if (!phoneRegex.test(phone.replace(/[^\d+]/g, ""))) {
     return "Please enter a valid phone number";

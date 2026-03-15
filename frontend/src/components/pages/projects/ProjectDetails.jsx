@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo, memo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import api from "../../../utils/api";
 
 const ProjectDetails = memo(() => {
   const { id } = useParams();
@@ -11,24 +12,15 @@ const ProjectDetails = memo(() => {
   const fetchProject = useCallback(async () => {
     setLoading(true);
     try {
-      setTimeout(() => {
-        setProject({
-          id,
-          title: "Final Year Project",
-          description: "Complete project management system for students",
-          status: "In Progress",
-          progress: 65,
-          startDate: "2024-01-15",
-          endDate: "2024-06-30",
-          supervisor: "Dr. John Smith",
-          teamMembers: ["Student A", "Student B", "Student C"],
-          documents: [],
-          milestones: [],
-        });
-        setLoading(false);
-      }, 500);
+      const response = await api.get(`/projects/${id}`);
+      if (response.data?.success) {
+        setProject(response.data.data);
+      } else {
+        toast.error(response.data?.message || "Failed to load project details");
+      }
     } catch (error) {
       toast.error("Failed to load project details");
+    } finally {
       setLoading(false);
     }
   }, [id]);
@@ -160,12 +152,17 @@ const ProjectDetails = memo(() => {
                 Team Members
               </h2>
               <div className="space-y-3">
-                {project.teamMembers.map((member, index) => (
+                {project.teamMembers?.map((member, index) => (
                   <div key={index} className="flex items-center">
-                    <div className="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full mr-3"></div>
-                    <span className="font-medium text-gray-900 dark:text-white">
-                      {member}
-                    </span>
+                    <div className="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full mr-3 overflow-hidden flex items-center justify-center text-sm font-medium text-gray-600 dark:text-gray-300">
+                      {member.name ? member.name.charAt(0).toUpperCase() : (typeof member === 'string' ? member.charAt(0).toUpperCase() : 'U')}
+                    </div>
+                    <div>
+                      <span className="font-medium text-gray-900 dark:text-white block">
+                        {member.name || member}
+                      </span>
+                      {member.role && <span className="text-xs text-gray-500 dark:text-gray-400">{member.role}</span>}
+                    </div>
                   </div>
                 ))}
               </div>

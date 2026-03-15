@@ -21,6 +21,20 @@ const projectSchema = new mongoose.Schema(
       trim: true,
       index: true,
     },
+    progress: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 100,
+    },
+    startDate: {
+      type: Date,
+      default: null,
+    },
+    endDate: {
+      type: Date,
+      default: null,
+    },
     members: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -32,6 +46,11 @@ const projectSchema = new mongoose.Schema(
       ref: "User",
       default: null,
       index: true,
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
   },
   {

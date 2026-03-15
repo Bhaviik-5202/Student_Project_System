@@ -1,38 +1,26 @@
-import { useState, useMemo, useCallback, memo } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import api from "../../../utils/api";
 
 const PeerReview = memo(() => {
   const navigate = useNavigate();
-  const reviews = useMemo(
-    () => [
-      {
-        id: 1,
-        assignment: "Database Design Project",
-        reviewee: "John Doe",
-        reviewer: "Jane Smith",
-        status: "Pending",
-        dueDate: "2024-01-20",
-      },
-      {
-        id: 2,
-        assignment: "Web App Prototype",
-        reviewee: "Robert Johnson",
-        reviewer: "Sarah Williams",
-        status: "Completed",
-        dueDate: "2024-01-18",
-      },
-      {
-        id: 3,
-        assignment: "Algorithm Analysis",
-        reviewee: "Michael Brown",
-        reviewer: "Emily Davis",
-        status: "In Progress",
-        dueDate: "2024-01-22",
-      },
-    ],
-    [],
-  );
+  const [reviews, setReviews] = useState([]);
+  const [reviewsLoading, setReviewsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const response = await api.get("/assignments/peer-reviews");
+        setReviews(response.data?.data || []);
+      } catch (error) {
+        console.error("Failed to fetch peer reviews", error);
+      } finally {
+        setReviewsLoading(false);
+      }
+    };
+    fetchReviews();
+  }, []);
 
   const [currentReview, setCurrentReview] = useState({
     criteria: [
@@ -75,41 +63,47 @@ const PeerReview = memo(() => {
                 My Reviews
               </h3>
               <div className="space-y-4">
-                {reviews.map((review) => (
-                  <div
-                    key={review.id}
-                    className={`p-4 border rounded-lg cursor-pointer hover:shadow-sm ${
-                      review.status === "Pending"
-                        ? "border-amber-300 dark:border-amber-600 bg-amber-50 dark:bg-amber-900/20"
-                        : review.status === "Completed"
-                          ? "border-emerald-300 dark:border-emerald-600 bg-emerald-50 dark:bg-emerald-900/20"
-                          : "border-blue-300 dark:border-blue-600 bg-blue-50 dark:bg-blue-900/20"
-                    }`}
-                  >
-                    <div className="font-medium text-slate-900 dark:text-white">
-                      {review.assignment}
+                {reviewsLoading ? (
+                  <div className="text-center py-4 text-slate-500">Loading reviews...</div>
+                ) : reviews.length === 0 ? (
+                  <div className="text-center py-4 text-slate-500">No peer reviews assigned.</div>
+                ) : (
+                  reviews.map((review) => (
+                    <div
+                      key={review.id || review._id}
+                      className={`p-4 border rounded-lg cursor-pointer hover:shadow-sm ${
+                        review.status === "Pending"
+                          ? "border-amber-300 dark:border-amber-600 bg-amber-50 dark:bg-amber-900/20"
+                          : review.status === "Completed"
+                            ? "border-emerald-300 dark:border-emerald-600 bg-emerald-50 dark:bg-emerald-900/20"
+                            : "border-blue-300 dark:border-blue-600 bg-blue-50 dark:bg-blue-900/20"
+                      }`}
+                    >
+                      <div className="font-medium text-slate-900 dark:text-white">
+                        {review.assignment || (review.assignmentId ? review.assignmentId.title : "N/A")}
+                      </div>
+                      <div className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                        Reviewee: {review.reviewee || (review.revieweeId ? review.revieweeId.name : "N/A")}
+                      </div>
+                      <div className="flex justify-between items-center mt-3">
+                        <span
+                          className={`text-xs px-2 py-1 rounded-full ${
+                            review.status === "Pending"
+                              ? "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300"
+                              : review.status === "Completed"
+                                ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
+                                : "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
+                          }`}
+                        >
+                          {review.status || "Pending"}
+                        </span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400">
+                          Due: {review.dueDate || new Date().toLocaleDateString()}
+                        </span>
+                      </div>
                     </div>
-                    <div className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                      Reviewee: {review.reviewee}
-                    </div>
-                    <div className="flex justify-between items-center mt-3">
-                      <span
-                        className={`text-xs px-2 py-1 rounded-full ${
-                          review.status === "Pending"
-                            ? "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300"
-                            : review.status === "Completed"
-                              ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
-                              : "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
-                        }`}
-                      >
-                        {review.status}
-                      </span>
-                      <span className="text-xs text-slate-500 dark:text-slate-400">
-                        Due: {review.dueDate}
-                      </span>
-                    </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
           </div>

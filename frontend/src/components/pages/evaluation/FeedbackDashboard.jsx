@@ -1,66 +1,41 @@
-import React, { memo, useMemo } from "react";
+import React, { memo, useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../../../utils/api";
 
 const FeedbackDashboard = memo(() => {
   const navigate = useNavigate();
-  const feedback = useMemo(
-    () => [
-      {
-        id: 1,
-        assignment: "Database Design",
-        student: "John Doe",
-        feedback: "Good work on the schema design",
-        rating: 4,
-        date: "2024-01-15",
-      },
-      {
-        id: 2,
-        assignment: "Web App Prototype",
-        student: "Jane Smith",
-        feedback: "Need improvement in UI design",
-        rating: 3,
-        date: "2024-01-14",
-      },
-      {
-        id: 3,
-        assignment: "Algorithm Analysis",
-        student: "Robert Johnson",
-        feedback: "Excellent algorithm explanation",
-        rating: 5,
-        date: "2024-01-13",
-      },
-      {
-        id: 4,
-        assignment: "Research Paper",
-        student: "Sarah Williams",
-        feedback: "Good research but needs more citations",
-        rating: 3,
-        date: "2024-01-12",
-      },
-    ],
-    [],
-  );
+  const [feedback, setFeedback] = useState([]);
+  const [stats, setStats] = useState({
+    totalFeedback: 0,
+    averageRating: 0.0,
+    pendingReviews: 0,
+    responseRate: 0,
+  });
+  const [distribution, setDistribution] = useState([
+    { rating: "5 Stars", count: 0, percentage: 0 },
+    { rating: "4 Stars", count: 0, percentage: 0 },
+    { rating: "3 Stars", count: 0, percentage: 0 },
+    { rating: "2 Stars", count: 0, percentage: 0 },
+    { rating: "1 Star", count: 0, percentage: 0 },
+  ]);
+  const [loading, setLoading] = useState(true);
 
-  const stats = useMemo(
-    () => ({
-      totalFeedback: 24,
-      averageRating: 4.2,
-      pendingReviews: 3,
-      responseRate: 85,
-    }),
-    [],
-  );
-
-  const distribution = useMemo(
-    () => [
-      { rating: "5 Stars", count: 12, percentage: 50 },
-      { rating: "4 Stars", count: 8, percentage: 33 },
-      { rating: "3 Stars", count: 3, percentage: 13 },
-      { rating: "2 Stars", count: 1, percentage: 4 },
-      { rating: "1 Star", count: 0, percentage: 0 },
-    ],
-    [],
-  );
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const response = await api.get("/evaluations/dashboard/feedback");
+        const data = response.data?.data || {};
+        if (data.feedback) setFeedback(data.feedback);
+        if (data.stats) setStats(data.stats);
+        if (data.distribution) setDistribution(data.distribution);
+      } catch (error) {
+        console.error("Failed to fetch feedback dashboard data", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDashboardData();
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
@@ -142,53 +117,63 @@ const FeedbackDashboard = memo(() => {
                 </tr>
               </thead>
               <tbody className="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
-                {feedback.map((item) => (
-                  <tr
-                    key={item.id}
-                    className="hover:bg-slate-50 dark:hover:bg-slate-700"
-                  >
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="font-medium text-slate-900 dark:text-white">
-                        {item.assignment}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
-                      {item.student}
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="text-slate-700 dark:text-slate-300 max-w-xs truncate">
-                        {item.feedback}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        {[...Array(5)].map((_, i) => (
-                          <span
-                            key={i}
-                            className={`text-lg ${
-                              i < item.rating
-                                ? "text-amber-400 dark:text-amber-300"
-                                : "text-slate-300 dark:text-slate-600"
-                            }`}
-                          >
-                            ★
-                          </span>
-                        ))}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
-                      {item.date}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mr-3">
-                        View
-                      </button>
-                      <button className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200">
-                        Edit
-                      </button>
-                    </td>
+                {loading ? (
+                  <tr>
+                    <td colSpan="6" className="px-6 py-4 text-center text-slate-500">Loading feedback...</td>
                   </tr>
-                ))}
+                ) : feedback.length === 0 ? (
+                  <tr>
+                    <td colSpan="6" className="px-6 py-4 text-center text-slate-500">No feedback available.</td>
+                  </tr>
+                ) : (
+                  feedback.map((item) => (
+                    <tr
+                      key={item.id || item._id}
+                      className="hover:bg-slate-50 dark:hover:bg-slate-700"
+                    >
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="font-medium text-slate-900 dark:text-white">
+                          {item.assignment || (item.assignmentId ? item.assignmentId.title : "TBA")}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
+                        {item.student || (item.studentId ? item.studentId.name : "TBA")}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-slate-700 dark:text-slate-300 max-w-xs truncate">
+                          {item.feedback || item.comments || "No comments"}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          {[...Array(5)].map((_, i) => (
+                            <span
+                              key={i}
+                              className={`text-lg ${
+                                i < (item.rating || item.score || 0)
+                                  ? "text-amber-400 dark:text-amber-300"
+                                  : "text-slate-300 dark:text-slate-600"
+                              }`}
+                            >
+                              ★
+                            </span>
+                          ))}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
+                        {item.date || new Date(item.createdAt || Date.now()).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mr-3">
+                          View
+                        </button>
+                        <button className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200">
+                          Edit
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

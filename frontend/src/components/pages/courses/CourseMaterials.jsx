@@ -1,50 +1,28 @@
-import React, { memo, useMemo } from "react";
+import React, { memo, useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import api from "../../../utils/api";
 
 const CourseMaterials = memo(() => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const materials = useMemo(
-    () => [
-      {
-        id: 1,
-        title: "Lecture 1: Introduction",
-        type: "PDF",
-        date: "Jan 10, 2024",
-        size: "2.4 MB",
-      },
-      {
-        id: 2,
-        title: "Assignment 1 Guidelines",
-        type: "PDF",
-        date: "Jan 12, 2024",
-        size: "1.1 MB",
-      },
-      {
-        id: 3,
-        title: "Week 1 Slides",
-        type: "PPT",
-        date: "Jan 8, 2024",
-        size: "5.3 MB",
-      },
-      {
-        id: 4,
-        title: "Reference Book Chapter",
-        type: "PDF",
-        date: "Jan 15, 2024",
-        size: "8.7 MB",
-      },
-      {
-        id: 5,
-        title: "Tutorial Video",
-        type: "Video",
-        date: "Jan 14, 2024",
-        size: "45.2 MB",
-      },
-    ],
-    [],
-  );
+  const [materials, setMaterials] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchMaterials = async () => {
+      try {
+        // Fallback or placeholder until backend route exists
+        const response = await api.get(`/courses/${id || 'all'}/materials`).catch(() => api.get("/courses/materials"));
+        setMaterials(response.data?.data || []);
+      } catch (error) {
+        console.error("Failed to fetch course materials", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMaterials();
+  }, [id]);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
@@ -103,45 +81,55 @@ const CourseMaterials = memo(() => {
                 </tr>
               </thead>
               <tbody className="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
-                {materials.map((material) => (
-                  <tr
-                    key={material.id}
-                    className="hover:bg-slate-50 dark:hover:bg-slate-700"
-                  >
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="font-medium text-slate-900 dark:text-white">
-                        {material.title}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`px-2 py-1 text-xs rounded-full ${
-                          material.type === "PDF"
-                            ? "bg-rose-100 text-rose-800 dark:bg-rose-900 dark:text-rose-200"
-                            : material.type === "Video"
-                              ? "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200"
-                              : "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
-                        }`}
-                      >
-                        {material.type}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-slate-200">
-                      {material.date}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-slate-200">
-                      {material.size}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mr-3">
-                        Download
-                      </button>
-                      <button className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-300">
-                        Preview
-                      </button>
-                    </td>
+                {loading ? (
+                  <tr>
+                    <td colSpan="5" className="px-6 py-4 text-center text-slate-500">Loading materials...</td>
                   </tr>
-                ))}
+                ) : materials.length === 0 ? (
+                  <tr>
+                    <td colSpan="5" className="px-6 py-4 text-center text-slate-500">No materials available.</td>
+                  </tr>
+                ) : (
+                  materials.map((material) => (
+                    <tr
+                      key={material.id || material._id}
+                      className="hover:bg-slate-50 dark:hover:bg-slate-700"
+                    >
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="font-medium text-slate-900 dark:text-white">
+                          {material.title}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span
+                          className={`px-2 py-1 text-xs rounded-full ${
+                            (material.type || "PDF") === "PDF"
+                              ? "bg-rose-100 text-rose-800 dark:bg-rose-900 dark:text-rose-200"
+                              : (material.type || "Video") === "Video"
+                                ? "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200"
+                                : "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                          }`}
+                        >
+                          {material.type || "PDF"}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-slate-200">
+                        {material.date || new Date(material.createdAt || Date.now()).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-slate-200">
+                        {material.size || "Unknown"}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 mr-3">
+                          Download
+                        </button>
+                        <button className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-300">
+                          Preview
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

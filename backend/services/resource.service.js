@@ -1,69 +1,81 @@
-const Resource = require("../models/resource.model");
+const resourceRepository = require("../repositories/resource.repository");
 
 /**
- * Create a new resource
- * @param {Object} data - Resource data
- * @returns {Promise<Object>} Created resource
+ * Standardized response helper for services
+ * @param {boolean} error - Whether the operation failed
+ * @param {any} data - The payload to return
+ * @param {string} message - Descriptive status message
+ * @returns {Object} { error, data, message }
  */
-exports.createResource = async (data) => {
+const response = (error, data, message) => ({ error, data, message });
+
+/**
+ * Register a new educational resource/file in the system
+ * @param {Object} data - Resource metadata and links
+ * @returns {Promise<Object>} Formatted service response with new resource data
+ */
+exports.create = async (data) => {
   try {
-    const resource = new Resource(data);
-    const savedResource = await resource.save();
-    return savedResource;
+    const resource = await resourceRepository.create(data);
+    return response(false, resource, "Resource created successfully");
   } catch (err) {
-    throw new Error(err.message || "Failed to create resource");
+    return response(true, null, err.message || "Failed to create resource");
   }
 };
 
 /**
- * Get all resources with pagination and filters
- * @param {Object} params - Pagination and filter params
- * @param {number} params.page - Page number
- * @param {number} params.limit - Number of items per page
- * @param {Object} params.filters - Filter object
- * @returns {Promise<Object>} Paginated resources
+ * Fetch all resources with pagination and filtering support
+ * @param {Object} params - Query and pagination parameters
+ * @param {number} params.page - Target page number
+ * @param {number} params.limit - Max records per page
+ * @param {Object} params.filters - Filter conditions
+ * @returns {Promise<Object>} Formatted service response with paginated resources
  */
-exports.getAllResources = async ({ page = 1, limit = 10, filters = {} }) => {
+exports.getAll = async ({ page = 1, limit = 10, filters = {} }) => {
   try {
     const skip = (page - 1) * limit;
     const [resources, total] = await Promise.all([
-      Resource.find(filters).skip(skip).limit(limit),
-      Resource.countDocuments(filters),
+      resourceRepository.findAll(filters, { skip, limit, sort: { createdAt: -1 } }),
+      resourceRepository.count(filters),
     ]);
-    return {
+    return response(false, {
       resources,
       total,
       page,
       limit,
       totalPages: Math.ceil(total / limit),
-    };
+    }, "Resources fetched successfully");
   } catch (err) {
-    throw new Error(err.message || "Failed to fetch resources");
+    return response(true, null, err.message || "Failed to fetch resources");
   }
 };
 
 /**
- * Get a resource by ID
- * @param {string} id - Resource ID
- * @returns {Promise<Object|null>} Resource or null
+ * Get detailed metadata for a specific resource
+ * @param {string} id - Resource identifier
+ * @returns {Promise<Object>} Formatted service response with resource data
  */
-exports.getResourceById = async (id) => {
+exports.getById = async (id) => {
   try {
-    return await Resource.findById(id);
+    const resource = await resourceRepository.findById(id);
+    if (!resource) return response(true, null, "Resource not found");
+    return response(false, resource, "Resource fetched successfully");
   } catch (err) {
-    throw new Error(err.message || "Failed to fetch resource");
+    return response(true, null, err.message || "Failed to fetch resource");
   }
 };
 
 /**
- * Delete a resource by ID
- * @param {string} id - Resource ID
- * @returns {Promise<Object|null>} Deleted resource or null
+ * Permanently remove a resource record
+ * @param {string} id - Resource identifier
+ * @returns {Promise<Object>} Formatted service response
  */
-exports.deleteResource = async (id) => {
+exports.remove = async (id) => {
   try {
-    return await Resource.findByIdAndDelete(id);
+    const resource = await resourceRepository.remove(id);
+    if (!resource) return response(true, null, "Resource not found");
+    return response(false, null, "Resource deleted successfully");
   } catch (err) {
-    throw new Error(err.message || "Failed to delete resource");
+    return response(true, null, err.message || "Failed to delete resource");
   }
 };

@@ -1,5 +1,11 @@
-// src/components/common/LoadingSpinner.jsx
-import React, { memo } from "react";
+/**
+ * LoadingSpinner Component
+ * 
+ * A configurable visual indicator for asynchronous operations. 
+ * Supports multiple sizes, optional status messages (aria-live), 
+ * and a full-page architectural overlay mode.
+ */
+import { memo } from "react";
 import PropTypes from "prop-types";
 
 const LoadingSpinner = ({

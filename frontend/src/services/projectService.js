@@ -3,8 +3,7 @@ import api from "../utils/api";
 const projectService = {
   getAllProjects: async (params = {}) => {
     try {
-      const response = await api.get("/projects", { params });
-      return { success: true, data: response.data };
+      return await api.get("/projects", { params });
     } catch (error) {
       return {
         success: false,
@@ -15,8 +14,7 @@ const projectService = {
 
   getProjectById: async (id) => {
     try {
-      const response = await api.get(`/projects/${id}`);
-      return { success: true, data: response.data };
+      return await api.get(`/projects/${id}`);
     } catch (error) {
       return {
         success: false,
@@ -27,8 +25,7 @@ const projectService = {
 
   createProject: async (projectData) => {
     try {
-      const response = await api.post("/projects", projectData);
-      return { success: true, data: response.data };
+      return await api.post("/projects", projectData);
     } catch (error) {
       return {
         success: false,
@@ -39,8 +36,7 @@ const projectService = {
 
   updateProject: async (id, projectData) => {
     try {
-      const response = await api.put(`/projects/${id}`, projectData);
-      return { success: true, data: response.data };
+      return await api.put(`/projects/${id}`, projectData);
     } catch (error) {
       return {
         success: false,
@@ -51,8 +47,7 @@ const projectService = {
 
   deleteProject: async (id) => {
     try {
-      await api.delete(`/projects/${id}`);
-      return { success: true };
+      return await api.delete(`/projects/${id}`);
     } catch (error) {
       return {
         success: false,
@@ -63,8 +58,7 @@ const projectService = {
 
   getProjectMembers: async (projectId) => {
     try {
-      const response = await api.get(`/projects/${projectId}/members`);
-      return { success: true, data: response.data };
+      return await api.get(`/projects/${projectId}/members`);
     } catch (error) {
       return {
         success: false,
@@ -76,11 +70,10 @@ const projectService = {
 
   addProjectMember: async (projectId, userId, role) => {
     try {
-      const response = await api.post(`/projects/${projectId}/members`, {
+      return await api.post(`/projects/${projectId}/members`, {
         userId,
         role,
       });
-      return { success: true, data: response.data };
     } catch (error) {
       return {
         success: false,

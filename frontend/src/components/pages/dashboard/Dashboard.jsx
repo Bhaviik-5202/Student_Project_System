@@ -1,3 +1,11 @@
+/**
+ * Dashboard Component
+ * 
+ * The main landing page for authenticated users (Admin, Faculty, Student).
+ * Displays role-specific statistics, recent activity, upcoming meetings, 
+ * and performance visualizations. Uses animated counters and premium 
+ * tailwind styling for a high-quality user experience.
+ */
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
@@ -5,6 +13,7 @@ import { toast } from "react-hot-toast";
 import { Fragment } from "react";
 import RecentActivity from "./RecentActivity";
 import UpcomingMeetings from "./UpcomingMeetings";
+import analyticsService from "../../../services/analyticsService";
 
 // Import icons from lucide-react
 import {
@@ -48,6 +57,7 @@ import {
 
 import { Menu, Transition } from "@headlessui/react";
 
+// --- Custom Hooks ---
 // Animated Counter Hook for stat values (same as AdminDashboard)
 const useAnimatedCounter = (endValue, duration = 1000) => {
   const [count, setCount] = useState(0);
@@ -181,6 +191,7 @@ const AnimatedStatCard = ({ stat, index, onClick }) => {
   );
 };
 
+// --- Main Component ---
 const Dashboard = () => {
   const { user, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
@@ -204,9 +215,11 @@ const Dashboard = () => {
     achievements: 3,
   });
 
+  // --- Data Loading Logic ---
   // Memoize the loadDashboardData function
-  const loadDashboardData = useCallback(() => {
+  const loadDashboardData = useCallback(async () => {
     try {
+      setIsLoading(true);
       if (!user) {
         setDashboardData({
           title: "Dashboard",
@@ -258,6 +271,24 @@ const Dashboard = () => {
             : adminGreetings;
       setGreeting(greetings[Math.floor(Math.random() * greetings.length)]);
 
+      // Fetch dashboard data from API
+      let apiData;
+      try {
+        if (user.role === "admin") {
+          apiData = await analyticsService.getDashboardStats();
+        } else if (user.role === "faculty") {
+          apiData = await analyticsService.getFacultyDashboardStats();
+        } else if (user.role === "student") {
+          apiData = await analyticsService.getStudentDashboardStats();
+        }
+      } catch (error) {
+        console.error("Failed to fetch dashboard data:", error);
+        // Fallback to empty data
+        apiData = { data: {} };
+      }
+
+      const statsData = apiData.data || {};
+
       // Create role-specific dashboard data
       let data = null;
 
@@ -269,7 +300,7 @@ const Dashboard = () => {
             stats: [
               {
                 title: "Total Projects",
-                value: "48",
+                value: statsData.activeProjects || 0,
                 icon: ChartBarIcon,
                 color: "blue",
                 change: "+12% from last month",
@@ -278,7 +309,7 @@ const Dashboard = () => {
               },
               {
                 title: "Active Students",
-                value: "156",
+                value: statsData.totalUsers || 0,
                 icon: UserGroupIcon,
                 color: "green",
                 change: "+8% from last month",
@@ -287,7 +318,7 @@ const Dashboard = () => {
               },
               {
                 title: "Pending Approvals",
-                value: "7",
+                value: statsData.pendingApprovals || 0,
                 icon: ClockIcon,
                 color: "yellow",
                 change: "Requires attention",
@@ -306,47 +337,7 @@ const Dashboard = () => {
             ],
           };
 
-          // Sample notifications for admin
-          setNotifications([
-            {
-              id: 1,
-              type: "announcement",
-              message: "System maintenance scheduled for Sunday",
-              time: "2h ago",
-              read: false,
-            },
-            {
-              id: 2,
-              type: "approval",
-              message: "3 new project approvals pending",
-              time: "4h ago",
-              read: false,
-            },
-            {
-              id: 3,
-              type: "alert",
-              message: "Storage at 85% capacity",
-              time: "1d ago",
-              read: true,
-            },
-          ]);
 
-          setUpcomingDeadlines([
-            {
-              id: 1,
-              title: "Budget Report",
-              due: "Tomorrow",
-              time: "9:00 AM",
-              priority: "high",
-            },
-            {
-              id: 2,
-              title: "Faculty Review",
-              due: "Jan 20",
-              time: "2:00 PM",
-              priority: "medium",
-            },
-          ]);
 
           break;
 
@@ -357,7 +348,7 @@ const Dashboard = () => {
             stats: [
               {
                 title: "My Projects",
-                value: "12",
+                value: statsData.myProjects || 0,
                 icon: ChartBarIcon,
                 color: "blue",
                 change: "+2 new projects",
@@ -366,7 +357,7 @@ const Dashboard = () => {
               },
               {
                 title: "Students Assigned",
-                value: "24",
+                value: statsData.activeStudents || 0,
                 icon: UserGroupIcon,
                 color: "green",
                 change: "All active",
@@ -375,7 +366,7 @@ const Dashboard = () => {
               },
               {
                 title: "Pending Reviews",
-                value: "3",
+                value: statsData.pendingReviews || 0,
                 icon: ClipboardIcon,
                 color: "yellow",
                 change: "Due this week",
@@ -384,7 +375,7 @@ const Dashboard = () => {
               },
               {
                 title: "Meetings Today",
-                value: "2",
+                value: statsData.todayMeetings || 0,
                 icon: CalendarIcon,
                 color: "purple",
                 change: "10:00 AM & 2:00 PM",
@@ -394,39 +385,7 @@ const Dashboard = () => {
             ],
           };
 
-          setNotifications([
-            {
-              id: 1,
-              type: "student",
-              message: "John submitted Math assignment",
-              time: "1h ago",
-              read: false,
-            },
-            {
-              id: 2,
-              type: "meeting",
-              message: "Department meeting at 3 PM",
-              time: "Today",
-              read: false,
-            },
-          ]);
 
-          setUpcomingDeadlines([
-            {
-              id: 1,
-              title: "Grade Submission",
-              due: "Tomorrow",
-              time: "5:00 PM",
-              priority: "high",
-            },
-            {
-              id: 2,
-              title: "Course Materials",
-              due: "Jan 18",
-              time: "10:00 AM",
-              priority: "medium",
-            },
-          ]);
 
           break;
 
@@ -437,7 +396,7 @@ const Dashboard = () => {
             stats: [
               {
                 title: "My Projects",
-                value: "2",
+                value: statsData.myProjects || 0,
                 icon: ChartBarIcon,
                 color: "blue",
                 change: "1 active, 1 completed",
@@ -446,7 +405,7 @@ const Dashboard = () => {
               },
               {
                 title: "Assignments Due",
-                value: "3",
+                value: statsData.upcomingDeadlines || 0,
                 icon: ClipboardListIcon,
                 color: "yellow",
                 change: "Due next week",
@@ -464,7 +423,7 @@ const Dashboard = () => {
               },
               {
                 title: "Grades",
-                value: "A-",
+                value: statsData.currentGrade || "N/A",
                 icon: AcademicCapIcon,
                 color: "green",
                 change: "Current average",
@@ -474,79 +433,7 @@ const Dashboard = () => {
             ],
           };
 
-          // Enhanced data for students
-          setNotifications([
-            {
-              id: 1,
-              type: "assignment",
-              message: "Math assignment due tomorrow",
-              time: "2h ago",
-              read: false,
-            },
-            {
-              id: 2,
-              type: "grade",
-              message: "Science quiz graded: A-",
-              time: "Yesterday",
-              read: true,
-            },
-            {
-              id: 3,
-              type: "announcement",
-              message: "New course materials uploaded",
-              time: "2d ago",
-              read: true,
-            },
-          ]);
 
-          setUpcomingDeadlines([
-            {
-              id: 1,
-              title: "Math Assignment",
-              due: "Tomorrow",
-              time: "2:00 PM",
-              priority: "high",
-            },
-            {
-              id: 2,
-              title: "Science Paper",
-              due: "Jan 18",
-              time: "11:59 PM",
-              priority: "medium",
-            },
-            {
-              id: 3,
-              title: "History Quiz",
-              due: "Jan 20",
-              time: "9:00 AM",
-              priority: "medium",
-            },
-          ]);
-
-          setTodayMeetings([
-            {
-              id: 1,
-              title: "Math Tutoring",
-              time: "2:00 PM",
-              type: "academic",
-              location: "Room 302",
-            },
-            {
-              id: 2,
-              title: "Group Study Session",
-              time: "4:30 PM",
-              type: "study",
-              location: "Library",
-            },
-          ]);
-
-          setPerformanceData([
-            { month: "Sep", gpa: 3.4 },
-            { month: "Oct", gpa: 3.6 },
-            { month: "Nov", gpa: 3.8 },
-            { month: "Dec", gpa: 3.7 },
-            { month: "Jan", gpa: 3.7 },
-          ]);
 
           break;
 
@@ -561,6 +448,11 @@ const Dashboard = () => {
       if (data && data.title) {
         setDashboardData(data);
       }
+
+      setNotifications(statsData.notifications || []);
+      setUpcomingDeadlines(statsData.upcomingDeadlines || []);
+      setTodayMeetings(statsData.todayMeetings || []);
+      setPerformanceData(statsData.performanceData || []);
     } catch (err) {
       console.error("Error loading dashboard:", err);
       toast.error("Failed to load dashboard data");
@@ -576,14 +468,14 @@ const Dashboard = () => {
   useEffect(() => {
     if (authLoading) return;
 
-    setIsLoading(true);
-    const timer = setTimeout(() => {
-      loadDashboardData();
+    const loadData = async () => {
+      setIsLoading(true);
+      await loadDashboardData();
       setIsLoading(false);
-    }, 100);
+    };
 
-    return () => clearTimeout(timer);
-  }, [loadDashboardData, authLoading]);
+    loadData();
+  }, [authLoading, loadDashboardData]);
 
   const handleRefresh = () => {
     setIsLoading(true);
@@ -627,6 +519,7 @@ const Dashboard = () => {
     );
   }
 
+  // --- Render ---
   return (
     <div className="min-h-screen p-4 md:p-6 space-y-6 animate-fade-in">
       {/* Dashboard Header with Welcome - Enhanced with animations */}

@@ -1,27 +1,27 @@
-import { useState, useCallback, useMemo, memo } from "react";
+import { useState, useCallback, useEffect, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import api from "../../../utils/api";
 
 const PermissionsManager = memo(() => {
   const navigate = useNavigate();
-  const roles = useMemo(
-    () => [
-      { id: 1, name: "Admin", users: 3, description: "Full system access" },
-      {
-        id: 2,
-        name: "Faculty",
-        users: 12,
-        description: "Manage courses and projects",
-      },
-      {
-        id: 3,
-        name: "Student",
-        users: 141,
-        description: "Access to courses and projects",
-      },
-    ],
-    [],
-  );
+  const [roles, setRoles] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        const response = await api.get("/admin/roles");
+        setRoles(response.data?.data || []);
+      } catch (error) {
+        console.error("Failed to fetch roles", error);
+        // Fallback or empty state could be managed here
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchRoles();
+  }, []);
 
   const [permissions, setPermissions] = useState({
     userManagement: { admin: true, faculty: false, student: false },
@@ -109,27 +109,33 @@ const PermissionsManager = memo(() => {
                 Roles
               </h3>
               <div className="space-y-3">
-                {roles.map((role) => (
-                  <button
-                    key={role.id}
-                    onClick={() => setSelectedRole(role.name.toLowerCase())}
-                    className={`w-full p-4 text-left rounded-lg transition-colors ${
-                      selectedRole === role.name.toLowerCase()
-                        ? "bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700 border"
-                        : "border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700"
-                    }`}
-                  >
-                    <div className="font-medium text-slate-900 dark:text-white">
-                      {role.name}
-                    </div>
-                    <div className="text-sm text-slate-600 dark:text-slate-400">
-                      {role.description}
-                    </div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                      {role.users} users
-                    </div>
-                  </button>
-                ))}
+                {loading ? (
+                  <div className="text-center text-slate-500 py-4">Loading roles...</div>
+                ) : roles.length === 0 ? (
+                  <div className="text-center text-slate-500 py-4">No roles defined.</div>
+                ) : (
+                  roles.map((role) => (
+                    <button
+                      key={role.id || role._id}
+                      onClick={() => setSelectedRole(role.name.toLowerCase())}
+                      className={`w-full p-4 text-left rounded-lg transition-colors ${
+                        selectedRole === role.name.toLowerCase()
+                          ? "bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700 border"
+                          : "border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700"
+                      }`}
+                    >
+                      <div className="font-medium text-slate-900 dark:text-white">
+                        {role.name}
+                      </div>
+                      <div className="text-sm text-slate-600 dark:text-slate-400">
+                        {role.description}
+                      </div>
+                      <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                        {role.users || 0} users
+                      </div>
+                    </button>
+                  ))
+                )}
               </div>
             </div>
           </div>

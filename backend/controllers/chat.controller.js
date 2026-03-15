@@ -1,169 +1,173 @@
-const Chat = require("../models/chat.model");
-const ApiError = require("../utils/ApiError");
+const chatService = require("../services/chat.service");
 const sendResponse = require("../utils/response");
-const mongoose = require("mongoose");
 
 /**
- * Create Chat
- * @route POST /chats
- * @access Private
+ * Chat Controller
+ * Manages real-time communication channels, group chats, and messaging sessions.
  */
-exports.createChat = async (req, res, next) => {
+
+/**
+ * Initialize a new chat session or group
+ * @route POST /chats
+ * @access Authenticated
+ */
+exports.createChat = async (req, res) => {
   try {
-    let { members = [], isGroup = false, groupName } = req.body;
+    const result = await chatService.create(req.body);
 
-    // Ensure logged-in user is included
-    if (!members.includes(req.user.id)) {
-      members.push(req.user.id);
-    }
-
-    // Remove duplicate members
-    members = [...new Set(members)];
-
-    const chat = await Chat.create({
-      members,
-      isGroup,
-      name: isGroup ? groupName : null,
-    });
-
-    return sendResponse(
+    sendResponse(
       res,
       {
-        success: true,
-        message: "Chat created successfully",
-        data: chat,
+        success: !result.error,
+        message: result.error ? result.message : "Chat created successfully",
+        data: result.data || null,
+        error: result.error || null,
       },
-      201,
+      result.error ? 400 : 201,
     );
   } catch (error) {
-    next(error);
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Failed to create chat",
+        data: null,
+        error: error.message,
+      },
+      400,
+    );
   }
 };
 
 /**
- * Get User Chats
+ * Fetch all active chat sessions for the authenticated user
  * @route GET /chats
- * @access Private
+ * @access Authenticated
  */
-exports.getUserChats = async (req, res, next) => {
+exports.getUserChats = async (req, res) => {
   try {
-    const chats = await Chat.find({
-      members: req.user.id,
-    })
-      .populate("members", "name email avatar")
-      .sort({ updatedAt: -1 });
+    const result = await chatService.getByUserId(req.user.id);
 
-    return sendResponse(res, {
-      success: true,
-      data: chats,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-/**
- * Get Chat by ID
- * @route GET /chats/:chatId
- * @access Private
- */
-exports.getChatById = async (req, res, next) => {
-  try {
-    const { chatId } = req.params;
-
-    const chat = await Chat.findById(chatId).populate(
-      "members",
-      "name email avatar",
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? "Failed to fetch user chats"
+          : "User chats fetched successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 400 : 200,
     );
-
-    if (!chat) {
-      throw new ApiError(404, "Chat not found");
-    }
-
-    if (!chat.members.some((m) => m._id.toString() === req.user.id)) {
-      throw new ApiError(403, "Access denied");
-    }
-
-    return sendResponse(res, {
-      success: true,
-      data: chat,
-    });
   } catch (error) {
-    next(error);
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
   }
 };
 
 /**
- * Update Chat
- * @route PUT /chats/:chatId
- * @access Private
+ * Retrieve messages and metadata for a specific chat session
+ * @route GET /chats/:id
+ * @access Authenticated
  */
-exports.updateChat = async (req, res, next) => {
+exports.getChatById = async (req, res) => {
   try {
-    const { chatId } = req.params;
-    const { members, isGroup, groupName } = req.body;
+    const result = await chatService.getById(req.params.id);
 
-    const chat = await Chat.findById(chatId);
-
-    if (!chat) {
-      throw new ApiError(404, "Chat not found");
-    }
-
-    if (!chat.members.map((id) => id.toString()).includes(req.user.id)) {
-      throw new ApiError(403, "Access denied");
-    }
-
-    if (members) {
-      chat.members = [...new Set(members)];
-    }
-
-    if (isGroup !== undefined) {
-      chat.isGroup = isGroup;
-    }
-
-    if (groupName !== undefined) {
-      chat.name = groupName;
-    }
-
-    await chat.save();
-
-    return sendResponse(res, {
-      success: true,
-      message: "Chat updated successfully",
-      data: chat,
-    });
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error ? "Chat not found" : "Chat fetched successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 404 : 200,
+    );
   } catch (error) {
-    next(error);
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
   }
 };
 
 /**
- * Delete Chat
- * @route DELETE /chats/:chatId
- * @access Private
+ * Update chat settings or member list
+ * @route PUT /chats/:id
+ * @access Authenticated
  */
-
-exports.deleteChat = async (req, res, next) => {
+exports.updateChat = async (req, res) => {
   try {
-    const { chatId } = req.params;
+    const result = await chatService.update(req.params.id, req.body);
 
-    const chat = await Chat.findById(chatId);
-
-    if (!chat) {
-      throw new ApiError(404, "Chat not found");
-    }
-
-    if (!chat.members.map((id) => id.toString()).includes(req.user.id)) {
-      throw new ApiError(403, "Access denied");
-    }
-
-    await chat.deleteOne();
-
-    return sendResponse(res, {
-      success: true,
-      message: "Chat deleted successfully",
-    });
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error ? "Chat not found" : "Chat updated successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 404 : 200,
+    );
   } catch (error) {
-    next(error);
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
+};
+/**
+ * Permanently delete a chat record and message history
+ * @route DELETE /chats/:id
+ * @access Admin, Participant (if authorized)
+ */
+exports.deleteChat = async (req, res) => {
+  try {
+    const result = await chatService.remove(req.params.id);
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error ? "Chat not found" : "Chat deleted successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 404 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
   }
 };

@@ -7,27 +7,35 @@ import React, {
   useMemo,
 } from "react";
 
+/**
+ * Theme Context for managing light/dark mode and system preferences
+ */
 const ThemeContext = createContext(null);
 
-// Available theme modes (what user selects)
+/**
+ * User-selectable theme modes
+ */
 const THEME_MODES = Object.freeze({
   LIGHT: "light",
   DARK: "dark",
   AUTO: "auto",
 });
 
-// Actual applied themes (what gets applied to UI)
+/**
+ * Actual UI theme states
+ */
 const THEMES = Object.freeze({
   LIGHT: "light",
   DARK: "dark",
 });
 
-// Storage key
 const THEME_STORAGE_KEY = "app_theme_mode";
-
-// System preference media query
 const DARK_MODE_QUERY = "(prefers-color-scheme: dark)";
 
+/**
+ * Hook to access and control the application theme
+ * @returns {Object} Theme state and control methods
+ */
 export const useTheme = () => {
   const context = useContext(ThemeContext);
   if (!context) {
@@ -39,8 +47,10 @@ export const useTheme = () => {
 export { THEMES, THEME_MODES };
 export default ThemeContext;
 
+/**
+ * Provider component for theme management logic
+ */
 export const ThemeProvider = ({ children }) => {
-  // Safe localStorage wrapper
   const safeLocalStorage = useMemo(
     () => ({
       getItem: (key) => {
@@ -73,10 +83,11 @@ export const ThemeProvider = ({ children }) => {
     [],
   );
 
-  // Get system theme preference
+  /**
+   * Detect current system color scheme preference
+   */
   const getSystemTheme = useCallback(() => {
     if (typeof window === "undefined") return THEMES.LIGHT;
-
     try {
       return window.matchMedia(DARK_MODE_QUERY).matches
         ? THEMES.DARK
@@ -87,23 +98,16 @@ export const ThemeProvider = ({ children }) => {
     }
   }, []);
 
-  // Track system theme separately for auto mode
   const [systemTheme, setSystemTheme] = useState(getSystemTheme());
 
-  // Initialize theme mode from localStorage (light, dark, or auto)
   const [themeMode, setThemeMode] = useState(() => {
     const savedMode = safeLocalStorage.getItem(THEME_STORAGE_KEY);
-
-    // Validate saved mode
     if (savedMode && Object.values(THEME_MODES).includes(savedMode)) {
       return savedMode;
     }
-
-    // Default to auto mode
     return THEME_MODES.AUTO;
   });
 
-  // Calculate the actual applied theme based on mode
   const appliedTheme = useMemo(() => {
     if (themeMode === THEME_MODES.AUTO) {
       return systemTheme;
@@ -111,13 +115,12 @@ export const ThemeProvider = ({ children }) => {
     return themeMode === THEME_MODES.DARK ? THEMES.DARK : THEMES.LIGHT;
   }, [themeMode, systemTheme]);
 
-  // Apply theme to document
+  /**
+   * Effect to apply theme classes and attributes to the document root
+   */
   useEffect(() => {
     try {
-      // Save mode to localStorage
       safeLocalStorage.setItem(THEME_STORAGE_KEY, themeMode);
-
-      // Apply to document
       const root = document.documentElement;
 
       if (appliedTheme === THEMES.DARK) {
@@ -128,11 +131,9 @@ export const ThemeProvider = ({ children }) => {
         root.classList.remove("dark");
       }
 
-      // Set data attributes for CSS
       root.setAttribute("data-theme", appliedTheme);
       root.setAttribute("data-theme-mode", themeMode);
 
-      // Update meta theme-color for mobile browsers
       const metaThemeColor = document.querySelector('meta[name="theme-color"]');
       if (metaThemeColor) {
         metaThemeColor.setAttribute(
@@ -145,23 +146,20 @@ export const ThemeProvider = ({ children }) => {
     }
   }, [appliedTheme, themeMode, safeLocalStorage]);
 
-  // Listen for system theme changes (important for auto mode)
+  /**
+   * Effect to listen for changes in system color scheme
+   */
   useEffect(() => {
     try {
       const mediaQuery = window.matchMedia(DARK_MODE_QUERY);
-
       const handleChange = (e) => {
-        const newSystemTheme = e.matches ? THEMES.DARK : THEMES.LIGHT;
-        setSystemTheme(newSystemTheme);
+        setSystemTheme(e.matches ? THEMES.DARK : THEMES.LIGHT);
       };
 
-      // Modern browsers
       if (mediaQuery.addEventListener) {
         mediaQuery.addEventListener("change", handleChange);
         return () => mediaQuery.removeEventListener("change", handleChange);
-      }
-      // Legacy browsers
-      else if (mediaQuery.addListener) {
+      } else if (mediaQuery.addListener) {
         mediaQuery.addListener(handleChange);
         return () => mediaQuery.removeListener(handleChange);
       }
@@ -170,11 +168,12 @@ export const ThemeProvider = ({ children }) => {
     }
   }, []);
 
-  // Toggle between light and dark (skips auto)
+  /**
+   * Toggle between light and dark modes
+   */
   const toggleTheme = useCallback(() => {
     setThemeMode((prevMode) => {
       if (prevMode === THEME_MODES.AUTO) {
-        // If in auto, toggle based on current applied theme
         return appliedTheme === THEMES.LIGHT
           ? THEME_MODES.DARK
           : THEME_MODES.LIGHT;
@@ -185,7 +184,10 @@ export const ThemeProvider = ({ children }) => {
     });
   }, [appliedTheme]);
 
-  // Set specific theme mode (light, dark, or auto)
+  /**
+   * Manually set the theme mode
+   * @param {string} newMode - 'light', 'dark', or 'auto'
+   */
   const setThemeModeValue = useCallback((newMode) => {
     if (Object.values(THEME_MODES).includes(newMode)) {
       setThemeMode(newMode);
@@ -195,44 +197,29 @@ export const ThemeProvider = ({ children }) => {
     }
   }, []);
 
-  // Set to auto mode
   const setAutoMode = useCallback(() => {
     setThemeMode(THEME_MODES.AUTO);
   }, []);
 
-  // Reset theme (clear preference and use auto)
   const resetTheme = useCallback(() => {
     safeLocalStorage.removeItem(THEME_STORAGE_KEY);
     setThemeMode(THEME_MODES.AUTO);
   }, [safeLocalStorage]);
 
-  // Check if currently in auto mode
   const isAutoMode = useMemo(() => themeMode === THEME_MODES.AUTO, [themeMode]);
+  const isDarkMode = useMemo(() => appliedTheme === THEMES.DARK, [appliedTheme]);
 
-  // Check if dark mode is active (regardless of how it was set)
-  const isDarkMode = useMemo(
-    () => appliedTheme === THEMES.DARK,
-    [appliedTheme],
-  );
-
-  // Memoize context value
   const contextValue = useMemo(
     () => ({
-      // Current mode (light, dark, auto)
       themeMode,
-      // Actually applied theme (light or dark)
       theme: appliedTheme,
-      // Convenience booleans
       isDarkMode,
       isAutoMode,
-      // System preference
       systemTheme,
-      // Actions
       toggleTheme,
       setThemeMode: setThemeModeValue,
       setAutoMode,
       resetTheme,
-      // Constants for external use
       THEMES,
       THEME_MODES,
     }),

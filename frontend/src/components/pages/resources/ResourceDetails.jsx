@@ -1,35 +1,34 @@
 // src/components/pages/resources/ResourceDetails.jsx
-import { memo, useMemo } from "react";
+import React, { useState, useCallback, useMemo, memo } from "react";
 import { useParams } from "react-router-dom";
+import useNotification from "../../../hooks/useNotification";
+import api from "../../../utils/api";
 
 const ResourceDetails = memo(() => {
   const { id } = useParams();
+  const [resource, setResource] = useState(null);
+  const [relatedResources, setRelatedResources] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { showSuccess, showError } = useNotification(); // Keep useNotification
 
-  const resource = useMemo(
-    () => ({
-      id: id || "1",
-      name: "Web Development Guide.pdf",
-      type: "pdf",
-      size: "2.4 MB",
-      category: "Documents",
-      uploadedBy: "Dr. John Smith",
-      uploadDate: "March 15, 2024",
-      downloads: 124,
-      description:
-        "Comprehensive guide covering HTML5, CSS3, JavaScript, React, and modern web development practices.",
-      tags: ["Web Development", "HTML", "CSS", "JavaScript", "React"],
-    }),
-    [id],
-  );
+  useEffect(() => {
+    const fetchResourceDetails = async () => {
+      try {
+        const response = await api.get(`/resources/${id}`);
+        setResource(response.data?.data?.resource || null);
+        setRelatedResources(response.data?.data?.related || []);
+      } catch (error) {
+        console.error("Failed to fetch resource details", error);
+        showError("Failed to load resource details."); // Add error notification
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchResourceDetails();
+  }, [id, showError]); // Add showError to dependency array
 
-  const relatedResources = useMemo(
-    () => [
-      "CSS Grid Guide.pdf",
-      "JavaScript ES6 Cheatsheet.pdf",
-      "React Hooks Tutorial.pdf",
-    ],
-    [],
-  );
+  if (loading) return <div className="p-6 text-center text-slate-500">Loading resource details...</div>;
+  if (!resource) return <div className="p-6 text-center text-red-500">Resource not found</div>;
 
   return (
     <div className="p-6">
@@ -170,10 +169,10 @@ const ResourceDetails = memo(() => {
                   <span className="text-xl">📄</span>
                   <div className="flex-1">
                     <p className="font-medium text-sm text-slate-900 dark:text-white">
-                      {item}
+                      {item.name || item.title || item}
                     </p>
                     <p className="text-xs text-slate-500 dark:text-slate-400">
-                      PDF • 1.2 MB
+                      {item.type || "PDF"} • {item.size || "1.2 MB"}
                     </p>
                   </div>
                 </div>

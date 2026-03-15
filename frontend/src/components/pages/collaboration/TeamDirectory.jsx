@@ -1,79 +1,30 @@
-import { useState, useMemo, memo } from "react";
+import { useState, useEffect, useMemo, memo } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../../../utils/api";
 
 const TeamDirectory = memo(() => {
   const navigate = useNavigate();
-  const teams = useMemo(
-    () => [
-      {
-        id: 1,
-        name: "Database Design Team",
-        members: 4,
-        projects: 2,
-        lead: "John Doe",
-      },
-      {
-        id: 2,
-        name: "Web Development Team",
-        members: 5,
-        projects: 3,
-        lead: "Jane Smith",
-      },
-      {
-        id: 3,
-        name: "Mobile App Team",
-        members: 3,
-        projects: 1,
-        lead: "Robert Johnson",
-      },
-      {
-        id: 4,
-        name: "Testing Team",
-        members: 2,
-        projects: 2,
-        lead: "Sarah Williams",
-      },
-    ],
-    [],
-  );
+  const [teams, setTeams] = useState([]);
+  const [members, setMembers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const members = useMemo(
-    () => [
-      {
-        id: 1,
-        name: "John Doe",
-        role: "Team Lead",
-        email: "john@example.com",
-        team: "Database Design",
-        skills: ["SQL", "Python", "DB Design"],
-      },
-      {
-        id: 2,
-        name: "Jane Smith",
-        role: "Frontend Developer",
-        email: "jane@example.com",
-        team: "Web Development",
-        skills: ["React", "JavaScript", "CSS"],
-      },
-      {
-        id: 3,
-        name: "Robert Johnson",
-        role: "Backend Developer",
-        email: "robert@example.com",
-        team: "Mobile App",
-        skills: ["Node.js", "MongoDB", "API"],
-      },
-      {
-        id: 4,
-        name: "Sarah Williams",
-        role: "QA Engineer",
-        email: "sarah@example.com",
-        team: "Testing",
-        skills: ["Testing", "Automation", "Debugging"],
-      },
-    ],
-    [],
-  );
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [teamsRes, membersRes] = await Promise.all([
+          api.get("/collaboration/teams").catch(() => ({ data: { data: [] } })),
+          api.get("/collaboration/members").catch(() => ({ data: { data: [] } }))
+        ]);
+        setTeams(teamsRes.data?.data || []);
+        setMembers(membersRes.data?.data || []);
+      } catch (error) {
+        console.error("Failed to fetch team data", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
@@ -98,31 +49,37 @@ const TeamDirectory = memo(() => {
             <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
               Teams
             </h3>
-            <div className="space-y-4">
-              {teams.map((team) => (
-                <div
-                  key={team.id}
-                  className="border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-sm"
-                >
-                  <div className="flex justify-between items-start mb-3">
-                    <div>
-                      <div className="font-medium text-slate-900 dark:text-white">
-                        {team.name}
+            <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
+              {loading ? (
+                <div className="text-center py-4 text-slate-500">Loading teams...</div>
+              ) : teams.length === 0 ? (
+                <div className="text-center py-4 text-slate-500">No teams found.</div>
+              ) : (
+                teams.map((team) => (
+                  <div
+                    key={team.id || team._id}
+                    className="border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-sm"
+                  >
+                    <div className="flex justify-between items-start mb-3">
+                      <div>
+                        <div className="font-medium text-slate-900 dark:text-white">
+                          {team.name}
+                        </div>
+                        <div className="text-sm text-slate-600 dark:text-slate-400">
+                          Lead: {team.lead || (team.leadId ? team.leadId.name : "TBA")}
+                        </div>
                       </div>
-                      <div className="text-sm text-slate-600 dark:text-slate-400">
-                        Lead: {team.lead}
-                      </div>
+                      <button className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-sm rounded-lg hover:bg-blue-200 dark:hover:bg-blue-900/50">
+                        View
+                      </button>
                     </div>
-                    <button className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-sm rounded-lg hover:bg-blue-200 dark:hover:bg-blue-900/50">
-                      View
-                    </button>
+                    <div className="flex gap-4 text-sm text-slate-600 dark:text-slate-400">
+                      <div>{team.members || team.memberCount || 0} members</div>
+                      <div>{team.projects || team.projectCount || 0} projects</div>
+                    </div>
                   </div>
-                  <div className="flex gap-4 text-sm text-slate-600 dark:text-slate-400">
-                    <div>{team.members} members</div>
-                    <div>{team.projects} projects</div>
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
 
@@ -131,41 +88,49 @@ const TeamDirectory = memo(() => {
             <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
               Team Members
             </h3>
-            <div className="space-y-4">
-              {members.map((member) => (
-                <div
-                  key={member.id}
-                  className="border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-sm"
-                >
-                  <div className="flex items-start mb-3">
-                    <div className="w-12 h-12 bg-slate-300 dark:bg-slate-600 rounded-full mr-4"></div>
-                    <div className="flex-1">
-                      <div className="font-medium text-slate-900 dark:text-white">
-                        {member.name}
+            <div className="space-y-4 max-h-[600px] overflow-y-auto pr-2">
+              {loading ? (
+                <div className="text-center py-4 text-slate-500">Loading members...</div>
+              ) : members.length === 0 ? (
+                <div className="text-center py-4 text-slate-500">No members found.</div>
+              ) : (
+                members.map((member) => (
+                  <div
+                    key={member.id || member._id}
+                    className="border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-sm"
+                  >
+                    <div className="flex items-start mb-3">
+                      <div className={`w-12 h-12 bg-slate-300 dark:bg-slate-600 rounded-full mr-4 flex items-center justify-center text-slate-700 dark:text-slate-300 font-bold overflow-hidden`}>
+                        {member.avatar ? <img src={member.avatar} alt={member.name} className="w-full h-full object-cover" /> : member.name?.charAt(0)}
                       </div>
-                      <div className="text-sm text-slate-600 dark:text-slate-400">
-                        {member.role} • {member.team}
+                      <div className="flex-1">
+                        <div className="font-medium text-slate-900 dark:text-white">
+                          {member.name}
+                        </div>
+                        <div className="text-sm text-slate-600 dark:text-slate-400">
+                          {member.role || "Member"} • {member.team || (member.teamId ? member.teamId.name : "Unassigned")}
+                        </div>
+                        <div className="text-sm text-slate-500 dark:text-slate-400">
+                          {member.email}
+                        </div>
                       </div>
-                      <div className="text-sm text-slate-500 dark:text-slate-400">
-                        {member.email}
-                      </div>
+                      <button className="px-3 py-1 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 text-sm rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700">
+                        Message
+                      </button>
                     </div>
-                    <button className="px-3 py-1 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 text-sm rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700">
-                      Message
-                    </button>
+                    <div className="flex flex-wrap gap-2">
+                      {(member.skills || []).map((skill, index) => (
+                        <span
+                          key={index}
+                          className="px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs rounded"
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                  <div className="flex flex-wrap gap-2">
-                    {member.skills.map((skill, index) => (
-                      <span
-                        key={index}
-                        className="px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs rounded"
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
         </div>

@@ -1,6 +1,13 @@
 import React, { memo, useCallback, useMemo } from "react";
 import PropTypes from "prop-types";
 
+/**
+ * Notification Component
+ * 
+ * An inline alert component for system feedback. Supports 
+ * multiple semantic types (success, error, warning, info) with 
+ * theme-aware styling and optional manual dismissal.
+ */
 const Notification = memo(({ type = "info", message, onClose }) => {
   const bgColor = useMemo(
     () => ({

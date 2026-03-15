@@ -1,123 +1,30 @@
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
+import api from "../../../utils/api";
 
 const ProjectGallery = () => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [viewMode, setViewMode] = useState("grid");
   const [filter, setFilter] = useState("all");
 
-  const projects = useMemo(
-    () => [
-      {
-        id: 1,
-        title: "E-Commerce Platform",
-        description: "Full-stack e-commerce solution with modern UI",
-        category: "web",
-        status: "completed",
-        team: ["Alex Johnson", "Sarah Miller"],
-        technologies: ["React", "Node.js", "MongoDB"],
-        images: [
-          "https://via.placeholder.com/800x450/3B82F6/FFFFFF?text=Home+Page",
-          "https://via.placeholder.com/800x450/10B981/FFFFFF?text=Product+Page",
-          "https://via.placeholder.com/800x450/8B5CF6/FFFFFF?text=Checkout",
-        ],
-        date: "Jan 2024",
-        likes: 42,
-        views: 156,
-      },
-      {
-        id: 2,
-        title: "AI Research Assistant",
-        description: "Machine learning model for academic research",
-        category: "ai",
-        status: "in-progress",
-        team: ["Mike Chen"],
-        technologies: ["Python", "TensorFlow", "NLP"],
-        images: [
-          "https://via.placeholder.com/800x450/EF4444/FFFFFF?text=AI+Dashboard",
-          "https://via.placeholder.com/800x450/F59E0B/FFFFFF?text=Training+Interface",
-        ],
-        date: "Dec 2023",
-        likes: 28,
-        views: 98,
-      },
-      {
-        id: 3,
-        title: "Mobile Fitness App",
-        description: "Cross-platform fitness tracking application",
-        category: "mobile",
-        status: "completed",
-        team: ["Emma Wilson", "David Lee", "Lisa Park"],
-        technologies: ["React Native", "Firebase", "Redux"],
-        images: [
-          "https://via.placeholder.com/800x450/6366F1/FFFFFF?text=Workout+Screen",
-          "https://via.placeholder.com/800x450/EC4899/FFFFFF?text=Progress+Tracking",
-        ],
-        date: "Nov 2023",
-        likes: 56,
-        views: 210,
-      },
-      {
-        id: 4,
-        title: "Data Visualization Dashboard",
-        description: "Interactive dashboard for business analytics",
-        category: "web",
-        status: "completed",
-        team: ["Robert Kim", "Jessica Wang"],
-        technologies: ["D3.js", "Vue.js", "Express"],
-        images: [
-          "https://via.placeholder.com/800x450/059669/FFFFFF?text=Dashboard+View",
-          "https://via.placeholder.com/800x450/DC2626/FFFFFF?text=Analytics+Chart",
-        ],
-        date: "Oct 2023",
-        likes: 37,
-        views: 134,
-      },
-      {
-        id: 5,
-        title: "IoT Home Automation",
-        description: "Smart home system with IoT integration",
-        category: "iot",
-        status: "planning",
-        team: ["Tom Harris", "Nina Rodriguez"],
-        technologies: ["Python", "Raspberry Pi", "MQTT"],
-        images: [
-          "https://via.placeholder.com/800x450/7C3AED/FFFFFF?text=Control+Panel",
-        ],
-        date: "Planned",
-        likes: 15,
-        views: 67,
-      },
-      {
-        id: 6,
-        title: "Blockchain Voting System",
-        description: "Secure voting platform using blockchain technology",
-        category: "blockchain",
-        status: "in-progress",
-        team: ["Alex Johnson", "Sarah Miller", "Mike Chen"],
-        technologies: ["Solidity", "Web3.js", "Ethereum"],
-        images: [
-          "https://via.placeholder.com/800x450/0EA5E9/FFFFFF?text=Voting+Interface",
-          "https://via.placeholder.com/800x450/84CC16/FFFFFF?text=Results+Screen",
-        ],
-        date: "Feb 2024",
-        likes: 31,
-        views: 112,
-      },
-    ],
-    [],
-  );
+  const [projects, setProjects] = useState([]);
+  const [filters, setFilters] = useState([{ id: "all", name: "All Projects", count: 0 }]);
+  const [loading, setLoading] = useState(true);
 
-  const filters = useMemo(
-    () => [
-      { id: "all", name: "All Projects", count: 6 },
-      { id: "web", name: "Web Development", count: 2 },
-      { id: "mobile", name: "Mobile Apps", count: 1 },
-      { id: "ai", name: "AI/ML", count: 1 },
-      { id: "completed", name: "Completed", count: 3 },
-      { id: "in-progress", name: "In Progress", count: 2 },
-    ],
-    [],
-  );
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await api.get('/portfolio/projects');
+        const data = response.data?.data || {};
+        if (data.projects) setProjects(data.projects);
+        if (data.filters) setFilters([{ id: "all", name: "All Projects", count: data.projects?.length || 0 }, ...data.filters]);
+      } catch (error) {
+        console.error("Failed to fetch projects", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProjects();
+  }, []);
 
   const filteredProjects = useMemo(
     () =>
@@ -159,6 +66,8 @@ const ProjectGallery = () => {
         return "fas fa-project-diagram";
     }
   }, []);
+
+  if (loading) return <div className="p-6 text-center text-slate-500">Loading projects...</div>;
 
   return (
     <div className="bg-white dark:bg-slate-900 rounded-lg shadow p-6\">

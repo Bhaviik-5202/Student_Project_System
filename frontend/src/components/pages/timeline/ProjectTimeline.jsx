@@ -1,40 +1,34 @@
-import { useCallback, useMemo, memo } from "react";
+import { useCallback, useState, useEffect, useMemo, memo } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../../../utils/api";
 
+/**
+ * ProjectTimeline Component
+ * 
+ * A high-level project orchestration and visualization tool. 
+ * Features a dynamic Gantt-style overview of overlapping project 
+ * phases, synchronized progress indicators, and milestone tracking 
+ * for comprehensive roadmap management.
+ */
 const ProjectTimeline = memo(() => {
   const navigate = useNavigate();
-  const projects = useMemo(
-    () => [
-      {
-        id: 1,
-        name: "Database Design",
-        start: "2024-01-01",
-        end: "2024-03-31",
-        progress: 65,
-        milestones: 6,
-        team: 4,
-      },
-      {
-        id: 2,
-        name: "Web Application",
-        start: "2024-02-01",
-        end: "2024-04-30",
-        progress: 40,
-        milestones: 8,
-        team: 5,
-      },
-      {
-        id: 3,
-        name: "Mobile App",
-        start: "2024-01-15",
-        end: "2024-04-15",
-        progress: 30,
-        milestones: 7,
-        team: 3,
-      },
-    ],
-    [],
-  );
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await api.get('/timeline/projects');
+        const data = response.data?.data || [];
+        setProjects(data);
+      } catch (error) {
+        console.error("Failed to fetch timeline projects", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProjects();
+  }, []);
 
   const months = useMemo(() => ["Jan", "Feb", "Mar", "Apr", "May", "Jun"], []);
   const gridLines = useMemo(() => Array.from({ length: 180 }), []);
@@ -63,9 +57,13 @@ const ProjectTimeline = memo(() => {
           </button>
         </div>
 
-        {/* Timeline Overview */}
-        <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 p-6 mb-8">
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-6">
+        {loading ? (
+          <div className="p-8 text-center text-slate-500">Loading timeline...</div>
+        ) : (
+          <>
+            {/* Timeline Overview */}
+            <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 p-6 mb-8">
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-6">
             Timeline Overview
           </h3>
 
@@ -231,9 +229,11 @@ const ProjectTimeline = memo(() => {
                   </tr>
                 ))}
               </tbody>
-            </table>
-          </div>
-        </div>
+                </table>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

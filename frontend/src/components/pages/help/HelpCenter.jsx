@@ -1,60 +1,32 @@
-import React, { memo, useMemo, useState, useCallback } from "react";
+import React, { memo, useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../../../utils/api";
 
 const HelpCenter = memo(() => {
   const navigate = useNavigate();
-  const faqs = useMemo(
-    () => [
-      {
-        id: 1,
-        question: "How do I submit a project proposal?",
-        category: "Projects",
-        answer: "Navigate to Projects → New Proposal and fill out the form.",
-      },
-      {
-        id: 2,
-        question: "How can I view my grades?",
-        category: "Grades",
-        answer: "Go to Grades section to view all your course grades.",
-      },
-      {
-        id: 3,
-        question: "How do I schedule a meeting?",
-        category: "Meetings",
-        answer:
-          "Navigate to Meetings → Schedule Meeting and select a time slot.",
-      },
-      {
-        id: 4,
-        question: "How can I reset my password?",
-        category: "Account",
-        answer:
-          "Click on Forgot Password on login page or go to Profile → Security.",
-      },
-      {
-        id: 5,
-        question: "How do I upload assignments?",
-        category: "Assignments",
-        answer: "Go to Assignments → Select assignment → Click Submit.",
-      },
-    ],
-    [],
-  );
+  const [faqs, setFaqs] = useState([]);
+  const [categories, setCategories] = useState(["All"]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchHelpData = async () => {
+      try {
+        const response = await api.get("/help/center");
+        const data = response.data?.data || {};
+        if (data.faqs) setFaqs(data.faqs);
+        if (data.categories) {
+          setCategories(["All", ...data.categories]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch help center data", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchHelpData();
+  }, []);
 
   const [selectedCategory, setSelectedCategory] = useState("All");
-
-  const categories = useMemo(
-    () => [
-      "All",
-      "Projects",
-      "Grades",
-      "Meetings",
-      "Account",
-      "Assignments",
-      "Technical",
-    ],
-    [],
-  );
 
   const filteredFaqs = useMemo(
     () =>
@@ -118,28 +90,34 @@ const HelpCenter = memo(() => {
           <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-6">
             Frequently Asked Questions
           </h2>
-          <div className="space-y-4">
-            {filteredFaqs.map((faq) => (
-              <div
-                key={faq.id}
-                className="border-b border-slate-200 dark:border-slate-700 pb-4 last:border-b-0"
-              >
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="font-medium text-slate-900 dark:text-white mb-2">
-                      {faq.question}
-                    </h3>
-                    <p className="text-slate-600 dark:text-slate-400 text-sm">
-                      {faq.answer}
-                    </p>
+          {loading ? (
+            <div className="text-center py-8 text-slate-500">Loading help center...</div>
+          ) : (
+            <div className="space-y-4">
+              {filteredFaqs.length > 0 ? filteredFaqs.map((faq) => (
+                <div
+                  key={faq.id || faq._id}
+                  className="border-b border-slate-200 dark:border-slate-700 pb-4 last:border-b-0"
+                >
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="font-medium text-slate-900 dark:text-white mb-2">
+                        {faq.question}
+                      </h3>
+                      <p className="text-slate-600 dark:text-slate-400 text-sm">
+                        {faq.answer}
+                      </p>
+                    </div>
+                    <span className="px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs rounded-full">
+                      {faq.category}
+                    </span>
                   </div>
-                  <span className="px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs rounded-full">
-                    {faq.category}
-                  </span>
                 </div>
-              </div>
-            ))}
-          </div>
+              )) : (
+                <div className="text-center py-4 text-slate-500">No FAQs found for this category.</div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Contact Support */}

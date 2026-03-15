@@ -3,9 +3,17 @@ const sendResponse = require("../utils/response");
 const { validationResult } = require("express-validator");
 
 /**
+ * Assignment Controller
+ * Handles HTTP requests related to academic assignments, including creation,
+ * retrieval, updates, and role-based filtering.
+ */
+
+/**
  * Create a new assignment
  * @route POST /assignments
  * @access Admin, Faculty
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.createAssignment = async (req, res) => {
   try {
@@ -14,12 +22,12 @@ exports.createAssignment = async (req, res) => {
     sendResponse(
       res,
       {
-        success: true,
-        message: "Assignment created successfully",
-        data: result,
-        error: null,
+        success: !result.error,
+        message: result.error ? result.message : "Assignment created successfully",
+        data: result.data || null,
+        error: result.error || null,
       },
-      201,
+      result.error ? 400 : 201,
     );
   } catch (error) {
     sendResponse(
@@ -39,7 +47,9 @@ exports.createAssignment = async (req, res) => {
  * Get all assignments with pagination and filtering
  * @route GET /assignments
  * @access Authenticated
- * @query page, limit, title, etc.
+ * @query {number} page - Page number for pagination
+ * @query {number} limit - Number of records per page
+ * @query {Object} filters - Search criteria (title, courseId, etc.)
  */
 exports.getAllAssignments = async (req, res) => {
   try {
@@ -73,7 +83,7 @@ exports.getAllAssignments = async (req, res) => {
 };
 
 /**
- * Get an assignment by ID
+ * Get detailed information for a specific assignment
  * @route GET /assignments/:id
  * @access Authenticated
  */
@@ -108,7 +118,7 @@ exports.getAssignmentById = async (req, res) => {
 };
 
 /**
- * Update an assignment by ID
+ * Update assignment details
  * @route PUT /assignments/:id
  * @access Admin, Faculty
  */
@@ -143,7 +153,7 @@ exports.updateAssignment = async (req, res) => {
 };
 
 /**
- * Validate assignment input
+ * Validate assignment data before submission
  * @route POST /assignments/validate
  * @access Admin, Faculty
  */
@@ -176,7 +186,7 @@ exports.validateAssignment = (req, res) => {
 };
 
 /**
- * Delete an assignment by ID
+ * Permanently delete an assignment
  * @route DELETE /assignments/:id
  * @access Admin, Faculty
  */
@@ -211,7 +221,7 @@ exports.deleteAssignment = async (req, res) => {
 };
 
 /**
- * Get all assignments for a specific student
+ * List all assignments assigned to a specific student
  * @route GET /assignments/student/:studentId
  * @access Authenticated
  */
@@ -246,10 +256,9 @@ exports.getAssignmentsByStudentId = async (req, res) => {
 };
 
 /**
- * Get all assignments for a specific activity
+ * List assignments associated with a specific activity
  * @route GET /assignments/activity/:activityId
  * @access Authenticated
- * @query page, limit
  */
 exports.getAssignmentsByActivityId = async (req, res) => {
   try {
@@ -286,11 +295,11 @@ exports.getAssignmentsByActivityId = async (req, res) => {
   }
 };
 
-/** Get all assignments for a specific faculty
+/** 
+ * List assignments published by a specific faculty member
  * @route GET /assignments/faculty/:facultyId
  * @access Authenticated
- * @query page, limit
- * */
+ */
 exports.getAssignmentsByFacultyId = async (req, res) => {
   try {
     const { page = 1, limit = 10 } = req.query;
@@ -324,11 +333,11 @@ exports.getAssignmentsByFacultyId = async (req, res) => {
   }
 };
 
-/** Get all assignments for a specific course
+/** 
+ * List all assignments for a specific academic course
  * @route GET /assignments/course/:courseId
  * @access Authenticated
- * @query page, limit
- * */
+ */
 exports.getAssignmentsByCourseId = async (req, res) => {
   try {
     const { page = 1, limit = 10 } = req.query;
@@ -362,11 +371,11 @@ exports.getAssignmentsByCourseId = async (req, res) => {
   }
 };
 
-/** Get all assignments for a specific batch
+/** 
+ * List assignments for a specific student batch
  * @route GET /assignments/batch/:batchId
  * @access Authenticated
- * @query page, limit
- * */
+ */
 exports.getAssignmentsByBatchId = async (req, res) => {
   try {
     const { page = 1, limit = 10 } = req.query;

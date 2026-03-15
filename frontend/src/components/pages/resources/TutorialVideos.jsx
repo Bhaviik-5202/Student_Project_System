@@ -1,4 +1,5 @@
-import React, { useState, useMemo, useCallback, memo } from "react";
+import React, { useState, useMemo, useCallback, memo, useEffect } from "react";
+import api from "../../../utils/api";
 
 const CategoryPill = memo(({ category, isActive, onSelect }) => (
   <button
@@ -20,85 +21,35 @@ const TutorialVideos = memo(() => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
 
-  const videoCategories = useMemo(
-    () => [
-      { id: "all", name: "All Videos", count: 24 },
-      { id: "getting-started", name: "Getting Started", count: 6 },
-      { id: "projects", name: "Projects", count: 8 },
-      { id: "reports", name: "Reports", count: 4 },
-      { id: "collaboration", name: "Collaboration", count: 6 },
-    ],
-    [],
-  );
+  const [videos, setVideos] = useState([]);
+  const [videoCategories, setVideoCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const videos = useMemo(
-    () => [
-      {
-        id: 1,
-        title: "Getting Started with Project Management",
-        category: "getting-started",
-        duration: "12:45",
-        views: 1560,
-        date: "2024-01-10",
-        thumbnail: "https://via.placeholder.com/300x180",
-        description: "Learn the basics of using our project management system",
-      },
-      {
-        id: 2,
-        title: "Creating Your First Project",
-        category: "projects",
-        duration: "18:30",
-        views: 980,
-        date: "2024-01-12",
-        thumbnail: "https://via.placeholder.com/300x180",
-        description: "Step-by-step guide to creating and managing projects",
-      },
-      {
-        id: 3,
-        title: "Advanced Reporting Features",
-        category: "reports",
-        duration: "22:15",
-        views: 720,
-        date: "2024-01-08",
-        thumbnail: "https://via.placeholder.com/300x180",
-        description: "Master the reporting and analytics tools",
-      },
-      {
-        id: 4,
-        title: "Team Collaboration Tools",
-        category: "collaboration",
-        duration: "15:20",
-        views: 890,
-        date: "2024-01-05",
-        thumbnail: "https://via.placeholder.com/300x180",
-        description: "How to effectively collaborate with your team",
-      },
-      {
-        id: 5,
-        title: "Time Management & Deadlines",
-        category: "projects",
-        duration: "20:10",
-        views: 640,
-        date: "2024-01-03",
-        thumbnail: "https://via.placeholder.com/300x180",
-        description: "Manage project timelines and meet deadlines",
-      },
-      {
-        id: 6,
-        title: "Mobile App Tutorial",
-        category: "getting-started",
-        duration: "14:25",
-        views: 1120,
-        date: "2024-01-15",
-        thumbnail: "https://via.placeholder.com/300x180",
-        description: "Using the project management app on mobile devices",
-      },
-    ],
-    [],
-  );
+  useEffect(() => {
+    const fetchVideos = async () => {
+      try {
+        const response = await api.get("/resources/videos");
+        const data = response.data?.data || {};
+        if (data.videos) {
+          setVideos(data.videos);
+          if (data.videos.length > 0 && !activeVideo) {
+            setActiveVideo(data.videos[0].id || data.videos[0]._id);
+          }
+        }
+        if (data.categories) {
+          setVideoCategories([{ id: "all", name: "All Videos", count: data.videos?.length || 0 }, ...data.categories]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch tutorial videos", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchVideos();
+  }, []);
 
   const currentVideo = useMemo(
-    () => videos.find((video) => video.id === activeVideo),
+    () => videos.find((video) => (video.id || video._id) === activeVideo),
     [videos, activeVideo],
   );
 
@@ -127,7 +78,11 @@ const TutorialVideos = memo(() => {
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Left Column - Video Player */}
         <div className="lg:w-2/3">
-          <div className="mb-6">
+          {loading ? (
+            <div className="text-center py-12 text-slate-500">Loading tutorials...</div>
+          ) : (
+            <>
+              <div className="mb-6">
             <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">
               {currentVideo?.title || "Select a video"}
             </h2>
@@ -200,6 +155,8 @@ const TutorialVideos = memo(() => {
               </div>
             </div>
           </div>
+            </>
+          )}
         </div>
 
         {/* Right Column - Video List */}
@@ -239,10 +196,10 @@ const TutorialVideos = memo(() => {
             </h3>
             {filteredVideos.map((video) => (
               <button
-                key={video.id}
-                onClick={() => handleSelectVideo(video.id)}
+                key={video.id || video._id}
+                onClick={() => handleSelectVideo(video.id || video._id)}
                 className={`w-full p-3 rounded-lg border text-left transition-colors ${
-                  activeVideo === video.id
+                  activeVideo === (video.id || video._id)
                     ? "border-blue-500 bg-blue-50 dark:bg-blue-900/30"
                     : "border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
                 }`}
@@ -265,7 +222,7 @@ const TutorialVideos = memo(() => {
                     <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
                       <span className="flex items-center mr-3">
                         <i className="fas fa-eye mr-1" />
-                        {video.views.toLocaleString()}
+                        {video.views?.toLocaleString()}
                       </span>
                       <span>{video.date}</span>
                     </div>
@@ -281,7 +238,7 @@ const TutorialVideos = memo(() => {
       <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="text-center p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
-            <div className="text-2xl font-bold text-blue-600">24</div>
+            <div className="text-2xl font-bold text-blue-600">{videos.length}</div>
             <div className="text-sm text-gray-600 dark:text-gray-400">
               Total Videos
             </div>

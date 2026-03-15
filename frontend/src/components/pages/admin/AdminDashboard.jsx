@@ -421,6 +421,13 @@ const SERVICE_ICONS = {
   api: Icons.Settings,
 };
 
+/**
+ * AdminDashboard Component
+ * 
+ * The mission control center for system administrators. Provides high-level 
+ * system telemetry, staggered statistical animations, platform-wide 
+ * quick actions, real-time activity tracking, and service health monitoring.
+ */
 const AdminDashboard = memo(() => {
   const navigate = useNavigate();
   const handleNavigate = useCallback((path) => () => navigate(path), [navigate]);

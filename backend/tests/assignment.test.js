@@ -16,14 +16,19 @@ before(async function () {
   };
 
   // Register
-  await request(app).post("/api/v1/auth/register").send(user);
+  const registerRes = await request(app).post("/api/v1/auth/register").send(user);
+  if (registerRes.statusCode !== 201) {
+    console.log("Registration failed. Make sure MongoDB is running.");
+    console.log("Start MongoDB with: net start MongoDB (as Administrator)");
+    throw new Error(`Registration failed with status ${registerRes.statusCode}: ${registerRes.body.message}`);
+  }
+  expect(registerRes.statusCode).to.equal(201);
 
   // Login
   const loginRes = await request(app).post("/api/v1/auth/login").send({
     email: user.email,
     password: user.password,
   });
-
   expect(loginRes.statusCode).to.equal(200);
   expect(loginRes.body).to.have.property("data");
   expect(loginRes.body.data).to.have.property("token");
@@ -35,6 +40,7 @@ describe("Assignment API", function () {
   const assignmentData = {
     title: "Test Assignment",
     description: "A test assignment",
+    course: "507f1f77bcf86cd799439011",
   };
 
   it("should create a new assignment", async function () {

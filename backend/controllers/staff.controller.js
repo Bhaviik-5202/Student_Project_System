@@ -2,7 +2,13 @@ const staffService = require("../services/staff.service");
 const sendResponse = require("../utils/response");
 
 /**
- * Create a new staff member
+ * Staff Controller
+ * Manages faculty and administrator profiles, departmental assignments,
+ * and professional information.
+ */
+
+/**
+ * Register a new staff member (Faculty or Admin)
  * @route POST /staff
  * @access Admin
  */
@@ -14,9 +20,7 @@ exports.createStaff = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error
-          ? "Failed to create staff member"
-          : "Staff member created successfully",
+        message: result.error ? result.message : "Staff created successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -37,7 +41,7 @@ exports.createStaff = async (req, res) => {
 };
 
 /**
- * Get all staff members
+ * Fetch all staff records
  * @route GET /staff
  * @access Admin
  */
@@ -50,8 +54,8 @@ exports.getAllStaff = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to fetch staff members"
-          : "Staff members fetched successfully",
+          ? "Failed to fetch staff"
+          : "Staff fetched successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -72,9 +76,9 @@ exports.getAllStaff = async (req, res) => {
 };
 
 /**
- * Get a staff member by ID
+ * Get detailed information for a specific staff member
  * @route GET /staff/:id
- * @access Admin
+ * @access Authenticated
  */
 exports.getStaffById = async (req, res) => {
   try {
@@ -84,9 +88,7 @@ exports.getStaffById = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error
-          ? "Staff member not found"
-          : "Staff member fetched successfully",
+        message: result.error ? "Staff member not found" : "Staff member fetched successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -107,9 +109,9 @@ exports.getStaffById = async (req, res) => {
 };
 
 /**
- * Update a staff member by ID
+ * Update staff profile or departmental role
  * @route PUT /staff/:id
- * @access Admin
+ * @access Admin, Staff (own profile)
  */
 exports.updateStaff = async (req, res) => {
   try {
@@ -119,9 +121,7 @@ exports.updateStaff = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error
-          ? "Failed to update staff member"
-          : "Staff member updated successfully",
+        message: result.error ? "Staff member not found" : "Staff member updated successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -142,7 +142,7 @@ exports.updateStaff = async (req, res) => {
 };
 
 /**
- * Delete a staff member by ID
+ * Permanently remove a staff record
  * @route DELETE /staff/:id
  * @access Admin
  */
@@ -154,9 +154,7 @@ exports.deleteStaff = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error
-          ? "Failed to delete staff member"
-          : "Staff member deleted successfully",
+        message: result.error ? "Staff member not found" : "Staff member deleted successfully",
         data: result.data || null,
         error: result.error || null,
       },

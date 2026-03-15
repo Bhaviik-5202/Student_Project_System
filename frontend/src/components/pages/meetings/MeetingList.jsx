@@ -1,5 +1,6 @@
-import React, { useMemo, useCallback, memo } from "react";
+import React, { useState, useEffect, useCallback, memo } from "react";
 import { useNavigate } from "react-router-dom";
+import meetingService from "../../../services/meetingService";
 
 const MeetingRow = memo(({ meeting, onView }) => {
   const statusStyles = {
@@ -51,29 +52,34 @@ MeetingRow.displayName = "MeetingRow";
 
 const MeetingList = memo(() => {
   const navigate = useNavigate();
-  const meetings = useMemo(
-    () => [
-      {
-        id: 1,
-        title: "Project Review Meeting",
-        date: "2024-01-15",
-        time: "10:00 AM",
-        location: "Room 301",
-        attendees: ["Student A", "Student B", "Dr. Smith"],
-        status: "Upcoming",
-      },
-      {
-        id: 2,
-        title: "Weekly Sync",
-        date: "2024-01-16",
-        time: "2:00 PM",
-        location: "Conference Room",
-        attendees: ["All Team Members"],
-        status: "Upcoming",
-      },
-    ],
-    [],
-  );
+  const [meetings, setMeetings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchMeetings = async () => {
+      setLoading(true);
+      setError(null);
+      const res = await meetingService.getAllMeetings();
+      if (res.success) {
+        setMeetings(
+          (res.data.data || []).map(m => ({
+            id: m._id || m.id,
+            title: m.title,
+            date: m.date ? m.date.split("T")[0] : "TBD",
+            time: m.time || "TBD",
+            location: m.location || "Online",
+            attendees: m.attendees || [],
+            status: m.status || "Upcoming",
+          }))
+        );
+      } else {
+        setError(res.message || "Failed to load meetings");
+      }
+      setLoading(false);
+    };
+    fetchMeetings();
+  }, []);
 
   // Schedule Meeting button handler
   const handleCreate = useCallback(() => {
@@ -153,36 +159,47 @@ const MeetingList = memo(() => {
         {/* ...existing code... */}
         <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-              <thead className="bg-gray-50 dark:bg-gray-700">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Title
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Date & Time
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Location
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                {meetings.map((meeting) => (
-                  <MeetingRow
-                    key={meeting.id}
-                    meeting={meeting}
-                    onView={handleView}
-                  />
-                ))}
-              </tbody>
-            </table>
+            {loading ? (
+              <div className="p-8 text-center text-gray-500 dark:text-gray-400">Loading meetings...</div>
+            ) : error ? (
+              <div className="p-8 text-center text-red-500">{error}</div>
+            ) : meetings.length === 0 ? (
+              <div className="p-8 text-center text-gray-500 dark:text-gray-400 flex flex-col items-center">
+                <i className="fas fa-calendar-times text-4xl mb-3 text-gray-400"></i>
+                <p>No meetings scheduled</p>
+              </div>
+            ) : (
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead className="bg-gray-50 dark:bg-gray-700">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                      Title
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                      Date & Time
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                      Location
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                  {meetings.map((meeting) => (
+                    <MeetingRow
+                      key={meeting.id}
+                      meeting={meeting}
+                      onView={handleView}
+                    />
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
       </div>

@@ -2,105 +2,106 @@ const portfolioService = require("../services/portfolio.service");
 const sendResponse = require("../utils/response");
 
 /**
- * Create a new portfolio
+ * Portfolio Controller
+ * Manages student professional portfolios and project showcases.
+ */
+
+/**
+ * Create a new student portfolio
  * @route POST /portfolios
- * @access Authenticated
+ * @access Student
  */
 exports.createPortfolio = async (req, res) => {
   try {
-    const portfolio = await portfolioService.createPortfolio(req.body);
+    const result = await portfolioService.upsert(req.user.id, req.body);
 
     sendResponse(
       res,
       {
-        success: true,
-        message: "Portfolio created successfully",
-        data: portfolio,
-        error: null,
+        success: !result.error,
+        message: result.error
+          ? "Failed to update portfolio"
+          : "Portfolio updated successfully",
+        data: result.data || null,
+        error: result.error || null,
       },
-      201,
+      result.error ? 400 : 200,
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to create portfolio",
+        message: "Internal server error",
         data: null,
         error: error.message,
       },
-      400,
+      500,
     );
   }
 };
 
 /**
- * Get a portfolio by student ID
+ * Fetch a portfolio by student ID
  * @route GET /portfolios/student/:studentId
  * @access Authenticated
  */
 exports.getPortfolioByStudent = async (req, res) => {
   try {
-    const portfolio = await portfolioService.getPortfolioByStudent(
-      req.params.studentId,
-    );
+    const result = await portfolioService.getByUserId(req.params.userId);
 
     sendResponse(
       res,
       {
-        success: true,
-        message: "Portfolio fetched successfully",
-        data: portfolio,
-        error: null,
+        success: !result.error,
+        message: result.error ? "Portfolio not found" : "Portfolio fetched successfully",
+        data: result.data || null,
+        error: result.error || null,
       },
-      200,
+      result.error ? 404 : 200,
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to fetch portfolio",
+        message: "Internal server error",
         data: null,
         error: error.message,
       },
-      400,
+      500,
     );
   }
 };
-
 /**
- * Update a portfolio by its ID
+ * Update an existing portfolio
  * @route PUT /portfolios/:id
- * @access Authenticated
+ * @access Student
  */
 exports.updatePortfolio = async (req, res) => {
   try {
-    const portfolio = await portfolioService.updatePortfolio(
-      req.params.id,
-      req.body,
-    );
+    const result = await portfolioService.update(req.params.id, req.body);
 
     sendResponse(
       res,
       {
-        success: true,
-        message: "Portfolio updated successfully",
-        data: portfolio,
-        error: null,
+        success: !result.error,
+        message: result.error ? "Portfolio not found" : "Portfolio updated successfully",
+        data: result.data || null,
+        error: result.error || null,
       },
-      200,
+      result.error ? 404 : 200,
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to update portfolio",
+        message: "Internal server error",
         data: null,
         error: error.message,
       },
-      400,
+      500,
     );
   }
 };

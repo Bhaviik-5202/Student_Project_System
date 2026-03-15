@@ -1,126 +1,31 @@
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
+import api from "../../../utils/api";
 
 const TranscriptViewer = () => {
   const [selectedYear, setSelectedYear] = useState("all");
   const [viewMode, setViewMode] = useState("detailed");
 
-  const studentInfo = useMemo(
-    () => ({
-      name: "Alex Johnson",
-      studentId: "S2024001",
-      program: "Bachelor of Computer Science",
-      enrollmentDate: "Fall 2020",
-      expectedGraduation: "Spring 2024",
-      advisor: "Dr. Sarah Wilson",
-      department: "Computer Science",
-    }),
-    [],
-  );
+  const [studentInfo, setStudentInfo] = useState({ name: "", studentId: "", program: "", enrollmentDate: "", expectedGraduation: "", advisor: "", department: "" });
+  const [academicYears, setAcademicYears] = useState([{ id: "all", name: "All Years" }]);
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const academicYears = useMemo(
-    () => [
-      { id: "all", name: "All Years" },
-      { id: "2023-2024", name: "2023-2024", gpa: 3.8 },
-      { id: "2022-2023", name: "2022-2023", gpa: 3.6 },
-      { id: "2021-2022", name: "2021-2022", gpa: 3.7 },
-      { id: "2020-2021", name: "2020-2021", gpa: 3.5 },
-    ],
-    [],
-  );
-
-  const courses = useMemo(
-    () => [
-      {
-        id: 1,
-        code: "CS401",
-        name: "Advanced Algorithms",
-        semester: "Fall 2023",
-        credits: 3,
-        grade: "A",
-        points: 4.0,
-        status: "Completed",
-        instructor: "Dr. Robert Kim",
-      },
-      {
-        id: 2,
-        code: "CS402",
-        name: "Machine Learning",
-        semester: "Fall 2023",
-        credits: 4,
-        grade: "A-",
-        points: 3.7,
-        status: "Completed",
-        instructor: "Dr. Sarah Wilson",
-      },
-      {
-        id: 3,
-        code: "CS403",
-        name: "Software Engineering",
-        semester: "Fall 2023",
-        credits: 3,
-        grade: "B+",
-        points: 3.3,
-        status: "Completed",
-        instructor: "Prof. Mike Chen",
-      },
-      {
-        id: 4,
-        code: "MATH301",
-        name: "Discrete Mathematics",
-        semester: "Fall 2023",
-        credits: 3,
-        grade: "A",
-        points: 4.0,
-        status: "Completed",
-        instructor: "Dr. Lisa Park",
-      },
-      {
-        id: 5,
-        code: "CS301",
-        name: "Data Structures",
-        semester: "Spring 2023",
-        credits: 4,
-        grade: "A-",
-        points: 3.7,
-        status: "Completed",
-        instructor: "Dr. Robert Kim",
-      },
-      {
-        id: 6,
-        code: "CS302",
-        name: "Database Systems",
-        semester: "Spring 2023",
-        credits: 3,
-        grade: "B+",
-        points: 3.3,
-        status: "Completed",
-        instructor: "Prof. Emma Wilson",
-      },
-      {
-        id: 7,
-        code: "CS201",
-        name: "Object-Oriented Programming",
-        semester: "Fall 2022",
-        credits: 3,
-        grade: "A",
-        points: 4.0,
-        status: "Completed",
-        instructor: "Dr. Sarah Wilson",
-      },
-      {
-        id: 8,
-        code: "CS202",
-        name: "Computer Networks",
-        semester: "Fall 2022",
-        credits: 3,
-        grade: "B",
-        points: 3.0,
-        status: "Completed",
-        instructor: "Prof. David Lee",
-      },
-    ],
-    [],
-  );
+  useEffect(() => {
+    const fetchTranscript = async () => {
+      try {
+        const response = await api.get('/portfolio/transcript');
+        const data = response.data?.data || {};
+        if (data.studentInfo) setStudentInfo(data.studentInfo);
+        if (data.academicYears) setAcademicYears([{ id: "all", name: "All Years" }, ...data.academicYears]);
+        if (data.courses) setCourses(data.courses);
+      } catch (error) {
+        console.error("Failed to fetch transcript details", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTranscript();
+  }, []);
 
   const filteredCourses = useMemo(
     () =>
@@ -187,6 +92,8 @@ const TranscriptViewer = () => {
   const handleDownload = useCallback((format) => {
     alert(`Downloading transcript as ${format.toUpperCase()}`);
   }, []);
+
+  if (loading) return <div className="p-6 text-center text-slate-500">Loading transcript...</div>;
 
   return (
     <div className="bg-white dark:bg-slate-900 rounded-lg shadow p-6">

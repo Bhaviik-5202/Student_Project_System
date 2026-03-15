@@ -2,9 +2,14 @@ const faqService = require("../services/faq.service");
 const sendResponse = require("../utils/response");
 
 /**
- * Create a new FAQ
+ * FAQ Controller
+ * Manages frequently asked questions, help documentation, and support resources.
+ */
+
+/**
+ * Create a new FAQ entry
  * @route POST /faqs
- * @access Admin
+ * @access admin
  */
 exports.createFAQ = async (req, res) => {
   try {
@@ -14,9 +19,7 @@ exports.createFAQ = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error
-          ? "Failed to create FAQ"
-          : "FAQ created successfully",
+        message: result.error ? result.message : "FAQ created successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -27,19 +30,19 @@ exports.createFAQ = async (req, res) => {
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: "Failed to create FAQ",
         data: null,
         error: error.message,
       },
-      500,
+      400,
     );
   }
 };
 
 /**
- * Get all FAQs
+ * Fetch all FAQ entries
  * @route GET /faqs
- * @access Public
+ * @access Authenticated
  */
 exports.getAllFAQs = async (req, res) => {
   try {
@@ -72,9 +75,9 @@ exports.getAllFAQs = async (req, res) => {
 };
 
 /**
- * Get a FAQ by ID
+ * Get detailed information for a specific FAQ by ID
  * @route GET /faqs/:id
- * @access Public
+ * @access Authenticated
  */
 exports.getFAQById = async (req, res) => {
   try {
@@ -105,9 +108,9 @@ exports.getFAQById = async (req, res) => {
 };
 
 /**
- * Update a FAQ by ID
+ * Update an existing FAQ entry
  * @route PUT /faqs/:id
- * @access Admin
+ * @access admin
  */
 exports.updateFAQ = async (req, res) => {
   try {
@@ -117,9 +120,7 @@ exports.updateFAQ = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error
-          ? "Failed to update FAQ"
-          : "FAQ updated successfully",
+        message: result.error ? "FAQ not found" : "FAQ updated successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -140,9 +141,9 @@ exports.updateFAQ = async (req, res) => {
 };
 
 /**
- * Delete a FAQ by ID
+ * Permanently remove an FAQ entry
  * @route DELETE /faqs/:id
- * @access Admin
+ * @access admin
  */
 exports.deleteFAQ = async (req, res) => {
   try {
@@ -152,9 +153,7 @@ exports.deleteFAQ = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error
-          ? "Failed to delete FAQ"
-          : "FAQ deleted successfully",
+        message: result.error ? "FAQ not found" : "FAQ deleted successfully",
         data: result.data || null,
         error: result.error || null,
       },

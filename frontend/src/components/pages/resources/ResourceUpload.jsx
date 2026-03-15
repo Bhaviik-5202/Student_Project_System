@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useMemo, memo } from "react";
 import useNotification from "../../../hooks/useNotification";
+import api from "../../../utils/api";
 
 const ResourceUpload = memo(() => {
   const [files, setFiles] = useState([]);
@@ -32,8 +33,14 @@ const ResourceUpload = memo(() => {
 
     setUploading(true);
     try {
-      // Simulate upload process
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const formData = new FormData();
+      formData.append("type", resourceType);
+      files.forEach((file) => {
+        formData.append("files", file);
+      });
+      await api.post("/resources/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       showSuccess(`${files.length} file(s) uploaded successfully`);
       setFiles([]);
     } catch (error) {
@@ -41,7 +48,7 @@ const ResourceUpload = memo(() => {
     } finally {
       setUploading(false);
     }
-  }, [files, showError, showSuccess]);
+  }, [files, resourceType, showError, showSuccess]);
 
   const removeFile = useCallback(
     (index) => {

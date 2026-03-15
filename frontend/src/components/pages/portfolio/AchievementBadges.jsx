@@ -1,87 +1,34 @@
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
+import api from "../../../utils/api";
 
 const AchievementBadges = () => {
   const [selectedFilter, setSelectedFilter] = useState("all");
-  const [userBadges, setUserBadges] = useState([
-    {
-      id: 1,
-      name: "Project Pioneer",
-      earned: true,
-      date: "2024-01-10",
-      description: "Complete first project",
-      icon: "fas fa-rocket",
-      color: "text-blue-500 bg-blue-100",
-    },
-    {
-      id: 2,
-      name: "Team Player",
-      earned: true,
-      date: "2024-01-12",
-      description: "Collaborate on 5+ projects",
-      icon: "fas fa-users",
-      color: "text-green-500 bg-green-100",
-    },
-    {
-      id: 3,
-      name: "Deadline Destroyer",
-      earned: false,
-      description: "Submit 10 projects on time",
-      icon: "fas fa-bolt",
-      color: "text-yellow-500 bg-yellow-100",
-    },
-    {
-      id: 4,
-      name: "Quality Master",
-      earned: true,
-      date: "2024-01-08",
-      description: "Achieve 95%+ quality score",
-      icon: "fas fa-star",
-      color: "text-purple-500 bg-purple-100",
-    },
-    {
-      id: 5,
-      name: "Mentor Master",
-      earned: false,
-      description: "Guide 3+ junior members",
-      icon: "fas fa-graduation-cap",
-      color: "text-indigo-500 bg-indigo-100",
-    },
-    {
-      id: 6,
-      name: "Innovator",
-      earned: true,
-      date: "2024-01-15",
-      description: "Implement creative solution",
-      icon: "fas fa-lightbulb",
-      color: "text-pink-500 bg-pink-100",
-    },
-    {
-      id: 7,
-      name: "Consistency King",
-      earned: false,
-      description: "Active for 30 consecutive days",
-      icon: "fas fa-calendar-check",
-      color: "text-red-500 bg-red-100",
-    },
-    {
-      id: 8,
-      name: "Feedback Guru",
-      earned: true,
-      date: "2024-01-05",
-      description: "Provide 50+ helpful feedbacks",
-      icon: "fas fa-comments",
-      color: "text-teal-500 bg-teal-100",
-    },
-  ]);
+  const [userBadges, setUserBadges] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchBadges = async () => {
+      try {
+        const response = await api.get('/portfolio/badges');
+        const data = response.data?.data || {};
+        if (data.badges) setUserBadges(data.badges);
+      } catch (error) {
+        console.error("Failed to fetch badges", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBadges();
+  }, []);
 
   const filters = useMemo(
     () => [
-      { id: "all", name: "All Badges", count: 8 },
-      { id: "earned", name: "Earned", count: 5 },
-      { id: "available", name: "Available", count: 3 },
-      { id: "recent", name: "Recent", count: 2 },
+      { id: "all", name: "All Badges", count: userBadges.length },
+      { id: "earned", name: "Earned", count: userBadges.filter(b => b.earned).length },
+      { id: "available", name: "Available", count: userBadges.filter(b => !b.earned).length },
+      { id: "recent", name: "Recent", count: userBadges.filter(b => b.earned && b.date).length },
     ],
-    [],
+    [userBadges]
   );
 
   const filteredBadges = useMemo(
@@ -94,6 +41,8 @@ const AchievementBadges = () => {
       }),
     [userBadges, selectedFilter],
   );
+
+  if (loading) return <div className="p-6 text-center text-slate-500">Loading badges...</div>;
 
   return (
     <div className="bg-white dark:bg-slate-900 rounded-lg shadow p-6\">

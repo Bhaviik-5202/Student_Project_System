@@ -2,8 +2,13 @@ const supportTicketService = require("../services/supportticket.service");
 const sendResponse = require("../utils/response");
 
 /**
- * Create a new support ticket
- * @route POST /supporttickets
+ * SupportTicket Controller
+ * Manages user support requests, issue tracking, and technical assistance workflow.
+ */
+
+/**
+ * Open a new support ticket
+ * @route POST /support-tickets
  * @access Authenticated
  */
 exports.createSupportTicket = async (req, res) => {
@@ -14,9 +19,7 @@ exports.createSupportTicket = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error
-          ? "Failed to create support ticket"
-          : "Support ticket created successfully",
+        message: result.error ? result.message : "Support ticket created successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -27,23 +30,24 @@ exports.createSupportTicket = async (req, res) => {
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: "Failed to create support ticket",
         data: null,
         error: error.message,
       },
-      500,
+      400,
     );
   }
 };
 
 /**
- * Get all support tickets
- * @route GET /supporttickets
- * @access Admin, Support
+ * Fetch all support tickets with pagination and status filters
+ * @route GET /support-tickets
+ * @access Admin
  */
 exports.getAllSupportTickets = async (req, res) => {
   try {
-    const result = await supportTicketService.getAll();
+    const { page = 1, limit = 10, ...status } = req.query;
+    const result = await supportTicketService.getAll({ page, limit, status });
 
     sendResponse(
       res,
@@ -72,9 +76,9 @@ exports.getAllSupportTickets = async (req, res) => {
 };
 
 /**
- * Get a support ticket by ID
- * @route GET /supporttickets/:id
- * @access Admin, Support
+ * Get detailed information for a specific support ticket
+ * @route GET /support-tickets/:id
+ * @access Authenticated
  */
 exports.getSupportTicketById = async (req, res) => {
   try {
@@ -84,9 +88,7 @@ exports.getSupportTicketById = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error
-          ? "Support ticket not found"
-          : "Support ticket fetched successfully",
+        message: result.error ? "Ticket not found" : "Support ticket fetched successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -107,9 +109,9 @@ exports.getSupportTicketById = async (req, res) => {
 };
 
 /**
- * Update a support ticket by ID
- * @route PUT /supporttickets/:id
- * @access Admin, Support
+ * Update support ticket status, priority, or comments
+ * @route PUT /support-tickets/:id
+ * @access Admin, Authenticated (owner)
  */
 exports.updateSupportTicket = async (req, res) => {
   try {
@@ -119,9 +121,7 @@ exports.updateSupportTicket = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error
-          ? "Failed to update support ticket"
-          : "Support ticket updated successfully",
+        message: result.error ? "Ticket not found" : "Support ticket updated successfully",
         data: result.data || null,
         error: result.error || null,
       },
@@ -142,9 +142,9 @@ exports.updateSupportTicket = async (req, res) => {
 };
 
 /**
- * Delete a support ticket by ID
- * @route DELETE /supporttickets/:id
- * @access Admin, Support
+ * Permanently close or remove a support ticket record
+ * @route DELETE /support-tickets/:id
+ * @access Admin
  */
 exports.deleteSupportTicket = async (req, res) => {
   try {
@@ -154,9 +154,7 @@ exports.deleteSupportTicket = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error
-          ? "Failed to delete support ticket"
-          : "Support ticket deleted successfully",
+        message: result.error ? "Ticket not found" : "Support ticket deleted successfully",
         data: result.data || null,
         error: result.error || null,
       },

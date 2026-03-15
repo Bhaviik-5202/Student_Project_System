@@ -1,5 +1,15 @@
-import React, { useState, useMemo, useCallback, memo } from "react";
+import React, { useState, useMemo, useCallback, memo, useEffect } from "react";
+import api from "../../../utils/api";
+import meetingService from "../../../services/meetingService";
+import { toast } from "react-hot-toast";
 
+/**
+ * MeetingCalendar Component
+ * 
+ * A sophisticated scheduling and participation interface. Features a full 
+ * calendar orchestration for project reviews and weekly syncs, multi-user 
+ * participant tracking, and integrated virtual meeting room links.
+ */
 const MeetingCalendar = memo(() => {
   const [showModal, setShowModal] = useState(false);
   const [meetingForm, setMeetingForm] = useState({
@@ -12,91 +22,52 @@ const MeetingCalendar = memo(() => {
     participants: [],
   });
 
-  const meetings = useMemo(
-    () => [
-      {
-        id: 1,
-        title: "Project Review - Group B",
-        type: "review",
-        time: "Tomorrow • 10:00 AM - 11:30 AM",
-        description: "Review of project progress and technical implementation",
-        date: "2024-02-15",
-        location: "Room 302, Computer Science Building",
-        participants: 4,
-        color: "blue",
-      },
-      {
-        id: 2,
-        title: "Weekly Sync - Group D",
-        type: "sync",
-        time: "Nov 15 • 2:00 PM - 3:00 PM",
-        description: "Weekly progress update and task allocation",
-        date: "2024-02-16",
-        location: "Online - Zoom Meeting",
-        participants: 3,
-        color: "gray",
-      },
-    ],
-    [],
-  );
+  const [meetings, setMeetings] = useState([]);
+  const [calendarDays, setCalendarDays] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const calendarDays = useMemo(
-    () => [
-      { day: 29, month: "prev", meetings: 0 },
-      { day: 30, month: "prev", meetings: 0 },
-      { day: 31, month: "prev", meetings: 0 },
-      { day: 1, month: "current", meetings: 2, current: true },
-      { day: 2, month: "current", meetings: 0 },
-      { day: 3, month: "current", meetings: 1 },
-      { day: 4, month: "current", meetings: 0 },
-      { day: 5, month: "current", meetings: 0 },
-      { day: 6, month: "current", meetings: 1 },
-      { day: 7, month: "current", meetings: 0 },
-      { day: 8, month: "current", meetings: 0 },
-      { day: 9, month: "current", meetings: 0 },
-      { day: 10, month: "current", meetings: 0 },
-      { day: 11, month: "current", meetings: 0 },
-      { day: 12, month: "current", meetings: 2 },
-      { day: 13, month: "current", meetings: 0 },
-      { day: 14, month: "current", meetings: 1 },
-      { day: 15, month: "current", meetings: 0 },
-      { day: 16, month: "current", meetings: 0 },
-      { day: 17, month: "current", meetings: 0 },
-      { day: 18, month: "current", meetings: 0 },
-      { day: 19, month: "current", meetings: 0 },
-      { day: 20, month: "current", meetings: 1 },
-      { day: 21, month: "current", meetings: 0 },
-      { day: 22, month: "current", meetings: 0 },
-      { day: 23, month: "current", meetings: 0 },
-      { day: 24, month: "current", meetings: 0 },
-      { day: 25, month: "current", meetings: 0 },
-      { day: 26, month: "current", meetings: 0 },
-      { day: 27, month: "current", meetings: 0 },
-      { day: 28, month: "current", meetings: 0 },
-      { day: 29, month: "next", meetings: 0 },
-      { day: 30, month: "next", meetings: 0 },
-    ],
-    [],
-  );
+  useEffect(() => {
+    const fetchCalendarData = async () => {
+      try {
+        const response = await api.get('/meetings/calendar');
+        const data = response.data?.data || {};
+        if (data.meetings) setMeetings(data.meetings);
+        if (data.calendarDays) setCalendarDays(data.calendarDays);
+      } catch (error) {
+        console.error("Failed to fetch calendar data", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCalendarData();
+  }, []);
 
   const handleFormChange = useCallback((e) => {
     const { name, value } = e.target;
     setMeetingForm((prev) => ({ ...prev, [name]: value }));
   }, []);
 
-  const handleScheduleMeeting = useCallback(() => {
-    // ...existing code...
-    alert("Meeting scheduled successfully!");
-    setShowModal(false);
-    setMeetingForm({
-      title: "",
-      date: "",
-      time: "",
-      duration: "1.5",
-      location: "",
-      description: "",
-      participants: [],
-    });
+  const handleScheduleMeeting = useCallback(async () => {
+    try {
+      const response = await meetingService.createMeeting(meetingForm);
+      if (response.success) {
+        toast.success("Meeting scheduled successfully!");
+        setShowModal(false);
+        setMeetingForm({
+          title: "",
+          date: "",
+          time: "",
+          duration: "1.5",
+          location: "",
+          description: "",
+          participants: [],
+        });
+      } else {
+        toast.error(response.message || "Failed to schedule meeting");
+      }
+    } catch (error) {
+      toast.error("Failed to schedule meeting");
+    }
   }, [meetingForm]);
 
   return (

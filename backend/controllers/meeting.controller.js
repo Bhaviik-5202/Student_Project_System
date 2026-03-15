@@ -2,85 +2,54 @@ const meetingService = require("../services/meeting.service");
 const sendResponse = require("../utils/response");
 
 /**
- * Create a new meeting
- * @route POST /api/v1/meetings
- * @access Faculty, Admin
+ * Meeting Controller
+ * Manages scheduling, attendance, and details for project synchronization meetings.
+ */
+
+/**
+ * Schedule a new meeting
+ * @route POST /meetings
+ * @access Faculty, student (if permitted)
  */
 exports.createMeeting = async (req, res) => {
   try {
     const result = await meetingService.create(req.body);
 
-    return sendResponse(
+    sendResponse(
       res,
       {
         success: !result.error,
-        message: result.error
-          ? "Failed to create meeting"
-          : "Meeting created successfully",
+        message: result.error ? result.message : "Meeting scheduled successfully",
         data: result.data || null,
         error: result.error || null,
       },
       result.error ? 400 : 201,
     );
   } catch (error) {
-    return sendResponse(
+    sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: "Failed to schedule meeting",
         data: null,
         error: error.message,
       },
-      500,
+      400,
     );
   }
 };
 
 /**
- * Join a meeting
- * @route POST /api/v1/meetings/:id/join
- * @access Authenticated
- */
-exports.joinMeeting = async (req, res) => {
-  try {
-    const result = await meetingService.join(req.params.id, req.user);
-
-    return sendResponse(
-      res,
-      {
-        success: !result.error,
-        message: result.error
-          ? "Failed to join meeting"
-          : "Joined meeting successfully",
-        data: result.data || null,
-        error: result.error || null,
-      },
-      result.error ? 400 : 200,
-    );
-  } catch (error) {
-    return sendResponse(
-      res,
-      {
-        success: false,
-        message: "Internal server error",
-        data: null,
-        error: error.message,
-      },
-      500,
-    );
-  }
-};
-
-/**
- * Get all meetings
- * @route GET /api/v1/meetings
+ * Fetch all meetings with optional filters for role and date
+ * @route GET /meetings
  * @access Authenticated
  */
 exports.getAllMeetings = async (req, res) => {
   try {
-    const result = await meetingService.getAll();
+    const { page = 1, limit = 10, ...filters } = req.query;
+    const result = await meetingService.getAll({ page, limit, filters });
 
-    return sendResponse(
+    sendResponse(
       res,
       {
         success: !result.error,
@@ -93,7 +62,7 @@ exports.getAllMeetings = async (req, res) => {
       result.error ? 400 : 200,
     );
   } catch (error) {
-    return sendResponse(
+    sendResponse(
       res,
       {
         success: false,
@@ -107,28 +76,26 @@ exports.getAllMeetings = async (req, res) => {
 };
 
 /**
- * Get a meeting by ID
- * @route GET /api/v1/meetings/:id
+ * Get detailed information for a specific meeting by ID
+ * @route GET /meetings/:id
  * @access Authenticated
  */
 exports.getMeetingById = async (req, res) => {
   try {
     const result = await meetingService.getById(req.params.id);
 
-    return sendResponse(
+    sendResponse(
       res,
       {
         success: !result.error,
-        message: result.error
-          ? "Meeting not found"
-          : "Meeting fetched successfully",
+        message: result.error ? "Meeting not found" : "Meeting fetched successfully",
         data: result.data || null,
         error: result.error || null,
       },
       result.error ? 404 : 200,
     );
   } catch (error) {
-    return sendResponse(
+    sendResponse(
       res,
       {
         success: false,
@@ -142,28 +109,26 @@ exports.getMeetingById = async (req, res) => {
 };
 
 /**
- * Update a meeting
- * @route PUT /api/v1/meetings/:id
- * @access Faculty, Admin
+ * Update meeting schedule or attendance list
+ * @route PUT /meetings/:id
+ * @access Faculty, organizer
  */
 exports.updateMeeting = async (req, res) => {
   try {
     const result = await meetingService.update(req.params.id, req.body);
 
-    return sendResponse(
+    sendResponse(
       res,
       {
         success: !result.error,
-        message: result.error
-          ? "Failed to update meeting"
-          : "Meeting updated successfully",
+        message: result.error ? "Meeting not found" : "Meeting updated successfully",
         data: result.data || null,
         error: result.error || null,
       },
       result.error ? 404 : 200,
     );
   } catch (error) {
-    return sendResponse(
+    sendResponse(
       res,
       {
         success: false,
@@ -177,28 +142,58 @@ exports.updateMeeting = async (req, res) => {
 };
 
 /**
- * Delete a meeting
- * @route DELETE /api/v1/meetings/:id
- * @access Faculty, Admin
+ * Cancel and remove a scheduled meeting
+ * @route DELETE /meetings/:id
+ * @access Faculty, organizer, admin
  */
 exports.deleteMeeting = async (req, res) => {
   try {
     const result = await meetingService.remove(req.params.id);
 
-    return sendResponse(
+    sendResponse(
       res,
       {
         success: !result.error,
-        message: result.error
-          ? "Failed to delete meeting"
-          : "Meeting deleted successfully",
+        message: result.error ? "Meeting not found" : "Meeting deleted successfully",
         data: result.data || null,
         error: result.error || null,
       },
       result.error ? 404 : 200,
     );
   } catch (error) {
-    return sendResponse(
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
+};
+/**
+ * Register current user participation for a scheduled meeting
+ * @route POST /meetings/:id/join
+ * @access Authenticated
+ */
+exports.joinMeeting = async (req, res) => {
+  try {
+    const result = await meetingService.join(req.params.id, req.user);
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error ? result.message : "Joined meeting successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 400 : 200,
+    );
+  } catch (error) {
+    sendResponse(
       res,
       {
         success: false,

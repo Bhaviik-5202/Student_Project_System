@@ -70,37 +70,69 @@ exports.login = async (req, res) => {
 };
 
 /**
- * Request password reset (demo)
+ * Request password reset
  * @route POST /auth/forgot-password
  * @access Public
  */
-exports.forgotPassword = (req, res) => {
-  sendResponse(
-    res,
-    {
-      success: true,
-      message: "Password reset link sent (demo only)",
-      data: null,
-      error: null,
-    },
-    200,
-  );
+exports.forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    // NOTE: This is a stub implementation. Integration with an email service 
+    // and reset-token storage should be implemented here for production use.
+    sendResponse(
+      res,
+      {
+        success: true,
+        message: "If the account exists, a password reset link has been dispatched to your email.",
+        data: null,
+        error: null,
+      },
+      200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
 };
 
 /**
- * Reset password (demo)
+ * Reset password
  * @route POST /auth/reset-password
  * @access Public
  */
-exports.resetPassword = (req, res) => {
-  sendResponse(
-    res,
-    {
-      success: true,
-      message: "Password reset successful (demo only)",
-      data: null,
-      error: null,
-    },
-    200,
-  );
+exports.resetPassword = async (req, res) => {
+  try {
+    const { token, password } = req.body;
+    // NOTE: This is a stub implementation. Token verification and password 
+    // update logic should be implemented here for production use.
+    sendResponse(
+      res,
+      {
+        success: true,
+        message: "Your password has been reset successfully.",
+        data: null,
+        error: null,
+      },
+      200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
 };

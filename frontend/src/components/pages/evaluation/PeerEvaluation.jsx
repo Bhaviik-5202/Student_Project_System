@@ -1,49 +1,25 @@
 // src/components/pages/evaluation/PeerEvaluation.jsx
-import React, { memo, useState, useCallback, useMemo } from "react";
+import React, { memo, useState, useEffect, useCallback, useMemo } from "react";
+import api from "../../../utils/api";
+import { toast } from "react-hot-toast";
 
 const PeerEvaluation = memo(() => {
-  const [evaluations, setEvaluations] = useState([
-    {
-      id: 1,
-      peer: "Alex Johnson",
-      role: "Team Lead",
-      criteria: [
-        { name: "Communication", score: 4, max: 5 },
-        { name: "Technical Skills", score: 5, max: 5 },
-        { name: "Teamwork", score: 4, max: 5 },
-        { name: "Deadline Adherence", score: 3, max: 5 },
-      ],
-      comments:
-        "Excellent leadership skills, could improve on time management.",
-      submitted: true,
-    },
-    {
-      id: 2,
-      peer: "Sarah Miller",
-      role: "Backend Developer",
-      criteria: [
-        { name: "Communication", score: 3, max: 5 },
-        { name: "Technical Skills", score: 5, max: 5 },
-        { name: "Teamwork", score: 4, max: 5 },
-        { name: "Deadline Adherence", score: 5, max: 5 },
-      ],
-      comments: "",
-      submitted: false,
-    },
-    {
-      id: 3,
-      peer: "Mike Chen",
-      role: "Database Admin",
-      criteria: [
-        { name: "Communication", score: 2, max: 5 },
-        { name: "Technical Skills", score: 4, max: 5 },
-        { name: "Teamwork", score: 3, max: 5 },
-        { name: "Deadline Adherence", score: 4, max: 5 },
-      ],
-      comments: "",
-      submitted: false,
-    },
-  ]);
+  const [evaluations, setEvaluations] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchEvaluations = async () => {
+      try {
+        const response = await api.get("/evaluations/peer");
+        setEvaluations(response.data?.data || []);
+      } catch (error) {
+        console.error("Failed to fetch peer evaluations", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchEvaluations();
+  }, []);
 
   const updateScore = useCallback((evalId, critIndex, newScore) => {
     setEvaluations((prevEvaluations) =>
@@ -67,13 +43,21 @@ const PeerEvaluation = memo(() => {
     );
   }, []);
 
-  const submitEvaluation = useCallback((evalId) => {
-    setEvaluations((prevEvaluations) =>
-      prevEvaluations.map((e) =>
-        e.id === evalId ? { ...e, submitted: true } : e,
-      ),
-    );
-  }, []);
+  const submitEvaluation = useCallback(async (evalId) => {
+    try {
+      const evaluationData = evaluations.find(e => e.id === evalId || e._id === evalId);
+      await api.post(`/evaluations/peer/${evalId || ''}`, evaluationData);
+      toast.success("Evaluation submitted successfully");
+      setEvaluations((prevEvaluations) =>
+        prevEvaluations.map((e) =>
+          (e.id === evalId || e._id === evalId) ? { ...e, submitted: true } : e,
+        ),
+      );
+    } catch (error) {
+      console.error("Failed to submit peer evaluation", error);
+      toast.error(error.response?.data?.message || "Failed to submit evaluation");
+    }
+  }, [evaluations]);
 
   const submittedCount = useMemo(
     () => evaluations.filter((e) => e.submitted).length,
@@ -127,12 +111,17 @@ const PeerEvaluation = memo(() => {
       </div>
 
       {/* Evaluation Forms */}
-      <div className="space-y-6">
-        {evaluations.map((evaluation) => (
-          <div
-            key={evaluation.id}
-            className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden"
-          >
+      <div className="space-y-6 max-h-[800px] overflow-y-auto pr-2">
+        {loading ? (
+          <div className="text-center py-8 text-slate-500">Loading evaluations...</div>
+        ) : evaluations.length === 0 ? (
+          <div className="text-center py-8 text-slate-500">No pending evaluations found.</div>
+        ) : (
+          evaluations.map((evaluation) => (
+            <div
+              key={evaluation.id || evaluation._id}
+              className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden"
+            >
             <div className="bg-slate-50 dark:bg-slate-700 p-4 border-b border-slate-200 dark:border-slate-600">
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
@@ -227,7 +216,7 @@ const PeerEvaluation = memo(() => {
               {!evaluation.submitted && (
                 <div className="flex justify-end">
                   <button
-                    onClick={() => submitEvaluation(evaluation.id)}
+                    onClick={() => submitEvaluation(evaluation.id || evaluation._id)}
                     className="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 font-medium"
                   >
                     Submit Evaluation
@@ -236,7 +225,7 @@ const PeerEvaluation = memo(() => {
               )}
             </div>
           </div>
-        ))}
+        )))}
       </div>
 
       {/* Evaluation Guidelines */}

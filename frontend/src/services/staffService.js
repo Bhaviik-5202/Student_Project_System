@@ -1,10 +1,9 @@
 import api from "../utils/api";
 
 const staffService = {
-  getAllStaff: async () => {
+  getAllStaff: async (params = {}) => {
     try {
-      const response = await api.get("/staff");
-      return { success: true, data: response.data };
+      return await api.get("/staff", { params });
     } catch (error) {
       return {
         success: false,
@@ -15,49 +14,44 @@ const staffService = {
 
   getStaffById: async (id) => {
     try {
-      const response = await api.get(`/staff/${id}`);
-      return { success: true, data: response.data };
+      return await api.get(`/staff/${id}`);
     } catch (error) {
       return {
         success: false,
-        message:
-          error.response?.data?.message || "Failed to fetch staff member",
+        message: error.response?.data?.message || "Failed to fetch staff member",
       };
     }
   },
 
   createStaff: async (staffData) => {
     try {
-      const response = await api.post("/staff", staffData);
-      return { success: true, data: response.data };
+      return await api.post("/staff", staffData);
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to create staff",
+        message: error.response?.data?.message || "Failed to create staff member",
       };
     }
   },
 
   updateStaff: async (id, staffData) => {
     try {
-      const response = await api.put(`/staff/${id}`, staffData);
-      return { success: true, data: response.data };
+      return await api.put(`/staff/${id}`, staffData);
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to update staff",
+        message: error.response?.data?.message || "Failed to update staff member",
       };
     }
   },
 
   deleteStaff: async (id) => {
     try {
-      await api.delete(`/staff/${id}`);
-      return { success: true };
+      return await api.delete(`/staff/${id}`);
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to delete staff",
+        message: error.response?.data?.message || "Failed to delete staff member",
       };
     }
   },

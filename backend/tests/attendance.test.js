@@ -53,14 +53,15 @@ describe("Attendance API", function () {
   });
 
   it("should mark attendance for a student", async function () {
+    const attendanceData = {
+      student: studentId,
+      date: new Date().toISOString(),
+      status: "present"
+    };
     const res = await request(app)
       .post("/api/v1/attendance")
       .set("Authorization", `Bearer ${token}`)
-      .send({
-        student: studentId,
-        date: new Date().toISOString(),
-        status: "present",
-      });
+      .send(attendanceData);
 
     expect(res.statusCode).to.equal(201);
     expect(res.body.success).to.be.true;

@@ -1,65 +1,32 @@
-import { useState, useMemo, memo } from "react";
+import { useState, useEffect, useMemo, memo } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../../../utils/api";
 
 const Workspace = memo(() => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("files");
 
-  const files = useMemo(
-    () => [
-      {
-        name: "project_specs.pdf",
-        size: "2.4 MB",
-        modified: "2 hours ago",
-        type: "PDF",
-      },
-      {
-        name: "database_schema.sql",
-        size: "1.1 MB",
-        modified: "1 day ago",
-        type: "SQL",
-      },
-      {
-        name: "meeting_notes.docx",
-        size: "0.8 MB",
-        modified: "2 days ago",
-        type: "DOC",
-      },
-      {
-        name: "prototype_design.fig",
-        size: "3.2 MB",
-        modified: "3 days ago",
-        type: "FIG",
-      },
-    ],
-    [],
-  );
+  const [files, setFiles] = useState([]);
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const tasks = useMemo(
-    () => [
-      {
-        task: "Design database schema",
-        assignee: "John Doe",
-        status: "Completed",
-      },
-      {
-        task: "Create ER diagram",
-        assignee: "Jane Smith",
-        status: "In Progress",
-      },
-      {
-        task: "Set up development environment",
-        assignee: "Robert Johnson",
-        status: "Pending",
-      },
-      {
-        task: "Write project documentation",
-        assignee: "Sarah Williams",
-        status: "Pending",
-      },
-    ],
-    [],
-  );
+  useEffect(() => {
+    const fetchWorkspaceData = async () => {
+      try {
+        const [filesRes, tasksRes] = await Promise.all([
+          api.get("/collaboration/files").catch(() => ({ data: { data: [] } })),
+          api.get("/collaboration/tasks").catch(() => ({ data: { data: [] } }))
+        ]);
+        setFiles(filesRes.data?.data || []);
+        setTasks(tasksRes.data?.data || []);
+      } catch (error) {
+        console.error("Failed to fetch workspace data", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchWorkspaceData();
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
@@ -116,35 +83,41 @@ const Workspace = memo(() => {
               <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
                 Project Files
               </h3>
-              <div className="space-y-4">
-                {files.map((file, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-4 border border-slate-200 dark:border-slate-700 rounded-lg"
-                  >
-                    <div className="flex items-center">
-                      <span className="text-slate-400 dark:text-slate-500 mr-3 text-xl">
-                        📄
-                      </span>
-                      <div>
-                        <div className="font-medium text-slate-900 dark:text-white">
-                          {file.name}
-                        </div>
-                        <div className="text-sm text-slate-600 dark:text-slate-400">
-                          {file.type} • {file.size} • Modified {file.modified}
+              <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
+                {loading ? (
+                  <div className="text-center py-4 text-slate-500">Loading files...</div>
+                ) : files.length === 0 ? (
+                  <div className="text-center py-4 text-slate-500">No files found.</div>
+                ) : (
+                  files.map((file, index) => (
+                    <div
+                      key={file.id || file._id || index}
+                      className="flex items-center justify-between p-4 border border-slate-200 dark:border-slate-700 rounded-lg"
+                    >
+                      <div className="flex items-center">
+                        <span className="text-slate-400 dark:text-slate-500 mr-3 text-xl">
+                          📄
+                        </span>
+                        <div>
+                          <div className="font-medium text-slate-900 dark:text-white">
+                            {file.name}
+                          </div>
+                          <div className="text-sm text-slate-600 dark:text-slate-400">
+                            {file.type || "FILE"} • {file.size || "Unknown"} • Modified {file.modified || new Date(file.updatedAt || Date.now()).toLocaleDateString()}
+                          </div>
                         </div>
                       </div>
+                      <div className="flex gap-2">
+                        <button className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-sm rounded-lg hover:bg-blue-200 dark:hover:bg-blue-900/50">
+                          Download
+                        </button>
+                        <button className="px-3 py-1 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 text-sm rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700">
+                          Share
+                        </button>
+                      </div>
                     </div>
-                    <div className="flex gap-2">
-                      <button className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-sm rounded-lg hover:bg-blue-200 dark:hover:bg-blue-900/50">
-                        Download
-                      </button>
-                      <button className="px-3 py-1 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 text-sm rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700">
-                        Share
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
           )}
@@ -154,33 +127,39 @@ const Workspace = memo(() => {
               <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
                 Project Tasks
               </h3>
-              <div className="space-y-3">
-                {tasks.map((task, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-4 border border-slate-200 dark:border-slate-700 rounded-lg"
-                  >
-                    <div>
-                      <div className="font-medium text-slate-900 dark:text-white">
-                        {task.task}
-                      </div>
-                      <div className="text-sm text-slate-600 dark:text-slate-400">
-                        Assigned to: {task.assignee}
-                      </div>
-                    </div>
-                    <span
-                      className={`px-3 py-1 rounded-full text-sm ${
-                        task.status === "Completed"
-                          ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
-                          : task.status === "In Progress"
-                            ? "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
-                            : "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300"
-                      }`}
+              <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2">
+                {loading ? (
+                  <div className="text-center py-4 text-slate-500">Loading tasks...</div>
+                ) : tasks.length === 0 ? (
+                  <div className="text-center py-4 text-slate-500">No tasks found.</div>
+                ) : (
+                  tasks.map((task, index) => (
+                    <div
+                      key={task.id || task._id || index}
+                      className="flex items-center justify-between p-4 border border-slate-200 dark:border-slate-700 rounded-lg"
                     >
-                      {task.status}
-                    </span>
-                  </div>
-                ))}
+                      <div>
+                        <div className="font-medium text-slate-900 dark:text-white">
+                          {task.task || task.title}
+                        </div>
+                        <div className="text-sm text-slate-600 dark:text-slate-400">
+                          Assigned to: {task.assignee || (task.assigneeId ? task.assigneeId.name : "Unassigned")}
+                        </div>
+                      </div>
+                      <span
+                        className={`px-3 py-1 rounded-full text-sm ${
+                          (task.status || "Pending") === "Completed"
+                            ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
+                            : (task.status || "Pending") === "In Progress"
+                              ? "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
+                              : "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300"
+                        }`}
+                      >
+                        {task.status || "Pending"}
+                      </span>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           )}

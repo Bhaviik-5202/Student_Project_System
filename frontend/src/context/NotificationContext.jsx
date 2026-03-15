@@ -7,9 +7,14 @@ import React, {
   useMemo,
 } from "react";
 
+/**
+ * Context for managing global application notifications (toasts)
+ */
 const NotificationContext = createContext(null);
 
-// Notification types
+/**
+ * Supported notification variants
+ */
 const NOTIFICATION_TYPES = Object.freeze({
   SUCCESS: "success",
   ERROR: "error",
@@ -17,10 +22,13 @@ const NOTIFICATION_TYPES = Object.freeze({
   INFO: "info",
 });
 
-// Default auto-dismiss duration (in milliseconds)
 const DEFAULT_DURATION = 5000;
 const MAX_NOTIFICATIONS = 5;
 
+/**
+ * Hook to trigger notifications from any component
+ * @returns {Object} Notification methods (success, error, warning, info)
+ */
 export const useNotification = () => {
   const context = useContext(NotificationContext);
   if (!context) {
@@ -32,13 +40,20 @@ export const useNotification = () => {
 export { NOTIFICATION_TYPES };
 export default NotificationContext;
 
+/**
+ * Provider component for notification management
+ */
 export const NotificationProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
   const timeoutRefs = useRef(new Map());
 
-  // Add notification with proper state update
+  /**
+   * Internal method to queue a new notification
+   * @param {Object} notification - Notification properties
+   * @returns {number} The unique ID of the notification
+   */
   const addNotification = useCallback((notification) => {
-    const id = Date.now() + Math.random(); // More unique ID
+    const id = Date.now() + Math.random();
     const duration = notification.duration ?? DEFAULT_DURATION;
     const type = notification.type || NOTIFICATION_TYPES.INFO;
 
@@ -52,12 +67,10 @@ export const NotificationProvider = ({ children }) => {
     };
 
     setNotifications((prevNotifications) => {
-      // Limit max notifications
       const updated = [...prevNotifications, newNotification];
       return updated.slice(-MAX_NOTIFICATIONS);
     });
 
-    // Auto remove after duration (only if duration > 0)
     if (duration > 0) {
       const timeoutId = setTimeout(() => {
         removeNotification(id);
@@ -69,9 +82,11 @@ export const NotificationProvider = ({ children }) => {
     return id;
   }, []);
 
-  // Remove notification by id
+  /**
+   * Remove a notification from the active list
+   * @param {number} id - Notification ID
+   */
   const removeNotification = useCallback((id) => {
-    // Clear timeout if exists
     const timeoutId = timeoutRefs.current.get(id);
     if (timeoutId) {
       clearTimeout(timeoutId);
@@ -83,16 +98,18 @@ export const NotificationProvider = ({ children }) => {
     );
   }, []);
 
-  // Clear all notifications
+  /**
+   * Clear all active and pending notifications
+   */
   const clearAllNotifications = useCallback(() => {
-    // Clear all timeouts
     timeoutRefs.current.forEach((timeoutId) => clearTimeout(timeoutId));
     timeoutRefs.current.clear();
-
     setNotifications([]);
   }, []);
 
-  // Convenience methods for different notification types
+  /**
+   * Trigger a success notification
+   */
   const success = useCallback(
     (message, options = {}) => {
       return addNotification({
@@ -104,18 +121,24 @@ export const NotificationProvider = ({ children }) => {
     [addNotification],
   );
 
+  /**
+   * Trigger an error notification with longer default duration
+   */
   const error = useCallback(
     (message, options = {}) => {
       return addNotification({
         type: NOTIFICATION_TYPES.ERROR,
         message,
-        duration: options.duration ?? 7000, // Errors stay longer
+        duration: options.duration ?? 7000,
         ...options,
       });
     },
     [addNotification],
   );
 
+  /**
+   * Trigger a warning notification
+   */
   const warning = useCallback(
     (message, options = {}) => {
       return addNotification({
@@ -127,6 +150,9 @@ export const NotificationProvider = ({ children }) => {
     [addNotification],
   );
 
+  /**
+   * Trigger an information notification
+   */
   const info = useCallback(
     (message, options = {}) => {
       return addNotification({
@@ -138,7 +164,6 @@ export const NotificationProvider = ({ children }) => {
     [addNotification],
   );
 
-  // Memoize context value
   const contextValue = useMemo(
     () => ({
       notifications,

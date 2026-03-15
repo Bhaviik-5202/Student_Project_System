@@ -2,6 +2,14 @@ import { useEffect, useState, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import analyticsService from "../../../services/analyticsService";
 
+/**
+ * AnalyticsDashboard Component
+ * 
+ * A comprehensive performance intelligence center. Aggregates and 
+ * visualizes student progress, project completion rates, and 
+ * longitudinal performance metrics using interactive data tables 
+ * and color-coded activity breakdowns.
+ */
 const AnalyticsDashboard = memo(() => {
   const navigate = useNavigate();
   const [stats, setStats] = useState({});

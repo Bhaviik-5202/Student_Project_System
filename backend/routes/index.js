@@ -29,6 +29,11 @@ const analyticsRoutes = require("./analytics.route");
 const meetingsRoutes = require("./meetings.route");
 const chatroutes = require("./chat.route");
 const messageRoutes = require("./message.route");
+const evaluationRoutes = require("./evaluation.route");
+const supportTicketRoutes = require("./supportticket.route");
+const settingRoutes = require("./setting.route");
+const faqRoutes = require("./faq.route");
+const knowledgeBaseRoutes = require("./knowledgebase.route");
 
 /**
  * Mount routes (Plural REST Convention)
@@ -53,6 +58,11 @@ router.use("/analytics", analyticsRoutes);
 router.use("/meetings", meetingsRoutes);
 router.use("/chats", chatroutes);
 router.use("/messages", messageRoutes);
+router.use("/evaluations", evaluationRoutes);
+router.use("/supporttickets", supportTicketRoutes);
+router.use("/settings", settingRoutes);
+router.use("/faqs", faqRoutes);
+router.use("/knowledgebase", knowledgeBaseRoutes);
 /**
  * Root API Information Endpoint
  * GET /api/v1

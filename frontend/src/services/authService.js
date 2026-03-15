@@ -1,5 +1,5 @@
 import api from "../utils/api";
-import { ROUTES, LOCAL_STORAGE_KEYS, ROLES } from "../utils/constants";
+import { LOCAL_STORAGE_KEYS, ROLES } from "../utils/constants";
 
 /**
  * Authentication Service
@@ -7,7 +7,7 @@ import { ROUTES, LOCAL_STORAGE_KEYS, ROLES } from "../utils/constants";
  */
 const authService = {
   /**
-   * Login user with email and password (Mock implementation)
+   * Login user with email and password
    * @param {string} email - User email
    * @param {string} password - User password
    * @returns {Promise<Object>} Login response
@@ -15,11 +15,16 @@ const authService = {
   login: async (email, password) => {
     try {
       const response = await api.post("/auth/login", { email, password });
-      const { token, user } = response.data.data;
-      localStorage.setItem(LOCAL_STORAGE_KEYS.TOKEN, token);
-      localStorage.setItem(LOCAL_STORAGE_KEYS.USER, JSON.stringify(user));
-      localStorage.setItem(LOCAL_STORAGE_KEYS.USER_ROLE, user.role);
-      return { success: true, data: { token, user } };
+      
+      // The interceptor now returns the standardized object { success, message, data }
+      if (response.success && response.data) {
+        const { token, user } = response.data;
+        localStorage.setItem(LOCAL_STORAGE_KEYS.TOKEN, token);
+        localStorage.setItem(LOCAL_STORAGE_KEYS.USER, JSON.stringify(user));
+        localStorage.setItem(LOCAL_STORAGE_KEYS.USER_ROLE, user.role);
+      }
+      
+      return response;
     } catch (error) {
       return {
         success: false,
@@ -35,8 +40,7 @@ const authService = {
    */
   register: async (formData) => {
     try {
-      const response = await api.post("/auth/register", formData);
-      return { success: true, data: response.data.data };
+      return await api.post("/auth/register", formData);
     } catch (error) {
       return {
         success: false,
@@ -119,6 +123,7 @@ const authService = {
    */
   hasRole: (role) => {
     const userRole = localStorage.getItem(LOCAL_STORAGE_KEYS.USER_ROLE);
+    if (!userRole) return false;
     if (Array.isArray(role)) {
       return role.includes(userRole);
     }
@@ -172,11 +177,13 @@ const authService = {
   updateProfile: async (userData) => {
     try {
       const response = await api.put("/auth/profile", userData);
-      localStorage.setItem(
-        LOCAL_STORAGE_KEYS.USER,
-        JSON.stringify(response.data.user),
-      );
-      return { success: true, data: response.data };
+      if (response.success && response.data) {
+        localStorage.setItem(
+          LOCAL_STORAGE_KEYS.USER,
+          JSON.stringify(response.data),
+        );
+      }
+      return response;
     } catch (error) {
       return {
         success: false,
@@ -193,11 +200,10 @@ const authService = {
    */
   changePassword: async (currentPassword, newPassword) => {
     try {
-      const response = await api.post("/auth/change-password", {
+      return await api.post("/auth/change-password", {
         currentPassword,
         newPassword,
       });
-      return { success: true, message: response.data.message };
     } catch (error) {
       return {
         success: false,
@@ -221,17 +227,17 @@ const authService = {
         refreshToken,
       });
 
-      if (response.data.token) {
-        localStorage.setItem(LOCAL_STORAGE_KEYS.TOKEN, response.data.token);
-        if (response.data.refreshToken) {
-          localStorage.setItem(
-            LOCAL_STORAGE_KEYS.REFRESH_TOKEN,
-            response.data.refreshToken,
-          );
+      if (response.success && response.data) {
+        const { token, refreshToken: newRefreshToken } = response.data;
+        if (token) {
+          localStorage.setItem(LOCAL_STORAGE_KEYS.TOKEN, token);
+        }
+        if (newRefreshToken) {
+          localStorage.setItem(LOCAL_STORAGE_KEYS.REFRESH_TOKEN, newRefreshToken);
         }
       }
 
-      return { success: true, data: response.data };
+      return response;
     } catch (error) {
       localStorage.removeItem(LOCAL_STORAGE_KEYS.TOKEN);
       localStorage.removeItem(LOCAL_STORAGE_KEYS.REFRESH_TOKEN);
@@ -249,8 +255,7 @@ const authService = {
    */
   requestPasswordReset: async (email) => {
     try {
-      const response = await api.post("/auth/forgot-password", { email });
-      return { success: true, message: response.data.message };
+      return await api.post("/auth/forgot-password", { email });
     } catch (error) {
       return {
         success: false,
@@ -267,11 +272,10 @@ const authService = {
    */
   resetPassword: async (token, newPassword) => {
     try {
-      const response = await api.post("/auth/reset-password", {
+      return await api.post("/auth/reset-password", {
         token,
         newPassword,
       });
-      return { success: true, message: response.data.message };
     } catch (error) {
       return {
         success: false,

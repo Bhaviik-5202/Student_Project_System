@@ -3,8 +3,7 @@ import api from "../utils/api";
 const studentService = {
   getAllStudents: async (params = {}) => {
     try {
-      const response = await api.get("/students", { params });
-      return { success: true, data: response.data };
+      return await api.get("/students", { params });
     } catch (error) {
       return {
         success: false,
@@ -15,8 +14,7 @@ const studentService = {
 
   getStudentById: async (id) => {
     try {
-      const response = await api.get(`/students/${id}`);
-      return { success: true, data: response.data };
+      return await api.get(`/students/${id}`);
     } catch (error) {
       return {
         success: false,
@@ -27,8 +25,7 @@ const studentService = {
 
   createStudent: async (studentData) => {
     try {
-      const response = await api.post("/students", studentData);
-      return { success: true, data: response.data };
+      return await api.post("/students", studentData);
     } catch (error) {
       return {
         success: false,
@@ -39,8 +36,7 @@ const studentService = {
 
   updateStudent: async (id, studentData) => {
     try {
-      const response = await api.put(`/students/${id}`, studentData);
-      return { success: true, data: response.data };
+      return await api.put(`/students/${id}`, studentData);
     } catch (error) {
       return {
         success: false,
@@ -51,8 +47,7 @@ const studentService = {
 
   deleteStudent: async (id) => {
     try {
-      await api.delete(`/students/${id}`);
-      return { success: true };
+      return await api.delete(`/students/${id}`);
     } catch (error) {
       return {
         success: false,
@@ -63,8 +58,7 @@ const studentService = {
 
   getStudentProjects: async (studentId) => {
     try {
-      const response = await api.get(`/students/${studentId}/projects`);
-      return { success: true, data: response.data };
+      return await api.get(`/students/${studentId}/projects`);
     } catch (error) {
       return {
         success: false,
@@ -76,8 +70,7 @@ const studentService = {
 
   getStudentGrades: async (studentId) => {
     try {
-      const response = await api.get(`/students/${studentId}/grades`);
-      return { success: true, data: response.data };
+      return await api.get(`/students/${studentId}/grades`);
     } catch (error) {
       return {
         success: false,
