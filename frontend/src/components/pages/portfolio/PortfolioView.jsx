@@ -17,9 +17,9 @@ const PortfolioView = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await api.get('/portfolio/overview');
-        if (response.data?.data) {
-          setPortfolioData(response.data.data);
+        const response = await api.get(`/portfolio/${id || 'me'}`);
+        if (response.data) {
+          setPortfolioData(response.data);
         }
       } catch (error) {
         console.error("Failed to fetch portfolio data", error);

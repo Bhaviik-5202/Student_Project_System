@@ -14,7 +14,7 @@ const TranscriptViewer = () => {
     const fetchTranscript = async () => {
       try {
         const response = await api.get('/portfolio/transcript');
-        const data = response.data?.data || {};
+        const data = response.data || {};
         if (data.studentInfo) setStudentInfo(data.studentInfo);
         if (data.academicYears) setAcademicYears([{ id: "all", name: "All Years" }, ...data.academicYears]);
         if (data.courses) setCourses(data.courses);

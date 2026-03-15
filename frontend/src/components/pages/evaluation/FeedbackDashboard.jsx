@@ -23,11 +23,13 @@ const FeedbackDashboard = memo(() => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const response = await api.get("/evaluations/dashboard/feedback");
-        const data = response.data?.data || {};
-        if (data.feedback) setFeedback(data.feedback);
-        if (data.stats) setStats(data.stats);
-        if (data.distribution) setDistribution(data.distribution);
+        const res = await api.get("/evaluations/dashboard/feedback");
+        if (res.success) {
+          const data = res.data || {};
+          if (data.feedback) setFeedback(data.feedback);
+          if (data.stats) setStats(data.stats);
+          if (data.distribution) setDistribution(data.distribution);
+        }
       } catch (error) {
         console.error("Failed to fetch feedback dashboard data", error);
       } finally {

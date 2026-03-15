@@ -19,7 +19,7 @@ const AssignmentList = memo(() => {
     const fetchAssignments = async () => {
       try {
         const response = await api.get("/assignments");
-        setAssignments(response.data?.data || []);
+        setAssignments(response.data || []);
       } catch (error) {
         console.error("Failed to fetch assignments", error);
       } finally {

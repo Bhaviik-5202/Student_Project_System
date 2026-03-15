@@ -12,8 +12,9 @@ const FAQ = memo(() => {
   useEffect(() => {
     const fetchFaqs = async () => {
       try {
-        const response = await api.get("/help/faq");
-        setFaqs(response.data?.data || []);
+        const response = await api.get("/help/overview");
+        const data = response.data || {};
+        setFaqs(data.faqs || []); // Assuming faqs are now nested under a 'faqs' key in the response data
       } catch (error) {
         console.error("Failed to fetch FAQs", error);
       } finally {

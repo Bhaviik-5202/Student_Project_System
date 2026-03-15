@@ -11,7 +11,7 @@ const SprintPlanner = memo(() => {
     const fetchSprints = async () => {
       try {
         const response = await api.get('/timeline/sprints');
-        const data = response.data?.data || [];
+        const data = response.data || [];
         setSprints(data);
       } catch (error) {
         console.error("Failed to fetch sprints", error);
@@ -53,7 +53,7 @@ const SprintPlanner = memo(() => {
     const fetchSprintTasks = async () => {
       try {
         const response = await api.get(`/timeline/sprints/${activeSprintData.id}/tasks`);
-        const data = response.data?.data || [];
+        const data = response.data || [];
         setSprintTasks(data);
       } catch (error) {
         console.error("Failed to fetch sprint tasks", error);

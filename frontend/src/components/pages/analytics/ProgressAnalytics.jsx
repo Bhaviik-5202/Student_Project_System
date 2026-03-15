@@ -11,7 +11,7 @@ const ProgressAnalytics = memo(() => {
     const fetchProgress = async () => {
       try {
         const response = await api.get("/analytics/progress");
-        setProjects(response.data?.data || []);
+        setProjects(response.data || []);
       } catch (error) {
         console.error("Failed to fetch progress analytics", error);
       } finally {

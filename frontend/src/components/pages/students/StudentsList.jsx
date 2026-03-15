@@ -101,14 +101,14 @@ const StudentsList = memo(() => {
       const res = await studentService.getAllStudents();
       if (res.success) {
         setStudents(
-          (res.data.data || []).map((student) => ({
+          (res.data || []).map((student) => ({
             id: student._id || student.id,
             name: student.name,
-            phone: student.phone || "",
-            department: student.department || "",
-            year: student.year ? String(student.year) : "",
+            rollNumber: student.rollNumber,
+            department: student.department,
+            year: student.year,
             email: student.email,
-            status: student.status || "Active", // Use real status if available
+            status: student.status || "Active", // Assuming status is still needed for display
           }))
         );
       } else {

@@ -1,9 +1,10 @@
 import { useState, useCallback, useMemo, useEffect, memo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import api from "../../../utils/api";
 
 const GradingRubric = memo(() => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const [rubric, setRubric] = useState({
     name: "Project Evaluation Rubric",
@@ -15,9 +16,9 @@ const GradingRubric = memo(() => {
   useEffect(() => {
     const fetchRubric = async () => {
       try {
-        const response = await api.get("/assignments/rubric");
-        if (response.data?.data) {
-          setRubric(response.data.data);
+        const response = await api.get(`/assignments/rubric/${id || ''}`);
+        if (response.data) {
+          setRubric(response.data);
         } else {
           // Provide fallback if empty
           setRubric({

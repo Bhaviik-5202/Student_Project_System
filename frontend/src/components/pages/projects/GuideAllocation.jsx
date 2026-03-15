@@ -135,7 +135,7 @@ const GuideAllocationList = memo(() => {
       const res = await staffService.getAllStaff();
       if (res.success) {
         setAllocations(
-          (res.data.data || []).filter(s => s.role === "Faculty" || s.role === "Guide").map(g => ({
+          (res.data || []).filter(s => s.role === "Faculty" || s.role === "Guide").map(g => ({
             id: g._id || g.id,
             guide: g.name,
             department: g.department || "General",
@@ -154,7 +154,7 @@ const GuideAllocationList = memo(() => {
       const res = await projectService.getAllProjects();
       if (res.success) {
         setProjects(
-          (res.data.data || []).map(p => ({
+          (res.data || []).map(p => ({
             id: p._id || p.id,
             name: p.title,
             group: p.teamMembers || "Ungrouped",

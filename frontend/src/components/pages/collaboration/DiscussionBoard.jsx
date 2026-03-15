@@ -11,7 +11,7 @@ const DiscussionBoard = memo(() => {
     const fetchDiscussions = async () => {
       try {
         const response = await api.get("/collaboration/discussions");
-        setDiscussions(response.data?.data || []);
+        setDiscussions(response.data || []);
       } catch (error) {
         console.error("Failed to fetch discussions", error);
       } finally {

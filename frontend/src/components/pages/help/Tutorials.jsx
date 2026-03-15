@@ -12,7 +12,7 @@ const Tutorials = memo(() => {
     const fetchTutorials = async () => {
       try {
         const response = await api.get("/help/tutorials");
-        const data = response.data?.data || {};
+        const data = response.data || {};
         if (data.tutorials) setTutorials(data.tutorials);
         if (data.categories) setCategories(["All", ...data.categories]);
       } catch (error) {

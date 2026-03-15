@@ -11,7 +11,7 @@ const UserManagement = memo(() => {
     const fetchUsers = async () => {
       try {
         const response = await api.get("/admin/users");
-        setUsers(response.data?.data || []);
+        setUsers(response.data || []);
       } catch (error) {
         console.error("Failed to fetch users", error);
       } finally {

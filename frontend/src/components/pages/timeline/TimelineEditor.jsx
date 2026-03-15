@@ -1,9 +1,10 @@
 import { useCallback, useState, useEffect, memo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import api from "../../../utils/api";
 
 const TimelineEditor = memo(() => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const [timeline, setTimeline] = useState({
     name: "",
@@ -15,9 +16,9 @@ const TimelineEditor = memo(() => {
   useEffect(() => {
     const fetchTimeline = async () => {
       try {
-        const response = await api.get('/timeline/editor');
-        if (response.data?.data) {
-          setTimeline(response.data.data);
+        const response = await api.get(`/timeline/${id}`);
+        if (response.data) {
+          setTimeline(response.data);
         }
       } catch (error) {
         console.error("Failed to fetch timeline data", error);

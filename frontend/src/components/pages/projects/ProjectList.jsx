@@ -110,7 +110,7 @@ ProjectCard.displayName = "ProjectCard";
 
 ProjectCard.propTypes = {
   project: PropTypes.shape({
-    id: PropTypes.number.isRequired,
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     title: PropTypes.string.isRequired,
     status: PropTypes.string.isRequired,
     statusColor: PropTypes.string.isRequired,

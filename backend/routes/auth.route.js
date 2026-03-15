@@ -10,6 +10,7 @@ const router = express.Router();
 
 // Controllers and Middlewares
 const authController = require("../controllers/auth.controller");
+const authMiddleware = require("../middleware/auth.middleware");
 const validateRequest = require("../middleware/validateRequest");
 
 /**
@@ -66,5 +67,26 @@ router.post("/forgot-password", authController.forgotPassword);
  * @access  Public
  */
 router.post("/reset-password", authController.resetPassword);
+
+/**
+ * @route   GET /api/v1/auth/profile
+ * @desc    Get current user profile
+ * @access  Private
+ */
+router.get("/profile", authMiddleware, authController.getProfile);
+
+/**
+ * @route   PUT /api/v1/auth/profile
+ * @desc    Update current user profile
+ * @access  Private
+ */
+router.put("/profile", authMiddleware, authController.updateProfile);
+
+/**
+ * @route   POST /api/v1/auth/change-password
+ * @desc    Change user password
+ * @access  Private
+ */
+router.post("/change-password", authMiddleware, authController.changePassword);
 
 module.exports = router;

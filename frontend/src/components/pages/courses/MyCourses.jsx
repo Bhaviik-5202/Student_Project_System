@@ -74,9 +74,8 @@ const MyCourses = memo(() => {
   useEffect(() => {
     const fetchMyCourses = async () => {
       try {
-        const response = await api.get("/courses"); // Usually /courses/my or similar, fallback to /courses for now
-        // Normally we'd filter by logged-in user enrollment. Let's just consume the api endpoint for now.
-        const allCourses = response.data?.data || [];
+        const response = await api.get("/courses");
+        const allCourses = response.data || [];
         // Map to expected structure
         const mapped = allCourses.map(c => ({
           id: c.id || c._id,

@@ -11,7 +11,7 @@ const PeerEvaluation = memo(() => {
     const fetchEvaluations = async () => {
       try {
         const response = await api.get("/evaluations/peer");
-        setEvaluations(response.data?.data || []);
+        setEvaluations(response.data || []);
       } catch (error) {
         console.error("Failed to fetch peer evaluations", error);
       } finally {

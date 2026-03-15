@@ -9,7 +9,7 @@ const GanttChart = memo(() => {
     const fetchGanttData = async () => {
       try {
         const response = await api.get('/timeline/gantt');
-        const data = response.data?.data || [];
+        const data = response.data || [];
         setProjects(data);
       } catch (error) {
         console.error("Failed to fetch Gantt data", error);

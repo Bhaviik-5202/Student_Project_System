@@ -18,8 +18,8 @@ const ProjectTimeline = memo(() => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await api.get('/timeline/projects');
-        const data = response.data?.data || [];
+        const response = await api.get('/timeline');
+        const data = response.data || [];
         setProjects(data);
       } catch (error) {
         console.error("Failed to fetch timeline projects", error);

@@ -22,7 +22,7 @@ const analyticsService = {
   /**
    * Get faculty-specific dashboard statistics
    */
-  getFacultyStats: async () => {
+  getFacultyDashboardStats: async () => {
     try {
       return await api.get("/analytics/faculty-dashboard");
     } catch (error) {
@@ -36,7 +36,7 @@ const analyticsService = {
   /**
    * Get student-specific dashboard statistics
    */
-  getStudentStats: async () => {
+  getStudentDashboardStats: async () => {
     try {
       return await api.get("/analytics/student-dashboard");
     } catch (error) {

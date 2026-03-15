@@ -11,7 +11,7 @@ const AuditLog = memo(() => {
     const fetchLogs = async () => {
       try {
         const response = await api.get("/admin/audit-logs");
-        setLogs(response.data?.data || []);
+        setLogs(response.data || []);
       } catch (error) {
         console.error("Failed to fetch audit logs", error);
       } finally {

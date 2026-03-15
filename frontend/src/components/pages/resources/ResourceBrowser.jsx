@@ -83,8 +83,12 @@ const ResourceBrowser = memo(() => {
       setLoading(true);
       setError(null);
       try {
-        const data = await resourceService.getResources();
-        setResources(data);
+        const res = await resourceService.getAll();
+        if (res.success) {
+          setResources(res.data || []);
+        } else {
+          setError(res.message || "Failed to load resources.");
+        }
       } catch (err) {
         setError("Failed to load resources.");
       } finally {

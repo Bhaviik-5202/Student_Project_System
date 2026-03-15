@@ -13,10 +13,10 @@ const ProjectDetails = memo(() => {
     setLoading(true);
     try {
       const response = await api.get(`/projects/${id}`);
-      if (response.data?.success) {
-        setProject(response.data.data);
+      if (response.success) {
+        setProject(response.data);
       } else {
-        toast.error(response.data?.message || "Failed to load project details");
+        toast.error(response.message || "Failed to load project details");
       }
     } catch (error) {
       toast.error("Failed to load project details");

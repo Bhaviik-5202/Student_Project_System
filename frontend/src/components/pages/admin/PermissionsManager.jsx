@@ -12,7 +12,7 @@ const PermissionsManager = memo(() => {
     const fetchRoles = async () => {
       try {
         const response = await api.get("/admin/roles");
-        setRoles(response.data?.data || []);
+        setRoles(response.data || []);
       } catch (error) {
         console.error("Failed to fetch roles", error);
         // Fallback or empty state could be managed here

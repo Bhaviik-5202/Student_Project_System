@@ -35,6 +35,38 @@ const projectSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    type: {
+      type: String,
+      trim: true,
+    },
+    abstract: {
+      type: String,
+      trim: true,
+    },
+    objectives: {
+      type: String,
+      trim: true,
+    },
+    outcomes: {
+      type: String,
+      trim: true,
+    },
+    resources: {
+      type: String,
+      trim: true,
+    },
+    budget: {
+      type: String,
+      trim: true,
+    },
+    teamMembers: {
+      type: String,
+      trim: true,
+    },
+    document: {
+      type: String,
+      default: null,
+    },
     members: [
       {
         type: mongoose.Schema.Types.ObjectId,

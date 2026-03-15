@@ -1,8 +1,9 @@
-import { useCallback, useState, useEffect, useMemo, memo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useCallback, useMemo, useEffect, memo } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import api from "../../../utils/api";
 
 const RoadmapViewer = memo(() => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const [roadmap, setRoadmap] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -10,9 +11,9 @@ const RoadmapViewer = memo(() => {
   useEffect(() => {
     const fetchRoadmap = async () => {
       try {
-        const response = await api.get('/timeline/roadmap');
-        if (response.data?.data) {
-          setRoadmap(response.data.data);
+        const response = await api.get(`/timeline/roadmap/${id || 'current'}`);
+        if (response.data) {
+          setRoadmap(response.data);
         }
       } catch (error) {
         console.error("Failed to fetch roadmap data", error);

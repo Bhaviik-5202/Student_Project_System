@@ -222,3 +222,29 @@ exports.resetPassword = async (token, newPassword) => {
     return response(true, null, err.message || "Failed to reset password");
   }
 };
+
+/**
+ * Change user password
+ * @param {string} id - User ID
+ * @param {string} currentPassword - Current password
+ * @param {string} newPassword - New password
+ * @returns {Promise<Object>} Formatted service response
+ */
+exports.changePassword = async (id, currentPassword, newPassword) => {
+  try {
+    const user = await userRepository.findById(id, { select: "+password" });
+    if (!user) return response(true, null, "User not found");
+
+    const isMatch = await user.comparePassword(currentPassword);
+    if (!isMatch) return response(true, null, "Incorrect current password");
+
+    user.password = newPassword;
+    await user.save();
+
+    return response(false, null, "Password changed successfully");
+  } catch (err) {
+    console.error("Change password error:", err);
+    return response(true, null, err.message || "Failed to change password");
+  }
+};
+

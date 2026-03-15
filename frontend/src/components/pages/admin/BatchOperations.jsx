@@ -18,7 +18,7 @@ const BatchOperations = memo(() => {
       try {
         const response = await api.get("/admin/users");
         setUsers(
-          (response.data?.data || []).map((u) => ({
+          (response.data || []).map((u) => ({
             ...u,
             id: u._id || u.id,
             selected: false,

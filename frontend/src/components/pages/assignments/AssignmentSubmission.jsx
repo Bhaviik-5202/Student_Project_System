@@ -1,11 +1,12 @@
 import { useState, useCallback, memo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import submissionService from "../../../services/submissionService";
 
 const AssignmentSubmission = memo(() => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [submission, setSubmission] = useState({
+  const [formData, setFormData] = useState({
     title: "",
     description: "",
     file: null,
@@ -16,15 +17,36 @@ const AssignmentSubmission = memo(() => {
   const handleSubmit = useCallback(
     async (e) => {
       e.preventDefault();
-      setLoading(true);
+      if (!formData.file) {
+        toast.error("Please select a file to upload");
+        return;
+      }
 
-      setTimeout(() => {
-        toast.success("Assignment submitted successfully");
+      setLoading(true);
+      const toastId = toast.loading("Submitting assignment...");
+
+      try {
+        const submissionData = new FormData();
+        submissionData.append("assignmentId", id);
+        submissionData.append("title", formData.title);
+        submissionData.append("description", formData.description);
+        submissionData.append("file", formData.file);
+        submissionData.append("comments", formData.comments);
+
+        const res = await submissionService.createSubmission(submissionData);
+        if (res.success) {
+          toast.success("Assignment submitted successfully", { id: toastId });
+          navigate("/assignments");
+        } else {
+          toast.error(res.message || "Failed to submit assignment", { id: toastId });
+        }
+      } catch (error) {
+        toast.error("An error occurred while submitting", { id: toastId });
+      } finally {
         setLoading(false);
-        navigate("/assignments");
-      }, 1500);
+      }
     },
-    [navigate],
+    [id, formData, navigate],
   );
 
   return (
@@ -41,7 +63,7 @@ const AssignmentSubmission = memo(() => {
             Submit Assignment
           </h1>
           <p className="text-slate-600 dark:text-slate-400">
-            Web App Prototype • Due: Jan 22, 2024
+            Submit your work for assignment {id}
           </p>
         </div>
 
@@ -55,9 +77,9 @@ const AssignmentSubmission = memo(() => {
                 type="text"
                 required
                 className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
-                value={submission.title}
+                value={formData.title}
                 onChange={(e) =>
-                  setSubmission({ ...submission, title: e.target.value })
+                  setFormData({ ...formData, title: e.target.value })
                 }
                 placeholder="Enter your submission title"
               />
@@ -70,9 +92,9 @@ const AssignmentSubmission = memo(() => {
               <textarea
                 rows="4"
                 className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
-                value={submission.description}
+                value={formData.description}
                 onChange={(e) =>
-                  setSubmission({ ...submission, description: e.target.value })
+                  setFormData({ ...formData, description: e.target.value })
                 }
                 placeholder="Describe your submission..."
               />
@@ -82,36 +104,48 @@ const AssignmentSubmission = memo(() => {
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                 Upload Files
               </label>
-              <div className="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg p-6 text-center bg-slate-50 dark:bg-slate-700/50">
+              <div className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
+                formData.file ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/10' : 'border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-700/50'
+              }`}>
                 <input
                   type="file"
                   className="hidden"
                   id="file-upload"
                   onChange={(e) =>
-                    setSubmission({ ...submission, file: e.target.files[0] })
+                    setFormData({ ...formData, file: e.target.files[0] })
                   }
                 />
                 <label htmlFor="file-upload" className="cursor-pointer">
                   <div className="text-slate-600 dark:text-slate-400">
-                    <svg
-                      className="mx-auto h-12 w-12 text-slate-400 dark:text-slate-500"
-                      stroke="currentColor"
-                      fill="none"
-                      viewBox="0 0 48 48"
-                    >
-                      <path
-                        d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    <p className="mt-2 text-slate-700 dark:text-slate-300">
-                      Click to upload or drag and drop
-                    </p>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">
-                      PDF, DOC, ZIP up to 50MB
-                    </p>
+                    {formData.file ? (
+                      <div className="text-emerald-600 dark:text-emerald-400">
+                        <i className="fas fa-file-check text-3xl mb-2" />
+                        <p className="font-medium">{formData.file.name}</p>
+                        <p className="text-sm">Click to change file</p>
+                      </div>
+                    ) : (
+                      <>
+                        <svg
+                          className="mx-auto h-12 w-12 text-slate-400 dark:text-slate-500"
+                          stroke="currentColor"
+                          fill="none"
+                          viewBox="0 0 48 48"
+                        >
+                          <path
+                            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                        <p className="mt-2 text-slate-700 dark:text-slate-300">
+                          Click to upload or drag and drop
+                        </p>
+                        <p className="text-sm text-slate-500 dark:text-slate-400">
+                          PDF, DOC, ZIP up to 50MB
+                        </p>
+                      </>
+                    )}
                   </div>
                 </label>
               </div>
@@ -124,9 +158,9 @@ const AssignmentSubmission = memo(() => {
               <textarea
                 rows="2"
                 className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
-                value={submission.comments}
+                value={formData.comments}
                 onChange={(e) =>
-                  setSubmission({ ...submission, comments: e.target.value })
+                  setFormData({ ...formData, comments: e.target.value })
                 }
                 placeholder="Any additional comments for the instructor..."
               />

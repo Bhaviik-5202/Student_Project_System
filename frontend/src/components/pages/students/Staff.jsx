@@ -76,7 +76,7 @@ const Staff = memo(() => {
       if (res.success) {
         // Normalize data for table
         setStaffMembers(
-          (res.data.data || []).map((staff) => ({
+          (res.data || []).map((staff) => ({
             id: staff._id || staff.id,
             name: staff.name,
             role: staff.role || "Faculty",

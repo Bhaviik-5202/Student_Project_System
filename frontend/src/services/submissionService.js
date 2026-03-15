@@ -55,6 +55,17 @@ const submissionService = {
       };
     }
   },
+
+  getHistory: async () => {
+    try {
+      return await api.get("/submissions/history");
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || "Failed to fetch submission history",
+      };
+    }
+  },
 };
 
 export default submissionService;

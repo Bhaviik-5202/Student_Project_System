@@ -29,7 +29,7 @@ const TutorialVideos = memo(() => {
     const fetchVideos = async () => {
       try {
         const response = await api.get("/resources/videos");
-        const data = response.data?.data || {};
+        const data = response.data || {};
         if (data.videos) {
           setVideos(data.videos);
           if (data.videos.length > 0 && !activeVideo) {

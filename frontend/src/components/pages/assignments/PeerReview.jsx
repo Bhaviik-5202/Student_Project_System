@@ -11,8 +11,13 @@ const PeerReview = memo(() => {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await api.get("/assignments/peer-reviews");
-        setReviews(response.data?.data || []);
+        const res = await api.get("/assignments/submissions/history");
+        const rawData = res.data || [];
+        const formattedData = rawData.map((review) => ({
+          ...review,
+          id: review.id || review._id,
+        }));
+        setReviews(formattedData);
       } catch (error) {
         console.error("Failed to fetch peer reviews", error);
       } finally {

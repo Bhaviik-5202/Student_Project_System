@@ -1,7 +1,11 @@
-import React, { useState, useCallback, useEffect } from "react";
-import projectService from "../../../services/projectService";
+import React, { useState, useCallback, useEffect, memo } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import api from "../../../utils/api";
 
 const PortfolioBuilder = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
   const [portfolio, setPortfolio] = useState({
     name: "My Professional Portfolio",
     description: "Showcasing my projects and skills",
@@ -53,9 +57,11 @@ const PortfolioBuilder = () => {
 
   useEffect(() => {
     const fetchProjects = async () => {
-      const res = await projectService.getAllProjects();
-      if (res.success) {
-        setRealProjects(res.data?.data || []);
+      try {
+        const res = await api.get("/projects/my-projects");
+        setRealProjects(res.data || []);
+      } catch (error) {
+        console.error("Failed to fetch projects", error);
       }
     };
     fetchProjects();

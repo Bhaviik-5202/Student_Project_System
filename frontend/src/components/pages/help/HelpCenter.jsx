@@ -11,8 +11,8 @@ const HelpCenter = memo(() => {
   useEffect(() => {
     const fetchHelpData = async () => {
       try {
-        const response = await api.get("/help/center");
-        const data = response.data?.data || {};
+        const response = await api.get("/help/overview");
+        const data = response.data || {};
         if (data.faqs) setFaqs(data.faqs);
         if (data.categories) {
           setCategories(["All", ...data.categories]);

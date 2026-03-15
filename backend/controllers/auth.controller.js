@@ -145,3 +145,118 @@ exports.resetPassword = async (req, res) => {
     );
   }
 };
+/**
+ * Get current user profile
+ * @route GET /auth/profile
+ * @access Private
+ */
+exports.getProfile = async (req, res) => {
+  try {
+    const result = await userService.getById(req.user.id);
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error ? "User not found" : "Profile fetched successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 404 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
+};
+
+/**
+ * Update current user profile
+ * @route PUT /auth/profile
+ * @access Private
+ */
+exports.updateProfile = async (req, res) => {
+  try {
+    // Prevent role change via profile update
+    const { role, ...updateData } = req.body;
+    const result = await userService.update(req.user.id, updateData);
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error ? "Update failed" : "Profile updated successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 400 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
+};
+
+/**
+ * Change user password
+ * @route POST /auth/change-password
+ * @access Private
+ */
+exports.changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword) {
+      return sendResponse(
+        res,
+        {
+          success: false,
+          message: "Current and new passwords are required",
+          data: null,
+          error: "Validation error",
+        },
+        400,
+      );
+    }
+
+    const result = await userService.changePassword(
+      req.user.id,
+      currentPassword,
+      newPassword,
+    );
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.message,
+        data: null,
+        error: result.error || null,
+      },
+      result.error ? 400 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
+};

@@ -1,12 +1,30 @@
-import { useState, useMemo, memo } from "react";
+import { useState, useEffect, memo } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../../../utils/api";
 
 const CourseCatalog = memo(() => {
   const navigate = useNavigate();
-  const courses = useMemo(
-    () => [],
-    [],
-  );
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const res = await api.get("/courses");
+        if (res.success) {
+          setCourses(res.data || []);
+        } else {
+          setError(res.message || "Failed to load courses");
+        }
+      } catch (err) {
+        setError("Failed to load courses");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCourses();
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">

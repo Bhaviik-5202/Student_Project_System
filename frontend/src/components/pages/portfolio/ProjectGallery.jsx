@@ -13,8 +13,8 @@ const ProjectGallery = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await api.get('/portfolio/projects');
-        const data = response.data?.data || {};
+        const response = await api.get("/portfolio/gallery");
+        const data = response.data || {};
         if (data.projects) setProjects(data.projects);
         if (data.filters) setFilters([{ id: "all", name: "All Projects", count: data.projects?.length || 0 }, ...data.filters]);
       } catch (error) {

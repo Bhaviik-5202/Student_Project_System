@@ -236,6 +236,68 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   /**
+   * Update the current user's profile on the server and update local state
+   * @param {Object} userData - User data to update
+   * @returns {Promise<Object>} Update status
+   */
+  const updateProfile = useCallback(
+    async (userData) => {
+      try {
+        setIsLoading(true);
+        const res = await authService.updateProfile(userData);
+        if (res.success) {
+          setUser(res.data);
+          safeLocalStorage.setItem(
+            STORAGE_KEYS.USER,
+            JSON.stringify(res.data),
+          );
+          toast.success("Profile updated successfully");
+          return { success: true, user: res.data };
+        } else {
+          toast.error(res.message || "Failed to update profile");
+          return { success: false, message: res.message };
+        }
+      } catch (error) {
+        console.error("Update profile error:", error);
+        toast.error("An error occurred while updating profile");
+        return { success: false, message: error.message };
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [safeLocalStorage],
+  );
+
+  /**
+   * Change user password
+   * @param {string} currentPassword - Current password
+   * @param {string} newPassword - New password
+   * @returns {Promise<Object>} Status of password change
+   */
+  const changePassword = useCallback(async (currentPassword, newPassword) => {
+    try {
+      setIsLoading(true);
+      const res = await authService.changePassword(
+        currentPassword,
+        newPassword,
+      );
+      if (res.success) {
+        toast.success("Password changed successfully");
+        return { success: true };
+      } else {
+        toast.error(res.message || "Failed to change password");
+        return { success: false, message: res.message };
+      }
+    } catch (error) {
+      console.error("Change password error:", error);
+      toast.error("An error occurred while changing password");
+      return { success: false, message: error.message };
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  /**
    * Update the current user's locally stored profile data
    * @param {Object} updates - Attributes to update
    * @returns {Object} Updated status and user data
@@ -258,7 +320,6 @@ export const AuthProvider = ({ children }) => {
         );
         setUser(updatedUser);
 
-        toast.success("Profile updated successfully");
         return { success: true, user: updatedUser };
       } catch (error) {
         console.error("Update user error:", error);
@@ -340,6 +401,8 @@ export const AuthProvider = ({ children }) => {
       logout,
       register,
       updateUser,
+      updateProfile,
+      changePassword,
       hasRole,
       hasAnyRole,
       refreshSession,
@@ -354,6 +417,8 @@ export const AuthProvider = ({ children }) => {
       logout,
       register,
       updateUser,
+      updateProfile,
+      changePassword,
       hasRole,
       hasAnyRole,
       refreshSession,

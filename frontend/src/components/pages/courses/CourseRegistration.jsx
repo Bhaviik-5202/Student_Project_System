@@ -12,8 +12,8 @@ const CourseRegistration = memo(() => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await api.get("/courses");
-        setAvailableCourses(response.data?.data || []);
+        const response = await api.get("/courses/available");
+        setAvailableCourses(response.data || []);
       } catch (error) {
         console.error("Failed to fetch courses", error);
       } finally {

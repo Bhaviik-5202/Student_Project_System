@@ -13,8 +13,8 @@ const CourseMaterials = memo(() => {
     const fetchMaterials = async () => {
       try {
         // Fallback or placeholder until backend route exists
-        const response = await api.get(`/courses/${id || 'all'}/materials`).catch(() => api.get("/courses/materials"));
-        setMaterials(response.data?.data || []);
+        const response = await api.get(`/courses/${id || 'all'}/materials`);
+        setMaterials(response.data || []);
       } catch (error) {
         console.error("Failed to fetch course materials", error);
       } finally {

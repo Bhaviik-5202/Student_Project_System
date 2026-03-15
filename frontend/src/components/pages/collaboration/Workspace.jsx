@@ -17,8 +17,8 @@ const Workspace = memo(() => {
           api.get("/collaboration/files").catch(() => ({ data: { data: [] } })),
           api.get("/collaboration/tasks").catch(() => ({ data: { data: [] } }))
         ]);
-        setFiles(filesRes.data?.data || []);
-        setTasks(tasksRes.data?.data || []);
+        setFiles(filesRes.data || []);
+        setTasks(tasksRes.data || []);
       } catch (error) {
         console.error("Failed to fetch workspace data", error);
       } finally {

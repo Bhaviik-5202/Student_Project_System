@@ -99,6 +99,7 @@ exports.createProject = async (req, res) => {
     const projectData = {
       ...req.body,
       createdBy: req.user.id,
+      document: req.file ? req.file.path : undefined,
     };
 
     const result = await projectService.create(projectData);
@@ -216,7 +217,11 @@ exports.getProjectById = async (req, res) => {
  */
 exports.updateProject = async (req, res) => {
   try {
-    const result = await projectService.update(req.params.id, req.body);
+    const updateData = { ...req.body };
+    if (req.file) {
+      updateData.document = req.file.path;
+    }
+    const result = await projectService.update(req.params.id, updateData);
 
     sendResponse(
       res,

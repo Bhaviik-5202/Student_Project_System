@@ -13,7 +13,7 @@ const SkillMatrix = () => {
     const fetchSkills = async () => {
       try {
         const response = await api.get('/portfolio/skills');
-        const data = response.data?.data || {};
+        const data = response.data || {};
         if (data.categories) setCategories([{ id: "all", name: "All Skills", count: data.skills?.length || 0 }, ...data.categories]);
         if (data.skills) setSkills(data.skills);
       } catch (error) {

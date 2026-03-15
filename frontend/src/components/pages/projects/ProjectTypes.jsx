@@ -65,7 +65,7 @@ const ProjectTypesList = memo(() => {
     const fetchProjectTypes = async () => {
       try {
         const response = await api.get('/projects/types');
-        const data = response.data?.data || [];
+        const data = response.data || [];
         setProjectTypes(data);
       } catch (error) {
         console.error("Failed to fetch project types", error);

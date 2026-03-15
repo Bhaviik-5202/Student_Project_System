@@ -1,8 +1,9 @@
-import { useCallback, useState, useEffect, useMemo, memo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useCallback, useMemo, useEffect, memo } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import api from "../../../utils/api";
 
 const MilestoneTracker = memo(() => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -10,9 +11,9 @@ const MilestoneTracker = memo(() => {
   useEffect(() => {
     const fetchMilestones = async () => {
       try {
-        const response = await api.get('/timeline/milestones/current');
-        if (response.data?.data) {
-          setProject(response.data.data);
+        const response = await api.get(`/timeline/milestones/${id || 'current'}`);
+        if (response.data) {
+          setProject(response.data);
         }
       } catch (error) {
         console.error("Failed to fetch milestone data", error);

@@ -60,8 +60,12 @@ const DocumentLibrary = memo(() => {
       setLoading(true);
       setError("");
       try {
-        const data = await documentService.getAll();
-        setDocuments(data.documents || []);
+        const res = await documentService.getAll();
+        if (res.success) {
+          setDocuments(res.data || []);
+        } else {
+          setError(res.message || "Failed to load documents");
+        }
       } catch (err) {
         setError("Failed to load documents");
       } finally {

@@ -83,9 +83,16 @@ const ProjectProposal = memo(() => {
       const toastId = toast.loading(isEditing ? "Updating project..." : "Submitting proposal...");
       
       try {
+        const data = new FormData();
+        Object.keys(formData).forEach((key) => {
+          if (formData[key] !== null) {
+            data.append(key, formData[key]);
+          }
+        });
+
         const res = isEditing
-          ? await projectService.updateProject(id, formData)
-          : await projectService.createProject(formData);
+          ? await projectService.updateProject(id, data)
+          : await projectService.createProject(data);
           
         if (res.success) {
           toast.success(`Project ${isEditing ? "updated" : "submitted"} successfully!`, { id: toastId });

@@ -15,8 +15,8 @@ const TeamDirectory = memo(() => {
           api.get("/collaboration/teams").catch(() => ({ data: { data: [] } })),
           api.get("/collaboration/members").catch(() => ({ data: { data: [] } }))
         ]);
-        setTeams(teamsRes.data?.data || []);
-        setMembers(membersRes.data?.data || []);
+        setTeams(teamsRes.data || []);
+        setMembers(membersRes.data || []);
       } catch (error) {
         console.error("Failed to fetch team data", error);
       } finally {

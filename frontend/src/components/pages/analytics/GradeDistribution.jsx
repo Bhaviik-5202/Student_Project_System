@@ -10,8 +10,8 @@ const GradeDistribution = memo(() => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await api.get("/analytics/grade-distribution");
-        setCourses(response.data?.data || []);
+        const response = await api.get("/analytics/grades");
+        setCourses(response.data || []);
       } catch (error) {
         console.error("Failed to fetch grade distribution", error);
       } finally {

@@ -29,8 +29,8 @@ const MeetingCalendar = memo(() => {
   useEffect(() => {
     const fetchCalendarData = async () => {
       try {
-        const response = await api.get('/meetings/calendar');
-        const data = response.data?.data || {};
+        const response = await api.get("/meetings/calendar");
+        const data = response.data || {};
         if (data.meetings) setMeetings(data.meetings);
         if (data.calendarDays) setCalendarDays(data.calendarDays);
       } catch (error) {

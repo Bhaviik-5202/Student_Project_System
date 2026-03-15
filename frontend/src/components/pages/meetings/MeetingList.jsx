@@ -63,7 +63,7 @@ const MeetingList = memo(() => {
       const res = await meetingService.getAllMeetings();
       if (res.success) {
         setMeetings(
-          (res.data.data || []).map(m => ({
+          (res.data || []).map(m => ({
             id: m._id || m.id,
             title: m.title,
             date: m.date ? m.date.split("T")[0] : "TBD",

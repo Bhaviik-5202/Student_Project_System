@@ -28,11 +28,11 @@ const EvaluationForm = memo(() => {
     const fetchFormData = async () => {
       try {
         const [studentsRes, projectsRes] = await Promise.all([
-          api.get("/users?role=student").catch(() => ({ data: { data: [] } })),
-          api.get("/projects").catch(() => ({ data: { data: [] } }))
+          api.get("/users?role=student").catch(() => ({ data: [] })),
+          api.get("/projects").catch(() => ({ data: [] }))
         ]);
-        setStudents(studentsRes.data?.data?.users || studentsRes.data?.data || []);
-        setProjects(projectsRes.data?.data?.projects || projectsRes.data?.data || []);
+        setStudents(studentsRes.data || []);
+        setProjects(projectsRes.data || []);
       } catch (error) {
         console.error("Failed to fetch form data", error);
       } finally {

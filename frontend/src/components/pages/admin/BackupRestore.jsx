@@ -12,7 +12,7 @@ const BackupRestore = memo(() => {
     const fetchBackups = async () => {
       try {
         const response = await api.get("/admin/backups");
-        setBackups(response.data?.data || []);
+        setBackups(response.data || []);
       } catch (error) {
         console.error("Failed to fetch backups", error);
       } finally {

@@ -14,19 +14,20 @@ const SubmissionHistory = memo(() => {
       try {
         setLoading(true);
         setError(null);
-
-        const res = await submissionService.getAllSubmissions();
-
-        if (res?.success) {
-          const formattedData = (res?.data?.data || []).map((submission) => ({
-            id: submission._id || submission.id,
-            assignment: submission.assignment || "-",
-            course: submission.course || "-",
-            submittedDate: submission.submittedDate
-              ? new Date(submission.submittedDate).toLocaleDateString()
-              : submission.createdAt
-                ? new Date(submission.createdAt).toLocaleDateString()
-                : "-",
+        const res = await submissionService.getHistory();
+        if (res) {
+          const rawData = res.data || res;
+          const formattedData = rawData.map((submission) => ({
+            id: submission.id || submission._id,
+            assignment:
+              submission.assignmentId?.title ||
+              submission.assignment ||
+              "Unknown Assignment",
+            course:
+              submission.courseId?.title || submission.course || "N/A",
+            submittedDate: submission.createdAt
+              ? new Date(submission.createdAt).toLocaleDateString()
+              : "-",
             grade: submission.grade || "Pending",
             status: submission.status || "Under Review",
             files: Array.isArray(submission.files)

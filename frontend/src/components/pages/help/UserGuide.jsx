@@ -11,7 +11,7 @@ const UserGuide = memo(() => {
     const fetchGuide = async () => {
       try {
         const response = await api.get("/help/guide");
-        setChapters(response.data?.data || []);
+        setChapters(response.data || []);
       } catch (error) {
         console.error("Failed to fetch user guide", error);
       } finally {

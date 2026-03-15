@@ -103,7 +103,7 @@ const ProjectGroupsList = memo(() => {
     const fetchGroups = async () => {
       try {
         const response = await api.get('/projects/groups');
-        const data = response.data?.data || [];
+        const data = response.data || [];
         setGroups(data);
       } catch (error) {
         console.error("Failed to fetch project groups", error);

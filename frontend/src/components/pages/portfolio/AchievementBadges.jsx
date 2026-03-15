@@ -9,8 +9,8 @@ const AchievementBadges = () => {
   useEffect(() => {
     const fetchBadges = async () => {
       try {
-        const response = await api.get('/portfolio/badges');
-        const data = response.data?.data || {};
+        const response = await api.get("/portfolio/badges");
+        const data = response.data || {};
         if (data.badges) setUserBadges(data.badges);
       } catch (error) {
         console.error("Failed to fetch badges", error);

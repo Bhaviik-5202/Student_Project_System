@@ -15,8 +15,8 @@ const ResourceDetails = memo(() => {
     const fetchResourceDetails = async () => {
       try {
         const response = await api.get(`/resources/${id}`);
-        setResource(response.data?.data?.resource || null);
-        setRelatedResources(response.data?.data?.related || []);
+        setResource(response.data?.resource || response.data || null);
+        setRelatedResources(response.data?.related || []);
       } catch (error) {
         console.error("Failed to fetch resource details", error);
         showError("Failed to load resource details."); // Add error notification

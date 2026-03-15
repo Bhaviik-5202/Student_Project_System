@@ -11,8 +11,8 @@ const KnowledgeBase = memo(() => {
   useEffect(() => {
     const fetchKbData = async () => {
       try {
-        const response = await api.get("/help/knowledge-base");
-        const data = response.data?.data || {};
+        const response = await api.get("/help/kb");
+        const data = response.data || {};
         if (data.categories) setCategories(data.categories);
         if (data.popularArticles) setPopularArticles(data.popularArticles);
       } catch (error) {

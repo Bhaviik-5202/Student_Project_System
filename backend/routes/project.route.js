@@ -13,6 +13,7 @@ const projectController = require("../controllers/project.controller");
 const authMiddleware = require("../middleware/auth.middleware");
 const roleMiddleware = require("../middleware/roleMiddleware");
 const validateRequest = require("../middleware/validateRequest");
+const upload = require("../utils/upload");
 
 /**
  * Validation rules for creating/updating a project
@@ -40,6 +41,7 @@ router.post(
   "/",
   authMiddleware,
   roleMiddleware(["admin", "faculty"]),
+  upload.single("document"),
   [
     body("title").notEmpty().withMessage("Title is required"),
     ...projectValidation.slice(1),
@@ -71,6 +73,7 @@ router.put(
   "/:id",
   authMiddleware,
   roleMiddleware(["admin", "faculty"]),
+  upload.single("document"),
   projectValidation,
   validateRequest,
   projectController.updateProject,
