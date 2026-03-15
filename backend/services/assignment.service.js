@@ -32,8 +32,8 @@ exports.getAll = async (options = {}) => {
   try {
     const { page = 1, limit = 10, filters = {} } = options;
     const assignments = await assignmentRepository.findAll(filters, {
-        skip: (page - 1) * limit,
-        limit: parseInt(limit)
+      skip: (page - 1) * limit,
+      limit: parseInt(limit),
     });
     return response(false, assignments, "Assignments fetched successfully");
   } catch (err) {
@@ -93,12 +93,22 @@ exports.remove = async (id) => {
  * @returns {Promise<Object>} Formatted service response with assignments
  */
 exports.getByStudentId = async (studentId) => {
-    try {
-        const assignments = await assignmentRepository.findAll({ student: studentId });
-        return response(false, assignments, "Student assignments fetched successfully");
-    } catch (err) {
-        return response(true, null, err.message || "Failed to fetch student assignments");
-    }
+  try {
+    const assignments = await assignmentRepository.findAll({
+      student: studentId,
+    });
+    return response(
+      false,
+      assignments,
+      "Student assignments fetched successfully",
+    );
+  } catch (err) {
+    return response(
+      true,
+      null,
+      err.message || "Failed to fetch student assignments",
+    );
+  }
 };
 
 /**
@@ -108,12 +118,23 @@ exports.getByStudentId = async (studentId) => {
  * @returns {Promise<Object>} Formatted service response with assignments
  */
 exports.getByActivityId = async (activityId, options = {}) => {
-    try {
-        const assignments = await assignmentRepository.findAll({ activity: activityId }, options);
-        return response(false, assignments, "Activity assignments fetched successfully");
-    } catch (err) {
-        return response(true, null, err.message || "Failed to fetch activity assignments");
-    }
+  try {
+    const assignments = await assignmentRepository.findAll(
+      { activity: activityId },
+      options,
+    );
+    return response(
+      false,
+      assignments,
+      "Activity assignments fetched successfully",
+    );
+  } catch (err) {
+    return response(
+      true,
+      null,
+      err.message || "Failed to fetch activity assignments",
+    );
+  }
 };
 
 /**
@@ -123,12 +144,23 @@ exports.getByActivityId = async (activityId, options = {}) => {
  * @returns {Promise<Object>} Formatted service response with assignments
  */
 exports.getByFacultyId = async (facultyId, options = {}) => {
-    try {
-        const assignments = await assignmentRepository.findAll({ faculty: facultyId }, options);
-        return response(false, assignments, "Faculty assignments fetched successfully");
-    } catch (err) {
-        return response(true, null, err.message || "Failed to fetch faculty assignments");
-    }
+  try {
+    const assignments = await assignmentRepository.findAll(
+      { faculty: facultyId },
+      options,
+    );
+    return response(
+      false,
+      assignments,
+      "Faculty assignments fetched successfully",
+    );
+  } catch (err) {
+    return response(
+      true,
+      null,
+      err.message || "Failed to fetch faculty assignments",
+    );
+  }
 };
 
 /**
@@ -138,12 +170,23 @@ exports.getByFacultyId = async (facultyId, options = {}) => {
  * @returns {Promise<Object>} Formatted service response with assignments
  */
 exports.getByCourseId = async (courseId, options = {}) => {
-    try {
-        const assignments = await assignmentRepository.findAll({ course: courseId }, options);
-        return response(false, assignments, "Course assignments fetched successfully");
-    } catch (err) {
-        return response(true, null, err.message || "Failed to fetch course assignments");
-    }
+  try {
+    const assignments = await assignmentRepository.findAll(
+      { course: courseId },
+      options,
+    );
+    return response(
+      false,
+      assignments,
+      "Course assignments fetched successfully",
+    );
+  } catch (err) {
+    return response(
+      true,
+      null,
+      err.message || "Failed to fetch course assignments",
+    );
+  }
 };
 
 /**
@@ -153,10 +196,21 @@ exports.getByCourseId = async (courseId, options = {}) => {
  * @returns {Promise<Object>} Formatted service response with assignments
  */
 exports.getByBatchId = async (batchId, options = {}) => {
-    try {
-        const assignments = await assignmentRepository.findAll({ batch: batchId }, options);
-        return response(false, assignments, "Batch assignments fetched successfully");
-    } catch (err) {
-        return response(true, null, err.message || "Failed to fetch batch assignments");
-    }
+  try {
+    const assignments = await assignmentRepository.findAll(
+      { batch: batchId },
+      options,
+    );
+    return response(
+      false,
+      assignments,
+      "Batch assignments fetched successfully",
+    );
+  } catch (err) {
+    return response(
+      true,
+      null,
+      err.message || "Failed to fetch batch assignments",
+    );
+  }
 };

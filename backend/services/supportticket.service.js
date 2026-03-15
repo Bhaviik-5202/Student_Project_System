@@ -19,7 +19,11 @@ exports.create = async (data) => {
     const ticket = await supportticketRepository.create(data);
     return response(false, ticket, "Support ticket created successfully");
   } catch (err) {
-    return response(true, null, err.message || "Failed to create support ticket");
+    return response(
+      true,
+      null,
+      err.message || "Failed to create support ticket",
+    );
   }
 };
 
@@ -32,7 +36,11 @@ exports.getAll = async () => {
     const tickets = await supportticketRepository.findAll();
     return response(false, tickets, "Support tickets fetched successfully");
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch support tickets");
+    return response(
+      true,
+      null,
+      err.message || "Failed to fetch support tickets",
+    );
   }
 };
 
@@ -47,7 +55,11 @@ exports.getById = async (id) => {
     if (!ticket) return response(true, null, "Support ticket not found");
     return response(false, ticket, "Support ticket fetched successfully");
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch support ticket");
+    return response(
+      true,
+      null,
+      err.message || "Failed to fetch support ticket",
+    );
   }
 };
 
@@ -63,7 +75,11 @@ exports.update = async (id, data) => {
     if (!ticket) return response(true, null, "Support ticket not found");
     return response(false, ticket, "Support ticket updated successfully");
   } catch (err) {
-    return response(true, null, err.message || "Failed to update support ticket");
+    return response(
+      true,
+      null,
+      err.message || "Failed to update support ticket",
+    );
   }
 };
 
@@ -78,6 +94,10 @@ exports.remove = async (id) => {
     if (!ticket) return response(true, null, "Support ticket not found");
     return response(false, null, "Support ticket deleted successfully");
   } catch (err) {
-    return response(true, null, err.message || "Failed to delete support ticket");
+    return response(
+      true,
+      null,
+      err.message || "Failed to delete support ticket",
+    );
   }
 };

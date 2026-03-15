@@ -30,7 +30,11 @@ exports.create = async (data) => {
 exports.getAll = async () => {
   try {
     const entries = await knowledgebaseRepository.findAll();
-    return response(false, entries, "Knowledgebase entries fetched successfully");
+    return response(
+      false,
+      entries,
+      "Knowledgebase entries fetched successfully",
+    );
   } catch (err) {
     return response(true, null, err.message || "Failed to fetch kb entries");
   }

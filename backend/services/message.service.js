@@ -18,32 +18,32 @@ const response = (error, data, message) => ({ error, data, message });
  * @returns {Promise<Object>} Formatted service response with the new message
  */
 exports.sendMessage = async (chatId, senderId, content) => {
-    try {
-        const chat = await chatRepository.findById(chatId);
-        if (!chat) return response(true, null, "Chat not found");
+  try {
+    const chat = await chatRepository.findById(chatId);
+    if (!chat) return response(true, null, "Chat not found");
 
-        if (!chat.members.map((id) => id.toString()).includes(senderId)) {
-            return response(true, null, "Access denied: Not a member of this chat");
-        }
-
-        const message = await messageRepository.create({
-            sender: senderId,
-            chat: chatId,
-            content,
-            readBy: [senderId],
-        });
-
-        // Sync chat with newest message reference
-        await chatRepository.update(chatId, { $push: { messages: message._id } });
-
-        const populatedMessage = await messageRepository.findById(message._id, {
-            populate: { path: "sender", select: "name email avatar" }
-        });
-
-        return response(false, populatedMessage, "Message sent successfully");
-    } catch (err) {
-        return response(true, null, err.message || "Failed to send message");
+    if (!chat.members.map((id) => id.toString()).includes(senderId)) {
+      return response(true, null, "Access denied: Not a member of this chat");
     }
+
+    const message = await messageRepository.create({
+      sender: senderId,
+      chat: chatId,
+      content,
+      readBy: [senderId],
+    });
+
+    // Sync chat with newest message reference
+    await chatRepository.update(chatId, { $push: { messages: message._id } });
+
+    const populatedMessage = await messageRepository.findById(message._id, {
+      populate: { path: "sender", select: "name email avatar" },
+    });
+
+    return response(false, populatedMessage, "Message sent successfully");
+  } catch (err) {
+    return response(true, null, err.message || "Failed to send message");
+  }
 };
 
 /**
@@ -53,23 +53,26 @@ exports.sendMessage = async (chatId, senderId, content) => {
  * @returns {Promise<Object>} Formatted service response with message list
  */
 exports.getMessagesByChat = async (chatId, userId) => {
-    try {
-        const chat = await chatRepository.findById(chatId);
-        if (!chat) return response(true, null, "Chat not found");
+  try {
+    const chat = await chatRepository.findById(chatId);
+    if (!chat) return response(true, null, "Chat not found");
 
-        if (!chat.members.map((id) => id.toString()).includes(userId)) {
-            return response(true, null, "Access denied: Not a member of this chat");
-        }
-
-        const messages = await messageRepository.findAll({ chat: chatId }, {
-            sort: { createdAt: 1 },
-            populate: { path: "sender", select: "name email avatar" }
-        });
-
-        return response(false, messages, "Messages fetched successfully");
-    } catch (err) {
-        return response(true, null, err.message || "Failed to fetch messages");
+    if (!chat.members.map((id) => id.toString()).includes(userId)) {
+      return response(true, null, "Access denied: Not a member of this chat");
     }
+
+    const messages = await messageRepository.findAll(
+      { chat: chatId },
+      {
+        sort: { createdAt: 1 },
+        populate: { path: "sender", select: "name email avatar" },
+      },
+    );
+
+    return response(false, messages, "Messages fetched successfully");
+  } catch (err) {
+    return response(true, null, err.message || "Failed to fetch messages");
+  }
 };
 
 /**
@@ -79,19 +82,19 @@ exports.getMessagesByChat = async (chatId, userId) => {
  * @returns {Promise<Object>} Formatted service response
  */
 exports.deleteMessage = async (messageId, userId) => {
-    try {
-        const message = await messageRepository.findById(messageId);
-        if (!message) return response(true, null, "Message not found");
+  try {
+    const message = await messageRepository.findById(messageId);
+    if (!message) return response(true, null, "Message not found");
 
-        if (message.sender.toString() !== userId) {
-            return response(true, null, "Access denied: Only sender can delete");
-        }
-
-        await messageRepository.remove(messageId);
-        return response(false, null, "Message deleted successfully");
-    } catch (err) {
-        return response(true, null, err.message || "Failed to delete message");
+    if (message.sender.toString() !== userId) {
+      return response(true, null, "Access denied: Only sender can delete");
     }
+
+    await messageRepository.remove(messageId);
+    return response(false, null, "Message deleted successfully");
+  } catch (err) {
+    return response(true, null, err.message || "Failed to delete message");
+  }
 };
 
 /**

@@ -26,7 +26,7 @@ exports.register = async ({ name, email, password, role }) => {
   try {
     const existing = await userRepository.findByEmail(email);
     if (existing) return response(true, null, "Email already registered");
-    
+
     await userRepository.create({ name, email, password, role });
     return response(false, null, "User registered successfully");
   } catch (err) {
@@ -44,18 +44,20 @@ exports.register = async ({ name, email, password, role }) => {
  */
 exports.login = async ({ email, password }) => {
   try {
-    const user = await userRepository.findByEmail(email, { select: "+password" });
+    const user = await userRepository.findByEmail(email, {
+      select: "+password",
+    });
     if (!user || !user.password)
       return response(true, null, "Invalid credentials");
-    
+
     const match = await user.comparePassword(password);
     if (!match) return response(true, null, "Invalid credentials");
-    
+
     let expiresIn = TOKEN_EXPIRES_IN || "1d";
     const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, {
       expiresIn,
     });
-    
+
     return response(
       false,
       {
@@ -112,7 +114,7 @@ exports.create = async (data) => {
   try {
     const existing = await userRepository.findByEmail(data.email);
     if (existing) return response(true, null, "Email already exists");
-    
+
     const user = await userRepository.create(data);
     return response(false, user, "User created successfully");
   } catch (err) {

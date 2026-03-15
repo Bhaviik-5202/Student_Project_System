@@ -93,7 +93,11 @@ exports.join = async (id, user) => {
     const meeting = await meetingRepository.findById(id);
     if (!meeting) return response(true, null, "Meeting not found");
     // Stub logic — extend later with participants array implementation
-    return response(false, { meetingId: id, user }, "Joined meeting successfully");
+    return response(
+      false,
+      { meetingId: id, user },
+      "Joined meeting successfully",
+    );
   } catch (err) {
     return response(true, null, err.message || "Failed to join meeting");
   }

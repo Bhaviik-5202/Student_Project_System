@@ -20,7 +20,11 @@ exports.getProjects = async (studentId) => {
     const projects = await projectRepository.findAll({ owner: studentId });
     return response(false, projects, "Student projects fetched successfully");
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch student projects");
+    return response(
+      true,
+      null,
+      err.message || "Failed to fetch student projects",
+    );
   }
 };
 
@@ -35,7 +39,11 @@ exports.getGrades = async (studentId) => {
     const grades = await evaluationRepository.findAll({ student: studentId });
     return response(false, grades, "Student grades fetched successfully");
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch student grades");
+    return response(
+      true,
+      null,
+      err.message || "Failed to fetch student grades",
+    );
   }
 };
 

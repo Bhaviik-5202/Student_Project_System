@@ -35,16 +35,24 @@ exports.getAll = async ({ page = 1, limit = 10, filters = {} }) => {
   try {
     const skip = (page - 1) * limit;
     const [resources, total] = await Promise.all([
-      resourceRepository.findAll(filters, { skip, limit, sort: { createdAt: -1 } }),
+      resourceRepository.findAll(filters, {
+        skip,
+        limit,
+        sort: { createdAt: -1 },
+      }),
       resourceRepository.count(filters),
     ]);
-    return response(false, {
-      resources,
-      total,
-      page,
-      limit,
-      totalPages: Math.ceil(total / limit),
-    }, "Resources fetched successfully");
+    return response(
+      false,
+      {
+        resources,
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+      "Resources fetched successfully",
+    );
   } catch (err) {
     return response(true, null, err.message || "Failed to fetch resources");
   }

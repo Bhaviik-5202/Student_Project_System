@@ -35,16 +35,24 @@ exports.getAll = async ({ page = 1, limit = 10, filters = {} }) => {
   try {
     const skip = (page - 1) * limit;
     const [projects, total] = await Promise.all([
-      projectRepository.findAll(filters, { skip, limit, sort: { createdAt: -1 } }),
+      projectRepository.findAll(filters, {
+        skip,
+        limit,
+        sort: { createdAt: -1 },
+      }),
       projectRepository.count(filters),
     ]);
-    return response(false, {
-      projects,
-      total,
-      page,
-      limit,
-      totalPages: Math.ceil(total / limit),
-    }, "Projects fetched successfully");
+    return response(
+      false,
+      {
+        projects,
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+      "Projects fetched successfully",
+    );
   } catch (err) {
     return response(true, null, err.message || "Failed to fetch projects");
   }
@@ -102,14 +110,16 @@ exports.remove = async (id) => {
  * @returns {Promise<Object>} Formatted service response with members list
  */
 exports.getMembers = async (id) => {
-    try {
-        const project = await projectRepository.findById(id, { populate: "members" });
-        if (!project) return response(true, null, "Project not found");
-        return response(false, project.members, "Members fetched successfully");
-    } catch (err) {
-        return response(true, null, err.message || "Failed to fetch members");
-    }
-}
+  try {
+    const project = await projectRepository.findById(id, {
+      populate: "members",
+    });
+    if (!project) return response(true, null, "Project not found");
+    return response(false, project.members, "Members fetched successfully");
+  } catch (err) {
+    return response(true, null, err.message || "Failed to fetch members");
+  }
+};
 
 /**
  * Add a user to the project's member list
@@ -118,16 +128,17 @@ exports.getMembers = async (id) => {
  * @returns {Promise<Object>} Formatted service response with updated project details
  */
 exports.addMember = async (id, userId) => {
-    try {
-        const project = await projectRepository.update(
-            id,
-            { $addToSet: { members: userId } }
-        );
-        if (!project) return response(true, null, "Project not found");
-        // Re-populate members
-        const updatedProject = await projectRepository.findById(id, { populate: "members" });
-        return response(false, updatedProject, "Member added successfully");
-    } catch (err) {
-        return response(true, null, err.message || "Failed to add member");
-    }
-}
+  try {
+    const project = await projectRepository.update(id, {
+      $addToSet: { members: userId },
+    });
+    if (!project) return response(true, null, "Project not found");
+    // Re-populate members
+    const updatedProject = await projectRepository.findById(id, {
+      populate: "members",
+    });
+    return response(false, updatedProject, "Member added successfully");
+  } catch (err) {
+    return response(true, null, err.message || "Failed to add member");
+  }
+};
