@@ -21,9 +21,9 @@ const PageTransition = memo(({ children, pathname, shouldAnimate }) => {
         setCurrentPath(pathname);
         requestAnimationFrame(() => {
           setIsVisible(true);
-          setTimeout(() => setIsAnimating(false), 300);
+          setTimeout(() => setIsAnimating(false), 200);
         });
-      }, 200);
+      }, 100);
 
       return () => clearTimeout(exitTimer);
     } else {

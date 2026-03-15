@@ -51,7 +51,7 @@ const MainLayout = () => {
         onCloseMobileMenu={handleCloseMobileMenu}
       />
 
-      <div className="flex flex-1 mt-14">
+      <div className="flex flex-1 mt-30">
         <div className="flex-1 flex flex-col min-w-0 w-full relative">
           {!isMobile && (
             <nav className="px-4 md:px-6 pt-4" aria-label="Breadcrumb">

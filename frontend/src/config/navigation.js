@@ -107,6 +107,7 @@ export const navigationItems = [
     submenu: [
       { title: "Admin Dashboard", path: "/admin-dashboard", roles: ROLE_COMBINATIONS.ADMIN_ONLY },
       { title: "User Management", path: "/user-management", roles: ROLE_COMBINATIONS.ADMIN_ONLY },
+      { title: "Staff Management", path: "/staff", roles: ROLE_COMBINATIONS.ADMIN_ONLY },
       { title: "System Settings", path: "/system-settings", roles: ROLE_COMBINATIONS.ADMIN_ONLY },
       { title: "Audit Log", path: "/audit-log", roles: ROLE_COMBINATIONS.ADMIN_ONLY },
     ],
