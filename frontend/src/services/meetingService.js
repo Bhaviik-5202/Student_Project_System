@@ -12,6 +12,10 @@ const meetingService = {
     }
   },
 
+  getAllMeetings: async (params = {}) => {
+    return await meetingService.getMeetings(params);
+  },
+
   getMeetingById: async (id) => {
     try {
       return await api.get(`/meetings/${id}`);

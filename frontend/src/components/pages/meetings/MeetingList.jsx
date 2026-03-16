@@ -83,11 +83,8 @@ const MeetingList = memo(() => {
 
   // Schedule Meeting button handler
   const handleCreate = useCallback(() => {
-    // Simulate scheduling not available
-    alert(
-      "Scheduling meetings is currently unavailable. Please contact your administrator or try again later.",
-    );
-  }, []);
+    navigate("/meetings/new");
+  }, [navigate]);
 
   const handleView = useCallback(
     (id) => {

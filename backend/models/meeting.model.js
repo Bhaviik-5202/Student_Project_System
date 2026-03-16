@@ -30,6 +30,11 @@ const meetingSchema = new mongoose.Schema(
         required: true,
       },
     ],
+    location: {
+      type: String,
+      trim: true,
+      default: "Online",
+    },
     project: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Project",

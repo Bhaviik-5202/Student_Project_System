@@ -29,10 +29,35 @@ const MeetingCalendar = memo(() => {
   useEffect(() => {
     const fetchCalendarData = async () => {
       try {
-        const response = await api.get("/meetings/calendar");
-        const data = response.data || {};
-        if (data.meetings) setMeetings(data.meetings);
-        if (data.calendarDays) setCalendarDays(data.calendarDays);
+        const response = await meetingService.getMeetings();
+        if (response.success) {
+          setMeetings(response.data || []);
+          
+          // Generate calendar days locally for the current month
+          const now = new Date();
+          const year = now.getFullYear();
+          const month = now.getMonth();
+          const firstDay = new Date(year, month, 1).getDay();
+          const daysInMonth = new Date(year, month + 1, 0).getDate();
+          
+          const days = [];
+          // Previous month padding
+          for (let i = 0; i < firstDay; i++) {
+            days.push({ day: "", month: "prev", meetings: 0 });
+          }
+          // Current month days
+          for (let i = 1; i <= daysInMonth; i++) {
+            const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+            const dayMeetings = (response.data || []).filter(m => m.date && m.date.startsWith(dateStr)).length;
+            days.push({ 
+              day: i, 
+              month: "current", 
+              current: i === now.getDate(),
+              meetings: dayMeetings 
+            });
+          }
+          setCalendarDays(days);
+        }
       } catch (error) {
         console.error("Failed to fetch calendar data", error);
       } finally {
@@ -198,7 +223,7 @@ const MeetingCalendar = memo(() => {
                   </div>
                   <div className="mt-3 flex items-center">
                     <div className="flex -space-x-2">
-                      {[...Array(Math.min(3, meeting.participants))].map(
+                      {[...Array(Math.min(3, meeting.participants?.length || 0))].map(
                         (_, i) => (
                           <div
                             key={i}
@@ -224,7 +249,7 @@ const MeetingCalendar = memo(() => {
                       )}
                     </div>
                     <span className="text-sm text-gray-500 dark:text-gray-400 ml-3">
-                      {meeting.participants} participants
+                      {meeting.participants?.length || 0} participants
                     </span>
                   </div>
                 </div>

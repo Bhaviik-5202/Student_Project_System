@@ -19,8 +19,9 @@ const response = (error, data, message) => ({ error, data, message });
 exports.getDashboardStats = async () => {
   try {
     const totalUsers = await userRepository.count();
-    const activeProjects = await projectRepository.count({ status: "active" });
-    const pendingApprovals = await projectRepository.count({ status: "pending" });
+    const totalProjects = await projectRepository.count();
+    const activeProjects = await projectRepository.count({ status: "in_progress" });
+    const pendingApprovals = await projectRepository.count({ status: "planning" });
     const totalAssignments = await assignmentRepository.count();
     const totalMeetings = await meetingRepository.count();
 
@@ -29,7 +30,7 @@ exports.getDashboardStats = async () => {
       {
         sort: { updatedAt: -1 },
         limit: 5,
-        populate: "owner",
+        populate: "createdBy",
       },
     );
 
@@ -37,6 +38,7 @@ exports.getDashboardStats = async () => {
       false,
       {
         totalUsers,
+        totalProjects,
         activeProjects,
         pendingApprovals,
         totalAssignments,
@@ -45,7 +47,7 @@ exports.getDashboardStats = async () => {
         recentActivities: recentProjects.map((p) => ({
           title: p.title,
           updatedAt: p.updatedAt,
-          owner: p.owner ? { name: p.owner.name } : null,
+          owner: p.createdBy ? { name: p.createdBy.name } : null,
           status: p.status,
         })),
       },
@@ -109,17 +111,18 @@ exports.getUserStats = async () => {
  */
 exports.getFacultyDashboardStats = async (facultyId) => {
   try {
-    const myProjectsCount = await projectRepository.count({ faculty: facultyId });
+    const totalProjectsCount = await projectRepository.count();
+    const myProjectsCount = await projectRepository.count({ guide: facultyId });
     const activeStudents = await userRepository.count({
       role: "student",
       status: "active",
     });
     const pendingReviewsCount = await projectRepository.count({
-      faculty: facultyId,
-      status: "submitted",
+      guide: facultyId,
+      status: "planning",
     });
     const todayMeetingsCount = await meetingRepository.count({
-      faculty: facultyId,
+      guide: facultyId,
       date: {
         $gte: new Date().setHours(0, 0, 0, 0),
         $lte: new Date().setHours(23, 59, 59, 999),
@@ -127,17 +130,18 @@ exports.getFacultyDashboardStats = async (facultyId) => {
     });
 
     const recentProjects = await projectRepository.findAll(
-      { faculty: facultyId },
+      { guide: facultyId },
       {
         sort: { updatedAt: -1 },
         limit: 5,
-        populate: "owner",
+        populate: "createdBy",
       },
     );
 
     return response(
       false,
       {
+        totalProjects: totalProjectsCount,
         myProjects: myProjectsCount,
         activeStudents,
         pendingReviews: pendingReviewsCount,
@@ -145,7 +149,7 @@ exports.getFacultyDashboardStats = async (facultyId) => {
         recentActivities: recentProjects.map((p) => ({
           title: p.title,
           updatedAt: p.updatedAt,
-          owner: p.owner ? { name: p.owner.name } : null,
+          owner: p.createdBy ? { name: p.createdBy.name } : null,
           status: p.status,
         })),
       },
@@ -167,7 +171,13 @@ exports.getFacultyDashboardStats = async (facultyId) => {
  */
 exports.getStudentDashboardStats = async (studentId) => {
   try {
-    const myProjectsCount = await projectRepository.count({ owner: studentId });
+    const totalProjectsCount = await projectRepository.count();
+    const myProjectsCount = await projectRepository.count({ 
+      $or: [
+        { createdBy: studentId },
+        { members: studentId }
+      ]
+    });
     const completedAssignmentsCount = await assignmentRepository.count({
       student: studentId,
       status: "completed",
@@ -178,7 +188,12 @@ exports.getStudentDashboardStats = async (studentId) => {
     });
 
     const recentProjects = await projectRepository.findAll(
-      { owner: studentId },
+      { 
+        $or: [
+          { createdBy: studentId },
+          { members: studentId }
+        ]
+      },
       {
         sort: { updatedAt: -1 },
         limit: 5,
@@ -188,6 +203,7 @@ exports.getStudentDashboardStats = async (studentId) => {
     return response(
       false,
       {
+        totalProjects: totalProjectsCount,
         myProjects: myProjectsCount,
         completedAssignments: completedAssignmentsCount,
         upcomingDeadlines: upcomingDeadlinesCount,

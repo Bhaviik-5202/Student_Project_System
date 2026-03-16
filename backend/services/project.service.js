@@ -39,6 +39,7 @@ exports.getAll = async ({ page = 1, limit = 10, filters = {} } = {}) => {
         skip,
         limit,
         sort: { createdAt: -1 },
+        populate: "guide members",
       }),
       projectRepository.count(filters),
     ]);

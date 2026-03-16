@@ -159,10 +159,10 @@ const AppRoutes = () => {
 
         {/* Project Routes */}
         <Route path="projects" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><ProjectList /></ProtectedRoute>} />
-        <Route path="projects/new" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.FACULTY_STUDENT}><ProjectProposal /></ProtectedRoute>} />
+        <Route path="projects/new" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><ProjectProposal /></ProtectedRoute>} />
         <Route path="project-proposal" element={<Navigate to="/projects/new" replace />} />
         <Route path="projects/:id" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><ProjectDetails /></ProtectedRoute>} />
-        <Route path="projects/:id/edit" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.FACULTY_STUDENT}><ProjectProposal /></ProtectedRoute>} />
+        <Route path="projects/:id/edit" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><ProjectProposal /></ProtectedRoute>} />
         <Route path="project-types" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><ProjectTypes /></ProtectedRoute>} />
         <Route path="project-groups" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><ProjectGroups /></ProtectedRoute>} />
         <Route path="guide-allocation" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><GuideAllocation /></ProtectedRoute>} />

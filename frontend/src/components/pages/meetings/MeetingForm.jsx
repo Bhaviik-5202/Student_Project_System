@@ -25,18 +25,29 @@ const MeetingForm = memo(() => {
       setLoading(true);
 
       try {
-        // Simulate API call
-        setTimeout(() => {
+        const meetingData = {
+          ...formData,
+          // Combine date and time into a single ISO string for the backend if needed,
+          // or send separately if the backend handles it.
+          // Based on the model, 'date' is a Date object.
+          date: new Date(`${formData.date}T${formData.time}`),
+          participants: formData.attendees.split(",").map(id => id.trim()).filter(id => id),
+        };
+
+        const res = await meetingService.createMeeting(meetingData);
+        if (res.success) {
           toast.success("Meeting scheduled successfully");
-          setLoading(false);
-          navigate("/meetings");
-        }, 1000);
+          navigate("/meetings/list");
+        } else {
+          toast.error(res.message || "Failed to schedule meeting");
+        }
       } catch (error) {
-        toast.error("Failed to schedule meeting");
+        toast.error("An unexpected error occurred");
+      } finally {
         setLoading(false);
       }
     },
-    [navigate],
+    [formData, navigate],
   );
 
   return (

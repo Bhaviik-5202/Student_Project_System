@@ -90,6 +90,15 @@ const projectSchema = new mongoose.Schema(
   },
 );
 
+projectSchema.set("toJSON", {
+  virtuals: true,
+  versionKey: false,
+  transform: function (doc, ret) {
+    ret.id = ret._id;
+    return ret;
+  },
+});
+
 projectSchema.index({ createdAt: -1 });
 projectSchema.index({ members: 1 });
 

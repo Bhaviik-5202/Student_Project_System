@@ -41,7 +41,7 @@ const projectValidation = [
 router.post(
   "/",
   authMiddleware,
-  roleMiddleware(["admin", "faculty"]),
+  roleMiddleware(["admin", "faculty", "student"]),
   upload.single("document"),
   [
     body("title").notEmpty().withMessage("Title is required"),
@@ -116,7 +116,7 @@ router.get("/:id", authMiddleware, projectController.getProjectById);
 router.put(
   "/:id",
   authMiddleware,
-  roleMiddleware(["admin", "faculty"]),
+  roleMiddleware(["admin", "faculty", "student"]),
   upload.single("document"),
   projectValidation,
   validateRequest,
@@ -131,7 +131,7 @@ router.put(
 router.delete(
   "/:id",
   authMiddleware,
-  roleMiddleware(["admin", "faculty"]),
+  roleMiddleware(["admin", "faculty", "student"]),
   projectController.deleteProject,
 );
 

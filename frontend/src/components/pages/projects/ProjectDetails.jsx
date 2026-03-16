@@ -37,6 +37,12 @@ const ProjectDetails = memo(() => {
         "bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200",
       Pending:
         "bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200",
+      planning:
+        "bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200",
+      in_progress:
+        "bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200",
+      completed:
+        "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200",
     }),
     [],
   );
@@ -124,8 +130,8 @@ const ProjectDetails = memo(() => {
                   <p className="text-sm text-gray-500 dark:text-gray-400">
                     Supervisor
                   </p>
-                  <p className="font-medium text-gray-900 dark:text-white">
-                    {project.supervisor}
+                  <p className="font-medium text-gray-900 dark:text-white text-capitalize">
+                    {project.guide?.name || project.guide || "Not Assigned"}
                   </p>
                 </div>
                 <div>
@@ -152,19 +158,25 @@ const ProjectDetails = memo(() => {
                 Team Members
               </h2>
               <div className="space-y-3">
-                {project.teamMembers?.map((member, index) => (
-                  <div key={index} className="flex items-center">
-                    <div className="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full mr-3 overflow-hidden flex items-center justify-center text-sm font-medium text-gray-600 dark:text-gray-300">
-                      {member.name ? member.name.charAt(0).toUpperCase() : (typeof member === 'string' ? member.charAt(0).toUpperCase() : 'U')}
+                {Array.isArray(project.teamMembers) ? (
+                  project.teamMembers.map((member, index) => (
+                    <div key={index} className="flex items-center">
+                      <div className="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full mr-3 overflow-hidden flex items-center justify-center text-sm font-medium text-gray-600 dark:text-gray-300">
+                        {member.name ? member.name.charAt(0).toUpperCase() : (typeof member === 'string' ? member.charAt(0).toUpperCase() : 'U')}
+                      </div>
+                      <div>
+                        <span className="font-medium text-gray-900 dark:text-white block">
+                          {member.name || member}
+                        </span>
+                        {member.role && <span className="text-xs text-gray-500 dark:text-gray-400">{member.role}</span>}
+                      </div>
                     </div>
-                    <div>
-                      <span className="font-medium text-gray-900 dark:text-white block">
-                        {member.name || member}
-                      </span>
-                      {member.role && <span className="text-xs text-gray-500 dark:text-gray-400">{member.role}</span>}
-                    </div>
+                  ))
+                ) : (
+                  <div className="text-gray-600 dark:text-gray-400 text-sm">
+                    {project.teamMembers || "No team members listed"}
                   </div>
-                ))}
+                )}
               </div>
             </div>
           </div>

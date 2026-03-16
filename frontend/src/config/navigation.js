@@ -33,8 +33,8 @@ export const navigationItems = [
       },
       {
         title: "Project Proposal",
-        path: "/project-proposal",
-        roles: ROLE_COMBINATIONS.FACULTY_STUDENT,
+        path: "/projects/new",
+        roles: ROLE_COMBINATIONS.ALL,
       },
       {
         title: "Project Groups",

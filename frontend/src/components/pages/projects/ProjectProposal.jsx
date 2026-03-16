@@ -191,9 +191,9 @@ const ProjectProposal = memo(() => {
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400"
                   >
                     <option value="">Select preferred guide</option>
-                    <option value="1">Dr. Sarah Johnson</option>
-                    <option value="2">Prof. Michael Chen</option>
-                    <option value="3">Dr. Emily Williams</option>
+                    <option value="507f1f77bcf86cd799439011">Dr. Sarah Johnson</option>
+                    <option value="507f1f77bcf86cd799439012">Prof. Michael Chen</option>
+                    <option value="507f1f77bcf86cd799439013">Dr. Emily Williams</option>
                   </select>
                 </div>
               </div>

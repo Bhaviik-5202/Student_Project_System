@@ -24,11 +24,11 @@ const ProjectTypeRow = memo(({ type, onEdit, onDelete }) => (
   <tr className="group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors duration-200">
     <td className="px-6 py-4 whitespace-nowrap">
       <div className="flex items-center">
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white shadow-sm group-hover:scale-110 transition-transform duration-200">
+        <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center text-white shadow-sm">
           <ProjectIcon size={18} />
         </div>
         <div className="ml-4">
-          <div className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400">
+          <div className="text-sm font-bold text-gray-900 dark:text-white">
             {type.name}
           </div>
           <div className="text-xs text-gray-400 dark:text-gray-500">
@@ -38,7 +38,7 @@ const ProjectTypeRow = memo(({ type, onEdit, onDelete }) => (
       </div>
     </td>
     <td className="px-6 py-4">
-      <p className="text-sm text-gray-600 dark:text-gray-400 max-w-xs line-clamp-1 italic hover:line-clamp-none transition-all cursor-help" title={type.description}>
+      <p className="text-sm text-gray-600 dark:text-gray-400 max-w-xs line-clamp-1" title={type.description}>
         {type.description}
       </p>
     </td>
@@ -65,17 +65,17 @@ const ProjectTypeRow = memo(({ type, onEdit, onDelete }) => (
       </span>
     </td>
     <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
-      <div className="flex items-center justify-end space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+      <div className="flex items-center justify-end space-x-2">
         <button 
           onClick={() => onEdit(type)}
-          className="p-2 text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/30 rounded-lg transition-all transform hover:scale-110"
+          className="p-2 text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
           title="Edit"
         >
           <EditIcon size={16} />
         </button>
         <button 
           onClick={() => onDelete(type._id || type.id)}
-          className="p-2 text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30 rounded-lg transition-all transform hover:scale-110"
+          className="p-2 text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30 rounded-lg transition-colors"
           title="Delete"
         >
           <TrashIcon size={16} />
@@ -218,12 +218,12 @@ const ProjectTypesList = memo(() => {
   };
 
   return (
-    <div className="min-h-screen p-4 md:p-6 lg:p-8 space-y-8 animate-fade-in">
+    <div className="min-h-screen p-4 md:p-6 lg:p-8 space-y-8">
       {/* Premium Header */}
-      <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-xl shadow-slate-100 dark:shadow-none p-6 md:p-8 transition-all duration-300">
+      <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm p-6 md:p-8">
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
           <div className="flex-1 flex items-center gap-6">
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-200 dark:shadow-none animate-pulse-subtle">
+            <div className="w-16 h-16 bg-blue-600 rounded-xl flex items-center justify-center shadow-sm">
               <GridIcon size={32} className="text-white" />
             </div>
             <div>
@@ -238,10 +238,9 @@ const ProjectTypesList = memo(() => {
           </div>
           <button 
             onClick={() => setIsModalOpen(true)}
-            className="group relative inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-xl hover:shadow-2xl hover:shadow-blue-300 dark:hover:shadow-none transition-all duration-300 font-bold overflow-hidden"
+            className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-bold"
           >
-            <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-            <PlusIcon size={20} className="mr-2 group-hover:rotate-90 transition-transform duration-300" />
+            <PlusIcon size={20} className="mr-2" />
             New Category
           </button>
         </div>
@@ -250,12 +249,12 @@ const ProjectTypesList = memo(() => {
       {/* Summary Stat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {[
-          { label: "Total Types", value: stats.total, icon: GridIcon, color: "blue", trend: "Stable" },
-          { label: "Active", value: stats.active, icon: CheckCircleIcon, color: "green", trend: "Maintained" },
-          { label: "Inactive", value: stats.inactive, icon: XCircleIcon, color: "red", trend: "N/A" },
+          { label: "Total Types", value: stats.total, icon: GridIcon, color: "blue" },
+          { label: "Active", value: stats.active, icon: CheckCircleIcon, color: "green" },
+          { label: "Inactive", value: stats.inactive, icon: XCircleIcon, color: "red" },
         ].map((stat, i) => (
-          <div key={i} className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-shadow group flex items-center">
-            <div className={`p-3 rounded-xl bg-${stat.color}-50 dark:bg-${stat.color}-900/20 text-${stat.color}-600 dark:text-${stat.color}-400 mr-4 group-hover:scale-110 transition-transform`}>
+          <div key={i} className="bg-white dark:bg-slate-800 p-6 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm flex items-center">
+            <div className={`p-3 rounded-lg bg-${stat.color}-50 dark:bg-${stat.color}-900/20 text-${stat.color}-600 dark:text-${stat.color}-400 mr-4`}>
               <stat.icon size={24} />
             </div>
             <div>
@@ -277,7 +276,7 @@ const ProjectTypesList = memo(() => {
               placeholder="Search by name or description..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 transition-all outline-none text-gray-900 dark:text-white"
+              className="w-full pl-10 pr-4 py-2 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-lg text-sm focus:border-blue-500 transition-colors outline-none text-gray-900 dark:text-white"
             />
           </div>
           <div className="flex gap-2">
@@ -292,9 +291,9 @@ const ProjectTypesList = memo(() => {
 
         <div className="overflow-x-auto">
           {loading && projectTypes.length === 0 ? (
-            <div className="p-20 text-center">
-              <LoadingSpinner size="lg" className="mb-6" />
-              <p className="text-gray-400 font-medium animate-pulse">Syncing with server database...</p>
+            <div className="p-20 text-center text-gray-400">
+              <LoadingSpinner size="lg" className="mb-4" />
+              <p className="font-medium">Loading project types...</p>
             </div>
           ) : (
             <table className="w-full text-left border-collapse">
@@ -367,7 +366,7 @@ const ProjectTypesList = memo(() => {
               name="description"
               value={formData.description}
               onChange={handleInputChange}
-              className="w-full p-4 bg-slate-50 dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all text-gray-900 dark:text-white italic min-h-[120px]"
+              className="w-full p-4 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-lg focus:border-blue-500 outline-none transition-colors text-gray-900 dark:text-white min-h-[120px]"
               placeholder="Provide a comprehensive summary of this project standard..."
               required
             />
@@ -422,20 +421,20 @@ const ProjectTypesList = memo(() => {
             </div>
           )}
 
-          <div className="flex gap-4 pt-4 border-t border-gray-50 dark:border-slate-700">
+          <div className="flex gap-4 pt-4 border-t border-gray-100 dark:border-slate-700">
             <button
               type="button"
               onClick={closeModal}
-              className="flex-1 px-6 py-3 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-gray-600 dark:text-gray-400 rounded-xl font-bold transition-all border border-gray-100 dark:border-slate-700"
+              className="flex-1 px-6 py-3 bg-white hover:bg-gray-50 dark:bg-slate-800 dark:hover:bg-slate-700 text-gray-600 dark:text-gray-400 rounded-lg font-bold transition-colors border border-gray-200 dark:border-slate-700"
             >
-              Discard Changes
+              Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-[2] px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-700 text-white rounded-xl font-bold hover:shadow-xl transition-all shadow-md disabled:opacity-50"
+              className="flex-[2] px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold transition-colors disabled:opacity-50 shadow-sm"
             >
-              {isSubmitting ? "Processing..." : (editingType ? "Update Configuration" : "Finalize Category")}
+              {isSubmitting ? "Saving..." : (editingType ? "Update Configuration" : "Save Configuration")}
             </button>
           </div>
         </form>

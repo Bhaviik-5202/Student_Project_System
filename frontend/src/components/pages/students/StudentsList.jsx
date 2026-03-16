@@ -1,9 +1,3 @@
-/**
- * StudentsList Component
- * 
- * Managed listing of all registered students. Supports advanced 
- * filtering, bulk actions, and direct profile editing.
- */
 import React, { memo, useEffect, useState, useMemo, useCallback } from "react";
 import PropTypes from "prop-types";
 import { 
@@ -30,69 +24,122 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import studentService from "../../../services/studentService";
 
+// --- Custom Hooks (From Dashboard for consistency) ---
+const useAnimatedCounter = (endValue, duration = 1000) => {
+  const [count, setCount] = useState(0);
+  const numericValue = parseInt(endValue) || 0;
+
+  useEffect(() => {
+    let startTime = null;
+    let animationFrame;
+
+    const animate = (currentTime) => {
+      if (!startTime) startTime = currentTime;
+      const progress = Math.min((currentTime - startTime) / duration, 1);
+      const easeOutQuad = 1 - (1 - progress) * (1 - progress);
+      setCount(Math.floor(easeOutQuad * numericValue));
+
+      if (progress < 1) {
+        animationFrame = requestAnimationFrame(animate);
+      }
+    };
+
+    animationFrame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationFrame);
+  }, [numericValue, duration]);
+
+  return count;
+};
+
+const PremiumStatCard = ({ label, value, icon: Icon, color, index }) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const animatedValue = useAnimatedCounter(isVisible ? value : 0, 1200);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsVisible(true), index * 100);
+    return () => clearTimeout(timer);
+  }, [index]);
+
+  const colorStyles = {
+    blue: "from-blue-500 to-blue-600 shadow-blue-200 dark:shadow-none",
+    indigo: "from-indigo-500 to-indigo-600 shadow-indigo-200 dark:shadow-none",
+    purple: "from-purple-500 to-purple-600 shadow-purple-200 dark:shadow-none",
+  };
+
+  return (
+    <div className={`bg-white dark:bg-slate-800 rounded-3xl p-6 border border-gray-100 dark:border-slate-700 shadow-xl shadow-slate-100 dark:shadow-none transition-all duration-500 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}>
+      <div className="flex items-center gap-5">
+        <div className={`w-14 h-14 bg-gradient-to-br ${colorStyles[color]} rounded-2xl flex items-center justify-center text-white shadow-lg transform transition-transform group-hover:scale-110`}>
+          <Icon size={24} />
+        </div>
+        <div>
+          <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">{label}</p>
+          <p className="text-3xl font-black text-gray-900 dark:text-white tabular-nums">
+            {animatedValue}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const StudentRow = memo(({ student, onEdit, onDelete }) => (
-  <tr className="group hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors duration-200">
-    <td className="px-6 py-4 whitespace-nowrap">
-      <div className="text-xs font-mono font-bold text-gray-400 dark:text-gray-500 uppercase tracking-tighter">
-        #{(student.id || student._id || "").toString().slice(-6).toUpperCase()}
+  <tr className="group hover:bg-slate-50/50 dark:hover:bg-slate-900/40 transition-all duration-300">
+    <td className="px-6 py-5 whitespace-nowrap">
+      <div className="text-[10px] font-black font-mono text-gray-300 dark:text-gray-600 uppercase tracking-widest bg-gray-50 dark:bg-slate-800 px-2 py-1 rounded-md inline-block">
+        #{(student.id || "").toString().slice(-6).toUpperCase()}
       </div>
     </td>
-    <td className="px-6 py-4 whitespace-nowrap">
+    <td className="px-6 py-5 whitespace-nowrap">
       <div className="flex items-center">
-        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/40 dark:to-indigo-900/40 flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-sm group-hover:scale-110 transition-transform duration-200">
-          <UserIcon size={18} />
+        <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-indigo-100 to-violet-100 dark:from-indigo-900/30 dark:to-violet-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shadow-sm border border-white dark:border-slate-700 group-hover:scale-110 transition-transform duration-300">
+          <UserIcon size={20} />
         </div>
         <div className="ml-4">
-          <div className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400">
+          <div className="text-sm font-black text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
             {student.name}
           </div>
-          <div className="flex items-center text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-            <PhoneIcon size={12} className="mr-1 opacity-70" />
-            {student.phone}
+          <div className="flex items-center text-[11px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider mt-0.5">
+            <MailIcon size={10} className="mr-1.5 opacity-60" />
+            {student.email}
           </div>
         </div>
       </div>
     </td>
-    <td className="px-6 py-4 whitespace-nowrap">
-      <div className="flex items-center text-sm font-medium text-gray-700 dark:text-gray-300">
-        <div className="w-2 h-2 rounded-full bg-blue-500 mr-2" />
+    <td className="px-6 py-5 whitespace-nowrap">
+      <div className="flex items-center text-xs font-bold text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-slate-800 px-3 py-1.5 rounded-xl border border-white dark:border-slate-700 shadow-sm">
+        <DeptIcon size={12} className="mr-2 text-indigo-400" />
         {student.department}
       </div>
     </td>
-    <td className="px-6 py-4 whitespace-nowrap">
-      <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
-        Year {student.year}
+    <td className="px-6 py-5 whitespace-nowrap">
+      <span className="inline-flex items-center px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-100 dark:border-slate-700">
+        Milestone {student.year}
       </span>
     </td>
-    <td className="px-6 py-4 whitespace-nowrap">
-      <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-        <MailIcon size={14} className="mr-2 opacity-70" />
-        {student.email}
-      </div>
-    </td>
-    <td className="px-6 py-4 whitespace-nowrap">
-      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border ${
+    <td className="px-6 py-5 whitespace-nowrap">
+      <span className={`inline-flex items-center px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border shadow-sm ${
         student.status === "Active" 
-          ? "bg-green-50 border-green-200 text-green-700 dark:bg-green-900/40 dark:border-green-800 dark:text-green-400"
-          : "bg-red-50 border-red-200 text-red-700 dark:bg-red-900/40 dark:border-red-800 dark:text-red-400"
+          ? "bg-emerald-50 border-emerald-100 text-emerald-600 dark:bg-emerald-900/20 dark:border-emerald-800 dark:text-emerald-400"
+          : "bg-rose-50 border-rose-100 text-rose-600 dark:bg-rose-900/20 dark:border-rose-800 dark:text-rose-400"
       }`}>
-        {student.status === "Active" ? <CheckCircleIcon size={12} className="mr-1" /> : <XCircleIcon size={12} className="mr-1" />}
+        <div className={`w-1.5 h-1.5 rounded-full mr-2 ${student.status === "Active" ? "bg-emerald-500" : "bg-rose-500"}`} />
         {student.status || "Active"}
       </span>
     </td>
-    <td className="px-6 py-4 whitespace-nowrap text-right">
-      <div className="flex items-center justify-end space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+    <td className="px-6 py-5 whitespace-nowrap text-right">
+      <div className="flex items-center justify-end space-x-1 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
         <button 
           onClick={() => onEdit(student.id)}
-          className="p-2 text-blue-600 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/30 rounded-lg transition-all transform hover:scale-110"
-          title="Edit Profile"
+          className="p-2.5 text-indigo-600 hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-900/30 rounded-xl transition-all shadow-sm border border-transparent hover:border-indigo-100"
+          title="Modify Profile"
         >
           <EditIcon size={16} />
         </button>
         <button 
           onClick={() => onDelete(student.id)}
-          className="p-2 text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30 rounded-lg transition-all transform hover:scale-110"
-          title="Delete Record"
+          className="p-2.5 text-rose-600 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-900/30 rounded-xl transition-all shadow-sm border border-transparent hover:border-rose-100"
+          title="Purge Record"
         >
           <TrashIcon size={16} />
         </button>
@@ -100,21 +147,6 @@ const StudentRow = memo(({ student, onEdit, onDelete }) => (
     </td>
   </tr>
 ));
-
-StudentRow.displayName = "StudentRow";
-StudentRow.propTypes = {
-  student: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    phone: PropTypes.string.isRequired,
-    department: PropTypes.string.isRequired,
-    year: PropTypes.string.isRequired,
-    email: PropTypes.string.isRequired,
-    status: PropTypes.string.isRequired,
-  }).isRequired,
-  onEdit: PropTypes.func.isRequired,
-  onDelete: PropTypes.func.isRequired,
-};
 
 const StudentsList = memo(() => {
   const navigate = useNavigate();
@@ -200,153 +232,138 @@ const StudentsList = memo(() => {
   }, [students]);
 
   return (
-    <div className="min-h-screen p-4 md:p-6 lg:p-8 space-y-8 animate-fade-in">
-      {/* Premium Header */}
-      <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-xl shadow-slate-100 dark:shadow-none p-6 md:p-8 transition-all duration-300">
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-          <div className="flex-1 flex items-center gap-6">
-            <div className="w-16 h-16 bg-gradient-to-br from-indigo-600 to-violet-700 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-200 dark:shadow-none">
-              <GradIcon size={32} className="text-white" />
+    <div className="min-h-screen p-4 md:p-8 space-y-8 animate-fade-in">
+      {/* Premium Header Section */}
+      <div className="bg-white dark:bg-slate-800 rounded-3xl border border-gray-100 dark:border-slate-700 shadow-xl shadow-slate-100 dark:shadow-none p-6 md:p-8 lg:p-10 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-indigo-500/5 to-purple-500/5 rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+        
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8 relative z-10">
+          <div className="flex items-center gap-6">
+            <div className="w-16 h-16 bg-gradient-to-br from-indigo-600 to-violet-700 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-indigo-200 dark:shadow-none transform hover:rotate-3 transition-transform duration-300">
+              <UsersIcon size={32} />
             </div>
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
-                Student Enrollment Center
-              </h1>
-              <p className="text-gray-500 dark:text-gray-400 mt-1 flex items-center">
-                <UsersIcon size={14} className="mr-2" />
-                Manage academic profiles and enrollment status
-              </p>
+              <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">Student Enrollment Center</h1>
+              <p className="text-gray-500 dark:text-gray-400 font-medium mt-1 uppercase tracking-widest text-[11px]">Academic Registry & Entity Management</p>
             </div>
           </div>
           <button 
             onClick={() => navigate("/students/new")} 
-            className="group relative inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-600 to-violet-700 text-white rounded-xl hover:shadow-2xl hover:shadow-indigo-300 dark:hover:shadow-none transition-all duration-300 font-bold overflow-hidden"
+            className="group relative bg-gradient-to-r from-indigo-600 to-violet-700 text-white px-8 py-4 rounded-2xl font-black transition-all hover:shadow-2xl hover:shadow-indigo-300 dark:hover:shadow-none flex items-center shadow-lg uppercase tracking-widest text-xs"
           >
-            <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-            <UserPlusIcon size={20} className="mr-2 group-hover:scale-110 transition-transform" />
-            Enroll Student
+            <UserPlusIcon size={18} className="mr-3 transform group-hover:scale-125 transition-transform" />
+            Registry Enrollment
           </button>
         </div>
       </div>
 
-      {/* Summary Stat Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {[
-          { label: "Total Students", value: stats.total, icon: UsersIcon, color: "blue" },
-          { label: "Departments", value: stats.departments, icon: DeptIcon, color: "purple" },
-          { label: "Active Status", value: stats.active, icon: ActivityIcon, color: "green" },
-        ].map((stat, i) => (
-          <div key={i} className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-all group flex items-center">
-            <div className={`p-4 rounded-xl bg-${stat.color}-50 dark:bg-${stat.color}-900/20 text-${stat.color}-600 dark:text-${stat.color}-400 mr-5 group-hover:rotate-12 transition-transform`}>
-              <stat.icon size={24} />
-            </div>
-            <div>
-              <p className="text-sm text-gray-400 font-semibold uppercase tracking-widest">{stat.label}</p>
-              <p className="text-2xl font-extrabold text-gray-900 dark:text-white leading-none mt-1">{stat.value}</p>
-            </div>
-          </div>
-        ))}
+      {/* Premium Animated Stats Section */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <PremiumStatCard label="Total Entities" value={stats.total} icon={UsersIcon} color="blue" index={0} />
+        <PremiumStatCard label="Active Domains" value={stats.departments} icon={DeptIcon} color="indigo" index={1} />
+        <PremiumStatCard label="Live Status" value={stats.active} icon={ActivityIcon} color="purple" index={2} />
       </div>
 
-      {/* Main Table Area */}
-      <div className="bg-white dark:bg-slate-800 rounded-3xl border border-gray-100 dark:border-slate-700 shadow-sm overflow-hidden">
-        {/* Advanced Filters Toolbar */}
-        <div className="p-5 md:p-8 bg-slate-50/50 dark:bg-slate-800/50 border-b border-gray-100 dark:border-slate-700">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-end">
-            <div className="lg:col-span-5 space-y-2">
-              <label className="text-xs font-bold text-gray-400 uppercase ml-1">Search Registry</label>
-              <div className="relative">
-                <SearchIcon size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="ID, Name or Email address..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-gray-900 dark:text-white shadow-sm"
-                />
-              </div>
-            </div>
-            <div className="lg:col-span-3 space-y-2">
-              <label className="text-xs font-bold text-gray-400 uppercase ml-1">Department</label>
-              <div className="relative">
-                <DeptIcon size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-                <select 
-                  value={department}
-                  onChange={(e) => setDepartment(e.target.value)}
-                  className="w-full pl-9 pr-4 py-3 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none appearance-none text-gray-900 dark:text-white shadow-sm"
-                >
-                  <option value="">All Departments</option>
-                  <option value="Computer Science">Computer Science</option>
-                  <option value="Information Technology">Information Technology</option>
-                  <option value="Electronics">Electronics</option>
-                </select>
-              </div>
-            </div>
-            <div className="lg:col-span-2 space-y-2">
-              <label className="text-xs font-bold text-gray-400 uppercase ml-1">Academic Year</label>
-              <div className="relative">
-                <CalendarIcon size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-                <select 
-                  value={year}
-                  onChange={(e) => setYear(e.target.value)}
-                  className="w-full pl-9 pr-4 py-3 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none appearance-none text-gray-900 dark:text-white shadow-sm"
-                >
-                  <option value="">All Years</option>
-                  <option value="1">1st Year</option>
-                  <option value="2">2nd Year</option>
-                  <option value="3">3rd Year</option>
-                  <option value="4">Final Year</option>
-                </select>
-              </div>
-            </div>
-            <div className="lg:col-span-2">
-              <button 
-                onClick={() => {setSearch(""); setDepartment(""); setYear("");}}
-                className="w-full py-3 px-4 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-xl font-bold flex items-center justify-center transition-all shadow-sm"
-              >
-                <ResetIcon size={18} className="mr-2" /> Reset
-              </button>
-            </div>
+      {/* Advanced Filter Toolbar */}
+      <div className="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-gray-100 dark:border-slate-700 shadow-sm flex flex-wrap gap-8 items-end">
+        <div className="flex-1 min-w-[280px] space-y-2">
+          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Archive Search</label>
+          <div className="relative group">
+            <SearchIcon size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500 transition-colors" />
+            <input
+              type="text"
+              placeholder="Query by name, UUID or digital identity..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-12 pr-4 py-3.5 bg-slate-50 dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl text-sm font-bold text-gray-900 dark:text-white outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all"
+            />
+          </div>
+        </div>
+        
+        <div className="w-64 space-y-2">
+          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Specialization</label>
+          <div className="relative">
+            <DeptIcon size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+            <select 
+              value={department}
+              onChange={(e) => setDepartment(e.target.value)}
+              className="w-full pl-12 pr-4 py-3.5 bg-slate-50 dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl text-sm font-bold outline-none appearance-none focus:ring-4 focus:ring-indigo-500/10 transition-all"
+            >
+              <option value="">All Domains</option>
+              <option value="Computer Science">Computer Science</option>
+              <option value="Information Technology">Information Technology</option>
+              <option value="Electronics">Electronics</option>
+            </select>
           </div>
         </div>
 
+        <div className="w-48 space-y-2">
+          <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Tenure</label>
+          <div className="relative">
+            <CalendarIcon size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+            <select 
+              value={year}
+              onChange={(e) => setYear(e.target.value)}
+              className="w-full pl-12 pr-4 py-3.5 bg-slate-50 dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl text-sm font-bold outline-none appearance-none focus:ring-4 focus:ring-indigo-500/10 transition-all"
+            >
+              <option value="">All Cohorts</option>
+              <option value="1">1st Year</option>
+              <option value="2">2nd Year</option>
+              <option value="3">3rd Year</option>
+              <option value="4">Final Year</option>
+            </select>
+          </div>
+        </div>
+
+        <button 
+          onClick={() => {setSearch(""); setDepartment(""); setYear("");}}
+          className="px-6 py-3.5 text-gray-400 hover:text-rose-500 font-black text-[10px] uppercase tracking-widest transition-colors"
+        >
+          Reset Config
+        </button>
+      </div>
+
+      {/* Premium Table Card */}
+      <div className="bg-white dark:bg-slate-800 rounded-[2.5rem] border border-gray-100 dark:border-slate-700 shadow-xl shadow-slate-100 dark:shadow-none overflow-hidden">
         <div className="overflow-x-auto">
           {loading ? (
-            <div className="p-24 text-center">
-              <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-indigo-100 border-t-indigo-600 mb-4" />
-              <p className="text-gray-400 font-bold tracking-tight">Syncing encrypted records...</p>
+            <div className="p-24 text-center space-y-4">
+              <div className="w-12 h-12 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin mx-auto" />
+              <p className="text-gray-400 font-black tracking-widest text-[10px] uppercase">Retrieving Academic Records...</p>
             </div>
           ) : error ? (
             <div className="p-24 text-center">
-              <XCircleIcon size={64} className="mx-auto text-red-100 mb-6" />
-              <h3 className="text-xl font-bold text-red-600 mb-2">Service Outage</h3>
-              <p className="text-gray-500 mb-6">{error}</p>
-              <button onClick={() => window.location.reload()} className="px-6 py-2 bg-red-100 text-red-600 rounded-lg font-bold hover:bg-red-200 transition-all">Retry Handshake</button>
+              <XCircleIcon size={48} className="text-rose-500 mx-auto mb-4 opacity-20" />
+              <p className="text-rose-500 font-bold">{error}</p>
             </div>
           ) : (
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-slate-50/80 dark:bg-slate-900/40">
-                  <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Entry ID</th>
-                  <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Full Name & Contact</th>
-                  <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Department</th>
-                  <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Academic Year</th>
-                  <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Digital Mailbox</th>
-                  <th className="px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest">Status</th>
-                  <th className="px-6 py-4 text-right text-xs font-bold text-gray-400 uppercase tracking-widest">Operations</th>
+            <table className="w-full text-left">
+              <thead className="bg-slate-50/50 dark:bg-slate-900/50 border-b border-gray-100 dark:border-slate-800">
+                <tr>
+                  <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Archive ID</th>
+                  <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Legal Identity</th>
+                  <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Specialization</th>
+                  <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Phase</th>
+                  <th className="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Health Status</th>
+                  <th className="px-6 py-5 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-slate-700">
+              <tbody className="divide-y divide-gray-50 dark:divide-slate-800">
                 {filteredStudents.length > 0 ? (
                   filteredStudents.map((student) => (
-                    <StudentRow key={student.id} student={student} onEdit={handleEdit} onDelete={handleDelete} />
+                    <StudentRow 
+                      key={student.id} 
+                      student={student} 
+                      onEdit={handleEdit}
+                      onDelete={handleDelete}
+                    />
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="7" className="text-center py-32">
-                      <SearchIcon size={64} className="mx-auto text-slate-100 dark:text-slate-700 mb-6" />
-                      <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">No Matching Profiles</h3>
-                      <p className="text-gray-400 max-w-sm mx-auto">Adjust your search filters or add a new enrollment to populate the registry.</p>
+                    <td colSpan="6" className="p-24 text-center">
+                      <SearchIcon size={64} className="text-gray-200 dark:text-slate-700 mx-auto mb-4" />
+                      <h3 className="text-lg font-bold text-gray-400 dark:text-gray-500">No Entities Located</h3>
+                      <p className="text-sm text-gray-400 mt-1">Refine your query parameters and try again.</p>
                     </td>
                   </tr>
                 )}

@@ -300,7 +300,7 @@ const Dashboard = () => {
             stats: [
               {
                 title: "Total Projects",
-                value: statsData.activeProjects || 0,
+                value: statsData.totalProjects || 0,
                 icon: ChartBarIcon,
                 color: "blue",
                 change: "+12% from last month",
@@ -347,12 +347,12 @@ const Dashboard = () => {
             subtitle: "Guide and evaluate student projects",
             stats: [
               {
-                title: "My Projects",
-                value: statsData.myProjects || 0,
+                title: "Total Projects",
+                value: statsData.totalProjects || 0,
                 icon: ChartBarIcon,
                 color: "blue",
-                change: "+2 new projects",
-                trend: "up",
+                change: `Your projects: ${statsData.myProjects || 0}`,
+                trend: "info",
                 onClick: () => navigate("/projects"),
               },
               {
@@ -395,11 +395,11 @@ const Dashboard = () => {
             subtitle: "Track your projects and progress",
             stats: [
               {
-                title: "My Projects",
-                value: statsData.myProjects || 0,
+                title: "Total Projects",
+                value: statsData.totalProjects || 0,
                 icon: ChartBarIcon,
                 color: "blue",
-                change: "1 active, 1 completed",
+                change: `Your projects: ${statsData.myProjects || 0}`,
                 trend: "info",
                 onClick: () => navigate("/projects"),
               },
@@ -687,8 +687,7 @@ const Dashboard = () => {
               <button
                 onClick={() => {
                   if (user?.role === "admin") navigate("/project-types");
-                  else if (user?.role === "faculty") navigate("/projects");
-                  else navigate("/project-proposal");
+                  else navigate("/projects/new");
                 }}
                 className="group relative inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-xl hover:shadow-xl transition-all duration-300 font-medium shadow-md overflow-hidden"
               >
