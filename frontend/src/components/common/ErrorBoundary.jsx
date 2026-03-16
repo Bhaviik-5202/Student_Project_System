@@ -2,9 +2,9 @@ import { Component } from "react";
 
 /**
  * ErrorBoundary Component
- * 
- * A catch-all security and stability component that intercepts React 
- * rendering errors. Provides a user-friendly fallback UI and allows 
+ *
+ * A catch-all security and stability component that intercepts React
+ * rendering errors. Provides a user-friendly fallback UI and allows
  * for application recovery via controlled state resets.
  */
 class ErrorBoundary extends Component {
@@ -45,7 +45,8 @@ class ErrorBoundary extends Component {
               Something went wrong
             </h2>
             <p className="text-gray-600 dark:text-gray-400 mb-6">
-              We're sorry for the inconvenience. Please try refreshing the page.
+              We are sorry for the inconvenience. Please try refreshing the
+              page.
             </p>
             <button
               onClick={() => window.location.reload()}

@@ -10,6 +10,7 @@ const router = express.Router();
 
 // Controllers and Middlewares
 const projectController = require("../controllers/project.controller");
+const projectTypeController = require("../controllers/projectType.controller");
 const authMiddleware = require("../middleware/auth.middleware");
 const roleMiddleware = require("../middleware/roleMiddleware");
 const validateRequest = require("../middleware/validateRequest");
@@ -56,6 +57,49 @@ router.post(
  * @access  Private (Authenticated Users)
  */
 router.get("/", authMiddleware, projectController.getAllProjects);
+
+/**
+ * @route   GET /api/v1/projects/types
+ * @desc    Retrieve all project types
+ * @access  Private (Authenticated Users)
+ */
+router.get("/types", authMiddleware, projectTypeController.getAllProjectTypes);
+
+/**
+ * @route   POST /api/v1/projects/types
+ * @desc    Create a new project type
+ * @access  Private (Admin/Faculty)
+ */
+router.post(
+  "/types",
+  authMiddleware,
+  roleMiddleware(["admin", "faculty"]),
+  projectTypeController.createProjectType,
+);
+
+/**
+ * @route   PUT /api/v1/projects/types/:id
+ * @desc    Update a project type
+ * @access  Private (Admin/Faculty)
+ */
+router.put(
+  "/types/:id",
+  authMiddleware,
+  roleMiddleware(["admin", "faculty"]),
+  projectTypeController.updateProjectType,
+);
+
+/**
+ * @route   DELETE /api/v1/projects/types/:id
+ * @desc    Delete a project type
+ * @access  Private (Admin/Faculty)
+ */
+router.delete(
+  "/types/:id",
+  authMiddleware,
+  roleMiddleware(["admin", "faculty"]),
+  projectTypeController.deleteProjectType,
+);
 
 /**
  * @route   GET /api/v1/projects/:id

@@ -2,9 +2,9 @@ import { useState, useEffect, memo } from "react";
 
 /**
  * PageTransition Component
- * 
- * Orchestrates fluid entering and exiting animations during SPA 
- * navigation. Utilizes requestAnimationFrame and CSS transforms 
+ *
+ * Orchestrates fluid entering and exiting animations during SPA
+ * navigation. Utilizes requestAnimationFrame and CSS transforms
  * to ensure smooth user experience during route changes.
  */
 const PageTransition = memo(({ children, pathname, shouldAnimate }) => {

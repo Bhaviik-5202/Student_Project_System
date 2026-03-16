@@ -18,7 +18,8 @@ const staffService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to fetch staff member",
+        message:
+          error.response?.data?.message || "Failed to fetch staff member",
       };
     }
   },
@@ -29,7 +30,8 @@ const staffService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to create staff member",
+        message:
+          error.response?.data?.message || "Failed to create staff member",
       };
     }
   },
@@ -40,7 +42,8 @@ const staffService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to update staff member",
+        message:
+          error.response?.data?.message || "Failed to update staff member",
       };
     }
   },
@@ -51,7 +54,8 @@ const staffService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to delete staff member",
+        message:
+          error.response?.data?.message || "Failed to delete staff member",
       };
     }
   },

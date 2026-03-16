@@ -1,15 +1,15 @@
 import { Suspense } from "react";
 import { Navigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../hooks/useAuth";
 import LoadingSpinner from "./LoadingSpinner";
 
 /**
  * ProtectedRoute Component
- * 
- * A route guard wrapper that enforces authentication and role-based 
- * access control (RBAC). Redirects unauthenticated users to login 
+ *
+ * A route guard wrapper that enforces authentication and role-based
+ * access control (RBAC). Redirects unauthenticated users to login
  * and unauthorized users to their respective dashboards.
- * 
+ *
  * @param {React.ReactNode} children - Route content to render
  * @param {Array<string>} allowedRoles - User roles permitted to access this route
  */

@@ -1,7 +1,7 @@
-import React, { useState, memo, useCallback, useMemo } from "react";
+import { useState, memo, useCallback, useMemo } from "react";
 import PropTypes from "prop-types";
 
-const Calendar = memo(({ events = [], onDateClick }) => {
+const Calendar = memo(({ onDateClick }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const calendarData = useMemo(() => {
@@ -176,12 +176,7 @@ const Calendar = memo(({ events = [], onDateClick }) => {
 Calendar.displayName = "Calendar";
 
 Calendar.propTypes = {
-  events: PropTypes.array,
   onDateClick: PropTypes.func,
-};
-
-Calendar.defaultProps = {
-  events: [],
 };
 
 export default Calendar;

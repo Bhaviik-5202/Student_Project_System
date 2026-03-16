@@ -14,7 +14,8 @@ const analyticsService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to fetch dashboard stats",
+        message:
+          error.response?.data?.message || "Failed to fetch dashboard stats",
       };
     }
   },
@@ -28,7 +29,8 @@ const analyticsService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to fetch faculty stats",
+        message:
+          error.response?.data?.message || "Failed to fetch faculty stats",
       };
     }
   },
@@ -42,7 +44,8 @@ const analyticsService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to fetch student stats",
+        message:
+          error.response?.data?.message || "Failed to fetch student stats",
       };
     }
   },
@@ -56,7 +59,8 @@ const analyticsService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to fetch project analytics",
+        message:
+          error.response?.data?.message || "Failed to fetch project analytics",
       };
     }
   },
@@ -70,7 +74,8 @@ const analyticsService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to fetch user analytics",
+        message:
+          error.response?.data?.message || "Failed to fetch user analytics",
       };
     }
   },

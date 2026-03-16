@@ -1,8 +1,8 @@
 /**
  * SplashScreen Component
- * 
- * A high-fidelity, animated loading screen shown during application 
- * initialization. Features complex SVG animations, themed glassmorphism, 
+ *
+ * A high-fidelity, animated loading screen shown during application
+ * initialization. Features complex SVG animations, themed glassmorphism,
  * and multi-stage initialization progress tracking.
  */
 const SplashScreen = () => (

@@ -1,7 +1,6 @@
-import React, {
+import {
   createContext,
   useState,
-  useContext,
   useEffect,
   useCallback,
   useMemo,
@@ -33,13 +32,7 @@ const STORAGE_KEYS = Object.freeze({
  * @throws {Error} If used outside of AuthProvider
  * @returns {Object} Auth context value
  */
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
-};
+// useAuth has been moved to useAuth.js for Fast Refresh compatibility.
 
 /**
  * AuthProvider component that wraps the application and provides auth state
@@ -167,31 +160,37 @@ export const AuthProvider = ({ children }) => {
    * @param {string} password - User password
    * @returns {Promise<Object>} Status of the login attempt
    */
-  const login = useCallback(async (email, password) => {
-    try {
-      setIsLoading(true);
-      if (!email || !password) {
-        return { success: false, message: "Email and password are required" };
+  const login = useCallback(
+    async (email, password) => {
+      try {
+        setIsLoading(true);
+        if (!email || !password) {
+          return { success: false, message: "Email and password are required" };
+        }
+        const res = await authService.login(email, password);
+        if (res.success) {
+          const { user, token } = res.data;
+          setUser(user);
+          setIsAuthenticated(true);
+          safeLocalStorage.setItem(
+            STORAGE_KEYS.TIMESTAMP,
+            Date.now().toString(),
+          );
+          return { success: true, user, token };
+        } else {
+          return { success: false, message: res.message || "Login failed" };
+        }
+      } catch (error) {
+        return {
+          success: false,
+          message: error.message || "Login failed. Please try again.",
+        };
+      } finally {
+        setIsLoading(false);
       }
-      const res = await authService.login(email, password);
-      if (res.success) {
-        const { user, token } = res.data;
-        setUser(user);
-        setIsAuthenticated(true);
-        safeLocalStorage.setItem(STORAGE_KEYS.TIMESTAMP, Date.now().toString());
-        return { success: true, user, token };
-      } else {
-        return { success: false, message: res.message || "Login failed" };
-      }
-    } catch (error) {
-      return {
-        success: false,
-        message: error.message || "Login failed. Please try again.",
-      };
-    } finally {
-      setIsLoading(false);
-    }
-  }, [safeLocalStorage]);
+    },
+    [safeLocalStorage],
+  );
 
   /**
    * Log out from the application
@@ -247,10 +246,7 @@ export const AuthProvider = ({ children }) => {
         const res = await authService.updateProfile(userData);
         if (res.success) {
           setUser(res.data);
-          safeLocalStorage.setItem(
-            STORAGE_KEYS.USER,
-            JSON.stringify(res.data),
-          );
+          safeLocalStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(res.data));
           toast.success("Profile updated successfully");
           return { success: true, user: res.data };
         } else {

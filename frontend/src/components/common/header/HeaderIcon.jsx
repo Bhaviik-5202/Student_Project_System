@@ -2,9 +2,9 @@ import PropTypes from "prop-types";
 
 /**
  * HeaderIcon Component
- * 
- * A specialized utility for rendering FontAwesome icons within the 
- * application header. Ensures consistent sizing, weight, and 
+ *
+ * A specialized utility for rendering FontAwesome icons within the
+ * application header. Ensures consistent sizing, weight, and
  * accessibility attributes across global navigation elements.
  */
 const HeaderIcon = ({ name, className = "", size = "text-base" }) => (

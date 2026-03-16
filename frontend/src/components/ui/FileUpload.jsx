@@ -1,4 +1,4 @@
-import React, { useState, memo, useCallback } from "react";
+import { useState, memo, useCallback } from "react";
 import PropTypes from "prop-types";
 
 const FileUpload = memo(({ onUpload, accept = "*", multiple = false }) => {

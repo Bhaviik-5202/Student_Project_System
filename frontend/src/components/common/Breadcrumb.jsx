@@ -1,12 +1,11 @@
 import React, { memo, useMemo } from "react";
-import PropTypes from "prop-types";
 import { useLocation, Link } from "react-router-dom";
 
 /**
  * Breadcrumb Component
- * 
- * An auto-generating navigation trail based on the current URL path. 
- * Maps route segments to human-readable labels and provides 
+ *
+ * An auto-generating navigation trail based on the current URL path.
+ * Maps route segments to human-readable labels and provides
  * accessible, hierarchical links for application depth tracking.
  */
 const Breadcrumb = memo(() => {

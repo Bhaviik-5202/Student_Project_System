@@ -1,43 +1,15 @@
-import React, {
-  createContext,
-  useState,
-  useContext,
-  useCallback,
-  useRef,
-  useMemo,
-} from "react";
+import { createContext, useState, useCallback, useRef, useMemo } from "react";
 
 /**
  * Context for managing global application notifications (toasts)
  */
 const NotificationContext = createContext(null);
 
-/**
- * Supported notification variants
- */
-const NOTIFICATION_TYPES = Object.freeze({
-  SUCCESS: "success",
-  ERROR: "error",
-  WARNING: "warning",
-  INFO: "info",
-});
+import { NOTIFICATION_TYPES } from "./notificationUtils";
 
 const DEFAULT_DURATION = 5000;
 const MAX_NOTIFICATIONS = 5;
 
-/**
- * Hook to trigger notifications from any component
- * @returns {Object} Notification methods (success, error, warning, info)
- */
-export const useNotification = () => {
-  const context = useContext(NotificationContext);
-  if (!context) {
-    throw new Error("useNotification must be used within NotificationProvider");
-  }
-  return context;
-};
-
-export { NOTIFICATION_TYPES };
 export default NotificationContext;
 
 /**

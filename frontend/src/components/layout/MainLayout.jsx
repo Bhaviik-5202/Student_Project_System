@@ -28,11 +28,19 @@ const MainLayout = () => {
 
   useEffect(() => {
     document.body.style.overflow = isMobileMenuOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [isMobileMenuOpen]);
 
-  const handleMobileMenuToggle = useCallback(() => setIsMobileMenuOpen(prev => !prev), []);
-  const handleCloseMobileMenu = useCallback(() => setIsMobileMenuOpen(false), []);
+  const handleMobileMenuToggle = useCallback(
+    () => setIsMobileMenuOpen((prev) => !prev),
+    [],
+  );
+  const handleCloseMobileMenu = useCallback(
+    () => setIsMobileMenuOpen(false),
+    [],
+  );
 
   const shouldAnimate = !location.pathname.includes("/chat");
 
@@ -59,10 +67,22 @@ const MainLayout = () => {
             </nav>
           )}
 
-          <main id="main-content" className="flex-1 px-4 md:px-6 py-4 pb-6 relative z-0">
+          <main
+            id="main-content"
+            className="flex-1 px-4 md:px-6 py-4 pb-6 relative z-0"
+          >
             <ErrorBoundary>
-              <Suspense fallback={<div className="flex items-center justify-center min-h-[50vh]"><LoadingSpinner size="lg" /></div>}>
-                <PageTransition pathname={location.pathname} shouldAnimate={shouldAnimate}>
+              <Suspense
+                fallback={
+                  <div className="flex items-center justify-center min-h-[50vh]">
+                    <LoadingSpinner size="lg" />
+                  </div>
+                }
+              >
+                <PageTransition
+                  pathname={location.pathname}
+                  shouldAnimate={shouldAnimate}
+                >
                   <Outlet />
                 </PageTransition>
               </Suspense>

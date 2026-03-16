@@ -8,7 +8,7 @@
  */
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../../hooks/useAuth";
 import { toast } from "react-hot-toast";
 import { Fragment } from "react";
 import RecentActivity from "./RecentActivity";
@@ -704,7 +704,22 @@ const Dashboard = () => {
               </button>
 
               <button
-                onClick={() => toast.info("Export feature coming soon!")}
+                onClick={() => {
+                  try {
+                    const { exportDashboardToCSV } = require("../../../utils/exportUtils");
+                    exportDashboardToCSV(dashboardData, user?.role || "user");
+                    toast.success("Report generated successfully!");
+                  } catch (error) {
+                    // Fallback for direct import if require fails in this environment
+                    import("../../../utils/exportUtils").then(module => {
+                      module.exportDashboardToCSV(dashboardData, user?.role || "user");
+                      toast.success("Report generated successfully!");
+                    }).catch(err => {
+                      console.error("Export failed:", err);
+                      toast.error("Failed to generate report");
+                    });
+                  }
+                }}
                 className="group relative inline-flex items-center px-5 py-2.5 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 rounded-xl hover:border-transparent hover:shadow-lg transition-all duration-300 font-medium overflow-hidden"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-gray-100 to-gray-50 dark:from-slate-700 dark:to-slate-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

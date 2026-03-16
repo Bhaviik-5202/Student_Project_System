@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState, memo } from "react";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { Loader2, User, Mail, Phone, Building, GraduationCap, FileText, Camera, X, Save, Settings, Shield, Bell, Key, Activity, Github, Globe, Linkedin } from "lucide-react";

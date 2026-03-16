@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState, memo, useEffect } from "react";
-import { useTheme } from "../../../context/ThemeContext";
+import { useTheme } from "../../../hooks/useTheme";
 
 /**
  * Settings Component

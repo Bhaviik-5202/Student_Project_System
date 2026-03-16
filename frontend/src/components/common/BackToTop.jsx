@@ -1,11 +1,10 @@
-import React, { memo, useCallback } from "react";
-import PropTypes from "prop-types";
+import { memo, useCallback } from "react";
 
 /**
  * BackToTop Component
- * 
- * A sticky accessibility button that provides a smooth-scrolling 
- * return to the top of the viewport. Features gradient styling 
+ *
+ * A sticky accessibility button that provides a smooth-scrolling
+ * return to the top of the viewport. Features gradient styling
  * and hover-driven scale animations for subtle user engagement.
  */
 const BackToTop = memo(() => {

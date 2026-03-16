@@ -1,51 +1,8 @@
-import React, {
-  createContext,
-  useState,
-  useContext,
-  useEffect,
-  useCallback,
-  useMemo,
-} from "react";
-
-/**
- * Theme Context for managing light/dark mode and system preferences
- */
-const ThemeContext = createContext(null);
-
-/**
- * User-selectable theme modes
- */
-const THEME_MODES = Object.freeze({
-  LIGHT: "light",
-  DARK: "dark",
-  AUTO: "auto",
-});
-
-/**
- * Actual UI theme states
- */
-const THEMES = Object.freeze({
-  LIGHT: "light",
-  DARK: "dark",
-});
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { ThemeContext, THEMES, THEME_MODES } from "./themeContextUtils";
 
 const THEME_STORAGE_KEY = "app_theme_mode";
 const DARK_MODE_QUERY = "(prefers-color-scheme: dark)";
-
-/**
- * Hook to access and control the application theme
- * @returns {Object} Theme state and control methods
- */
-export const useTheme = () => {
-  const context = useContext(ThemeContext);
-  if (!context) {
-    throw new Error("useTheme must be used within ThemeProvider");
-  }
-  return context;
-};
-
-export { THEMES, THEME_MODES };
-export default ThemeContext;
 
 /**
  * Provider component for theme management logic
@@ -207,7 +164,10 @@ export const ThemeProvider = ({ children }) => {
   }, [safeLocalStorage]);
 
   const isAutoMode = useMemo(() => themeMode === THEME_MODES.AUTO, [themeMode]);
-  const isDarkMode = useMemo(() => appliedTheme === THEMES.DARK, [appliedTheme]);
+  const isDarkMode = useMemo(
+    () => appliedTheme === THEMES.DARK,
+    [appliedTheme],
+  );
 
   const contextValue = useMemo(
     () => ({

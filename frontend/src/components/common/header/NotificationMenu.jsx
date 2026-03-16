@@ -3,12 +3,17 @@ import HeaderIcon from "./HeaderIcon";
 
 /**
  * NotificationMenu Component
- * 
- * A sophisticated dropdown menu for displaying user-specific 
- * system alerts. Features read/unread state management, bulk 
+ *
+ * A sophisticated dropdown menu for displaying user-specific
+ * system alerts. Features read/unread state management, bulk
  * dismissal actions, and direct links to the full notification center.
  */
-const NotificationMenu = ({ notifications, unreadCount, onMarkAllAsRead, onClose }) => {
+const NotificationMenu = ({
+  notifications,
+  unreadCount,
+  onMarkAllAsRead,
+  onClose,
+}) => {
   return (
     <>
       <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
@@ -43,18 +48,30 @@ const NotificationMenu = ({ notifications, unreadCount, onMarkAllAsRead, onClose
             <div
               key={notification.id}
               className={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 border-l-4 transition-colors cursor-pointer ${
-                notification.read ? "border-transparent" : "border-blue-500 bg-blue-50/50 dark:bg-blue-900/10"
+                notification.read
+                  ? "border-transparent"
+                  : "border-blue-500 bg-blue-50/50 dark:bg-blue-900/10"
               }`}
             >
               <div className="flex items-start gap-3">
-                <div className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center ${notification.bgColor}`}>
-                  <HeaderIcon name={notification.icon} className={notification.color} size="text-sm" />
+                <div
+                  className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center ${notification.bgColor}`}
+                >
+                  <HeaderIcon
+                    name={notification.icon}
+                    className={notification.color}
+                    size="text-sm"
+                  />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className={`text-sm font-medium ${notification.read ? "text-gray-700 dark:text-gray-300" : "text-gray-900 dark:text-white"}`}>
+                  <p
+                    className={`text-sm font-medium ${notification.read ? "text-gray-700 dark:text-gray-300" : "text-gray-900 dark:text-white"}`}
+                  >
                     {notification.title}
                   </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{notification.time}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                    {notification.time}
+                  </p>
                 </div>
                 {!notification.read && (
                   <div className="flex-shrink-0 mt-1">
@@ -66,8 +83,14 @@ const NotificationMenu = ({ notifications, unreadCount, onMarkAllAsRead, onClose
           ))
         ) : (
           <div className="px-4 py-8 text-center">
-            <HeaderIcon name="bell-slash" className="text-gray-300 dark:text-gray-600 mb-2" size="text-3xl" />
-            <p className="text-sm text-gray-500 dark:text-gray-400">No new notifications</p>
+            <HeaderIcon
+              name="bell-slash"
+              className="text-gray-300 dark:text-gray-600 mb-2"
+              size="text-3xl"
+            />
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              No new notifications
+            </p>
           </div>
         )}
       </div>

@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect, useCallback, useMemo, memo } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
-import { useAuth } from "../../context/AuthContext";
-import { useTheme } from "../../context/ThemeContext";
+import { useAuth } from "../../hooks/useAuth";
+import { useTheme } from "../../hooks/useTheme";
 import Calendar from "../ui/Calendar";
 import HeaderIcon from "./header/HeaderIcon";
 import SearchBar from "./header/SearchBar";
@@ -12,15 +12,14 @@ import QuickAddMenu from "./header/QuickAddMenu";
 
 /**
  * Header Component
- * 
- * Main application header featuring global search (Ctrl+K), quick 
- * role-based action menus, notification alerts, an integrated 
+ *
+ * Main application header featuring global search (Ctrl+K), quick
+ * role-based action menus, notification alerts, an integrated
  * project calendar, and user profile management.
  */
 const Header = memo(
   ({
     isScrolled = false,
-    notificationCount = 0,
     clearNotifications = () => {},
     onMobileMenuToggle,
     isMobileMenuOpen = false,
@@ -45,7 +44,10 @@ const Header = memo(
 
     // Mock notifications data (should ideally come from a hook/context)
     const notifications = useMemo(() => [], []);
-    const unreadCount = useMemo(() => notifications.filter((n) => !n.read).length, [notifications]);
+    const unreadCount = useMemo(
+      () => notifications.filter((n) => !n.read).length,
+      [notifications],
+    );
 
     const closeAllDropdowns = useCallback(() => {
       setShowUserMenu(false);
@@ -58,14 +60,22 @@ const Header = memo(
     // Outside click handler
     useEffect(() => {
       const handleClickOutside = (event) => {
-        if (userMenuRef.current && !userMenuRef.current.contains(event.target)) setShowUserMenu(false);
-        if (notificationsRef.current && !notificationsRef.current.contains(event.target)) setShowNotifications(false);
-        if (quickAddRef.current && !quickAddRef.current.contains(event.target)) setShowQuickAdd(false);
-        if (calendarRef.current && !calendarRef.current.contains(event.target)) setShowCalendar(false);
+        if (userMenuRef.current && !userMenuRef.current.contains(event.target))
+          setShowUserMenu(false);
+        if (
+          notificationsRef.current &&
+          !notificationsRef.current.contains(event.target)
+        )
+          setShowNotifications(false);
+        if (quickAddRef.current && !quickAddRef.current.contains(event.target))
+          setShowQuickAdd(false);
+        if (calendarRef.current && !calendarRef.current.contains(event.target))
+          setShowCalendar(false);
       };
 
       document.addEventListener("mousedown", handleClickOutside);
-      return () => document.removeEventListener("mousedown", handleClickOutside);
+      return () =>
+        document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
     // Keyboard shortcuts
@@ -88,14 +98,20 @@ const Header = memo(
     }, [location.pathname, closeAllDropdowns]);
 
     const getRoleLabel = useCallback(() => {
-      const roles = { admin: "Administrator", faculty: "Faculty Member", student: "Student" };
+      const roles = {
+        admin: "Administrator",
+        faculty: "Faculty Member",
+        student: "Student",
+      };
       return roles[user?.role] || "User";
     }, [user?.role]);
 
     const getUserInitials = useCallback(() => {
       if (!user?.name) return "U";
       const parts = user.name.split(" ");
-      return (parts[0][0] + (parts[1] ? parts[1][0] : "")).toUpperCase().slice(0, 2);
+      return (parts[0][0] + (parts[1] ? parts[1][0] : ""))
+        .toUpperCase()
+        .slice(0, 2);
     }, [user?.name]);
 
     const getPageTitle = useCallback(() => {
@@ -111,7 +127,10 @@ const Header = memo(
         settings: "Settings",
       };
 
-      return titles[path] || path.replace("-", " ").replace(/\b\w/g, (l) => l.toUpperCase());
+      return (
+        titles[path] ||
+        path.replace("-", " ").replace(/\b\w/g, (l) => l.toUpperCase())
+      );
     }, [location.pathname]);
 
     const quickAddActions = useMemo(() => {
@@ -152,15 +171,18 @@ const Header = memo(
       return baseActions;
     }, [user?.role]);
 
-    const handleQuickAction = useCallback((path) => {
-      setShowQuickAdd(false);
-      navigate(path);
-    }, [navigate]);
+    const handleQuickAction = useCallback(
+      (path) => {
+        setShowQuickAdd(false);
+        navigate(path);
+      },
+      [navigate],
+    );
 
     const Dropdown = ({ isOpen, children, className = "" }) => {
       if (!isOpen) return null;
       return (
-        <div 
+        <div
           className={`absolute top-full right-0 mt-2 w-72 sm:w-80 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden dropdown-enter z-[9999] ${className}`}
         >
           {children}
@@ -170,7 +192,9 @@ const Header = memo(
 
     return (
       <>
-        <header className={`sticky top-0 z-[100] w-full h-16 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md transition-all duration-300 ${isScrolled ? "shadow-lg dark:shadow-gray-800/50" : "border-b border-gray-200/80 dark:border-gray-700/80"}`}>
+        <header
+          className={`sticky top-0 z-[100] w-full h-16 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md transition-all duration-300 ${isScrolled ? "shadow-lg dark:shadow-gray-800/50" : "border-b border-gray-200/80 dark:border-gray-700/80"}`}
+        >
           <div className="w-full px-4 lg:px-6 h-full">
             <div className="flex items-center justify-between h-full gap-4">
               {/* Logo Section */}
@@ -180,15 +204,26 @@ const Header = memo(
                   className="lg:hidden p-2 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
                   aria-label="Toggle mobile menu"
                 >
-                  <HeaderIcon name={isMobileMenuOpen ? "xmark" : "bars"} size="text-xl" />
+                  <HeaderIcon
+                    name={isMobileMenuOpen ? "xmark" : "bars"}
+                    size="text-xl"
+                  />
                 </button>
                 <Link to="/dashboard" className="flex items-center gap-3 group">
                   <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-700 rounded-xl flex items-center justify-center shadow-lg">
-                    <HeaderIcon name="graduation-cap" className="text-white" size="text-lg" />
+                    <HeaderIcon
+                      name="graduation-cap"
+                      className="text-white"
+                      size="text-lg"
+                    />
                   </div>
                   <div className="hidden sm:block">
-                    <h1 className="text-base font-bold text-gray-900 dark:text-white leading-tight">Student Project System</h1>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">{getPageTitle()}</p>
+                    <h1 className="text-base font-bold text-gray-900 dark:text-white leading-tight">
+                      Student Project System
+                    </h1>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                      {getPageTitle()}
+                    </p>
                   </div>
                 </Link>
               </div>
@@ -210,20 +245,29 @@ const Header = memo(
 
                 <div className="hidden md:block relative" ref={quickAddRef}>
                   <button
-                    onClick={() => { closeAllDropdowns(); setShowQuickAdd(!showQuickAdd); }}
+                    onClick={() => {
+                      closeAllDropdowns();
+                      setShowQuickAdd(!showQuickAdd);
+                    }}
                     className={`p-2.5 rounded-xl transition-all ${showQuickAdd ? "bg-blue-100 dark:bg-blue-900/40 text-blue-600" : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"}`}
                     aria-label="Quick Actions"
                   >
                     <HeaderIcon name="plus" size="text-lg" />
                   </button>
                   <Dropdown isOpen={showQuickAdd} className="w-60">
-                    <QuickAddMenu actions={quickAddActions} onActionClick={handleQuickAction} />
+                    <QuickAddMenu
+                      actions={quickAddActions}
+                      onActionClick={handleQuickAction}
+                    />
                   </Dropdown>
                 </div>
 
                 <div className="hidden md:block relative" ref={calendarRef}>
                   <button
-                    onClick={() => { closeAllDropdowns(); setShowCalendar(!showCalendar); }}
+                    onClick={() => {
+                      closeAllDropdowns();
+                      setShowCalendar(!showCalendar);
+                    }}
                     className={`p-2.5 rounded-xl transition-all ${showCalendar ? "bg-blue-100 dark:bg-blue-900/40 text-blue-600" : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"}`}
                     aria-label="Calendar"
                   >
@@ -231,7 +275,14 @@ const Header = memo(
                   </button>
                   {showCalendar && (
                     <div className="absolute top-full right-0 mt-2 z-50 animate-dropdown">
-                      <Calendar onDateClick={(date) => { setShowCalendar(false); navigate(`/meetings?date=${date.toISOString().split("T")[0]}`); }} />
+                      <Calendar
+                        onDateClick={(date) => {
+                          setShowCalendar(false);
+                          navigate(
+                            `/meetings?date=${date.toISOString().split("T")[0]}`,
+                          );
+                        }}
+                      />
                     </div>
                   )}
                 </div>
@@ -241,12 +292,18 @@ const Header = memo(
                   className="hidden sm:flex p-2.5 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl"
                   aria-label="Toggle theme"
                 >
-                  <HeaderIcon name={isDarkMode ? "sun" : "moon"} size="text-lg" />
+                  <HeaderIcon
+                    name={isDarkMode ? "sun" : "moon"}
+                    size="text-lg"
+                  />
                 </button>
 
                 <div className="relative" ref={notificationsRef}>
                   <button
-                    onClick={() => { closeAllDropdowns(); setShowNotifications(!showNotifications); }}
+                    onClick={() => {
+                      closeAllDropdowns();
+                      setShowNotifications(!showNotifications);
+                    }}
                     className={`relative p-2.5 rounded-xl transition-all ${showNotifications ? "bg-blue-100 dark:bg-blue-900/40 text-blue-600" : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"}`}
                     aria-label="Notifications"
                   >
@@ -260,10 +317,13 @@ const Header = memo(
                     )}
                   </button>
                   <Dropdown isOpen={showNotifications} className="w-80 sm:w-96">
-                    <NotificationMenu 
-                      notifications={notifications} 
-                      unreadCount={unreadCount} 
-                      onMarkAllAsRead={() => { clearNotifications(); setShowNotifications(false); }}
+                    <NotificationMenu
+                      notifications={notifications}
+                      unreadCount={unreadCount}
+                      onMarkAllAsRead={() => {
+                        clearNotifications();
+                        setShowNotifications(false);
+                      }}
                       onClose={() => setShowNotifications(false)}
                     />
                   </Dropdown>
@@ -271,23 +331,32 @@ const Header = memo(
 
                 <div className="relative" ref={userMenuRef}>
                   <button
-                    onClick={() => { closeAllDropdowns(); setShowUserMenu(!showUserMenu); }}
+                    onClick={() => {
+                      closeAllDropdowns();
+                      setShowUserMenu(!showUserMenu);
+                    }}
                     className="flex items-center gap-3 p-1.5 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 focus:ring-2 focus:ring-blue-500/50"
                   >
                     <div className="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
-                      <span className="text-white font-bold text-sm">{getUserInitials()}</span>
+                      <span className="text-white font-bold text-sm">
+                        {getUserInitials()}
+                      </span>
                     </div>
                     <div className="hidden lg:block text-left">
-                      <p className="text-sm font-semibold text-gray-900 dark:text-white truncate max-w-[100px]">{user?.name || "User"}</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[100px]">{getRoleLabel()}</p>
+                      <p className="text-sm font-semibold text-gray-900 dark:text-white truncate max-w-[100px]">
+                        {user?.name || "User"}
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-[100px]">
+                        {getRoleLabel()}
+                      </p>
                     </div>
                   </button>
                   <Dropdown isOpen={showUserMenu}>
-                    <UserMenu 
-                      user={user} 
-                      initials={getUserInitials()} 
-                      onLogout={logout} 
-                      onClose={() => setShowUserMenu(false)} 
+                    <UserMenu
+                      user={user}
+                      initials={getUserInitials()}
+                      onLogout={logout}
+                      onClose={() => setShowUserMenu(false)}
                     />
                   </Dropdown>
                 </div>
@@ -297,22 +366,42 @@ const Header = memo(
         </header>
 
         {showSearch && (
-          <div className="fixed inset-0 z-[200] bg-black/60 backdrop-blur-sm flex items-start justify-center pt-16 px-4" onClick={(e) => e.target === e.currentTarget && setShowSearch(false)}>
+          <div
+            className="fixed inset-0 z-[200] bg-black/60 backdrop-blur-sm flex items-start justify-center pt-16 px-4"
+            onClick={(e) =>
+              e.target === e.currentTarget && setShowSearch(false)
+            }
+          >
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-lg animate-dropdown border border-gray-100 dark:border-gray-700 p-4">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                  <HeaderIcon name="magnifying-glass" className="text-blue-500" size="text-sm" />
+                  <HeaderIcon
+                    name="magnifying-glass"
+                    className="text-blue-500"
+                    size="text-sm"
+                  />
                   Search
                 </h3>
-                <button onClick={() => setShowSearch(false)} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl"><HeaderIcon name="xmark" size="text-lg" /></button>
+                <button
+                  onClick={() => setShowSearch(false)}
+                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl"
+                >
+                  <HeaderIcon name="xmark" size="text-lg" />
+                </button>
               </div>
-              <SearchBar onSearch={(q) => { console.log("Search:", q); setShowSearch(false); }} isMobile={true} />
+              <SearchBar
+                onSearch={(q) => {
+                  console.log("Search:", q);
+                  setShowSearch(false);
+                }}
+                isMobile={true}
+              />
             </div>
           </div>
         )}
       </>
     );
-  }
+  },
 );
 
 Header.displayName = "Header";

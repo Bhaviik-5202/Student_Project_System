@@ -62,7 +62,8 @@ const submissionService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to fetch submission history",
+        message:
+          error.response?.data?.message || "Failed to fetch submission history",
       };
     }
   },

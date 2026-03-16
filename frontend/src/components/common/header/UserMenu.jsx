@@ -3,12 +3,12 @@ import HeaderIcon from "./HeaderIcon";
 
 /**
  * UserMenu Component
- * 
- * An advanced user identity and navigation hub. Displays profile 
- * metadata, provides quick links to personal settings and admin panels, 
+ *
+ * An advanced user identity and navigation hub. Displays profile
+ * metadata, provides quick links to personal settings and admin panels,
  * and handles secure session termination.
  */
-const UserMenu = ({ user, initials, roleLabel, onLogout, onClose }) => {
+const UserMenu = ({ user, initials, onLogout, onClose }) => {
   return (
     <div className="py-2">
       {/* User Info Header */}
@@ -83,7 +83,11 @@ const UserMenu = ({ user, initials, roleLabel, onLogout, onClose }) => {
           className="flex items-center w-full px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 group transition-colors"
         >
           <div className="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-900/30 flex items-center justify-center mr-3 group-hover:bg-red-100 dark:group-hover:bg-red-900/50 transition-colors">
-            <HeaderIcon name="right-from-bracket" className="text-red-500" size="text-sm" />
+            <HeaderIcon
+              name="right-from-bracket"
+              className="text-red-500"
+              size="text-sm"
+            />
           </div>
           <span className="font-medium">Sign Out</span>
         </button>

@@ -15,7 +15,7 @@ const authService = {
   login: async (email, password) => {
     try {
       const response = await api.post("/auth/login", { email, password });
-      
+
       // The interceptor now returns the standardized object { success, message, data }
       if (response.success && response.data) {
         const { token, user } = response.data;
@@ -23,7 +23,7 @@ const authService = {
         localStorage.setItem(LOCAL_STORAGE_KEYS.USER, JSON.stringify(user));
         localStorage.setItem(LOCAL_STORAGE_KEYS.USER_ROLE, user.role);
       }
-      
+
       return response;
     } catch (error) {
       return {
@@ -233,7 +233,10 @@ const authService = {
           localStorage.setItem(LOCAL_STORAGE_KEYS.TOKEN, token);
         }
         if (newRefreshToken) {
-          localStorage.setItem(LOCAL_STORAGE_KEYS.REFRESH_TOKEN, newRefreshToken);
+          localStorage.setItem(
+            LOCAL_STORAGE_KEYS.REFRESH_TOKEN,
+            newRefreshToken,
+          );
         }
       }
 

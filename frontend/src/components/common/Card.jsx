@@ -1,11 +1,11 @@
-import React, { memo } from "react";
+import { memo } from "react";
 import PropTypes from "prop-types";
 
 /**
  * Card Component
- * 
- * A fundamental layout primitive for grouping related content. 
- * Supports theme-adaptive shadows, dark-mode specific elevation, 
+ *
+ * A fundamental layout primitive for grouping related content.
+ * Supports theme-adaptive shadows, dark-mode specific elevation,
  * and optional hover-state transformations for interactive tiles.
  */
 const Card = memo(({ children, className = "", hoverable = false }) => {
