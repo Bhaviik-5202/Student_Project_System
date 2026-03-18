@@ -1,7 +1,10 @@
 import React, { useState, useMemo, useCallback, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import api from "../../../utils/api";
 
 const PortfolioView = () => {
+  const navigate = useNavigate();
+  const { id } = useParams();
   const [activeTab, setActiveTab] = useState("overview");
 
   const [portfolioData, setPortfolioData] = useState({
@@ -165,7 +168,10 @@ const PortfolioView = () => {
                       ))}
                     </div>
                     <div className="flex space-x-2">
-                      <button className="flex-1 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm">
+                      <button 
+                        onClick={() => navigate(`/projects/${project.id || project._id}`)}
+                        className="flex-1 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm"
+                      >
                         View Details
                       </button>
                       <button className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50">

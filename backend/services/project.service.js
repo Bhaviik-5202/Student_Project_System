@@ -66,7 +66,9 @@ exports.getAll = async ({ page = 1, limit = 10, filters = {} } = {}) => {
  */
 exports.getById = async (id) => {
   try {
-    const project = await projectRepository.findById(id);
+    const project = await projectRepository.findById(id, {
+      populate: "guide members",
+    });
     if (!project) return response(true, null, "Project not found");
     return response(false, project, "Project fetched successfully");
   } catch (err) {

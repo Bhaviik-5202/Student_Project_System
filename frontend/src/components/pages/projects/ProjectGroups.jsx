@@ -1,8 +1,10 @@
 import React, { memo, useMemo, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../../../utils/api";
 import PropTypes from "prop-types";
 
 const GroupCard = memo(({ group }) => {
+  const navigate = useNavigate();
   const isActive = group.status === "Active";
   const statusClass = isActive
     ? "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200"
@@ -33,7 +35,10 @@ const GroupCard = memo(({ group }) => {
           </p>
         </div>
         <div className="flex space-x-2">
-          <button className="px-3 py-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
+          <button 
+            onClick={() => navigate(`/projects/${group.projectId || group.id || group._id}`)}
+            className="px-3 py-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+          >
             View Details
           </button>
           <button className="px-3 py-1 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">

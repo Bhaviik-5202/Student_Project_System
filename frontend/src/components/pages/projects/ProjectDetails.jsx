@@ -158,7 +158,21 @@ const ProjectDetails = memo(() => {
                 Team Members
               </h2>
               <div className="space-y-3">
-                {Array.isArray(project.teamMembers) ? (
+                {Array.isArray(project.members) && project.members.length > 0 ? (
+                  project.members.map((member, index) => (
+                    <div key={member._id || index} className="flex items-center">
+                      <div className="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full mr-3 overflow-hidden flex items-center justify-center text-sm font-medium text-gray-600 dark:text-gray-300">
+                        {member.name ? member.name.charAt(0).toUpperCase() : (typeof member === 'string' ? member.charAt(0).toUpperCase() : 'U')}
+                      </div>
+                      <div>
+                        <span className="font-medium text-gray-900 dark:text-white block">
+                          {member.name || member}
+                        </span>
+                        {member.rollNumber && <span className="text-xs text-gray-500 dark:text-gray-400">{member.rollNumber}</span>}
+                      </div>
+                    </div>
+                  ))
+                ) : Array.isArray(project.teamMembers) ? (
                   project.teamMembers.map((member, index) => (
                     <div key={index} className="flex items-center">
                       <div className="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full mr-3 overflow-hidden flex items-center justify-center text-sm font-medium text-gray-600 dark:text-gray-300">

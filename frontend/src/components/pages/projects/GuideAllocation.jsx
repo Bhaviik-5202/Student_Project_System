@@ -1,4 +1,5 @@
 import React, { memo, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import projectService from "../../../services/projectService";
 import staffService from "../../../services/staffService";
@@ -67,8 +68,10 @@ GuideCard.propTypes = {
   }).isRequired,
 };
 
-const AllocationRow = memo(({ project }) => (
-  <tr>
+const AllocationRow = memo(({ project }) => {
+  const navigate = useNavigate();
+  return (
+    <tr>
     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
       {project.id}
     </td>
@@ -108,9 +111,16 @@ const AllocationRow = memo(({ project }) => (
       <button className="ml-2 px-3 py-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
         Assign
       </button>
+      <button 
+        onClick={() => navigate(`/projects/${project.id || project._id}`)}
+        className="ml-2 px-3 py-1 border border-blue-600 text-blue-600 hover:bg-blue-50 dark:border-blue-400 dark:text-blue-400 dark:hover:bg-blue-900/30 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+      >
+        View Details
+      </button>
     </td>
   </tr>
-));
+  );
+});
 
 AllocationRow.displayName = "AllocationRow";
 

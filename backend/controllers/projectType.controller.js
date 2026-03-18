@@ -2,6 +2,11 @@ const ProjectType = require("../models/projectType.model");
 const sendResponse = require("../utils/response");
 
 /**
+ * ProjectType COntroller
+ * Manages project types, including creation, listing, updates, and deletion.
+ */
+
+/**
  * Get all project types
  * @route GET /api/v1/projects/types
  * @access Authenticated

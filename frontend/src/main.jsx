@@ -54,7 +54,8 @@ class ErrorBoundary extends React.Component {
               Oops! Something went wrong
             </h1>
             <p className="text-gray-600 mb-6">
-              We are sorry for the inconvenience. Please try refreshing the page.
+              We are sorry for the inconvenience. Please try refreshing the
+              page.
             </p>
             <button
               onClick={() => window.location.reload()}

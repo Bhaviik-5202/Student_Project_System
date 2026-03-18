@@ -1,8 +1,8 @@
-import { lazy, Suspense } from "react";
+import { lazy } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import MainLayout from "../components/layout/MainLayout";
 import AuthLayout from "../components/layout/AuthLayout";
-import LoadingSpinner from "../components/common/LoadingSpinner";
+// import LoadingSpinner from "../components/common/LoadingSpinner";
 import ProtectedRoute from "../components/common/ProtectedRoute";
 import PublicRoute from "../components/common/PublicRoute";
 import { ROLE_COMBINATIONS } from "../config/roles";

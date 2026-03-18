@@ -179,7 +179,10 @@ const ProgressAnalytics = memo(() => {
                       </div>
 
                       <div className="flex gap-2">
-                        <button className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
+                        <button 
+                          onClick={() => navigate(`/projects/${project.id || project._id}`)}
+                          className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
+                        >
                           View Details
                         </button>
                         <button className="text-sm text-slate-600 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200">
