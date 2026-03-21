@@ -1,50 +1,32 @@
-/**
- * Attendance Component
- * 
- * Interface for tracking and reporting student attendance.
- * Provides calendar-based views and statistical summaries.
- */
-import React, { memo, useMemo } from "react";
+import React, { memo, useMemo, useState } from "react";
 
 const AttendanceRow = memo(({ record }) => {
   const statusStyles = {
-    green: "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200",
-    red: "bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200",
-    yellow:
-      "bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200",
+    green: "bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400",
+    red: "bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400",
+    yellow: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400",
   };
 
   const statusClass = statusStyles[record.statusColor] || statusStyles.green;
 
   return (
-    <tr className="hover:bg-gray-50 dark:hover:bg-gray-700">
-      <td className="px-6 py-4 whitespace-nowrap">
-        <div className="text-sm font-medium text-gray-900 dark:text-white">
-          {new Date(record.date).toLocaleDateString()}
-        </div>
+    <tr className="hover:bg-gray-50 dark:hover:bg-slate-900/50 transition-colors">
+      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+        {new Date(record.date).toLocaleDateString()}
       </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
         {record.day}
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
-        <div className="flex items-center">
-          <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mr-3">
-            <i className="fas fa-calendar-check text-blue-600 dark:text-blue-400" />
-          </div>
-          <div>
-            <p className="text-sm font-medium text-gray-900 dark:text-white">
-              {record.meeting}
-            </p>
-          </div>
-        </div>
+        <p className="text-sm font-semibold text-gray-900 dark:text-white">
+          {record.meeting}
+        </p>
       </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
         {record.time}
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
-        <span
-          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}`}
-        >
+        <span className={`px-2 py-1 text-[10px] font-bold uppercase rounded-full ${statusClass}`}>
           {record.status}
         </span>
       </td>
@@ -55,178 +37,105 @@ const AttendanceRow = memo(({ record }) => {
 AttendanceRow.displayName = "AttendanceRow";
 
 const StudentAttendance = memo(() => {
-  const attendanceRecords = useMemo(
+  const [showAll, setShowAll] = useState(false);
+
+  const allRecords = useMemo(
     () => [
-      {
-        date: "2024-02-15",
-        day: "Thursday",
-        meeting: "Project Review Meeting",
-        time: "10:00 AM - 11:30 AM",
-        status: "Present",
-        statusColor: "green",
-      },
-      {
-        date: "2024-02-13",
-        day: "Tuesday",
-        meeting: "Weekly Sync",
-        time: "2:00 PM - 3:00 PM",
-        status: "Present",
-        statusColor: "green",
-      },
-      {
-        date: "2024-02-08",
-        day: "Thursday",
-        meeting: "Group Discussion",
-        time: "11:00 AM - 12:30 PM",
-        status: "Absent",
-        statusColor: "red",
-      },
-      {
-        date: "2024-02-06",
-        day: "Tuesday",
-        meeting: "Project Planning",
-        time: "3:00 PM - 4:00 PM",
-        status: "Present",
-        statusColor: "green",
-      },
+      { date: "2024-02-15", day: "Thursday", meeting: "Project Review Meeting", time: "10:00 AM - 11:30 AM", status: "Present", statusColor: "green" },
+      { date: "2024-02-13", day: "Tuesday", meeting: "Weekly Sync", time: "2:00 PM - 3:00 PM", status: "Present", statusColor: "green" },
+      { date: "2024-02-08", day: "Thursday", meeting: "Group Discussion", time: "11:00 AM - 12:30 PM", status: "Absent", statusColor: "red" },
+      { date: "2024-02-06", day: "Tuesday", meeting: "Project Planning", time: "3:00 PM - 4:00 PM", status: "Present", statusColor: "green" },
+      { date: "2024-02-01", day: "Thursday", meeting: "Review Session", time: "10:00 AM - 11:00 AM", status: "Present", statusColor: "green" },
+      { date: "2024-01-30", day: "Tuesday", meeting: "Sprint Planning", time: "2:00 PM - 3:00 PM", status: "Present", statusColor: "green" },
+      { date: "2024-01-25", day: "Thursday", meeting: "Tech Talk", time: "11:00 AM - 12:00 PM", status: "Late", statusColor: "yellow" },
+      { date: "2024-01-23", day: "Tuesday", meeting: "Status Update", time: "3:00 PM - 3:30 PM", status: "Present", statusColor: "green" },
     ],
     [],
   );
 
-  const stats = useMemo(
-    () => ({
-      totalMeetings: 12,
-      present: 10,
-      absent: 1,
-      late: 1,
-      attendancePercentage: 83.3,
-    }),
-    [],
-  );
+  const displayedRecords = showAll ? allRecords : allRecords.slice(0, 4);
+
+  const stats = {
+    totalMeetings: allRecords.length,
+    present: allRecords.filter(r => r.status === "Present").length,
+    absent: allRecords.filter(r => r.status === "Absent").length,
+    attendancePercentage: ((allRecords.filter(r => r.status === "Present").length / allRecords.length) * 100).toFixed(1),
+  };
 
   return (
-    <div className="animate-fade-in">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-          Attendance
-        </h2>
-        <p className="text-gray-600 dark:text-gray-400">
-          Track your meeting attendance records
-        </p>
+    <div className="p-4 md:p-6 space-y-6">
+      <div>
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white">Attendance Overview</h2>
+        <p className="text-sm text-gray-500">Track and monitor academic presence</p>
       </div>
 
-      {/* Attendance Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm dark:shadow-md border border-gray-200 dark:border-gray-700">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                Total Meetings
-              </p>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white mt-2">
-                {stats.totalMeetings}
-              </p>
+      {/* Basic Stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {[
+          { label: "Total Meetings", value: stats.totalMeetings, icon: "fa-calendar", color: "text-blue-600 bg-blue-50" },
+          { label: "Present", value: stats.present, icon: "fa-check", color: "text-green-600 bg-green-50" },
+          { label: "Absent", value: stats.absent, icon: "fa-times", color: "text-red-600 bg-red-50" },
+          { label: "Attendance %", value: `${stats.attendancePercentage}%`, icon: "fa-percent", color: "text-indigo-600 bg-indigo-50" },
+        ].map((stat, idx) => (
+          <div key={idx} className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm flex items-center gap-4">
+            <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${stat.color} dark:bg-opacity-10`}>
+              <i className={`fas ${stat.icon}`} />
             </div>
-            <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
-              <i className="fas fa-calendar-alt text-blue-600 dark:text-blue-400 text-xl" />
+            <div>
+              <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">{stat.label}</p>
+              <p className="text-lg font-bold text-gray-900 dark:text-white">{stat.value}</p>
             </div>
           </div>
-        </div>
-
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm dark:shadow-md border border-gray-200 dark:border-gray-700">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                Present
-              </p>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white mt-2">
-                {stats.present}
-              </p>
-            </div>
-            <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
-              <i className="fas fa-check-circle text-green-600 dark:text-green-400 text-xl" />
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm dark:shadow-md border border-gray-200 dark:border-gray-700">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                Absent
-              </p>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white mt-2">
-                {stats.absent}
-              </p>
-            </div>
-            <div className="w-12 h-12 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center">
-              <i className="fas fa-times-circle text-red-600 dark:text-red-400 text-xl" />
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm dark:shadow-md border border-gray-200 dark:border-gray-700">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
-                Attendance %
-              </p>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white mt-2">
-                {stats.attendancePercentage}%
-              </p>
-            </div>
-            <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center">
-              <i className="fas fa-chart-line text-purple-600 dark:text-purple-400 text-xl" />
-            </div>
-          </div>
-        </div>
+        ))}
       </div>
 
-      {/* Attendance Records */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm dark:shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-            Recent Attendance Records
-          </h3>
+      {/* Attendance List */}
+      <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-100 dark:border-slate-700 flex justify-between items-center">
+          <h3 className="font-bold text-gray-900 dark:text-white">Recent Sessions</h3>
         </div>
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead className="bg-gray-50 dark:bg-gray-700">
+          <table className="w-full text-left">
+            <thead className="bg-gray-50 dark:bg-slate-900/50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Date
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Day
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Meeting
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Time
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Status
-                </th>
+                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Date</th>
+                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Day</th>
+                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Meeting</th>
+                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Time</th>
+                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Status</th>
               </tr>
             </thead>
-            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-              {attendanceRecords.map((record, index) => (
+            <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
+              {displayedRecords.map((record, index) => (
                 <AttendanceRow key={index} record={record} />
               ))}
             </tbody>
           </table>
         </div>
-        <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
-          <button className="w-full px-4 py-2 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition duration-150 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
-            View All Records
-          </button>
-        </div>
+        {!showAll && allRecords.length > 4 && (
+          <div className="p-4 bg-gray-50 dark:bg-slate-900/30 text-center">
+            <button 
+              onClick={() => setShowAll(true)}
+              className="text-sm font-bold text-indigo-600 hover:text-indigo-700 transition-colors"
+            >
+              View All Records
+            </button>
+          </div>
+        )}
+        {showAll && (
+          <div className="p-4 bg-gray-50 dark:bg-slate-900/30 text-center">
+            <button 
+              onClick={() => setShowAll(false)}
+              className="text-sm font-bold text-gray-500 hover:text-gray-700 transition-colors"
+            >
+              Show Less
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
 });
 
 StudentAttendance.displayName = "StudentAttendance";
-
 export default StudentAttendance;

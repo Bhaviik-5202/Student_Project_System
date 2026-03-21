@@ -1,16 +1,19 @@
-import React, { useState, useMemo, useCallback, memo, useEffect } from "react";
-import api from "../../../utils/api";
+import React, { useState, useCallback, memo, useEffect } from "react";
+import {
+  Calendar,
+  Clock,
+  MapPin,
+  Video,
+  Plus,
+  X,
+  ChevronLeft,
+  ChevronRight
+} from "lucide-react";
 import meetingService from "../../../services/meetingService";
 import { toast } from "react-hot-toast";
 
-/**
- * MeetingCalendar Component
- * 
- * A sophisticated scheduling and participation interface. Features a full 
- * calendar orchestration for project reviews and weekly syncs, multi-user 
- * participant tracking, and integrated virtual meeting room links.
- */
 const MeetingCalendar = memo(() => {
+  const [viewDate, setViewDate] = useState(new Date());
   const [showModal, setShowModal] = useState(false);
   const [meetingForm, setMeetingForm] = useState({
     title: "",
@@ -26,46 +29,58 @@ const MeetingCalendar = memo(() => {
   const [calendarDays, setCalendarDays] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchCalendarData = async () => {
-      try {
-        const response = await meetingService.getMeetings();
-        if (response.success) {
-          setMeetings(response.data || []);
-          
-          // Generate calendar days locally for the current month
-          const now = new Date();
-          const year = now.getFullYear();
-          const month = now.getMonth();
-          const firstDay = new Date(year, month, 1).getDay();
-          const daysInMonth = new Date(year, month + 1, 0).getDate();
-          
-          const days = [];
-          // Previous month padding
-          for (let i = 0; i < firstDay; i++) {
-            days.push({ day: "", month: "prev", meetings: 0 });
-          }
-          // Current month days
-          for (let i = 1; i <= daysInMonth; i++) {
-            const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
-            const dayMeetings = (response.data || []).filter(m => m.date && m.date.startsWith(dateStr)).length;
-            days.push({ 
-              day: i, 
-              month: "current", 
-              current: i === now.getDate(),
-              meetings: dayMeetings 
-            });
-          }
-          setCalendarDays(days);
-        }
-      } catch (error) {
-        console.error("Failed to fetch calendar data", error);
-      } finally {
-        setLoading(false);
+  const fetchMeetings = useCallback(async () => {
+    try {
+      const response = await meetingService.getMeetings();
+      if (response.success) {
+        setMeetings(response.data || []);
       }
-    };
-    fetchCalendarData();
+    } catch (error) {
+      console.error("Failed to fetch meetings", error);
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchMeetings();
+  }, [fetchMeetings]);
+
+  useEffect(() => {
+    const year = viewDate.getFullYear();
+    const month = viewDate.getMonth();
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    const days = [];
+    const prevMonthLastDay = new Date(year, month, 0).getDate();
+    for (let i = firstDay - 1; i >= 0; i--) {
+      days.push({ day: prevMonthLastDay - i, month: "prev", meetings: 0 });
+    }
+
+    const now = new Date();
+    for (let i = 1; i <= daysInMonth; i++) {
+      const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+      const dayMeetings = meetings.filter(m => m.date && m.date.startsWith(dateStr)).length;
+      days.push({
+        day: i,
+        month: "current",
+        current: i === now.getDate() && month === now.getMonth() && year === now.getFullYear(),
+        meetings: dayMeetings
+      });
+    }
+
+    const remainingDays = 42 - days.length;
+    for (let i = 1; i <= remainingDays; i++) {
+      days.push({ day: i, month: "next", meetings: 0 });
+    }
+
+    setCalendarDays(days);
+  }, [viewDate, meetings]);
+
+  const changeMonth = (offset) => {
+    setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() + offset, 1));
+  };
 
   const handleFormChange = useCallback((e) => {
     const { name, value } = e.target;
@@ -73,324 +88,219 @@ const MeetingCalendar = memo(() => {
   }, []);
 
   const handleScheduleMeeting = useCallback(async () => {
+    if (!meetingForm.title || !meetingForm.date || !meetingForm.time) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
     try {
       const response = await meetingService.createMeeting(meetingForm);
       if (response.success) {
         toast.success("Meeting scheduled successfully!");
         setShowModal(false);
         setMeetingForm({
-          title: "",
-          date: "",
-          time: "",
-          duration: "1.5",
-          location: "",
-          description: "",
-          participants: [],
+          title: "", date: "", time: "", duration: "1.5",
+          location: "", description: "", participants: [],
         });
+        fetchMeetings();
       } else {
         toast.error(response.message || "Failed to schedule meeting");
       }
     } catch (error) {
       toast.error("Failed to schedule meeting");
     }
-  }, [meetingForm]);
+  }, [meetingForm, fetchMeetings]);
+
+  const monthName = viewDate.toLocaleString('default', { month: 'long' });
+  const yearName = viewDate.getFullYear();
 
   return (
-    <div className="animate-fade-in">
-      <div className="flex justify-between items-center mb-6">
+    <div className="dashboard-content">
+      <div className="flex justify-between items-center mb-8">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Meeting Management
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400">
-            Schedule and manage project meetings
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            Meeting Calendar
+          </h1>
+          <p className="text-gray-500 dark:text-gray-400">
+            Monitor and schedule your project sessions
           </p>
         </div>
-        <button
-          onClick={() => setShowModal(true)}
-          className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white rounded-lg transition duration-150 flex items-center focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
-        >
-          <i className="fas fa-plus mr-2" /> Schedule Meeting
+        <button onClick={() => setShowModal(true)} className="btn btn-primary">
+          <Plus className="w-5 h-5" /> Schedule Meeting
         </button>
       </div>
 
-      {/* Calendar View */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm dark:shadow-md border border-gray-200 dark:border-gray-700 p-6 mb-6">
-        <div className="flex justify-between items-center mb-6">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-            November 2023
-          </h3>
-          <div className="flex space-x-2">
-            <button className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
-              <i className="fas fa-chevron-left" />
-            </button>
-            <button className="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg">
-              Today
-            </button>
-            <button className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
-              <i className="fas fa-chevron-right" />
-            </button>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 card">
+          <div className="card-header flex justify-between items-center">
+            <h2 className="card-title">
+              {monthName} {yearName}
+            </h2>
+            <div className="flex items-center gap-2">
+              <button onClick={() => changeMonth(-1)} className="btn btn-secondary btn-sm">
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <button onClick={() => setViewDate(new Date())} className="btn btn-secondary btn-sm">
+                Today
+              </button>
+              <button onClick={() => changeMonth(1)} className="btn btn-secondary btn-sm">
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+          <div className="card-body p-0">
+            <div className="grid grid-cols-7 border-b border-gray-100 dark:border-gray-800">
+              {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+                <div key={day} className="py-3 text-center text-xs font-semibold text-gray-400 uppercase tracking-wider bg-gray-50 dark:bg-gray-900/50">
+                  {day}
+                </div>
+              ))}
+            </div>
+            <div className="grid grid-cols-7 gap-px bg-gray-100 dark:bg-gray-800">
+              {calendarDays.map((day, index) => (
+                <div key={index} className={`min-h-[100px] bg-white dark:bg-slate-800 p-2 ${day.month !== "current" ? "bg-gray-50 dark:bg-slate-900/50 opacity-40" : ""
+                  }`}>
+                  <div className="flex justify-between items-center mb-1">
+                    <span className={`text-sm font-medium ${day.current ? "bg-indigo-600 text-white w-7 h-7 flex items-center justify-center rounded-full" : "text-gray-700 dark:text-gray-300"
+                      }`}>
+                      {day.day}
+                    </span>
+                  </div>
+                  {day.meetings > 0 && (
+                    <div className="mt-1 space-y-1">
+                      <div className="px-1.5 py-0.5 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-[10px] font-bold rounded flex items-center gap-1 border border-indigo-100 dark:border-indigo-800">
+                        <div className="w-1.5 h-1.5 rounded-full bg-indigo-500"></div>
+                        {day.meetings} Session{day.meetings !== 1 ? "s" : ""}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-7 gap-2 mb-4">
-          {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-            <div
-              key={day}
-              className="text-center text-sm font-medium text-gray-500 dark:text-gray-400 py-2"
-            >
-              {day}
-            </div>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-7 gap-2">
-          {calendarDays.map((day, index) => (
-            <div
-              key={index}
-              className={`h-24 border border-gray-200 dark:border-gray-700 rounded-lg p-2 ${
-                day.month === "current" && day.current
-                  ? "bg-blue-50 dark:bg-blue-900/30"
-                  : day.month === "prev" || day.month === "next"
-                    ? "bg-gray-50 dark:bg-gray-700"
-                    : ""
-              }`}
-            >
-              <div
-                className={`text-sm ${
-                  day.month === "current"
-                    ? "font-medium text-gray-900 dark:text-white"
-                    : "text-gray-500 dark:text-gray-400"
-                }`}
-              >
-                {day.day}
+        <div className="card flex flex-col h-full">
+          <div className="card-header">
+            <h2 className="card-title">Upcoming Sessions</h2>
+          </div>
+          <div className="card-body overflow-y-auto max-h-[600px] space-y-4">
+            {loading ? (
+              <div className="text-center py-10 text-gray-400">Loading...</div>
+            ) : meetings.length === 0 ? (
+              <div className="text-center py-10">
+                <Calendar className="w-10 h-10 text-gray-200 mx-auto mb-3" />
+                <p className="text-gray-400 text-sm">No upcoming sessions</p>
               </div>
-              {day.meetings > 0 && (
-                <div className="mt-1">
-                  <span className="inline-block w-2 h-2 bg-blue-500 rounded-full" />
-                  <span className="text-xs text-gray-600 dark:text-gray-400 ml-1">
-                    {day.meetings} meeting{day.meetings !== 1 ? "s" : ""}
-                  </span>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Upcoming Meetings List */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm dark:shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-            Upcoming Meetings
-          </h3>
-        </div>
-        <div className="divide-y divide-gray-200 dark:divide-gray-700">
-          {meetings.map((meeting) => (
-            <div
-              key={meeting.id}
-              className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700 transition duration-150"
-            >
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center mb-2">
-                    <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        meeting.type === "review"
-                          ? "bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200"
-                          : "bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
-                      } mr-3`}
-                    >
-                      {meeting.type === "review"
-                        ? "Project Review"
-                        : "Weekly Sync"}
-                    </span>
-                    <span className="text-sm text-gray-500 dark:text-gray-400">
-                      <i className="fas fa-clock mr-1" /> 2 hours
-                    </span>
-                  </div>
-                  <h4 className="text-lg font-medium text-gray-900 dark:text-white mb-1">
-                    {meeting.title}
-                  </h4>
-                  <p className="text-gray-600 dark:text-gray-400 mb-3">
-                    {meeting.description}
-                  </p>
-                  <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                    <i className="fas fa-calendar-alt mr-2" />
-                    <span>{meeting.time}</span>
-                    <i className="fas fa-map-marker-alt ml-4 mr-2" />
-                    <span>{meeting.location}</span>
-                  </div>
-                  <div className="mt-3 flex items-center">
-                    <div className="flex -space-x-2">
-                      {[...Array(Math.min(3, meeting.participants?.length || 0))].map(
-                        (_, i) => (
-                          <div
-                            key={i}
-                            className={`w-8 h-8 ${
-                              i === 0
-                                ? "bg-blue-100 dark:bg-blue-900"
-                                : i === 1
-                                  ? "bg-green-100 dark:bg-green-900"
-                                  : "bg-yellow-100 dark:bg-yellow-900"
-                            } rounded-full flex items-center justify-center border-2 border-white dark:border-gray-800`}
-                          >
-                            <i
-                              className={`fas fa-user ${
-                                i === 0
-                                  ? "text-blue-600 dark:text-blue-300"
-                                  : i === 1
-                                    ? "text-green-600 dark:text-green-300"
-                                    : "text-yellow-600 dark:text-yellow-300"
-                              } text-xs`}
-                            />
-                          </div>
-                        ),
-                      )}
-                    </div>
-                    <span className="text-sm text-gray-500 dark:text-gray-400 ml-3">
-                      {meeting.participants?.length || 0} participants
-                    </span>
-                  </div>
-                </div>
-                <div className="ml-4 flex space-x-2">
-                  <button className="px-3 py-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white text-sm rounded-lg">
-                    <i className="fas fa-video mr-1" /> Join
-                  </button>
-                  <button className="px-3 py-1 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">
-                    <i className="fas fa-edit mr-1" /> Edit
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Schedule Meeting Modal */}
-      {showModal && (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <div
-              className="fixed inset-0 transition-opacity modal-overlay"
-              onClick={() => setShowModal(false)}
-            ></div>
-            <span
-              className="hidden sm:inline-block sm:align-middle sm:h-screen"
-              aria-hidden="true"
-            >
-              &#8203;
-            </span>
-            <div className="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-              <div className="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <div className="sm:flex sm:items-start">
-                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-4">
-                      Schedule New Meeting
+            ) : (
+              meetings.map((meeting) => (
+                <div key={meeting.id || meeting._id} className="p-4 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-900 transition-colors">
+                  <div className="flex justify-between items-start mb-2">
+                    <h3 className="text-sm font-bold text-gray-900 dark:text-white">
+                      {meeting.title}
                     </h3>
-                    <div className="space-y-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                          Meeting Title
-                        </label>
-                        <input
-                          type="text"
-                          name="title"
-                          required
-                          value={meetingForm.title}
-                          onChange={handleFormChange}
-                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400"
-                          placeholder="Enter meeting title"
-                        />
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            Date
-                          </label>
-                          <input
-                            type="date"
-                            name="date"
-                            required
-                            value={meetingForm.date}
-                            onChange={handleFormChange}
-                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            Time
-                          </label>
-                          <input
-                            type="time"
-                            name="time"
-                            required
-                            value={meetingForm.time}
-                            onChange={handleFormChange}
-                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400"
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                          Duration (hours)
-                        </label>
-                        <input
-                          type="number"
-                          name="duration"
-                          min="0.5"
-                          max="8"
-                          step="0.5"
-                          value={meetingForm.duration}
-                          onChange={handleFormChange}
-                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400"
-                          placeholder="1.5"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                          Location
-                        </label>
-                        <input
-                          type="text"
-                          name="location"
-                          value={meetingForm.location}
-                          onChange={handleFormChange}
-                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400"
-                          placeholder="Enter meeting location"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                          Description
-                        </label>
-                        <textarea
-                          rows="3"
-                          name="description"
-                          value={meetingForm.description}
-                          onChange={handleFormChange}
-                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400"
-                          placeholder="Meeting agenda and notes"
-                        />
-                      </div>
-                    </div>
+                    <Video className="w-4 h-4 text-indigo-500" />
+                  </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-4 line-clamp-2">
+                    {meeting.description || "Project alignment session."}
+                  </p>
+                  <div className="flex items-center gap-4 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
+                    <span className="flex items-center gap-1">
+                      <Clock className="w-3.5 h-3.5" /> {meeting.time || "10:00 AM"}
+                    </span>
+                    <span className="flex items-center gap-1 truncate max-w-[120px]">
+                      <MapPin className="w-3.5 h-3.5" /> {meeting.location || "Online"}
+                    </span>
                   </div>
                 </div>
+              ))
+            )}
+          </div>
+        </div>
+      </div>
+
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-content max-w-lg">
+            <div className="modal-header">
+              <h2 className="modal-title">Schedule New Session</h2>
+              <button
+                onClick={() => setShowModal(false)}
+                className="modal-close"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="modal-body space-y-4">
+              <div className="form-group">
+                <label className="form-label">Session Title</label>
+                <input
+                  type="text"
+                  name="title"
+                  required
+                  value={meetingForm.title}
+                  onChange={handleFormChange}
+                  className="form-control"
+                  placeholder="e.g. Project Review, Sprint Planning"
+                />
               </div>
-              <div className="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                <button
-                  onClick={handleScheduleMeeting}
-                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
-                >
-                  Schedule Meeting
-                </button>
-                <button
-                  onClick={() => setShowModal(false)}
-                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 bg-white dark:bg-gray-800 text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-                >
-                  Cancel
-                </button>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="form-group">
+                  <label className="form-label">Date</label>
+                  <input
+                    type="date"
+                    name="date"
+                    required
+                    value={meetingForm.date}
+                    onChange={handleFormChange}
+                    className="form-control"
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Time</label>
+                  <input
+                    type="time"
+                    name="time"
+                    required
+                    value={meetingForm.time}
+                    onChange={handleFormChange}
+                    className="form-control"
+                  />
+                </div>
               </div>
+
+              <div className="form-group">
+                <label className="form-label">Location / Link</label>
+                <input
+                  type="text"
+                  name="location"
+                  value={meetingForm.location}
+                  onChange={handleFormChange}
+                  className="form-control"
+                  placeholder="Physical room or meeting URL"
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Agenda</label>
+                <textarea
+                  name="description"
+                  rows="3"
+                  value={meetingForm.description}
+                  onChange={handleFormChange}
+                  className="form-control resize-none"
+                  placeholder="What will be discussed during this session?"
+                />
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button onClick={() => setShowModal(false)} className="btn btn-secondary">
+                Cancel
+              </button>
+              <button onClick={handleScheduleMeeting} className="btn btn-primary">
+                Confirm Session
+              </button>
             </div>
           </div>
         </div>

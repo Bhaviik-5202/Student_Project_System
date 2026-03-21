@@ -1,5 +1,22 @@
-import { useState, useEffect, useMemo, memo } from "react";
+import React, { useState, useEffect, memo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { 
+  ChevronLeft, 
+  BookOpen, 
+  User, 
+  Clock, 
+  MapPin, 
+  GraduationCap,
+  FileText,
+  Users,
+  CheckCircle,
+  MessageCircle,
+  Video,
+  Info,
+  ArrowRight
+} from "lucide-react";
+import courseService from "../../../services/courseService";
+import { toast } from "react-hot-toast";
 
 const CourseDetails = memo(() => {
   const { id } = useParams();
@@ -7,251 +24,185 @@ const CourseDetails = memo(() => {
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const syllabus = useMemo(
-    () => [
-      "Week 1: Introduction to Software Engineering",
-      "Week 2-3: Requirements Engineering",
-      "Week 4-5: System Design Principles",
-      "Week 6-7: Software Development Methodologies",
-      "Week 8-9: Testing and Quality Assurance",
-      "Week 10-12: Project Development",
-      "Week 13-14: Deployment and Maintenance",
-      "Week 15: Final Presentations",
-    ],
-    [],
-  );
-
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setCourse({
-        id,
-        code: "CS401",
-        title: "Software Engineering",
-        instructor: "Dr. John Smith",
-        semester: "Fall 2024",
-        credits: 3,
-        description:
-          "This course covers software engineering principles and practices.",
-        schedule: "Mon/Wed 10:00 AM - 11:30 AM",
-        room: "Room 301",
-        students: 45,
-        assignments: 8,
-        materials: 12,
-      });
-      setLoading(false);
-    }, 500);
-  }, [id]);
+    const fetchCourse = async () => {
+      try {
+        const res = await courseService.getCourseById(id);
+        if (res.success) {
+          setCourse(res.data);
+        } else {
+          toast.error(res.message || "Course not found");
+          navigate("/courses/catalog");
+        }
+      } catch (err) {
+        console.error("Failed to fetch course details", err);
+        toast.error("Error loading course details");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCourse();
+  }, [id, navigate]);
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-slate-600 dark:text-slate-400">
-            Loading course details...
-          </p>
-        </div>
+      <div className="flex flex-col items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
+        <p className="mt-4 text-gray-500 font-medium">Loading course data...</p>
       </div>
     );
   }
 
+  if (!course) return null;
+
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-6">
-          <button
-            onClick={() => navigate("/courses")}
-            className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex items-center mb-4"
-          >
-            ← Back to Courses
-          </button>
-          <div className="flex justify-between items-start">
-            <div>
-              <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-                {course.title}
+    <div className="dashboard-content">
+      <button
+        onClick={() => navigate("/courses/catalog")}
+        className="flex items-center gap-2 text-gray-500 hover:text-indigo-600 mb-6 font-semibold transition-colors"
+      >
+        <ChevronLeft className="w-5 h-5" /> Back to Catalog
+      </button>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 space-y-6">
+          <div className="card">
+            <div className="card-header bg-gray-50/50 dark:bg-gray-900/50 block">
+              <div className="flex flex-wrap items-center gap-3 mb-3">
+                <span className="badge badge-primary">{course.code}</span>
+                <span className="badge badge-secondary">{course.semester || "Spring 2024"}</span>
+              </div>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                {course.name || course.title}
               </h1>
-              <div className="flex items-center gap-4 mt-2">
-                <span className="text-slate-600 dark:text-slate-400">
-                  {course.code}
-                </span>
-                <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 text-sm rounded">
-                  {course.credits} Credits
-                </span>
-                <span className="text-slate-600 dark:text-slate-400">
-                  {course.semester}
-                </span>
+            </div>
+            <div className="card-body">
+              <div className="flex items-center gap-2 text-indigo-600 mb-4">
+                <Info className="w-5 h-5" />
+                <h3 className="text-lg font-bold">Course Synopsis</h3>
+              </div>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-8">
+                {course.description || "This comprehensive module covers the fundamental and advanced principles of the subject, providing students with both theoretical knowledge and practical applications."}
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
+                  <div className="flex items-center gap-2 text-gray-500 mb-1">
+                    <Clock className="w-4 h-4" />
+                    <span className="text-[10px] font-bold uppercase tracking-wider">Schedule</span>
+                  </div>
+                  <p className="text-sm font-semibold">{course.schedule || "Mon, Wed 10:00 AM"}</p>
+                </div>
+                <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
+                  <div className="flex items-center gap-2 text-gray-500 mb-1">
+                    <MapPin className="w-4 h-4" />
+                    <span className="text-[10px] font-bold uppercase tracking-wider">Location</span>
+                  </div>
+                  <p className="text-sm font-semibold">{course.room || "Lab 402, Block B"}</p>
+                </div>
+                <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
+                  <div className="flex items-center gap-2 text-gray-500 mb-1">
+                    <GraduationCap className="w-4 h-4" />
+                    <span className="text-[10px] font-bold uppercase tracking-wider">Credits</span>
+                  </div>
+                  <p className="text-sm font-semibold">{course.credits || 4} Units</p>
+                </div>
               </div>
             </div>
-            <button className="px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-800">
-              Enroll Now
-            </button>
+          </div>
+
+          <div className="card">
+            <div className="card-header flex justify-between items-center">
+              <h3 className="card-title flex items-center gap-2">
+                <FileText className="w-5 h-5 text-indigo-500" /> Curriculum Map
+              </h3>
+              <button
+                onClick={() => navigate(`/courses/${id}/syllabus`)}
+                className="btn btn-secondary btn-sm"
+              >
+                Full Roadmap <ArrowRight className="w-4 h-4 ml-1" />
+              </button>
+            </div>
+            <div className="card-body">
+              <div className="space-y-4">
+                {(course.syllabus && course.syllabus.length > 0) ? (
+                  course.syllabus.slice(0, 3).map((topic, index) => (
+                    <div key={index} className="flex gap-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
+                      <div className="flex-shrink-0 w-10 h-10 bg-white dark:bg-gray-800 text-indigo-600 rounded-lg flex items-center justify-center font-bold border border-gray-100 dark:border-gray-700">
+                        {topic.week || index + 1}
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-gray-900 dark:text-white text-sm">
+                          {topic.topic || topic.title}
+                        </h4>
+                        <p className="text-xs text-gray-500 mt-1 line-clamp-1">
+                          {topic.description || "Core concepts and specialized case studies."}
+                        </p>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8">
+                    <p className="text-sm text-gray-400 italic">Syllabus details coming soon.</p>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Course Information */}
-          <div className="lg:col-span-2 space-y-6">
-            <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
-                Course Description
-              </h3>
-              <p className="text-slate-600 dark:text-slate-400">
-                {course.description}
-              </p>
+        <div className="space-y-6">
+          <div className="card">
+            <div className="card-header">
+              <h3 className="card-title">Lead Instructor</h3>
             </div>
+            <div className="card-body text-center">
+              <div className="w-20 h-20 bg-indigo-50 dark:bg-indigo-900/30 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-white dark:border-gray-800 shadow-sm">
+                <User className="w-10 h-10 text-indigo-500" />
+              </div>
+              <h4 className="text-lg font-bold">{course.faculty?.name || course.instructor || "Visiting Lead"}</h4>
+              <p className="text-xs text-gray-500 uppercase tracking-widest font-bold mb-4">Professor</p>
 
-            {/* Course Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6 text-center">
-                <div className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
-                  {course.students}
-                </div>
-                <div className="text-slate-600 dark:text-slate-400">
-                  Enrolled Students
-                </div>
-              </div>
-              <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6 text-center">
-                <div className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
-                  {course.assignments}
-                </div>
-                <div className="text-slate-600 dark:text-slate-400">
-                  Assignments
-                </div>
-              </div>
-              <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6 text-center">
-                <div className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
-                  {course.materials}
-                </div>
-                <div className="text-slate-600 dark:text-slate-400">
-                  Learning Materials
-                </div>
-              </div>
-            </div>
-
-            {/* Syllabus */}
-            <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
-                Course Syllabus
-              </h3>
-              <div className="space-y-3">
-                {syllabus.map((topic, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center p-3 border border-slate-200 dark:border-slate-700 rounded-lg"
-                  >
-                    <div className="w-8 h-8 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center mr-3 text-slate-700 dark:text-slate-200">
-                      {index + 1}
-                    </div>
-                    <div className="font-medium text-slate-900 dark:text-white">
-                      {topic}
-                    </div>
-                  </div>
-                ))}
+              <div className="flex flex-col gap-2 mt-4">
+                <button className="btn btn-secondary w-full flex items-center justify-center gap-2">
+                  <MessageCircle className="w-4 h-4" /> Message
+                </button>
+                <button className="btn btn-secondary w-full flex items-center justify-center gap-2">
+                  <Video className="w-4 h-4" /> Office Hours
+                </button>
               </div>
             </div>
           </div>
 
-          {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Instructor Info */}
-            <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
-                Instructor
-              </h3>
-              <div className="flex items-center mb-4">
-                <div className="w-12 h-12 bg-slate-300 dark:bg-slate-600 rounded-full mr-4"></div>
-                <div>
-                  <div className="font-medium text-slate-900 dark:text-white">
-                    {course.instructor}
-                  </div>
-                  <div className="text-sm text-slate-600 dark:text-slate-400">
-                    Professor of Computer Science
-                  </div>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center text-sm text-slate-600 dark:text-slate-400">
-                  <span className="mr-2">📧</span>
-                  john.smith@university.edu
-                </div>
-                <div className="flex items-center text-sm text-slate-600 dark:text-slate-400">
-                  <span className="mr-2">🏢</span>
-                  Office: Room 205, CS Building
-                </div>
-                <div className="flex items-center text-sm text-slate-600 dark:text-slate-400">
-                  <span className="mr-2">⏰</span>
-                  Office Hours: Mon/Wed 2-4 PM
-                </div>
-              </div>
+          <div className="card bg-indigo-600 text-white border-0 shadow-lg">
+            <div className="card-body">
+              <h3 className="text-xl font-bold mb-2">Registration Open</h3>
+              <p className="text-indigo-100 text-sm mb-6">
+                Enrollment for academic session 2024 is currently active.
+              </p>
+              <button
+                onClick={() => navigate("/courses/register")}
+                className="btn bg-white text-indigo-600 hover:bg-gray-100 w-full font-bold py-3"
+              >
+                Enroll in Course
+              </button>
             </div>
+          </div>
 
-            {/* Course Details */}
-            <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
-                Course Details
+          <div className="card">
+            <div className="card-header">
+              <h3 className="card-title flex items-center gap-2">
+                <BookOpen className="w-5 h-5 text-indigo-500" /> Learning Resources
               </h3>
-              <div className="space-y-3">
-                <div>
-                  <div className="text-sm text-slate-500 dark:text-slate-400">
-                    Schedule
-                  </div>
-                  <div className="font-medium text-slate-900 dark:text-white">
-                    {course.schedule}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-sm text-slate-500 dark:text-slate-400">
-                    Room
-                  </div>
-                  <div className="font-medium text-slate-900 dark:text-white">
-                    {course.room}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-sm text-slate-500 dark:text-slate-400">
-                    Credits
-                  </div>
-                  <div className="font-medium text-slate-900 dark:text-white">
-                    {course.credits}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-sm text-slate-500 dark:text-slate-400">
-                    Semester
-                  </div>
-                  <div className="font-medium text-slate-900 dark:text-white">
-                    {course.semester}
-                  </div>
-                </div>
-              </div>
             </div>
-
-            {/* Quick Actions */}
-            <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
-                Quick Actions
-              </h3>
-              <div className="space-y-3">
-                <button
-                  onClick={() => navigate(`/courses/${id}/materials`)}
-                  className="w-full px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-800"
-                >
-                  View Materials
-                </button>
-                <button
-                  onClick={() => navigate(`/courses/${id}/assignments`)}
-                  className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700"
-                >
-                  View Assignments
-                </button>
-                <button
-                  onClick={() => navigate(`/courses/${id}/grades`)}
-                  className="w-full px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700"
-                >
-                  View Grades
-                </button>
-              </div>
+            <div className="card-body">
+              <p className="text-sm text-gray-500 mb-4">Access course materials, readings, and repository.</p>
+              <button
+                onClick={() => navigate(`/courses/${id}/materials`)}
+                className="btn btn-secondary w-full"
+              >
+                Access Repository
+              </button>
             </div>
           </div>
         </div>

@@ -57,3 +57,10 @@ exports.remove = (id) => Student.findByIdAndDelete(id);
  * @returns {Promise<number>} Record count
  */
 exports.count = (filter = {}) => Student.countDocuments(filter);
+
+/**
+ * Locate a student by their email address
+ * @param {string} email - Student email
+ * @returns {Promise<Object|null>} Student document or null
+ */
+exports.findByEmail = (email) => Student.findOne({ email });

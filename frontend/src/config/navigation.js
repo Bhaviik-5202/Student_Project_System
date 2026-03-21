@@ -100,12 +100,17 @@ export const navigationItems = [
       { title: "My Courses", path: "/courses", roles: ROLE_COMBINATIONS.ALL },
       {
         title: "Course Catalog",
-        path: "/course-catalog",
+        path: "/courses/catalog",
         roles: ROLE_COMBINATIONS.ALL,
       },
       {
-        title: "Course Materials",
-        path: "/course-materials",
+        title: "Module Registration",
+        path: "/courses/register",
+        roles: ROLE_COMBINATIONS.ALL,
+      },
+      {
+        title: "Course Schedule",
+        path: "/courses/schedule",
         roles: ROLE_COMBINATIONS.ALL,
       },
     ],

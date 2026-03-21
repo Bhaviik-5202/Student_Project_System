@@ -80,13 +80,13 @@ const StudentForm = memo(() => {
           : await studentService.createStudent(formData);
           
         if (res.success) {
-          toast.success(`Entry ${isEditing ? "synchronized" : "created"} successfully!`, { id: toastId });
+          toast.success(`Student ${isEditing ? "updated" : "enrolled"} successfully!`, { id: toastId });
           navigate("/students");
         } else {
-          toast.error(res.message || "Failed to secure record", { id: toastId });
+          toast.error(res.message || "Failed to save record", { id: toastId });
         }
       } catch (error) {
-        toast.error("Network handshake failed", { id: toastId });
+        toast.error("Network error occurred", { id: toastId });
       }
     },
     [formData, id, isEditing, navigate],
@@ -95,172 +95,171 @@ const StudentForm = memo(() => {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center p-20 space-y-4">
-        <div className="w-12 h-12 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin" />
-        <p className="text-gray-400 font-bold tracking-widest text-sm">LOADING PROFILE...</p>
+        <div className="w-10 h-10 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+        <p className="text-gray-500 font-medium text-sm">Loading student form...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen p-4 md:p-8 space-y-8 animate-fade-in max-w-4xl mx-auto">
-      {/* Premium Header */}
-      <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 shadow-xl shadow-slate-100 dark:shadow-none p-6 md:p-8">
+    <div className="p-4 md:p-8 space-y-6 max-w-3xl mx-auto">
+      {/* Header */}
+      <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm p-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div className="flex items-center gap-5">
-            <div className="w-14 h-14 bg-gradient-to-br from-indigo-600 to-violet-700 rounded-2xl flex items-center justify-center text-white shadow-lg">
-              <UserIcon size={28} />
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-lg">
+              <UserIcon size={24} />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                {isEditing ? "Edit Academic Profile" : "Registry Enrollment"}
+              <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+                {isEditing ? "Update Student Profile" : "Registry Enrollment"}
               </h1>
-              <p className="text-gray-500 dark:text-gray-400 text-sm mt-0.5">
-                {isEditing ? "Updating existing student record details" : "Registering a new digital entity in the system"}
+              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                {isEditing ? "Modify existing academic record" : "Enroll a new student in the registry"}
               </p>
             </div>
           </div>
           <button 
             onClick={() => navigate("/students")}
-            className="flex items-center px-4 py-2 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all font-bold text-sm"
+            className="text-gray-400 hover:text-red-500 p-2 rounded-lg transition-colors"
+            title="Discard changes"
           >
-            <XIcon size={18} className="mr-2" /> Discard
+            <XIcon size={20} />
           </button>
         </div>
       </div>
 
-      {/* Main Configuration Card */}
-      <div className="bg-white dark:bg-slate-800 rounded-3xl border border-gray-100 dark:border-slate-700 shadow-sm overflow-hidden">
-        <div className="p-8 md:p-12">
-          <form onSubmit={handleSubmit} className="space-y-8">
-            {/* Name Section */}
-            <div className="space-y-2">
-              <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Full Legal Name</label>
+      {/* Form Card */}
+      <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm overflow-hidden">
+        <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-5">
+          {/* Name Field */}
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider ml-1">Full Name</label>
+            <div className="relative">
+              <UserIcon size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all text-sm font-medium"
+                placeholder="Student Name"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {/* Roll Number */}
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider ml-1">Roll Number</label>
               <div className="relative">
-                <UserIcon size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                <HashIcon size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
                   type="text"
-                  name="name"
-                  value={formData.name}
+                  name="rollNumber"
+                  value={formData.rollNumber}
                   onChange={handleChange}
-                  className="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all text-gray-900 dark:text-white font-bold"
-                  placeholder="e.g. Alexander Pierce"
+                  className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all text-sm font-medium"
+                  placeholder="e.g. 2024CS01"
                   required
                 />
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Roll Number */}
-              <div className="space-y-2">
-                <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Archive ID / Roll No</label>
-                <div className="relative">
-                  <HashIcon size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-                  <input
-                    type="text"
-                    name="rollNumber"
-                    value={formData.rollNumber}
-                    onChange={handleChange}
-                    className="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all text-gray-900 dark:text-white font-bold"
-                    placeholder="e.g. 2024CS085"
-                    required
-                  />
-                </div>
-              </div>
-
-              {/* Phone */}
-              <div className="space-y-2">
-                <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Contact Gateway</label>
-                <div className="relative">
-                  <PhoneIcon size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-                  <input
-                    type="text"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    className="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all text-gray-900 dark:text-white font-bold"
-                    placeholder="+91 XXXXX XXXXX"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Email */}
-            <div className="space-y-2">
-              <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Digital Identity (Email)</label>
+            {/* Phone */}
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider ml-1">Phone Number</label>
               <div className="relative">
-                <MailIcon size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                <PhoneIcon size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
+                  type="text"
+                  name="phone"
+                  value={formData.phone}
                   onChange={handleChange}
-                  className="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all text-gray-900 dark:text-white font-bold"
-                  placeholder="student.id@university.edu"
-                  required
+                  className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all text-sm font-medium"
+                  placeholder="Contact Number"
                 />
               </div>
             </div>
+          </div>
 
-            {/* Dept & Year */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="space-y-2">
-                <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Specialization</label>
-                <div className="relative">
-                  <DeptIcon size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-                  <select 
-                    name="department"
-                    value={formData.department}
-                    onChange={handleChange}
-                    className="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 outline-none appearance-none text-gray-900 dark:text-white font-bold"
-                    required
-                  >
-                    <option value="">Select Domain</option>
-                    <option value="Computer Science">Computer Science</option>
-                    <option value="Information Technology">Information Technology</option>
-                    <option value="Electronics">Electronics</option>
-                  </select>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Current Milestone</label>
-                <div className="relative">
-                  <CalendarIcon size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-                  <select 
-                    name="year"
-                    value={formData.year}
-                    onChange={handleChange}
-                    className="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-900 border border-gray-100 dark:border-slate-800 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 outline-none appearance-none text-gray-900 dark:text-white font-bold"
-                    required
-                  >
-                    <option value="">Select Tenure</option>
-                    <option value="1">Entry Year (1st)</option>
-                    <option value="2">Core Period (2nd)</option>
-                    <option value="3">Advanced Stage (3rd)</option>
-                    <option value="4">Final Milestone (4th)</option>
-                  </select>
-                </div>
+          {/* Email */}
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider ml-1">Email Address</label>
+            <div className="relative">
+              <MailIcon size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all text-sm font-medium"
+                placeholder="example@university.com"
+                required
+              />
+            </div>
+          </div>
+
+          {/* Dept & Year */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider ml-1">Department</label>
+              <div className="relative">
+                <DeptIcon size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                <select 
+                  name="department"
+                  value={formData.department}
+                  onChange={handleChange}
+                  className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-indigo-500/20 outline-none appearance-none text-sm font-medium"
+                  required
+                >
+                  <option value="">Select Department</option>
+                  <option value="Computer Science">Computer Science</option>
+                  <option value="Information Technology">Information Technology</option>
+                  <option value="Electronics">Electronics</option>
+                </select>
               </div>
             </div>
-
-            {/* Actions */}
-            <div className="flex flex-col sm:flex-row gap-4 pt-10 border-t border-gray-50 dark:border-slate-700">
-              <button
-                type="button"
-                onClick={() => navigate("/students")}
-                className="flex-1 px-8 py-4 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-gray-600 dark:text-gray-400 rounded-2xl font-bold transition-all border border-gray-100 dark:border-slate-700 flex items-center justify-center"
-              >
-                <BackIcon size={18} className="mr-2" /> Return to Registry
-              </button>
-              <button
-                type="submit"
-                className="flex-[2] px-8 py-4 bg-gradient-to-r from-indigo-600 to-violet-700 text-white rounded-2xl font-extrabold hover:shadow-2xl hover:shadow-indigo-300 dark:hover:shadow-none transition-all shadow-md flex items-center justify-center uppercase tracking-widest"
-              >
-                <SaveIcon size={20} className="mr-2" />
-                {isEditing ? "Synchronize Profile" : "Finalize Enrollment"}
-              </button>
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider ml-1">Academic Year</label>
+              <div className="relative">
+                <CalendarIcon size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                <select 
+                  name="year"
+                  value={formData.year}
+                  onChange={handleChange}
+                  className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-indigo-500/20 outline-none appearance-none text-sm font-medium"
+                  required
+                >
+                  <option value="">Select Year</option>
+                  <option value="1">1st Year</option>
+                  <option value="2">2nd Year</option>
+                  <option value="3">3rd Year</option>
+                  <option value="4">Final Year</option>
+                </select>
+              </div>
             </div>
-          </form>
-        </div>
+          </div>
+
+          {/* Actions */}
+          <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t border-gray-100 dark:border-slate-700">
+            <button
+              type="button"
+              onClick={() => navigate("/students")}
+              className="px-6 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-gray-700 dark:text-gray-300 rounded-lg font-medium transition-colors flex items-center justify-center text-sm"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="flex-1 px-8 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold shadow-sm transition-all flex items-center justify-center text-sm"
+            >
+              <SaveIcon size={16} className="mr-2" />
+              {isEditing ? "Update Student" : "Save Record"}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

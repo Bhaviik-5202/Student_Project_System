@@ -31,167 +31,134 @@ const ProjectDetails = memo(() => {
 
   const statusStyles = useMemo(
     () => ({
-      Completed:
-        "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200",
-      "In Progress":
-        "bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200",
-      Pending:
-        "bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200",
-      planning:
-        "bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200",
-      in_progress:
-        "bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200",
-      completed:
-        "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200",
+      Completed: "bg-green-50 text-green-700",
+      "In Progress": "bg-blue-50 text-blue-700",
+      Pending: "bg-yellow-50 text-yellow-700",
+      planning: "bg-yellow-50 text-yellow-700",
+      in_progress: "bg-blue-50 text-blue-700",
+      completed: "bg-green-50 text-green-700",
     }),
     [],
   );
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <div className="container mx-auto px-4 py-8">
-          <div className="animate-pulse">
-            <div className="h-8 bg-gray-300 dark:bg-gray-700 rounded w-1/4 mb-4"></div>
-            <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded w-1/2 mb-8"></div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="h-64 bg-gray-300 dark:bg-gray-700 rounded"></div>
-              <div className="h-64 bg-gray-300 dark:bg-gray-700 rounded"></div>
-            </div>
-          </div>
-        </div>
+      <div className="p-8 text-center text-gray-400 text-sm italic">
+        Retrieving project specifications...
       </div>
     );
   }
 
+  if (!project) return null;
+
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-6">
+    <div className="p-4 md:p-6 space-y-6">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
           <button
             onClick={() => navigate("/projects")}
-            className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex items-center mb-4 font-medium"
+            className="text-indigo-600 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1 hover:underline"
           >
-            ← Back to Projects
+            <i className="fas fa-arrow-left" /> Back to Catalog
           </button>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
             {project.title}
           </h1>
-          <div className="flex items-center gap-4">
-            <span
-              className={`px-3 py-1 rounded-full text-sm font-medium ${
-                statusStyles[project.status] || statusStyles.Pending
-              }`}
-            >
+          <div className="flex items-center gap-3 mt-2">
+            <span className={`px-2 py-0.5 text-[10px] font-bold uppercase rounded-full ${statusStyles[project.status] || statusStyles.Pending}`}>
               {project.status}
             </span>
-            <span className="text-gray-600 dark:text-gray-400">
-              Progress: {project.progress}%
+            <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+              ID: {project.id || project._id}
             </span>
           </div>
         </div>
+        <div className="flex gap-2">
+          <button className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2 px-6 rounded-lg shadow-sm transition-colors">
+            Edit Metadata
+          </button>
+        </div>
+      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-6">
-            <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-                Project Description
-              </h2>
-              <p className="text-gray-600 dark:text-gray-400">
-                {project.description}
-              </p>
-            </div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 space-y-6">
+          <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6 shadow-sm">
+            <h2 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest mb-4 border-b border-gray-50 dark:border-slate-700 pb-2">
+              Objective & Scope
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-sm">
+              {project.description}
+            </p>
+          </div>
 
-            <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-                Progress
-              </h2>
-              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mb-2">
+          <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6 shadow-sm">
+            <h2 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest mb-6 border-b border-gray-50 dark:border-slate-700 pb-2">
+              Execution Strategy
+            </h2>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center text-xs font-bold text-gray-400 uppercase tracking-widest">
+                <span>Phase Completion</span>
+                <span className="text-indigo-600">{project.progress}%</span>
+              </div>
+              <div className="w-full bg-gray-100 dark:bg-slate-900 rounded-full h-2 overflow-hidden">
                 <div
-                  className="bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 h-2.5 rounded-full"
+                  className="h-full bg-indigo-500 rounded-full transition-all duration-1000 ease-out"
                   style={{ width: `${project.progress}%` }}
                 />
               </div>
-              <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400">
-                <span>0%</span>
-                <span className="font-medium">{project.progress}%</span>
-                <span>100%</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-6">
+          <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6 shadow-sm">
+            <h2 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest mb-4 border-b border-gray-50 dark:border-slate-700 pb-2">
+              Vital Statistics
+            </h2>
+            <div className="space-y-4">
+              <div>
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Primary Mentor</p>
+                <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                  {project.guide?.name || project.guide || "Awaiting Assignment"}
+                </p>
+              </div>
+              <div>
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Initiation</p>
+                <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                  {project.startDate}
+                </p>
+              </div>
+              <div>
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Target Culmination</p>
+                <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                  {project.endDate}
+                </p>
               </div>
             </div>
           </div>
 
-          <div className="space-y-6">
-            <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-                Project Details
-              </h2>
-              <div className="space-y-3">
-                <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Supervisor
-                  </p>
-                  <p className="font-medium text-gray-900 dark:text-white text-capitalize">
-                    {project.guide?.name || project.guide || "Not Assigned"}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Start Date
-                  </p>
-                  <p className="font-medium text-gray-900 dark:text-white">
-                    {project.startDate}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    End Date
-                  </p>
-                  <p className="font-medium text-gray-900 dark:text-white">
-                    {project.endDate}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
-                Team Members
-              </h2>
-              <div className="space-y-3">
-                {Array.isArray(project.members) && project.members.length > 0 ? (
-                  project.members.map((member, index) => (
-                    <div key={member._id || index} className="flex items-center">
-                      <div className="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full mr-3 overflow-hidden flex items-center justify-center text-sm font-medium text-gray-600 dark:text-gray-300">
-                        {member.name ? member.name.charAt(0).toUpperCase() : (typeof member === 'string' ? member.charAt(0).toUpperCase() : 'U')}
-                      </div>
-                      <div>
-                        <span className="font-medium text-gray-900 dark:text-white block">
-                          {member.name || member}
-                        </span>
-                        {member.rollNumber && <span className="text-xs text-gray-500 dark:text-gray-400">{member.rollNumber}</span>}
-                      </div>
+          <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6 shadow-sm">
+            <h2 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest mb-4 border-b border-gray-50 dark:border-slate-700 pb-2">
+              Collaborative Unit
+            </h2>
+            <div className="space-y-3 mt-4">
+              {Array.isArray(project.members) && project.members.length > 0 ? (
+                project.members.map((member, index) => (
+                  <div key={member._id || index} className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-slate-900 flex items-center justify-center text-xs font-bold text-indigo-600 border border-indigo-100 dark:border-slate-700">
+                      {(member.name || member).charAt(0).toUpperCase()}
                     </div>
-                  ))
-                ) : Array.isArray(project.teamMembers) ? (
-                  project.teamMembers.map((member, index) => (
-                    <div key={index} className="flex items-center">
-                      <div className="w-8 h-8 bg-gray-300 dark:bg-gray-600 rounded-full mr-3 overflow-hidden flex items-center justify-center text-sm font-medium text-gray-600 dark:text-gray-300">
-                        {member.name ? member.name.charAt(0).toUpperCase() : (typeof member === 'string' ? member.charAt(0).toUpperCase() : 'U')}
-                      </div>
-                      <div>
-                        <span className="font-medium text-gray-900 dark:text-white block">
-                          {member.name || member}
-                        </span>
-                        {member.role && <span className="text-xs text-gray-500 dark:text-gray-400">{member.role}</span>}
-                      </div>
+                    <div>
+                      <span className="text-sm font-bold text-gray-900 dark:text-white block">
+                        {member.name || member}
+                      </span>
+                      {member.rollNumber && <span className="text-[10px] font-bold text-gray-400 uppercase">{member.rollNumber}</span>}
                     </div>
-                  ))
-                ) : (
-                  <div className="text-gray-600 dark:text-gray-400 text-sm">
-                    {project.teamMembers || "No team members listed"}
                   </div>
-                )}
-              </div>
+                ))
+              ) : (
+                <p className="text-xs text-gray-400 italic">No collaborative data available</p>
+              )}
             </div>
           </div>
         </div>
@@ -201,5 +168,4 @@ const ProjectDetails = memo(() => {
 });
 
 ProjectDetails.displayName = "ProjectDetails";
-
 export default ProjectDetails;

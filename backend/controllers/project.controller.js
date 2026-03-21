@@ -102,6 +102,12 @@ exports.createProject = async (req, res) => {
       document: req.file ? req.file.path : undefined,
     };
 
+    // Sanitize guide and members to prevent Cast to ObjectId failed for empty strings
+    if (projectData.guide === "") projectData.guide = null;
+    if (Array.isArray(projectData.members)) {
+      projectData.members = projectData.members.filter(m => m !== "");
+    }
+
     const result = await projectService.create(projectData);
 
     sendResponse(
@@ -282,6 +288,12 @@ exports.updateProject = async (req, res) => {
     const updateData = { ...req.body };
     if (req.file) {
       updateData.document = req.file.path;
+    }
+
+    // Sanitize guide and members to prevent Cast to ObjectId failed for empty strings
+    if (updateData.guide === "") updateData.guide = null;
+    if (Array.isArray(updateData.members)) {
+      updateData.members = updateData.members.filter(m => m !== "");
     }
     const result = await projectService.update(req.params.id, updateData);
 

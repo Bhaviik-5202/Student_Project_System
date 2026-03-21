@@ -25,6 +25,39 @@ const courseSchema = new mongoose.Schema(
       ref: "Staff",
       required: [true, "Faculty is required"],
     },
+    semester: {
+      type: String,
+      trim: true,
+      default: "Fall 2024",
+    },
+    credits: {
+      type: Number,
+      default: 3,
+    },
+    schedule: {
+      type: String,
+      trim: true,
+      default: "TBA",
+    },
+    room: {
+      type: String,
+      trim: true,
+      default: "TBA",
+    },
+    syllabus: [
+      {
+        week: Number,
+        topic: String,
+        description: String,
+      },
+    ],
+    materials: [
+      {
+        title: String,
+        url: String,
+        type: { type: String, default: "PDF" },
+      },
+    ],
   },
   {
     timestamps: true,

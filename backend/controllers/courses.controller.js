@@ -165,3 +165,70 @@ exports.deleteCourse = async (req, res) => {
     );
   }
 };
+
+/**
+ * Enroll the current user (student) in a course
+ * @route POST /courses/:id/enroll
+ * @access Student
+ */
+exports.enrollCourse = async (req, res) => {
+  try {
+    const studentId = req.user.id;
+    const courseId = req.params.id;
+    const result = await coursesService.enroll(studentId, courseId);
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error ? result.message : "Enrolled in course successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 400 : 200,
+    );
+  } catch (err) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Failed to enroll in course",
+        data: null,
+        error: err.message,
+      },
+      500,
+    );
+  }
+};
+
+/**
+ * Get courses enrolled by the current student
+ * @route GET /courses/my
+ * @access Student
+ */
+exports.getMyCourses = async (req, res) => {
+  try {
+    const studentId = req.user.id;
+    const result = await coursesService.getEnrolled(studentId);
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error ? result.message : "My courses fetched successfully",
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 400 : 200,
+    );
+  } catch (err) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Failed to fetch my courses",
+        data: null,
+        error: err.message,
+      },
+      500,
+    );
+  }
+};

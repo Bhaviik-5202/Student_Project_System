@@ -1,93 +1,96 @@
-import React, { useState, useEffect, useMemo, memo } from "react";
-import PropTypes from "prop-types";
-import api from "../../../utils/api";
+import React, { useState, useEffect, memo } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  BookOpen,
+  Plus,
+  User,
+  Info,
+  Library,
+  GraduationCap,
+  Clock,
+  Layout,
+  ArrowRight
+} from "lucide-react";
+import courseService from "../../../services/courseService";
 
-const CourseCard = memo(({ course }) => (
-  <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6 hover:shadow-md dark:hover:shadow-lg transition-shadow">
-    <div className="flex justify-between items-start mb-4">
-      <div>
-        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
-          {course.title}
-        </h3>
-        <p className="text-sm text-slate-600 dark:text-slate-400">
-          {course.code}
-        </p>
+const CourseCard = memo(({ course }) => {
+  const navigate = useNavigate();
+  const progress = course.progress || 0;
+
+  return (
+    <div className="card h-full flex flex-col">
+      <div className="card-header bg-gray-50/50 dark:bg-gray-900/50">
+        <div className="flex justify-between items-start">
+          <div>
+            <span className="badge badge-primary mb-2">{course.code}</span>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white line-clamp-1">
+              {course.name || course.title}
+            </h3>
+          </div>
+        </div>
       </div>
-      <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm font-medium">
-        {course.grade}
-      </span>
-    </div>
 
-    <div className="mb-4">
-      <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400 mb-1">
-        <span>Progress</span>
-        <span>{course.progress}%</span>
+      <div className="card-body flex-1 flex flex-col">
+        <div className="mb-6">
+          <div className="flex justify-between items-end mb-2">
+            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Progress</span>
+            <span className="text-sm font-bold text-indigo-600">{progress}%</span>
+          </div>
+          <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-2 overflow-hidden">
+            <div
+              className="bg-indigo-600 h-full rounded-full transition-all duration-1000"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3 py-4 border-t border-gray-100 dark:border-gray-800 mb-6">
+          <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-gray-900 flex items-center justify-center text-gray-400">
+            <User className="w-4 h-4" />
+          </div>
+          <div>
+            <p className="text-[10px] font-bold text-gray-400 uppercase leading-none mb-1">Instructor</p>
+            <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+              {course.faculty?.name || course.instructor || "Visiting Lead"}
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 mt-auto">
+          <button
+            onClick={() => navigate(`/courses/${course.id || course._id}`)}
+            className="btn btn-secondary btn-sm flex items-center justify-center gap-2"
+          >
+            <Info className="w-4 h-4" /> Details
+          </button>
+          <button
+            onClick={() => navigate(`/courses/${course.id || course._id}/materials`)}
+            className="btn btn-primary btn-sm flex items-center justify-center gap-2"
+          >
+            <Library className="w-4 h-4" /> Resources
+          </button>
+        </div>
       </div>
-      <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
-        <div
-          className="bg-gradient-to-r from-blue-500 to-indigo-500 h-2 rounded-full transition-all"
-          style={{ width: `${course.progress}%` }}
-        />
-      </div>
     </div>
-
-    <div className="text-sm text-slate-600 dark:text-slate-400 mb-4">
-      Next assignment due: {course.nextAssignment}
-    </div>
-
-    <div className="flex gap-2">
-      <button className="flex-1 px-3 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
-        Enter Course
-      </button>
-      <button className="px-3 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 text-sm rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
-        View Details
-      </button>
-    </div>
-  </div>
-));
+  );
+});
 
 CourseCard.displayName = "CourseCard";
 
-CourseCard.propTypes = {
-  course: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    title: PropTypes.string.isRequired,
-    code: PropTypes.string.isRequired,
-    progress: PropTypes.number.isRequired,
-    grade: PropTypes.string.isRequired,
-    nextAssignment: PropTypes.string.isRequired,
-  }).isRequired,
-};
-
-/**
- * MyCourses Component
- * 
- * A personalized academic dashboard for students. Aggregates and 
- * displays enrolled courses with dynamic progress visualizations, 
- * performance metrics, and pending assignment alerts using a 
- * responsive grid layout.
- */
 const MyCourses = memo(() => {
-  const [coursesData, setCoursesData] = useState([]);
+  const navigate = useNavigate();
+  const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchMyCourses = async () => {
       try {
-        const response = await api.get("/courses");
-        const allCourses = response.data || [];
-        // Map to expected structure
-        const mapped = allCourses.map(c => ({
-          id: c.id || c._id,
-          title: c.title || c.courseName || "Unknown Course",
-          code: c.code || c.courseCode || "XXX",
-          progress: c.progress || Math.floor(Math.random() * 100),
-          grade: c.grade || "N/A",
-          nextAssignment: c.nextAssignment || "TBA"
-        }));
-        setCoursesData(mapped);
-      } catch (error) {
-        console.error("Failed to fetch my courses", error);
+        const res = await courseService.getMyCourses();
+        if (res.success) {
+          setCourses(res.data || []);
+        }
+      } catch (err) {
+        console.error("Failed to fetch my courses", err);
       } finally {
         setLoading(false);
       }
@@ -95,36 +98,60 @@ const MyCourses = memo(() => {
     fetchMyCourses();
   }, []);
 
-  return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-              My Courses
-            </h1>
-            <p className="text-slate-600 dark:text-slate-400">
-              Track your enrolled courses and progress
-            </p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {loading ? (
-            <div className="col-span-full text-center py-8 text-slate-500">Loading courses...</div>
-          ) : coursesData.length === 0 ? (
-            <div className="col-span-full text-center py-8 text-slate-500">No courses found.</div>
-          ) : (
-            coursesData.map((course) => (
-              <CourseCard key={course.id} course={course} />
-            ))
-          )}
-        </div>
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
+        <p className="mt-4 text-gray-500 font-medium">Loading your courses...</p>
       </div>
+    );
+  }
+
+  return (
+    <div className="dashboard-content">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            My Courses
+          </h1>
+          <p className="text-gray-500 dark:text-gray-400">
+            Manage your active modules and academic progress
+          </p>
+        </div>
+        <button
+          onClick={() => navigate("/courses/register")}
+          className="btn btn-primary flex items-center gap-2 py-3 px-6"
+        >
+          <Plus className="w-5 h-5" /> New Enrollment
+        </button>
+      </div>
+
+      {courses.length === 0 ? (
+        <div className="card p-16 text-center max-w-2xl mx-auto border-dashed">
+          <div className="w-16 h-16 bg-gray-50 dark:bg-gray-900 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <BookOpen className="w-8 h-8 text-gray-300" />
+          </div>
+          <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">No active courses</h3>
+          <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-sm mx-auto">
+            You haven't registered for any modules this semester yet.
+          </p>
+          <button
+            onClick={() => navigate("/courses/register")}
+            className="btn btn-primary px-8"
+          >
+            Start Registration <ArrowRight className="w-5 h-5 ml-2" />
+          </button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {courses.map((course) => (
+            <CourseCard key={course.id || course._id} course={course} />
+          ))}
+        </div>
+      )}
     </div>
   );
 });
 
 MyCourses.displayName = "MyCourses";
-
 export default MyCourses;

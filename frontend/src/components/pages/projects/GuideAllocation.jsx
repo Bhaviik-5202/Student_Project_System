@@ -7,66 +7,40 @@ import staffService from "../../../services/staffService";
 const GuideCard = memo(({ guide }) => {
   const statusClass =
     guide.status === "Available"
-      ? "text-green-600 dark:text-green-400"
-      : "text-yellow-600 dark:text-yellow-400";
+      ? "text-green-600 bg-green-50"
+      : "text-amber-600 bg-amber-50";
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm dark:shadow-md border border-gray-200 dark:border-gray-700 card-hover">
-      <div className="flex items-center mb-4">
-        <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mr-4">
-          <i className="fas fa-user-tie text-purple-600 dark:text-purple-400 text-xl" />
+    <div className="bg-white dark:bg-slate-800 p-5 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm">
+      <div className="flex items-center gap-4 mb-4">
+        <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center">
+          <i className="fas fa-user-tie text-indigo-600" />
         </div>
         <div>
-          <h3 className="font-semibold text-gray-900 dark:text-white">
+          <h3 className="text-sm font-bold text-gray-900 dark:text-white leading-tight">
             {guide.guide}
           </h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-xs text-gray-500">
             {guide.department}
           </p>
         </div>
       </div>
 
-      <div className="space-y-3">
-        <div className="flex justify-between text-sm">
-          <span className="text-gray-600 dark:text-gray-400">
-            Allocated Groups
-          </span>
-          <span className="font-medium text-gray-900 dark:text-white">
-            {guide.allocatedGroups}/{guide.maxCapacity}
-          </span>
+      <div className="grid grid-cols-2 gap-2 text-[11px] font-medium uppercase tracking-wider">
+        <div className="p-2 bg-gray-50 dark:bg-slate-900/50 rounded-lg">
+          <p className="text-gray-400 mb-0.5">Capacity</p>
+          <p className="text-gray-900 dark:text-white">{guide.allocatedGroups}/{guide.maxCapacity}</p>
         </div>
-        <div className="flex justify-between text-sm">
-          <span className="text-gray-600 dark:text-gray-400">Students</span>
-          <span className="font-medium text-gray-900 dark:text-white">
-            {guide.students}
-          </span>
-        </div>
-        <div className="flex justify-between text-sm">
-          <span className="text-gray-600 dark:text-gray-400">Status</span>
-          <span className={`font-medium ${statusClass}`}>{guide.status}</span>
+        <div className={`p-2 rounded-lg ${statusClass} dark:bg-opacity-10`}>
+          <p className="opacity-70 mb-0.5">Status</p>
+          <p className="font-bold">{guide.status}</p>
         </div>
       </div>
-
-      <button className="w-full mt-4 px-4 py-2 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition duration-150 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
-        View Details
-      </button>
     </div>
   );
 });
 
 GuideCard.displayName = "GuideCard";
-
-GuideCard.propTypes = {
-  guide: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    guide: PropTypes.string.isRequired,
-    department: PropTypes.string.isRequired,
-    allocatedGroups: PropTypes.number.isRequired,
-    maxCapacity: PropTypes.number.isRequired,
-    students: PropTypes.number.isRequired,
-    status: PropTypes.string.isRequired,
-  }).isRequired,
-};
 
 const AllocationRow = memo(({ project, availableGuides, onAssign }) => {
   const navigate = useNavigate();
@@ -79,76 +53,53 @@ const AllocationRow = memo(({ project, availableGuides, onAssign }) => {
   };
 
   return (
-    <tr>
-    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-      {project.id && project.id.length > 8 ? `${project.id.substring(0, 8)}...` : project.id}
-    </td>
-    <td className="px-6 py-4 whitespace-nowrap">
-      <div className="flex items-center">
-        <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mr-3">
-          <i className="fas fa-project-diagram text-blue-600 dark:text-blue-400" />
-        </div>
-        <div>
-          <p className="text-sm font-medium text-gray-900 dark:text-white">
-            {project.name}
-          </p>
-        </div>
-      </div>
-    </td>
-    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-      {project.group}
-    </td>
-    <td className="px-6 py-4 whitespace-nowrap">
-      <span
-        className={`text-sm ${
-          project.currentGuide === "None"
-            ? "text-yellow-600 dark:text-yellow-400 font-medium"
-            : "text-gray-500 dark:text-gray-400"
-        }`}
-      >
-        {project.currentGuide}
-      </span>
-    </td>
-    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-      <select 
-        value={selectedGuide}
-        onChange={(e) => setSelectedGuide(e.target.value)}
-        className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400"
-      >
-        <option value="">Select Guide</option>
-        {availableGuides.map(guide => (
-          <option key={guide.id} value={guide.id}>{guide.guide}</option>
-        ))}
-      </select>
-      <button 
-        onClick={handleAssignClick}
-        className="ml-2 px-3 py-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
-      >
-        Assign
-      </button>
-      <button 
-        onClick={() => navigate(`/projects/${project.id || project._id}`)}
-        className="ml-2 px-3 py-1 border border-blue-600 text-blue-600 hover:bg-blue-50 dark:border-blue-400 dark:text-blue-400 dark:hover:bg-blue-900/30 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
-      >
-        View Details
-      </button>
-    </td>
-  </tr>
+    <tr className="hover:bg-gray-50 dark:hover:bg-slate-900/50 transition-colors">
+      <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-600 dark:text-gray-300">
+        {project.id}
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap">
+        <p className="text-sm font-semibold text-gray-900 dark:text-white">
+          {project.name}
+        </p>
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+        {project.group}
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap">
+        <span className={`text-sm px-2 py-1 rounded-full ${project.currentGuide === "None" ? "bg-yellow-50 text-yellow-700 font-bold" : "text-gray-600"}`}>
+          {project.currentGuide}
+        </span>
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap text-sm flex items-center gap-2">
+        <select 
+          value={selectedGuide}
+          onChange={(e) => setSelectedGuide(e.target.value)}
+          className="text-xs bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg px-2 py-1.5 focus:ring-2 focus:ring-indigo-500 outline-none"
+        >
+          <option value="">Select Guide</option>
+          {availableGuides.map(guide => (
+            <option key={guide.id} value={guide.id}>{guide.guide}</option>
+          ))}
+        </select>
+        <button 
+          onClick={handleAssignClick}
+          className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-1.5 px-3 rounded-lg transition-colors shadow-sm"
+        >
+          Assign
+        </button>
+        <button 
+          onClick={() => navigate(`/projects/${project.id}`)}
+          className="border border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700 p-1.5 rounded-lg transition-colors"
+          title="View Details"
+        >
+          <i className="fas fa-external-link-alt text-gray-400" />
+        </button>
+      </td>
+    </tr>
   );
 });
 
 AllocationRow.displayName = "AllocationRow";
-
-AllocationRow.propTypes = {
-  project: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    group: PropTypes.string.isRequired,
-    currentGuide: PropTypes.string.isRequired,
-  }).isRequired,
-  availableGuides: PropTypes.arrayOf(PropTypes.object).isRequired,
-  onAssign: PropTypes.func.isRequired,
-};
 
 const GuideAllocationList = memo(() => {
   const [allocations, setAllocations] = useState([]);
@@ -162,15 +113,17 @@ const GuideAllocationList = memo(() => {
       const res = await staffService.getAllStaff();
       if (res.success) {
         setAllocations(
-          (res.data || []).filter(s => s.role === "Faculty" || s.role === "Guide").map(g => ({
-            id: g._id || g.id,
-            guide: g.name,
-            department: g.department || "General",
-            allocatedGroups: g.allocatedGroups || 0,
-            maxCapacity: g.maxCapacity || 5,
-            students: g.studentsCount || 0,
-            status: (g.allocatedGroups || 0) < (g.maxCapacity || 5) ? "Available" : "Full",
-          }))
+          (res.data || [])
+            .filter(s => s.role?.toLowerCase() === "faculty" || s.role?.toLowerCase() === "guide")
+            .map(g => ({
+              id: g._id || g.id,
+              guide: g.name,
+              department: g.department || "General",
+              allocatedGroups: g.allocatedGroups || 0,
+              maxCapacity: g.maxCapacity || 5,
+              students: g.studentsCount || 0,
+              status: (g.allocatedGroups || 0) < (g.maxCapacity || 5) ? "Available" : "Full",
+            }))
         );
       }
       setLoadingGuides(false);
@@ -184,7 +137,7 @@ const GuideAllocationList = memo(() => {
           (res.data || []).map(p => ({
             id: p._id || p.id,
             name: p.title,
-            group: p.teamMembers || "Ungrouped",
+            group: p.teamMembers?.length > 0 ? p.teamMembers.join(", ") : "Ungrouped",
             currentGuide: p.guide || "None",
           }))
         );
@@ -209,69 +162,66 @@ const GuideAllocationList = memo(() => {
     }
   };
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   return (
-    <div className="animate-fade-in">
-      <div className="flex justify-between items-center mb-6">
+    <div className="p-4 md:p-6 space-y-8 print:p-0">
+      <div className="flex justify-between items-center no-print">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Guide Allocation
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400">
-            Assign and manage project guides
-          </p>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">Guide Allocation</h2>
+          <p className="text-sm text-gray-500">Manage mentor assignments and capacity</p>
         </div>
-        <button className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white rounded-lg transition duration-150 flex items-center focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
-          <i className="fas fa-user-tie mr-2" /> Assign Guide
+        <button 
+          onClick={handlePrint}
+          className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-gray-50 transition-colors shadow-sm"
+        >
+          <i className="fas fa-print text-gray-400" /> Print Report
         </button>
       </div>
 
-      {/* Guides Overview */}
-      {loadingGuides ? (
-        <div className="p-8 text-center text-gray-500">Loading guides...</div>
-      ) : allocations.length === 0 ? (
-        <div className="p-8 text-center text-gray-500">No guides found.</div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {allocations.map((guide) => (
-            <GuideCard key={guide.id} guide={guide} />
-          ))}
-        </div>
-      )}
+      {/* Guides Grid */}
+      <div className="space-y-4 no-print">
+        <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400">Mentor Availability</h3>
+        {loadingGuides ? (
+          <div className="text-center py-10 text-gray-400 text-sm">Loading mentors...</div>
+        ) : allocations.length === 0 ? (
+          <div className="text-center py-10 text-gray-400 text-sm bg-gray-50 dark:bg-slate-800 rounded-xl border border-dashed border-gray-200">No mentors found matching criteria.</div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {allocations.map((guide) => (
+              <GuideCard key={guide.id} guide={guide} />
+            ))}
+          </div>
+        )}
+      </div>
 
-      {/* Projects for Allocation */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm dark:shadow-md border border-gray-200 dark:border-gray-700 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-          Projects Pending Allocation
-        </h3>
+      {/* Projects Table */}
+      <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm overflow-hidden print:border-none">
+        <div className="px-6 py-4 border-b border-gray-100 dark:border-slate-700 flex justify-between items-center no-print">
+          <h3 className="font-bold text-gray-900 dark:text-white tabular-nums">Allocation Management</h3>
+          <span className="text-[10px] font-bold bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full uppercase tracking-tighter">Total Projects: {projects.length}</span>
+        </div>
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead className="bg-gray-50 dark:bg-gray-700">
+          <table className="w-full text-left">
+            <thead className="bg-gray-50 dark:bg-slate-900/50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Project ID
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Project Name
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Group
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Current Guide
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                  Actions
-                </th>
+                <th className="px-6 py-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">ID</th>
+                <th className="px-6 py-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Name</th>
+                <th className="px-6 py-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Group</th>
+                <th className="px-6 py-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Guide</th>
+                <th className="px-6 py-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest no-print">Actions</th>
               </tr>
             </thead>
-            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+            <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
               {loadingProjects ? (
                 <tr>
-                  <td colSpan="5" className="p-8 text-center text-gray-500">Loading projects...</td>
+                  <td colSpan="5" className="px-6 py-10 text-center text-gray-400 text-sm">Fetching projects data...</td>
                 </tr>
               ) : projects.length === 0 ? (
                 <tr>
-                   <td colSpan="5" className="p-8 text-center text-gray-500">No projects pending allocation.</td>
+                   <td colSpan="5" className="px-6 py-10 text-center text-gray-400 text-sm">All projects have been allocated guides.</td>
                 </tr>
               ) : (
                 projects.map((project) => (
@@ -292,5 +242,4 @@ const GuideAllocationList = memo(() => {
 });
 
 GuideAllocationList.displayName = "GuideAllocationList";
-
 export default GuideAllocationList;

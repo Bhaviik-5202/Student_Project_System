@@ -129,6 +129,8 @@ const SupportTicket = lazy(() => import("../components/pages/help/SupportTicket"
 const Tutorials = lazy(() => import("../components/pages/help/Tutorials"));
 const UserGuide = lazy(() => import("../components/pages/help/UserGuide"));
 
+const AddCourse = lazy(() => import("../components/pages/courses/AddCourse"));
+
 const AppRoutes = () => {
   return (
     <Routes>
@@ -174,13 +176,13 @@ const AppRoutes = () => {
 
         {/* Course Routes */}
         <Route path="courses" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><MyCourses /></ProtectedRoute>} />
-        <Route path="courses/new" element={<Navigate to="/course-catalog" replace />} />
-        <Route path="course-catalog" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><CourseCatalog /></ProtectedRoute>} />
+        <Route path="courses/new" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><AddCourse /></ProtectedRoute>} />
+        <Route path="courses/catalog" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><CourseCatalog /></ProtectedRoute>} />
+        <Route path="courses/register" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><CourseRegistration /></ProtectedRoute>} />
+        <Route path="courses/schedule" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><CourseSchedule /></ProtectedRoute>} />
         <Route path="courses/:id" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><CourseDetails /></ProtectedRoute>} />
-        <Route path="course-materials" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><CourseMaterials /></ProtectedRoute>} />
-        <Route path="course-registration" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><CourseRegistration /></ProtectedRoute>} />
-        <Route path="course-schedule" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><CourseSchedule /></ProtectedRoute>} />
-        <Route path="syllabus/:id" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><SyllabusViewer /></ProtectedRoute>} />
+        <Route path="courses/:id/materials" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><CourseMaterials /></ProtectedRoute>} />
+        <Route path="courses/:id/syllabus" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><SyllabusViewer /></ProtectedRoute>} />
 
         {/* Assignment Routes */}
         <Route path="assignments" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><AssignmentList /></ProtectedRoute>} />

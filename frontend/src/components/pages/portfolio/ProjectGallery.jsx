@@ -5,7 +5,6 @@ const ProjectGallery = () => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [viewMode, setViewMode] = useState("grid");
   const [filter, setFilter] = useState("all");
-
   const [projects, setProjects] = useState([]);
   const [filters, setFilters] = useState([{ id: "all", name: "All Projects", count: 0 }]);
   const [loading, setLoading] = useState(true);
@@ -30,218 +29,113 @@ const ProjectGallery = () => {
     () =>
       projects.filter((project) => {
         if (filter === "all") return true;
-        if (filter === "completed") return project.status === "completed";
-        if (filter === "in-progress") return project.status === "in-progress";
         return project.category === filter || project.status === filter;
       }),
     [projects, filter],
   );
 
-  const getStatusColor = useCallback((status) => {
-    switch (status) {
-      case "completed":
-        return "bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-200";
-      case "in-progress":
-        return "bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-200";
-      case "planning":
-        return "bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200";
-      default:
-        return "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300";
-    }
-  }, []);
-
-  const getCategoryIcon = useCallback((category) => {
-    switch (category) {
-      case "web":
-        return "fas fa-globe";
-      case "mobile":
-        return "fas fa-mobile-alt";
-      case "ai":
-        return "fas fa-brain";
-      case "iot":
-        return "fas fa-microchip";
-      case "blockchain":
-        return "fas fa-link";
-      default:
-        return "fas fa-project-diagram";
-    }
-  }, []);
-
-  if (loading) return <div className="p-6 text-center text-slate-500">Loading projects...</div>;
+  if (loading) return <div className="p-20 text-center text-gray-400 text-sm italic">Synchronizing gallery...</div>;
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-lg shadow p-6\">
-      {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-8">
+    <div className="p-4 md:p-6 space-y-6">
+      <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-gray-800">Project Gallery</h2>
-          <p className="text-gray-600 mt-1">
-            Showcasing student projects and innovations
-          </p>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">Project Gallery</h2>
+          <p className="text-sm text-gray-500">Exhibition of institutional innovations</p>
         </div>
-        <div className="flex items-center space-x-3 mt-4 lg:mt-0">
-          <div className="flex bg-gray-100 rounded-lg p-1">
+        <div className="flex items-center gap-3">
+          <div className="flex bg-gray-100 dark:bg-slate-800 p-1 rounded-lg">
             <button
               onClick={() => setViewMode("grid")}
-              className={`px-3 py-2 rounded ${
-                viewMode === "grid" ? "bg-white shadow" : ""
-              }`}
+              className={`p-2 rounded-md transition-all ${viewMode === "grid" ? "bg-white dark:bg-slate-700 shadow-sm" : "text-gray-400"}`}
             >
-              <i className="fas fa-th-large"></i>
+              <i className="fas fa-th-large text-xs"></i>
             </button>
             <button
               onClick={() => setViewMode("list")}
-              className={`px-3 py-2 rounded ${
-                viewMode === "list" ? "bg-white shadow" : ""
-              }`}
+              className={`p-2 rounded-md transition-all ${viewMode === "list" ? "bg-white dark:bg-slate-700 shadow-sm" : "text-gray-400"}`}
             >
-              <i className="fas fa-list"></i>
+              <i className="fas fa-list text-xs"></i>
             </button>
           </div>
-          <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-            <i className="fas fa-plus mr-2"></i>
-            Add Project
+        </div>
+      </div>
+
+      {/* Primary Filtering */}
+      <div className="flex flex-wrap gap-2">
+        {filters.map((f) => (
+          <button
+            key={f.id}
+            onClick={() => setFilter(f.id)}
+            className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${
+              filter === f.id
+                ? "bg-indigo-600 text-white shadow-md shadow-indigo-200"
+                : "bg-white text-gray-500 border border-gray-100 hover:border-gray-200"
+            }`}
+          >
+            {f.name}
           </button>
-        </div>
+        ))}
       </div>
 
-      {/* Filters */}
-      <div className="mb-6">
-        <div className="flex flex-wrap gap-2">
-          {filters.map((filterItem) => (
-            <button
-              key={filterItem.id}
-              onClick={() => setFilter(filterItem.id)}
-              className={`px-4 py-2 rounded-lg ${
-                filter === filterItem.id
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              }`}
-            >
-              {filterItem.name} ({filterItem.count})
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Projects Grid/List */}
+      {/* Grid Display */}
       {viewMode === "grid" ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProjects.map((project) => (
             <div
-              key={project.id}
-              className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+              key={project.id || project._id}
+              className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 overflow-hidden shadow-sm hover:shadow-md transition-all group cursor-pointer"
               onClick={() => setSelectedProject(project)}
             >
-              {/* Project Image */}
-              <div className="h-48 bg-gray-200 relative">
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+              <div className="h-40 bg-gray-50 dark:bg-slate-900 flex items-center justify-center relative overflow-hidden">
+                <i className="fas fa-project-diagram text-gray-200 text-4xl group-hover:scale-110 transition-transform duration-500" />
                 <div className="absolute top-3 right-3">
-                  <span
-                    className={`px-2 py-1 text-xs rounded-full ${getStatusColor(
-                      project.status,
-                    )}`}
-                  >
-                    {project.status.replace("-", " ")}
+                  <span className="bg-white/90 backdrop-blur px-2 py-0.5 rounded text-[8px] font-bold text-gray-900 uppercase">
+                    {project.category}
                   </span>
                 </div>
-                <div className="absolute bottom-3 left-3">
-                  <div className="flex items-center space-x-2 text-white">
-                    <div className="w-8 h-8 bg-white bg-opacity-20 backdrop-blur-sm rounded-full flex items-center justify-center">
-                      <i className={getCategoryIcon(project.category)}></i>
-                    </div>
-                    <div>
-                      <h3 className="font-bold">{project.title}</h3>
-                    </div>
-                  </div>
-                </div>
               </div>
-
-              {/* Project Info */}
-              <div className="p-4">
-                <p className="text-gray-600 text-sm mb-3">
+              <div className="p-5">
+                <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-2 leading-tight">
+                  {project.title}
+                </h3>
+                <p className="text-[11px] text-gray-500 line-clamp-2 leading-relaxed mb-4">
                   {project.description}
                 </p>
-
-                {/* Technologies */}
-                <div className="flex flex-wrap gap-1 mb-4">
-                  {project.technologies.slice(0, 3).map((tech) => (
-                    <span
-                      key={tech}
-                      className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                  {project.technologies.length > 3 && (
-                    <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">
-                      +{project.technologies.length - 3}
-                    </span>
-                  )}
-                </div>
-
-                {/* Stats */}
-                <div className="flex items-center justify-between text-sm text-gray-500">
-                  <div className="flex items-center space-x-4">
-                    <span className="flex items-center">
-                      <i className="fas fa-heart mr-1"></i>
-                      {project.likes}
-                    </span>
-                    <span className="flex items-center">
-                      <i className="fas fa-eye mr-1"></i>
-                      {project.views}
-                    </span>
+                <div className="flex items-center justify-between pt-4 border-t border-gray-50 dark:border-slate-700">
+                  <div className="flex gap-1">
+                    {project.technologies.slice(0, 2).map((tech) => (
+                      <span key={tech} className="bg-gray-50 dark:bg-slate-900 px-2 py-0.5 rounded text-[8px] font-bold text-gray-400 uppercase">
+                        {tech}
+                      </span>
+                    ))}
                   </div>
-                  <span>{project.date}</span>
+                  <span className="text-[9px] font-bold text-gray-400 uppercase tracking-tighter">
+                    {project.date}
+                  </span>
                 </div>
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm divide-y divide-gray-50 dark:divide-slate-700">
           {filteredProjects.map((project) => (
             <div
-              key={project.id}
-              className="flex flex-col md:flex-row border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow"
+              key={project.id || project._id}
+              className="p-5 flex items-center justify-between hover:bg-gray-50/50 dark:hover:bg-slate-900/30 transition-colors cursor-pointer"
               onClick={() => setSelectedProject(project)}
             >
-              <div className="md:w-64 h-48 md:h-auto bg-gray-200"></div>
-              <div className="flex-1 p-4">
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="font-bold text-gray-800">{project.title}</h3>
-                  <span
-                    className={`px-2 py-1 text-xs rounded-full ${getStatusColor(
-                      project.status,
-                    )}`}
-                  >
-                    {project.status.replace("-", " ")}
-                  </span>
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 bg-gray-50 dark:bg-slate-900 rounded-lg flex items-center justify-center border border-gray-100 dark:border-slate-800">
+                  <i className="fas fa-cube text-gray-300 text-xs" />
                 </div>
-                <p className="text-gray-600 mb-3">{project.description}</p>
-
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="flex items-center space-x-1">
-                      <i className="fas fa-users text-gray-400"></i>
-                      <span className="text-sm text-gray-600">
-                        {project.team.length} members
-                      </span>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <i className={getCategoryIcon(project.category)}></i>
-                      <span className="text-sm text-gray-600 capitalize">
-                        {project.category}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    <span className="text-sm text-gray-500">
-                      {project.date}
-                    </span>
-                  </div>
+                <div>
+                  <h4 className="text-sm font-bold text-gray-900 dark:text-white">{project.title}</h4>
+                  <p className="text-[10px] text-gray-400 uppercase font-bold tracking-widest mt-0.5">{project.category} • {project.date}</p>
                 </div>
               </div>
+              <button className="text-[10px] font-bold text-indigo-600 uppercase hover:underline">Review</button>
             </div>
           ))}
         </div>
@@ -249,188 +143,92 @@ const ProjectGallery = () => {
 
       {/* Empty State */}
       {filteredProjects.length === 0 && (
-        <div className="text-center py-12">
-          <i className="fas fa-project-diagram text-gray-300 text-4xl mb-3"></i>
-          <h3 className="text-lg font-medium text-gray-700 mb-2">
-            No projects found
-          </h3>
-          <p className="text-gray-500">Try adjusting your filter criteria</p>
+        <div className="text-center py-24 bg-gray-50 dark:bg-slate-900/50 rounded-2xl border border-dashed border-gray-200 dark:border-slate-800">
+          <i className="fas fa-folder-open text-gray-300 text-3xl mb-4" />
+          <h3 className="text-sm font-bold text-gray-900 dark:text-white">Gallery Empty</h3>
+          <p className="text-[10px] text-gray-500 uppercase tracking-widest mt-1">No ventures match the selected criteria</p>
         </div>
       )}
 
-      {/* Project Details Modal */}
+      {/* Detail Showcase Overlay */}
       {selectedProject && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-gray-900/40 backdrop-blur-sm p-4">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+            <div className="p-8">
               <div className="flex justify-between items-start mb-6">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-800">
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white leading-tight">
                     {selectedProject.title}
                   </h2>
-                  <div className="flex items-center space-x-3 mt-2">
-                    <span
-                      className={`px-3 py-1 rounded-full text-sm ${getStatusColor(
-                        selectedProject.status,
-                      )}`}
-                    >
-                      {selectedProject.status.replace("-", " ")}
+                  <div className="flex items-center gap-3 mt-2">
+                    <span className="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded text-[8px] font-bold uppercase">
+                      {selectedProject.status}
                     </span>
-                    <span className="text-gray-500">
-                      <i className="fas fa-calendar mr-1"></i>
+                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
                       {selectedProject.date}
                     </span>
                   </div>
                 </div>
                 <button
                   onClick={() => setSelectedProject(null)}
-                  className="text-gray-500 hover:text-gray-700"
+                  className="bg-gray-50 hover:bg-gray-100 p-2 rounded-full text-gray-400 transition-colors"
                 >
-                  <i className="fas fa-times text-xl"></i>
+                  <i className="fas fa-times" />
                 </button>
               </div>
 
-              {/* Image Gallery */}
-              <div className="mb-6">
-                <div className="grid grid-cols-3 gap-3">
-                  {selectedProject.images.map((img, index) => (
-                    <div
-                      key={index}
-                      className="aspect-video bg-gray-200 rounded-lg overflow-hidden"
-                    >
-                      {/* Image would go here */}
-                      <div className="w-full h-full flex items-center justify-center bg-gray-300">
-                        <i className="fas fa-image text-gray-400 text-2xl"></i>
-                      </div>
-                    </div>
-                  ))}
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-3">Conceptual Blueprint</h3>
+                  <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+                    {selectedProject.description}
+                  </p>
                 </div>
-              </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Left Column */}
-                <div className="lg:col-span-2 space-y-6">
+                <div className="grid grid-cols-2 gap-8">
                   <div>
-                    <h3 className="font-bold text-gray-800 mb-3">
-                      Description
-                    </h3>
-                    <p className="text-gray-700">
-                      {selectedProject.description}
-                    </p>
-                  </div>
-
-                  <div>
-                    <h3 className="font-bold text-gray-800 mb-3">
-                      Technologies Used
-                    </h3>
+                    <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-4">Stack Architecture</h3>
                     <div className="flex flex-wrap gap-2">
                       {selectedProject.technologies.map((tech) => (
-                        <span
-                          key={tech}
-                          className="px-3 py-2 bg-blue-100 text-blue-700 rounded-lg"
-                        >
+                        <span key={tech} className="bg-gray-50 dark:bg-slate-900 px-2.5 py-1 rounded text-[9px] font-bold text-gray-500 border border-gray-100 dark:border-slate-700">
                           {tech}
                         </span>
                       ))}
                     </div>
                   </div>
-                </div>
-
-                {/* Right Column */}
-                <div className="space-y-6">
                   <div>
-                    <h3 className="font-bold text-gray-800 mb-3">
-                      Team Members
-                    </h3>
+                    <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-4">Core Team</h3>
                     <div className="space-y-2">
-                      {selectedProject.team.map((member, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded"
-                        >
-                          <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
-                          <span className="font-medium">{member}</span>
+                      {selectedProject.team.map((member) => (
+                        <div key={member} className="flex items-center gap-2">
+                          <div className="w-5 h-5 bg-indigo-100 rounded flex items-center justify-center">
+                            <i className="fas fa-user text-[8px] text-indigo-500" />
+                          </div>
+                          <span className="text-[11px] font-bold text-gray-700 dark:text-gray-200">{member}</span>
                         </div>
                       ))}
                     </div>
                   </div>
-
-                  <div>
-                    <h3 className="font-bold text-gray-800 mb-3">
-                      Project Stats
-                    </h3>
-                    <div className="space-y-3">
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Likes</span>
-                        <span className="font-medium">
-                          {selectedProject.likes}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Views</span>
-                        <span className="font-medium">
-                          {selectedProject.views}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Category</span>
-                        <span className="font-medium capitalize">
-                          {selectedProject.category}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex space-x-3">
-                    <button className="flex-1 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                      <i className="fas fa-external-link-alt mr-2"></i>
-                      Visit Project
-                    </button>
-                    <button className="flex-1 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
-                      <i className="fas fa-download mr-2"></i>
-                      Download
-                    </button>
-                  </div>
                 </div>
               </div>
+            </div>
+            <div className="bg-gray-50 dark:bg-slate-900/50 p-6 flex gap-3">
+              <button className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-lg text-xs font-bold shadow-lg shadow-indigo-100 transition-all">
+                Launch Application
+              </button>
+              <button 
+                onClick={() => setSelectedProject(null)}
+                className="px-6 py-2.5 bg-white border border-gray-200 text-gray-500 rounded-lg text-xs font-bold hover:bg-gray-50 transition-all"
+              >
+                Dismiss
+              </button>
             </div>
           </div>
         </div>
       )}
-
-      {/* Gallery Stats */}
-      <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700\">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="text-center">
-            <div className="text-2xl font-bold text-blue-600">
-              {projects.length}
-            </div>
-            <div className="text-sm text-gray-600">Total Projects</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-green-600">
-              {projects.filter((p) => p.status === "completed").length}
-            </div>
-            <div className="text-sm text-gray-600">Completed</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-purple-600">
-              {projects.reduce((sum, p) => sum + p.likes, 0)}
-            </div>
-            <div className="text-sm text-gray-600">Total Likes</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-yellow-600">
-              {projects.reduce((sum, p) => sum + p.views, 0)}
-            </div>
-            <div className="text-sm text-gray-600">Total Views</div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
 
 ProjectGallery.displayName = "ProjectGallery";
-
 export default React.memo(ProjectGallery);

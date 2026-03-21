@@ -48,6 +48,12 @@ const studentSchema = new mongoose.Schema(
         ref: "Project",
       },
     ],
+    enrolledCourses: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Course",
+      },
+    ],
 
     grades: [
       {

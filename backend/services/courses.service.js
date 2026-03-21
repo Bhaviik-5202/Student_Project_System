@@ -81,3 +81,82 @@ exports.remove = async (id) => {
     return response(true, null, err.message || "Failed to delete course");
   }
 };
+
+/**
+ * Enroll a student in a course
+ * @param {string} studentId - Student identifier
+ * @param {string} courseId - Course identifier
+ * @returns {Promise<Object>} Formatted service response
+ */
+exports.enroll = async (userId, courseId) => {
+  try {
+    const studentRepository = require("../repositories/student.repository");
+    const userRepository = require("../repositories/user.repository");
+    
+    // 1. Resolve User to get email
+    const user = await userRepository.findById(userId);
+    if (!user) return response(true, null, "User account not found");
+
+    // 2. Resolve Student by email
+    let student = await studentRepository.findByEmail(user.email);
+    
+    // 3. If student profile doesn't exist, create it on-the-fly (for legacy users)
+    if (!student) {
+      student = await studentRepository.create({
+        name: user.name,
+        email: user.email,
+        rollNumber: `STUDENT-${Date.now()}`,
+        department: "General",
+        year: 1
+      });
+    }
+
+    const course = await coursesRepository.findById(courseId);
+    if (!course) return response(true, null, "Course not found");
+
+    const updatedStudent = await studentRepository.update(student._id, {
+      $addToSet: { enrolledCourses: courseId }
+    });
+
+    return response(false, updatedStudent, "Enrolled in course successfully");
+  } catch (err) {
+    return response(true, null, err.message || "Failed to enroll in course");
+  }
+};
+
+/**
+ * Get courses enrolled by a student
+ * @param {string} studentId - Student identifier
+ * @returns {Promise<Object>} Formatted service response with course list
+ */
+exports.getEnrolled = async (userId) => {
+  try {
+    const studentRepository = require("../repositories/student.repository");
+    const userRepository = require("../repositories/user.repository");
+
+    // 1. Resolve User to get email
+    const user = await userRepository.findById(userId);
+    if (!user) return response(true, null, "User account not found");
+
+    // 2. Resolve Student by email
+    let student = await studentRepository.findByEmail(user.email);
+    
+    // 3. Fallback for legacy users
+    if (!student) {
+      student = await studentRepository.create({
+        name: user.name,
+        email: user.email,
+        rollNumber: `STUDENT-${Date.now()}`,
+        department: "General",
+        year: 1
+      });
+    }
+
+    const fullStudent = await studentRepository.findById(student._id, {
+      populate: "enrolledCourses"
+    });
+    return response(false, fullStudent.enrolledCourses, "Enrolled courses fetched successfully");
+  } catch (err) {
+    return response(true, null, err.message || "Failed to fetch enrolled courses");
+  }
+};

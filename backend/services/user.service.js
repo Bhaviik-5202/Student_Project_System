@@ -28,8 +28,21 @@ exports.register = async ({ name, email, password, role }) => {
     const existing = await userRepository.findByEmail(email);
     if (existing) return response(true, null, "Email already registered");
 
-    await userRepository.create({ name, email, password, role });
-    return response(false, null, "User registered successfully");
+    const user = await userRepository.create({ name, email, password, role });
+
+    // If registered as a student, create a student profile
+    if (role === "student") {
+      const studentRepository = require("../repositories/student.repository");
+      await studentRepository.create({
+        name,
+        email,
+        rollNumber: `TEMP-${Date.now()}`, // Temporary roll number until updated
+        department: "TBA",
+        year: 1
+      });
+    }
+
+    return response(false, user, "User registered successfully");
   } catch (err) {
     console.error("Registration error:", err);
     return response(true, null, err.message || "Registration failed");

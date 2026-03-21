@@ -2,14 +2,6 @@ import { useCallback, useState, useEffect, useMemo, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../../utils/api";
 
-/**
- * ProjectTimeline Component
- * 
- * A high-level project orchestration and visualization tool. 
- * Features a dynamic Gantt-style overview of overlapping project 
- * phases, synchronized progress indicators, and milestone tracking 
- * for comprehensive roadmap management.
- */
 const ProjectTimeline = memo(() => {
   const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
@@ -31,217 +23,133 @@ const ProjectTimeline = memo(() => {
   }, []);
 
   const months = useMemo(() => ["Jan", "Feb", "Mar", "Apr", "May", "Jun"], []);
-  const gridLines = useMemo(() => Array.from({ length: 180 }), []);
-
-  const handleNavigate = useCallback(
-    (path) => {
-      navigate(path);
-    },
-    [navigate],
-  );
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-              Project Timeline
-            </h1>
-            <p className="text-slate-600 dark:text-slate-300">
-              Overview of all project timelines
-            </p>
-          </div>
-          <button 
-            onClick={() => navigate('/projects/new')}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-          >
-            New Project
-          </button>
+    <div className="p-4 md:p-6 space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+            Project Timelines
+          </h1>
+          <p className="text-sm text-gray-500">
+            Orchestration of active academic ventures
+          </p>
         </div>
-
-        {loading ? (
-          <div className="p-8 text-center text-slate-500">Loading timeline...</div>
-        ) : (
-          <>
-            {/* Timeline Overview */}
-            <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 p-6 mb-8">
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-6">
-            Timeline Overview
-          </h3>
-
-          {/* Month Headers */}
-          <div className="flex mb-4">
-            <div className="w-48"></div>
-            <div className="flex-1">
-              <div className="flex justify-between mb-2">
-                {months.map((month, index) => (
-                  <div
-                    key={index}
-                    className="text-center text-sm font-medium text-slate-700 dark:text-slate-300 w-16"
-                  >
-                    {month}
-                  </div>
-                ))}
-              </div>
-              <div className="flex">
-                {gridLines.map((_, i) => (
-                  <div
-                    key={i}
-                    className="h-4 border-r border-slate-200 dark:border-slate-700 w-1"
-                  ></div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Project Bars */}
-          <div className="space-y-6">
-            {projects.map((project) => {
-              const startMonth = new Date(project.start).getMonth();
-              const endMonth = new Date(project.end).getMonth();
-              const duration = endMonth - startMonth + 1;
-
-              return (
-                <div key={project.id} className="flex items-center">
-                  <div className="w-48">
-                    <div className="font-medium text-slate-900 dark:text-slate-100">
-                      {project.name}
-                    </div>
-                    <div className="text-sm text-slate-600 dark:text-slate-300">
-                      {project.start} - {project.end}
-                    </div>
-                  </div>
-                  <div className="flex-1 relative">
-                    {/* Project Bar */}
-                    <div className="relative h-10">
-                      <div className="absolute top-1/2 left-0 right-0 h-3 bg-slate-200 dark:bg-slate-700 transform -translate-y-1/2 rounded-full"></div>
-                      <div
-                        className="absolute top-1/2 h-3 bg-blue-500 transform -translate-y-1/2 rounded-full"
-                        style={{
-                          left: `${(startMonth / 6) * 100}%`,
-                          width: `${(duration / 6) * 100}%`,
-                        }}
-                      >
-                        <div
-                          className="h-3 bg-emerald-500 rounded-full"
-                          style={{ width: `${project.progress}%` }}
-                        ></div>
-                      </div>
-
-                      {/* Start and End Markers */}
-                      <div
-                        className="absolute top-1/2 w-2 h-2 bg-blue-600 rounded-full transform -translate-y-1/2"
-                        style={{ left: `${(startMonth / 6) * 100}%` }}
-                      ></div>
-                      <div
-                        className="absolute top-1/2 w-2 h-2 bg-rose-600 rounded-full transform -translate-y-1/2"
-                        style={{ left: `${(endMonth / 6) * 100}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                  <div className="w-32 text-right">
-                    <div className="font-medium text-slate-900 dark:text-slate-100">
-                      {project.progress}%
-                    </div>
-                    <div className="text-sm text-slate-600 dark:text-slate-300">
-                      {project.milestones} milestones
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Project List */}
-        <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">
-            Projects
-          </h3>
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
-              <thead className="bg-slate-50 dark:bg-slate-800">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                    Project
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                    Timeline
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                    Progress
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                    Milestones
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                    Team
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white dark:bg-slate-900 divide-y divide-slate-200 dark:divide-slate-700">
-                {projects.map((project) => (
-                  <tr
-                    key={project.id}
-                    className="hover:bg-slate-50 dark:hover:bg-slate-800"
-                  >
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="font-medium text-slate-900 dark:text-slate-100">
-                        {project.name}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-slate-100">
-                      {project.start} to {project.end}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <div className="w-24 bg-slate-200 dark:bg-slate-700 rounded-full h-2 mr-3">
-                          <div
-                            className="bg-blue-500 h-2 rounded-full"
-                            style={{ width: `${project.progress}%` }}
-                          ></div>
-                        </div>
-                        <span className="text-sm text-slate-900 dark:text-slate-100">
-                          {project.progress}%
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-slate-100">
-                      {project.milestones}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-slate-100">
-                      {project.team} members
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button
-                        onClick={() =>
-                          handleNavigate(`/milestones?id=${project.id || project._id}`)
-                        }
-                        className="text-blue-600 dark:text-blue-300 hover:text-blue-900 dark:hover:text-blue-200 mr-3"
-                      >
-                        View
-                      </button>
-                      <button className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100">
-                        Edit
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-                </table>
-              </div>
-            </div>
-          </>
-        )}
+        <button 
+          onClick={() => navigate('/projects/new')}
+          className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition-colors"
+        >
+          New Project
+        </button>
       </div>
+
+      {loading ? (
+        <div className="p-20 text-center text-gray-400 text-sm italic">Synchronizing roadmap...</div>
+      ) : (
+        <div className="space-y-6">
+          {/* Timeline Visualization Card */}
+          <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6 shadow-sm overflow-hidden">
+            <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-8">Temporal Overview</h3>
+            
+            <div className="relative">
+              {/* Grid Headers */}
+              <div className="flex mb-4">
+                <div className="w-1/4"></div>
+                <div className="flex-1 flex justify-between px-2">
+                  {months.map((month) => (
+                    <span key={month} className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">{month}</span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Project Tracks */}
+              <div className="space-y-6">
+                {projects.map((project) => {
+                  const startMonth = new Date(project.start).getMonth();
+                  const endMonth = new Date(project.end).getMonth();
+                  const duration = Math.max(1, endMonth - startMonth + 1);
+
+                  return (
+                    <div key={project.id || project._id} className="flex items-center gap-4">
+                      <div className="w-1/4">
+                        <div className="text-xs font-bold text-gray-900 dark:text-white truncate" title={project.name}>
+                          {project.name}
+                        </div>
+                        <div className="text-[8px] font-bold text-gray-400 uppercase mt-0.5">
+                          {project.progress}% Complete
+                        </div>
+                      </div>
+                      <div className="flex-1 relative h-6 bg-gray-50 dark:bg-slate-900 rounded-lg overflow-hidden border border-gray-100 dark:border-slate-800">
+                        <div
+                          className="absolute inset-y-0 bg-indigo-500/10 border-x border-indigo-500/20"
+                          style={{
+                            left: `${(startMonth / 6) * 100}%`,
+                            width: `${(duration / 6) * 100}%`,
+                          }}
+                        >
+                          <div
+                            className="h-full bg-indigo-500 transition-all duration-1000"
+                            style={{ width: `${project.progress}%` }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Project Details List */}
+          <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="bg-gray-50/50 dark:bg-slate-900/40 border-b border-gray-100 dark:border-slate-700">
+                    <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Venture</th>
+                    <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Schedule</th>
+                    <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Status</th>
+                    <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50 dark:divide-slate-700/50">
+                  {projects.map((project) => (
+                    <tr key={project.id || project._id} className="hover:bg-gray-50 dark:hover:bg-slate-800/30 transition-colors">
+                      <td className="px-6 py-4">
+                        <span className="text-xs font-bold text-gray-900 dark:text-white">{project.name}</span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-[10px] font-bold text-gray-500">
+                          {new Date(project.start).toLocaleDateString()} — {new Date(project.end).toLocaleDateString()}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center gap-2">
+                          <div className="flex-1 w-16 bg-gray-100 dark:bg-slate-900 rounded-full h-1">
+                            <div className="bg-emerald-500 h-full rounded-full" style={{ width: `${project.progress}%` }} />
+                          </div>
+                          <span className="text-[10px] font-bold text-emerald-600">{project.progress}%</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <button
+                          onClick={() => navigate(`/projects/${project.id || project._id}`)}
+                          className="text-[10px] font-bold text-indigo-600 uppercase hover:underline"
+                        >
+                          Review
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 });
 
 ProjectTimeline.displayName = "ProjectTimeline";
-
 export default ProjectTimeline;

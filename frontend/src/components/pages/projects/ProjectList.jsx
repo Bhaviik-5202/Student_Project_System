@@ -1,105 +1,76 @@
-/**
- * ProjectList Component
- * 
- * Displays a filterable grid of student projects. Provides a summary 
- * of project status, progress tracks, and quick action links for 
- * both students and faculty.
- */
-import React, { memo, useMemo } from "react";
-import PropTypes from "prop-types";
+import React, { memo, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import projectService from "../../../services/projectService";
 
 const ProjectCard = memo(({ project, onNavigate }) => {
   const statusStyles = {
-    blue: {
-      badge: "bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200",
-      progress: "bg-blue-500",
-    },
-    green: {
-      badge:
-        "bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200",
-      progress: "bg-green-500",
-    },
-    yellow: {
-      badge:
-        "bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200",
-      progress: "bg-yellow-500",
-    },
-    purple: {
-      badge:
-        "bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200",
-      progress: "bg-purple-500",
-    },
+    blue: "bg-blue-50 text-blue-700",
+    green: "bg-green-50 text-green-700",
+    yellow: "bg-yellow-50 text-yellow-700",
+    purple: "bg-purple-50 text-purple-700",
   };
 
-  const style = statusStyles[project.statusColor] || statusStyles.blue;
+  const badgeClass = statusStyles[project.statusColor] || statusStyles.blue;
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm dark:shadow-md border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md dark:hover:shadow-lg transition-shadow duration-300">
-      <div className="flex justify-between items-start mb-4">
-        <div>
-          <div className="flex items-center mb-2">
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white mr-3">
+    <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-5 shadow-sm">
+      <div className="flex justify-between items-start gap-4 mb-4">
+        <div className="flex-1">
+          <div className="flex items-center gap-2 mb-1">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">
               {project.title}
             </h3>
-            <span
-              className={`px-3 py-1 text-xs font-medium rounded-full ${style.badge}`}
-            >
+            <span className={`px-2 py-0.5 text-[10px] font-bold uppercase rounded-full ${badgeClass}`}>
               {project.status}
             </span>
           </div>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-sm text-gray-500 line-clamp-2">
             {project.description}
           </p>
         </div>
-        <div className="flex space-x-2">
-          <button onClick={() => onNavigate(`/projects/${project.id || project._id}`)} className="px-3 py-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
-            View Details
+        <div className="flex gap-2">
+          <button 
+            onClick={() => onNavigate(`/projects/${project.id || project._id}`)}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2 px-4 rounded-lg transition-colors shadow-sm"
+          >
+            Details
           </button>
-          <button onClick={() => onNavigate(`/projects/${project.id || project._id}/edit`)} className="px-3 py-1 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
+          <button 
+            onClick={() => onNavigate(`/projects/${project.id || project._id}/edit`)}
+            className="border border-gray-200 dark:border-slate-700 hover:bg-gray-50 text-gray-600 dark:text-gray-400 text-xs font-bold py-2 px-4 rounded-lg transition-colors"
+          >
             Edit
           </button>
         </div>
       </div>
 
-      <div className="space-y-4">
+      <div className="pt-4 border-t border-gray-50 dark:border-slate-700 grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div>
-          <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-1">
-            <span>Progress</span>
-            <span>{project.progress}%</span>
-          </div>
-          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-            <div
-              className={`${style.progress} h-2 rounded-full transition-all duration-500`}
-              style={{ width: `${project.progress}%` }}
-            />
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Guide</p>
+          <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+            {project.guide?.name || project.guide || "Not Assigned"}
+          </p>
+        </div>
+        <div>
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Start Date</p>
+          <p className="text-sm font-semibold text-gray-900 dark:text-white">
+            {new Date(project.startDate).toLocaleDateString()}
+          </p>
+        </div>
+        <div>
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Progress</p>
+          <div className="flex items-center gap-2">
+            <div className="flex-1 bg-gray-100 dark:bg-slate-900 rounded-full h-1.5 overflow-hidden">
+              <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${project.progress}%` }} />
+            </div>
+            <span className="text-xs font-bold text-gray-900 dark:text-white">{project.progress}%</span>
           </div>
         </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-          <div>
-            <p className="text-gray-500 dark:text-gray-400">Start Date</p>
-            <p className="font-medium text-gray-900 dark:text-white">
-              {new Date(project.startDate).toLocaleDateString()}
-            </p>
-          </div>
-          <div>
-            <p className="text-gray-500 dark:text-gray-400">End Date</p>
-            <p className="font-medium text-gray-900 dark:text-white">
-              {new Date(project.endDate).toLocaleDateString()}
-            </p>
-          </div>
-          <div>
-            <p className="text-gray-500 dark:text-gray-400">Guide</p>
-            <p className="font-medium text-gray-900 dark:text-white">
-              {project.guide?.name || project.guide || "Not Assigned"}
-            </p>
-          </div>
-          <div>
-            <p className="text-gray-500 dark:text-gray-400">Last Updated</p>
-            <p className="font-medium text-gray-900 dark:text-white">
-              2 days ago
-            </p>
-          </div>
+        <div>
+          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Deadline</p>
+          <p className="text-sm font-semibold text-gray-900 dark:text-white">
+            {new Date(project.endDate).toLocaleDateString()}
+          </p>
         </div>
       </div>
     </div>
@@ -107,26 +78,6 @@ const ProjectCard = memo(({ project, onNavigate }) => {
 });
 
 ProjectCard.displayName = "ProjectCard";
-
-ProjectCard.propTypes = {
-  project: PropTypes.shape({
-    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    title: PropTypes.string.isRequired,
-    status: PropTypes.string.isRequired,
-    statusColor: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    startDate: PropTypes.string.isRequired,
-    endDate: PropTypes.string.isRequired,
-    guide: PropTypes.string.isRequired,
-    progress: PropTypes.number.isRequired,
-  }).isRequired,
-  onNavigate: PropTypes.func.isRequired,
-};
-
-
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import projectService from "../../../services/projectService";
 
 const ProjectList = memo(() => {
   const navigate = useNavigate();
@@ -149,42 +100,36 @@ const ProjectList = memo(() => {
     fetchProjects();
   }, []);
 
-
   return (
-    <div className="animate-fade-in">
-      <div className="flex justify-between items-center mb-6">
+    <div className="p-4 md:p-6 space-y-6">
+      <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-            My Projects
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400">
-            Track and manage your projects
-          </p>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">Project Catalog</h2>
+          <p className="text-sm text-gray-500">Track milestones and deliverables</p>
         </div>
-        <button onClick={() => navigate("/projects/new")} className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white rounded-lg transition duration-150 flex items-center focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
-          <i className="fas fa-plus mr-2" /> New Project
+        <button 
+          onClick={() => navigate("/projects/new")}
+          className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-colors shadow-sm"
+        >
+          <i className="fas fa-plus" /> New Project
         </button>
       </div>
 
       {loading ? (
-        <div className="p-8 text-center text-slate-500 dark:text-slate-400">Loading projects...</div>
+        <div className="text-center py-20 text-gray-400 text-sm italic">Accessing project archives...</div>
       ) : error ? (
-        <div className="p-8 text-center text-red-500">{error}</div>
+        <div className="bg-red-50 text-red-600 p-4 rounded-xl text-center font-bold text-sm border border-red-100">{error}</div>
       ) : (
-        <div className="grid grid-cols-1 gap-6">
+        <div className="grid grid-cols-1 gap-4">
           {projects.length > 0 ? (
             projects.map((project) => (
               <ProjectCard key={project.id || project._id} project={project} onNavigate={navigate} />
             ))
           ) : (
-            <div className="bg-white dark:bg-gray-800 rounded-xl border border-dashed border-gray-300 dark:border-gray-700 p-12 text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-400 mb-4">
-                <i className="fas fa-folder-open text-2xl" />
-              </div>
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-1">No Projects Found</h3>
-              <p className="text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
-                You haven't been assigned to any projects yet or your search matched no records.
-              </p>
+            <div className="bg-gray-50 dark:bg-slate-800 rounded-2xl border border-dashed border-gray-200 dark:border-slate-700 p-12 text-center">
+              <i className="fas fa-folder-open text-gray-300 text-3xl mb-4" />
+              <h3 className="font-bold text-gray-900 dark:text-white">No Projects Found</h3>
+              <p className="text-xs text-gray-500 mt-1 max-w-[200px] mx-auto leading-relaxed">No active projects found in your registry. Start by proposing a new one.</p>
             </div>
           )}
         </div>
@@ -194,5 +139,4 @@ const ProjectList = memo(() => {
 });
 
 ProjectList.displayName = "ProjectList";
-
 export default ProjectList;

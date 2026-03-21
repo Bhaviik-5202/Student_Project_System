@@ -94,110 +94,66 @@ const MeetingList = memo(() => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-              Meeting Management
-            </h1>
-            <p className="text-gray-600 dark:text-gray-400">
-              View and manage all meetings. Find useful resources and tips
-              below.
-            </p>
-          </div>
-          <button
-            onClick={handleCreate}
-            className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
-          >
-            Schedule New Meeting
-          </button>
+    <div className="p-4 md:p-6 space-y-6">
+      <div className="flex justify-between items-center bg-white dark:bg-slate-800 p-6 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm">
+        <div>
+          <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+            Meeting Management
+          </h1>
+          <p className="text-sm text-gray-500">
+            View and manage all scheduled sessions
+          </p>
         </div>
+        <button
+          onClick={handleCreate}
+          className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold uppercase tracking-widest rounded-lg shadow-lg shadow-indigo-100 dark:shadow-none transition-all"
+        >
+          Schedule New Meeting
+        </button>
+      </div>
 
-        {/* Related Resources Section */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">
-            Related Resources
-          </h2>
-          <ul className="list-disc pl-6 text-gray-700 dark:text-gray-300">
-            <li>
-              <a
-                href="https://www.mindtools.com/meeting-management"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 dark:text-blue-400"
-              >
-                Effective Meeting Management Tips
-              </a>
-            </li>
-            <li>
-              <a
-                href="https://www.atlassian.com/work-management/meeting-notes"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 dark:text-blue-400"
-              >
-                How to Take Meeting Notes
-              </a>
-            </li>
-            <li>
-              <a
-                href="https://www.youtube.com/watch?v=O2Q2FZp4R6A"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 dark:text-blue-400"
-              >
-                Video: Running Productive Meetings
-              </a>
-            </li>
-          </ul>
-        </div>
-
-        {/* ...existing code... */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-          <div className="overflow-x-auto">
-            {loading ? (
-              <div className="p-8 text-center text-gray-500 dark:text-gray-400">Loading meetings...</div>
-            ) : error ? (
-              <div className="p-8 text-center text-red-500">{error}</div>
-            ) : meetings.length === 0 ? (
-              <div className="p-8 text-center text-gray-500 dark:text-gray-400 flex flex-col items-center">
-                <i className="fas fa-calendar-times text-4xl mb-3 text-gray-400"></i>
-                <p>No meetings scheduled</p>
-              </div>
-            ) : (
-              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead className="bg-gray-50 dark:bg-gray-700">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      Title
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      Date & Time
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      Location
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                  {meetings.map((meeting) => (
-                    <MeetingRow
-                      key={meeting.id}
-                      meeting={meeting}
-                      onView={handleView}
-                    />
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </div>
+      <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 overflow-hidden shadow-sm">
+        <div className="overflow-x-auto">
+          {loading ? (
+            <div className="p-12 text-center text-gray-400 text-sm italic">Loading sessions...</div>
+          ) : error ? (
+            <div className="p-12 text-center text-red-500 text-sm font-semibold">{error}</div>
+          ) : meetings.length === 0 ? (
+            <div className="p-12 text-center text-gray-400 flex flex-col items-center">
+              <p className="text-sm italic">No meetings scheduled at this time.</p>
+            </div>
+          ) : (
+            <table className="min-w-full divide-y divide-gray-100 dark:divide-slate-700">
+              <thead className="bg-gray-50 dark:bg-slate-900/50">
+                <tr>
+                  <th className="px-6 py-4 text-left text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                    Title
+                  </th>
+                  <th className="px-6 py-4 text-left text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                    Date & Time
+                  </th>
+                  <th className="px-6 py-4 text-left text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                    Location
+                  </th>
+                  <th className="px-6 py-4 text-left text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                    Status
+                  </th>
+                  <th className="px-6 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100 dark:divide-slate-700">
+                {meetings.map((meeting) => (
+                  <MeetingRow
+                    key={meeting.id}
+                    meeting={meeting}
+                    onView={handleView}
+                  />
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </div>
