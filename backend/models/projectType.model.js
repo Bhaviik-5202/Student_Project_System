@@ -24,6 +24,11 @@ const projectTypeSchema = new mongoose.Schema(
       required: [true, "Maximum students is required"],
       min: [1, "At least 1 student is required"],
     },
+    category: {
+      type: String,
+      required: [true, "Category is required"],
+      trim: true,
+    },
     status: {
       type: String,
       enum: ["Active", "Inactive"],

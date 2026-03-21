@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useCallback, memo, useEffect } from "react";
-import templateService from "../../../services/templateService";
+import { useNavigate } from "react-router-dom";
+import resourceService from "../../../services/resourceService";
 import useNotification from "../../../hooks/useNotification";
 
 const CategoryTab = memo(({ category, isActive, onSelect }) => (
@@ -21,30 +22,26 @@ const TemplateCard = memo(({ template, onDownload, onPreview }) => (
   <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-5 hover:shadow-md transition-shadow bg-white dark:bg-gray-800">
     <div className="flex items-start justify-between mb-4">
       <div className="w-12 h-12 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
-        <i className={`${template.icon} text-xl`} />
+        <i className="fas fa-file-invoice text-blue-500 text-xl" />
       </div>
-      <span className="text-xs font-medium px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded">
-        {template.category.toUpperCase()}
+      <span className="text-xs font-medium px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded uppercase">
+        {template.type}
       </span>
     </div>
 
     <h3 className="font-bold text-gray-800 dark:text-white mb-2">
-      {template.name}
+      {template.title}
     </h3>
-    <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+    <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
       {template.description}
     </p>
 
     <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mb-4">
       <span className="flex items-center">
-        <i className="fas fa-download mr-1" />
-        {template.downloads}
-      </span>
-      <span className="flex items-center">
         <i className="fas fa-calendar mr-1" />
-        {template.lastUpdated}
+        {new Date(template.createdAt).toLocaleDateString()}
       </span>
-      <span>{template.fileSize}</span>
+      <span>{template.size || "MB"}</span>
     </div>
 
     <div className="flex space-x-2">
@@ -71,9 +68,9 @@ const TemplateLibrary = memo(() => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const { showSuccess } = useNotification();
+  const navigate = useNavigate();
 
   const [templates, setTemplates] = useState([]);
-  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -82,20 +79,12 @@ const TemplateLibrary = memo(() => {
       setLoading(true);
       setError(null);
       try {
-        const data = await templateService.getTemplates();
-        setTemplates(data);
-        // Extract categories from templates
-        const cats = data.reduce((acc, t) => {
-          const cat = t.category;
-          if (!acc[cat]) acc[cat] = { id: cat, name: cat.charAt(0).toUpperCase() + cat.slice(1) + ' Templates', count: 0 };
-          acc[cat].count++;
-          return acc;
-        }, {});
-        const catArr = [
-          { id: "all", name: "All Templates", count: data.length },
-          ...Object.values(cats)
-        ];
-        setCategories(catArr);
+        const res = await resourceService.getAll({ type: "template" });
+        if (res.success) {
+          setTemplates(res.data || []);
+        } else {
+          setError(res.message || "Failed to load templates.");
+        }
       } catch (err) {
         setError("Failed to load templates.");
       } finally {
@@ -105,30 +94,43 @@ const TemplateLibrary = memo(() => {
     fetchTemplates();
   }, []);
 
+  const categories = useMemo(() => {
+    const cats = templates.reduce((acc, t) => {
+      const cat = t.type || "template";
+      if (!acc[cat]) acc[cat] = { id: cat, name: cat.charAt(0).toUpperCase() + cat.slice(1) + 's', count: 0 };
+      acc[cat].count++;
+      return acc;
+    }, {});
+    return [
+      { id: "all", name: "All Templates", count: templates.length },
+      ...Object.values(cats)
+    ];
+  }, [templates]);
+
   const filteredTemplates = useMemo(() => {
     const lowered = searchTerm.toLowerCase();
     return templates.filter((template) => {
       const matchesSearch =
-        template.name.toLowerCase().includes(lowered) ||
-        template.description.toLowerCase().includes(lowered);
+        template.title.toLowerCase().includes(lowered) ||
+        (template.description && template.description.toLowerCase().includes(lowered));
       const matchesCategory =
-        selectedCategory === "all" || template.category === selectedCategory;
+        selectedCategory === "all" || template.type === selectedCategory;
       return matchesSearch && matchesCategory;
     });
   }, [templates, searchTerm, selectedCategory]);
 
   const handleDownload = useCallback(
     (template) => {
-      showSuccess(`Downloading ${template.name}`);
-      // Download logic here
+      if (template.url) window.open(template.url, "_blank");
+      showSuccess(`Downloading ${template.title}`);
     },
     [showSuccess],
   );
 
   const handlePreview = useCallback(
     (template) => {
-      showSuccess(`Previewing ${template.name}`);
-      // Preview logic here
+      if (template.url) window.open(template.url, "_blank");
+      showSuccess(`Previewing ${template.title}`);
     },
     [showSuccess],
   );
@@ -148,7 +150,9 @@ const TemplateLibrary = memo(() => {
             Browse and download project templates
           </p>
         </div>
-        <button className="mt-4 md:mt-0 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white rounded-lg flex items-center">
+        <button 
+          onClick={() => navigate("/resource-upload")}
+          className="mt-4 md:mt-0 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white rounded-lg flex items-center">
           <i className="fas fa-plus mr-2" />
           Upload Template
         </button>
@@ -207,7 +211,7 @@ const TemplateLibrary = memo(() => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredTemplates.map((template) => (
               <TemplateCard
-                key={template.id}
+                key={template._id || template.id}
                 template={template}
                 onDownload={handleDownload}
                 onPreview={handlePreview}
@@ -231,28 +235,32 @@ const TemplateLibrary = memo(() => {
           {/* Stats */}
           <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="text-center">
+              <div className="text-center p-4">
                 <div className="text-2xl font-bold text-blue-600">{templates.length}</div>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
                   Total Templates
                 </div>
               </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">{templates.reduce((acc, t) => acc + (t.downloads || 0), 0)}</div>
+              <div className="text-center p-4">
+                <div className="text-2xl font-bold text-green-600">
+                  {templates.filter(t => t.type === 'template').length}
+                </div>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-                  Total Downloads
+                  Design Templates
                 </div>
               </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-purple-600">{categories.find(c => c.id === 'project')?.count || 0}</div>
+              <div className="text-center p-4">
+                <div className="text-2xl font-bold text-purple-600">
+                   {templates.filter(t => new Date(t.createdAt).getMonth() === new Date().getMonth()).length}
+                </div>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-                  Project Templates
+                  New This Month
                 </div>
               </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-yellow-600">{templates.filter(t => t.lastUpdated && new Date(t.lastUpdated).getMonth() === new Date().getMonth()).length}</div>
+              <div className="text-center p-4">
+                <div className="text-2xl font-bold text-yellow-600">24/7</div>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
-                  Updated This Month
+                  Availability
                 </div>
               </div>
             </div>

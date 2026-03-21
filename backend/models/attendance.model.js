@@ -24,6 +24,24 @@ const attendanceSchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
     },
+    
+    meeting: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Meeting",
+      default: null,
+    },
+
+    time: {
+      type: String,
+      trim: true,
+      default: null,
+    },
+
+    remarks: {
+      type: String,
+      trim: true,
+      default: null,
+    },
   },
   {
     timestamps: true,

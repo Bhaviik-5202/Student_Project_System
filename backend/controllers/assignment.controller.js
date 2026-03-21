@@ -33,6 +33,16 @@ exports.createAssignment = async (req, res) => {
 
     const assignmentData = { ...req.body };
 
+    // Sanitize attachments if they are not in the expected format (array of strings)
+    // This prevents errors like "Cast to [string] failed for value '[ {} ]'"
+    if (assignmentData.attachments && !Array.isArray(assignmentData.attachments)) {
+      delete assignmentData.attachments;
+    } else if (Array.isArray(assignmentData.attachments)) {
+      // Filter out non-string/invalid elements
+      assignmentData.attachments = assignmentData.attachments.filter(item => typeof item === 'string');
+      if (assignmentData.attachments.length === 0) delete assignmentData.attachments;
+    }
+
     // Handle multiple file uploads via Multer
     if (req.files && req.files.length > 0) {
       assignmentData.attachments = req.files.map((file) => file.path);

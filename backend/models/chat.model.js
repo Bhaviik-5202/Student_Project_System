@@ -28,6 +28,12 @@ const chatSchema = new mongoose.Schema(
         ref: "Message",
       },
     ],
+    project: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Project",
+      default: null,
+      index: true,
+    },
   },
   {
     timestamps: true,

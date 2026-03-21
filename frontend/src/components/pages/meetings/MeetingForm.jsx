@@ -1,10 +1,15 @@
-import React, { useState, useCallback, memo } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useCallback, memo, useEffect } from "react";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import meetingService from "../../../services/meetingService";
 
 const MeetingForm = memo(() => {
   const navigate = useNavigate();
+  const { id } = useParams();
+  const location = useLocation();
+  const isEditing = location.pathname.endsWith("/edit");
+  const isViewing = id && !isEditing;
+
   const [formData, setFormData] = useState({
     title: "",
     date: "",
@@ -14,6 +19,32 @@ const MeetingForm = memo(() => {
     attendees: "",
   });
   const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(!!id);
+
+  useEffect(() => {
+    if (id) {
+      const fetchMeeting = async () => {
+        setInitialLoading(true);
+        const res = await meetingService.getMeetingById(id);
+        if (res.success) {
+          const m = res.data;
+          setFormData({
+            title: m.title || "",
+            date: m.date ? m.date.split("T")[0] : "",
+            time: m.time || (m.date ? new Date(m.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) : ""),
+            location: m.location || "",
+            description: m.description || "",
+            attendees: m.participants ? m.participants.map(p => p._id || p).join(", ") : "",
+          });
+        } else {
+          toast.error("Failed to load meeting details");
+          navigate("/meetings/list");
+        }
+        setInitialLoading(false);
+      };
+      fetchMeeting();
+    }
+  }, [id, navigate]);
 
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
@@ -26,8 +57,6 @@ const MeetingForm = memo(() => {
       setLoading(true);
 
       try {
-        // Sanitize attendees: check if they are valid MongoDB ObjectIds
-        // If not, we skip them to prevent backend BSON errors for now.
         const potentialParticipants = formData.attendees
           .split(",")
           .map((id) => id.trim())
@@ -39,12 +68,15 @@ const MeetingForm = memo(() => {
           participants: potentialParticipants,
         };
 
-        const res = await meetingService.createMeeting(meetingData);
+        const res = isEditing 
+          ? await meetingService.updateMeeting(id, meetingData)
+          : await meetingService.createMeeting(meetingData);
+
         if (res.success) {
-          toast.success("Meeting scheduled successfully");
+          toast.success(`Meeting ${isEditing ? "updated" : "scheduled"} successfully`);
           navigate("/meetings/list");
         } else {
-          toast.error(res.message || "Failed to schedule meeting");
+          toast.error(res.message || `Failed to ${isEditing ? "update" : "schedule"} meeting`);
         }
       } catch (error) {
         toast.error("An unexpected error occurred");
@@ -52,18 +84,26 @@ const MeetingForm = memo(() => {
         setLoading(false);
       }
     },
-    [formData, navigate],
+    [formData, navigate, id, isEditing],
   );
+
+  if (initialLoading) {
+    return (
+      <div className="p-12 text-center text-gray-400 text-sm italic">
+        Loading session particulars...
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 md:p-6 space-y-6">
       <div className="flex justify-between items-start gap-4">
         <div>
           <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-            Schedule Meeting
+            {isViewing ? "Meeting Particulars" : isEditing ? "Modify Meeting" : "Schedule Meeting"}
           </h2>
           <p className="text-sm text-gray-500">
-            Orchestrate a new collaborative session
+            {isViewing ? "Review session details and agenda" : isEditing ? "Update existing session details" : "Orchestrate a new collaborative session"}
           </p>
         </div>
         <button
@@ -89,7 +129,8 @@ const MeetingForm = memo(() => {
                   required
                   value={formData.title}
                   onChange={handleChange}
-                  className="w-full bg-gray-50 dark:bg-slate-900 border border-transparent focus:border-indigo-500 dark:focus:border-indigo-500 rounded-lg px-4 py-3 text-sm font-semibold transition-all outline-none"
+                  readOnly={isViewing}
+                  className={`w-full bg-gray-50 dark:bg-slate-900 border border-transparent focus:border-indigo-500 dark:focus:border-indigo-500 rounded-lg px-4 py-3 text-sm font-semibold transition-all outline-none ${isViewing ? 'cursor-not-allowed opacity-70' : ''}`}
                   placeholder="Official session name..."
                 />
               </div>
@@ -104,7 +145,8 @@ const MeetingForm = memo(() => {
                     required
                     value={formData.date}
                     onChange={handleChange}
-                    className="w-full bg-gray-50 dark:bg-slate-900 border border-transparent focus:border-indigo-500 dark:focus:border-indigo-500 rounded-lg px-4 py-3 text-sm font-semibold transition-all outline-none"
+                    readOnly={isViewing}
+                    className={`w-full bg-gray-50 dark:bg-slate-900 border border-transparent focus:border-indigo-500 dark:focus:border-indigo-500 rounded-lg px-4 py-3 text-sm font-semibold transition-all outline-none ${isViewing ? 'cursor-not-allowed opacity-70' : ''}`}
                   />
                 </div>
                 <div>
@@ -117,7 +159,8 @@ const MeetingForm = memo(() => {
                     required
                     value={formData.time}
                     onChange={handleChange}
-                    className="w-full bg-gray-50 dark:bg-slate-900 border border-transparent focus:border-indigo-500 dark:focus:border-indigo-500 rounded-lg px-4 py-3 text-sm font-semibold transition-all outline-none"
+                    readOnly={isViewing}
+                    className={`w-full bg-gray-50 dark:bg-slate-900 border border-transparent focus:border-indigo-500 dark:focus:border-indigo-500 rounded-lg px-4 py-3 text-sm font-semibold transition-all outline-none ${isViewing ? 'cursor-not-allowed opacity-70' : ''}`}
                   />
                 </div>
               </div>
@@ -131,7 +174,8 @@ const MeetingForm = memo(() => {
                   required
                   value={formData.location}
                   onChange={handleChange}
-                  className="w-full bg-gray-50 dark:bg-slate-900 border border-transparent focus:border-indigo-500 dark:focus:border-indigo-500 rounded-lg px-4 py-3 text-sm font-semibold transition-all outline-none"
+                  readOnly={isViewing}
+                  className={`w-full bg-gray-50 dark:bg-slate-900 border border-transparent focus:border-indigo-500 dark:focus:border-indigo-500 rounded-lg px-4 py-3 text-sm font-semibold transition-all outline-none ${isViewing ? 'cursor-not-allowed opacity-70' : ''}`}
                   placeholder="Physical room or virtual link..."
                 />
               </div>
@@ -150,7 +194,8 @@ const MeetingForm = memo(() => {
                   rows="4"
                   value={formData.description}
                   onChange={handleChange}
-                  className="w-full bg-gray-50 dark:bg-slate-900 border border-transparent focus:border-indigo-500 dark:focus:border-indigo-500 rounded-lg px-4 py-3 text-sm font-semibold transition-all outline-none resize-none"
+                  readOnly={isViewing}
+                  className={`w-full bg-gray-50 dark:bg-slate-900 border border-transparent focus:border-indigo-500 dark:focus:border-indigo-500 rounded-lg px-4 py-3 text-sm font-semibold transition-all outline-none resize-none ${isViewing ? 'cursor-not-allowed opacity-70' : ''}`}
                   placeholder="Items to discuss and key takeaways..."
                 />
               </div>
@@ -171,21 +216,26 @@ const MeetingForm = memo(() => {
                   rows="3"
                   value={formData.attendees}
                   onChange={handleChange}
-                  className="w-full bg-gray-50 dark:bg-slate-900 border border-transparent focus:border-indigo-500 dark:focus:border-indigo-500 rounded-lg px-4 py-3 text-sm font-semibold transition-all outline-none resize-none"
+                  readOnly={isViewing}
+                  className={`w-full bg-gray-50 dark:bg-slate-900 border border-transparent focus:border-indigo-500 dark:focus:border-indigo-500 rounded-lg px-4 py-3 text-sm font-semibold transition-all outline-none resize-none ${isViewing ? 'cursor-not-allowed opacity-70' : ''}`}
                   placeholder="User ObjectIds (24 characters)..."
                 />
-                <p className="text-[10px] text-gray-400 mt-2 italic">
-                  Note: Only valid User IDs will be registered as participants.
-                </p>
+                {!isViewing && (
+                  <p className="text-[10px] text-gray-400 mt-2 italic">
+                    Note: Only valid User IDs will be registered as participants.
+                  </p>
+                )}
               </div>
               
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-4 rounded-xl shadow-lg shadow-indigo-200 dark:shadow-none transition-all disabled:opacity-50"
-              >
-                {loading ? "Scheduling..." : "Schedule Meeting"}
-              </button>
+              {!isViewing && (
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-4 rounded-xl shadow-lg shadow-indigo-200 dark:shadow-none transition-all disabled:opacity-50"
+                >
+                  {loading ? (isEditing ? "Updating..." : "Scheduling...") : (isEditing ? "Update Meeting" : "Schedule Meeting")}
+                </button>
+              )}
             </div>
           </div>
         </div>

@@ -1,15 +1,17 @@
-import React, { useState, memo, useCallback, useMemo } from "react";
+import React, { useState, useEffect, memo, useCallback } from "react";
 import PropTypes from "prop-types";
 import { useNavigate, useParams } from "react-router-dom";
+import collaborationService from "../../../services/collaborationService";
+import useNotification from "../../../hooks/useNotification";
 
 const ReplyItem = memo(({ reply }) => (
   <div className="border-l-4 border-blue-500 dark:border-blue-400 pl-4">
     <div className="flex items-center mb-2">
       <div className="font-medium text-slate-900 dark:text-white">
-        {reply.author}
+        {reply.author?.name || "Anonymous"}
       </div>
       <div className="text-slate-500 dark:text-slate-400 text-sm ml-4">
-        {reply.createdAt}
+        {new Date(reply.createdAt).toLocaleString()}
       </div>
     </div>
     <p className="text-slate-700 dark:text-slate-300">{reply.content}</p>
@@ -20,8 +22,7 @@ ReplyItem.displayName = "ReplyItem";
 
 ReplyItem.propTypes = {
   reply: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    author: PropTypes.string.isRequired,
+    author: PropTypes.object,
     content: PropTypes.string.isRequired,
     createdAt: PropTypes.string.isRequired,
   }).isRequired,
@@ -30,51 +31,69 @@ ReplyItem.propTypes = {
 const DiscussionThread = memo(() => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [thread, setThread] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [reply, setReply] = useState("");
+  const { showSuccess, showError } = useNotification();
 
-  const threadData = useMemo(
-    () => ({
-      title: "Database Design Help",
-      author: "John Doe",
-      createdAt: "2024-01-15 10:30:00",
-      content:
-        "I need help with designing the database schema for our project. Specifically, how should we handle the user authentication and session management?",
-      replies: [
-        {
-          id: 1,
-          author: "Dr. Smith",
-          content:
-            "Consider using JWT tokens for authentication and Redis for session management.",
-          createdAt: "2024-01-15 11:00:00",
-        },
-        {
-          id: 2,
-          author: "Jane Smith",
-          content:
-            "We used MongoDB with Mongoose for our last project and it worked well.",
-          createdAt: "2024-01-15 12:30:00",
-        },
-        {
-          id: 3,
-          author: "Robert Johnson",
-          content:
-            "Make sure to implement proper password hashing and salting.",
-          createdAt: "2024-01-15 14:15:00",
-        },
-      ],
-    }),
-    [],
-  );
+  const fetchThread = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await collaborationService.getDiscussionById(id);
+      if (response.success) {
+        setThread(response.data);
+      }
+    } catch (error) {
+      showError("Failed to fetch discussion details");
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }, [id, showError]);
+
+  useEffect(() => {
+    fetchThread();
+  }, [fetchThread]);
 
   const handleReplyChange = useCallback((e) => {
     setReply(e.target.value);
   }, []);
 
-  const handlePostReply = useCallback(() => {
-    if (reply.trim()) {
-      setReply("");
+  const handlePostReply = useCallback(async () => {
+    if (!reply.trim()) return;
+    try {
+      const response = await collaborationService.addReply(id, reply);
+      if (response.success) {
+        showSuccess("Reply posted successfully");
+        setReply("");
+        fetchThread();
+      }
+    } catch (error) {
+      showError("Failed to post reply");
     }
-  }, [reply]);
+  }, [id, reply, fetchThread, showSuccess, showError]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
+        <div className="text-slate-600 dark:text-slate-400">Loading discussion...</div>
+      </div>
+    );
+  }
+
+  if (!thread) {
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center">
+        <p className="text-slate-600 dark:text-slate-400 mb-4">Discussion not found.</p>
+        <button
+          onClick={() => navigate("/discussions")}
+          className="text-blue-600 hover:underline"
+        >
+          Back to Discussions
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
@@ -87,14 +106,14 @@ const DiscussionThread = memo(() => {
             ← Back to Discussions
           </button>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-            {threadData.title}
+            {thread.title}
           </h1>
           <div className="flex items-center gap-4 mt-2">
             <span className="text-slate-600 dark:text-slate-400">
-              By {threadData.author}
+              By {thread.author?.name || "Anonymous"}
             </span>
             <span className="text-slate-500 dark:text-slate-400 text-sm">
-              {threadData.createdAt}
+              {new Date(thread.createdAt).toLocaleString()}
             </span>
           </div>
         </div>
@@ -102,18 +121,18 @@ const DiscussionThread = memo(() => {
         <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6 mb-6">
           <div className="prose dark:prose-invert max-w-none">
             <p className="text-slate-700 dark:text-slate-300">
-              {threadData.content}
+              {thread.content}
             </p>
           </div>
         </div>
 
         <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6 mb-6">
           <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
-            Replies ({threadData.replies.length})
+            Replies ({thread.replies?.length || 0})
           </h2>
           <div className="space-y-6">
-            {threadData.replies.map((replyItem) => (
-              <ReplyItem key={replyItem.id} reply={replyItem} />
+            {(thread.replies || []).map((replyItem, index) => (
+              <ReplyItem key={index} reply={replyItem} />
             ))}
           </div>
         </div>
@@ -133,7 +152,8 @@ const DiscussionThread = memo(() => {
             <div className="flex justify-end">
               <button
                 onClick={handlePostReply}
-                className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+                disabled={!reply.trim()}
+                className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 disabled:opacity-50"
               >
                 Post Reply
               </button>

@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useMemo, memo } from "react";
 import useNotification from "../../../hooks/useNotification";
-import api from "../../../utils/api";
+import resourceService from "../../../services/resourceService";
 
 const ResourceUpload = memo(() => {
   const [files, setFiles] = useState([]);
@@ -12,10 +12,7 @@ const ResourceUpload = memo(() => {
     () => [
       { value: "document", label: "Document", icon: "fas fa-file-alt" },
       { value: "video", label: "Video", icon: "fas fa-video" },
-      { value: "image", label: "Image", icon: "fas fa-image" },
-      { value: "audio", label: "Audio", icon: "fas fa-music" },
       { value: "template", label: "Template", icon: "fas fa-layer-group" },
-      { value: "other", label: "Other", icon: "fas fa-file" },
     ],
     [],
   );
@@ -38,11 +35,15 @@ const ResourceUpload = memo(() => {
       files.forEach((file) => {
         formData.append("files", file);
       });
-      await api.post("/resources/upload", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      showSuccess(`${files.length} file(s) uploaded successfully`);
-      setFiles([]);
+
+      const response = await resourceService.upload(formData);
+      
+      if (response.success) {
+        showSuccess(response.message || `${files.length} file(s) uploaded successfully`);
+        setFiles([]);
+      } else {
+        showError(response.message || "Upload failed. Please try again.");
+      }
     } catch (error) {
       showError("Upload failed. Please try again.");
     } finally {

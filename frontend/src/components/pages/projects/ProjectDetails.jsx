@@ -74,7 +74,10 @@ const ProjectDetails = memo(() => {
           </div>
         </div>
         <div className="flex gap-2">
-          <button className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2 px-6 rounded-lg shadow-sm transition-colors">
+          <button 
+            onClick={() => navigate(`/projects/${id}/edit`)}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2 px-6 rounded-lg shadow-sm transition-colors"
+          >
             Edit Metadata
           </button>
         </div>

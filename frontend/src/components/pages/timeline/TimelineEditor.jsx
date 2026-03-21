@@ -1,24 +1,61 @@
-import { useCallback, useState, useEffect, memo } from "react";
+import { useCallback, useState, useEffect, memo, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
-import api from "../../../utils/api";
+import timelineService from "../../../services/timelineService";
+import projectService from "../../../services/projectService";
 
 const TimelineEditor = memo(() => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [projects, setProjects] = useState([]);
+  const [selectedProjectId, setSelectedProjectId] = useState(id || "");
   const [timeline, setTimeline] = useState({
-    name: "",
-    description: "",
+    project: "",
     milestones: [],
   });
   const [fetching, setFetching] = useState(true);
+  const [loading, setLoading] = useState(false);
+  
+  const [newMilestone, setNewMilestone] = useState({
+    title: "",
+    dueDate: "",
+    description: "",
+  });
 
+  // Fetch all projects for selection
   useEffect(() => {
-    const fetchTimeline = async () => {
+    const fetchProjects = async () => {
       try {
-        const response = await api.get(`/timeline/${id}`);
-        if (response.data) {
-          setTimeline(response.data);
+        const response = await projectService.getAllProjects();
+        if (response.success) {
+          setProjects(response.data);
+          if (!selectedProjectId && response.data.length > 0) {
+            setSelectedProjectId(response.data[0]._id);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch projects", error);
+      }
+    };
+    fetchProjects();
+  }, [selectedProjectId]);
+
+  // Fetch timeline for the selected project
+  useEffect(() => {
+    if (!selectedProjectId) return;
+    
+    const fetchTimeline = async () => {
+      setFetching(true);
+      try {
+        const response = await timelineService.getByProject(selectedProjectId);
+        if (response.success && response.data.length > 0) {
+          setTimeline(response.data[0]);
+        } else {
+          // Initialize a blank timeline for the selected project
+          setTimeline({
+            project: selectedProjectId,
+            milestones: [],
+          });
         }
       } catch (error) {
         console.error("Failed to fetch timeline data", error);
@@ -27,26 +64,11 @@ const TimelineEditor = memo(() => {
       }
     };
     fetchTimeline();
-  }, []);
+  }, [selectedProjectId]);
 
-  const [newMilestone, setNewMilestone] = useState({
-    name: "",
-    date: "",
-    description: "",
-  });
-  const [loading, setLoading] = useState(false);
-
-  const handleNavigate = useCallback(
-    (path) => {
-      navigate(path);
-    },
-    [navigate],
-  );
-
-  const handleTimelineChange = useCallback((e) => {
-    const { name, value } = e.target;
-    setTimeline((prev) => ({ ...prev, [name]: value }));
-  }, []);
+  const handleProjectChange = (e) => {
+    setSelectedProjectId(e.target.value);
+  };
 
   const handleNewMilestoneChange = useCallback((e) => {
     const { name, value } = e.target;
@@ -54,250 +76,260 @@ const TimelineEditor = memo(() => {
   }, []);
 
   const addMilestone = useCallback(() => {
-    if (!newMilestone.name || !newMilestone.date) {
-      toast.error("Please fill in milestone name and date");
+    if (!newMilestone.title || !newMilestone.dueDate) {
+      toast.error("Title and Date are required for a milestone");
       return;
     }
 
-    const newId = Math.max(...timeline.milestones.map((m) => m.id)) + 1;
+    const tempId = Date.now().toString();
     setTimeline((prev) => ({
       ...prev,
-      milestones: [...prev.milestones, { ...newMilestone, id: newId }],
+      milestones: [...prev.milestones, { ...newMilestone, _id: tempId, completed: false }],
     }));
-    setNewMilestone({ name: "", date: "", description: "" });
-    toast.success("Milestone added");
-  }, [newMilestone, timeline.milestones]);
+    setNewMilestone({ title: "", dueDate: "", description: "" });
+    toast.success("Milestone staged");
+  }, [newMilestone]);
 
-  const removeMilestone = useCallback((id) => {
+  const removeMilestone = useCallback((mid) => {
     setTimeline((prev) => ({
       ...prev,
-      milestones: prev.milestones.filter((milestone) => milestone.id !== id),
+      milestones: prev.milestones.filter((m) => (m._id || m.id) !== mid),
     }));
     toast.success("Milestone removed");
   }, []);
 
+  const toggleMilestoneStatus = useCallback((mid) => {
+    setTimeline((prev) => ({
+      ...prev,
+      milestones: prev.milestones.map((m) => 
+        (m._id || m.id) === mid ? { ...m, completed: !m.completed } : m
+      ),
+    }));
+  }, []);
+
   const saveTimeline = useCallback(async () => {
+    if (!selectedProjectId) {
+      toast.error("Please select a project first");
+      return;
+    }
+    
     setLoading(true);
     try {
-      const response = await api.post('/timeline', timeline);
-      if (response.data?.success) {
-        toast.success("Timeline saved successfully");
-        handleNavigate("/timeline");
+      let response;
+      if (timeline._id) {
+        response = await timelineService.update(timeline._id, timeline);
       } else {
-        toast.error(response.data?.message || "Failed to save timeline");
+        response = await timelineService.create({
+          project: selectedProjectId,
+          milestones: timeline.milestones.map(({ _id, ...rest }) => rest) // Remove temp IDs if any
+        });
+      }
+      
+      if (response.success) {
+        toast.success("Timeline successfully synchronized");
+        navigate("/timeline");
+      } else {
+        toast.error(response.message || "Failed to preserve timeline");
       }
     } catch (error) {
-      toast.error("Failed to save timeline");
+      toast.error("Critical synchronization failure");
+      console.error(error);
     } finally {
       setLoading(false);
     }
-  }, [timeline, handleNavigate]);
+  }, [timeline, selectedProjectId, navigate]);
 
-  const inputClass =
-    "w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500";
+  const handleNavigate = useCallback((path) => {
+    navigate(path);
+  }, [navigate]);
+
+  const inputClass = "w-full px-4 py-3 bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-700 rounded-2xl text-sm font-bold text-slate-900 dark:text-white placeholder:text-slate-300 dark:placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all";
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-6">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 font-sans selection:bg-indigo-100 selection:text-indigo-900">
+      <div className="container mx-auto px-4 py-8 max-w-5xl">
+        <div className="mb-8 animate-in fade-in slide-in-from-top-4 duration-700">
           <button
             onClick={() => handleNavigate("/timeline")}
-            className="text-blue-600 dark:text-blue-300 hover:text-blue-800 dark:hover:text-blue-200 flex items-center mb-4"
+            className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 flex items-center mb-6 text-xs font-black uppercase tracking-[0.2em] transition-all hover:-translate-x-1"
           >
-            ← Back to Timeline
+            ← Back to Overviews
           </button>
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-                Timeline Editor
+          
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-white dark:bg-slate-800 p-10 rounded-[2.5rem] border border-gray-100 dark:border-slate-700 shadow-xl shadow-gray-200/50 dark:shadow-none relative overflow-hidden">
+            <div className="flex flex-col relative z-10">
+              <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tighter uppercase italic leading-none mb-3">
+                Timeline Architect
               </h1>
-              <p className="text-slate-600 dark:text-slate-300">
-                Create and edit project timelines
-              </p>
+              <div className="flex items-center gap-3">
+                 <div className="px-3 py-1 bg-indigo-50 dark:bg-indigo-950/30 rounded-full flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-600 animate-pulse"></span>
+                    <span className="text-[10px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">Structural Management</span>
+                 </div>
+                 <select 
+                    value={selectedProjectId}
+                    onChange={handleProjectChange}
+                    className="bg-transparent border-none text-[11px] font-black text-slate-400 dark:text-slate-500 focus:ring-0 p-0 cursor-pointer uppercase tracking-widest hover:text-indigo-600 transition-colors"
+                  >
+                    <option value="" disabled>Select Venture</option>
+                    {projects.map(p => (
+                      <option key={p._id} value={p._id} className="text-slate-900 dark:text-white bg-white dark:bg-slate-800">{p.title}</option>
+                    ))}
+                  </select>
+              </div>
             </div>
-            <div className="flex gap-3">
+            
+            <div className="flex gap-4 w-full md:w-auto relative z-10">
               <button
                 onClick={saveTimeline}
                 disabled={loading}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                className="flex-1 md:flex-none px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] shadow-2xl shadow-indigo-200 dark:shadow-none transition-all hover:scale-105 active:scale-95 disabled:opacity-50"
               >
-                {loading ? "Saving..." : "Save Timeline"}
-              </button>
-              <button className="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800">
-                Preview
+                {loading ? "Synchronizing..." : "Preserve Timeline"}
               </button>
             </div>
+            
+            {/* Background Accent */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-600/5 blur-[100px] rounded-full -mr-32 -mt-32"></div>
           </div>
         </div>
 
         {fetching ? (
-          <div className="p-8 text-center text-slate-500">Loading timeline editor...</div>
+          <div className="py-32 text-center flex flex-col items-center">
+            <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-6"></div>
+            <span className="text-xs font-black text-gray-400 uppercase tracking-widest animate-pulse">Decoding Architecture...</span>
+          </div>
         ) : (
-          <>
-            <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 p-6 mb-8">
-          {/* Timeline Info */}
-          <div className="mb-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                  Timeline Name
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  className={inputClass}
-                  value={timeline.name}
-                  onChange={handleTimelineChange}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                  Description
-                </label>
-                <input
-                  type="text"
-                  name="description"
-                  className={inputClass}
-                  value={timeline.description}
-                  onChange={handleTimelineChange}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Add New Milestone */}
-          <div className="mb-8">
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">
-              Add New Milestone
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                  Milestone Name
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  className={inputClass}
-                  value={newMilestone.name}
-                  onChange={handleNewMilestoneChange}
-                  placeholder="Enter milestone name"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                  Date
-                </label>
-                <input
-                  type="date"
-                  name="date"
-                  className={inputClass}
-                  value={newMilestone.date}
-                  onChange={handleNewMilestoneChange}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                  Description
-                </label>
-                <input
-                  type="text"
-                  name="description"
-                  className={inputClass}
-                  value={newMilestone.description}
-                  onChange={handleNewMilestoneChange}
-                  placeholder="Brief description"
-                />
-              </div>
-            </div>
-            <button
-              onClick={addMilestone}
-              className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700"
-            >
-              Add Milestone
-            </button>
-          </div>
-
-          {/* Milestones List */}
-          <div>
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">
-              Milestones ({timeline.milestones.length})
-            </h3>
-            <div className="space-y-4">
-              {timeline.milestones.map((milestone) => (
-                <div
-                  key={milestone.id}
-                  className="border border-slate-200 dark:border-slate-700 rounded-lg p-4"
-                >
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <div className="font-medium text-slate-900 dark:text-slate-100">
-                        {milestone.name}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+             {/* Configuration Panel */}
+             <div className="lg:col-span-1 space-y-8">
+                <div className="bg-white dark:bg-slate-800 rounded-[2rem] border border-gray-100 dark:border-slate-700 p-8 shadow-sm">
+                   <h3 className="text-xs font-black text-slate-900 dark:text-white mb-6 uppercase tracking-[0.2em] flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 rounded-full bg-indigo-600"></div>
+                      New Milestone
+                   </h3>
+                   <div className="space-y-6">
+                      <div>
+                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block px-1">Objective Title</label>
+                        <input
+                          type="text"
+                          name="title"
+                          placeholder="e.g. Beta Launch"
+                          className={inputClass}
+                          value={newMilestone.title}
+                          onChange={handleNewMilestoneChange}
+                        />
                       </div>
-                      <div className="text-sm text-slate-600 dark:text-slate-300 mt-1">
-                        {milestone.description}
+                      <div>
+                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block px-1">Target Delivery</label>
+                        <input
+                          type="date"
+                          name="dueDate"
+                          className={inputClass}
+                          value={newMilestone.dueDate}
+                          onChange={handleNewMilestoneChange}
+                        />
                       </div>
-                      <div className="text-sm text-slate-500 dark:text-slate-400 mt-2">
-                        Date: {milestone.date}
+                      <div>
+                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block px-1">Scope Description</label>
+                        <textarea
+                          name="description"
+                          rows="3"
+                          placeholder="What must be achieved?"
+                          className={`${inputClass} resize-none`}
+                          value={newMilestone.description}
+                          onChange={handleNewMilestoneChange}
+                        ></textarea>
                       </div>
-                    </div>
-                    <div className="flex gap-2 ml-4">
-                      <button className="px-3 py-1 bg-blue-100 text-blue-700 text-sm rounded-lg hover:bg-blue-200 dark:bg-blue-900/40 dark:text-blue-200 dark:hover:bg-blue-900/60">
-                        Edit
-                      </button>
                       <button
-                        onClick={() => removeMilestone(milestone.id)}
-                        className="px-3 py-1 bg-rose-100 text-rose-700 text-sm rounded-lg hover:bg-rose-200 dark:bg-rose-900/40 dark:text-rose-200 dark:hover:bg-rose-900/60"
+                        onClick={addMilestone}
+                        className="w-full py-4 bg-gray-900 dark:bg-white text-white dark:text-slate-900 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-black dark:hover:bg-indigo-400 dark:hover:text-white transition-all active:scale-95"
                       >
-                        Remove
+                        Stage Objective
                       </button>
-                    </div>
-                  </div>
+                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Timeline Preview */}
-        <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
-          <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">
-            Preview
-          </h3>
-          <div className="relative">
-            {/* Timeline Line */}
-            <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-slate-300 dark:bg-slate-700"></div>
-
-            {/* Milestones */}
-            <div className="space-y-8">
-              {timeline.milestones.map((milestone) => (
-                <div key={milestone.id} className="relative pl-16">
-                  {/* Timeline Dot */}
-                  <div className="absolute left-6 top-2 w-4 h-4 bg-blue-500 rounded-full border-4 border-white dark:border-slate-900"></div>
-
-                  {/* Milestone Card */}
-                  <div className="border border-slate-200 dark:border-slate-700 rounded-lg p-4">
-                    <div className="flex justify-between items-start mb-2">
-                      <h4 className="font-semibold text-slate-900 dark:text-slate-100">
-                        {milestone.name}
-                      </h4>
-                      <span className="text-sm text-slate-600 dark:text-slate-300">
-                        {milestone.date}
-                      </span>
-                    </div>
-                    <p className="text-slate-600 dark:text-slate-300 text-sm">
-                      {milestone.description}
-                    </p>
-                  </div>
+                
+                <div className="bg-indigo-600/5 dark:bg-indigo-950/20 p-8 rounded-[2rem] border border-indigo-100 dark:border-indigo-900/50">
+                    <h4 className="text-[11px] font-black text-indigo-700 dark:text-indigo-300 uppercase tracking-widest mb-2 italic">Architect's Note</h4>
+                    <p className="text-[10px] font-bold text-indigo-600/70 dark:text-indigo-400/60 leading-relaxed uppercase tracking-tight">Staged objectives are only preserved once you commit to 'Preserve Timeline'. Ensure your trajectory is logically consistent.</p>
                 </div>
-              ))}
-            </div>
+             </div>
+
+             {/* Trajectory Manifest */}
+             <div className="lg:col-span-2 space-y-8">
+                <div className="bg-white dark:bg-slate-800 rounded-[2.5rem] border border-gray-100 dark:border-slate-700 p-10 shadow-sm relative overflow-hidden min-h-[600px]">
+                   <div className="flex justify-between items-center mb-10 relative z-10">
+                      <h3 className="text-xl font-black text-slate-900 dark:text-white tracking-tighter uppercase italic">Phase Manifest ({timeline.milestones.length})</h3>
+                      <div className="h-px flex-1 mx-8 bg-gray-50 dark:bg-slate-700/50"></div>
+                   </div>
+                   
+                   {timeline.milestones.length === 0 ? (
+                     <div className="flex flex-col items-center justify-center py-24 text-center">
+                        <div className="w-16 h-16 bg-gray-50 dark:bg-slate-900 rounded-3xl flex items-center justify-center mb-6 border border-gray-100 dark:border-slate-700/50 rotate-3 group-hover:rotate-0 transition-transform">
+                           <svg className="w-6 h-6 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                        </div>
+                        <h4 className="text-lg font-black text-slate-900 dark:text-white uppercase tracking-tight mb-2 leading-none">Trajectory Uninitialized</h4>
+                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest max-w-xs leading-relaxed">Stage your first objective to begin architectural planning.</p>
+                     </div>
+                   ) : (
+                     <div className="space-y-6 relative z-10">
+                        {timeline.milestones.map((m, i) => (
+                           <div key={m._id || m.id} className="group relative bg-white dark:bg-slate-900/40 border-2 border-transparent hover:border-indigo-500/30 rounded-3xl p-6 transition-all duration-500 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/5">
+                              <div className="flex items-start justify-between gap-6">
+                                 <div className="flex items-center gap-5 flex-1">
+                                    <button 
+                                      onClick={() => toggleMilestoneStatus(m._id || m.id)}
+                                      className={`w-10 h-10 rounded-xl flex items-center justify-center border-2 transition-all ${
+                                        m.completed 
+                                          ? 'bg-emerald-500 border-emerald-500 text-white shadow-lg shadow-emerald-500/20' 
+                                          : 'border-gray-100 dark:border-slate-700 text-transparent hover:border-indigo-500'
+                                      }`}
+                                    >
+                                       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                                    </button>
+                                    <div>
+                                       <div className="flex items-center gap-3 mb-1">
+                                          <h4 className={`text-xl font-black tracking-tighter leading-none italic transition-all ${m.completed ? 'text-slate-400 line-through decoration-2' : 'text-slate-900 dark:text-white'}`}>
+                                            "{m.title}"
+                                          </h4>
+                                          <span className="text-[10px] font-black text-indigo-500/50 font-mono">0{i + 1}</span>
+                                       </div>
+                                       <div className="flex items-center gap-3">
+                                          <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest tabular-nums">Deadline: {new Date(m.dueDate).toLocaleDateString()}</span>
+                                          <div className="w-1 h-1 rounded-full bg-gray-200"></div>
+                                          <span className={`text-[9px] font-black uppercase tracking-widest ${m.completed ? 'text-emerald-500' : 'text-indigo-500'}`}>
+                                            {m.completed ? 'Validated' : 'Scheduled'}
+                                          </span>
+                                       </div>
+                                       {m.description && (
+                                         <p className="mt-4 text-xs font-bold text-slate-500 leading-relaxed italic border-l-2 border-gray-50 dark:border-slate-800 pl-4">
+                                           {m.description}
+                                         </p>
+                                       )}
+                                    </div>
+                                 </div>
+                                 
+                                 <button
+                                   onClick={() => removeMilestone(m._id || m.id)}
+                                   className="w-10 h-10 rounded-xl border border-gray-100 dark:border-slate-700 flex items-center justify-center text-gray-300 hover:text-rose-500 hover:border-rose-500/30 hover:bg-rose-50/50 transition-all"
+                                 >
+                                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                 </button>
+                              </div>
+                           </div>
+                        ))}
+                     </div>
+                   )}
+                   
+                   {/* Background Overlay */}
+                   <div className="absolute bottom-0 right-0 w-64 h-64 bg-indigo-600/5 blur-[100px] rounded-full -mr-32 -mb-32"></div>
+                </div>
+             </div>
           </div>
-        </div>
-      </>
-    )}
-  </div>
-</div>
+        )}
+      </div>
+    </div>
   );
 });
 

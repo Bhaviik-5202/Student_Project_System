@@ -1,6 +1,6 @@
 import { useCallback, useState, useEffect, useMemo, memo } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../../../utils/api";
+import timelineService from "../../../services/timelineService";
 
 const ProjectTimeline = memo(() => {
   const navigate = useNavigate();
@@ -8,18 +8,37 @@ const ProjectTimeline = memo(() => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchProjects = async () => {
+    const fetchTimelines = async () => {
       try {
-        const response = await api.get('/timelines');
-        const data = response.data || [];
-        setProjects(data);
+        const response = await timelineService.getAll();
+        if (response.success) {
+          const mappedProjects = response.data.map(t => {
+            const total = t.milestones?.length || 0;
+            const completed = t.milestones?.filter(m => m.completed).length || 0;
+            
+            // Get earliest and latest dates from milestones
+            const dates = t.milestones?.map(m => new Date(m.dueDate).getTime()).filter(d => !isNaN(d)) || [];
+            const start = dates.length > 0 ? new Date(Math.min(...dates)) : new Date(t.createdAt);
+            const end = dates.length > 0 ? new Date(Math.max(...dates)) : new Date(t.updatedAt);
+
+            return {
+              id: t._id,
+              projectId: t.project?._id,
+              name: t.project?.title || "Unknown Project",
+              progress: total > 0 ? Math.round((completed / total) * 100) : 0,
+              start: start,
+              end: end
+            };
+          });
+          setProjects(mappedProjects);
+        }
       } catch (error) {
         console.error("Failed to fetch timeline projects", error);
       } finally {
         setLoading(false);
       }
     };
-    fetchProjects();
+    fetchTimelines();
   }, []);
 
   const months = useMemo(() => ["Jan", "Feb", "Mar", "Apr", "May", "Jun"], []);

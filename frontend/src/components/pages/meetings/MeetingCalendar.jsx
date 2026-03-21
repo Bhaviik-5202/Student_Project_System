@@ -1,4 +1,4 @@
-import React, { useState, useCallback, memo, useEffect } from "react";
+import React, { useState, useCallback, memo, useEffect, useMemo } from "react";
 import {
   Calendar,
   Clock,
@@ -11,7 +11,6 @@ import {
 } from "lucide-react";
 import meetingService from "../../../services/meetingService";
 import { toast } from "react-hot-toast";
-
 const MeetingCalendar = memo(() => {
   const [viewDate, setViewDate] = useState(new Date());
   const [showModal, setShowModal] = useState(false);
@@ -24,6 +23,7 @@ const MeetingCalendar = memo(() => {
     description: "",
     participants: [],
   });
+  const [selectedDate, setSelectedDate] = useState(null);
 
   const [meetings, setMeetings] = useState([]);
   const [calendarDays, setCalendarDays] = useState([]);
@@ -114,6 +114,17 @@ const MeetingCalendar = memo(() => {
   const monthName = viewDate.toLocaleString('default', { month: 'long' });
   const yearName = viewDate.getFullYear();
 
+  const filteredMeetings = useMemo(() => {
+    if (!selectedDate) return meetings;
+    return meetings.filter(m => m.date && m.date.startsWith(selectedDate));
+  }, [meetings, selectedDate]);
+
+  const handleDayClick = (dayObj) => {
+    if (dayObj.month !== "current") return;
+    const dateStr = `${viewDate.getFullYear()}-${String(viewDate.getMonth() + 1).padStart(2, '0')}-${String(dayObj.day).padStart(2, '0')}`;
+    setSelectedDate(selectedDate === dateStr ? null : dateStr);
+  };
+
   return (
     <div className="dashboard-content">
       <div className="flex justify-between items-center mb-8">
@@ -157,59 +168,89 @@ const MeetingCalendar = memo(() => {
               ))}
             </div>
             <div className="grid grid-cols-7 gap-px bg-gray-100 dark:bg-gray-800">
-              {calendarDays.map((day, index) => (
-                <div key={index} className={`min-h-[100px] bg-white dark:bg-slate-800 p-2 ${day.month !== "current" ? "bg-gray-50 dark:bg-slate-900/50 opacity-40" : ""
-                  }`}>
-                  <div className="flex justify-between items-center mb-1">
-                    <span className={`text-sm font-medium ${day.current ? "bg-indigo-600 text-white w-7 h-7 flex items-center justify-center rounded-full" : "text-gray-700 dark:text-gray-300"
+              {calendarDays.map((day, index) => {
+                const dateStr = day.month === "current" 
+                  ? `${viewDate.getFullYear()}-${String(viewDate.getMonth() + 1).padStart(2, '0')}-${String(day.day).padStart(2, '0')}`
+                  : null;
+                const isSelected = selectedDate === dateStr;
+                const dayMeetings = meetings.filter(m => m.date && m.date.startsWith(dateStr));
+
+                return (
+                  <div 
+                    key={index} 
+                    onClick={() => handleDayClick(day)}
+                    className={`min-h-[110px] bg-white dark:bg-slate-800 p-2 transition-all cursor-pointer border-r border-b border-gray-100 dark:border-gray-800 ${
+                      day.month !== "current" ? "bg-gray-50/50 dark:bg-slate-900/30 opacity-30 pointer-events-none" : "hover:bg-indigo-50/30 dark:hover:bg-indigo-900/10"
+                    } ${isSelected ? "ring-2 ring-inset ring-indigo-500 bg-indigo-50/50 dark:bg-indigo-900/20" : ""}`}
+                  >
+                    <div className="flex justify-between items-center mb-1">
+                      <span className={`text-xs font-bold ${
+                        day.current ? "bg-indigo-600 text-white w-6 h-6 flex items-center justify-center rounded-lg shadow-md shadow-indigo-200" : "text-gray-500 dark:text-gray-400"
                       }`}>
-                      {day.day}
-                    </span>
-                  </div>
-                  {day.meetings > 0 && (
-                    <div className="mt-1 space-y-1">
-                      <div className="px-1.5 py-0.5 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 text-[10px] font-bold rounded flex items-center gap-1 border border-indigo-100 dark:border-indigo-800">
-                        <div className="w-1.5 h-1.5 rounded-full bg-indigo-500"></div>
-                        {day.meetings} Session{day.meetings !== 1 ? "s" : ""}
-                      </div>
+                        {day.day}
+                      </span>
                     </div>
-                  )}
-                </div>
-              ))}
+                    <div className="mt-1 space-y-1 overflow-hidden">
+                      {dayMeetings.slice(0, 2).map((m, i) => (
+                        <div key={i} className="px-1.5 py-0.5 bg-indigo-100/50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 text-[9px] font-bold rounded border border-indigo-200/50 dark:border-indigo-800/50 truncate">
+                          {m.title}
+                        </div>
+                      ))}
+                      {dayMeetings.length > 2 && (
+                        <div className="text-[9px] text-gray-400 font-bold pl-1">
+                          +{dayMeetings.length - 2} more
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
 
-        <div className="card flex flex-col h-full">
-          <div className="card-header">
-            <h2 className="card-title">Upcoming Sessions</h2>
+        <div className="card flex flex-col h-full border-indigo-100 dark:border-indigo-900/30 shadow-indigo-100/20 shadow-xl">
+          <div className="card-header flex justify-between items-center">
+            <h2 className="card-title">
+              {selectedDate ? "Day Schedule" : "Upcoming Sessions"}
+            </h2>
+            {selectedDate && (
+              <button 
+                onClick={() => setSelectedDate(null)}
+                className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest hover:underline"
+              >
+                View All
+              </button>
+            )}
           </div>
           <div className="card-body overflow-y-auto max-h-[600px] space-y-4">
             {loading ? (
               <div className="text-center py-10 text-gray-400">Loading...</div>
-            ) : meetings.length === 0 ? (
-              <div className="text-center py-10">
-                <Calendar className="w-10 h-10 text-gray-200 mx-auto mb-3" />
-                <p className="text-gray-400 text-sm">No upcoming sessions</p>
+            ) : filteredMeetings.length === 0 ? (
+              <div className="text-center py-14">
+                <Calendar className="w-12 h-12 text-gray-100 dark:text-gray-800 mx-auto mb-4" />
+                <p className="text-gray-400 text-sm font-medium">No sessions {selectedDate ? "on this date" : "scheduled"}</p>
               </div>
             ) : (
-              meetings.map((meeting) => (
-                <div key={meeting.id || meeting._id} className="p-4 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 hover:border-indigo-200 dark:hover:border-indigo-900 transition-colors">
+              filteredMeetings.map((meeting) => (
+                <div key={meeting.id || meeting._id} className="p-4 bg-gray-50/50 dark:bg-gray-900/50 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-indigo-300 dark:hover:border-indigo-800 hover:bg-white dark:hover:bg-gray-900 transition-all group">
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-sm font-bold text-gray-900 dark:text-white">
+                    <h3 className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 transition-colors">
                       {meeting.title}
                     </h3>
-                    <Video className="w-4 h-4 text-indigo-500" />
+                    <div className="p-1.5 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg group-hover:bg-indigo-100 dark:group-hover:bg-indigo-900/50 transition-colors">
+                      <Video className="w-3.5 h-3.5 text-indigo-500" />
+                    </div>
                   </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-4 line-clamp-2">
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-4 line-clamp-2 leading-relaxed">
                     {meeting.description || "Project alignment session."}
                   </p>
-                  <div className="flex items-center gap-4 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5" /> {meeting.time || "10:00 AM"}
+                  <div className="flex items-center gap-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                    <span className="flex items-center gap-1.5">
+                      <Clock className="w-3.5 h-3.5 text-indigo-400" /> {meeting.time || "10:00 AM"}
                     </span>
-                    <span className="flex items-center gap-1 truncate max-w-[120px]">
-                      <MapPin className="w-3.5 h-3.5" /> {meeting.location || "Online"}
+                    <span className="flex items-center gap-1.5 truncate max-w-[120px]">
+                      <MapPin className="w-3.5 h-3.5 text-indigo-400" /> {meeting.location || "Online"}
                     </span>
                   </div>
                 </div>

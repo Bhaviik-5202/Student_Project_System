@@ -1,39 +1,75 @@
-import { useState, useEffect, useMemo, memo } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../../../utils/api";
+import collaborationService from "../../../services/collaborationService";
+import projectService from "../../../services/projectService";
+import assignmentService from "../../../services/assignmentService";
+import useNotification from "../../../hooks/useNotification";
 
 const Workspace = memo(() => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("files");
-
+  const [projects, setProjects] = useState([]);
+  const [selectedProjectId, setSelectedProjectId] = useState("");
   const [files, setFiles] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { showError } = useNotification();
+
+  const fetchProjects = useCallback(async () => {
+    try {
+      const response = await projectService.getAllProjects();
+      if (response.data?.success) {
+        setProjects(response.data.data);
+        if (response.data.data.length > 0) {
+          setSelectedProjectId(response.data.data[0]._id || response.data.data[0].id);
+        }
+      }
+    } catch (error) {
+      console.error("Failed to fetch projects", error);
+    }
+  }, []);
+
+  const fetchWorkspaceData = useCallback(async (projectId) => {
+    if (!projectId) return;
+    try {
+      setLoading(true);
+      const [filesRes, tasksRes] = await Promise.all([
+        collaborationService.getSharedFiles(projectId),
+        assignmentService.getAll()
+      ]);
+      
+      if (filesRes.success) {
+        setFiles(filesRes.data);
+      }
+      
+      // For tasks, we use assignments. Since they are linked to courses, 
+      // in a real app we'd filter by the course linked to the project.
+      if (tasksRes.data?.success) {
+        setTasks(tasksRes.data.data);
+      }
+    } catch (error) {
+      showError("Failed to fetch workspace data");
+    } finally {
+      setLoading(false);
+    }
+  }, [showError]);
 
   useEffect(() => {
-    const fetchWorkspaceData = async () => {
-      try {
-        const [filesRes, tasksRes] = await Promise.all([
-          api.get("/collaboration/files").catch(() => ({ data: { data: [] } })),
-          api.get("/collaboration/tasks").catch(() => ({ data: { data: [] } }))
-        ]);
-        setFiles(filesRes.data || []);
-        setTasks(tasksRes.data || []);
-      } catch (error) {
-        console.error("Failed to fetch workspace data", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchWorkspaceData();
-  }, []);
+    fetchProjects();
+  }, [fetchProjects]);
+
+  useEffect(() => {
+    if (selectedProjectId) {
+      fetchWorkspaceData(selectedProjectId);
+    }
+  }, [selectedProjectId, fetchWorkspaceData]);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6">
           <button
-            onClick={() => navigate("/collaboration")}
+            onClick={() => navigate("/discussions")}
             className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex items-center mb-4"
           >
             ← Back to Collaboration
@@ -43,14 +79,20 @@ const Workspace = memo(() => {
               <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
                 Project Workspace
               </h1>
-              <p className="text-slate-600 dark:text-slate-400">
-                Database Design Project • Team Collaboration Space
-              </p>
-            </div>
-            <div className="flex gap-3">
-              <button className="px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-800">
-                Invite Members
-              </button>
+              <div className="flex items-center gap-3 mt-1">
+                <span className="text-sm text-slate-500 dark:text-slate-400">Project:</span>
+                <select
+                  value={selectedProjectId}
+                  onChange={(e) => setSelectedProjectId(e.target.value)}
+                  className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1 text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  {projects.map((p) => (
+                    <option key={p.id || p._id} value={p.id || p._id}>
+                      {p.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
         </div>

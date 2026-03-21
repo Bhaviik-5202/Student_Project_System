@@ -84,7 +84,9 @@ const AssignmentUpload = memo(() => {
       assignmentData.append("instructions", formData.instructions);
       
       formData.files.forEach((file) => {
-        assignmentData.append("attachments", file); // Key matches upload.array("attachments")
+        if (file instanceof File) {
+          assignmentData.append("attachments", file);
+        }
       });
 
       const response = await assignmentService.create(assignmentData);
@@ -162,6 +164,9 @@ const AssignmentUpload = memo(() => {
                   name="deadline"
                   value={formData.deadline}
                   onChange={handleInputChange}
+                  onClick={(e) => e.target.showPicker()}
+                  onFocus={(e) => e.target.showPicker()}
+                  onKeyDown={(e) => e.preventDefault()}
                   className="assignment-input"
                   required
                 />

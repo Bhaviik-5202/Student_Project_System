@@ -22,7 +22,7 @@ const ProjectProposal = memo(() => {
     budget: "",
     document: null,
   });
-
+  const [projectTypes, setProjectTypes] = useState([]);
   const [loading, setLoading] = useState(isEditing);
 
   useEffect(() => {
@@ -60,6 +60,20 @@ const ProjectProposal = memo(() => {
       fetchProject();
     }
   }, [id, isEditing, navigate]);
+
+  useEffect(() => {
+    const fetchProjectTypes = async () => {
+      try {
+        const res = await projectService.getProjectTypes();
+        if (res.success || Array.isArray(res.data)) {
+          setProjectTypes(res.data || res);
+        }
+      } catch (error) {
+        console.error("Failed to fetch project types");
+      }
+    };
+    fetchProjectTypes();
+  }, []);
 
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
@@ -158,11 +172,12 @@ const ProjectProposal = memo(() => {
                     onChange={handleChange}
                     className="w-full bg-gray-50 dark:bg-slate-900 border border-transparent focus:border-indigo-500 dark:focus:border-indigo-500 rounded-lg px-4 py-3 text-sm font-semibold transition-all outline-none appearance-none"
                   >
-                    <option value="">Select Category</option>
-                    <option value="research">Research</option>
-                    <option value="development">Development</option>
-                    <option value="hardware">Hardware</option>
-                    <option value="hybrid">Hybrid</option>
+                    <option value="">Select Classification</option>
+                    {projectTypes.map((type) => (
+                      <option key={type._id || type.id} value={type.name}>
+                        {type.name}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div>

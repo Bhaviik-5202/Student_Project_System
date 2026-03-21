@@ -1,67 +1,79 @@
-import { memo, useMemo } from "react";
+import { memo, useMemo, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
+import resourceService from "../../../services/resourceService";
 
-const DocumentRow = memo(({ doc }) => (
-  <tr className="hover:bg-slate-50 dark:hover:bg-slate-700">
-    <td className="px-6 py-4 whitespace-nowrap">
-      <div className="font-medium text-slate-900 dark:text-white">
-        {doc.title}
-      </div>
-    </td>
-    <td className="px-6 py-4 whitespace-nowrap">
-      <span className="px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs rounded-full">
-        {doc.category}
-      </span>
-    </td>
-    <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
-      {doc.uploadedBy}
-    </td>
-    <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
-      {doc.date}
-    </td>
-    <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
-      {doc.size}
-    </td>
-    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-      <button className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 mr-3">
-        Download
-      </button>
-      <button className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">
-        Preview
-      </button>
-    </td>
-  </tr>
-));
+const DocumentRow = memo(({ doc }) => {
+  const handleDownload = () => {
+    if (doc.url) window.open(doc.url, "_blank");
+  };
+
+  return (
+    <tr className="hover:bg-slate-50 dark:hover:bg-slate-700">
+      <td className="px-6 py-4 whitespace-nowrap">
+        <div className="font-medium text-slate-900 dark:text-white">
+          {doc.title}
+        </div>
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap">
+        <span className="px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs rounded-full capitalize">
+          {doc.type}
+        </span>
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
+        {doc.uploadedBy?.name || "Faculty"}
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
+        {new Date(doc.createdAt).toLocaleDateString()}
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
+        {doc.size || "MB"}
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+        <button 
+          onClick={handleDownload}
+          className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 mr-3">
+          Download
+        </button>
+        <button 
+          onClick={handleDownload}
+          className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">
+          Preview
+        </button>
+      </td>
+    </tr>
+  );
+});
 
 DocumentRow.displayName = "DocumentRow";
 
 DocumentRow.propTypes = {
   doc: PropTypes.shape({
-    id: PropTypes.number.isRequired,
+    _id: PropTypes.string,
     title: PropTypes.string.isRequired,
-    category: PropTypes.string.isRequired,
-    uploadedBy: PropTypes.string.isRequired,
-    date: PropTypes.string.isRequired,
-    size: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    uploadedBy: PropTypes.object,
+    createdAt: PropTypes.string.isRequired,
+    size: PropTypes.string,
+    url: PropTypes.string,
   }).isRequired,
 };
-
-
-import { useEffect, useState } from "react";
-import documentService from "../../../services/documentService";
 
 const DocumentLibrary = memo(() => {
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDocuments = async () => {
       setLoading(true);
       setError("");
       try {
-        const res = await documentService.getAll();
+        const res = await resourceService.getAll({ type: "document" });
         if (res.success) {
+          // The backend might return { resources: [], total: ... } or just the array depending on controller
+          // Based on resource.controller.js line 69, data is result.data.resources
           setDocuments(res.data || []);
         } else {
           setError(res.message || "Failed to load documents");
@@ -88,11 +100,13 @@ const DocumentLibrary = memo(() => {
               Access and manage all shared documents
             </p>
           </div>
-          <button className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
+          <button 
+            onClick={() => navigate("/resource-upload")}
+            className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
             Upload Document
           </button>
         </div>
-
+...
         <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
           <div className="overflow-x-auto">
             {loading ? (

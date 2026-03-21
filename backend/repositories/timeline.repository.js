@@ -11,7 +11,7 @@ exports.findAll = (filter = {}, options = {}) =>
     .sort(options.sort || { createdAt: -1 })
     .skip(options.skip || 0)
     .limit(options.limit || 0)
-    .populate(options.populate || "")
+    .populate(options.populate || "project")
     .select(options.select || "");
 
 /**
@@ -22,7 +22,7 @@ exports.findAll = (filter = {}, options = {}) =>
  */
 exports.findById = (id, options = {}) =>
   Timeline.findById(id)
-    .populate(options.populate || "")
+    .populate(options.populate || "project")
     .select(options.select || "");
 
 /**
@@ -65,4 +65,5 @@ exports.count = (filter = {}) => Timeline.countDocuments(filter);
  */
 exports.findByProjectId = (projectId) =>
   Timeline.find({ project: projectId })
+    .populate("project")
     .sort({ dueDate: 1 });

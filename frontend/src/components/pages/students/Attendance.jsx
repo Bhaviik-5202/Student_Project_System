@@ -1,4 +1,6 @@
-import React, { memo, useMemo, useState } from "react";
+import React, { memo, useMemo, useState, useEffect, useCallback } from "react";
+import useAuth from "../../../hooks/useAuth";
+import attendanceService from "../../../services/attendanceService";
 
 const AttendanceRow = memo(({ record }) => {
   const statusStyles = {
@@ -37,21 +39,38 @@ const AttendanceRow = memo(({ record }) => {
 AttendanceRow.displayName = "AttendanceRow";
 
 const StudentAttendance = memo(() => {
+  const { user } = useAuth();
+  const [allRecords, setAllRecords] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [showAll, setShowAll] = useState(false);
 
-  const allRecords = useMemo(
-    () => [
-      { date: "2024-02-15", day: "Thursday", meeting: "Project Review Meeting", time: "10:00 AM - 11:30 AM", status: "Present", statusColor: "green" },
-      { date: "2024-02-13", day: "Tuesday", meeting: "Weekly Sync", time: "2:00 PM - 3:00 PM", status: "Present", statusColor: "green" },
-      { date: "2024-02-08", day: "Thursday", meeting: "Group Discussion", time: "11:00 AM - 12:30 PM", status: "Absent", statusColor: "red" },
-      { date: "2024-02-06", day: "Tuesday", meeting: "Project Planning", time: "3:00 PM - 4:00 PM", status: "Present", statusColor: "green" },
-      { date: "2024-02-01", day: "Thursday", meeting: "Review Session", time: "10:00 AM - 11:00 AM", status: "Present", statusColor: "green" },
-      { date: "2024-01-30", day: "Tuesday", meeting: "Sprint Planning", time: "2:00 PM - 3:00 PM", status: "Present", statusColor: "green" },
-      { date: "2024-01-25", day: "Thursday", meeting: "Tech Talk", time: "11:00 AM - 12:00 PM", status: "Late", statusColor: "yellow" },
-      { date: "2024-01-23", day: "Tuesday", meeting: "Status Update", time: "3:00 PM - 3:30 PM", status: "Present", statusColor: "green" },
-    ],
-    [],
-  );
+  const fetchAttendance = useCallback(async () => {
+    if (!user?.id && !user?._id) return;
+    setLoading(true);
+    try {
+      const res = await attendanceService.getAttendanceByStudent(user.id || user._id);
+      if (res.success || Array.isArray(res.data)) {
+        const data = res.data || res;
+        const mappedRecords = data.map(record => ({
+          date: record.date,
+          day: new Date(record.date).toLocaleDateString('en-US', { weekday: 'long' }),
+          meeting: record.meeting?.title || record.remarks || "Session",
+          time: record.time || (record.meeting?.date ? new Date(record.meeting.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "TBD"),
+          status: record.status.charAt(0).toUpperCase() + record.status.slice(1),
+          statusColor: record.status === "present" ? "green" : record.status === "absent" ? "red" : "yellow"
+        }));
+        setAllRecords(mappedRecords);
+      }
+    } catch (error) {
+      console.error("Failed to fetch attendance:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    fetchAttendance();
+  }, [fetchAttendance]);
 
   const displayedRecords = showAll ? allRecords : allRecords.slice(0, 4);
 
@@ -106,9 +125,24 @@ const StudentAttendance = memo(() => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
-              {displayedRecords.map((record, index) => (
-                <AttendanceRow key={index} record={record} />
-              ))}
+              {loading ? (
+                <tr>
+                  <td colSpan="5" className="px-6 py-10 text-center text-gray-400 text-sm italic">Synchronizing logs...</td>
+                </tr>
+              ) : displayedRecords.length === 0 ? (
+                <tr>
+                  <td colSpan="5" className="px-6 py-12 text-center">
+                    <div className="flex flex-col items-center">
+                      <i className="fas fa-calendar-times text-gray-200 text-4xl mb-3" />
+                      <p className="text-gray-400 text-sm font-medium">No attendance records found</p>
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                displayedRecords.map((record, index) => (
+                  <AttendanceRow key={index} record={record} />
+                ))
+              )}
             </tbody>
           </table>
         </div>

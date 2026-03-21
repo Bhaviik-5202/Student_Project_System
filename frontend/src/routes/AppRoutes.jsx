@@ -173,6 +173,8 @@ const AppRoutes = () => {
         <Route path="meetings" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><MeetingCalendar /></ProtectedRoute>} />
         <Route path="meetings/list" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><MeetingList /></ProtectedRoute>} />
         <Route path="meetings/new" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><MeetingForm /></ProtectedRoute>} />
+        <Route path="meetings/:id" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><MeetingForm /></ProtectedRoute>} />
+        <Route path="meetings/:id/edit" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><MeetingForm /></ProtectedRoute>} />
 
         {/* Course Routes */}
         <Route path="courses" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><MyCourses /></ProtectedRoute>} />

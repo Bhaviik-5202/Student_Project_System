@@ -14,6 +14,11 @@ const assignmentSchema = new mongoose.Schema(
       trim: true,
       default: null,
     },
+    instructions: {
+      type: String,
+      trim: true,
+      default: null,
+    },
 
     dueDate: {
       type: Date,

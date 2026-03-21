@@ -13,23 +13,50 @@ const sendResponse = require("../utils/response");
  */
 exports.createResource = async (req, res) => {
   try {
-    const resourceData = {
-      ...req.body,
-      uploadedBy: req.user.id,
-    };
-    const result = await resourceService.create(resourceData);
+    const { title, type, description, url } = req.body;
+    const uploadedBy = req.user.id;
+    const createdResources = [];
+
+    // Handle file uploads (can be multiple)
+    if (req.files && req.files.length > 0) {
+      for (const file of req.files) {
+        const resourceData = {
+          title: req.files.length === 1 ? (title || file.originalname.split('.')[0]) : file.originalname.split('.')[0],
+          type: type || 'document',
+          description,
+          uploadedBy,
+          url: file.path.replace(/\\/g, "/"),
+        };
+        const result = await resourceService.create(resourceData);
+        if (result && !result.error && result.data) {
+           createdResources.push(result.data);
+        }
+      }
+    } else {
+      // Handle manual entry (e.g., video URL or image URL)
+      const resourceData = {
+        title,
+        type: type || 'document',
+        description,
+        url,
+        uploadedBy,
+      };
+      const result = await resourceService.create(resourceData);
+      if (result && !result.error && result.data) {
+        createdResources.push(result.data);
+      } else if (result && result.error) {
+        throw new Error(result.message || "Failed to create resource");
+      }
+    }
 
     sendResponse(
       res,
       {
-        success: !result.error,
-        message: result.error
-          ? result.message
-          : "Resource created successfully",
-        data: result.data || null,
-        error: result.error || null,
+        success: true,
+        message: `${createdResources.length} resource(s) created successfully`,
+        data: createdResources.length === 1 ? createdResources[0] : createdResources,
       },
-      result.error ? 400 : 201,
+      201,
     );
   } catch (error) {
     sendResponse(

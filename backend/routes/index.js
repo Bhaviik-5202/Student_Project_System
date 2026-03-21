@@ -33,6 +33,7 @@ const supportTicketRoutes = require("./supportticket.route");
 const settingRoutes = require("./setting.route");
 const faqRoutes = require("./faq.route");
 const knowledgeBaseRoutes = require("./knowledgebase.route");
+const collaborationRoutes = require("./collaboration.route");
 
 /**
  * Mount routes
@@ -62,6 +63,7 @@ router.use("/supporttickets", supportTicketRoutes);
 router.use("/settings", settingRoutes);
 router.use("/faqs", faqRoutes);
 router.use("/knowledgebase", knowledgeBaseRoutes);
+router.use("/collaboration", collaborationRoutes);
 
 /**
  * @route   GET /api/v1

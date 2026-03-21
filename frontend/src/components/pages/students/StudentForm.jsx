@@ -24,9 +24,11 @@ const StudentForm = memo(() => {
     email: "",
     rollNumber: "",
     department: "",
+    customDepartment: "",
     year: "",
     phone: "",
   });
+  const [showCustomDept, setShowCustomDept] = useState(false);
   
   const [loading, setLoading] = useState(isEditing);
 
@@ -40,10 +42,17 @@ const StudentForm = memo(() => {
               name: res.data.name || "",
               email: res.data.email || "",
               rollNumber: res.data.rollNumber || "",
-              department: res.data.department || "",
+              rollNumber: res.data.rollNumber || "",
+              department: ["Computer Science", "Information Technology", "Electronics"].includes(res.data.department) 
+                ? res.data.department 
+                : "Other",
+              customDepartment: !["Computer Science", "Information Technology", "Electronics"].includes(res.data.department) 
+                ? res.data.department 
+                : "",
               year: res.data.year || "",
               phone: res.data.phone || "",
             });
+            setShowCustomDept(!["Computer Science", "Information Technology", "Electronics"].includes(res.data.department));
           } else {
             toast.error("Failed to fetch student details");
             navigate("/students");
@@ -61,10 +70,14 @@ const StudentForm = memo(() => {
 
   const handleChange = useCallback(
     (e) => {
-      setFormData({
-        ...formData,
-        [e.target.name]: e.target.value,
-      });
+      const { name, value } = e.target;
+      if (name === "department") {
+        setShowCustomDept(value === "Other");
+      }
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
     },
     [formData],
   );
@@ -75,9 +88,16 @@ const StudentForm = memo(() => {
       const toastId = toast.loading(isEditing ? "Updating record..." : "Creating record...");
       
       try {
+        const payload = {
+          ...formData,
+          department: showCustomDept ? formData.customDepartment : formData.department
+        };
+        // Remove helper fields from payload
+        delete payload.customDepartment;
+
         const res = isEditing 
-          ? await studentService.updateStudent(id, formData)
-          : await studentService.createStudent(formData);
+          ? await studentService.updateStudent(id, payload)
+          : await studentService.createStudent(payload);
           
         if (res.success) {
           toast.success(`Student ${isEditing ? "updated" : "enrolled"} successfully!`, { id: toastId });
@@ -218,9 +238,51 @@ const StudentForm = memo(() => {
                   <option value="Computer Science">Computer Science</option>
                   <option value="Information Technology">Information Technology</option>
                   <option value="Electronics">Electronics</option>
+                  <option value="Other">Other (Specify...)</option>
                 </select>
               </div>
             </div>
+
+            {showCustomDept ? (
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider ml-1">Specify Department</label>
+                <div className="relative">
+                  <DeptIcon size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input
+                    type="text"
+                    name="customDepartment"
+                    value={formData.customDepartment}
+                    onChange={handleChange}
+                    className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all text-sm font-medium"
+                    placeholder="Enter department name"
+                    required
+                  />
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider ml-1">Academic Year</label>
+                <div className="relative">
+                  <CalendarIcon size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+                  <select 
+                    name="year"
+                    value={formData.year}
+                    onChange={handleChange}
+                    className="w-full pl-10 pr-4 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg focus:ring-2 focus:ring-indigo-500/20 outline-none appearance-none text-sm font-medium"
+                    required
+                  >
+                    <option value="">Select Year</option>
+                    <option value="1">1st Year</option>
+                    <option value="2">2nd Year</option>
+                    <option value="3">3rd Year</option>
+                    <option value="4">Final Year</option>
+                  </select>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {showCustomDept && (
             <div className="space-y-1">
               <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider ml-1">Academic Year</label>
               <div className="relative">
@@ -240,7 +302,7 @@ const StudentForm = memo(() => {
                 </select>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t border-gray-100 dark:border-slate-700">

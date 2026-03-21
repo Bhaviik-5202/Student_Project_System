@@ -12,6 +12,7 @@ const router = express.Router();
 const resourceController = require("../controllers/resource.controller");
 const authMiddleware = require("../middleware/auth.middleware");
 const validateRequest = require("../middleware/validateRequest");
+const upload = require("../utils/upload");
 
 /**
  * @route   POST /api/v1/resources
@@ -21,6 +22,7 @@ const validateRequest = require("../middleware/validateRequest");
 router.post(
   "/",
   authMiddleware,
+  upload.array("files"),
   [
     body("title").notEmpty().withMessage("Title is required"),
 
@@ -28,13 +30,6 @@ router.post(
       .notEmpty()
       .isIn(["document", "template", "video"])
       .withMessage("Type must be document, template, or video"),
-
-    body("description")
-      .optional()
-      .isString()
-      .withMessage("Description must be a string"),
-
-    body("url").optional().isString().withMessage("URL must be a string"),
   ],
   validateRequest,
   resourceController.createResource,

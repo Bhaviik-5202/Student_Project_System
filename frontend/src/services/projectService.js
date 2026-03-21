@@ -81,6 +81,17 @@ const projectService = {
       };
     }
   },
+  
+  getProjectTypes: async () => {
+    try {
+      return await api.get("/projects/types");
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || "Failed to fetch project types",
+      };
+    }
+  },
 };
 
 export default projectService;

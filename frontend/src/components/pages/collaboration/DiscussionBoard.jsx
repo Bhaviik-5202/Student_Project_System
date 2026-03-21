@@ -1,25 +1,32 @@
-import { useState, useEffect, useMemo, memo } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../../../utils/api";
+import collaborationService from "../../../services/collaborationService";
+import useNotification from "../../../hooks/useNotification";
 
 const DiscussionBoard = memo(() => {
   const navigate = useNavigate();
   const [discussions, setDiscussions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { showError } = useNotification();
+
+  const fetchDiscussions = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await collaborationService.getDiscussions();
+      if (response.success) {
+        setDiscussions(response.data);
+      }
+    } catch (error) {
+      showError("Failed to fetch discussions");
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }, [showError]);
 
   useEffect(() => {
-    const fetchDiscussions = async () => {
-      try {
-        const response = await api.get("/collaboration/discussions");
-        setDiscussions(response.data || []);
-      } catch (error) {
-        console.error("Failed to fetch discussions", error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchDiscussions();
-  }, []);
+  }, [fetchDiscussions]);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
@@ -84,16 +91,16 @@ const DiscussionBoard = memo(() => {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
-                        {discussion.author || (discussion.authorId ? discussion.authorId.name : "Anonymous")}
+                        {discussion.author?.name || "Anonymous"}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
                           className={`px-2 py-1 text-xs rounded-full ${
-                            discussion.category === "Projects"
+                            discussion.category === "Project"
                               ? "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
                               : discussion.category === "Technical"
                                 ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
-                                : discussion.category === "Announcements"
+                                : discussion.category === "Announcement"
                                   ? "bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300"
                                   : "bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-300"
                           }`}
@@ -102,16 +109,22 @@ const DiscussionBoard = memo(() => {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
-                        {discussion.replies || 0}
+                        {discussion.replies?.length || 0}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
-                        {discussion.lastActivity || new Date(discussion.updatedAt || Date.now()).toLocaleDateString()}
+                        {new Date(discussion.updatedAt || Date.now()).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <button className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 mr-3">
+                        <button
+                          onClick={() => navigate(`/discussions/${discussion.id || discussion._id}`)}
+                          className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 mr-3"
+                        >
                           View
                         </button>
-                        <button className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+                        <button
+                          onClick={() => navigate(`/discussions/${discussion.id || discussion._id}`)}
+                          className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                        >
                           Reply
                         </button>
                       </td>

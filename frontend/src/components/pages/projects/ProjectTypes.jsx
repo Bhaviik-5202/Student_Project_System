@@ -18,8 +18,8 @@ const ProjectTypeRow = memo(({ type, onEdit, onDelete }) => (
     <td className="px-6 py-4">
       <div className="flex flex-col">
         <span className="text-sm font-bold text-gray-900 dark:text-white">{type.name}</span>
-        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-          ID: PT{(type._id || type.id).toString().slice(-4)}
+        <span className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">
+          {type.category || "General"}
         </span>
       </div>
     </td>
@@ -74,6 +74,7 @@ const ProjectTypesList = memo(() => {
     description: "",
     duration: "",
     maxStudents: 3,
+    category: "Internal",
     status: "Active"
   });
 
@@ -117,6 +118,7 @@ const ProjectTypesList = memo(() => {
       description: type.description,
       duration: type.duration,
       maxStudents: type.maxStudents,
+      category: type.category || "Internal",
       status: type.status || "Active"
     });
     setIsModalOpen(true);
@@ -141,7 +143,7 @@ const ProjectTypesList = memo(() => {
   const closeModal = useCallback(() => {
     setIsModalOpen(false);
     setEditingType(null);
-    setFormData({ name: "", description: "", duration: "", maxStudents: 3, status: "Active" });
+    setFormData({ name: "", description: "", duration: "", maxStudents: 3, category: "Internal", status: "Active" });
   }, []);
 
   const handleSubmit = async (e) => {
@@ -211,7 +213,7 @@ const ProjectTypesList = memo(() => {
             <table className="w-full text-left">
               <thead>
                 <tr className="bg-gray-50/50 dark:bg-slate-900/40 border-b border-gray-100 dark:border-slate-700">
-                  <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Descriptor</th>
+                  <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Classification</th>
                   <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Manifesto</th>
                   <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Timeline</th>
                   <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Unit Size</th>
@@ -270,6 +272,21 @@ const ProjectTypesList = memo(() => {
               placeholder="Scope and limitations..."
               required
             />
+          </div>
+
+          <div>
+            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 block">Category</label>
+            <select
+              name="category"
+              value={formData.category}
+              onChange={handleInputChange}
+              className="w-full bg-gray-50 dark:bg-slate-900 border border-transparent focus:border-indigo-500 rounded-lg px-4 py-2.5 text-sm font-bold transition-all outline-none appearance-none"
+            >
+              <option value="Internal">Internal</option>
+              <option value="External">External</option>
+              <option value="Research">Research</option>
+              <option value="Industry">Industry</option>
+            </select>
           </div>
 
           <div className="grid grid-cols-2 gap-4">

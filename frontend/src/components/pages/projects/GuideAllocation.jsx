@@ -137,8 +137,10 @@ const GuideAllocationList = memo(() => {
           (res.data || []).map(p => ({
             id: p._id || p.id,
             name: p.title,
-            group: p.teamMembers?.length > 0 ? p.teamMembers.join(", ") : "Ungrouped",
-            currentGuide: p.guide || "None",
+            group: Array.isArray(p.members) && p.members.length > 0 
+              ? p.members.map(m => m.name || m).join(", ") 
+              : p.teamMembers || "Ungrouped",
+            currentGuide: p.guide?.name || "None",
           }))
         );
       }

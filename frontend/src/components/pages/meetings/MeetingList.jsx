@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import meetingService from "../../../services/meetingService";
 
-const MeetingRow = memo(({ meeting, onView }) => {
+const MeetingRow = memo(({ meeting, onView, onEdit }) => {
   const statusStyles = {
     Upcoming:
       "bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200",
@@ -40,7 +40,10 @@ const MeetingRow = memo(({ meeting, onView }) => {
         >
           View
         </button>
-        <button className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors">
+        <button 
+          onClick={() => onEdit(meeting.id)}
+          className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors"
+        >
           Edit
         </button>
       </td>
@@ -89,6 +92,13 @@ const MeetingList = memo(() => {
   const handleView = useCallback(
     (id) => {
       navigate(`/meetings/${id}`);
+    },
+    [navigate],
+  );
+
+  const handleEdit = useCallback(
+    (id) => {
+      navigate(`/meetings/${id}/edit`);
     },
     [navigate],
   );
@@ -149,6 +159,7 @@ const MeetingList = memo(() => {
                     key={meeting.id}
                     meeting={meeting}
                     onView={handleView}
+                    onEdit={handleEdit}
                   />
                 ))}
               </tbody>

@@ -1,53 +1,69 @@
 // src/components/pages/resources/ResourceBrowser.jsx
 import { useState, useMemo, useCallback, useEffect, memo } from "react";
+import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import resourceService from "../../../services/resourceService";
 
-const ResourceCard = memo(({ resource, icon }) => (
-  <div className="border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-md hover:border-blue-300 dark:hover:border-blue-500 transition-all bg-white dark:bg-slate-800">
-    <div className="flex items-start justify-between mb-3">
-      <div className="flex items-center gap-3">
-        <i className={`${icon} text-xl`} />
-        <div>
-          <h4 className="font-medium text-slate-800 dark:text-white">
-            {resource.name}
-          </h4>
-          <p className="text-sm text-slate-600 dark:text-slate-400">
-            {resource.category}
-          </p>
+const ResourceCard = memo(({ resource, icon }) => {
+  const handleDownload = () => {
+    if (resource.url) {
+      window.open(resource.url, "_blank");
+    }
+  };
+
+  return (
+    <div className="border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-md hover:border-blue-300 dark:hover:border-blue-500 transition-all bg-white dark:bg-slate-800">
+      <div className="flex items-start justify-between mb-3">
+        <div className="flex items-center gap-3">
+          <i className={`${icon} text-xl`} />
+          <div>
+            <h4 className="font-medium text-slate-800 dark:text-white">
+              {resource.title}
+            </h4>
+            <p className="text-sm text-slate-600 dark:text-slate-400 capitalize">
+              {resource.type}
+            </p>
+          </div>
         </div>
+        <button className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300">
+          <i className="fas fa-ellipsis-h" />
+        </button>
       </div>
-      <button className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300">
-        <i className="fas fa-ellipsis-h" />
-      </button>
-    </div>
 
-    <div className="flex items-center justify-between text-sm text-slate-500 dark:text-slate-400">
-      <span>{resource.size}</span>
-      <span>{resource.date}</span>
-    </div>
+      <div className="flex items-center justify-between text-sm text-slate-500 dark:text-slate-400">
+        <span>{resource.size || "MB"}</span>
+        <span>{new Date(resource.createdAt).toLocaleDateString()}</span>
+      </div>
 
-    <div className="mt-4 flex gap-2">
-      <button className="flex-1 px-3 py-2 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded hover:bg-blue-100 dark:hover:bg-blue-900/50">
-        Download
-      </button>
-      <button className="px-3 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded hover:bg-slate-50 dark:hover:bg-slate-700">
-        Preview
-      </button>
+      <div className="mt-4 flex gap-2">
+        <button
+          onClick={handleDownload}
+          className="flex-1 px-3 py-2 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded hover:bg-blue-100 dark:hover:bg-blue-900/50"
+        >
+          Download
+        </button>
+        <button
+          onClick={handleDownload}
+          className="px-3 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded hover:bg-slate-50 dark:hover:bg-slate-700"
+        >
+          Preview
+        </button>
+      </div>
     </div>
-  </div>
-));
+  );
+});
 
 ResourceCard.displayName = "ResourceCard";
 
 ResourceCard.propTypes = {
   resource: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    name: PropTypes.string.isRequired,
+    _id: PropTypes.string,
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    title: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
-    size: PropTypes.string.isRequired,
-    category: PropTypes.string.isRequired,
-    date: PropTypes.string.isRequired,
+    url: PropTypes.string.isRequired,
+    createdAt: PropTypes.string.isRequired,
+    size: PropTypes.string,
   }).isRequired,
   icon: PropTypes.string.isRequired,
 };
@@ -77,6 +93,7 @@ const ResourceBrowser = memo(() => {
   const [resources, setResources] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchResources = async () => {
@@ -128,13 +145,16 @@ const ResourceBrowser = memo(() => {
     }
   }, []);
 
-  const filteredResources = useMemo(
-    () =>
-      selectedCategory === "All"
-        ? resources
-        : resources.filter((r) => r.category === selectedCategory),
-    [resources, selectedCategory],
-  );
+  const filteredResources = useMemo(() => {
+    if (selectedCategory === "All") return resources;
+    const typeMapping = {
+      Documents: "document",
+      Templates: "template",
+      Videos: "video",
+    };
+    const targetType = typeMapping[selectedCategory] || selectedCategory.toLowerCase().slice(0, -1);
+    return resources.filter((r) => r.type === targetType);
+  }, [resources, selectedCategory]);
 
   const handleSelectCategory = useCallback((category) => {
     setSelectedCategory(category);
@@ -146,7 +166,9 @@ const ResourceBrowser = memo(() => {
         <h1 className="text-2xl font-bold text-slate-800 dark:text-white">
           Resource Browser
         </h1>
-        <button className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white rounded-lg flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
+        <button 
+          onClick={() => navigate("/resource-upload")}
+          className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white rounded-lg flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
           <i className="fas fa-plus" /> Upload Resource
         </button>
       </div>
