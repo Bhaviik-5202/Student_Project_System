@@ -102,6 +102,13 @@ router.delete(
 );
 
 /**
+ * @route   GET /api/v1/projects/groups
+ * @desc    Retrieve all projects formatted as groups
+ * @access  Private (Authenticated Users)
+ */
+router.get("/groups", authMiddleware, projectController.getProjectGroups);
+
+/**
  * @route   GET /api/v1/projects/:id
  * @desc    Retrieve a single project by ID
  * @access  Private (Authenticated Users)

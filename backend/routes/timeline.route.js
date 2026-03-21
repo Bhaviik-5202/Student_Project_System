@@ -46,4 +46,11 @@ router.put("/:id", authMiddleware, timelineController.updateTimeline);
  */
 router.delete("/:id", authMiddleware, timelineController.deleteTimeline);
 
+/**
+ * @route   GET /api/v1/timelines/project/:projectId
+ * @desc    Retrieve all timeline events for a specific project
+ * @access  Private (Authenticated Users)
+ */
+router.get("/project/:projectId", authMiddleware, timelineController.getTimelineEventsByProject);
+
 module.exports = router;

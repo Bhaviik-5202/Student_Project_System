@@ -11,9 +11,18 @@ const MilestoneTracker = memo(() => {
   useEffect(() => {
     const fetchMilestones = async () => {
       try {
-        const response = await api.get(`/timeline/milestones/${id || 'current'}`);
+        const response = await api.get(`/timelines/project/${id || 'current'}`);
         if (response.data) {
-          setProject(response.data);
+          setProject({
+            name: response.data[0]?.project?.title || "Project Milestones",
+            milestones: response.data.map(m => ({
+              id: m._id || m.id,
+              name: m.title || m.name,
+              dueDate: new Date(m.dueDate).toLocaleDateString(),
+              status: m.status || "pending",
+              progress: m.progress || 0
+            }))
+          });
         }
       } catch (error) {
         console.error("Failed to fetch milestone data", error);
@@ -89,7 +98,10 @@ const MilestoneTracker = memo(() => {
                 {project ? project.name : "Loading..."}
               </p>
             </div>
-            <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+            <button 
+              onClick={() => navigate('/timeline-editor')}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            >
               Add Milestone
             </button>
           </div>

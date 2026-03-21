@@ -81,3 +81,17 @@ exports.remove = async (id) => {
     return response(true, null, err.message || "Failed to delete timeline");
   }
 };
+
+/**
+ * Fetch all timeline events for a specific project
+ * @param {string} projectId - Project identifier
+ * @returns {Promise<Object>} Formatted service response with events list
+ */
+exports.getByProjectId = async (projectId) => {
+  try {
+    const timelines = await timelineRepository.findByProjectId(projectId);
+    return response(false, timelines, "Project timeline events fetched successfully");
+  } catch (err) {
+    return response(true, null, err.message || "Failed to fetch project timeline events");
+  }
+};

@@ -68,12 +68,20 @@ GuideCard.propTypes = {
   }).isRequired,
 };
 
-const AllocationRow = memo(({ project }) => {
+const AllocationRow = memo(({ project, availableGuides, onAssign }) => {
   const navigate = useNavigate();
+  const [selectedGuide, setSelectedGuide] = useState("");
+
+  const handleAssignClick = () => {
+    if (selectedGuide) {
+      onAssign(project.id, selectedGuide);
+    }
+  };
+
   return (
     <tr>
     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-      {project.id}
+      {project.id && project.id.length > 8 ? `${project.id.substring(0, 8)}...` : project.id}
     </td>
     <td className="px-6 py-4 whitespace-nowrap">
       <div className="flex items-center">
@@ -102,13 +110,20 @@ const AllocationRow = memo(({ project }) => {
       </span>
     </td>
     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-      <select className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400">
+      <select 
+        value={selectedGuide}
+        onChange={(e) => setSelectedGuide(e.target.value)}
+        className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400"
+      >
         <option value="">Select Guide</option>
-        <option value="1">Dr. Sarah Johnson</option>
-        <option value="2">Prof. Michael Chen</option>
-        <option value="3">Dr. Emily Williams</option>
+        {availableGuides.map(guide => (
+          <option key={guide.id} value={guide.id}>{guide.guide}</option>
+        ))}
       </select>
-      <button className="ml-2 px-3 py-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
+      <button 
+        onClick={handleAssignClick}
+        className="ml-2 px-3 py-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+      >
         Assign
       </button>
       <button 
@@ -131,6 +146,8 @@ AllocationRow.propTypes = {
     group: PropTypes.string.isRequired,
     currentGuide: PropTypes.string.isRequired,
   }).isRequired,
+  availableGuides: PropTypes.arrayOf(PropTypes.object).isRequired,
+  onAssign: PropTypes.func.isRequired,
 };
 
 const GuideAllocationList = memo(() => {
@@ -178,6 +195,19 @@ const GuideAllocationList = memo(() => {
     fetchGuides();
     fetchProjects();
   }, []);
+
+  const handleAssignGuide = async (projectId, guideId) => {
+    const guideName = allocations.find(g => g.id === guideId)?.guide;
+    const res = await projectService.updateProject(projectId, { guide: guideId });
+    if (res.success) {
+      setProjects(prev => prev.map(p => 
+        p.id === projectId ? { ...p, currentGuide: guideName || "Assigned" } : p
+      ));
+      alert("Guide assigned successfully!");
+    } else {
+      alert("Failed to assign guide: " + res.message);
+    }
+  };
 
   return (
     <div className="animate-fade-in">
@@ -245,7 +275,12 @@ const GuideAllocationList = memo(() => {
                 </tr>
               ) : (
                 projects.map((project) => (
-                  <AllocationRow key={project.id} project={project} />
+                  <AllocationRow 
+                    key={project.id} 
+                    project={project} 
+                    availableGuides={allocations}
+                    onAssign={handleAssignGuide}
+                  />
                 ))
               )}
             </tbody>

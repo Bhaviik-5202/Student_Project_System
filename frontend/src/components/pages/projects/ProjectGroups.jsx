@@ -108,6 +108,7 @@ const ProjectGroupsList = memo(() => {
     const fetchGroups = async () => {
       try {
         const response = await api.get('/projects/groups');
+        // The api interceptor returns response.data if success is present
         const data = response.data || [];
         setGroups(data);
       } catch (error) {
@@ -130,7 +131,10 @@ const ProjectGroupsList = memo(() => {
             Manage student project groups
           </p>
         </div>
-        <button className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white rounded-lg transition duration-150 flex items-center focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
+        <button 
+          onClick={() => navigate("/projects/new")}
+          className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white rounded-lg transition duration-150 flex items-center focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+        >
           <i className="fas fa-users mr-2" /> Create Group
         </button>
       </div>

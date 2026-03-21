@@ -57,3 +57,12 @@ exports.remove = (id) => Timeline.findByIdAndDelete(id);
  * @returns {Promise<number>} Record count
  */
 exports.count = (filter = {}) => Timeline.countDocuments(filter);
+
+/**
+ * Find all timeline events for a specific project
+ * @param {string} projectId - Project ID
+ * @returns {Promise<Array>} List of timeline events for the project
+ */
+exports.findByProjectId = (projectId) =>
+  Timeline.find({ project: projectId })
+    .sort({ dueDate: 1 });

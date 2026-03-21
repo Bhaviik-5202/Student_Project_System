@@ -18,7 +18,7 @@ const ProjectTimeline = memo(() => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await api.get('/timeline');
+        const response = await api.get('/timelines');
         const data = response.data || [];
         setProjects(data);
       } catch (error) {
@@ -52,7 +52,10 @@ const ProjectTimeline = memo(() => {
               Overview of all project timelines
             </p>
           </div>
-          <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+          <button 
+            onClick={() => navigate('/projects/new')}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
             New Project
           </button>
         </div>
@@ -216,7 +219,7 @@ const ProjectTimeline = memo(() => {
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <button
                         onClick={() =>
-                          handleNavigate(`/projects/${project.id}`)
+                          handleNavigate(`/milestones?id=${project.id || project._id}`)
                         }
                         className="text-blue-600 dark:text-blue-300 hover:text-blue-900 dark:hover:text-blue-200 mr-3"
                       >

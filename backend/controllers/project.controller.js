@@ -178,6 +178,68 @@ exports.getAllProjects = async (req, res) => {
 };
 
 /**
+ * Get all projects formatted as groups
+ * @route GET /projects/groups
+ * @access Authenticated
+ */
+exports.getProjectGroups = async (req, res) => {
+  try {
+    const result = await projectService.getAll({ 
+      page: 1, 
+      limit: 100, // Fetch more for groups view
+      filters: {} 
+    });
+
+    if (result.error) {
+      return sendResponse(
+        res,
+        {
+          success: false,
+          message: result.message,
+          data: null,
+          error: result.error,
+        },
+        400,
+      );
+    }
+
+    // Format data for the frontend ProjectGroups view if needed
+    // However, the service already returns populated projects.
+    // We just need to ensure the structure matches what ProjectGroups.jsx expects.
+    const formattedGroups = result.data.projects.map(project => ({
+      id: project.id || project._id,
+      name: project.title,
+      project: project.title,
+      guide: project.guide ? project.guide.name : "Not Assigned",
+      members: project.members ? project.members.map(m => m.name || "Unknown") : [],
+      status: project.status.charAt(0).toUpperCase() + project.status.slice(1).replace('_', ' '),
+      progress: project.progress || 0
+    }));
+
+    sendResponse(
+      res,
+      {
+        success: true,
+        message: "Project groups fetched successfully",
+        data: formattedGroups,
+      },
+      200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
+};
+
+/**
  * Get a project by its ID
  * @route GET /projects/:id
  * @access Authenticated
