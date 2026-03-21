@@ -1,55 +1,46 @@
-import { useState, useMemo, memo } from "react";
+import { useState, useEffect, memo } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../../../utils/api";
 
 const UsageStatistics = memo(() => {
   const navigate = useNavigate();
-  const stats = useMemo(
-    () => ({
-      activeUsers: { current: 156, change: "+8%" },
-      dailyLogins: { current: 234, change: "+12%" },
-      pageViews: { current: "1.2K", change: "+15%" },
-      storageUsed: { current: "45.2 GB", change: "+5%" },
-    }),
-    [],
-  );
+  const [stats, setStats] = useState({});
+  const [usageData, setUsageData] = useState([]);
+  const [dailyUsers, setDailyUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const usageData = useMemo(
-    () => [
-      { feature: "Projects", usage: 95, users: 148 },
-      { feature: "Assignments", usage: 88, users: 137 },
-      { feature: "Discussions", usage: 72, users: 112 },
-      { feature: "File Sharing", usage: 65, users: 101 },
-      { feature: "Calendar", usage: 58, users: 90 },
-      { feature: "Reports", usage: 42, users: 65 },
-    ],
-    [],
-  );
+  useEffect(() => {
+    const fetchUsage = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get("/analytics/usage");
+        const data = response.data || {};
+        setStats({
+          activeUsers: data.activeUsers || { current: 0, change: "0%" },
+          dailyLogins: data.dailyLogins || { current: 0, change: "0%" },
+          pageViews: data.pageViews || { current: 0, change: "0%" },
+          storageUsed: data.storageUsed || { current: 0, change: "0%" }
+        });
+        setUsageData(data.usageData || []);
+        setDailyUsers(data.dailyUsers || []);
+      } catch (error) {
+        console.error("Failed to fetch usage statistics", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUsage();
+  }, []);
 
-  const dailyUsers = useMemo(
-    () => [
-      { day: "Mon", users: 156, trend: "up" },
-      { day: "Tue", users: 162, trend: "up" },
-      { day: "Wed", users: 158, trend: "stable" },
-      { day: "Thu", users: 170, trend: "up" },
-      { day: "Fri", users: 165, trend: "down" },
-      { day: "Sat", users: 142, trend: "down" },
-      { day: "Sun", users: 135, trend: "down" },
-    ],
-    [],
-  );
-
-  const peakHours = useMemo(
-    () => [
-      { hour: "9 AM", usage: 85 },
-      { hour: "10 AM", usage: 92 },
-      { hour: "11 AM", usage: 88 },
-      { hour: "12 PM", usage: 78 },
-      { hour: "1 PM", usage: 82 },
-      { hour: "2 PM", usage: 95 },
-      { hour: "3 PM", usage: 90 },
-    ],
-    [],
-  );
+  const peakHours = [
+    { hour: "9 AM", usage: 85 },
+    { hour: "10 AM", usage: 92 },
+    { hour: "11 AM", usage: 88 },
+    { hour: "12 PM", usage: 78 },
+    { hour: "1 PM", usage: 82 },
+    { hour: "2 PM", usage: 95 },
+    { hour: "3 PM", usage: 90 },
+  ];
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
@@ -68,29 +59,32 @@ const UsageStatistics = memo(() => {
           </button>
         </div>
 
-        {/* Key Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {Object.entries(stats).map(([key, metric]) => (
-            <div
-              key={key}
-              className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6"
-            >
-              <div className="text-sm text-slate-500 dark:text-slate-300 uppercase tracking-wider mb-2">
-                {key
-                  .replace(/([A-Z])/g, " $1")
-                  .replace(/^./, (str) => str.toUpperCase())}
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="text-2xl font-bold text-slate-900 dark:text-white">
-                  {metric.current}
+        {loading ? (
+          <div className="p-8 text-center text-slate-500">Loading usage statistics...</div>
+        ) : Object.keys(stats).length === 0 ? (
+          <div className="p-8 text-center text-slate-500">No usage data available.</div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {Object.entries(stats).map(([key, metric]) => (
+              <div
+                key={key}
+                className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6"
+              >
+                <div className="text-sm text-slate-500 dark:text-slate-300 uppercase tracking-wider mb-2">
+                  {key.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase())}
                 </div>
-                <div className="text-sm text-emerald-600 dark:text-emerald-400 flex items-center">
-                  <span>{metric.change}</span>
+                <div className="flex items-center justify-between">
+                  <div className="text-2xl font-bold text-slate-900 dark:text-white">
+                    {metric.current}
+                  </div>
+                  <div className="text-sm text-emerald-600 dark:text-emerald-400 flex items-center">
+                    <span>{metric.change}</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         {/* Usage by Feature */}
         <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6 mb-8">

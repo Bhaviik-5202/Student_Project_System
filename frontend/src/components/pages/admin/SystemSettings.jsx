@@ -1,204 +1,147 @@
-import { useState, useCallback, memo } from "react";
+import { useState, useCallback, memo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import api from "../../../utils/api";
+import "../../../assets/styles/admin.css";
 
 const SystemSettings = memo(() => {
   const navigate = useNavigate();
   const [settings, setSettings] = useState({
-    systemName: "Project Management System",
+    systemName: "",
     maintenanceMode: false,
-    emailNotifications: true,
-    fileUploadLimit: 50,
-    sessionTimeout: 30,
+    emailNotifications: false,
+    fileUploadLimit: 0,
+    sessionTimeout: 0,
     backupFrequency: "daily",
   });
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const handleSubmit = useCallback((e) => {
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const response = await api.get("/settings");
+        if (response.data) {
+          setSettings(response.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch settings", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSettings();
+  }, []);
+
+  const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    setTimeout(() => {
+    try {
+      await api.put("/admin/settings", settings);
       toast.success("Settings updated successfully");
+    } catch (error) {
+      console.error("Failed to update settings", error);
+      toast.error("Failed to update settings");
+    } finally {
       setLoading(false);
-    }, 1500);
-  }, []);
+    }
+  }, [settings]);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-6">
+    <div className="admin-page">
+      <div className="admin-container">
+        <header className="admin-header">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <button
+                onClick={() => navigate("/admin-dashboard")}
+                className="text-blue-600 hover:text-blue-800 text-sm font-semibold"
+              >
+                ← Back to Dashboard
+              </button>
+            </div>
+            <h1 className="admin-title">System Settings</h1>
+            <p className="admin-subtitle">Global configuration and platform preferences</p>
+          </div>
           <button
-            onClick={() => navigate("/admin")}
-            className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex items-center mb-4"
+            onClick={handleSubmit}
+            disabled={loading}
+            className="admin-btn admin-btn-primary"
           >
-            ← Back to Admin
+            {loading ? "Saving..." : "Save All Changes"}
           </button>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-            System Settings
-          </h1>
-          <p className="text-slate-600 dark:text-slate-400">
-            Configure system preferences and options
-          </p>
-        </div>
+        </header>
 
-        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6 max-w-3xl">
-          <form onSubmit={handleSubmit} className="space-y-8">
-            {/* General Settings */}
-            <div>
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
-                General Settings
-              </h3>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                    System Name
-                  </label>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-6">
+            <section className="admin-card">
+              <h3 className="text-lg font-bold mb-6">General Configuration</h3>
+              <div className="space-y-6">
+                <div className="admin-form-group">
+                  <label className="admin-label">System Name</label>
                   <input
                     type="text"
-                    className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600"
+                    className="admin-input"
                     value={settings.systemName}
-                    onChange={(e) =>
-                      setSettings({ ...settings, systemName: e.target.value })
-                    }
+                    onChange={(e) => setSettings({ ...settings, systemName: e.target.value })}
+                    placeholder="e.g. Student Project Management System"
                   />
                 </div>
 
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700/30 rounded-lg">
                   <div>
-                    <div className="font-medium text-slate-900 dark:text-white">
-                      Maintenance Mode
-                    </div>
-                    <div className="text-sm text-slate-600 dark:text-slate-400">
-                      Disable system access for maintenance
-                    </div>
+                    <div className="font-semibold text-slate-900 dark:text-white">Maintenance Mode</div>
+                    <div className="text-sm text-slate-500">Temporarily disable public access to the system</div>
                   </div>
                   <button
                     type="button"
-                    onClick={() =>
-                      setSettings({
-                        ...settings,
-                        maintenanceMode: !settings.maintenanceMode,
-                      })
-                    }
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full ${
-                      settings.maintenanceMode
-                        ? "bg-blue-600 dark:bg-blue-500"
-                        : "bg-slate-200 dark:bg-slate-700"
+                    onClick={() => setSettings({ ...settings, maintenanceMode: !settings.maintenanceMode })}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                      settings.maintenanceMode ? "bg-rose-500" : "bg-slate-300"
                     }`}
                   >
-                    <span
-                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
-                        settings.maintenanceMode
-                          ? "translate-x-6"
-                          : "translate-x-1"
-                      }`}
-                    />
+                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${settings.maintenanceMode ? "translate-x-6" : "translate-x-1"}`} />
                   </button>
                 </div>
               </div>
-            </div>
+            </section>
 
-            {/* Notification Settings */}
-            <div>
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
-                Notification Settings
-              </h3>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="font-medium text-slate-900 dark:text-white">
-                      Email Notifications
-                    </div>
-                    <div className="text-sm text-slate-600 dark:text-slate-400">
-                      Send email notifications for important events
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setSettings({
-                        ...settings,
-                        emailNotifications: !settings.emailNotifications,
-                      })
-                    }
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full ${
-                      settings.emailNotifications
-                        ? "bg-emerald-600 dark:bg-emerald-500"
-                        : "bg-slate-200 dark:bg-slate-700"
-                    }`}
-                  >
-                    <span
-                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
-                        settings.emailNotifications
-                          ? "translate-x-6"
-                          : "translate-x-1"
-                      }`}
-                    />
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* System Limits */}
-            <div>
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
-                System Limits
-              </h3>
+            <section className="admin-card">
+              <h3 className="text-lg font-bold mb-6">System Limits & Performance</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                    File Upload Limit (MB)
-                  </label>
+                <div className="admin-form-group">
+                  <label className="admin-label">File Upload Limit (MB)</label>
                   <input
                     type="number"
-                    className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600"
+                    className="admin-input"
                     value={settings.fileUploadLimit}
-                    onChange={(e) =>
-                      setSettings({
-                        ...settings,
-                        fileUploadLimit: parseInt(e.target.value),
-                      })
-                    }
+                    onChange={(e) => setSettings({ ...settings, fileUploadLimit: parseInt(e.target.value) })}
                   />
+                  <p className="text-[11px] text-slate-400 mt-1">Maximum size allowed for document uploads</p>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                    Session Timeout (minutes)
-                  </label>
+                <div className="admin-form-group">
+                  <label className="admin-label">Session Timeout (min)</label>
                   <input
                     type="number"
-                    className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600"
+                    className="admin-input"
                     value={settings.sessionTimeout}
-                    onChange={(e) =>
-                      setSettings({
-                        ...settings,
-                        sessionTimeout: parseInt(e.target.value),
-                      })
-                    }
+                    onChange={(e) => setSettings({ ...settings, sessionTimeout: parseInt(e.target.value) })}
                   />
+                  <p className="text-[11px] text-slate-400 mt-1">Automatic logout after inactivity</p>
                 </div>
               </div>
-            </div>
+            </section>
+          </div>
 
-            {/* Backup Settings */}
-            <div>
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
-                Backup Settings
-              </h3>
-              <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                  Backup Frequency
-                </label>
+          <div className="space-y-6">
+            <section className="admin-card">
+              <h3 className="text-lg font-bold mb-6">Backup & Recovery</h3>
+              <div className="admin-form-group">
+                <label className="admin-label">Backup Frequency</label>
                 <select
-                  className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600"
+                  className="admin-input"
                   value={settings.backupFrequency}
-                  onChange={(e) =>
-                    setSettings({
-                      ...settings,
-                      backupFrequency: e.target.value,
-                    })
-                  }
+                  onChange={(e) => setSettings({ ...settings, backupFrequency: e.target.value })}
                 >
                   <option value="hourly">Hourly</option>
                   <option value="daily">Daily</option>
@@ -206,25 +149,30 @@ const SystemSettings = memo(() => {
                   <option value="monthly">Monthly</option>
                 </select>
               </div>
-            </div>
+              <button className="w-full mt-4 admin-btn admin-btn-secondary text-sm">
+                Run Manual Backup Now
+              </button>
+            </section>
 
-            <div className="flex gap-3">
-              <button
-                type="submit"
-                disabled={loading}
-                className="px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-800 disabled:opacity-50"
-              >
-                {loading ? "Saving..." : "Save Settings"}
-              </button>
-              <button
-                type="button"
-                onClick={() => navigate("/admin")}
-                className="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700"
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
+            <section className="admin-card">
+              <h3 className="text-lg font-bold mb-6">Notifications</h3>
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="font-semibold text-slate-900 dark:text-white">Email Notifications</div>
+                  <div className="text-xs text-slate-500">Alert admins on critical events</div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setSettings({ ...settings, emailNotifications: !settings.emailNotifications })}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                    settings.emailNotifications ? "bg-emerald-500" : "bg-slate-300"
+                  }`}
+                >
+                  <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${settings.emailNotifications ? "translate-x-6" : "translate-x-1"}`} />
+                </button>
+              </div>
+            </section>
+          </div>
         </div>
       </div>
     </div>

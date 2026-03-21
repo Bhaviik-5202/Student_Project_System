@@ -25,17 +25,24 @@ const BackupRestore = memo(() => {
   const [backupType, setBackupType] = useState("full");
   const [loading, setLoading] = useState(false);
 
-  const handleBackup = useCallback(() => {
+  const handleBackup = useCallback(async () => {
     setLoading(true);
-
-    setTimeout(() => {
+    try {
+      await api.post("/admin/backups", { type: backupType });
       toast.success(
         `${
           backupType === "full" ? "Full" : "Incremental"
         } backup initiated successfully`,
       );
+      // Refresh list
+      const response = await api.get("/admin/backups");
+      setBackups(response.data || []);
+    } catch (error) {
+      console.error("Backup failed", error);
+      toast.error("Backup failed. Please try again.");
+    } finally {
       setLoading(false);
-    }, 2000);
+    }
   }, [backupType]);
 
   const handleRestore = useCallback((backupId) => {

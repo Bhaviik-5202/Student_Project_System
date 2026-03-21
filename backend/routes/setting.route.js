@@ -35,6 +35,13 @@ router.get("/", authMiddleware, settingController.getAllSettings);
 router.get("/:id", authMiddleware, settingController.getSettingById);
 
 /**
+ * @route   PUT /api/v1/settings
+ * @desc    Bulk update system settings
+ * @access  Private (Admin)
+ */
+router.put("/", authMiddleware, settingController.bulkUpdateSettings);
+
+/**
  * @route   PUT /api/v1/settings/:id
  * @desc    Update an existing setting
  * @access  Private (Admin)

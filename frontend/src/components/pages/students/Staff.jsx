@@ -1,48 +1,144 @@
 import React, { memo, useEffect, useState } from "react";
 import PropTypes from "prop-types";
-
 import staffService from "../../../services/staffService";
+import "../../../assets/styles/admin.css";
 
-const StaffRow = memo(({ staff }) => (
-  <tr>
-    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-      {staff.id}
-    </td>
-    <td className="px-6 py-4 whitespace-nowrap">
-      <div className="flex items-center">
-        <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mr-3">
-          <i className="fas fa-user-tie text-purple-600 dark:text-purple-400" />
+const StaffModal = ({ isOpen, onClose, onSave, staff = null }) => {
+  const [formData, setFormData] = useState(staff || {
+    name: "",
+    email: "",
+    phone: "",
+    role: "Faculty",
+    department: "",
+    staffId: ""
+  });
+
+  useEffect(() => {
+    if (staff) setFormData(staff);
+    else setFormData({
+      name: "",
+      email: "",
+      phone: "",
+      role: "Faculty",
+      department: "",
+      staffId: ""
+    });
+  }, [staff, isOpen]);
+
+  if (!isOpen) return null;
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSave(formData);
+  };
+
+  return (
+    <div className="admin-modal-overlay" style={{ alignItems: 'flex-start', paddingTop: '60px', overflowY: 'auto' }}>
+      <div className="admin-modal shadow-lg">
+        <div className="admin-modal-header">
+          <h3 className="text-lg font-bold">{staff ? "Edit Staff" : "Add New Staff"}</h3>
+          <button onClick={onClose} className="text-slate-400 hover:text-slate-600">&times;</button>
         </div>
-        <div>
-          <p className="text-sm font-medium text-gray-900 dark:text-white">
-            {staff.name}
-          </p>
-          <p className="text-xs text-gray-500 dark:text-gray-400">
-            {staff.phone}
-          </p>
-        </div>
+        <form onSubmit={handleSubmit}>
+          <div className="admin-modal-body">
+            <div className="admin-form-group">
+              <label className="admin-label">Full Name</label>
+              <input
+                type="text"
+                className="admin-input"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                required
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="admin-form-group">
+                <label className="admin-label">Email</label>
+                <input
+                  type="email"
+                  className="admin-input"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  required
+                />
+              </div>
+              <div className="admin-form-group">
+                <label className="admin-label">Phone</label>
+                <input
+                  type="text"
+                  className="admin-input"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="admin-form-group">
+                <label className="admin-label">Role</label>
+                <select
+                  className="admin-input"
+                  value={formData.role}
+                  onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                >
+                  <option value="Faculty">Faculty</option>
+                  <option value="HOD">HOD</option>
+                  <option value="Admin">Admin Staff</option>
+                </select>
+              </div>
+              <div className="admin-form-group">
+                <label className="admin-label">Department</label>
+                <input
+                  type="text"
+                  className="admin-input"
+                  value={formData.department}
+                  onChange={(e) => setFormData({ ...formData, department: e.target.value })}
+                  placeholder="e.g. Computer Science"
+                />
+              </div>
+            </div>
+            <div className="admin-form-group">
+              <label className="admin-label">Staff ID (Optional)</label>
+              <input
+                type="text"
+                className="admin-input"
+                value={formData.staffId}
+                onChange={(e) => setFormData({ ...formData, staffId: e.target.value })}
+                placeholder="Leave blank to auto-generate"
+              />
+            </div>
+          </div>
+          <div className="admin-modal-footer">
+            <button type="button" onClick={onClose} className="admin-btn admin-btn-secondary">Cancel</button>
+            <button type="submit" className="admin-btn admin-btn-primary">
+              {staff ? "Update Staff" : "Add Staff"}
+            </button>
+          </div>
+        </form>
       </div>
+    </div>
+  );
+};
+
+// Staff Row Component
+const StaffRow = memo(({ staff, onEdit, onDelete }) => (
+  <tr>
+    <td style={{ fontWeight: '600' }}>{staff.id}</td>
+    <td>
+      <div style={{ fontWeight: '600' }}>{staff.name}</div>
+      <div style={{ fontSize: '12px', color: 'var(--admin-text-muted)' }}>{staff.phone}</div>
     </td>
-    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-      {staff.role}
+    <td>{staff.role}</td>
+    <td>{staff.department}</td>
+    <td>{staff.email}</td>
+    <td>
+      <span className="admin-badge admin-badge-success">{staff.status}</span>
     </td>
-    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-      {staff.department}
-    </td>
-    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-      {staff.email}
-    </td>
-    <td className="px-6 py-4 whitespace-nowrap">
-      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
-        {staff.status}
-      </span>
-    </td>
-    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-      <button className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 mr-3">
-        <i className="fas fa-edit" />
+    <td style={{ textAlign: 'right' }}>
+      <button onClick={() => onEdit(staff)} className="text-blue-600 hover:text-blue-800 font-semibold text-sm mr-4">
+        Edit
       </button>
-      <button className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300">
-        <i className="fas fa-trash" />
+      <button onClick={() => onDelete(staff.dbId)} className="text-rose-600 hover:text-rose-800 font-semibold text-sm">
+        Delete
       </button>
     </td>
   </tr>
@@ -50,108 +146,142 @@ const StaffRow = memo(({ staff }) => (
 
 StaffRow.displayName = "StaffRow";
 
-StaffRow.propTypes = {
-  staff: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    role: PropTypes.string.isRequired,
-    department: PropTypes.string.isRequired,
-    email: PropTypes.string.isRequired,
-    phone: PropTypes.string.isRequired,
-    status: PropTypes.string.isRequired,
-  }).isRequired,
-};
-
 
 const Staff = memo(() => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedStaff, setSelectedStaff] = useState(null);
   const [staffMembers, setStaffMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const fetchStaff = async () => {
+    setLoading(true);
+    setError(null);
+    const res = await staffService.getAllStaff();
+    if (res.success) {
+      setStaffMembers(
+        (res.data || []).map((staff, index) => ({
+          dbId: staff._id || staff.id,
+          id: staff.staffId || `STF-${String(index + 1).padStart(3, "0")}`,
+          name: staff.name,
+          role: staff.role || "Faculty",
+          department: staff.department || "",
+          email: staff.email,
+          phone: staff.phone || "",
+          status: "Active",
+          staffId: staff.staffId
+        }))
+      );
+    } else {
+      setError(res.message || "Failed to load staff");
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
-    const fetchStaff = async () => {
-      setLoading(true);
-      setError(null);
-      const res = await staffService.getAllStaff();
-      if (res.success) {
-        // Normalize data for table
-        setStaffMembers(
-          (res.data || []).map((staff) => ({
-            id: staff._id || staff.id,
-            name: staff.name,
-            role: staff.role || "Faculty",
-            department: staff.department || "",
-            email: staff.email,
-            phone: staff.phone || "",
-            status: "Active", // You may want to use a real status if available
-          }))
-        );
-      } else {
-        setError(res.message || "Failed to load staff");
-      }
-      setLoading(false);
-    };
     fetchStaff();
   }, []);
 
-  return (
-    <div className="animate-fade-in">
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Staff Management
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400">
-            Manage faculty and staff profiles
-          </p>
-        </div>
-        <button className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white rounded-lg transition duration-150 flex items-center focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
-          <i className="fas fa-user-plus mr-2" /> Add Staff
-        </button>
-      </div>
+  const handleAddStaff = () => {
+    setSelectedStaff(null);
+    setIsModalOpen(true);
+  };
 
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm dark:shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden">
-        <div className="overflow-x-auto">
+  const handleEditStaff = (staff) => {
+    setSelectedStaff(staff);
+    setIsModalOpen(true);
+  };
+
+  const handleSaveStaff = async (formData) => {
+    try {
+      if (selectedStaff) {
+        await staffService.updateStaff(selectedStaff.dbId, formData);
+      } else {
+        await staffService.createStaff(formData);
+      }
+      setIsModalOpen(false);
+      fetchStaff();
+    } catch (error) {
+      console.error("Failed to save staff", error);
+      alert("Failed to save staff. Please check the data.");
+    }
+  };
+
+  const handleDeleteStaff = async (id) => {
+    if (window.confirm("Are you sure you want to delete this staff member?")) {
+      const res = await staffService.deleteStaff(id);
+      if (res.success) {
+        fetchStaff();
+      } else {
+        alert(res.message || "Failed to delete staff member");
+      }
+    }
+  };
+
+  return (
+    <div className="admin-page">
+      <div className="admin-container">
+        <header className="admin-header">
+          <div>
+            <h1 className="admin-title">Staff Management</h1>
+            <p className="admin-subtitle">Manage faculty and staff profiles</p>
+          </div>
+          <button onClick={handleAddStaff} className="admin-btn admin-btn-primary">
+            + Add Staff
+          </button>
+        </header>
+
+        <div className="admin-table-container">
           {loading ? (
-            <div className="p-6 text-center text-gray-500 dark:text-gray-400">Loading staff...</div>
+            <div style={{ textAlign: 'center', padding: '48px', color: 'var(--admin-text-muted)' }}>
+              Loading staff profiles...
+            </div>
           ) : error ? (
-            <div className="p-6 text-center text-red-500">{error}</div>
+            <div style={{ textAlign: 'center', padding: '48px', color: 'var(--admin-danger)' }}>
+              {error}
+            </div>
           ) : (
-            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-              <thead className="bg-gray-50 dark:bg-gray-700">
+            <table className="admin-table">
+              <thead>
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Staff ID
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Name
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Role
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Department
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Email
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                    Actions
-                  </th>
+                  <th>Staff ID</th>
+                  <th>Name</th>
+                  <th>Role</th>
+                  <th>Department</th>
+                  <th>Email</th>
+                  <th>Status</th>
+                  <th style={{ textAlign: 'right' }}>Actions</th>
                 </tr>
               </thead>
-              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                {staffMembers.map((staff) => (
-                  <StaffRow key={staff.id} staff={staff} />
-                ))}
+              <tbody>
+                {staffMembers.length === 0 ? (
+                  <tr>
+                    <td colSpan="7" style={{ textAlign: 'center', padding: '48px' }}>
+                      No staff records found.
+                    </td>
+                  </tr>
+                ) : (
+                  staffMembers.map((staff) => (
+                    <StaffRow
+                      key={staff.dbId}
+                      staff={staff}
+                      onEdit={handleEditStaff}
+                      onDelete={handleDeleteStaff}
+                    />
+                  ))
+                )}
               </tbody>
             </table>
           )}
         </div>
       </div>
+
+      <StaffModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleSaveStaff}
+        staff={selectedStaff}
+      />
     </div>
   );
 });

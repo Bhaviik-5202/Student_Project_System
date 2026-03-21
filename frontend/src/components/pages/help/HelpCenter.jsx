@@ -12,10 +12,11 @@ const HelpCenter = memo(() => {
     const fetchHelpData = async () => {
       try {
         const response = await api.get("/help/overview");
-        const data = response.data || {};
-        if (data.faqs) setFaqs(data.faqs);
-        if (data.categories) {
-          setCategories(["All", ...data.categories]);
+        if (response.success && response.data) {
+          if (response.data.faqs) setFaqs(response.data.faqs);
+          if (response.data.categories) {
+            setCategories(["All", ...response.data.categories]);
+          }
         }
       } catch (error) {
         console.error("Failed to fetch help center data", error);
@@ -26,15 +27,18 @@ const HelpCenter = memo(() => {
     fetchHelpData();
   }, []);
 
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   const filteredFaqs = useMemo(
     () =>
       faqs.filter(
         (faq) =>
-          selectedCategory === "All" || faq.category === selectedCategory,
+          (selectedCategory === "All" || faq.category === selectedCategory) &&
+          (faq.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
+           faq.answer.toLowerCase().includes(searchTerm.toLowerCase())),
       ),
-    [faqs, selectedCategory],
+    [faqs, selectedCategory, searchTerm],
   );
 
   const handleCategoryChange = useCallback((category) => {
@@ -42,42 +46,78 @@ const HelpCenter = memo(() => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+    <div className="min-h-screen bg-white dark:bg-slate-900">
       <div className="container mx-auto px-4 py-8">
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
+        <div className="mb-10">
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
             Help Center
           </h1>
-          <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-            Find answers to frequently asked questions and get support for
-            common issues
+          <p className="text-slate-600 dark:text-slate-400">
+            Search our knowledge base or contact support for assistance
           </p>
         </div>
 
         {/* Search Bar */}
-        <div className="max-w-2xl mx-auto mb-8">
+        <div className="max-w-xl mb-10">
           <div className="relative">
             <input
               type="text"
-              placeholder="Search for help..."
-              className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+              placeholder="Search help articles..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full px-4 py-3 pl-12 border border-slate-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white transition-all"
             />
-            <button className="absolute right-3 top-3 text-slate-400 dark:text-slate-500">
-              🔍
-            </button>
+            <div className="absolute left-4 top-3.5 text-slate-400">
+              <i className="fas fa-search" />
+            </div>
+            {searchTerm && (
+              <button 
+                onClick={() => setSearchTerm("")}
+                className="absolute right-4 top-3.5 text-slate-400 hover:text-slate-600"
+              >
+                <i className="fas fa-times" />
+              </button>
+            )}
           </div>
         </div>
 
+        {/* Navigation Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          {[
+            { title: "User Guide", icon: "fa-book", desc: "Browse full documentation", link: "/user-guide", color: "blue" },
+            { title: "FAQs", icon: "fa-question-circle", desc: "Common questions & answers", link: "/faq", color: "indigo" },
+            { title: "Tutorials", icon: "fa-play-circle", desc: "Watch help videos", link: "/help/tutorials", color: "emerald" },
+          ].map((card) => (
+            <button
+              key={card.title}
+              onClick={() => navigate(card.link)}
+              className="bg-white dark:bg-slate-800 p-6 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-blue-500 dark:hover:border-blue-500 transition-all text-left"
+            >
+              <div className="flex items-center mb-4">
+                <div className={`w-10 h-10 rounded bg-${card.color}-100 dark:bg-${card.color}-900/30 flex items-center justify-center mr-3`}>
+                  <i className={`fas ${card.icon} text-lg text-${card.color}-600 dark:text-${card.color}-400`} />
+                </div>
+                <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
+                  {card.title}
+                </h3>
+              </div>
+              <p className="text-sm text-slate-500 dark:text-slate-400">
+                {card.desc}
+              </p>
+            </button>
+          ))}
+        </div>
+
         {/* Category Filters */}
-        <div className="flex flex-wrap gap-2 justify-center mb-8">
+        <div className="flex flex-wrap gap-2 mb-8">
           {categories.map((category) => (
             <button
               key={category}
               onClick={() => handleCategoryChange(category)}
-              className={`px-4 py-2 rounded-full transition-colors ${
+              className={`px-4 py-1.5 rounded text-sm font-medium border transition-all ${
                 selectedCategory === category
-                  ? "bg-blue-600 dark:bg-blue-500 text-white"
-                  : "bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700"
+                  ? "bg-blue-600 text-white border-blue-600"
+                  : "bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:border-blue-500"
               }`}
             >
               {category}
@@ -86,53 +126,55 @@ const HelpCenter = memo(() => {
         </div>
 
         {/* FAQ Section */}
-        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6 max-w-4xl mx-auto">
-          <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-6">
-            Frequently Asked Questions
-          </h2>
-          {loading ? (
-            <div className="text-center py-8 text-slate-500">Loading help center...</div>
-          ) : (
-            <div className="space-y-4">
-              {filteredFaqs.length > 0 ? filteredFaqs.map((faq) => (
-                <div
-                  key={faq.id || faq._id}
-                  className="border-b border-slate-200 dark:border-slate-700 pb-4 last:border-b-0"
-                >
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="font-medium text-slate-900 dark:text-white mb-2">
-                        {faq.question}
-                      </h3>
-                      <p className="text-slate-600 dark:text-slate-400 text-sm">
-                        {faq.answer}
-                      </p>
-                    </div>
-                    <span className="px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs rounded-full">
+        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden mb-12">
+          <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
+            <h2 className="font-semibold text-slate-900 dark:text-white">
+              Trending Articles
+            </h2>
+          </div>
+          <div className="divide-y divide-slate-200 dark:divide-slate-700">
+            {loading ? (
+              <div className="p-8 text-center text-slate-500">
+                <i className="fas fa-spinner fa-spin mr-2" /> Loading...
+              </div>
+            ) : filteredFaqs.length > 0 ? (
+              filteredFaqs.map((faq) => (
+                <div key={faq.id || faq._id} className="p-6 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors">
+                  <div className="flex justify-between items-start mb-2">
+                    <h3 className="font-medium text-slate-900 dark:text-white">
+                      {faq.question}
+                    </h3>
+                    <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 rounded">
                       {faq.category}
                     </span>
                   </div>
+                  <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                    {faq.answer}
+                  </p>
                 </div>
-              )) : (
-                <div className="text-center py-4 text-slate-500">No FAQs found for this category.</div>
-              )}
-            </div>
-          )}
+              ))
+            ) : (
+              <div className="p-8 text-center text-slate-500 italic">
+                No matching results found.
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Contact Support */}
-        <div className="max-w-4xl mx-auto mt-8">
-          <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg p-6 text-center">
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
-              Still need help?
-            </h3>
-            <p className="text-slate-600 dark:text-slate-400 mb-4">
-              Contact our support team for further assistance
-            </p>
-            <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
-              Contact Support
-            </button>
-          </div>
+        <div className="bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700 p-8 text-center">
+          <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
+            Can't find what you're looking for?
+          </h3>
+          <p className="text-slate-600 dark:text-slate-400 mb-6">
+            Our support team is ready to help you with any technical or administrative issues.
+          </p>
+          <button 
+            onClick={() => navigate("/support")}
+            className="px-6 py-2.5 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 transition-colors shadow-sm"
+          >
+            Submit Support Ticket
+          </button>
         </div>
       </div>
     </div>

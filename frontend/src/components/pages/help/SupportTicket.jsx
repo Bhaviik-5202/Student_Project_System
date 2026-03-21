@@ -17,6 +17,12 @@ const SupportTicket = memo(() => {
   const handleSubmit = useCallback(
     async (e) => {
       e.preventDefault();
+      
+      if (!ticket.subject.trim() || !ticket.description.trim()) {
+        toast.error("Please fill in all required fields");
+        return;
+      }
+
       setLoading(true);
 
       try {

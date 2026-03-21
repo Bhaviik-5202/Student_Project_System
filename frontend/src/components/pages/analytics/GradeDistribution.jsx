@@ -1,6 +1,8 @@
 import { useState, useEffect, useMemo, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../../utils/api";
+import { downloadCSV, convertToCSV } from "../../../utils/exportUtils";
+import { toast } from "react-hot-toast";
 
 const GradeDistribution = memo(() => {
   const navigate = useNavigate();
@@ -20,6 +22,28 @@ const GradeDistribution = memo(() => {
     };
     fetchCourses();
   }, []);
+
+  const handleExport = () => {
+    if (courses.length === 0) {
+      toast.error("No data available to export");
+      return;
+    }
+
+    const exportData = courses.map(course => ({
+      "Course Name": course.name || course.courseName,
+      "Average Grade": `${course.avgGrade}%`,
+      "Grade A": course.a || 0,
+      "Grade B": course.b || 0,
+      "Grade C": course.c || 0,
+      "Grade D": course.d || 0,
+      "Grade F": course.f || 0,
+      "Total Students": (course.a || 0) + (course.b || 0) + (course.c || 0) + (course.d || 0) + (course.f || 0)
+    }));
+
+    const csvData = convertToCSV(exportData);
+    downloadCSV(csvData, `Grade_Distribution_Report_${new Date().toISOString().split('T')[0]}.csv`);
+    toast.success("Report exported successfully");
+  };
 
   const [selectedCourse, setSelectedCourse] = useState(1);
 
@@ -71,7 +95,10 @@ const GradeDistribution = memo(() => {
               View grade statistics across courses
             </p>
           </div>
-          <button className="px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-800">
+          <button
+            onClick={handleExport}
+            className="px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-800 transition-colors"
+          >
             Export Report
           </button>
         </div>
@@ -93,11 +120,10 @@ const GradeDistribution = memo(() => {
                     <button
                       key={course.id || course._id}
                       onClick={() => setSelectedCourse(course.id || course._id)}
-                      className={`w-full p-4 text-left rounded-lg transition-colors ${
-                        selectedCourse === (course.id || course._id)
+                      className={`w-full p-4 text-left rounded-lg transition-colors ${selectedCourse === (course.id || course._id)
                           ? "bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700 border"
                           : "border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700"
-                      }`}
+                        }`}
                     >
                       <div className="font-medium text-slate-900 dark:text-white">
                         {course.name || course.courseName}
@@ -182,10 +208,10 @@ const GradeDistribution = memo(() => {
                     <div className="text-2xl font-bold text-slate-900 dark:text-white">
                       {selectedCourseData
                         ? selectedCourseData.a +
-                          selectedCourseData.b +
-                          selectedCourseData.c +
-                          selectedCourseData.d +
-                          selectedCourseData.f
+                        selectedCourseData.b +
+                        selectedCourseData.c +
+                        selectedCourseData.d +
+                        selectedCourseData.f
                         : 0}
                     </div>
                     <div className="text-sm text-slate-600 dark:text-slate-400">

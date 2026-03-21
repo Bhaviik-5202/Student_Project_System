@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import AppRoutes from "./routes/AppRoutes";
 import SplashScreen from "./components/common/SplashScreen";
+import ScrollToTop from "./components/common/ScrollToTop";
 
 const SPLASH_SCREEN_DELAY = 1200; // ms
 
@@ -26,6 +27,7 @@ function App() {
 
   return (
     <Router>
+      <ScrollToTop />
       <AppRoutes />
     </Router>
   );

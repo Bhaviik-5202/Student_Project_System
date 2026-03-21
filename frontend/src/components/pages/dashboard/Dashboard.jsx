@@ -13,6 +13,7 @@ import { toast } from "react-hot-toast";
 import { Fragment } from "react";
 import RecentActivity from "./RecentActivity";
 import UpcomingMeetings from "./UpcomingMeetings";
+import ProgressVisualization from "./ProgressVisualization";
 import analyticsService from "../../../services/analyticsService";
 
 // Import icons from lucide-react
@@ -89,7 +90,7 @@ const useAnimatedCounter = (endValue, duration = 1000) => {
 const AnimatedStatCard = ({ stat, index, onClick }) => {
   const [isVisible, setIsVisible] = useState(false);
   const numericPart = parseInt(stat.value) || 0;
-  const suffix = stat.value.toString().replace(/[0-9]/g, "");
+  const suffix = stat.value ? stat.value.toString().replace(/[0-9]/g, "") : "";
   const animatedValue = useAnimatedCounter(isVisible ? numericPart : 0, 1200);
   const Icon = stat.icon;
 
@@ -210,10 +211,13 @@ const Dashboard = () => {
   const [timeOfDay, setTimeOfDay] = useState("");
   const [greeting, setGreeting] = useState("");
   const [userActivity, setUserActivity] = useState({
-    lastActive: "2 hours ago",
-    streak: 5,
-    achievements: 3,
+    lastActive: "Just now",
+    streak: 0,
+    achievements: 0,
   });
+  const [recentActivities, setRecentActivities] = useState([]);
+  const [projectProgressData, setProjectProgressData] = useState([]);
+  const [statsData, setStatsData] = useState({});
 
   // --- Data Loading Logic ---
   // Memoize the loadDashboardData function
@@ -303,7 +307,7 @@ const Dashboard = () => {
                 value: statsData.totalProjects || 0,
                 icon: ChartBarIcon,
                 color: "blue",
-                change: "+12% from last month",
+                change: statsData.projectGrowth || "+0%",
                 trend: "up",
                 onClick: () => navigate("/projects"),
               },
@@ -312,7 +316,7 @@ const Dashboard = () => {
                 value: statsData.totalUsers || 0,
                 icon: UserGroupIcon,
                 color: "green",
-                change: "+8% from last month",
+                change: statsData.userGrowth || "+0%",
                 trend: "up",
                 onClick: () => navigate("/students"),
               },
@@ -327,10 +331,10 @@ const Dashboard = () => {
               },
               {
                 title: "Upcoming Meetings",
-                value: "5",
+                value: todayMeetings.length || 0,
                 icon: CalendarIcon,
                 color: "purple",
-                change: "Next: Tomorrow",
+                change: todayMeetings.length > 0 ? `Next: ${todayMeetings[0].time}` : "No meetings",
                 trend: "info",
                 onClick: () => navigate("/meetings"),
               },
@@ -408,16 +412,16 @@ const Dashboard = () => {
                 value: statsData.upcomingDeadlines || 0,
                 icon: ClipboardListIcon,
                 color: "yellow",
-                change: "Due next week",
+                change: statsData.urgentTasks ? `${statsData.urgentTasks} urgent` : "None urgent",
                 trend: "attention",
                 onClick: () => navigate("/projects"),
               },
               {
                 title: "Meetings",
-                value: "1",
+                value: todayMeetings.length || 0,
                 icon: CalendarIcon,
                 color: "purple",
-                change: "Tomorrow at 2:00 PM",
+                change: todayMeetings.length > 0 ? `Next: ${todayMeetings[0].time}` : "None today",
                 trend: "info",
                 onClick: () => navigate("/meetings"),
               },
@@ -447,12 +451,14 @@ const Dashboard = () => {
 
       if (data && data.title) {
         setDashboardData(data);
+        setNotifications(statsData.notifications || []);
+        setUpcomingDeadlines(statsData.upcomingDeadlines || []);
+        setTodayMeetings(statsData.todayMeetings || []);
+        setPerformanceData(statsData.performanceData || []);
+        setRecentActivities(statsData.recentActivities || []);
+        setProjectProgressData(statsData.projectProgress || []);
+        setStatsData(statsData);
       }
-
-      setNotifications(statsData.notifications || []);
-      setUpcomingDeadlines(statsData.upcomingDeadlines || []);
-      setTodayMeetings(statsData.todayMeetings || []);
-      setPerformanceData(statsData.performanceData || []);
     } catch (err) {
       console.error("Error loading dashboard:", err);
       toast.error("Failed to load dashboard data");
@@ -477,15 +483,18 @@ const Dashboard = () => {
     loadData();
   }, [authLoading, loadDashboardData]);
 
-  const handleRefresh = () => {
+  const handleRefresh = async () => {
     setIsLoading(true);
-    toast.loading("Refreshing dashboard...");
-    setTimeout(() => {
-      loadDashboardData();
+    const loadingToast = toast.loading("Refreshing dashboard...");
+    try {
+      await loadDashboardData();
+      toast.success("Dashboard refreshed!", { id: loadingToast });
+    } catch (error) {
+      console.error("Refresh failed:", error);
+      toast.error("Failed to refresh dashboard", { id: loadingToast });
+    } finally {
       setIsLoading(false);
-      toast.dismiss();
-      toast.success("Dashboard refreshed!");
-    }, 800);
+    }
   };
 
   // Handle notification actions
@@ -807,7 +816,7 @@ const Dashboard = () => {
         {/* Left Column - 2/3 width */}
         <div className="lg:col-span-2 space-y-8">
           <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm p-6">
-            <RecentActivity userRole={user?.role} />
+            <RecentActivity activities={recentActivities} userRole={user?.role} />
           </div>
 
           {/* Upcoming Deadlines */}
@@ -951,54 +960,7 @@ const Dashboard = () => {
           {/* Today's Meetings */}
           {todayMeetings.length > 0 && (
             <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm p-6">
-              <div className="flex items-center justify-between mb-8">
-                <div className="flex items-center">
-                  <div className="w-10 h-10 bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-900/30 dark:to-purple-800/20 rounded-lg flex items-center justify-center mr-3">
-                    <UserGroupIcon className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                      Today's Meetings
-                    </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                      Your schedule for today
-                    </p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => navigate("/meetings")}
-                  className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium flex items-center bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 px-4 py-2 rounded-xl transition-colors duration-300"
-                >
-                  Schedule
-                  <ChevronRightIcon className="w-4 h-4 ml-2" />
-                </button>
-              </div>
-
-              <div className="space-y-4">
-                {todayMeetings.map((meeting) => (
-                  <div
-                    key={meeting.id}
-                    className="p-5 bg-gradient-to-r from-blue-50 to-blue-100/50 dark:from-blue-900/30 dark:to-blue-800/20 rounded-xl border border-blue-200 dark:border-blue-800 hover:shadow-md transition-all duration-300"
-                  >
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="font-bold text-gray-900 dark:text-white">
-                        {meeting.title}
-                      </div>
-                      <span className="px-3 py-1 bg-gradient-to-r from-blue-100 to-blue-50 dark:from-blue-900/50 dark:to-blue-800/40 text-blue-700 dark:text-blue-400 rounded-lg text-xs font-bold border border-blue-200 dark:border-blue-800">
-                        {meeting.type}
-                      </span>
-                    </div>
-                    <div className="flex items-center text-sm text-gray-600 dark:text-gray-400 mb-3">
-                      <ClockIcon className="w-4 h-4 mr-2 text-blue-500 dark:text-blue-400" />
-                      <span className="font-medium">{meeting.time}</span>
-                    </div>
-                    <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
-                      <LocationMarkerIcon className="w-4 h-4 mr-2 text-blue-500 dark:text-blue-400" />
-                      {meeting.location}
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <UpcomingMeetings meetings={todayMeetings} userRole={user?.role} />
             </div>
           )}
 
@@ -1027,7 +989,7 @@ const Dashboard = () => {
                   icon: DocumentTextIcon,
                   label: "Materials",
                   color: "blue",
-                  path: "/course-materials",
+                  path: "/resources",
                 },
                 {
                   icon: CalendarDaysIcon,
@@ -1095,97 +1057,33 @@ const Dashboard = () => {
 
       {/* Bottom Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Project Progress */}
-        <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm p-6">
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center">
-              <div className="w-10 h-10 bg-gradient-to-br from-indigo-50 to-indigo-100/50 dark:from-indigo-900/30 dark:to-indigo-800/20 rounded-lg flex items-center justify-center mr-3">
-                <ChartBarIcon className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                  Project Progress
-                </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                  Track your project completion
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={() => navigate("/projects")}
-              className="group text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium flex items-center bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 px-4 py-2 rounded-xl transition-all duration-300 hover:shadow-md"
-            >
-              View all
-              <ChevronRightIcon className="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
-            </button>
-          </div>
-
-          {/* Progress Visualization */}
-          <div className="mb-6">
-            <div className="flex justify-between mb-4">
-              <div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  Average Completion
+          {/* Project Progress */}
+          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm p-6">
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center">
+                <div className="w-10 h-10 bg-gradient-to-br from-indigo-50 to-indigo-100/50 dark:from-indigo-900/30 dark:to-indigo-800/20 rounded-lg flex items-center justify-center mr-3">
+                  <ChartBarIcon className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                 </div>
-                <div className="text-3xl font-bold text-gray-900 dark:text-white">
-                  72.5%
+                <div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                    Project Progress
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                    Track project completion
+                  </p>
                 </div>
               </div>
-              <div className="text-right">
-                <div className="text-sm text-gray-600 dark:text-gray-400">
-                  On Track
-                </div>
-                <div className="flex items-center text-green-600 dark:text-green-400 font-bold">
-                  <ArrowUpIcon className="w-4 h-4 mr-1" />
-                  <span>+5.2%</span>
-                </div>
-              </div>
-            </div>
-            <div className="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-3">
-              <div
-                className="bg-gradient-to-r from-blue-500 to-purple-600 h-3 rounded-full transition-all duration-1000 ease-out"
-                style={{ width: "72.5%" }}
-              ></div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            {[
-              { label: "Research", progress: 85, color: "blue" },
-              { label: "Design", progress: 65, color: "purple" },
-              { label: "Development", progress: 45, color: "green" },
-              { label: "Testing", progress: 25, color: "yellow" },
-            ].map((project, index) => (
-              <div
-                key={index}
-                className="p-4 border border-gray-200 dark:border-slate-700 rounded-xl"
+              <button
+                onClick={() => navigate("/projects")}
+                className="group text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium flex items-center bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 px-4 py-2 rounded-xl transition-all duration-300 hover:shadow-md"
               >
-                <div className="flex justify-between mb-2">
-                  <span className="text-sm font-medium text-gray-900 dark:text-white">
-                    {project.label}
-                  </span>
-                  <span className="text-sm font-bold text-gray-900 dark:text-white">
-                    {project.progress}%
-                  </span>
-                </div>
-                <div className="w-full bg-gray-200 dark:bg-slate-700 rounded-full h-2">
-                  <div
-                    className={`h-2 rounded-full ${
-                      project.color === "blue"
-                        ? "bg-gradient-to-r from-blue-500 to-blue-400"
-                        : project.color === "purple"
-                          ? "bg-gradient-to-r from-purple-500 to-purple-400"
-                          : project.color === "green"
-                            ? "bg-gradient-to-r from-green-500 to-green-400"
-                            : "bg-gradient-to-r from-yellow-500 to-yellow-400"
-                    }`}
-                    style={{ width: `${project.progress}%` }}
-                  ></div>
-                </div>
-              </div>
-            ))}
+                View all
+                <ChevronRightIcon className="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
+              </button>
+            </div>
+
+            <ProgressVisualization projects={projectProgressData} userRole={user?.role} />
           </div>
-        </div>
 
         {/* System Metrics */}
         <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-6 text-white shadow-xl">
@@ -1214,31 +1112,31 @@ const Dashboard = () => {
               {
                 icon: ServerIcon,
                 label: "System Performance",
-                value: "92%",
-                change: "+2.5%",
+                value: `${statsData.systemPerformance || 92}%`,
+                change: statsData.performanceChange || "+2.5%",
                 color: "green",
-                progress: 92,
+                progress: statsData.systemPerformance || 92,
               },
               {
                 icon: BoltIcon,
                 label: "Response Time",
-                value: "128ms",
-                change: "-12ms",
+                value: `${statsData.responseTime || 128}ms`,
+                change: statsData.responseTimeChange || "-12ms",
                 color: "blue",
                 progress: 85,
               },
               {
                 icon: UserGroupIcon,
                 label: "Active Users",
-                value: "156",
-                change: "+8",
+                value: statsData.activeUsers || 156,
+                change: statsData.userChange || "+8",
                 color: "purple",
                 progress: 75,
               },
               {
                 icon: ShieldCheckIcon,
                 label: "Data Accuracy",
-                value: "99.8%",
+                value: statsData.dataAccuracy || "99.8%",
                 change: "Verified",
                 color: "green",
                 progress: 99,
@@ -1317,18 +1215,19 @@ const Dashboard = () => {
                   Administrator Alerts
                 </h4>
                 <div className="text-sm text-yellow-700 dark:text-yellow-300 space-y-2">
-                  <p className="flex items-center">
-                    <span className="w-1.5 h-1.5 bg-yellow-500 rounded-full mr-2"></span>
-                    3 projects awaiting approval
-                  </p>
-                  <p className="flex items-center">
-                    <span className="w-1.5 h-1.5 bg-yellow-500 rounded-full mr-2"></span>
-                    2 meeting rooms unavailable tomorrow
-                  </p>
-                  <p className="flex items-center">
-                    <span className="w-1.5 h-1.5 bg-yellow-500 rounded-full mr-2"></span>
-                    System backup scheduled for 2:00 AM
-                  </p>
+                  {notifications.length > 0 ? (
+                    notifications.slice(0, 3).map((notif, idx) => (
+                      <p key={idx} className="flex items-center">
+                        <span className="w-1.5 h-1.5 bg-yellow-500 rounded-full mr-2"></span>
+                        {notif.message}
+                      </p>
+                    ))
+                  ) : (
+                    <p className="flex items-center">
+                      <span className="w-1.5 h-1.5 bg-yellow-500 rounded-full mr-2"></span>
+                      No urgent alerts at this time.
+                    </p>
+                  )}
                 </div>
               </div>
             </div>

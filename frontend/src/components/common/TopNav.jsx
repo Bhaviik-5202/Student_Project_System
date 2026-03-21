@@ -70,6 +70,7 @@ const TopNav = memo(
     const handleMouseLeave = useCallback(() => {
       dropdownTimeoutRef.current = setTimeout(() => {
         setHoveredItem(null);
+        setActiveDropdown(null);
       }, 150);
     }, []);
 

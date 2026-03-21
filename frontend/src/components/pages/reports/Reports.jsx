@@ -1,5 +1,6 @@
-import React, { useState, useMemo, useCallback, memo } from "react";
+import React, { useState, useMemo, useCallback, memo, useEffect } from "react";
 import { useAuth } from "../../../hooks/useAuth";
+import reportService from "../../../services/reportService";
 
 /**
  * Reports Component
@@ -120,56 +121,54 @@ const Reports = memo(() => {
     [],
   );
 
-  const projectStats = useMemo(
-    () => ({
-      total: 48,
-      byStatus: [
-        {
-          status: "Active",
-          count: 32,
-          color: "bg-green-500",
-          percentage: 66.7,
-        },
-        {
-          status: "Pending",
-          count: 7,
-          color: "bg-yellow-500",
-          percentage: 14.6,
-        },
-        {
-          status: "Completed",
-          count: 9,
-          color: "bg-blue-500",
-          percentage: 18.7,
-        },
-      ],
-      byDepartment: [
-        { department: "Computer Science", count: 18, percentage: 37.5 },
-        { department: "Information Technology", count: 12, percentage: 25.0 },
-        { department: "Electronics", count: 10, percentage: 20.8 },
-        { department: "Mechanical", count: 8, percentage: 16.7 },
-      ],
-    }),
-    [],
-  );
-
-  const monthlyData = useMemo(
-    () => [
-      { month: "Jan", submissions: 12, completions: 8 },
-      { month: "Feb", submissions: 8, completions: 6 },
-      { month: "Mar", submissions: 15, completions: 10 },
-      { month: "Apr", submissions: 10, completions: 7 },
-      { month: "May", submissions: 18, completions: 12 },
-      { month: "Jun", submissions: 14, completions: 11 },
-      { month: "Jul", submissions: 16, completions: 13 },
-      { month: "Aug", submissions: 12, completions: 9 },
-      { month: "Sep", submissions: 11, completions: 8 },
-      { month: "Oct", submissions: 13, completions: 10 },
-      { month: "Nov", submissions: 9, completions: 7 },
-      { month: "Dec", submissions: 7, completions: 5 },
+  const [projectStats, setProjectStats] = useState({
+    total: 0,
+    byStatus: [],
+    byDepartment: [
+      { department: "Computer Science", count: 18, percentage: 37.5 },
+      { department: "Information Technology", count: 12, percentage: 25.0 },
+      { department: "Electronics", count: 10, percentage: 20.8 },
+      { department: "Mechanical", count: 8, percentage: 16.7 },
     ],
-    [],
-  );
+  });
+
+  const [monthlyData, setMonthlyData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const [recentReports, setRecentReports] = useState([]);
+
+  const fetchRecentReports = useCallback(async () => {
+    try {
+      const response = await reportService.getRecentReports();
+      setRecentReports(response?.data || []);
+    } catch (error) {
+      console.error("Failed to fetch recent reports", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    const fetchReportData = async () => {
+      try {
+        setLoading(true);
+        const response = await reportService.getProjectStatusReport({ range: dateRange });
+        const data = response?.data || {};
+        if (data && data.stats) {
+          setProjectStats((prev) => ({
+            ...prev,
+            total: (data.stats.totalProjects || 0) + (data.stats.totalStudents || 0),
+            byStatus: data.activityData || [],
+          }));
+          setMonthlyData(data.performanceData || []);
+        }
+      } catch (error) {
+        console.error("Failed to fetch report data", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchReportData();
+    fetchRecentReports();
+  }, [dateRange, fetchRecentReports]);
 
   const colorStyles = useMemo(
     () => ({
@@ -227,15 +226,97 @@ const Reports = memo(() => {
     [monthlyData],
   );
 
-  const generateReport = useCallback((reportId) => {
-    setSelectedReport(reportId);
-    // In real app, this would trigger API call
-    // ...existing code...
-  }, []);
+  const generateReport = useCallback(async (reportId) => {
+    const reportTemplate = reportTypes.find(r => r.id === reportId);
+    if (!reportTemplate) return;
 
-  const handleExport = useCallback(() => {
-    alert(`Report exported as ${exportFormat.toUpperCase()} successfully!`);
-  }, [exportFormat]);
+    try {
+      setSelectedReport(reportId);
+      const reportData = {
+        title: reportTemplate.title,
+        description: reportTemplate.description,
+        type: reportTemplate.id,
+        format: exportFormat,
+        size: "2.4 MB", // Simulated size
+        parameters: { range: dateRange }
+      };
+      await reportService.createReport(reportData);
+      fetchRecentReports();
+      alert(`Report "${reportTemplate.title}" generated successfully!`);
+    } catch (error) {
+      console.error("Failed to generate report", error);
+      alert("Failed to generate report.");
+    }
+  }, [reportTypes, exportFormat, dateRange, fetchRecentReports]);
+
+  const handleExport = useCallback(async () => {
+    if (!selectedReport) {
+      alert("Please select a report type to export.");
+      return;
+    }
+    try {
+      await reportService.exportReport(selectedReport, exportFormat);
+      alert(`Report exported as ${exportFormat.toUpperCase()} successfully!`);
+    } catch (error) {
+      console.error("Export failed", error);
+      alert("Failed to export report.");
+    }
+  }, [exportFormat, selectedReport]);
+
+  const [editingReport, setEditingReport] = useState(null);
+  const [editTitle, setEditTitle] = useState("");
+
+  const handleEditReport = (report) => {
+    setEditingReport(report._id);
+    setEditTitle(report.title);
+  };
+
+  const saveReportEdit = async (id) => {
+    try {
+      await reportService.updateReport(id, { title: editTitle });
+      setEditingReport(null);
+      fetchRecentReports();
+      alert("Report title updated successfully!");
+    } catch (error) {
+      console.error("Update failed", error);
+      alert("Failed to update report title.");
+    }
+  };
+
+  const cancelEdit = () => {
+    setEditingReport(null);
+    setEditTitle("");
+  };
+
+  const handleExportAll = async () => {
+    try {
+      await reportService.exportReport("all", exportFormat);
+      alert(`All reports exported as ${exportFormat.toUpperCase()} successfully!`);
+    } catch (error) {
+      console.error("Export all failed", error);
+      alert("Failed to export all reports.");
+    }
+  };
+
+  const handleDeleteReport = async (id) => {
+    if (window.confirm("Are you sure you want to delete this report?")) {
+      try {
+        await reportService.deleteReport(id);
+        fetchRecentReports();
+      } catch (error) {
+        console.error("Delete failed", error);
+      }
+    }
+  };
+
+  const handlePreview = () => {
+    if (!selectedReport) {
+      alert("Please select a report type to preview.");
+      return;
+    }
+    const report = reportTypes.find(r => r.id === selectedReport);
+    alert(`Previewing ${report?.title || "selected report"}...\n(In this version, preview is a mock view of the current charts)`);
+  };
 
   // Filter reports based on user role
   const filteredReports = useMemo(
@@ -271,7 +352,10 @@ const Reports = memo(() => {
               <i className="fas fa-chevron-down" />
             </div>
           </div>
-          <button className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white rounded-lg transition duration-150 flex items-center focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
+          <button 
+            onClick={handleExportAll}
+            className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white rounded-lg transition duration-150 flex items-center focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+          >
             <i className="fas fa-download mr-2" /> Export All
           </button>
         </div>
@@ -314,6 +398,10 @@ const Reports = memo(() => {
                   Generated 2 hours ago
                 </span>
                 <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    generateReport(report.id);
+                  }}
                   className={`px-3 py-1 text-sm rounded-lg transition duration-150 ${
                     colorStyles[report.color]?.soft || colorStyles.blue.soft
                   } ${colorStyles[report.color]?.hoverSoft || colorStyles.blue.hoverSoft} ${
@@ -344,9 +432,15 @@ const Reports = memo(() => {
           <div className="flex items-center justify-center mb-6">
             <div className="relative">
               {/* Doughnut Chart Visualization */}
-              <div className="w-48 h-48 rounded-full border-8 border-blue-500 flex items-center justify-center">
+              <div 
+                className={`w-48 h-48 rounded-full border-8 border-blue-500 dark:border-blue-600 flex items-center justify-center transition-all duration-700`}
+                style={{
+                  boxShadow: `inset 0 0 20px rgba(59, 130, 246, 0.2)`,
+                  borderColor: projectStats.total > 0 ? '#3b82f6' : '#e2e8f0'
+                }}
+              >
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                  <div className="text-3xl font-bold text-gray-900 dark:text-white">
                     {projectStats.total}
                   </div>
                   <div className="text-sm text-gray-500 dark:text-gray-400">
@@ -487,7 +581,10 @@ const Reports = memo(() => {
             </p>
           </div>
           <div className="flex items-center space-x-3">
-            <button className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition duration-150">
+            <button 
+              onClick={handlePreview}
+              className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition duration-150"
+            >
               Preview
             </button>
             <button
@@ -609,48 +706,107 @@ const Reports = memo(() => {
               </tr>
             </thead>
             <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-              <tr>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="flex items-center">
-                    <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mr-3">
-                      <i className="fas fa-chart-pie text-blue-600 dark:text-blue-400" />
-                    </div>
-                    <div>
-                      <div className="text-sm font-medium text-gray-900 dark:text-white">
-                        Project Status Report
+              {loading ? (
+                <tr>
+                  <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
+                    <i className="fas fa-spinner fa-spin mr-2" /> Loading reports...
+                  </td>
+                </tr>
+              ) : recentReports.length === 0 ? (
+                <tr>
+                  <td colSpan="6" className="px-6 py-8 text-center text-gray-500 italic">
+                    No reports generated yet.
+                  </td>
+                </tr>
+              ) : (
+                recentReports.map((report) => (
+                  <tr key={report._id}>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mr-3">
+                          <i className={`fas ${reportTypes.find(r => r.id === report.type)?.icon || 'fa-file-alt'} text-blue-600 dark:text-blue-400`} />
+                        </div>
+                        <div>
+                          <div className="text-sm font-medium text-gray-900 dark:text-white">
+                            {report.title}
+                          </div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400">
+                            {report.description}
+                          </div>
+                        </div>
                       </div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400">
-                        Monthly analysis
-                      </div>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                  Today, 10:30 AM
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200">
-                    PDF
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                  2.1 MB
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
-                    Ready
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <button className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 mr-3">
-                    <i className="fas fa-download" />
-                  </button>
-                  <button className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
-                    <i className="fas fa-trash" />
-                  </button>
-                </td>
-              </tr>
-              {/* Add more rows as needed */}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                      {new Date(report.createdAt).toLocaleString()}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                        report.format === 'pdf' ? 'bg-red-100 text-red-800' : 
+                        report.format === 'excel' ? 'bg-green-100 text-green-800' : 
+                        'bg-blue-100 text-blue-800'
+                      }`}>
+                        {report.format?.toUpperCase()}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                      {report.size}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
+                        {report.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      {editingReport === report._id ? (
+                        <div className="flex items-center space-x-2">
+                          <input 
+                            type="text" 
+                            value={editTitle}
+                            onChange={(e) => setEditTitle(e.target.value)}
+                            className="text-xs p-1 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                            autoFocus
+                          />
+                          <button 
+                            onClick={() => saveReportEdit(report._id)} 
+                            className="text-green-600 hover:text-green-800 p-1"
+                            title="Save Changes"
+                          >
+                            <i className="fas fa-save" />
+                          </button>
+                          <button 
+                            onClick={cancelEdit} 
+                            className="text-rose-600 hover:text-rose-800 p-1"
+                            title="Cancel"
+                          >
+                            <i className="fas fa-times" />
+                          </button>
+                        </div>
+                      ) : (
+                        <>
+                          <button 
+                            onClick={() => handleEditReport(report)}
+                            className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 mr-3"
+                          >
+                            <i className="fas fa-edit" />
+                          </button>
+                          <button 
+                            onClick={() => handleExport()}
+                            className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 mr-3"
+                          >
+                            <i className="fas fa-download" />
+                          </button>
+                          <button 
+                            onClick={() => handleDeleteReport(report._id)}
+                            className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+                          >
+                            <i className="fas fa-trash" />
+                          </button>
+                        </>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

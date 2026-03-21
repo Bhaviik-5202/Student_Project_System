@@ -13,8 +13,10 @@ const FAQ = memo(() => {
     const fetchFaqs = async () => {
       try {
         const response = await api.get("/help/overview");
-        const data = response.data || {};
-        setFaqs(data.faqs || []); // Assuming faqs are now nested under a 'faqs' key in the response data
+        if (response.success && response.data) {
+          const faqsData = response.data.groupedFaqs || [];
+          setFaqs(faqsData);
+        }
       } catch (error) {
         console.error("Failed to fetch FAQs", error);
       } finally {

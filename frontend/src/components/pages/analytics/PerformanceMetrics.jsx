@@ -1,20 +1,27 @@
-import { useState, useMemo, memo } from "react";
+import { useState, useEffect, memo } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../../../utils/api";
 
 const PerformanceMetrics = memo(() => {
   const navigate = useNavigate();
-  const metrics = useMemo(
-    () => ({
-      overall: { current: 85, target: 90, trend: "up" },
-      attendance: { current: 92, target: 95, trend: "stable" },
-      assignments: { current: 88, target: 85, trend: "up" },
-      projects: { current: 82, target: 80, trend: "up" },
-      participation: { current: 78, target: 75, trend: "stable" },
-    }),
-    [],
-  );
-
+  const [metrics, setMetrics] = useState({});
+  const [loading, setLoading] = useState(true);
   const [timeRange, setTimeRange] = useState("month");
+
+  useEffect(() => {
+    const fetchPerformance = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get("/analytics/performance");
+        setMetrics(response.data || {});
+      } catch (error) {
+        console.error("Failed to fetch performance metrics", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPerformance();
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
@@ -45,70 +52,46 @@ const PerformanceMetrics = memo(() => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {Object.entries(metrics).map(([key, metric]) => (
-            <div
-              key={key}
-              className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6"
-            >
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <div className="text-sm font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                    {key
-                      .replace(/([A-Z])/g, " $1")
-                      .replace(/^./, (str) => str.toUpperCase())}
+        {loading ? (
+          <div className="p-8 text-center text-slate-500">Loading performance metrics...</div>
+        ) : Object.keys(metrics).length === 0 ? (
+          <div className="p-8 text-center text-slate-500">No performance data available.</div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            {Object.entries(metrics).map(([key, metric]) => (
+              <div
+                key={key}
+                className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6"
+              >
+                {/* ... existing metric card content ... */}
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <div className="text-sm font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
+                      {key.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase())}
+                    </div>
+                    <div className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
+                      {metric.current}%
+                    </div>
                   </div>
-                  <div className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
-                    {metric.current}%
+                  <div className={`px-2 py-1 rounded-full text-xs font-medium ${
+                    metric.trend === "up" ? "bg-emerald-100 text-emerald-800" : "bg-blue-100 text-blue-800"
+                  }`}>
+                    {metric.trend === "up" ? "↑ Improving" : "→ Stable"}
                   </div>
                 </div>
-                <div
-                  className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    metric.trend === "up"
-                      ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
-                      : metric.trend === "down"
-                        ? "bg-rose-100 dark:bg-rose-900/30 text-rose-800 dark:text-rose-300"
-                        : "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300"
-                  }`}
-                >
-                  {metric.trend === "up"
-                    ? "↑ Improving"
-                    : metric.trend === "down"
-                      ? "↓ Declining"
-                      : "→ Stable"}
+                <div className="mb-3">
+                  <div className="flex justify-between text-sm mb-1">
+                    <span>Progress</span>
+                    <span>{metric.current}% / {metric.target}%</span>
+                  </div>
+                  <div className="w-full bg-slate-200 rounded-full h-2">
+                    <div className="bg-blue-500 h-2 rounded-full" style={{ width: `${(metric.current / metric.target) * 100}%` }}></div>
+                  </div>
                 </div>
               </div>
-
-              <div className="mb-3">
-                <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400 mb-1">
-                  <span>Progress</span>
-                  <span>
-                    {metric.current}% / {metric.target}%
-                  </span>
-                </div>
-                <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
-                  <div
-                    className={`h-2 rounded-full ${
-                      metric.current >= metric.target
-                        ? "bg-emerald-500"
-                        : "bg-blue-500"
-                    }`}
-                    style={{
-                      width: `${Math.min(
-                        100,
-                        (metric.current / metric.target) * 100,
-                      )}%`,
-                    }}
-                  ></div>
-                </div>
-              </div>
-
-              <div className="text-sm text-slate-600 dark:text-slate-400">
-                Target: {metric.target}%
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         {/* Performance Chart */}
         <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6 mb-8">

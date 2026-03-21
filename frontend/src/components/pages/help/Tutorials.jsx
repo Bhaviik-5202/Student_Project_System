@@ -1,5 +1,6 @@
 import React, { memo, useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 import api from "../../../utils/api";
 
 const Tutorials = memo(() => {
@@ -12,9 +13,10 @@ const Tutorials = memo(() => {
     const fetchTutorials = async () => {
       try {
         const response = await api.get("/help/tutorials");
-        const data = response.data || {};
-        if (data.tutorials) setTutorials(data.tutorials);
-        if (data.categories) setCategories(["All", ...data.categories]);
+        if (response.success && response.data) {
+          if (response.data.tutorials) setTutorials(response.data.tutorials);
+          if (response.data.categories) setCategories(["All", ...response.data.categories]);
+        }
       } catch (error) {
         console.error("Failed to fetch tutorials", error);
       } finally {
@@ -47,6 +49,16 @@ const Tutorials = memo(() => {
 
   const handleCategoryChange = useCallback((category) => {
     setSelectedCategory(category);
+  }, []);
+
+  const handleStartTutorial = useCallback((tutorial) => {
+    // In a real app, this would open a video modal
+    toast.success(`Starting tutorial: ${tutorial.title}`);
+  }, []);
+
+  const handleViewAll = useCallback(() => {
+    setSelectedCategory("All");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   return (
@@ -95,12 +107,14 @@ const Tutorials = memo(() => {
             {filteredTutorials.map((tutorial) => (
               <div
                 key={tutorial.id || tutorial._id}
-                className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6"
+                className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6 shadow-sm hover:shadow-md transition-shadow"
               >
                 <div className="relative mb-4">
-                  <div className="aspect-video bg-slate-200 dark:bg-slate-700 rounded-lg flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="text-4xl mb-2">🎬</div>
+                  <div className="aspect-video bg-slate-200 dark:bg-slate-700 rounded-lg flex items-center justify-center group cursor-pointer" onClick={() => handleStartTutorial(tutorial)}>
+                    <div className="text-center group-hover:scale-110 transition-transform">
+                      <div className="text-4xl mb-2 text-blue-600">
+                        <i className="fas fa-play-circle" />
+                      </div>
                       <div className="text-sm text-slate-600 dark:text-slate-400">
                         {tutorial.duration}
                       </div>
@@ -117,7 +131,7 @@ const Tutorials = memo(() => {
                   <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
                     {tutorial.title}
                   </h3>
-                  <p className="text-slate-600 dark:text-slate-400 text-sm">
+                  <p className="text-slate-600 dark:text-slate-400 text-sm h-10 overflow-hidden">
                     {tutorial.description}
                   </p>
                 </div>
@@ -126,7 +140,10 @@ const Tutorials = memo(() => {
                   <span className="px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs rounded">
                     {tutorial.category}
                   </span>
-                  <button className="px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
+                  <button 
+                    onClick={() => handleStartTutorial(tutorial)}
+                    className="px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 transition-colors"
+                  >
                     {tutorial.completed ? "Watch Again" : "Start Tutorial"}
                   </button>
                 </div>
@@ -149,14 +166,17 @@ const Tutorials = memo(() => {
             </div>
             <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-3">
               <div
-                className="bg-emerald-500 dark:bg-emerald-400 h-3 rounded-full"
+                className="bg-emerald-500 dark:bg-emerald-400 h-3 rounded-full transition-all duration-500"
                 style={{ width: `${progressPercentage}%` }}
               ></div>
             </div>
           </div>
 
           <div className="text-center">
-            <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
+            <button 
+              onClick={handleViewAll}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+            >
               View All Tutorials
             </button>
           </div>

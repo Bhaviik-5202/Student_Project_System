@@ -24,13 +24,51 @@ exports.create = async (data) => {
 };
 
 /**
- * Fetch all audit log entries
- * @returns {Promise<Object>} Formatted service response with log list
+ * Fetch all audit log entries with pagination and filters
+ * @param {Object} options - Query and pagination options
+ * @returns {Promise<Object>} Formatted service response with log list and pagination metadata
  */
-exports.getAll = async () => {
+exports.getAll = async ({ page = 1, limit = 20, filters = {} }) => {
   try {
-    const auditLogs = await auditLogRepository.findAll();
-    return response(false, auditLogs, "Audit logs fetched successfully");
+    const skip = (page - 1) * limit;
+    
+    // Transform filters for Mongoose
+    const query = {};
+    if (filters.action) {
+      query.action = { $regex: filters.action, $options: "i" };
+    }
+    if (filters.status) {
+      query.status = filters.status;
+    }
+    if (filters.createdAt) {
+      const date = new Date(filters.createdAt);
+      if (!isNaN(date.getTime())) {
+        const start = new Date(date);
+        start.setHours(0, 0, 0, 0);
+        const end = new Date(date);
+        end.setHours(23, 59, 59, 999);
+        query.createdAt = { $gte: start, $lte: end };
+      }
+    }
+
+    const [auditLogs, total] = await Promise.all([
+      auditLogRepository.findAll(query, { skip, limit: Number(limit) }),
+      auditLogRepository.count(query),
+    ]);
+
+    return response(
+      false,
+      {
+        logs: auditLogs,
+        pagination: {
+          total,
+          page: Number(page),
+          limit: Number(limit),
+          pages: Math.ceil(total / limit),
+        },
+      },
+      "Audit logs fetched successfully"
+    );
   } catch (err) {
     return response(true, null, err.message || "Failed to fetch audit logs");
   }

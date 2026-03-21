@@ -1,46 +1,46 @@
-import { useState, useMemo, memo } from "react";
+import { useState, useEffect, memo } from "react";
 import { useNavigate } from "react-router-dom";
+import api from "../../../utils/api";
 
 const Visualizations = memo(() => {
   const navigate = useNavigate();
   const [chartType, setChartType] = useState("bar");
+  const [loading, setLoading] = useState(true);
+  const [gradeBars, setGradeBars] = useState([]);
+  const [performanceMonths, setPerformanceMonths] = useState([]);
+  const [courseEnrollments] = useState([
+    { course: "Software Engineering", enrollment: 45, capacity: 50 },
+    { course: "Database Systems", enrollment: 40, capacity: 45 },
+    { course: "Web Development", enrollment: 35, capacity: 40 },
+  ]);
 
-  const gradeBars = useMemo(
-    () => [
-      { label: "A", value: 25, color: "bg-emerald-500" },
-      { label: "B", value: 40, color: "bg-blue-500" },
-      { label: "C", value: 20, color: "bg-amber-500" },
-      { label: "D", value: 10, color: "bg-orange-500" },
-      { label: "F", value: 5, color: "bg-rose-500" },
-    ],
-    [],
-  );
+  useEffect(() => {
+    const fetchVisuals = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get("/analytics/dashboard");
+        const data = response.data || {};
+        
+        // Map activityData to grade bars for visual similarity
+        if (data.activityData) {
+          setGradeBars(data.activityData.map(a => ({
+            label: a.label,
+            value: a.value,
+            color: a.color
+          })));
+        }
 
-  const courseEnrollments = useMemo(
-    () => [
-      {
-        course: "Software Engineering",
-        enrollment: 45,
-        capacity: 50,
-      },
-      { course: "Database Systems", enrollment: 40, capacity: 45 },
-      { course: "Web Development", enrollment: 35, capacity: 40 },
-      { course: "Data Structures", enrollment: 40, capacity: 45 },
-      { course: "Machine Learning", enrollment: 30, capacity: 35 },
-    ],
-    [],
-  );
-
-  const performanceMonths = useMemo(
-    () => [
-      { month: "Sep", overall: 65, attendance: 70, assignments: 60 },
-      { month: "Oct", overall: 70, attendance: 75, assignments: 65 },
-      { month: "Nov", overall: 75, attendance: 80, assignments: 70 },
-      { month: "Dec", overall: 78, attendance: 82, assignments: 75 },
-      { month: "Jan", overall: 82, attendance: 85, assignments: 80 },
-    ],
-    [],
-  );
+        if (data.performanceData) {
+          setPerformanceMonths(data.performanceData);
+        }
+      } catch (error) {
+        console.error("Failed to fetch visualization data", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchVisuals();
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
@@ -71,65 +71,71 @@ const Visualizations = memo(() => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          {/* Grade Distribution Chart */}
-          <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
-              Grade Distribution
-            </h3>
-            <div className="h-64 flex items-end justify-between">
-              {gradeBars.map((bar, index) => (
-                <div key={index} className="flex flex-col items-center">
-                  <div
-                    className={`w-12 ${bar.color} rounded-t-lg`}
-                    style={{ height: `${bar.value * 2}px` }}
-                  ></div>
-                  <div className="text-sm text-slate-600 dark:text-slate-400 mt-2">
-                    {bar.label}
-                  </div>
-                  <div className="text-xs text-slate-500 dark:text-slate-400">
-                    {bar.value}%
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Course Enrollment */}
-          <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
-              Course Enrollment
-            </h3>
-            <div className="space-y-4">
-              {courseEnrollments.map((course, index) => (
-                <div key={index}>
-                  <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400 mb-1">
-                    <span>{course.course}</span>
-                    <span>
-                      {course.enrollment}/{course.capacity}
-                    </span>
-                  </div>
-                  <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
+        {loading ? (
+          <div className="p-8 text-center text-slate-500">Loading visualizations...</div>
+        ) : gradeBars.length === 0 ? (
+          <div className="p-8 text-center text-slate-500">No visualization data available.</div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            {/* Grade Distribution Chart */}
+            <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
+                Activity Distribution
+              </h3>
+              <div className="h-64 flex items-end justify-between">
+                {gradeBars.map((bar, index) => (
+                  <div key={index} className="flex flex-col items-center flex-1">
                     <div
-                      className={`h-2 rounded-full ${
-                        course.enrollment / course.capacity >= 0.9
-                          ? "bg-rose-500"
-                          : course.enrollment / course.capacity >= 0.7
-                            ? "bg-amber-500"
-                            : "bg-emerald-500"
-                      }`}
-                      style={{
-                        width: `${
-                          (course.enrollment / course.capacity) * 100
-                        }%`,
-                      }}
+                      className={`w-12 ${bar.color} rounded-t-lg transition-all duration-500`}
+                      style={{ height: `${bar.value * 2}px` }}
                     ></div>
+                    <div className="text-xs text-slate-600 dark:text-slate-400 mt-2 text-center">
+                      {bar.label}
+                    </div>
+                    <div className="text-xs font-bold text-slate-500 dark:text-slate-400">
+                      {bar.value}%
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
+            </div>
+
+            {/* Course Enrollment */}
+            <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
+                Course Enrollment
+              </h3>
+              <div className="space-y-4">
+                {courseEnrollments.map((course, index) => (
+                  <div key={index}>
+                    <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400 mb-1">
+                      <span>{course.course}</span>
+                      <span>
+                        {course.enrollment}/{course.capacity}
+                      </span>
+                    </div>
+                    <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
+                      <div
+                        className={`h-2 rounded-full ${
+                          course.enrollment / course.capacity >= 0.9
+                            ? "bg-rose-500"
+                            : course.enrollment / course.capacity >= 0.7
+                              ? "bg-amber-500"
+                              : "bg-emerald-500"
+                        }`}
+                        style={{
+                          width: `${
+                            (course.enrollment / course.capacity) * 100
+                          }%`,
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Performance Trends */}
         <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6 mb-8">

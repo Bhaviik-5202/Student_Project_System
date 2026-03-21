@@ -23,30 +23,44 @@ const PermissionsManager = memo(() => {
     fetchRoles();
   }, []);
 
-  const [permissions, setPermissions] = useState({
-    userManagement: { admin: true, faculty: false, student: false },
-    projectManagement: { admin: true, faculty: true, student: true },
-    courseManagement: { admin: true, faculty: true, student: false },
-    systemSettings: { admin: true, faculty: false, student: false },
-    reporting: { admin: true, faculty: true, student: false },
-    backupRestore: { admin: true, faculty: false, student: false },
-  });
+  const [permissions, setPermissions] = useState({});
+  const [permissionsLoading, setPermissionsLoading] = useState(false);
 
-  const [selectedRole, setSelectedRole] = useState("admin");
+  const [selectedRole, setSelectedRole] = useState("Admin");
 
-  const togglePermission = useCallback((permission, role) => {
+  useEffect(() => {
+    const fetchPermissions = async () => {
+      if (!selectedRole) return;
+      try {
+        setPermissionsLoading(true);
+        const response = await api.get(`/admin/permissions/${selectedRole}`);
+        setPermissions(response.data || {});
+      } catch (error) {
+        console.error("Failed to fetch permissions", error);
+      } finally {
+        setPermissionsLoading(false);
+      }
+    };
+    fetchPermissions();
+  }, [selectedRole]);
+
+  const togglePermission = useCallback(async (permission, role) => {
+    const newValue = !permissions[permission];
     setPermissions((prev) => ({
       ...prev,
-      [permission]: {
-        ...prev[permission],
-        [role]: !prev[permission][role],
-      },
+      [permission]: newValue,
     }));
-  }, []);
+  }, [permissions]);
 
-  const savePermissions = useCallback(() => {
-    toast.success("Permissions updated successfully");
-  }, []);
+  const savePermissions = useCallback(async () => {
+    try {
+      await api.put(`/admin/permissions/${selectedRole}`, permissions);
+      toast.success("Permissions updated successfully");
+    } catch (error) {
+      console.error("Failed to update permissions", error);
+      toast.error("Failed to update permissions");
+    }
+  }, [selectedRole, permissions]);
 
   const allowAll = useCallback(() => {
     setPermissions((prev) => {
@@ -171,7 +185,11 @@ const PermissionsManager = memo(() => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
-                    {Object.entries({
+                    {permissionsLoading ? (
+                      <tr>
+                        <td colSpan="3" className="px-6 py-4 text-center text-slate-500">Loading permissions...</td>
+                      </tr>
+                    ) : Object.entries({
                       userManagement: "Manage users and access rights",
                       projectManagement: "Create, edit, and manage projects",
                       courseManagement: "Manage courses and materials",
@@ -199,14 +217,14 @@ const PermissionsManager = memo(() => {
                           <button
                             onClick={() => togglePermission(key, selectedRole)}
                             className={`relative inline-flex h-6 w-11 items-center rounded-full ${
-                              permissions[key][selectedRole]
+                              permissions[key]
                                 ? "bg-emerald-600 dark:bg-emerald-500"
                                 : "bg-slate-200 dark:bg-slate-700"
                             }`}
                           >
                             <span
                               className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
-                                permissions[key][selectedRole]
+                                permissions[key]
                                   ? "translate-x-6"
                                   : "translate-x-1"
                               }`}

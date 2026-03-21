@@ -25,6 +25,7 @@ const notificationRoutes = require("./notification.route");
 const userRoutes = require("./user.route");
 const healthRoutes = require("./health.route");
 const analyticsRoutes = require("./analytics.route");
+const adminRoutes = require("./admin.route");
 const meetingsRoutes = require("./meetings.route");
 const chatroutes = require("./chat.route");
 const messageRoutes = require("./message.route");
@@ -34,6 +35,8 @@ const settingRoutes = require("./setting.route");
 const faqRoutes = require("./faq.route");
 const knowledgeBaseRoutes = require("./knowledgebase.route");
 const collaborationRoutes = require("./collaboration.route");
+const reportRoutes = require("./report.route");
+const helpRoutes = require("./help.route");
 
 /**
  * Mount routes
@@ -46,6 +49,8 @@ router.use("/auth", authRoutes);
 router.use("/portfolios", portfolioRoutes);
 router.use("/courses", coursesRoutes);
 router.use("/projects", projectRoutes);
+router.use("/reports", reportRoutes); // Added
+router.use("/help", helpRoutes);
 router.use("/resources", resourceRoutes);
 router.use("/staff", staffRoutes);
 router.use("/students", studentRoutes);
@@ -55,6 +60,7 @@ router.use("/notifications", notificationRoutes);
 router.use("/users", userRoutes);
 router.use("/health", healthRoutes);
 router.use("/analytics", analyticsRoutes);
+router.use("/admin", adminRoutes);
 router.use("/meetings", meetingsRoutes);
 router.use("/chats", chatroutes);
 router.use("/messages", messageRoutes);

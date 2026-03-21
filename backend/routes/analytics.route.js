@@ -48,4 +48,9 @@ router.get(
   analyticsController.getStudentDashboardStats,
 );
 
+router.get("/grades", authMiddleware, roleMiddleware(["admin", "faculty"]), analyticsController.getGradeDistribution);
+router.get("/performance", authMiddleware, roleMiddleware(["admin"]), analyticsController.getPerformanceMetrics);
+router.get("/progress", authMiddleware, roleMiddleware(["admin", "faculty"]), analyticsController.getProgressAnalytics);
+router.get("/usage", authMiddleware, roleMiddleware(["admin"]), analyticsController.getUsageStatistics);
+
 module.exports = router;

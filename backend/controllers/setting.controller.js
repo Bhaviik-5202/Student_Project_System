@@ -135,25 +135,67 @@ exports.getSettingByKey = async (req, res) => {
 };
 
 /**
- * Create or update a system setting
- * @route POST /settings
+ * Update an existing system setting
+ * @route PUT /settings/:id
  * @access Admin
  */
 exports.updateSetting = async (req, res) => {
   try {
     const { key, value, description, category } = req.body;
-    const setting = await Setting.findOneAndUpdate(
-      { key },
-      { value, description, category },
-      { returnDocument: 'after', upsert: true, runValidators: true },
+    const setting = await Setting.findByIdAndUpdate(
+      req.params.id,
+      { key, value, description, category },
+      { new: true, runValidators: true },
     );
 
     sendResponse(
       res,
       {
-        success: true,
-        message: "Setting updated successfully",
+        success: !!setting,
+        message: setting ? "Setting updated successfully" : "Setting not found",
         data: setting,
+        error: setting ? null : "Invalid ID",
+      },
+      setting ? 200 : 404,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Failed to update setting",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
+};
+
+/**
+ * Bulk update system settings
+ * @route PUT /settings
+ * @access Admin
+ */
+exports.bulkUpdateSettings = async (req, res) => {
+  try {
+    const settings = req.body; // Expecting { key1: val1, key2: val2, ... }
+    const updatePromises = Object.entries(settings).map(([key, value]) =>
+      Setting.findOneAndUpdate(
+        { key },
+        { value },
+        { upsert: true, new: true, runValidators: true }
+      )
+    );
+
+    await Promise.all(updatePromises);
+
+    sendResponse(
+      res,
+      {
+        success: true,
+        message: "All settings updated successfully",
+        data: settings,
         error: null,
       },
       200,
@@ -163,7 +205,7 @@ exports.updateSetting = async (req, res) => {
       res,
       {
         success: false,
-        message: "Failed to update setting",
+        message: "Failed to update settings",
         data: null,
         error: error.message,
       },

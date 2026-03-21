@@ -48,7 +48,7 @@ const BatchOperations = memo(() => {
   }, [users]);
 
   const handleSubmit = useCallback(
-    (e) => {
+    async (e) => {
       e.preventDefault();
       if (selectedUsers.length === 0) {
         toast.error("Please select at least one user");
@@ -56,15 +56,23 @@ const BatchOperations = memo(() => {
       }
 
       setLoading(true);
-
-      setTimeout(() => {
+      try {
+        await api.post("/admin/batch-operation", {
+          operation,
+          selectedUsers,
+          message,
+        });
         toast.success(
-          `${operation} operation completed for ${selectedUsers.length} users`,
+          `${operation.charAt(0).toUpperCase() + operation.slice(1)} operation completed for ${selectedUsers.length} users`,
         );
-        setLoading(false);
         setMessage("");
         setSelectedUsers([]);
-      }, 2000);
+      } catch (error) {
+        console.error("Batch operation failed", error);
+        toast.error("Batch operation failed. Please try again.");
+      } finally {
+        setLoading(false);
+      }
     },
     [operation, selectedUsers],
   );

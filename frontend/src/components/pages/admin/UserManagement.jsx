@@ -1,138 +1,273 @@
 import { useState, useEffect, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../../utils/api";
+import "../../../assets/styles/admin.css";
+
+function UserModal({ isOpen, onClose, onSave, user = null }) {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    role: "student",
+    password: ""
+  });
+
+  useEffect(() => {
+    if (isOpen) {
+      if (user) {
+        setFormData({
+          name: user.name || "",
+          email: user.email || "",
+          role: user.role || "student",
+          password: ""
+        });
+      } else {
+        setFormData({
+          name: "",
+          email: "",
+          role: "student",
+          password: ""
+        });
+      }
+    }
+  }, [user, isOpen]);
+
+  if (!isOpen) return null;
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSave(formData);
+  };
+
+  return (
+    <div className="admin-modal-overlay">
+      <div className="admin-modal shadow-lg" onClick={(e) => e.stopPropagation()}>
+        <div className="admin-modal-header">
+          <h3 className="text-lg font-bold">{user ? "Edit User" : "Add New User"}</h3>
+          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 text-2xl">&times;</button>
+        </div>
+        <form onSubmit={handleSubmit}>
+          <div className="admin-modal-body">
+            <div className="admin-form-group">
+              <label className="admin-label">Full Name</label>
+              <input
+                type="text"
+                className="admin-input"
+                placeholder="John Doe"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                required
+              />
+            </div>
+            <div className="admin-form-group">
+              <label className="admin-label">Email Address</label>
+              <input
+                type="email"
+                className="admin-input"
+                placeholder="email@example.com"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                required
+              />
+            </div>
+            <div className="admin-form-group">
+              <label className="admin-label">Role</label>
+              <select
+                className="admin-input"
+                value={formData.role}
+                onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+              >
+                <option value="student">Student</option>
+                <option value="faculty">Faculty</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+            {!user && (
+              <div className="admin-form-group">
+                <label className="admin-label">Password</label>
+                <input
+                  type="password"
+                  className="admin-input"
+                  placeholder="At least 6 characters"
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  required
+                />
+              </div>
+            )}
+          </div>
+          <div className="admin-modal-footer">
+            <button type="button" onClick={onClose} className="admin-btn admin-btn-secondary">Cancel</button>
+            <button type="submit" className="admin-btn admin-btn-primary">
+              {user ? "Update User" : "Create User"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
 
 const UserManagement = memo(() => {
   const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const fetchUsers = async () => {
+    try {
+      setLoading(true);
+      const response = await api.get("/users");
+      setUsers(response.data || []);
+    } catch (error) {
+      console.error("Failed to fetch users", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await api.get("/admin/users");
-        setUsers(response.data || []);
-      } catch (error) {
-        console.error("Failed to fetch users", error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchUsers();
   }, []);
 
-  return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-              User Management
-            </h1>
-            <p className="text-slate-600 dark:text-slate-400">
-              Manage system users and permissions
-            </p>
-          </div>
-          <button className="px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-800">
-            Add User
-          </button>
-        </div>
+  const handleAddUser = () => {
+    setSelectedUser(null);
+    setIsModalOpen(true);
+  };
 
-        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
-              <thead className="bg-slate-50 dark:bg-slate-700">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                    Name
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                    Email
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                    Role
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                    Joined
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
-                {loading ? (
-                  <tr>
-                    <td colSpan="6" className="px-6 py-4 text-center text-slate-500">
-                      Loading users...
-                    </td>
-                  </tr>
-                ) : users.length === 0 ? (
-                  <tr>
-                    <td colSpan="6" className="px-6 py-4 text-center text-slate-500">
-                      No users found.
-                    </td>
-                  </tr>
-                ) : (
-                  users.map((user) => (
-                    <tr
-                      key={user.id || user._id}
-                      className="hover:bg-slate-50 dark:hover:bg-slate-700"
-                    >
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="font-medium text-slate-900 dark:text-white">
-                          {user.name || (user.firstName + " " + user.lastName)}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
-                        {user.email}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className={`px-2 py-1 text-xs rounded-full ${
-                            user.role === "Admin"
-                              ? "bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300"
-                              : user.role === "Faculty"
-                                ? "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
-                                : "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
-                          }`}
-                        >
-                          {user.role}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className={`px-2 py-1 text-xs rounded-full ${
-                            user.status === "Active"
-                              ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
-                              : "bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-300"
-                          }`}
-                        >
-                          {user.status || "Active"}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
-                        {user.joined || (user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A")}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <button className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 mr-3">
-                          Edit
-                        </button>
-                        <button className="text-rose-600 dark:text-rose-400 hover:text-rose-900 dark:hover:text-rose-300">
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+  const handleEditUser = (user) => {
+    setSelectedUser(user);
+    setIsModalOpen(true);
+  };
+
+  const handleSaveUser = async (formData) => {
+    try {
+      const payload = { ...formData };
+      // Don't send empty password during update
+      if (selectedUser && !payload.password) {
+        delete payload.password;
+      }
+
+      if (selectedUser) {
+        await api.put(`/users/${selectedUser.id || selectedUser._id}`, payload);
+      } else {
+        await api.post("/users", payload);
+      }
+      setIsModalOpen(false);
+      fetchUsers();
+    } catch (error) {
+      console.error("Failed to save user", error);
+      const msg = error.response?.data?.message || "Please check if the email already exists.";
+      alert(`Failed to save user: ${msg}`);
+    }
+  };
+
+  const handleDeleteUser = async (userId) => {
+    if (window.confirm("Are you sure you want to delete this user?")) {
+      try {
+        await api.delete(`/users/${userId}`);
+        // Refresh the list
+        fetchUsers();
+      } catch (error) {
+        console.error("Failed to delete user", error);
+        alert("Failed to delete user. Please try again.");
+      }
+    }
+  };
+
+  return (
+    <div className="admin-page">
+      <div className="admin-container">
+        <header className="admin-header">
+          <div className="flex flex-col">
+            <h1 className="admin-title">User Management</h1>
+            <p className="admin-subtitle">Manage system users, roles, and access permissions</p>
           </div>
+          <button onClick={handleAddUser} className="admin-btn admin-btn-primary">
+            + Add New User
+          </button>
+        </header>
+
+        <div className="admin-table-container">
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Joined</th>
+                <th style={{ textAlign: 'right' }}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td colSpan="6" style={{ textAlign: 'center', padding: '48px' }}>
+                    <div className="flex flex-col items-center gap-2">
+                       <p className="text-slate-500">Loading user database...</p>
+                    </div>
+                  </td>
+                </tr>
+              ) : users.length === 0 ? (
+                <tr>
+                  <td colSpan="6" style={{ textAlign: 'center', padding: '48px' }}>
+                    <p className="text-slate-500">No users found in the system.</p>
+                  </td>
+                </tr>
+              ) : (
+                users.map((user) => (
+                  <tr key={user.id || user._id}>
+                    <td>
+                      <div style={{ fontWeight: '600' }}>
+                        {user.name}
+                      </div>
+                    </td>
+                    <td>{user.email}</td>
+                    <td>
+                      <span className={`admin-badge ${
+                        user.role === 'admin' ? 'admin-badge-blue' :
+                        user.role === 'faculty' ? 'admin-badge-success' : 'admin-badge-gray'
+                      }`}>
+                        {user.role}
+                      </span>
+                    </td>
+                    <td>
+                      <span className="admin-badge admin-badge-success">
+                        {user.status || "Active"}
+                      </span>
+                    </td>
+                    <td style={{ color: 'var(--admin-text-muted)', fontSize: '13px' }}>
+                      {user.joined || (user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A")}
+                    </td>
+                    <td style={{ textAlign: 'right' }}>
+                      <button
+                        onClick={() => handleEditUser(user)}
+                        className="text-blue-600 hover:text-blue-800 font-semibold text-sm mr-4"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDeleteUser(user.id || user._id)}
+                        className="text-rose-600 hover:text-rose-800 font-semibold text-sm"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
+
+      <UserModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleSaveUser}
+        user={selectedUser}
+      />
     </div>
   );
 });

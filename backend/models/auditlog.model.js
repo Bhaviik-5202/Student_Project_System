@@ -19,6 +19,16 @@ const auditLogSchema = new mongoose.Schema(
       trim: true,
       default: null,
     },
+    status: {
+      type: String,
+      enum: ["Success", "Failed", "Warning"],
+      default: "Success",
+    },
+    ip: {
+      type: String,
+      trim: true,
+      default: "127.0.0.1",
+    },
   },
   {
     timestamps: true,

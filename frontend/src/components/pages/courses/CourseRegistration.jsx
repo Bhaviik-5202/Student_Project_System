@@ -144,7 +144,7 @@ const CourseRegistration = memo(() => {
 
       <div className="course-details-grid">
         <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-          <div className="course-card-simple" style={{ position: "sticky", top: "24px", zIndex: "5", backgroundColor: "white" }}>
+          <div className="course-card-simple" style={{ position: "sticky", top: "24px", zIndex: "5", backgroundColor: "var(--course-white)" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               <div className="course-search-container" style={{ maxWidth: "none" }}>
                 <Search style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", width: "16px", height: "16px", color: "var(--course-text-muted)" }} />
@@ -189,7 +189,7 @@ const CourseRegistration = memo(() => {
                       cursor: "pointer", 
                       borderColor: isSelected ? "var(--course-primary)" : "var(--course-border)",
                       borderWidth: isSelected ? "2px" : "1px",
-                      backgroundColor: isSelected ? "rgba(37, 99, 235, 0.05)" : "white"
+                      backgroundColor: isSelected ? "rgba(37, 99, 235, 0.05)" : "var(--course-white)"
                     }}
                   >
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "12px" }}>

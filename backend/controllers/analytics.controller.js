@@ -174,3 +174,43 @@ exports.getStudentDashboardStats = async (req, res) => {
     );
   }
 };
+
+exports.getGradeDistribution = async (req, res) => {
+  try {
+    const { error, data, message } = await analyticsService.getGradeDistribution();
+    if (error) throw new Error(message);
+    sendResponse(res, { success: true, data }, 200);
+  } catch (error) {
+    sendResponse(res, { success: false, message: error.message }, 500);
+  }
+};
+
+exports.getPerformanceMetrics = async (req, res) => {
+  try {
+    const { error, data, message } = await analyticsService.getPerformanceMetrics();
+    if (error) throw new Error(message);
+    sendResponse(res, { success: true, data }, 200);
+  } catch (error) {
+    sendResponse(res, { success: false, message: error.message }, 500);
+  }
+};
+
+exports.getProgressAnalytics = async (req, res) => {
+  try {
+    const { error, data, message } = await analyticsService.getProgressAnalytics();
+    if (error) throw new Error(message);
+    sendResponse(res, { success: true, data }, 200);
+  } catch (error) {
+    sendResponse(res, { success: false, message: error.message }, 500);
+  }
+};
+
+exports.getUsageStatistics = async (req, res) => {
+  try {
+    const { error, data, message } = await analyticsService.getUsageStatistics();
+    if (error) throw new Error(message);
+    sendResponse(res, { success: true, data }, 200);
+  } catch (error) {
+    sendResponse(res, { success: false, message: error.message }, 500);
+  }
+};

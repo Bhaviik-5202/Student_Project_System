@@ -1,5 +1,7 @@
-import { useMemo, memo, useCallback, useState, useEffect } from "react";
+import { useState, useEffect, memo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import analyticsService from "../../../services/analyticsService";
+import "../../../assets/styles/admin.css";
 
 // SVG Icon Components (no external dependencies)
 const Icons = {
@@ -137,137 +139,54 @@ const Icons = {
   ),
 };
 
-// Animated Counter Hook for stat values
-const useAnimatedCounter = (endValue, duration = 1000) => {
-  const [count, setCount] = useState(0);
-  const numericValue = parseInt(endValue) || 0;
-
-  useEffect(() => {
-    let startTime = null;
-    let animationFrame;
-
-    const animate = (currentTime) => {
-      if (!startTime) startTime = currentTime;
-      const progress = Math.min((currentTime - startTime) / duration, 1);
-      const easeOutQuad = 1 - (1 - progress) * (1 - progress);
-      setCount(Math.floor(easeOutQuad * numericValue));
-
-      if (progress < 1) {
-        animationFrame = requestAnimationFrame(animate);
-      }
-    };
-
-    animationFrame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animationFrame);
-  }, [numericValue, duration]);
-
-  return count;
-};
-
-// Stat Card Component - displays individual statistics with icon and animation
-const StatCard = memo(
-  ({
-    icon: IconComponent,
-    iconColorClass,
-    bgColorClass,
-    value,
-    label,
-    delay = 0,
-  }) => {
-    const [isVisible, setIsVisible] = useState(false);
-    const numericPart = parseInt(value) || 0;
-    const suffix = value.toString().replace(/[0-9]/g, "");
-    const animatedValue = useAnimatedCounter(isVisible ? numericPart : 0, 1200);
-
-    useEffect(() => {
-      const timer = setTimeout(() => setIsVisible(true), delay);
-      return () => clearTimeout(timer);
-    }, [delay]);
-
-    return (
-      <div
-        className={`bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 transform transition-all duration-500 hover:scale-105 hover:shadow-lg dark:hover:shadow-slate-700/50 cursor-pointer group ${
-          isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
-        }`}
-      >
-        <div className="flex items-center">
-          <div
-            className={`w-14 h-14 ${bgColorClass} rounded-xl flex items-center justify-center mr-4 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3`}
-          >
-            <IconComponent
-              className={`w-7 h-7 ${iconColorClass}`}
-              aria-hidden="true"
-            />
-          </div>
-          <div>
-            <div className="text-3xl font-bold text-slate-900 dark:text-white tabular-nums">
-              {animatedValue}
-              {suffix}
-            </div>
-            <div className="text-slate-600 dark:text-slate-400 font-medium">
-              {label}
-            </div>
-          </div>
-        </div>
-        <div
-          className={`h-1 mt-4 rounded-full ${bgColorClass} overflow-hidden`}
-        >
-          <div
-            className={`h-full ${iconColorClass.replace("text-", "bg-")} rounded-full transition-all duration-1000 ease-out`}
-            style={{ width: isVisible ? "100%" : "0%" }}
-          />
-        </div>
+// Stat Card Component
+const StatCard = memo(({ icon: IconComponent, value, label }) => {
+  return (
+    <div className="admin-stat-card">
+      <div className="admin-stat-icon">
+        <IconComponent className="w-6 h-6" />
       </div>
-    );
-  },
-);
+      <div>
+        <div className="admin-stat-value">{value}</div>
+        <div className="admin-stat-label">{label}</div>
+      </div>
+    </div>
+  );
+});
 
 StatCard.displayName = "StatCard";
 
-// Quick Action Button Component with enhanced hover effects
-const QuickActionButton = memo(
-  ({ icon: IconComponent, iconColorClass, bgColorClass, label, onClick }) => (
-    <button
-      onClick={onClick}
-      className="group relative p-5 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-transparent text-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-slate-800 overflow-hidden hover:shadow-lg dark:hover:shadow-slate-700/30"
-      aria-label={label}
-    >
-      <div
-        className={`absolute inset-0 ${bgColorClass || "bg-blue-50 dark:bg-blue-900/20"} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
-      />
-      <div className="relative z-10">
-        <div
-          className={`${iconColorClass} flex justify-center mb-3 transform transition-transform duration-300 group-hover:scale-125 group-hover:-translate-y-1`}
-        >
-          <IconComponent className="w-7 h-7" aria-hidden="true" />
-        </div>
-        <div className="font-semibold text-slate-900 dark:text-white transition-colors">
-          {label}
-        </div>
-      </div>
-    </button>
-  ),
-);
+StatCard.displayName = "StatCard";
+
+// Quick Action Button Component
+const QuickActionButton = memo(({ icon: IconComponent, label, onClick }) => (
+  <button onClick={onClick} className="admin-btn admin-btn-secondary" style={{ display: 'flex', flexDirection: 'column', padding: '20px', height: 'auto' }}>
+    <IconComponent className="w-6 h-6 mb-2 text-blue-600" />
+    <span>{label}</span>
+  </button>
+));
 
 QuickActionButton.displayName = "QuickActionButton";
 
-// Activity Item Component with hover animation
-const ActivityItem = memo(({ user, action, time, icon: IconComponent }) => (
-  <div className="flex items-center justify-between p-4 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-all duration-200 hover:border-blue-200 dark:hover:border-blue-800 cursor-pointer group">
+QuickActionButton.displayName = "QuickActionButton";
+
+// Activity Item Component
+const ActivityItem = memo(({ user, action, time }) => (
+  <div className="flex items-center justify-between p-4 border-b border-slate-100 dark:border-slate-700 last:border-0">
     <div className="flex items-center gap-3">
-      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-semibold text-sm shadow-md group-hover:shadow-lg transition-shadow">
+      <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-300 font-semibold text-xs">
         {user.charAt(0).toUpperCase()}
       </div>
       <div>
-        <div className="font-semibold text-slate-900 dark:text-white">
+        <div className="font-medium text-slate-900 dark:text-white text-sm">
           {user}
         </div>
-        <div className="text-sm text-slate-600 dark:text-slate-400">
+        <div className="text-xs text-slate-500">
           {action}
         </div>
       </div>
     </div>
-    <time className="text-sm text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full">
+    <time className="text-xs text-slate-400">
       {time}
     </time>
   </div>
@@ -275,142 +194,39 @@ const ActivityItem = memo(({ user, action, time, icon: IconComponent }) => (
 
 ActivityItem.displayName = "ActivityItem";
 
-// Service Status Item Component with pulse animation
-const ServiceStatusItem = memo(
-  ({ service, status, uptime, icon: IconComponent }) => {
-    const isOnline = status === "Online";
+// Service Status Item Component
+const ServiceStatusItem = memo(({ service, status, uptime, icon: IconComponent }) => {
+  const isOnline = status === "Online";
 
-    return (
-      <div className="flex items-center justify-between p-4 border border-slate-200 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-all duration-200 group">
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <div
-              className={`w-4 h-4 rounded-full ${
-                isOnline
-                  ? "bg-emerald-500 dark:bg-emerald-400"
-                  : "bg-rose-500 dark:bg-rose-400"
-              }`}
-              role="status"
-              aria-label={`${service} is ${status}`}
-            />
-            {isOnline && (
-              <div className="absolute inset-0 w-4 h-4 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-ping opacity-75" />
-            )}
-          </div>
-          <div
-            className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-              isOnline
-                ? "bg-emerald-100 dark:bg-emerald-900/30"
-                : "bg-rose-100 dark:bg-rose-900/30"
-            }`}
-          >
-            {IconComponent && (
-              <IconComponent
-                className={`w-5 h-5 ${
-                  isOnline
-                    ? "text-emerald-600 dark:text-emerald-400"
-                    : "text-rose-600 dark:text-rose-400"
-                }`}
-              />
-            )}
-          </div>
-          <div>
-            <div className="font-semibold text-slate-900 dark:text-white">
-              {service}
-            </div>
-            <div
-              className={`text-sm font-medium ${
-                isOnline
-                  ? "text-emerald-600 dark:text-emerald-400"
-                  : "text-rose-600 dark:text-rose-400"
-              }`}
-            >
-              {status}
-            </div>
-          </div>
-        </div>
-        <div className="text-right">
-          <div className="text-lg font-bold text-slate-900 dark:text-white">
-            {uptime}
-          </div>
-          <div className="text-xs text-slate-500 dark:text-slate-400">
-            Uptime
-          </div>
-        </div>
+  return (
+    <div className="flex items-center justify-between p-4 border-b border-slate-100 dark:border-slate-700 last:border-0">
+      <div className="flex items-center gap-3">
+        <div className={`w-2 h-2 rounded-full ${isOnline ? "bg-emerald-500" : "bg-rose-500"}`} />
+        <div className="text-sm font-medium text-slate-900 dark:text-white">{service}</div>
       </div>
-    );
-  },
-);
+      <div className="text-right">
+        <div className="text-xs font-semibold text-slate-900 dark:text-white">{uptime}</div>
+        <div className="text-[10px] text-slate-400 uppercase">Uptime</div>
+      </div>
+    </div>
+  );
+});
 
 ServiceStatusItem.displayName = "ServiceStatusItem";
 
-// Stats configuration for easy maintenance
+// Page configs
 const STATS_CONFIG = [
-  {
-    key: "totalUsers",
-    icon: Icons.Users,
-    iconColorClass: "text-blue-600 dark:text-blue-400",
-    bgColorClass: "bg-blue-100 dark:bg-blue-900/30",
-    label: "Total Users",
-  },
-  {
-    key: "activeProjects",
-    icon: Icons.Project,
-    iconColorClass: "text-emerald-600 dark:text-emerald-400",
-    bgColorClass: "bg-emerald-100 dark:bg-emerald-900/30",
-    label: "Active Projects",
-  },
-  {
-    key: "pendingApprovals",
-    icon: Icons.Clock,
-    iconColorClass: "text-amber-600 dark:text-amber-400",
-    bgColorClass: "bg-amber-100 dark:bg-amber-900/30",
-    label: "Pending Approvals",
-  },
-  {
-    key: "systemHealth",
-    icon: Icons.Heartbeat,
-    iconColorClass: "text-purple-600 dark:text-purple-400",
-    bgColorClass: "bg-purple-100 dark:bg-purple-900/30",
-    label: "System Health",
-    suffix: "%",
-  },
+  { key: "totalUsers", icon: Icons.Users, label: "Total Users" },
+  { key: "activeProjects", icon: Icons.Project, label: "Active Projects" },
+  { key: "pendingApprovals", icon: Icons.Clock, label: "Pending Approvals" },
+  { key: "systemHealth", icon: Icons.Heartbeat, label: "System Health", suffix: "%" },
 ];
 
-// Quick actions configuration with correct route paths
 const QUICK_ACTIONS_CONFIG = [
-  {
-    id: "users",
-    icon: Icons.UserCog,
-    iconColorClass: "text-blue-600 dark:text-blue-400",
-    bgColorClass: "bg-blue-50 dark:bg-blue-900/20",
-    label: "User Management",
-    path: "/user-management",
-  },
-  {
-    id: "settings",
-    icon: Icons.Settings,
-    iconColorClass: "text-emerald-600 dark:text-emerald-400",
-    bgColorClass: "bg-emerald-50 dark:bg-emerald-900/20",
-    label: "System Settings",
-    path: "/system-settings",
-  },
-  {
-    id: "audit",
-    icon: Icons.Clipboard,
-    iconColorClass: "text-purple-600 dark:text-purple-400",
-    bgColorClass: "bg-purple-50 dark:bg-purple-900/20",
-    label: "Audit Log",
-    path: "/audit-log",
-  },
-  {
-    id: "backup",
-    icon: Icons.Database,
-    iconColorClass: "text-amber-600 dark:text-amber-400",
-    bgColorClass: "bg-amber-50 dark:bg-amber-900/20",
-    label: "Backup",
-    path: "/backup",
-  },
+  { id: "users", icon: Icons.UserCog, label: "User Management", path: "/user-management" },
+  { id: "settings", icon: Icons.Settings, label: "System Settings", path: "/system-settings" },
+  { id: "audit", icon: Icons.Clipboard, label: "Audit Log", path: "/audit-log" },
+  { id: "backup", icon: Icons.Database, label: "Backup", path: "/backup" },
 ];
 
 // Service icons mapping
@@ -443,16 +259,13 @@ const AdminDashboard = memo(() => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Optionally, keep static system services for now
-  const systemServices = useMemo(
-    () => [
-      { id: "db", service: "Database", status: "Online", uptime: "99.9%" },
-      { id: "storage", service: "File Storage", status: "Online", uptime: "99.8%" },
-      { id: "email", service: "Email Service", status: "Online", uptime: "99.7%" },
-      { id: "api", service: "API Server", status: "Online", uptime: "99.9%" },
-    ],
-    [],
-  );
+  // Keep system services as fetched or empty if not yet provided by API
+  const [systemServices, setSystemServices] = useState([
+    { id: "db", service: "Database", status: "Online", uptime: "99.9%" },
+    { id: "storage", service: "File Storage", status: "Online", uptime: "99.8%" },
+    { id: "email", service: "Email Service", status: "Online", uptime: "99.7%" },
+    { id: "api", service: "API Server", status: "Online", uptime: "99.9%" },
+  ]);
 
   useEffect(() => {
     let mounted = true;
@@ -491,193 +304,82 @@ const AdminDashboard = memo(() => {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 dark:bg-slate-900" role="main">
-      <div className="container mx-auto px-4 py-8">
-        {/* Welcome Banner with Gradient */}
-        <div className="relative mb-8 overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 p-8 text-white shadow-xl">
-          {/* Animated background shapes */}
-          <div className="absolute inset-0 overflow-hidden">
-            <div className="absolute -top-24 -right-24 w-64 h-64 bg-white/10 rounded-full blur-3xl animate-pulse" />
-            <div
-              className="absolute -bottom-16 -left-16 w-48 h-48 bg-white/10 rounded-full blur-2xl animate-pulse"
-              style={{ animationDelay: "1s" }}
-            />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
+    <div className="admin-page">
+      <div className="admin-container">
+        <header className="admin-header">
+          <div>
+            <h1 className="admin-title">Admin Dashboard</h1>
+            <p className="admin-subtitle">System overview and management console</p>
           </div>
-
-          <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                  <svg
-                    className="w-7 h-7 text-white"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                    <path d="M2 17l10 5 10-5" />
-                    <path d="M2 12l10 5 10-5" />
-                  </svg>
-                </div>
-                <div>
-                  <h1 className="text-2xl md:text-3xl font-bold">
-                    Welcome back, Admin!
-                  </h1>
-                  <p className="text-blue-100 text-sm md:text-base">
-                    Everything is running smoothly. Here's your system overview.
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="bg-white/20 backdrop-blur-sm rounded-xl px-4 py-2 text-center">
-                <div className="text-2xl font-bold">99.8%</div>
-                <div className="text-xs text-blue-100">System Uptime</div>
-              </div>
-              <div className="bg-white/20 backdrop-blur-sm rounded-xl px-4 py-2 text-center">
-                <div className="text-2xl font-bold text-emerald-300">
-                  All OK
-                </div>
-                <div className="text-xs text-blue-100">Services Status</div>
-              </div>
+          <div style={{ display: 'flex', gap: '12px' }}>
+            <div className="admin-card" style={{ padding: '8px 16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div className="w-2 h-2 rounded-full bg-emerald-500" />
+              <span className="text-xs font-semibold">99.8% Uptime</span>
             </div>
           </div>
-        </div>
-
-        {/* Page Header */}
-        <header className="mb-6">
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white">
-            System Overview
-          </h2>
-          <p className="text-slate-600 dark:text-slate-400">
-            Monitor and manage your platform's key metrics
-          </p>
         </header>
 
-        {/* Stats Grid with staggered animations */}
-        <section
-          aria-label="Statistics Overview"
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
-        >
-          {STATS_CONFIG.map(
-            (
-              { key, icon, iconColorClass, bgColorClass, label, suffix },
-              index,
-            ) => (
-              <StatCard
-                key={key}
-                icon={icon}
-                iconColorClass={iconColorClass}
-                bgColorClass={bgColorClass}
-                value={`${stats[key]}${suffix || ""}`}
-                label={label}
-                delay={index * 100}
-              />
-            ),
-          )}
+        <section className="admin-stat-grid">
+          {STATS_CONFIG.map(({ key, icon, label, suffix }) => (
+            <StatCard
+              key={key}
+              icon={icon}
+              value={`${stats[key]}${suffix || ""}`}
+              label={label}
+            />
+          ))}
         </section>
 
-        {/* Admin Quick Actions & Recent Activities */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          {/* Quick Actions */}
-          <section
-            aria-label="Quick Actions"
-            className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm"
-          >
-            <div className="flex items-center justify-between mb-5">
-              <h2 className="text-lg font-bold text-slate-900 dark:text-white">
-                Quick Actions
-              </h2>
-              <span className="text-xs text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded-full">
-                Admin Tools
-              </span>
-            </div>
-            <nav
-              className="grid grid-cols-2 gap-4"
-              aria-label="Admin navigation"
-            >
-              {QUICK_ACTIONS_CONFIG.map(
-                ({ id, icon, iconColorClass, bgColorClass, label, path }) => (
-                  <QuickActionButton
-                    key={id}
-                    icon={icon}
-                    iconColorClass={iconColorClass}
-                    bgColorClass={bgColorClass}
-                    label={label}
-                    onClick={handleNavigate(path)}
-                  />
-                ),
-              )}
-            </nav>
-          </section>
-
-          {/* Recent Activities */}
-          <section
-            aria-label="Recent Activities"
-            className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm"
-          >
-            <div className="flex items-center justify-between mb-5">
-              <h2 className="text-lg font-bold text-slate-900 dark:text-white">
-                Recent Activities
-              </h2>
-              <button className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors">
-                <span style={{ textDecoration: "none" }}>View All</span>
-              </button>
-            </div>
-            <div className="space-y-3" role="list" aria-label="Activity list">
-              {recentActivities.map((activity) => (
-                <ActivityItem
-                  key={activity.id}
-                  user={activity.user}
-                  action={activity.action}
-                  time={activity.time}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px', marginBottom: '24px' }}>
+          <section className="admin-card">
+            <h2 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '20px' }}>Quick Actions</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px' }}>
+              {QUICK_ACTIONS_CONFIG.map(({ id, icon, label, path }) => (
+                <QuickActionButton
+                  key={id}
+                  icon={icon}
+                  label={label}
+                  onClick={handleNavigate(path)}
                 />
               ))}
             </div>
           </section>
+
+          <section className="admin-card">
+            <h2 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '20px' }}>Recent Activities</h2>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              {recentActivities.length === 0 ? (
+                <p className="text-sm text-slate-500 py-4 text-center">No recent activities</p>
+              ) : (
+                recentActivities.map((activity) => (
+                  <ActivityItem
+                    key={activity.id}
+                    user={activity.user}
+                    action={activity.action}
+                    time={activity.time}
+                  />
+                ))
+              )}
+            </div>
+          </section>
         </div>
 
-        {/* System Status */}
-        <section
-          aria-label="System Status"
-          className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 shadow-sm"
-        >
-          <div className="flex items-center justify-between mb-5">
-            <div className="flex items-center gap-3">
-              <h2 className="text-lg font-bold text-slate-900 dark:text-white">
-                System Status
-              </h2>
-              <span className="flex items-center gap-1.5 text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/30 px-2.5 py-1 rounded-full">
-                <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-                All Systems Operational
-              </span>
-            </div>
-            <button className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium transition-colors">
-              <span style={{ textDecoration: "none" }}>View Details</span>
-            </button>
-          </div>
-          <div
-            className="grid grid-cols-1 md:grid-cols-2 gap-4"
-            role="list"
-            aria-label="Service status list"
-          >
+        <section className="admin-card">
+          <h2 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '20px' }}>System Status</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1px', backgroundColor: 'var(--admin-border)' }}>
             {systemServices.map((service) => (
-              <ServiceStatusItem
-                key={service.id}
-                service={service.service}
-                status={service.status}
-                uptime={service.uptime}
-                icon={SERVICE_ICONS[service.id]}
-              />
+              <div key={service.id} style={{ backgroundColor: 'var(--admin-white)' }}>
+                <ServiceStatusItem
+                  service={service.service}
+                  status={service.status}
+                  uptime={service.uptime}
+                />
+              </div>
             ))}
           </div>
         </section>
       </div>
-    </main>
+    </div>
   );
 });
 

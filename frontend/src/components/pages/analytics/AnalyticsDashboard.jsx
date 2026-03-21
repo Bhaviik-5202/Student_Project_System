@@ -23,10 +23,11 @@ const AnalyticsDashboard = memo(() => {
       setLoading(true);
       setError("");
       try {
-        const data = await analyticsService.getDashboardStats();
-        setStats(data?.stats || {});
-        setPerformanceData(data?.performanceData || []);
-        setActivityData(data?.activityData || []);
+        const response = await analyticsService.getDashboardStats();
+        const data = response?.data || {};
+        setStats(data.stats || {});
+        setPerformanceData(data.performanceData || []);
+        setActivityData(data.activityData || []);
       } catch (err) {
         setError("Failed to load analytics data");
       } finally {

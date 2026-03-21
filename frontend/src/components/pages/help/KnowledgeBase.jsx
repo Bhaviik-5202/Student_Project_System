@@ -12,9 +12,10 @@ const KnowledgeBase = memo(() => {
     const fetchKbData = async () => {
       try {
         const response = await api.get("/help/kb");
-        const data = response.data || {};
-        if (data.categories) setCategories(data.categories);
-        if (data.popularArticles) setPopularArticles(data.popularArticles);
+        if (response.success && response.data) {
+          if (response.data.categories) setCategories(response.data.categories);
+          if (response.data.popularArticles) setPopularArticles(response.data.popularArticles);
+        }
       } catch (error) {
         console.error("Failed to fetch knowledge base data", error);
       } finally {

@@ -58,94 +58,7 @@ ActivityItem.propTypes = {
   }).isRequired,
 };
 
-const RecentActivity = memo(({ userRole = "admin" }) => {
-  const activities = useMemo(
-    () => ({
-      admin: [
-        {
-          type: "approved",
-          icon: "fa-check-circle",
-          title: 'Project "E-commerce Platform" approved',
-          description: "By Dr. Smith • 2 hours ago",
-          color: "green",
-        },
-        {
-          type: "submission",
-          icon: "fa-file-upload",
-          title: "New project proposal submitted",
-          description: "By John Doe • 4 hours ago",
-          color: "blue",
-        },
-        {
-          type: "meeting",
-          icon: "fa-calendar-check",
-          title: "Meeting scheduled for Group A",
-          description: "By Prof. Johnson • 1 day ago",
-          color: "yellow",
-        },
-        {
-          type: "update",
-          icon: "fa-sync-alt",
-          title: "System update completed",
-          description: "Version 2.1.0 deployed • 2 days ago",
-          color: "purple",
-        },
-      ],
-      faculty: [
-        {
-          type: "review",
-          icon: "fa-clipboard-check",
-          title: "Project review submitted",
-          description: "For Group B • 1 hour ago",
-          color: "green",
-        },
-        {
-          type: "meeting",
-          icon: "fa-video",
-          title: "Meeting with Group C completed",
-          description: "Yesterday • 3:00 PM",
-          color: "blue",
-        },
-        {
-          type: "submission",
-          icon: "fa-upload",
-          title: "New project proposal received",
-          description: "From student • 1 day ago",
-          color: "yellow",
-        },
-      ],
-      student: [
-        {
-          type: "submission",
-          icon: "fa-paper-plane",
-          title: "Project proposal submitted",
-          description: "Awaiting review • 1 day ago",
-          color: "blue",
-        },
-        {
-          type: "feedback",
-          icon: "fa-comment-alt",
-          title: "Feedback received on assignment",
-          description: "From Dr. Johnson • 2 days ago",
-          color: "green",
-        },
-        {
-          type: "meeting",
-          icon: "fa-calendar-plus",
-          title: "Meeting scheduled",
-          description: "Tomorrow at 2:00 PM • Room 302",
-          color: "yellow",
-        },
-      ],
-    }),
-    [],
-  );
-
-  const currentActivities = useMemo(
-    () => activities[userRole] || activities.admin,
-    [activities, userRole],
-  );
-
+const RecentActivity = memo(({ activities = [], userRole = "admin" }) => {
   return (
     <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm dark:shadow-md border border-slate-200 dark:border-slate-700 p-6">
       <div className="flex justify-between items-center mb-6">
@@ -165,9 +78,17 @@ const RecentActivity = memo(({ userRole = "admin" }) => {
         </Link>
       </div>
       <div className="space-y-4">
-        {currentActivities.map((activity, index) => (
-          <ActivityItem key={index} activity={activity} />
-        ))}
+        {activities && activities.length > 0 ? (
+          activities
+            .filter((activity) => activity && activity.title)
+            .map((activity, index) => (
+              <ActivityItem key={index} activity={activity} />
+            ))
+        ) : (
+          <div className="text-center py-8 text-slate-500 dark:text-slate-400">
+            No recent activity found.
+          </div>
+        )}
       </div>
     </div>
   );
@@ -176,6 +97,7 @@ const RecentActivity = memo(({ userRole = "admin" }) => {
 RecentActivity.displayName = "RecentActivity";
 
 RecentActivity.propTypes = {
+  activities: PropTypes.array,
   userRole: PropTypes.oneOf(["admin", "faculty", "student"]),
 };
 
