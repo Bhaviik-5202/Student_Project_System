@@ -103,58 +103,104 @@ const CourseCatalog = memo(() => {
   const canAddCourse = user?.role === "admin" || user?.role === "faculty";
 
   return (
-    <div className="dashboard-content">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+    <div className="course-page">
+      <div className="course-catalog-header">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+          <h1 className="course-title">
             Academic Catalog
           </h1>
-          <p className="text-gray-500 dark:text-gray-400">
+          <p className="course-subtitle">
             Explore and register for available modules
           </p>
         </div>
         
-        <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
+          <div className="course-search-container">
+            <Search style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", width: "16px", height: "16px", color: "var(--course-text-muted)" }} />
             <input
               type="text"
               placeholder="Search modules..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="form-control pl-10 h-10 min-w-[250px]"
+              className="course-search-input"
             />
           </div>
           {canAddCourse && (
             <button 
               onClick={() => navigate("/courses/new")}
-              className="btn btn-primary flex items-center justify-center gap-2"
+              className="course-btn course-btn-primary"
             >
-              <Plus className="w-5 h-5" /> New Module
+              <Plus className="course-icon-md course-mr-2" /> New Module
             </button>
           )}
         </div>
       </div>
 
       {loading ? (
-        <div className="flex flex-col items-center justify-center py-20">
-          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600 mb-4"></div>
-          <p className="text-gray-400 font-medium">Loading catalog...</p>
+        <div className="course-loading-container">
+          <div className="course-spinner"></div>
+          <p className="course-loading-text">Syncing course catalog...</p>
         </div>
       ) : filteredCourses.length === 0 ? (
-        <div className="card p-12 text-center max-w-lg mx-auto mt-10">
-          <div className="w-16 h-16 bg-gray-50 dark:bg-gray-900 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Search className="w-8 h-8 text-gray-300" />
+        <div className="course-card-simple" style={{ textAlign: "center", padding: "48px", maxWidth: "512px", margin: "40px auto" }}>
+          <div style={{ width: "64px", height: "64px", backgroundColor: "var(--course-secondary)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px" }}>
+            <Search className="course-icon-xl" style={{ color: "var(--course-text-muted)" }} />
           </div>
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No Modules Found</h3>
-          <p className="text-gray-500">
+          <h3 style={{ fontSize: "20px", fontWeight: "700", marginBottom: "8px" }}>No Modules Found</h3>
+          <p style={{ color: "var(--course-text-muted)" }}>
             Try adjusting your search for "{searchTerm}"
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="course-grid">
           {filteredCourses.map((course) => (
-            <CourseCard key={course.id || course._id} course={course} />
+            <div key={course.id || course._id} className="course-card-simple course-card-details">
+              <div className="course-card-header">
+                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                  <BookOpen className="course-icon-md" style={{ color: "var(--course-primary)" }} />
+                  <span style={{ fontSize: "12px", fontWeight: "600", color: "var(--course-text-muted)", textTransform: "uppercase" }}>{course.code}</span>
+                </div>
+                <span className="course-badge course-badge-gray">
+                  {course.semester || "Current Term"}
+                </span>
+              </div>
+
+              <div className="course-card-body">
+                <h3 className="course-card-title">
+                  {course.name || course.title}
+                </h3>
+                <p style={{ color: "var(--course-text-muted)", fontSize: "14px", marginBottom: "16px", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                  {course.description || "Course description not available."}
+                </p>
+                
+                <div style={{ paddingTop: "16px", borderTop: "1px solid var(--course-border)" }}>
+                  <div className="course-card-info-row">
+                    <User className="w-4 h-4" />
+                    <span>{course.faculty?.name || course.instructor || "Visiting Faculty"}</span>
+                  </div>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "8px" }}>
+                    <div className="course-card-info-row">
+                      <GraduationCap className="w-4 h-4" style={{ color: "var(--course-primary)" }} />
+                      <span style={{ fontWeight: "600" }}>{course.credits || 0} Credits</span>
+                    </div>
+                    <div className="course-card-info-row">
+                      <Clock className="w-4 h-4" />
+                      <span>{course.schedule?.split(" ")[0] || "Flexible"}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: "1px solid var(--course-border)" }}>
+                <button
+                  onClick={() => navigate(`/courses/${course.id || course._id}`)}
+                  className="course-btn course-btn-primary"
+                  style={{ width: "100%" }}
+                >
+                  <Info className="w-4 h-4" /> View Details
+                </button>
+              </div>
+            </div>
           ))}
         </div>
       )}

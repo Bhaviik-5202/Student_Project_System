@@ -34,6 +34,7 @@ exports.getAll = async (options = {}) => {
     const assignments = await assignmentRepository.findAll(filters, {
       skip: (page - 1) * limit,
       limit: parseInt(limit),
+      populate: "course",
     });
     return response(false, assignments, "Assignments fetched successfully");
   } catch (err) {
@@ -48,7 +49,7 @@ exports.getAll = async (options = {}) => {
  */
 exports.getById = async (id) => {
   try {
-    const assignment = await assignmentRepository.findById(id);
+    const assignment = await assignmentRepository.findById(id, { populate: "course" });
     if (!assignment) return response(true, null, "Assignment not found");
     return response(false, assignment, "Assignment fetched successfully");
   } catch (err) {

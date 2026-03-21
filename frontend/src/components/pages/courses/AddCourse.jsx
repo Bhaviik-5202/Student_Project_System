@@ -99,20 +99,23 @@ const AddCourse = memo(() => {
   const prevStep = () => setStep(prev => prev - 1);
 
   return (
-    <div className="dashboard-content">
-      <div className="flex items-center gap-4 mb-8">
-        <button 
-          onClick={() => navigate(-1)}
-          className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
-        >
-          <X className="w-6 h-6 text-gray-500" />
-        </button>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-          Create New Course
-        </h1>
+    <div className="course-page">
+      <div className="course-header">
+        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+          <button 
+            onClick={() => navigate(-1)}
+            className="course-btn course-btn-secondary"
+            style={{ padding: "8px", borderRadius: "50%" }}
+          >
+            <X className="course-icon-md" />
+          </button>
+          <h1 className="course-title">
+            Create New Course
+          </h1>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+      <div className="course-steps">
         {[
           { id: 1, label: "Basic Info", icon: Info },
           { id: 2, label: "Faculty & Room", icon: Users },
@@ -120,36 +123,32 @@ const AddCourse = memo(() => {
         ].map((item) => (
           <div 
             key={item.id}
-            className={`card flex items-center gap-4 p-4 border-b-4 transition-all ${
-              step >= item.id ? "border-indigo-600 bg-indigo-50/10" : "border-gray-100"
-            }`}
+            className={`course-step-item ${step >= item.id ? "active" : ""}`}
           >
-            <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-              step >= item.id ? "bg-indigo-600 text-white" : "bg-gray-100 text-gray-400"
-            }`}>
+            <div className="course-step-icon">
               <item.icon className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-[10px] font-bold uppercase text-gray-400">Step {item.id}</p>
-              <p className="font-bold text-gray-900 dark:text-white">{item.label}</p>
+              <p style={{ fontSize: "10px", fontWeight: "bold", textTransform: "uppercase", color: "var(--course-text-muted)" }}>Step {item.id}</p>
+              <p style={{ fontWeight: "700" }}>{item.label}</p>
             </div>
           </div>
         ))}
       </div>
 
-      <form onSubmit={handleSubmit} className="card">
-        <div className="card-body p-8">
+      <form onSubmit={handleSubmit} className="course-form-container">
+        <div className="course-form-body">
           {step === 1 && (
-            <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                <Info className="w-5 h-5 text-indigo-600" /> Basic Information
+            <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+              <h2 style={{ fontSize: "18px", fontWeight: "700", display: "flex", alignItems: "center", gap: "8px" }}>
+                <Info className="course-icon-md" style={{ color: "var(--course-primary)" }} /> Basic Information
               </h2>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="form-group">
-                  <label className="form-label">Course Name</label>
-                  <div className="relative">
-                    <BookOpen className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
+                <div className="course-form-group">
+                  <label className="course-label">Course Name</label>
+                  <div style={{ position: "relative" }}>
+                    <BookOpen style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", width: "16px", height: "16px", color: "var(--course-text-muted)" }} />
                     <input 
                       type="text"
                       name="name"
@@ -157,15 +156,16 @@ const AddCourse = memo(() => {
                       onChange={handleChange}
                       required
                       placeholder="e.g. Data Structures"
-                      className="form-control pl-10"
+                      className="course-input"
+                      style={{ paddingLeft: "40px" }}
                     />
                   </div>
                 </div>
                 
-                <div className="form-group">
-                  <label className="form-label">Course Code</label>
-                  <div className="relative">
-                    <Code className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <div className="course-form-group">
+                  <label className="course-label">Course Code</label>
+                  <div style={{ position: "relative" }}>
+                    <Code style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", width: "16px", height: "16px", color: "var(--course-text-muted)" }} />
                     <input 
                       type="text"
                       name="code"
@@ -173,47 +173,48 @@ const AddCourse = memo(() => {
                       onChange={handleChange}
                       required
                       placeholder="e.g. CS101"
-                      className="form-control pl-10 uppercase"
+                      className="course-input"
+                      style={{ paddingLeft: "40px", textTransform: "uppercase" }}
                     />
                   </div>
                 </div>
               </div>
 
-              <div className="form-group">
-                <label className="form-label">Description</label>
+              <div className="course-form-group">
+                <label className="course-label">Description</label>
                 <textarea 
                   name="description"
                   value={formData.description}
                   onChange={handleChange}
                   rows={4}
                   placeholder="Provide a brief overview..."
-                  className="form-control"
+                  className="course-input"
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="form-group">
-                  <label className="form-label">Semester</label>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
+                <div className="course-form-group">
+                  <label className="course-label">Semester</label>
                   <select 
                     name="semester"
                     value={formData.semester}
                     onChange={handleChange}
-                    className="form-control"
+                    className="course-input"
                   >
                     <option value="Fall 2024">Fall 2024</option>
                     <option value="Spring 2025">Spring 2025</option>
                   </select>
                 </div>
                 
-                <div className="form-group">
-                  <label className="form-label">Credits</label>
+                <div className="course-form-group">
+                  <label className="course-label">Credits</label>
                   <input 
                     type="number"
                     name="credits"
                     value={formData.credits}
                     onChange={handleChange}
                     min="1"
-                    className="form-control"
+                    className="course-input"
                   />
                 </div>
               </div>
@@ -221,19 +222,19 @@ const AddCourse = memo(() => {
           )}
 
           {step === 2 && (
-            <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                <Users className="w-5 h-5 text-indigo-600" /> Faculty & Logistics
+            <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+              <h2 style={{ fontSize: "18px", fontWeight: "700", display: "flex", alignItems: "center", gap: "8px" }}>
+                <Users className="course-icon-md" style={{ color: "var(--course-primary)" }} /> Faculty & Logistics
               </h2>
 
-              <div className="form-group">
-                <label className="form-label">Assigned Faculty</label>
+              <div className="course-form-group">
+                <label className="course-label">Assigned Faculty</label>
                 <select 
                   name="faculty"
                   value={formData.faculty}
                   onChange={handleChange}
                   required
-                  className="form-control"
+                  className="course-input"
                 >
                   <option value="">Select Faculty Member</option>
                   {staff.map(member => (
@@ -244,33 +245,35 @@ const AddCourse = memo(() => {
                 </select>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="form-group">
-                  <label className="form-label">Schedule</label>
-                  <div className="relative">
-                    <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
+                <div className="course-form-group">
+                  <label className="course-label">Schedule</label>
+                  <div style={{ position: "relative" }}>
+                    <Clock style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", width: "16px", height: "16px", color: "var(--course-text-muted)" }} />
                     <input 
                       type="text"
                       name="schedule"
                       value={formData.schedule}
                       onChange={handleChange}
                       placeholder="e.g. Mon 10:00-12:00"
-                      className="form-control pl-10"
+                      className="course-input"
+                      style={{ paddingLeft: "40px" }}
                     />
                   </div>
                 </div>
                 
-                <div className="form-group">
-                  <label className="form-label">Room</label>
-                  <div className="relative">
-                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <div className="course-form-group">
+                  <label className="course-label">Room</label>
+                  <div style={{ position: "relative" }}>
+                    <MapPin style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", width: "16px", height: "16px", color: "var(--course-text-muted)" }} />
                     <input 
                       type="text"
                       name="room"
                       value={formData.room}
                       onChange={handleChange}
                       placeholder="e.g. 402-B"
-                      className="form-control pl-10"
+                      className="course-input"
+                      style={{ paddingLeft: "40px" }}
                     />
                   </div>
                 </div>
@@ -279,60 +282,64 @@ const AddCourse = memo(() => {
           )}
 
           {step === 3 && (
-            <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                  <FileText className="w-5 h-5 text-indigo-600" /> Syllabus / Roadmap
+            <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <h2 style={{ fontSize: "18px", fontWeight: "700", display: "flex", alignItems: "center", gap: "8px" }}>
+                  <FileText className="course-icon-md" style={{ color: "var(--course-primary)" }} /> Syllabus / Roadmap
                 </h2>
                 <button 
                   type="button"
                   onClick={addSyllabusWeek}
-                  className="btn btn-secondary py-1 px-3 text-xs"
+                  className="course-btn course-btn-secondary"
+                  style={{ padding: "4px 12px", fontSize: "12px" }}
                 >
-                  <Plus className="w-4 h-4 mr-1 inline" /> Add Week
+                  <Plus className="course-icon-sm course-mr-1" /> Add Week
                 </button>
               </div>
 
-              <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
+              <div className="course-syllabus-list" style={{ maxHeight: "400px", overflowY: "auto", paddingRight: "8px" }}>
                 {formData.syllabus.map((item, index) => (
-                  <div key={index} className="p-4 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 space-y-4 relative group">
+                  <div key={index} className="course-syllabus-item">
                     <button 
                       type="button"
                       onClick={() => removeSyllabusWeek(index)}
-                      className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors"
+                      style={{ position: "absolute", top: "16px", right: "16px", backgroundColor: "transparent", border: "none", cursor: "pointer", color: "var(--course-text-muted)" }}
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="course-icon-sm" />
                     </button>
                     
-                    <div className="grid grid-cols-4 gap-4">
-                      <div className="col-span-1">
-                        <label className="text-[10px] font-bold text-gray-400 uppercase">Week</label>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 3fr", gap: "16px", marginBottom: "16px" }}>
+                      <div>
+                        <label className="course-label" style={{ fontSize: "10px", color: "var(--course-text-muted)", textTransform: "uppercase" }}>Week</label>
                         <input 
                           type="number"
                           value={item.week}
                           onChange={(e) => handleSyllabusChange(index, "week", e.target.value)}
-                          className="form-control py-1 px-2 text-sm"
+                          className="course-input"
+                          style={{ padding: "4px 8px" }}
                         />
                       </div>
-                      <div className="col-span-3">
-                        <label className="text-[10px] font-bold text-gray-400 uppercase">Topic</label>
+                      <div>
+                        <label className="course-label" style={{ fontSize: "10px", color: "var(--course-text-muted)", textTransform: "uppercase" }}>Topic</label>
                         <input 
                           type="text"
                           value={item.topic}
                           onChange={(e) => handleSyllabusChange(index, "topic", e.target.value)}
                           placeholder="Topic Headline"
-                          className="form-control py-1 px-2 text-sm"
+                          className="course-input"
+                          style={{ padding: "4px 8px" }}
                         />
                       </div>
                     </div>
                     <div>
-                      <label className="text-[10px] font-bold text-gray-400 uppercase">Summary</label>
+                      <label className="course-label" style={{ fontSize: "10px", color: "var(--course-text-muted)", textTransform: "uppercase" }}>Summary</label>
                       <textarea 
                         value={item.description}
                         onChange={(e) => handleSyllabusChange(index, "description", e.target.value)}
                         placeholder="Key points..."
                         rows={2}
-                        className="form-control py-1 px-2 text-sm"
+                        className="course-input"
+                        style={{ padding: "4px 8px" }}
                       />
                     </div>
                   </div>
@@ -342,14 +349,14 @@ const AddCourse = memo(() => {
           )}
         </div>
 
-        <div className="card-footer bg-gray-50/50 flex justify-between p-6">
+        <div className="course-form-footer">
           {step > 1 ? (
             <button 
               type="button"
               onClick={prevStep}
-              className="btn btn-secondary flex items-center gap-2"
+              className="course-btn course-btn-secondary"
             >
-              <ChevronLeft className="w-4 h-4" /> Back
+              <ChevronLeft className="course-icon-md course-mr-2" /> Back
             </button>
           ) : <div />}
 
@@ -357,17 +364,17 @@ const AddCourse = memo(() => {
             <button 
               type="button"
               onClick={nextStep}
-              className="btn btn-primary flex items-center gap-2"
+              className="course-btn course-btn-primary"
             >
-              Next Step <ChevronRight className="w-4 h-4" />
+              Next Step <ChevronRight className="course-icon-md course-ml-2" />
             </button>
           ) : (
             <button 
               type="submit"
               disabled={loading}
-              className="btn btn-primary flex items-center gap-2"
+              className="course-btn course-btn-primary"
             >
-              {loading ? "Processing..." : <>Create Course <Save className="w-4 h-4" /></>}
+              {loading ? "Processing..." : <>Create Course <Save className="course-icon-md course-mr-2" /></>}
             </button>
           )}
         </div>

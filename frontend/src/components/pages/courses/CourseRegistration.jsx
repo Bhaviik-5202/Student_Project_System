@@ -120,66 +120,61 @@ const CourseRegistration = memo(() => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
-        <p className="mt-4 text-gray-500 font-medium">Loading registration data...</p>
+      <div className="course-loading-container">
+        <div className="course-spinner"></div>
+        <p className="course-loading-text">Loading registration data...</p>
       </div>
     );
   }
 
   return (
-    <div className="dashboard-content">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+    <div className="course-page">
+      <div className="course-header">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
-            Course Registration
-          </h1>
-          <p className="text-gray-500 dark:text-gray-400">
-            Select modules to build your academic schedule
-          </p>
+          <h1 className="course-title">Course Registration</h1>
+          <p className="course-subtitle">Select modules to build your academic schedule</p>
         </div>
         <button
           onClick={() => navigate("/courses/catalog")}
-          className="btn btn-secondary flex items-center gap-2"
+          className="course-btn course-btn-secondary"
         >
-          <ChevronLeft className="w-4 h-4" /> Back to Catalog
+          <ChevronLeft className="course-icon-md course-mr-1" /> Back to Catalog
         </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        <div className="lg:col-span-3 space-y-6">
-          <div className="card sticky top-4 z-10 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md">
-            <div className="card-body py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="relative flex-1 w-full">
+      <div className="course-details-grid">
+        <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+          <div className="course-card-simple" style={{ position: "sticky", top: "24px", zIndex: "5", backgroundColor: "white" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              <div className="course-search-container" style={{ maxWidth: "none" }}>
+                <Search style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", width: "16px", height: "16px", color: "var(--course-text-muted)" }} />
                 <input
                   type="text"
-                  placeholder="Filter modules by name, code, instructor or credits..."
-                  className="form-control pl-10 h-10"
+                  placeholder="Filter by name, code, or instructor..."
+                  className="course-search-input"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
-              <div className="flex items-center gap-6 whitespace-nowrap">
-                <div className="flex flex-col items-end">
-                  <span className="text-[10px] font-bold text-gray-400 uppercase">Credits</span>
-                  <span className={`text-lg font-bold ${currentCredits > maxCredits ? "text-red-500" : "text-indigo-600"}`}>
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: "24px" }}>
+                <div>
+                  <span style={{ fontSize: "10px", fontWeight: "700", color: "var(--course-text-muted)", textTransform: "uppercase" }}>Credits</span>
+                  <p style={{ fontSize: "18px", fontWeight: "700", color: currentCredits > maxCredits ? "#ef4444" : "var(--course-primary)" }}>
                     {currentCredits} / {maxCredits}
-                  </span>
+                  </p>
                 </div>
-                <div className="flex flex-col items-end">
-                  <span className="text-[10px] font-bold text-gray-400 uppercase">Selected</span>
-                  <span className="text-lg font-bold text-gray-900 dark:text-white">
-                    {selectedCourses.length}
-                  </span>
+                <div>
+                  <span style={{ fontSize: "10px", fontWeight: "700", color: "var(--course-text-muted)", textTransform: "uppercase" }}>Selected</span>
+                  <p style={{ fontSize: "18px", fontWeight: "700" }}>{selectedCourses.length}</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="course-grid" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))" }}>
             {filteredCourses.length === 0 ? (
-              <div className="col-span-full card p-12 text-center text-gray-500">
-                No modules found matching your search.
+              <div className="course-card-simple" style={{ gridColumn: "1 / -1", textAlign: "center", padding: "48px" }}>
+                <p style={{ color: "var(--course-text-muted)" }}>No modules match your search criteria.</p>
               </div>
             ) : (
               filteredCourses.map(course => {
@@ -189,29 +184,39 @@ const CourseRegistration = memo(() => {
                   <div
                     key={id}
                     onClick={() => toggleCourse(id)}
-                    className={`card cursor-pointer transition-all ${isSelected
-                      ? "border-indigo-500 ring-2 ring-indigo-500/10 bg-indigo-50/5"
-                      : "hover:border-gray-300"
-                      }`}
+                    className="course-card-simple"
+                    style={{ 
+                      cursor: "pointer", 
+                      borderColor: isSelected ? "var(--course-primary)" : "var(--course-border)",
+                      borderWidth: isSelected ? "2px" : "1px",
+                      backgroundColor: isSelected ? "rgba(37, 99, 235, 0.05)" : "white"
+                    }}
                   >
-                    <div className="card-body p-4">
-                      <div className="flex justify-between items-start mb-3">
-                        <div>
-                          <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-wider">{course.code}</span>
-                          <h4 className="font-bold text-gray-900 dark:text-white mt-0.5 line-clamp-1">{course.name || course.title}</h4>
-                        </div>
-                        <div className={`w-5 h-5 rounded-full flex items-center justify-center border transition-colors ${isSelected ? "bg-indigo-600 border-indigo-600" : "border-gray-200"
-                          }`}>
-                          {isSelected && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
-                        </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "12px" }}>
+                      <div>
+                        <span className="course-badge course-badge-blue" style={{ marginBottom: "4px" }}>{course.code}</span>
+                        <h4 style={{ fontWeight: "700", fontSize: "15px" }}>{course.name || course.title}</h4>
                       </div>
-                      <div className="flex items-center gap-4 text-xs text-gray-500">
-                        <div className="flex items-center gap-1 font-medium">
-                          <CreditCard className="w-3.5 h-3.5 text-indigo-500" /> {course.credits} Units
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Clock className="w-3.5 h-3.5" /> {course.schedule || "Flexible"}
-                        </div>
+                      <div style={{ 
+                        width: "20px", 
+                        height: "20px", 
+                        borderRadius: "50%", 
+                        border: "1px solid var(--course-border)", 
+                        display: "flex", 
+                        alignItems: "center", 
+                        justifyContent: "center",
+                        backgroundColor: isSelected ? "var(--course-primary)" : "transparent",
+                        borderColor: isSelected ? "var(--course-primary)" : "var(--course-border)"
+                      }}>
+                        {isSelected && <CheckCircle2 className="course-icon-sm" style={{ color: "white" }} />}
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "16px", fontSize: "12px", color: "var(--course-text-muted)" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                        <CreditCard className="course-icon-sm" /> {course.credits} Cr
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                        <Clock className="course-icon-sm" /> {course.schedule?.split(" ")[0] || "TBA"}
                       </div>
                     </div>
                   </div>
@@ -221,80 +226,67 @@ const CourseRegistration = memo(() => {
           </div>
         </div>
 
-        <div className="space-y-6">
-          <div className="card sticky top-4">
-            <div className="card-header">
-              <h3 className="card-title">Registration Summary</h3>
-            </div>
-            <div className="card-body">
-              <div className="space-y-3 mb-6">
-                {selectedCourses.length === 0 ? (
-                  <p className="text-sm text-gray-400 italic text-center py-4">
-                    Select modules to enroll
-                  </p>
-                ) : (
-                  selectedCourses.map(id => {
-                    const course = availableCourses.find(c => (c.id || c._id) === id);
-                    return (
-                      <div key={id} className="flex justify-between items-center gap-2 text-sm">
-                        <div className="flex-1 truncate">
-                          <p className="font-bold text-gray-900 dark:text-white truncate">{course?.name || course?.title}</p>
-                          <p className="text-[10px] text-gray-500 font-bold uppercase">{course?.code}</p>
-                        </div>
-                        <button
-                          onClick={(e) => { e.stopPropagation(); toggleCourse(id); }}
-                          className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg text-gray-400 transition-colors"
-                        >
-                          <X className="w-3.5 h-3.5" />
-                        </button>
+        <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+          <div className="course-card-simple" style={{ position: "sticky", top: "24px" }}>
+            <h3 style={{ fontSize: "14px", fontWeight: "700", marginBottom: "16px", paddingBottom: "12px", borderBottom: "1px solid var(--course-border)" }}>Registration Summary</h3>
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "20px", maxHeight: "300px", overflowY: "auto" }}>
+              {selectedCourses.length === 0 ? (
+                <p style={{ fontSize: "12px", color: "var(--course-text-muted)", fontStyle: "italic", textAlign: "center", padding: "16px" }}>Select modules to begin</p>
+              ) : (
+                selectedCourses.map(id => {
+                  const course = availableCourses.find(c => (c.id || c._id) === id);
+                  return (
+                    <div key={id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "8px", fontSize: "12px" }}>
+                      <div style={{ overflow: "hidden" }}>
+                        <p style={{ fontWeight: "700", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{course?.name || course?.title}</p>
+                        <span style={{ fontSize: "10px", color: "var(--course-text-muted)", fontWeight: "700" }}>{course?.code} ({course?.credits} Cr)</span>
                       </div>
-                    );
-                  })
-                )}
+                      <button
+                        onClick={(e) => { e.stopPropagation(); toggleCourse(id); }}
+                        style={{ border: "none", backgroundColor: "transparent", cursor: "pointer", color: "var(--course-text-muted)", padding: "4px" }}
+                      >
+                        <X className="course-icon-sm" />
+                      </button>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+
+            <div style={{ paddingTop: "16px", borderTop: "1px solid var(--course-border)", display: "flex", flexDirection: "column", gap: "16px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "14px" }}>
+                <span>Total Credits</span>
+                <span style={{ fontWeight: "800", color: currentCredits > maxCredits ? "#ef4444" : "inherit" }}>{currentCredits} / {maxCredits}</span>
               </div>
 
-              <div className="pt-4 border-t border-gray-100 dark:border-gray-800 space-y-4">
-                <div className="flex justify-between text-sm">
-                  <span className="text-gray-500 font-medium">Total Credits</span>
-                  <span className={`font-bold ${currentCredits > maxCredits ? "text-red-500" : "text-gray-900 dark:text-white"}`}>
-                    {currentCredits} / {maxCredits}
-                  </span>
+              {currentCredits > maxCredits && (
+                <div style={{ padding: "8px", backgroundColor: "#fef2f2", color: "#991b1b", borderRadius: "8px", fontSize: "11px", display: "flex", gap: "6px", alignItems: "center" }}>
+                  <AlertCircle className="course-icon-sm" /> Credit limit reached.
                 </div>
+              )}
 
-                {currentCredits > maxCredits && (
-                  <div className="p-3 bg-red-50 dark:bg-red-900/20 text-red-600 rounded-lg text-xs font-medium flex gap-2">
-                    <AlertCircle className="w-4 h-4 shrink-0" />
-                    <span>Credit limit exceeded.</span>
-                  </div>
+              <button
+                onClick={handleRegister}
+                disabled={registering || selectedCourses.length === 0 || currentCredits > maxCredits}
+                className="course-btn course-btn-primary"
+                style={{ width: "100%", height: "48px" }}
+              >
+                {registering ? (
+                  <div className="course-progress-bar-fill" style={{ width: "30%", height: "4px", margin: "0 auto" }}></div>
+                ) : (
+                  <>Confirm Enrollment <ArrowRight className="course-icon-sm course-ml-2" /></>
                 )}
-
-                <button
-                  onClick={handleRegister}
-                  disabled={registering || selectedCourses.length === 0 || currentCredits > maxCredits}
-                  className="btn btn-primary w-full py-3 h-auto text-base font-bold flex items-center justify-center gap-2"
-                >
-                  {registering ? (
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                  ) : (
-                    <>Commit Registration <ArrowRight className="w-5 h-5" /></>
-                  )}
-                </button>
-              </div>
+              </button>
             </div>
           </div>
 
-          <div className="card bg-gray-50 dark:bg-gray-900/50 border-dashed">
-            <div className="card-body p-4">
-              <div className="flex items-center gap-2 mb-3 text-indigo-600">
-                <Target className="w-4 h-4" />
-                <h4 className="text-sm font-bold">Policy Reminder</h4>
-              </div>
-              <ul className="text-[11px] text-gray-500 space-y-2 font-medium">
-                <li>• No changes allowed after deadline.</li>
-                <li>• Attendance starts from session 1.</li>
-                <li>• Check for schedule overlaps.</li>
-              </ul>
-            </div>
+          <div className="course-card-simple" style={{ backgroundColor: "var(--course-bg-light)", borderStyle: "dashed" }}>
+            <h4 style={{ fontSize: "12px", fontWeight: "700", marginBottom: "12px", color: "var(--course-primary)" }}>Information</h4>
+            <ul style={{ listStyle: "none", padding: "0", margin: "0", display: "flex", flexDirection: "column", gap: "8px", fontSize: "11px", color: "var(--course-text-muted)" }}>
+              <li>• Registration is binding for current semester.</li>
+              <li>• Attendance requirement: 75% per module.</li>
+              <li>• Check timetable for potential conflicts.</li>
+            </ul>
           </div>
         </div>
       </div>

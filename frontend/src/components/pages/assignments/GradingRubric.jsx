@@ -3,6 +3,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import api from "../../../utils/api";
 
+/**
+ * GradingRubric Component
+ * 
+ * An administrative interface for educators to define evaluation 
+ * criteria for assignments. Supports dynamic addition/removal of 
+ * criteria, point assignment, and total score calculation.
+ */
 const GradingRubric = memo(() => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -14,18 +21,19 @@ const GradingRubric = memo(() => {
   const [initialLoading, setInitialLoading] = useState(true);
 
   useEffect(() => {
-    const fetchRubric = async () => {
+    const fetchRubricData = async () => {
       try {
-        const response = await api.get(`/assignments/rubric/${id || ''}`);
-        if (response.data) {
-          setRubric(response.data);
+        setInitialLoading(true);
+        const response = await api.get(`/assignments/rubric/${id || ""}`);
+        if (response.data && response.data.success) {
+          setRubric(response.data.data);
         } else {
-          // Provide fallback if empty
+          // Provide default structure if none exists
           setRubric({
-            name: "Project Evaluation Rubric",
+            name: "New Evaluation Rubric",
             criteria: [
               {
-                id: 1,
+                id: Date.now(),
                 criterion: "Technical Implementation",
                 maxPoints: 30,
                 description: "Quality of code and technical execution",
@@ -35,25 +43,26 @@ const GradingRubric = memo(() => {
         }
       } catch (error) {
         console.error("Failed to fetch rubric", error);
+        toast.error("Failed to fetch rubric data");
       } finally {
         setInitialLoading(false);
       }
     };
-    fetchRubric();
-  }, []);
+    fetchRubricData();
+  }, [id]);
 
-  const updateCriterion = useCallback((id, field, value) => {
+  const updateCriterion = useCallback((criterionId, field, value) => {
     setRubric((prev) => ({
       ...prev,
       criteria: prev.criteria.map((criterion) =>
-        criterion.id === id ? { ...criterion, [field]: value } : criterion,
+        criterion.id === criterionId ? { ...criterion, [field]: value } : criterion,
       ),
     }));
   }, []);
 
   const addCriterion = useCallback(() => {
     setRubric((prev) => {
-      const newId = Math.max(...prev.criteria.map((c) => c.id)) + 1;
+      const newId = prev.criteria.length > 0 ? Math.max(...prev.criteria.map((c) => c.id)) + 1 : Date.now();
       return {
         ...prev,
         criteria: [
@@ -62,177 +71,154 @@ const GradingRubric = memo(() => {
             id: newId,
             criterion: "New Criterion",
             maxPoints: 10,
-            description: "Criterion description",
+            description: "Describe what is being evaluated",
           },
         ],
       };
     });
   }, []);
 
-  const removeCriterion = useCallback((id) => {
+  const removeCriterion = useCallback((criterionId) => {
     setRubric((prev) => ({
       ...prev,
-      criteria: prev.criteria.filter((criterion) => criterion.id !== id),
+      criteria: prev.criteria.filter((criterion) => criterion.id !== criterionId),
     }));
   }, []);
 
-  const saveRubric = useCallback(() => {
-    setLoading(true);
-    setTimeout(() => {
-      toast.success("Rubric saved successfully");
+  const handleSave = async () => {
+    try {
+      setLoading(true);
+      const response = await api.post(`/assignments/rubric/${id || ""}`, rubric);
+      if (response.data && response.data.success) {
+        toast.success("Rubric saved successfully");
+      } else {
+        toast.error(response.data?.message || "Failed to save rubric");
+      }
+    } catch (error) {
+      console.error("Save failed", error);
+      toast.error("An error occurred while saving the rubric");
+    } finally {
       setLoading(false);
-    }, 1000);
-  }, []);
+    }
+  };
 
-  const totalPoints = useMemo(
-    () =>
-      rubric.criteria.reduce((sum, criterion) => sum + criterion.maxPoints, 0),
+  const totalPointsTotal = useMemo(
+    () => rubric.criteria.reduce((sum, criterion) => sum + (Number(criterion.maxPoints) || 0), 0),
     [rubric.criteria],
   );
 
+  if (initialLoading) {
+    return (
+      <div className="assignment-page" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+        <p className="assignment-subtitle">Loading rubric data...</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-6">
-          <button
-            onClick={() => navigate(-1)}
-            className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex items-center mb-4"
-          >
-            ← Back
-          </button>
-          <div className="flex justify-between items-center">
+    <div className="assignment-page">
+      <div className="assignment-container">
+        <div className="assignment-header" style={{ marginBottom: "24px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
             <div>
-              <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-                Grading Rubric
-              </h1>
-              <p className="text-slate-600 dark:text-slate-400">
-                Create and manage grading rubrics
-              </p>
+              <h1 className="assignment-title">Grading Rubric</h1>
+              <p className="assignment-subtitle">Define assessment criteria and point weights</p>
             </div>
-            <div className="flex gap-3">
-              <button
-                onClick={saveRubric}
-                disabled={loading}
-                className="px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-800 disabled:opacity-50"
+            <div style={{ display: "flex", gap: "12px" }}>
+              <button onClick={() => navigate(-1)} className="assignment-btn assignment-btn-outline">
+                Back
+              </button>
+              <button 
+                onClick={handleSave} 
+                disabled={loading} 
+                className="assignment-btn assignment-btn-primary"
               >
                 {loading ? "Saving..." : "Save Rubric"}
-              </button>
-              <button className="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700">
-                Export
               </button>
             </div>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6 mb-6">
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-              Rubric Name
-            </label>
+        <div className="assignment-card">
+          <div className="assignment-form-group">
+            <label className="assignment-label">Rubric Name</label>
             <input
               type="text"
-              className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600"
+              className="assignment-input"
               value={rubric.name}
               onChange={(e) => setRubric({ ...rubric, name: e.target.value })}
+              placeholder="e.g. Project Final Evaluation"
             />
           </div>
 
-          <div className="mb-6">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
-                Rubric Criteria
-              </h3>
-              <button
-                onClick={addCriterion}
-                className="px-3 py-1 bg-emerald-600 dark:bg-emerald-700 text-white text-sm rounded-lg hover:bg-emerald-700 dark:hover:bg-emerald-800"
-              >
-                Add Criterion
-              </button>
-            </div>
+          <div style={{ margin: "32px 0 24px 0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <h3 className="assignment-detail-title" style={{ margin: 0 }}>Evaluation Criteria</h3>
+            <button onClick={addCriterion} className="assignment-btn-text" style={{ color: "var(--color-success)" }}>
+              + Add New Criterion
+            </button>
+          </div>
 
-            {initialLoading ? (
-              <div className="text-center py-4 text-slate-500">Loading rubric...</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            {rubric.criteria.length === 0 ? (
+              <div className="assignment-card" style={{ textAlign: "center", padding: "32px", borderStyle: "dashed" }}>
+                <p className="assignment-subtitle">No criteria added yet. Add one to start building your rubric.</p>
+              </div>
             ) : (
-              <div className="space-y-4">
-              {rubric.criteria.map((criterion) => (
-                <div
-                  key={criterion.id}
-                  className="border border-slate-200 dark:border-slate-700 rounded-lg p-4"
-                >
-                  <div className="flex justify-between items-start mb-3">
-                    <div className="flex-1">
+              rubric.criteria.map((criterion) => (
+                <div key={criterion.id} className="assignment-card" style={{ padding: "16px", backgroundColor: "var(--assignment-bg-light)" }}>
+                  <div className="assignment-grid assignment-grid-2" style={{ alignItems: "flex-start" }}>
+                    <div style={{ flex: 1 }}>
                       <input
                         type="text"
-                        className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 mb-2"
+                        className="assignment-input"
+                        style={{ marginBottom: "8px", fontWeight: "600" }}
                         value={criterion.criterion}
-                        onChange={(e) =>
-                          updateCriterion(
-                            criterion.id,
-                            "criterion",
-                            e.target.value,
-                          )
-                        }
+                        onChange={(e) => updateCriterion(criterion.id, "criterion", e.target.value)}
+                        placeholder="Criterion Title"
                       />
                       <textarea
+                        className="assignment-textarea"
+                        style={{ fontSize: "14px" }}
                         rows="2"
-                        className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 text-sm"
                         value={criterion.description}
-                        onChange={(e) =>
-                          updateCriterion(
-                            criterion.id,
-                            "description",
-                            e.target.value,
-                          )
-                        }
-                        placeholder="Criterion description"
+                        onChange={(e) => updateCriterion(criterion.id, "description", e.target.value)}
+                        placeholder="Description of what constitutes full points..."
                       />
                     </div>
-                    <div className="ml-4 flex items-start">
-                      <div className="mr-4">
-                        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-                          Max Points
-                        </label>
+                    <div style={{ display: "flex", gap: "12px", alignItems: "flex-end", width: "fit-content" }}>
+                      <div className="assignment-form-group" style={{ margin: 0 }}>
+                        <label className="assignment-label" style={{ fontSize: "12px" }}>Max Points</label>
                         <input
                           type="number"
-                          min="0"
-                          className="w-24 px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600"
+                          className="assignment-input"
+                          style={{ width: "80px" }}
                           value={criterion.maxPoints}
-                          onChange={(e) =>
-                            updateCriterion(
-                              criterion.id,
-                              "maxPoints",
-                              parseInt(e.target.value),
-                            )
-                          }
+                          onChange={(e) => updateCriterion(criterion.id, "maxPoints", e.target.value)}
                         />
                       </div>
                       <button
                         onClick={() => removeCriterion(criterion.id)}
-                        className="text-rose-600 dark:text-rose-400 hover:text-rose-800 dark:hover:text-rose-300 mt-7"
+                        className="assignment-btn-text"
+                        style={{ color: "var(--color-error)", paddingBottom: "10px" }}
                       >
                         Remove
                       </button>
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
+              ))
             )}
           </div>
 
-          <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
-            <div className="flex justify-between items-center">
+          <div className="assignment-card" style={{ marginTop: "32px", border: "1px solid var(--assignment-primary)", backgroundColor: "var(--assignment-bg-light)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <div>
-                <div className="text-lg font-semibold text-slate-900 dark:text-white">
-                  Total Points
-                </div>
-                <div className="text-slate-600 dark:text-slate-400">
-                  Sum of all criteria points
-                </div>
+                <p style={{ fontWeight: "700", color: "var(--assignment-primary)" }}>Total Rubric Score</p>
+                <p className="assignment-subtitle" style={{ fontSize: "12px" }}>Calculated sum of all criteria point values</p>
               </div>
-              <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
-                {totalPoints}
-              </div>
+              <p style={{ fontSize: "32px", fontWeight: "800", color: "var(--assignment-primary)" }}>
+                {totalPointsTotal}
+              </p>
             </div>
           </div>
         </div>

@@ -14,11 +14,11 @@ const submissionSchema = new mongoose.Schema(
       required: [true, "Assignment is required"],
       index: true,
     },
-    fileUrl: {
-      type: String,
-      required: [true, "File URL is required"],
-      trim: true,
-    },
+    files: [
+      {
+        type: String,
+      },
+    ],
     grade: {
       type: String,
       trim: true,

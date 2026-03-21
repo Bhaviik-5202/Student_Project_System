@@ -3,31 +3,20 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import api from "../../../utils/api";
 
+/**
+ * PeerReview Component
+ * 
+ * Facilitates the collaborative evaluation process where students 
+ * assess each other's work based on predefined criteria. 
+ * Features rating scales, comment sections, and an overview 
+ * of assigned reviews.
+ */
 const PeerReview = memo(() => {
   const navigate = useNavigate();
   const [reviews, setReviews] = useState([]);
   const [reviewsLoading, setReviewsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchReviews = async () => {
-      try {
-        const res = await api.get("/assignments/submissions/history");
-        const rawData = res.data || [];
-        const formattedData = rawData.map((review) => ({
-          ...review,
-          id: review.id || review._id,
-        }));
-        setReviews(formattedData);
-      } catch (error) {
-        console.error("Failed to fetch peer reviews", error);
-      } finally {
-        setReviewsLoading(false);
-      }
-    };
-    fetchReviews();
-  }, []);
-
-  const [currentReview, setCurrentReview] = useState({
+  const [selectedReview, setSelectedReview] = useState(null);
+  const [reviewForm, setReviewForm] = useState({
     criteria: [
       { id: 1, name: "Code Quality", rating: 0, comments: "" },
       { id: 2, name: "Documentation", rating: 0, comments: "" },
@@ -37,75 +26,114 @@ const PeerReview = memo(() => {
     overallComments: "",
   });
 
-  const submitReview = useCallback(() => {
-    toast.success("Peer review submitted successfully");
-    navigate("/assignments");
-  }, [navigate]);
+  useEffect(() => {
+    const fetchPeerReviews = async () => {
+      try {
+        setReviewsLoading(true);
+        // Standardized endpoint for assigned peer reviews
+        const response = await api.get("/assignments/peer-reviews/mine");
+        if (response.data && response.data.success) {
+          setReviews(response.data.data || []);
+          if (response.data.data?.length > 0) {
+            setSelectedReview(response.data.data[0]);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch peer reviews", error);
+        // Fallback for demonstration if API fails or is not yet implemented
+        setReviews([]);
+      } finally {
+        setReviewsLoading(false);
+      }
+    };
+    fetchPeerReviews();
+  }, []);
+
+  const handleRatingChange = useCallback((criterionId, rating) => {
+    setReviewForm((prev) => ({
+      ...prev,
+      criteria: prev.criteria.map((c) =>
+        c.id === criterionId ? { ...c, rating } : c
+      ),
+    }));
+  }, []);
+
+  const handleCommentChange = useCallback((criterionId, comments) => {
+    setReviewForm((prev) => ({
+      ...prev,
+      criteria: prev.criteria.map((c) =>
+        c.id === criterionId ? { ...c, comments } : c
+      ),
+    }));
+  }, []);
+
+  const handleSubmitReview = async () => {
+    if (!selectedReview) return;
+    
+    try {
+      const toastId = toast.loading("Submitting peer review...");
+      const response = await api.post(`/assignments/peer-reviews/${selectedReview.id || selectedReview._id}`, reviewForm);
+      
+      if (response.data && response.data.success) {
+        toast.success("Peer review submitted successfully", { id: toastId });
+        navigate("/assignments");
+      } else {
+        toast.error(response.data?.message || "Failed to submit review", { id: toastId });
+      }
+    } catch (error) {
+      console.error("Submission failed", error);
+      toast.error("An error occurred during submission");
+    }
+  };
+
+  if (reviewsLoading) {
+    return (
+      <div className="assignment-page" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+        <p className="assignment-subtitle">Loading peer reviews...</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-6">
-          <button
-            onClick={() => navigate("/assignments")}
-            className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex items-center mb-4"
-          >
-            ← Back to Assignments
-          </button>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-            Peer Review
-          </h1>
-          <p className="text-slate-600 dark:text-slate-400">
-            Review and evaluate peer submissions
-          </p>
+    <div className="assignment-page">
+      <div className="assignment-container">
+        <div className="assignment-header">
+          <div>
+            <h1 className="assignment-title">Peer Review</h1>
+            <p className="assignment-subtitle">Evaluate and provide feedback on peer submissions</p>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Review List */}
+        <div className="assignment-grid assignment-grid-3">
+          {/* Review List Sidebar */}
           <div className="lg:col-span-1">
-            <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
-                My Reviews
-              </h3>
-              <div className="space-y-4">
-                {reviewsLoading ? (
-                  <div className="text-center py-4 text-slate-500">Loading reviews...</div>
-                ) : reviews.length === 0 ? (
-                  <div className="text-center py-4 text-slate-500">No peer reviews assigned.</div>
+            <div className="assignment-card">
+              <h3 className="assignment-detail-title">Assigned Reviews</h3>
+              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                {reviews.length === 0 ? (
+                  <p className="assignment-subtitle" style={{ fontSize: "14px" }}>No reviews currently assigned.</p>
                 ) : (
                   reviews.map((review) => (
                     <div
                       key={review.id || review._id}
-                      className={`p-4 border rounded-lg cursor-pointer hover:shadow-sm ${
-                        review.status === "Pending"
-                          ? "border-amber-300 dark:border-amber-600 bg-amber-50 dark:bg-amber-900/20"
-                          : review.status === "Completed"
-                            ? "border-emerald-300 dark:border-emerald-600 bg-emerald-50 dark:bg-emerald-900/20"
-                            : "border-blue-300 dark:border-blue-600 bg-blue-50 dark:bg-blue-900/20"
-                      }`}
+                      onClick={() => setSelectedReview(review)}
+                      className={`assignment-card ${selectedReview?.id === review.id ? "border-primary" : ""}`}
+                      style={{ 
+                        padding: "12px", 
+                        cursor: "pointer", 
+                        backgroundColor: selectedReview?.id === (review.id || review._id) ? "var(--assignment-bg-light)" : "transparent",
+                        border: selectedReview?.id === (review.id || review._id) ? "1px solid var(--assignment-primary)" : "1px solid var(--assignment-border)"
+                      }}
                     >
-                      <div className="font-medium text-slate-900 dark:text-white">
-                        {review.assignment || (review.assignmentId ? review.assignmentId.title : "N/A")}
-                      </div>
-                      <div className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                        Reviewee: {review.reviewee || (review.revieweeId ? review.revieweeId.name : "N/A")}
-                      </div>
-                      <div className="flex justify-between items-center mt-3">
-                        <span
-                          className={`text-xs px-2 py-1 rounded-full ${
-                            review.status === "Pending"
-                              ? "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300"
-                              : review.status === "Completed"
-                                ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
-                                : "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
-                          }`}
-                        >
-                          {review.status || "Pending"}
-                        </span>
-                        <span className="text-xs text-slate-500 dark:text-slate-400">
-                          Due: {review.dueDate || new Date().toLocaleDateString()}
-                        </span>
-                      </div>
+                      <p style={{ fontWeight: "600", fontSize: "14px" }}>
+                        {review.assignmentTitle || review.assignmentId?.title || "Project Assignment"}
+                      </p>
+                      <p className="assignment-subtitle" style={{ fontSize: "12px" }}>
+                        Reviewee: {review.revieweeName || review.revieweeId?.name || "Student"}
+                      </p>
+                      <span className={`assignment-badge ${review.status === "Completed" ? "badge-submitted" : "badge-pending"}`} style={{ marginTop: "8px" }}>
+                        {review.status || "Pending"}
+                      </span>
                     </div>
                   ))
                 )}
@@ -113,130 +141,81 @@ const PeerReview = memo(() => {
             </div>
           </div>
 
-          {/* Review Form */}
+          {/* Review Form Component */}
           <div className="lg:col-span-2">
-            <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
-              <div className="mb-6">
-                <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
-                  Database Design Project
-                </h2>
-                <div className="text-slate-600 dark:text-slate-400">
-                  Reviewing submission from: John Doe
-                </div>
-                <div className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                  Due: January 20, 2024
-                </div>
+            {!selectedReview ? (
+              <div className="assignment-card" style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "300px" }}>
+                <p className="assignment-subtitle">Select a submission from the list to start reviewing.</p>
               </div>
+            ) : (
+              <div className="assignment-card">
+                <div className="assignment-header" style={{ marginBottom: "24px" }}>
+                  <div>
+                    <h2 className="assignment-title" style={{ fontSize: "20px" }}>
+                      {selectedReview.assignmentTitle || selectedReview.assignmentId?.title || "Submission Evaluation"}
+                    </h2>
+                    <p className="assignment-subtitle">
+                      Reviewing: <strong>{selectedReview.revieweeName || selectedReview.revieweeId?.name || "Peer Student"}</strong>
+                    </p>
+                  </div>
+                </div>
 
-              <div className="space-y-6">
-                {currentReview.criteria.map((criterion) => (
-                  <div
-                    key={criterion.id}
-                    className="border border-slate-200 dark:border-slate-700 rounded-lg p-4"
-                  >
-                    <div className="flex justify-between items-start mb-3">
-                      <div>
-                        <div className="font-medium text-slate-900 dark:text-white">
-                          {criterion.name}
+                <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+                  {reviewForm.criteria.map((criterion) => (
+                    <div key={criterion.id} className="assignment-detail-section" style={{ borderBottom: "1px solid var(--assignment-border)", paddingBottom: "24px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                        <h4 style={{ margin: 0, fontWeight: "600" }}>{criterion.name}</h4>
+                        <div style={{ display: "flex", gap: "4px" }}>
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <button
+                              key={star}
+                              type="button"
+                              onClick={() => handleRatingChange(criterion.id, star)}
+                              style={{ 
+                                background: "none", 
+                                border: "none", 
+                                cursor: "pointer", 
+                                fontSize: "20px",
+                                color: star <= criterion.rating ? "var(--color-warning)" : "var(--assignment-border)" 
+                              }}
+                            >
+                              ★
+                            </button>
+                          ))}
                         </div>
-                        <div className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                          Rate the quality of {criterion.name.toLowerCase()}
-                        </div>
                       </div>
-                      <div className="text-lg font-bold text-blue-600 dark:text-blue-400">
-                        {criterion.rating}/5
-                      </div>
-                    </div>
-
-                    <div className="mb-4">
-                      <div className="flex gap-1 mb-2">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <button
-                            key={star}
-                            type="button"
-                            onClick={() => {
-                              const newCriteria = currentReview.criteria.map(
-                                (c) =>
-                                  c.id === criterion.id
-                                    ? { ...c, rating: star }
-                                    : c,
-                              );
-                              setCurrentReview({
-                                ...currentReview,
-                                criteria: newCriteria,
-                              });
-                            }}
-                            className={`text-2xl ${
-                              star <= criterion.rating
-                                ? "text-amber-400 dark:text-amber-500"
-                                : "text-slate-300 dark:text-slate-600"
-                            }`}
-                          >
-                            ★
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                        Comments
-                      </label>
                       <textarea
-                        rows="2"
-                        className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600 text-sm"
+                        className="assignment-textarea"
+                        placeholder={`Feedback for ${criterion.name.toLowerCase()}...`}
                         value={criterion.comments}
-                        onChange={(e) => {
-                          const newCriteria = currentReview.criteria.map((c) =>
-                            c.id === criterion.id
-                              ? { ...c, comments: e.target.value }
-                              : c,
-                          );
-                          setCurrentReview({
-                            ...currentReview,
-                            criteria: newCriteria,
-                          });
-                        }}
-                        placeholder="Provide specific feedback..."
+                        onChange={(e) => handleCommentChange(criterion.id, e.target.value)}
+                        rows="2"
                       />
                     </div>
+                  ))}
+
+                  <div className="assignment-form-group">
+                    <label className="assignment-label">Overall Feedback</label>
+                    <textarea
+                      className="assignment-textarea"
+                      placeholder="Summary and constructive suggestions"
+                      value={reviewForm.overallComments}
+                      onChange={(e) => setReviewForm({ ...reviewForm, overallComments: e.target.value })}
+                      rows="4"
+                    />
                   </div>
-                ))}
 
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                    Overall Comments
-                  </label>
-                  <textarea
-                    rows="4"
-                    className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600"
-                    value={currentReview.overallComments}
-                    onChange={(e) =>
-                      setCurrentReview({
-                        ...currentReview,
-                        overallComments: e.target.value,
-                      })
-                    }
-                    placeholder="Provide overall feedback and suggestions..."
-                  />
-                </div>
-
-                <div className="flex gap-3">
-                  <button
-                    onClick={submitReview}
-                    className="px-4 py-2 bg-emerald-600 dark:bg-emerald-700 text-white rounded-lg hover:bg-emerald-700 dark:hover:bg-emerald-800"
-                  >
-                    Submit Review
-                  </button>
-                  <button
-                    onClick={() => navigate("/assignments")}
-                    className="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700"
-                  >
-                    Save Draft
-                  </button>
+                  <div style={{ display: "flex", gap: "12px", marginTop: "16px" }}>
+                    <button onClick={() => navigate("/assignments")} className="assignment-btn assignment-btn-outline" style={{ flex: 1 }}>
+                      Cancel
+                    </button>
+                    <button onClick={handleSubmitReview} className="assignment-btn assignment-btn-primary" style={{ flex: 2 }}>
+                      Submit Peer Review
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

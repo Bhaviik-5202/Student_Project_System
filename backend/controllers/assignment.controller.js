@@ -17,7 +17,28 @@ const { validationResult } = require("express-validator");
  */
 exports.createAssignment = async (req, res) => {
   try {
-    const result = await assignmentService.create(req.body);
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return sendResponse(
+        res,
+        {
+          success: false,
+          message: "Validation failed",
+          data: null,
+          error: errors.array(),
+        },
+        400,
+      );
+    }
+
+    const assignmentData = { ...req.body };
+
+    // Handle multiple file uploads via Multer
+    if (req.files && req.files.length > 0) {
+      assignmentData.attachments = req.files.map((file) => file.path);
+    }
+
+    const result = await assignmentService.create(assignmentData);
 
     sendResponse(
       res,
@@ -396,6 +417,77 @@ exports.getAssignmentsByBatchId = async (req, res) => {
         error: result.error || null,
       },
       result.error ? 404 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
+};
+
+/**
+ * Get the grading rubric for an assignment
+ * @route GET /assignments/rubric/:id
+ * @access Admin, Faculty
+ */
+exports.getRubric = async (req, res) => {
+  try {
+    const result = await assignmentService.getById(req.params.id);
+    if (result.error) {
+      return sendResponse(res, result, 404);
+    }
+
+    sendResponse(
+      res,
+      {
+        success: true,
+        message: "Rubric fetched successfully",
+        data: result.data.rubric || { name: "", criteria: [] },
+        error: null,
+      },
+      200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
+};
+
+/**
+ * Save the grading rubric for an assignment
+ * @route POST /assignments/rubric/:id
+ * @access Admin, Faculty
+ */
+exports.saveRubric = async (req, res) => {
+  try {
+    const result = await assignmentService.update(req.params.id, {
+      rubric: req.body,
+    });
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error ? "Failed to save rubric" : "Rubric saved successfully",
+        data: result.data?.rubric || null,
+        error: result.error || null,
+      },
+      result.error ? 400 : 200,
     );
   } catch (error) {
     sendResponse(

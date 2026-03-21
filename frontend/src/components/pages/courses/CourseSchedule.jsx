@@ -78,132 +78,121 @@ const CourseSchedule = memo(() => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
-        <p className="mt-4 text-gray-500 font-medium">Compiling timetable...</p>
+      <div className="course-loading-container">
+        <div className="course-spinner"></div>
+        <p className="course-loading-text">Compiling timetable...</p>
       </div>
     );
   }
 
   return (
-    <div className="dashboard-content tracking-tight">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
+    <div className="course-page">
+      <div className="course-header">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
-            Weekly Schedule
-          </h1>
-          <p className="text-gray-500 dark:text-gray-400">
-            Track your lectures and manage your academic time
-          </p>
+          <h1 className="course-title">Academic Schedule</h1>
+          <p className="course-subtitle">Weekly lecture and laboratory timetables</p>
         </div>
-        <div className="card py-2 px-4 flex items-center gap-3 bg-white/50 backdrop-blur-sm">
-          <Calendar className="w-5 h-5 text-indigo-600" />
-          <span className="font-bold text-gray-900 dark:text-white">
-            {new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'long' })}
-          </span>
+        <div style={{ display: "flex", gap: "12px" }}>
+          <div className="course-card-simple" style={{ padding: "8px 16px", display: "flex", alignItems: "center", gap: "12px" }}>
+            <Calendar className="course-icon-md" style={{ color: "var(--course-primary)" }} />
+            <span style={{ fontWeight: "700", fontSize: "14px" }}>
+              {new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'long' })}
+            </span>
+          </div>
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-2 mb-8">
+      <div style={{ marginBottom: "32px", display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "8px" }}>
         {days.map((day) => (
           <button
             key={day}
             onClick={() => setSelectedDay(day)}
-            className={`px-6 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 ${selectedDay === day
-              ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/25 scale-105"
-              : "bg-white dark:bg-gray-800 text-gray-500 border border-transparent hover:border-gray-200 dark:hover:border-gray-700"
-              }`}
+            className={`course-btn ${selectedDay === day ? "course-btn-primary" : "course-btn-secondary"}`}
+            style={{ borderRadius: "20px", padding: "8px 24px" }}
           >
             {day}
           </button>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-4">
-          <div className="flex items-center gap-2 mb-2 px-1">
-            <Layout className="w-5 h-5 text-indigo-600" />
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-              {selectedDay} Modules
-            </h3>
+      <div className="course-details-grid">
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+            <Layout className="course-icon-md" style={{ color: "var(--course-primary)" }} />
+            <h3 style={{ fontSize: "18px", fontWeight: "700" }}>{selectedDay} Modules</h3>
           </div>
 
           {todaySchedule.length === 0 ? (
-            <div className="card p-16 text-center border-dashed border-2 bg-gray-50/30">
-              <div className="w-16 h-16 bg-white dark:bg-gray-900 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm">
-                <Coffee className="w-8 h-8 text-gray-300" />
+            <div className="course-card-simple" style={{ textAlign: "center", padding: "64px" }}>
+              <div style={{ width: "64px", height: "64px", backgroundColor: "var(--course-bg-light)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px" }}>
+                <Coffee className="course-icon-xl" style={{ color: "var(--course-text-muted)" }} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No lectures today</h3>
-              <p className="text-gray-500 font-medium">Enjoy your break or catch up on self-study.</p>
+              <h3 style={{ fontSize: "18px", fontWeight: "700" }}>No lectures today</h3>
+              <p style={{ color: "var(--course-text-muted)" }}>Enjoy your break or catch up on self-study.</p>
             </div>
           ) : (
             todaySchedule.map((item, index) => (
-              <div key={item.id || index} className="card transition-all hover:shadow-md hover:border-indigo-200 active:scale-[0.99]">
-                <div className="card-body flex flex-col md:flex-row md:items-center justify-between gap-6 p-5">
-                  <div className="flex items-start md:items-center gap-6">
-                    <div className="w-16 h-16 bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl flex flex-col items-center justify-center border border-indigo-100 dark:border-indigo-800/50 shrink-0">
-                      <span className="text-[10px] font-bold text-indigo-400 dark:text-indigo-500 uppercase tracking-tighter">START</span>
-                      <span className="text-base font-bold text-indigo-700 dark:text-indigo-300">{item.time.split("-")[0].trim()}</span>
+              <div key={item.id || index} className="course-schedule-grid">
+                <div className="course-schedule-time">{item.time.split("-")[0].trim()}</div>
+                <div className="course-schedule-event">
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "12px" }}>
+                    <div>
+                      <span className="course-badge course-badge-blue" style={{ marginBottom: "4px" }}>{item.code}</span>
+                      <h4 style={{ fontWeight: "700", fontSize: "16px" }}>{item.name}</h4>
                     </div>
-                    <div className="min-w-0">
-                      <span className="badge badge-primary py-0.5 px-2 text-[10px] mb-1.5">{item.code}</span>
-                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 truncate">{item.name}</h3>
-                      <div className="flex flex-wrap gap-4 text-sm text-gray-500 font-medium">
-                        <div className="flex items-center gap-1.5">
-                          <MapPin className="w-4 h-4 text-indigo-400" /> {item.room}
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <User className="w-4 h-4 text-indigo-400" /> {item.faculty}
-                        </div>
-                      </div>
+                    <button
+                      onClick={() => navigate(`/courses/${item.id}`)}
+                      className="course-btn course-btn-secondary"
+                      style={{ padding: "6px 12px", fontSize: "12px" }}
+                    >
+                      Enter <ArrowRight className="w-4 h-4 ml-1" />
+                    </button>
+                  </div>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "16px", fontSize: "12px", color: "var(--course-text-muted)" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                      <MapPin className="w-4 h-4" /> {item.room}
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                      <User className="w-4 h-4" /> {item.faculty}
                     </div>
                   </div>
-                  <button
-                    onClick={() => navigate(`/courses/${item.id}`)}
-                    className="btn btn-secondary w-full md:w-auto h-11 flex items-center justify-center gap-2 group whitespace-nowrap"
-                  >
-                    Enter Module <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                  </button>
                 </div>
               </div>
             ))
           )}
         </div>
 
-        <div className="space-y-6">
-          <div className="card bg-indigo-600 text-white border-0 shadow-xl overflow-hidden relative">
-            <div className="absolute top-0 right-0 -m-4 w-24 h-24 bg-white/10 rounded-full blur-2xl"></div>
-            <div className="card-body relative z-10">
-              <h3 className="text-lg font-bold mb-6 opacity-90 uppercase tracking-widest text-xs">Semester Overview</h3>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/10">
-                  <span className="font-medium opacity-80 text-sm">Active Modules</span>
-                  <span className="text-2xl font-bold">{courses.length}</span>
-                </div>
-                <div className="flex justify-between items-center bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/10">
-                  <span className="font-medium opacity-80 text-sm">Total Units</span>
-                  <span className="text-2xl font-bold">{totalCredits}</span>
-                </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+          <div className="course-card-simple" style={{ backgroundColor: "var(--course-primary)", color: "white", border: "none" }}>
+            <h3 style={{ fontSize: "11px", fontWeight: "700", textTransform: "uppercase", letterSpacing: "1px", color: "rgba(255,255,255,0.7)", marginBottom: "20px" }}>Semester Overview</h3>
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", backgroundColor: "rgba(255,255,255,0.1)", padding: "12px", borderRadius: "12px" }}>
+                <span style={{ fontSize: "13px", fontWeight: "500" }}>Active Modules</span>
+                <span style={{ fontSize: "20px", fontWeight: "700" }}>{courses.length}</span>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", backgroundColor: "rgba(255,255,255,0.1)", padding: "12px", borderRadius: "12px" }}>
+                <span style={{ fontSize: "13px", fontWeight: "500" }}>Total Units</span>
+                <span style={{ fontSize: "20px", fontWeight: "700" }}>{totalCredits}</span>
               </div>
             </div>
           </div>
 
-          <div className="card shadow-sm">
-            <div className="card-header border-b border-gray-50 dark:border-gray-800">
-              <h3 className="card-title text-sm">Quick Actions</h3>
-            </div>
-            <div className="card-body flex flex-col gap-3 p-4">
+          <div className="course-card-simple">
+            <h3 style={{ fontSize: "14px", fontWeight: "700", marginBottom: "16px", paddingBottom: "12px", borderBottom: "1px solid var(--course-border)" }}>Quick Actions</h3>
+            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
               <button
                 onClick={() => navigate("/courses/catalog")}
-                className="btn btn-secondary w-full justify-between h-11 text-sm font-bold"
+                className="course-btn course-btn-secondary"
+                style={{ justifyContent: "space-between", width: "100%" }}
               >
-                Browse Catalog <ArrowRight className="w-4 h-4 opacity-50" />
+                Browse Catalog <ArrowRight className="w-4 h-4" />
               </button>
               <button
                 onClick={() => navigate("/courses/register")}
-                className="btn btn-secondary w-full justify-between h-11 text-sm font-bold"
+                className="course-btn course-btn-secondary"
+                style={{ justifyContent: "space-between", width: "100%" }}
               >
-                Enrollment <ArrowRight className="w-4 h-4 opacity-50" />
+                Enrollment <ArrowRight className="w-4 h-4" />
               </button>
             </div>
           </div>

@@ -45,9 +45,9 @@ const SyllabusViewer = memo(() => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
-        <p className="mt-4 text-gray-500 font-medium">Loading syllabus...</p>
+      <div className="course-loading-container">
+        <div className="course-spinner"></div>
+        <p className="course-loading-text">Loading syllabus...</p>
       </div>
     );
   }
@@ -55,161 +55,145 @@ const SyllabusViewer = memo(() => {
   const syllabus = course?.syllabus || [];
 
   return (
-    <div className="dashboard-content">
-      <div className="mb-8">
-        <button
-          onClick={() => navigate(`/courses/${id}`)}
-          className="flex items-center gap-2 text-gray-500 hover:text-indigo-600 mb-6 font-semibold transition-colors"
-        >
-          <ChevronLeft className="w-5 h-5" /> Back to Module
-        </button>
-        
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
-              Course Syllabus
-            </h1>
-            <p className="text-gray-500 dark:text-gray-400">
-              Academic roadmap for {course?.name || course?.title}
-            </p>
-          </div>
+    <div className="course-page">
+      <div className="course-header">
+        <div>
+          <h1 className="course-title">Master Syllabus</h1>
+          <p className="course-subtitle">Academic roadmap for {course?.name || course?.title}</p>
+        </div>
+        <div style={{ display: "flex", gap: "12px" }}>
+          <button
+            onClick={() => navigate(`/courses/${id}`)}
+            className="course-btn course-btn-secondary"
+          >
+            <ChevronLeft className="course-icon-md course-mr-2" /> Back to Module
+          </button>
           <button 
-            className="btn btn-secondary flex items-center gap-2"
+            className="course-btn course-btn-secondary"
             onClick={() => window.print()}
           >
-            <Printer className="w-4 h-4" /> Print Syllabus
+            <Printer className="course-icon-sm course-mr-2" /> Print
           </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="space-y-4">
-          <div className="card">
-            <div className="card-header flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-indigo-600" />
-              <h3 className="card-title text-sm uppercase tracking-wider">Timeline</h3>
+      <div className="course-details-grid">
+        <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+          {/* Timeline / Modules List */}
+          <div className="course-card-simple">
+            <div className="course-section-header" style={{ marginBottom: "20px" }}>
+              <h3 style={{ fontSize: "16px", fontWeight: "700", display: "flex", alignItems: "center", gap: "8px" }}>
+                <Calendar className="course-icon-md" style={{ color: "var(--course-primary)" }} /> Course Timeline
+              </h3>
             </div>
-            <div className="card-body p-2">
-              <div className="space-y-1">
-                {syllabus.length === 0 ? (
-                  <p className="text-sm text-gray-500 italic p-4 text-center">No modules defined</p>
-                ) : (
-                  syllabus.map((item, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setActiveWeek(index)}
-                      className={`w-full p-4 text-left rounded-xl transition-all ${
-                        activeWeek === index
-                          ? "bg-indigo-600 text-white shadow-md"
-                          : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800"
-                      }`}
-                    >
-                      <div className={`text-[10px] font-bold uppercase mb-1 ${
-                        activeWeek === index ? "text-indigo-100" : "text-indigo-600"
-                      }`}>
-                        Session {index + 1}
-                      </div>
-                      <div className="font-bold text-sm truncate">
-                        {item.topic || item.title}
-                      </div>
-                    </button>
-                  ))
-                )}
-              </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", gap: "12px" }}>
+              {syllabus.length === 0 ? (
+                <p style={{ color: "var(--course-text-muted)", gridColumn: "1/-1", textAlign: "center", padding: "20px" }}>No modules defined</p>
+              ) : (
+                syllabus.map((item, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setActiveWeek(index)}
+                    className={`course-btn ${activeWeek === index ? "course-btn-primary" : "course-btn-secondary"}`}
+                    style={{ 
+                      flexDirection: "column", 
+                      alignItems: "flex-start", 
+                      height: "auto", 
+                      padding: "12px",
+                      textAlign: "left"
+                    }}
+                  >
+                    <span style={{ fontSize: "10px", opacity: 0.7, textTransform: "uppercase" }}>Week {item.week || index + 1}</span>
+                    <span style={{ fontSize: "13px", fontWeight: "700", marginTop: "4px", display: "block", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", width: "100%" }}>
+                      {item.topic || item.title}
+                    </span>
+                  </button>
+                ))
+              )}
             </div>
           </div>
-        </div>
 
-        <div className="lg:col-span-2 space-y-6">
+          {/* Detailed View */}
           {syllabus[activeWeek] ? (
-            <div className="card min-h-[500px]">
-              <div className="card-body p-8 lg:p-12">
-                <div className="flex items-center gap-3 mb-8">
-                  <span className="badge badge-primary">Module {activeWeek + 1}</span>
-                  <div className="flex items-center gap-1.5 text-xs text-gray-400 font-bold uppercase">
-                    <Clock className="w-3.5 h-3.5" /> Week {syllabus[activeWeek].week || activeWeek + 1}
+            <div className="course-card-simple" style={{ padding: "32px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "24px" }}>
+                <span className="course-badge course-badge-blue">Module {activeWeek + 1}</span>
+                <span style={{ fontSize: "12px", color: "var(--course-text-muted)", fontWeight: "700", textTransform: "uppercase" }}>
+                  <Clock className="course-icon-sm" style={{ verticalAlign: "middle", marginRight: "4px" }} /> Week {syllabus[activeWeek].week || activeWeek + 1}
+                </span>
+              </div>
+              
+              <h2 style={{ fontSize: "28px", fontWeight: "800", marginBottom: "24px" }}>
+                {syllabus[activeWeek].topic || syllabus[activeWeek].title}
+              </h2>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
+                <section>
+                  <h4 style={{ fontSize: "11px", fontWeight: "700", color: "var(--course-text-muted)", textTransform: "uppercase", marginBottom: "12px" }}>
+                    <FileText className="course-icon-sm" style={{ verticalAlign: "middle", marginRight: "6px" }} /> Session Description
+                  </h4>
+                  <p style={{ fontSize: "16px", lineHeight: "1.6", color: "var(--course-text-main)" }}>
+                    {syllabus[activeWeek].description || "Guided study session covering core concepts and practical applications relevant to this module's learning outcomes."}
+                  </p>
+                </section>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
+                  <div className="course-card-simple" style={{ backgroundColor: "var(--course-bg-light)" }}>
+                    <h4 style={{ fontSize: "11px", fontWeight: "700", color: "var(--course-text-muted)", textTransform: "uppercase", marginBottom: "16px" }}>
+                      <Target className="course-icon-sm" style={{ verticalAlign: "middle", marginRight: "6px" }} /> Key Outcomes
+                    </h4>
+                    <ul style={{ listStyle: "none", padding: "0", margin: "0", display: "flex", flexDirection: "column", gap: "10px" }}>
+                      {["Concept Mastery", "Practical Skills", "Problem Solving"].map((text, i) => (
+                        <li key={i} style={{ display: "flex", gap: "10px", fontSize: "13px" }}>
+                          <CheckCircle2 className="w-4 h-4" style={{ color: "var(--course-primary)", flexShrink: 0 }} />
+                          <span>{text}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                </div>
-                
-                <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">
-                  {syllabus[activeWeek].topic || syllabus[activeWeek].title}
-                </h2>
-
-                <div className="space-y-10">
-                  <section>
-                    <div className="flex items-center gap-2 mb-4 text-gray-400 uppercase tracking-wider text-[10px] font-bold">
-                      <FileText className="w-4 h-4" /> Description
-                    </div>
-                    <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
-                      {syllabus[activeWeek].description || "Conceptual framework and practical implementation strategies for this session."}
-                    </p>
-                  </section>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="p-6 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border border-gray-100 dark:border-gray-800">
-                      <div className="flex items-center gap-2 mb-4 text-gray-400 uppercase tracking-wider text-[10px] font-bold">
-                         <Target className="w-4 h-4" /> Learning Outcomes
-                      </div>
-                      <ul className="space-y-4">
-                        {[
-                          "Core principles and methodologies",
-                          "Practical implementation skills",
-                          "Collaborative problem solving"
-                        ].map((text, i) => (
-                          <li key={i} className="flex gap-3 items-start">
-                            <CheckCircle2 className="w-4 h-4 text-indigo-500 shrink-0 mt-0.5" />
-                            <span className="text-sm font-medium text-gray-600 dark:text-gray-400">{text}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    
-                    <div className="p-6 bg-indigo-50/50 dark:bg-indigo-900/10 rounded-2xl border border-indigo-100/50 dark:border-indigo-800/50">
-                      <div className="flex items-center gap-2 mb-4 text-gray-400 uppercase tracking-wider text-[10px] font-bold">
-                         <BarChart3 className="w-4 h-4" /> Assessment Weight
-                      </div>
-                      <div className="space-y-4">
-                        {[
-                          { label: "Participation", weight: "10%" },
-                          { label: "Lab Work", weight: "20%" },
-                          { label: "Final Quiz", weight: "70%" }
-                        ].map((item, i) => (
-                          <div key={i} className="flex justify-between items-center py-1.5 border-b border-indigo-100/30 dark:border-indigo-800/30 last:border-0 pb-0">
-                            <span className="text-sm font-bold text-gray-600 dark:text-gray-400">{item.label}</span>
-                            <span className="text-lg font-bold text-indigo-600">{item.weight}</span>
-                          </div>
-                        ))}
-                      </div>
+                  
+                  <div className="course-card-simple" style={{ backgroundColor: "rgba(37, 99, 235, 0.05)", borderColor: "rgba(37, 99, 235, 0.2)" }}>
+                    <h4 style={{ fontSize: "11px", fontWeight: "700", color: "var(--course-text-muted)", textTransform: "uppercase", marginBottom: "16px" }}>
+                      <BarChart3 className="w-4 h-4" style={{ verticalAlign: "middle", marginRight: "6px" }} /> Assessment
+                    </h4>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                      {[
+                        { label: "Lab Work", val: "20%" },
+                        { label: "Assignment", val: "30%" },
+                        { label: "Session Test", val: "50%" }
+                      ].map((item, i) => (
+                        <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: "8px", borderBottom: i < 2 ? "1px solid rgba(0,0,0,0.05)" : "none" }}>
+                          <span style={{ fontSize: "13px", fontWeight: "600" }}>{item.label}</span>
+                          <span className="course-badge course-badge-blue">{item.val}</span>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           ) : (
-            <div className="card p-20 text-center border-dashed">
-              <div className="w-20 h-20 bg-gray-50 dark:bg-gray-900 rounded-3xl flex items-center justify-center mx-auto mb-8">
-                <BookOpen className="w-10 h-10 text-gray-300" />
+            <div className="course-card-simple" style={{ textAlign: "center", padding: "80px" }}>
+              <div style={{ width: "80px", height: "80px", backgroundColor: "var(--course-bg-light)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px" }}>
+                <BookOpen className="w-10 h-10" style={{ color: "var(--course-text-muted)" }} />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Syllabus Not Available</h3>
-              <p className="text-gray-500 max-w-sm mx-auto">
-                Detailed roadmap for this module is currently under review.
-              </p>
+              <h3 style={{ fontSize: "20px", fontWeight: "700" }}>Select a module to view details</h3>
+              <p style={{ color: "var(--course-text-muted)" }}>Use the timeline to navigate through the course curriculum.</p>
             </div>
           )}
+        </div>
 
-          <div className="card bg-gray-900 dark:bg-white/5 text-white p-6 border-0">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-              <div className="flex items-start gap-4">
-                <div className="p-3 bg-white/10 rounded-xl">
-                  <AlertCircle className="w-6 h-6 text-indigo-400" />
-                </div>
-                <div>
-                  <h4 className="font-bold mb-1">Academic Policy</h4>
-                  <p className="text-xs text-gray-400 max-w-md">
-                    Submissions are subject to verification. Late work incurs 10% daily deduction. 
-                    75% attendance required for exam eligibility.
-                  </p>
-                </div>
+        <div>
+          <div className="course-card-simple" style={{ backgroundColor: "var(--course-text-main)", color: "white", border: "none" }}>
+            <div style={{ display: "flex", gap: "16px", alignItems: "flex-start" }}>
+              <div style={{ padding: "12px", backgroundColor: "rgba(255,255,255,0.1)", borderRadius: "12px" }}>
+                <AlertCircle className="w-6 h-6" style={{ color: "var(--course-primary)" }} />
+              </div>
+              <div>
+                <h4 style={{ fontWeight: "700", marginBottom: "4px" }}>Academic Policy</h4>
+                <p style={{ fontSize: "12px", opacity: 0.7, lineHeight: "1.5" }}>
+                  Submissions are subject to verification. 75% attendance required for final assessment eligibility. Late work policy applied.
+                </p>
               </div>
             </div>
           </div>

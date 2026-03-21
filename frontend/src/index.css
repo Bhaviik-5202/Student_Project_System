@@ -1,4 +1,6 @@
 @import "./assets/styles/global.css";
+@import "./assets/styles/courses.css";
+@import "./assets/styles/assignments.css";
 
 @tailwind base;
 @tailwind components;

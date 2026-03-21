@@ -13,7 +13,19 @@ const sendResponse = require("../utils/response");
  */
 exports.createSubmission = async (req, res) => {
   try {
-    const result = await submissionService.create(req.body);
+    const submissionData = { ...req.body };
+
+    // Set student ID if not provided (should come from auth)
+    if (!submissionData.student && req.user) {
+      submissionData.student = req.user.id || req.user._id;
+    }
+
+    // Handle file uploads via Multer
+    if (req.files && req.files.length > 0) {
+      submissionData.files = req.files.map((file) => file.path);
+    }
+
+    const result = await submissionService.create(submissionData);
 
     sendResponse(
       res,
@@ -146,11 +158,6 @@ exports.updateSubmission = async (req, res) => {
   }
 };
 
-/**
- * Delete a submission from the record
- * @route DELETE /submissions/:id
- * @access Faculty, Admin
- */
 exports.deleteSubmission = async (req, res) => {
   try {
     const result = await submissionService.remove(req.params.id);
@@ -166,6 +173,43 @@ exports.deleteSubmission = async (req, res) => {
         error: result.error || null,
       },
       result.error ? 404 : 200,
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: "Internal server error",
+        data: null,
+        error: error.message,
+      },
+      500,
+    );
+  }
+};
+
+/**
+ * Get the current student's submission history
+ * @route GET /submissions/history
+ * @access Student
+ */
+exports.getSubmissionHistory = async (req, res) => {
+  try {
+    const studentId = req.user.id || req.user._id;
+    // We filter by student and populate the assignment details
+    const result = await submissionService.getByStudentId(studentId);
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? "Failed to fetch submission history"
+          : "Submission history retrieved successfully",
+        data: result.data || [],
+        error: result.error || null,
+      },
+      result.error ? 400 : 200,
     );
   } catch (error) {
     sendResponse(

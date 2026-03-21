@@ -81,3 +81,19 @@ exports.remove = async (id) => {
     return response(true, null, err.message || "Failed to delete submission");
   }
 };
+/**
+ * Fetch all submissions for a specific student
+ * @param {string} studentId - Student identifier
+ * @returns {Promise<Object>} Formatted service response
+ */
+exports.getByStudentId = async (studentId) => {
+  try {
+    const submissions = await submissionRepository.findAll(
+      { student: studentId },
+      { populate: "assignment" }
+    );
+    return response(false, submissions, "Student history fetched successfully");
+  } catch (err) {
+    return response(true, null, err.message || "Failed to fetch student history");
+  }
+};

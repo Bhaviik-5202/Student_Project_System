@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback, memo } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../../../utils/api";
+import assignmentService from "../../../services/assignmentService";
+import { useAuth } from "../../../hooks/useAuth";
+import { ROLE_COMBINATIONS } from "../../../config/roles";
 
 /**
  * AssignmentList Component
@@ -12,14 +14,20 @@ import api from "../../../utils/api";
  */
 const AssignmentList = memo(() => {
   const navigate = useNavigate();
+  const { hasAnyRole } = useAuth();
   const [assignments, setAssignments] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchAssignments = async () => {
       try {
-        const response = await api.get("/assignments");
-        setAssignments(response.data || []);
+        const response = await assignmentService.getAll();
+        // Assuming assignmentService.getAll returns the standardized response
+        if (response.success) {
+          setAssignments(response.data || []);
+        } else {
+          console.error("Failed to fetch assignments:", response.message);
+        }
       } catch (error) {
         console.error("Failed to fetch assignments", error);
       } finally {
@@ -32,118 +40,103 @@ const AssignmentList = memo(() => {
   const handleNavigate = useCallback((path) => navigate(path), [navigate]);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-6">
+    <div className="assignment-page">
+      <div className="assignment-container">
+        <div className="assignment-header">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+            <h1 className="assignment-title">
               Assignments
             </h1>
-            <p className="text-slate-600 dark:text-slate-400">
+            <p className="assignment-subtitle">
               View and manage all assignments
             </p>
           </div>
-          <button
-            onClick={() => handleNavigate("/assignments/new")}
-            className="px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-800"
-          >
-            New Assignment
-          </button>
+          {hasAnyRole(ROLE_COMBINATIONS.ADMIN_FACULTY) && (
+            <button
+              onClick={() => handleNavigate("/assignments/upload")}
+              className="assignment-btn assignment-btn-primary"
+            >
+              New Assignment
+            </button>
+          )}
         </div>
 
-        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
-              <thead className="bg-slate-50 dark:bg-slate-700">
+        <div className="assignment-table-container">
+          <table className="assignment-table">
+            <thead>
+              <tr>
+                <th>Assignment Title</th>
+                <th>Course</th>
+                <th>Due Date</th>
+                <th>Status</th>
+                <th>Points</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                    Assignment Title
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                    Course
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                    Due Date
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                    Points
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                    Actions
-                  </th>
+                  <td colSpan="6" style={{ textAlign: "center", color: "var(--assignment-text-muted)" }}>Loading assignments...</td>
                 </tr>
-              </thead>
-              <tbody className="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
-                {loading ? (
-                  <tr>
-                    <td colSpan="6" className="px-6 py-4 text-center text-slate-500">Loading assignments...</td>
+              ) : assignments.length === 0 ? (
+                <tr>
+                  <td colSpan="6" style={{ textAlign: "center", color: "var(--assignment-text-muted)" }}>No assignments found.</td>
+                </tr>
+              ) : (
+                assignments.map((assignment) => (
+                  <tr key={assignment.id || assignment._id}>
+                    <td>
+                      <div style={{ fontWeight: "600", color: "var(--assignment-text-main)" }}>
+                        {assignment.title}
+                      </div>
+                    </td>
+                    <td>
+                      {assignment.course?.title || assignment.course?.name || "N/A"}
+                    </td>
+                    <td>
+                      {assignment.dueDate ? new Date(assignment.dueDate).toLocaleDateString() : "N/A"}
+                    </td>
+                    <td>
+                      <span
+                        className={`assignment-badge ${
+                          assignment.status === "Submitted"
+                            ? "badge-submitted"
+                            : assignment.status === "In Progress"
+                              ? "badge-progress"
+                              : "badge-pending"
+                        }`}
+                      >
+                        {assignment.status || "Pending"}
+                      </span>
+                    </td>
+                    <td>
+                      {assignment.points || assignment.maxScore || 100}
+                    </td>
+                    <td>
+                      <button
+                        onClick={() =>
+                          handleNavigate(`/assignments/${assignment.id || assignment._id}`)
+                        }
+                        className="assignment-btn-text"
+                        style={{ marginRight: "12px" }}
+                      >
+                        View
+                      </button>
+                      <button
+                        onClick={() =>
+                          handleNavigate(`/assignments/submit/${assignment.id || assignment._id}`)
+                        }
+                        className="assignment-btn-text"
+                        style={{ color: "var(--color-success)" }}
+                      >
+                        Submit
+                      </button>
+                    </td>
                   </tr>
-                ) : assignments.length === 0 ? (
-                  <tr>
-                    <td colSpan="6" className="px-6 py-4 text-center text-slate-500">No assignments found.</td>
-                  </tr>
-                ) : (
-                  assignments.map((assignment) => (
-                    <tr
-                      key={assignment.id || assignment._id}
-                      className="hover:bg-slate-50 dark:hover:bg-slate-700"
-                    >
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="font-medium text-slate-900 dark:text-white">
-                          {assignment.title}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
-                        {assignment.course || (assignment.courseId ? assignment.courseId.title : "N/A")}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
-                        {assignment.dueDate || new Date(assignment.deadline).toLocaleDateString()}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className={`px-2 py-1 text-xs rounded-full ${
-                            assignment.status === "Submitted"
-                              ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
-                              : assignment.status === "In Progress"
-                                ? "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
-                                : assignment.status === "Pending"
-                                  ? "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300"
-                                  : "bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200"
-                          }`}
-                        >
-                          {assignment.status || "Pending"}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
-                        {assignment.points || assignment.maxScore || 100}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <button
-                          onClick={() =>
-                            handleNavigate(`/assignments/${assignment.id || assignment._id}`)
-                          }
-                          className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 mr-3"
-                        >
-                          View
-                        </button>
-                        <button
-                          onClick={() =>
-                            handleNavigate(`/assignments/${assignment.id || assignment._id}/submit`)
-                          }
-                          className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-900 dark:hover:text-emerald-300"
-                        >
-                          Submit
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

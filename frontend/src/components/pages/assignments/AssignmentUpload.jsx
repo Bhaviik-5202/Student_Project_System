@@ -1,236 +1,267 @@
-import { useState, useCallback, memo } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-hot-toast";
+import assignmentService from "../../../services/assignmentService";
+import courseService from "../../../services/courseService";
+import toast from "react-hot-toast";
 
+/**
+ * AssignmentUpload Component
+ * 
+ * A specialized interface for faculty to create new academic tasks.
+ * Includes fields for title, detailed description, course selection,
+ * due date, point allocation, and resource file uploads.
+ */
 const AssignmentUpload = memo(() => {
   const navigate = useNavigate();
-  const [assignment, setAssignment] = useState({
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
     title: "",
     description: "",
-    course: "",
-    dueDate: "",
-    points: 100,
+    courseId: "",
+    deadline: "",
+    maxScore: 100,
+    instructions: "",
     files: [],
   });
-  const [loading, setLoading] = useState(false);
 
-  const handleFileUpload = useCallback((e) => {
-    const files = Array.from(e.target.files);
-    setAssignment((prev) => ({
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const response = await courseService.getAllCourses();
+        if (response.success) {
+          setCourses(response.data || []);
+        } else {
+          toast.error("Failed to load courses");
+        }
+      } catch (error) {
+        console.error("Failed to fetch courses", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCourses();
+  }, []);
+
+  const handleInputChange = useCallback((e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  }, []);
+
+  const handleFileChange = useCallback((e) => {
+    const selectedFiles = Array.from(e.target.files);
+    setFormData((prev) => ({
       ...prev,
-      files: [...prev.files, ...files],
+      files: [...prev.files, ...selectedFiles],
     }));
   }, []);
 
   const removeFile = useCallback((index) => {
-    setAssignment((prev) => {
-      const newFiles = [...prev.files];
-      newFiles.splice(index, 1);
-      return { ...prev, files: newFiles };
-    });
+    setFormData((prev) => ({
+      ...prev,
+      files: prev.files.filter((_, i) => i !== index),
+    }));
   }, []);
 
-  const handleSubmit = useCallback(
-    async (e) => {
-      e.preventDefault();
-      setLoading(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.courseId) {
+      toast.error("Please select a course");
+      return;
+    }
 
-      setTimeout(() => {
-        toast.success("Assignment created successfully");
-        setLoading(false);
+    try {
+      setSubmitting(true);
+      const toastId = toast.loading("Creating assignment...");
+      
+      const assignmentData = new FormData();
+      assignmentData.append("title", formData.title);
+      assignmentData.append("description", formData.description);
+      assignmentData.append("course", formData.courseId); // Changed courseId -> course
+      assignmentData.append("dueDate", formData.deadline); // Changed deadline -> dueDate
+      assignmentData.append("maxScore", formData.maxScore);
+      assignmentData.append("instructions", formData.instructions);
+      
+      formData.files.forEach((file) => {
+        assignmentData.append("attachments", file); // Key matches upload.array("attachments")
+      });
+
+      const response = await assignmentService.create(assignmentData);
+      
+      if (response.success) {
+        toast.success("Assignment created successfully!", { id: toastId });
         navigate("/assignments");
-      }, 1500);
-    },
-    [navigate],
-  );
+      } else {
+        toast.error(response.message || "Failed to create assignment", { id: toastId });
+      }
+    } catch (error) {
+      console.error("Creation failed", error);
+      toast.error("An error occurred during assignment creation");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="assignment-page" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+        <p className="assignment-subtitle">Loading creation form...</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-6">
-          <button
-            onClick={() => navigate("/assignments")}
-            className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex items-center mb-4"
-          >
-            ← Back to Assignments
-          </button>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-            Create Assignment
-          </h1>
-          <p className="text-slate-600 dark:text-slate-400">
-            Create a new assignment for students
-          </p>
+    <div className="assignment-page">
+      <div className="assignment-container" style={{ maxWidth: "900px" }}>
+        <div className="assignment-header">
+          <div>
+            <h1 className="assignment-title">Create New Assignment</h1>
+            <p className="assignment-subtitle">Set up a new academic task for your students</p>
+          </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6 max-w-3xl">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                Assignment Title
-              </label>
-              <input
-                type="text"
-                required
-                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600"
-                value={assignment.title}
-                onChange={(e) =>
-                  setAssignment({ ...assignment, title: e.target.value })
-                }
-                placeholder="Enter assignment title"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                Description
-              </label>
-              <textarea
-                rows="4"
-                required
-                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600"
-                value={assignment.description}
-                onChange={(e) =>
-                  setAssignment({ ...assignment, description: e.target.value })
-                }
-                placeholder="Describe the assignment requirements..."
-              />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                  Course
-                </label>
-                <select
+        <div className="assignment-card">
+          <form onSubmit={handleSubmit}>
+            <div className="assignment-grid assignment-grid-2">
+              <div className="assignment-form-group">
+                <label className="assignment-label">Assignment Title</label>
+                <input
+                  type="text"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleInputChange}
+                  className="assignment-input"
+                  placeholder="e.g. Database Design Phase 1"
                   required
-                  className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600"
-                  value={assignment.course}
-                  onChange={(e) =>
-                    setAssignment({ ...assignment, course: e.target.value })
-                  }
+                />
+              </div>
+
+              <div className="assignment-form-group">
+                <label className="assignment-label">Course</label>
+                <select
+                  name="courseId"
+                  value={formData.courseId}
+                  onChange={handleInputChange}
+                  className="assignment-select"
+                  required
                 >
-                  <option value="">Select Course</option>
-                  <option value="CS401">Software Engineering</option>
-                  <option value="CS402">Database Systems</option>
-                  <option value="CS403">Web Development</option>
+                  <option value="">Select a Course</option>
+                  {courses.map((course) => (
+                    <option key={course.id || course._id} value={course.id || course._id}>
+                      {course.title || course.name}
+                    </option>
+                  ))}
                 </select>
               </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                  Due Date
-                </label>
+
+              <div className="assignment-form-group">
+                <label className="assignment-label">Due Date</label>
                 <input
                   type="datetime-local"
+                  name="deadline"
+                  value={formData.deadline}
+                  onChange={handleInputChange}
+                  className="assignment-input"
                   required
-                  className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600"
-                  value={assignment.dueDate}
-                  onChange={(e) =>
-                    setAssignment({ ...assignment, dueDate: e.target.value })
-                  }
+                />
+              </div>
+
+              <div className="assignment-form-group">
+                <label className="assignment-label">Total Points</label>
+                <input
+                  type="number"
+                  name="maxScore"
+                  value={formData.maxScore}
+                  onChange={handleInputChange}
+                  className="assignment-input"
+                  min="0"
+                  required
                 />
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                Total Points
-              </label>
-              <input
-                type="number"
-                min="0"
-                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-600"
-                value={assignment.points}
-                onChange={(e) =>
-                  setAssignment({
-                    ...assignment,
-                    points: parseInt(e.target.value),
-                  })
-                }
+            <div className="assignment-form-group">
+              <label className="assignment-label">Description</label>
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                className="assignment-textarea"
+                placeholder="Brief summary of the assignment"
+                rows="3"
+                required
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                Attach Files
-              </label>
-              <div className="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg p-6 text-center">
+            <div className="assignment-form-group">
+              <label className="assignment-label">Instructions</label>
+              <textarea
+                name="instructions"
+                value={formData.instructions}
+                onChange={handleInputChange}
+                className="assignment-textarea"
+                placeholder="Detailed instructions for students..."
+                rows="5"
+              />
+            </div>
+
+            <div className="assignment-form-group">
+              <label className="assignment-label">Attachments & Resources</label>
+              <div 
+                className="assignment-upload-area"
+                onClick={() => document.getElementById("fileInput").click()}
+              >
+                <div style={{ color: "var(--assignment-text-muted)" }}>
+                  <p style={{ fontWeight: "600", color: "var(--assignment-primary)", marginBottom: "4px" }}>
+                    Click to upload
+                  </p>
+                  <p style={{ fontSize: "12px" }}>Resource files for students (PDF, ZIP, etc.)</p>
+                </div>
                 <input
+                  id="fileInput"
                   type="file"
                   multiple
-                  className="hidden"
-                  id="file-upload"
-                  onChange={handleFileUpload}
+                  onChange={handleFileChange}
+                  style={{ display: "none" }}
                 />
-                <label htmlFor="file-upload" className="cursor-pointer">
-                  <div className="text-slate-600 dark:text-slate-400">
-                    <svg
-                      className="mx-auto h-12 w-12 text-slate-400 dark:text-slate-500"
-                      stroke="currentColor"
-                      fill="none"
-                      viewBox="0 0 48 48"
-                    >
-                      <path
-                        d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    <p className="mt-2">Click to upload or drag and drop</p>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">
-                      PDF, DOC, PPT, ZIP up to 50MB each
-                    </p>
-                  </div>
-                </label>
               </div>
 
-              {assignment.files.length > 0 && (
-                <div className="mt-4">
-                  <h4 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                    Uploaded Files
-                  </h4>
-                  <div className="space-y-2">
-                    {assignment.files.map((file, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700 rounded-lg"
+              {formData.files.length > 0 && (
+                <div className="assignment-file-list">
+                  {formData.files.map((file, index) => (
+                    <div key={index} className="assignment-file-item">
+                      <span style={{ fontSize: "14px" }}>{file.name}</span>
+                      <button
+                        type="button"
+                        onClick={() => removeFile(index)}
+                        className="assignment-btn-text"
+                        style={{ color: "var(--color-error)" }}
                       >
-                        <div className="flex items-center">
-                          <span className="text-slate-400 dark:text-slate-500 mr-3">
-                            📎
-                          </span>
-                          <span className="text-sm text-slate-700 dark:text-slate-300">
-                            {file.name}
-                          </span>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => removeFile(index)}
-                          className="text-rose-600 dark:text-rose-400 hover:text-rose-800 dark:hover:text-rose-300 text-sm"
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    ))}
-                  </div>
+                        Remove
+                      </button>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
 
-            <div className="flex gap-3">
-              <button
-                type="submit"
-                disabled={loading}
-                className="px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-800 disabled:opacity-50"
-              >
-                {loading ? "Creating Assignment..." : "Create Assignment"}
-              </button>
+            <div style={{ display: "flex", gap: "12px", marginTop: "32px" }}>
               <button
                 type="button"
-                onClick={() => navigate("/assignments")}
-                className="px-4 py-2 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700"
+                onClick={() => navigate(-1)}
+                className="assignment-btn assignment-btn-outline"
+                style={{ flex: 1 }}
               >
                 Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={submitting}
+                className="assignment-btn assignment-btn-primary"
+                style={{ flex: 2 }}
+              >
+                {submitting ? "Processing..." : "Create Assignment"}
               </button>
             </div>
           </form>

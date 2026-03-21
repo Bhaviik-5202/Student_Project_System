@@ -11,6 +11,7 @@ const router = express.Router();
 // Controllers and Middlewares
 const assignmentController = require("../controllers/assignment.controller");
 const authMiddleware = require("../middleware/auth.middleware");
+const upload = require("../utils/upload");
 
 /**
  * Validation rules for creating an assignment
@@ -56,6 +57,7 @@ const updateAssignmentValidation = [
 router.post(
   "/",
   authMiddleware,
+  upload.array("attachments"),
   createAssignmentValidation,
   assignmentController.createAssignment,
 );
@@ -85,6 +87,20 @@ router.put(
   updateAssignmentValidation,
   assignmentController.updateAssignment,
 );
+
+/**
+ * @route   GET /api/v1/assignments/rubric/:id
+ * @desc    Get the grading rubric for an assignment
+ * @access  Private (Admin, Faculty)
+ */
+router.get("/rubric/:id", authMiddleware, assignmentController.getRubric);
+
+/**
+ * @route   POST /api/v1/assignments/rubric/:id
+ * @desc    Save the grading rubric for an assignment
+ * @access  Private (Admin, Faculty)
+ */
+router.post("/rubric/:id", authMiddleware, assignmentController.saveRubric);
 
 /**
  * @route   DELETE /api/v1/assignments/:id

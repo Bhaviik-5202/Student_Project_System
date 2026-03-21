@@ -10,13 +10,21 @@ const router = express.Router();
 // Controllers and Middlewares
 const submissionController = require("../controllers/submission.controller");
 const authMiddleware = require("../middleware/auth.middleware");
+const upload = require("../utils/upload");
 
 /**
  * @route   POST /api/v1/submissions
  * @desc    Create a new submission
  * @access  Private (Authenticated Users)
  */
-router.post("/", authMiddleware, submissionController.createSubmission);
+router.post("/", authMiddleware, upload.array("file"), submissionController.createSubmission);
+
+/**
+ * @route   GET /api/v1/submissions/history
+ * @desc    Retrieve the current student's submission history
+ * @access  Private (Student)
+ */
+router.get("/history", authMiddleware, submissionController.getSubmissionHistory);
 
 /**
  * @route   GET /api/v1/submissions

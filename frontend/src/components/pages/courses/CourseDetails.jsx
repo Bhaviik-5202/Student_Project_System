@@ -46,9 +46,9 @@ const CourseDetails = memo(() => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
-        <p className="mt-4 text-gray-500 font-medium">Loading course data...</p>
+      <div className="course-loading-container">
+        <div className="course-spinner"></div>
+        <p className="course-loading-text">Loading module insights...</p>
       </div>
     );
   }
@@ -56,94 +56,96 @@ const CourseDetails = memo(() => {
   if (!course) return null;
 
   return (
-    <div className="dashboard-content">
+    <div className="course-page">
       <button
         onClick={() => navigate("/courses/catalog")}
-        className="flex items-center gap-2 text-gray-500 hover:text-indigo-600 mb-6 font-semibold transition-colors"
+        className="course-btn course-btn-secondary"
+        style={{ marginBottom: "24px", color: "var(--course-text-muted)" }}
       >
-        <ChevronLeft className="w-5 h-5" /> Back to Catalog
+        <ChevronLeft className="course-icon-md" /> Back to Catalog
       </button>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-6">
-          <div className="card">
-            <div className="card-header bg-gray-50/50 dark:bg-gray-900/50 block">
-              <div className="flex flex-wrap items-center gap-3 mb-3">
-                <span className="badge badge-primary">{course.code}</span>
-                <span className="badge badge-secondary">{course.semester || "Spring 2024"}</span>
+      <div className="course-details-grid">
+        <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+          <div className="course-card-simple">
+            <div className="course-section-header" style={{ backgroundColor: "rgba(0,0,0,0.02)", margin: "-16px -16px 24px", padding: "16px" }}>
+              <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
+                <span className="course-badge course-badge-blue">{course.code}</span>
+                <span className="course-badge course-badge-gray">{course.semester || "Spring 2024"}</span>
               </div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              <h1 className="course-title" style={{ fontSize: "28px" }}>
                 {course.name || course.title}
               </h1>
             </div>
-            <div className="card-body">
-              <div className="flex items-center gap-2 text-indigo-600 mb-4">
-                <Info className="w-5 h-5" />
-                <h3 className="text-lg font-bold">Course Synopsis</h3>
+            <div style={{ padding: "0" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--course-primary)", marginBottom: "16px" }}>
+                <Info className="course-icon-md" />
+                <h3 style={{ fontSize: "18px", fontWeight: "700" }}>Course Synopsis</h3>
               </div>
-              <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-8">
+              <p style={{ color: "var(--course-text-muted)", lineHeight: "1.6", marginBottom: "32px" }}>
                 {course.description || "This comprehensive module covers the fundamental and advanced principles of the subject, providing students with both theoretical knowledge and practical applications."}
               </p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
-                  <div className="flex items-center gap-2 text-gray-500 mb-1">
-                    <Clock className="w-4 h-4" />
-                    <span className="text-[10px] font-bold uppercase tracking-wider">Schedule</span>
+              <div className="course-info-card-grid">
+                <div className="course-info-card-item">
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--course-text-muted)", marginBottom: "4px" }}>
+                    <Clock className="course-icon-sm" />
+                    <span style={{ fontSize: "10px", fontWeight: "700", textTransform: "uppercase" }}>Schedule</span>
                   </div>
-                  <p className="text-sm font-semibold">{course.schedule || "Mon, Wed 10:00 AM"}</p>
+                  <p style={{ fontSize: "14px", fontWeight: "600" }}>{course.schedule || "Mon, Wed 10:00 AM"}</p>
                 </div>
-                <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
-                  <div className="flex items-center gap-2 text-gray-500 mb-1">
-                    <MapPin className="w-4 h-4" />
-                    <span className="text-[10px] font-bold uppercase tracking-wider">Location</span>
+                <div className="course-info-card-item">
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--course-text-muted)", marginBottom: "4px" }}>
+                    <MapPin className="course-icon-sm" />
+                    <span style={{ fontSize: "10px", fontWeight: "700", textTransform: "uppercase" }}>Location</span>
                   </div>
-                  <p className="text-sm font-semibold">{course.room || "Lab 402, Block B"}</p>
+                  <p style={{ fontSize: "14px", fontWeight: "600" }}>{course.room || "Lab 402, Block B"}</p>
                 </div>
-                <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
-                  <div className="flex items-center gap-2 text-gray-500 mb-1">
-                    <GraduationCap className="w-4 h-4" />
-                    <span className="text-[10px] font-bold uppercase tracking-wider">Credits</span>
+                <div className="course-info-card-item">
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--course-text-muted)", marginBottom: "4px" }}>
+                    <GraduationCap className="course-icon-sm" />
+                    <span style={{ fontSize: "10px", fontWeight: "700", textTransform: "uppercase" }}>Credits</span>
                   </div>
-                  <p className="text-sm font-semibold">{course.credits || 4} Units</p>
+                  <p style={{ fontSize: "14px", fontWeight: "600" }}>{course.credits || 4} Units</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="card">
-            <div className="card-header flex justify-between items-center">
-              <h3 className="card-title flex items-center gap-2">
-                <FileText className="w-5 h-5 text-indigo-500" /> Curriculum Map
+          <div className="course-card-simple">
+            <div className="course-card-header">
+              <h3 style={{ fontSize: "18px", fontWeight: "700", display: "flex", alignItems: "center", gap: "8px" }}>
+                <FileText className="course-icon-md" style={{ color: "var(--course-primary)" }} /> Curriculum Map
               </h3>
               <button
                 onClick={() => navigate(`/courses/${id}/syllabus`)}
-                className="btn btn-secondary btn-sm"
+                className="course-btn course-btn-secondary"
+                style={{ fontSize: "12px", padding: "4px 12px" }}
               >
-                Full Roadmap <ArrowRight className="w-4 h-4 ml-1" />
+                Full Roadmap <ArrowRight className="course-icon-sm course-ml-1" />
               </button>
             </div>
-            <div className="card-body">
-              <div className="space-y-4">
+            <div className="course-card-body">
+              <div className="course-curriculum-list">
                 {(course.syllabus && course.syllabus.length > 0) ? (
                   course.syllabus.slice(0, 3).map((topic, index) => (
-                    <div key={index} className="flex gap-4 p-4 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800">
-                      <div className="flex-shrink-0 w-10 h-10 bg-white dark:bg-gray-800 text-indigo-600 rounded-lg flex items-center justify-center font-bold border border-gray-100 dark:border-gray-700">
+                    <div key={index} className="course-curriculum-item">
+                      <div className="course-week-number">
                         {topic.week || index + 1}
                       </div>
                       <div>
-                        <h4 className="font-bold text-gray-900 dark:text-white text-sm">
+                        <h4 style={{ fontWeight: "700", fontSize: "14px" }}>
                           {topic.topic || topic.title}
                         </h4>
-                        <p className="text-xs text-gray-500 mt-1 line-clamp-1">
+                        <p style={{ fontSize: "12px", color: "var(--course-text-muted)", marginTop: "4px", display: "-webkit-box", WebkitLineClamp: 1, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                           {topic.description || "Core concepts and specialized case studies."}
                         </p>
                       </div>
                     </div>
                   ))
                 ) : (
-                  <div className="text-center py-8">
-                    <p className="text-sm text-gray-400 italic">Syllabus details coming soon.</p>
+                  <div style={{ textAlign: "center", padding: "32px" }}>
+                    <p style={{ fontSize: "14px", color: "var(--course-text-muted)", fontStyle: "italic" }}>Syllabus details coming soon.</p>
                   </div>
                 )}
               </div>
@@ -151,55 +153,53 @@ const CourseDetails = memo(() => {
           </div>
         </div>
 
-        <div className="space-y-6">
-          <div className="card">
-            <div className="card-header">
-              <h3 className="card-title">Lead Instructor</h3>
+        <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+          <div className="course-card-simple course-instructor-card">
+            <div className="course-section-header" style={{ marginBottom: "16px" }}>
+              <h3 style={{ fontSize: "16px", fontWeight: "700" }}>Lead Instructor</h3>
             </div>
-            <div className="card-body text-center">
-              <div className="w-20 h-20 bg-indigo-50 dark:bg-indigo-900/30 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-white dark:border-gray-800 shadow-sm">
-                <User className="w-10 h-10 text-indigo-500" />
-              </div>
-              <h4 className="text-lg font-bold">{course.faculty?.name || course.instructor || "Visiting Lead"}</h4>
-              <p className="text-xs text-gray-500 uppercase tracking-widest font-bold mb-4">Professor</p>
-
-              <div className="flex flex-col gap-2 mt-4">
-                <button className="btn btn-secondary w-full flex items-center justify-center gap-2">
-                  <MessageCircle className="w-4 h-4" /> Message
-                </button>
-                <button className="btn btn-secondary w-full flex items-center justify-center gap-2">
-                  <Video className="w-4 h-4" /> Office Hours
-                </button>
-              </div>
+            <div className="course-instructor-avatar">
+              <User className="course-icon-xl" style={{ color: "var(--course-primary)" }} />
             </div>
-          </div>
+            <h4 style={{ fontSize: "18px", fontWeight: "700" }}>{course.faculty?.name || course.instructor || "Visiting Lead"}</h4>
+            <p style={{ fontSize: "11px", color: "var(--course-text-muted)", textTransform: "uppercase", letterSpacing: "1px", fontWeight: "700", margin: "4px 0 16px" }}>Professor</p>
 
-          <div className="card bg-indigo-600 text-white border-0 shadow-lg">
-            <div className="card-body">
-              <h3 className="text-xl font-bold mb-2">Registration Open</h3>
-              <p className="text-indigo-100 text-sm mb-6">
-                Enrollment for academic session 2024 is currently active.
-              </p>
-              <button
-                onClick={() => navigate("/courses/register")}
-                className="btn bg-white text-indigo-600 hover:bg-gray-100 w-full font-bold py-3"
-              >
-                Enroll in Course
+            <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginTop: "16px" }}>
+              <button className="course-btn course-btn-secondary" style={{ width: "100%" }}>
+                <MessageCircle className="course-icon-sm" /> Message
+              </button>
+              <button className="course-btn course-btn-secondary" style={{ width: "100%" }}>
+                <Video className="course-icon-sm" /> Office Hours
               </button>
             </div>
           </div>
 
-          <div className="card">
-            <div className="card-header">
-              <h3 className="card-title flex items-center gap-2">
-                <BookOpen className="w-5 h-5 text-indigo-500" /> Learning Resources
+          <div className="course-promo-banner">
+            <h3 style={{ fontSize: "20px", fontWeight: "700", marginBottom: "8px" }}>Registration Open</h3>
+            <p style={{ fontSize: "14px", opacity: "0.9", marginBottom: "24px" }}>
+              Enrollment for academic session 2024 is currently active.
+            </p>
+            <button
+              onClick={() => navigate("/courses/register")}
+              className="course-btn"
+              style={{ backgroundColor: "white", color: "var(--course-primary)", width: "100%", fontWeight: "700" }}
+            >
+              Enroll in Course
+            </button>
+          </div>
+
+          <div className="course-card-simple">
+            <div className="course-card-header">
+              <h3 style={{ fontSize: "16px", fontWeight: "700", display: "flex", alignItems: "center", gap: "8px" }}>
+                <BookOpen className="course-icon-md" style={{ color: "var(--course-primary)" }} /> Learning Resources
               </h3>
             </div>
-            <div className="card-body">
-              <p className="text-sm text-gray-500 mb-4">Access course materials, readings, and repository.</p>
+            <div className="course-card-body">
+              <p style={{ fontSize: "14px", color: "var(--course-text-muted)", marginBottom: "16px" }}>Access course materials, readings, and repository.</p>
               <button
                 onClick={() => navigate(`/courses/${id}/materials`)}
-                className="btn btn-secondary w-full"
+                className="course-btn course-btn-secondary"
+                style={{ width: "100%" }}
               >
                 Access Repository
               </button>

@@ -16,7 +16,7 @@ const assignmentSchema = new mongoose.Schema(
     },
 
     dueDate: {
-      type: Number,
+      type: Date,
       default: null,
     },
 
@@ -27,12 +27,30 @@ const assignmentSchema = new mongoose.Schema(
       index: true,
     },
 
+    attachments: [
+      {
+        type: String,
+      },
+    ],
+
     submissions: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Submission",
       },
     ],
+
+    rubric: {
+      name: { type: String, default: "Evaluation Rubric" },
+      criteria: [
+        {
+          id: { type: Number },
+          criterion: { type: String },
+          maxPoints: { type: Number },
+          description: { type: String },
+        },
+      ],
+    },
   },
   {
     timestamps: true,

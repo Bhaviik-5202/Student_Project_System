@@ -1,8 +1,14 @@
 import { useState, useEffect, memo } from "react";
 import { useNavigate } from "react-router-dom";
-
 import submissionService from "../../../services/submissionService";
 
+/**
+ * SubmissionHistory Component
+ * 
+ * Provides students with a comprehensive log of their academic 
+ * output. Displays submission dates, status indicators, and 
+ * recorded grades across different courses and tasks.
+ */
 const SubmissionHistory = memo(() => {
   const navigate = useNavigate();
   const [submissions, setSubmissions] = useState([]);
@@ -10,172 +16,138 @@ const SubmissionHistory = memo(() => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchSubmissions = async () => {
+    const fetchSubmissionHistory = async () => {
       try {
         setLoading(true);
         setError(null);
         const res = await submissionService.getHistory();
-        if (res) {
-          const rawData = res.data || res;
-          const formattedData = rawData.map((submission) => ({
+        
+        // Handle both direct data and wrapped success/data format
+        const responseData = res.success ? res.data : (res.data || res);
+        
+        if (Array.isArray(responseData)) {
+          const formattedData = responseData.map((submission) => ({
             id: submission.id || submission._id,
-            assignment:
-              submission.assignmentId?.title ||
-              submission.assignment ||
-              "Unknown Assignment",
-            course:
-              submission.courseId?.title || submission.course || "N/A",
+            assignmentId: submission.assignment?.id || submission.assignment?._id,
+            assignment: submission.assignment?.title || "Untitled Task",
+            course: submission.assignment?.course?.title || submission.assignment?.course?.name || "N/A",
             submittedDate: submission.createdAt
-              ? new Date(submission.createdAt).toLocaleDateString()
-              : "-",
+              ? new Date(submission.createdAt).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                })
+              : "N/A",
             grade: submission.grade || "Pending",
             status: submission.status || "Under Review",
-            files: Array.isArray(submission.files)
-              ? submission.files.length
-              : 0,
+            filesCount: Array.isArray(submission.files) ? submission.files.length : (submission.fileUrl ? 1 : 0),
           }));
-
           setSubmissions(formattedData);
         } else {
-          setError(res?.message || "Failed to load submissions");
+          setError(res?.message || "No submission history available.");
         }
       } catch (err) {
-        setError(err?.message || "Something went wrong");
+        console.error("History fetch failed", err);
+        setError("Unable to retrieve submission history at this time.");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchSubmissions();
+    fetchSubmissionHistory();
   }, []);
 
+  if (loading) {
+    return (
+      <div className="assignment-page" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+        <p className="assignment-subtitle">Accessing submission archives...</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-6">
+    <div className="assignment-page">
+      <div className="assignment-container">
+        <div className="assignment-header">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-              Submission History
-            </h1>
-            <p className="text-slate-600 dark:text-slate-400">
-              View your assignment submissions and grades
-            </p>
+            <h1 className="assignment-title">Submission History</h1>
+            <p className="assignment-subtitle">Review your past academic performance and feedback</p>
           </div>
-          <button className="px-4 py-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-800">
-            Download All
+          <button onClick={() => navigate(-1)} className="assignment-btn assignment-btn-outline">
+            Back
           </button>
         </div>
 
-        <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
-          <div className="overflow-x-auto">
-            {loading ? (
-              <div className="p-6 text-center text-slate-500 dark:text-slate-400">
-                Loading submissions...
-              </div>
-            ) : error ? (
-              <div className="p-6 text-center text-red-500">{error}</div>
-            ) : submissions.length === 0 ? (
-              <div className="p-6 text-center text-slate-500 dark:text-slate-400">
-                No submissions found.
-              </div>
-            ) : (
-              <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
-                <thead className="bg-slate-50 dark:bg-slate-700">
+        <div className="assignment-card" style={{ padding: 0, overflow: "hidden" }}>
+          {error ? (
+            <div style={{ padding: "40px", textAlign: "center" }}>
+              <p style={{ color: "var(--color-error)" }}>{error}</p>
+            </div>
+          ) : submissions.length === 0 ? (
+            <div style={{ padding: "40px", textAlign: "center" }}>
+              <p className="assignment-subtitle">You haven't submitted any assignments yet.</p>
+              <button 
+                onClick={() => navigate("/assignments")} 
+                className="assignment-btn assignment-btn-primary" 
+                style={{ marginTop: "16px" }}
+              >
+                Go to Assignments
+              </button>
+            </div>
+          ) : (
+            <div className="assignment-table-container">
+              <table className="assignment-table">
+                <thead>
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                      Assignment
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                      Course
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                      Submitted Date
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                      Grade
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                      Status
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                      Files
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
-                      Actions
-                    </th>
+                    <th>Assignment</th>
+                    <th>Course</th>
+                    <th>Submitted</th>
+                    <th>Grade</th>
+                    <th>Status</th>
+                    <th>Files</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
-
-                <tbody className="bg-white dark:bg-slate-800 divide-y divide-slate-200 dark:divide-slate-700">
-                  {submissions.map((submission) => (
-                    <tr
-                      key={submission.id}
-                      className="hover:bg-slate-50 dark:hover:bg-slate-700"
-                    >
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="font-medium text-slate-900 dark:text-white">
-                          {submission.assignment}
+                <tbody>
+                  {submissions.map((item) => (
+                    <tr key={item.id}>
+                      <td>
+                        <div style={{ fontWeight: "600" }}>{item.assignment}</div>
+                      </td>
+                      <td>{item.course}</td>
+                      <td>{item.submittedDate}</td>
+                      <td>
+                        <span className={`assignment-badge ${
+                          item.grade !== "Pending" ? "badge-submitted" : "badge-pending"
+                        }`}>
+                          {item.grade}
+                        </span>
+                      </td>
+                      <td>
+                        <span className={`assignment-badge ${
+                          item.status === "Graded" ? "badge-submitted" : "badge-pending"
+                        }`}>
+                          {item.status}
+                        </span>
+                      </td>
+                      <td>{item.filesCount}</td>
+                      <td>
+                        <div style={{ display: "flex", gap: "8px" }}>
+                          <button 
+                            className="assignment-btn-text" 
+                            style={{ color: "var(--assignment-primary)" }}
+                            onClick={() => navigate(`/assignments/details/${item.assignmentId || item.id}`)}
+                          >
+                            View
+                          </button>
                         </div>
-                      </td>
-
-                      <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
-                        {submission.course}
-                      </td>
-
-                      <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
-                        {submission.submittedDate}
-                      </td>
-
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className={`px-2 py-1 text-xs rounded-full ${
-                            submission.grade === "A" ||
-                            submission.grade === "A-"
-                              ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
-                              : submission.grade === "B+" ||
-                                submission.grade === "B"
-                                ? "bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300"
-                                : submission.grade === "Pending"
-                                  ? "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300"
-                                  : "bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200"
-                          }`}
-                        >
-                          {submission.grade}
-                        </span>
-                      </td>
-
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className={`px-2 py-1 text-xs rounded-full ${
-                            submission.status === "Graded"
-                              ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300"
-                              : submission.status === "Under Review"
-                                ? "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300"
-                                : "bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200"
-                          }`}
-                        >
-                          {submission.status}
-                        </span>
-                      </td>
-
-                      <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
-                        {submission.files} file(s)
-                      </td>
-
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <button className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 mr-3">
-                          View
-                        </button>
-                        <button className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
-                          Download
-                        </button>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
