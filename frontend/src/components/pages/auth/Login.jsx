@@ -77,8 +77,7 @@ const Login = memo(() => {
 
           <div>
             <div className="flex justify-between items-center mb-1.5">
-              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300">Password</label>
-              <Link to="/forgot-password" size="text-xs" className="text-xs font-medium text-blue-600 dark:text-blue-400 hover:underline">Forgot password?</Link>
+              <Link to="/forgot-password" size="text-xs" className="text-xs font-medium text-blue-600 dark:text-blue-400">Forgot password?</Link>
             </div>
             <div className="relative">
               <i className="fas fa-key absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
@@ -109,8 +108,7 @@ const Login = memo(() => {
 
       <div className="text-center pt-2">
         <p className="text-sm text-slate-600 dark:text-slate-400">
-          Don't have an account?{" "}
-          <Link to="/register" className="font-bold text-blue-600 dark:text-blue-400 hover:underline">Create Account</Link>
+          <Link to="/register" className="font-bold text-blue-600 dark:text-blue-400">Create Account</Link>
         </p>
       </div>
     </div>

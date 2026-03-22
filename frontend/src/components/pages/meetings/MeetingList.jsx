@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, memo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Outlet } from "react-router-dom";
 import meetingService from "../../../services/meetingService";
 
 const MeetingRow = memo(({ meeting, onView, onEdit }) => {
@@ -40,7 +40,7 @@ const MeetingRow = memo(({ meeting, onView, onEdit }) => {
         >
           View
         </button>
-        <button 
+        <button
           onClick={() => onEdit(meeting.id)}
           className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors"
         >
@@ -104,19 +104,19 @@ const MeetingList = memo(() => {
   );
 
   return (
-    <div className="p-4 md:p-6 space-y-6">
-      <div className="flex justify-between items-center bg-white dark:bg-slate-800 p-6 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm">
-        <div>
-          <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-            Meeting Management
-          </h1>
-          <p className="text-sm text-gray-500">
-            View and manage all scheduled sessions
-          </p>
+    <div className="p-4 md:p-6 space-y-6 animate-fade-in">
+      {/* Header Section (Standardized with Project Catalog style) */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+        <div className="flex items-center gap-5">
+
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Meeting Management</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">View and manage all scheduled academic sessions</p>
+          </div>
         </div>
         <button
           onClick={handleCreate}
-          className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold uppercase tracking-widest rounded-lg shadow-lg shadow-indigo-100 dark:shadow-none transition-all"
+          className="btn btn-secondary"
         >
           Schedule New Meeting
         </button>
@@ -167,6 +167,7 @@ const MeetingList = memo(() => {
           )}
         </div>
       </div>
+      <Outlet />
     </div>
   );
 });

@@ -184,7 +184,7 @@ const UserManagement = memo(() => {
             <p className="admin-subtitle">Manage system users, roles, and access permissions</p>
           </div>
           <button onClick={handleAddUser} className="admin-btn admin-btn-primary">
-            + Add New User
+            Add New User
           </button>
         </header>
 

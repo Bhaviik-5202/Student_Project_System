@@ -123,19 +123,15 @@ const ProjectProposal = memo(() => {
   }
 
   return (
-    <div className="p-4 md:p-6 space-y-6">
-      <div className="flex justify-between items-start gap-4">
+    <div className="project-page animate-fade-in text-gray-600 dark:text-gray-400">
+      <div className="project-header">
         <div>
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-            Project Proposal
-          </h2>
-          <p className="text-sm text-gray-500">
-            Formalize your venture for academic review
-          </p>
+          <h2 className="project-title text-gray-900 dark:text-white">Project Proposal</h2>
+          <p className="project-subtitle">Formalize your venture for academic review</p>
         </div>
         <button
           onClick={() => navigate("/projects")}
-          className="text-gray-400 hover:text-gray-600 text-xs font-bold uppercase tracking-widest"
+          className="project-btn project-btn-secondary"
         >
           Cancel
         </button>
@@ -143,34 +139,30 @@ const ProjectProposal = memo(() => {
 
       <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6 shadow-sm">
-            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-6">Principal Data</h3>
+          <div className="project-card-simple">
+            <h3 className="text-xs font-bold text-gray-400 tracking-[0.2em] mb-6">Principal Data</h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
-                  Venture Title
-                </label>
+                <label className="project-label mb-1.5">Venture Title</label>
                 <input
                   type="text"
                   name="title"
                   required
                   value={formData.title}
                   onChange={handleChange}
-                  className="w-full bg-gray-50 dark:bg-slate-900 border border-transparent focus:border-indigo-500 dark:focus:border-indigo-500 rounded-lg px-4 py-3 text-sm font-semibold transition-all outline-none"
+                  className="project-input"
                   placeholder="Official project name..."
                 />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
-                    Project Classification
-                  </label>
+                  <label className="project-label mb-1.5">Project Classification</label>
                   <select
                     name="type"
                     required
                     value={formData.type}
                     onChange={handleChange}
-                    className="w-full bg-gray-50 dark:bg-slate-900 border border-transparent focus:border-indigo-500 dark:focus:border-indigo-500 rounded-lg px-4 py-3 text-sm font-semibold transition-all outline-none appearance-none"
+                    className="project-select"
                   >
                     <option value="">Select Classification</option>
                     {projectTypes.map((type) => (
@@ -181,16 +173,14 @@ const ProjectProposal = memo(() => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
-                    Collaborative Team
-                  </label>
+                  <label className="project-label mb-1.5">Collaborative Team</label>
                   <input
                     type="text"
                     name="teamMembers"
                     required
                     value={formData.teamMembers}
                     onChange={handleChange}
-                    className="w-full bg-gray-50 dark:bg-slate-900 border border-transparent focus:border-indigo-500 dark:focus:border-indigo-500 rounded-lg px-4 py-3 text-sm font-semibold transition-all outline-none"
+                    className="project-input"
                     placeholder="Names, comma separated..."
                   />
                 </div>
@@ -198,34 +188,30 @@ const ProjectProposal = memo(() => {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6 shadow-sm">
-            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-6">Conceptual Core</h3>
+          <div className="project-card-simple">
+            <h3 className="text-xs font-bold text-gray-400 tracking-[0.2em] mb-6">Conceptual Core</h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
-                  Executive Abstract
-                </label>
+                <label className="project-label mb-1.5">Executive Abstract</label>
                 <textarea
                   name="abstract"
                   required
                   rows="4"
                   value={formData.abstract}
                   onChange={handleChange}
-                  className="w-full bg-gray-50 dark:bg-slate-900 border border-transparent focus:border-indigo-500 dark:focus:border-indigo-500 rounded-lg px-4 py-3 text-sm font-semibold transition-all outline-none resize-none"
+                  className="project-textarea"
                   placeholder="High-level overview of the project..."
                 />
               </div>
               <div>
-                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
-                  Strategic Objectives
-                </label>
+                <label className="project-label mb-1.5">Strategic Objectives</label>
                 <textarea
                   name="objectives"
                   required
                   rows="3"
                   value={formData.objectives}
                   onChange={handleChange}
-                  className="w-full bg-gray-50 dark:bg-slate-900 border border-transparent focus:border-indigo-500 dark:focus:border-indigo-500 rounded-lg px-4 py-3 text-sm font-semibold transition-all outline-none resize-none"
+                  className="project-textarea"
                   placeholder="Key milestones to achieve..."
                 />
               </div>
@@ -234,55 +220,49 @@ const ProjectProposal = memo(() => {
         </div>
 
         <div className="space-y-6">
-          <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6 shadow-sm">
-            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-6">Timeline & Resources</h3>
+          <div className="project-card-simple">
+            <h3 className="text-xs font-bold text-gray-400 tracking-[0.2em] mb-6">Timeline & Resources</h3>
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
-                    Start
-                  </label>
+                  <label className="project-label mb-1.5">Start</label>
                   <input
                     type="date"
                     name="startDate"
                     required
                     value={formData.startDate}
                     onChange={handleChange}
-                    className="w-full bg-gray-50 dark:bg-slate-900 border border-transparent focus:border-indigo-500 dark:focus:border-indigo-500 rounded-lg px-4 py-3 text-sm font-semibold transition-all outline-none"
+                    className="project-input"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
-                    Conclusion
-                  </label>
+                  <label className="project-label mb-1.5">Conclusion</label>
                   <input
                     type="date"
                     name="endDate"
                     required
                     value={formData.endDate}
                     onChange={handleChange}
-                    className="w-full bg-gray-50 dark:bg-slate-900 border border-transparent focus:border-indigo-500 dark:focus:border-indigo-500 rounded-lg px-4 py-3 text-sm font-semibold transition-all outline-none"
+                    className="project-input"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
-                  Technical Resources
-                </label>
+                <label className="project-label mb-1.5">Technical Resources</label>
                 <textarea
                   name="resources"
                   rows="2"
                   value={formData.resources}
                   onChange={handleChange}
-                  className="w-full bg-gray-50 dark:bg-slate-900 border border-transparent focus:border-indigo-500 dark:focus:border-indigo-500 rounded-lg px-4 py-3 text-sm font-semibold transition-all outline-none resize-none"
+                  className="project-textarea"
                   placeholder="Hardware, software, specialized tools..."
                 />
               </div>
             </div>
           </div>
 
-          <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6 shadow-sm">
-            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-6">Documentation</h3>
+          <div className="project-card-simple">
+            <h3 className="text-xs font-bold text-gray-400 tracking-[0.2em] mb-6">Documentation</h3>
             <div className="space-y-4">
               <div className="relative border-2 border-dashed border-gray-100 dark:border-slate-700 rounded-xl p-6 text-center group hover:border-indigo-400 transition-colors">
                 <input
@@ -293,16 +273,15 @@ const ProjectProposal = memo(() => {
                   accept=".pdf,.doc,.docx"
                   required={!isEditing}
                 />
-                <i className="fas fa-file-upload text-gray-300 group-hover:text-indigo-500 text-2xl mb-2 transition-colors" />
-                <p className="text-[10px] font-bold text-gray-400 uppercase truncate">
+                <p className="text-[10px] font-bold text-gray-400 truncate">
                   {formData.document ? formData.document.name : "Select Proposal File"}
                 </p>
-                <p className="text-[8px] text-gray-300 mt-1 uppercase">PDF, DOC (MAX 10MB)</p>
+                <p className="text-[8px] text-gray-300 mt-1">PDF, DOC (MAX 10MB)</p>
               </div>
               
               <button
                 type="submit"
-                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-4 rounded-xl shadow-lg shadow-indigo-200 dark:shadow-none transition-all"
+                className="w-full project-btn project-btn-primary py-4 font-bold"
               >
                 {isEditing ? "Update Submission" : "Submit Proposal"}
               </button>

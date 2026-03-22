@@ -1,5 +1,6 @@
 import React, { useState, memo, useCallback, useMemo } from "react";
 import PropTypes from "prop-types";
+import { Filter, RotateCcw, CheckCircle2, Building, GraduationCap } from "lucide-react";
 
 const StudentFilters = memo(({ onFilter }) => {
   const [filters, setFilters] = useState({
@@ -30,11 +31,11 @@ const StudentFilters = memo(({ onFilter }) => {
 
   const yearOptions = useMemo(
     () => [
-      { value: "", label: "All Years" },
-      { value: "1", label: "First Year" },
-      { value: "2", label: "Second Year" },
-      { value: "3", label: "Third Year" },
-      { value: "4", label: "Fourth Year" },
+      { value: "", label: "All Academic Years" },
+      { value: "1", label: "1st Year (Freshman)" },
+      { value: "2", label: "2nd Year (Sophomore)" },
+      { value: "3", label: "3rd Year (Junior)" },
+      { value: "4", label: "4th Year (Senior)" },
     ],
     [],
   );
@@ -59,76 +60,92 @@ const StudentFilters = memo(({ onFilter }) => {
   );
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow dark:shadow-md space-y-4">
-      <h3 className="font-semibold text-gray-900 dark:text-white">
-        Filter Students
-      </h3>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            Year
-          </label>
-          <select
-            name="year"
-            value={filters.year}
-            onChange={handleChange}
-            className="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400"
-          >
-            {yearOptions.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
+    <div className="card shadow-md animate-fade-in border-t-4 border-indigo-500">
+      <div className="card-body space-y-6">
+        <div className="flex items-center gap-3 pb-2 border-b border-gray-100 dark:border-slate-800">
+          <div className="p-2 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-lg">
+            <Filter size={20} />
+          </div>
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+            Advanced Search & Filters
+          </h3>
         </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            Department
-          </label>
-          <select
-            name="department"
-            value={filters.department}
-            onChange={handleChange}
-            className="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400"
-          >
-            {departmentOptions.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="form-group">
+            <label className="form-label flex items-center gap-2">
+              <GraduationCap size={14} className="text-gray-400" />
+              Academic Year
+            </label>
+            <select
+              name="year"
+              value={filters.year}
+              onChange={handleChange}
+              className="form-control appearance-none"
+            >
+              {yearOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label flex items-center gap-2">
+              <Building size={14} className="text-gray-400" />
+              Department
+            </label>
+            <select
+              name="department"
+              value={filters.department}
+              onChange={handleChange}
+              className="form-control appearance-none"
+            >
+              {departmentOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label flex items-center gap-2">
+              <CheckCircle2 size={14} className="text-gray-400" />
+              Enrollment Status
+            </label>
+            <select
+              name="status"
+              value={filters.status}
+              onChange={handleChange}
+              className="form-control appearance-none"
+            >
+              {statusOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            Status
-          </label>
-          <select
-            name="status"
-            value={filters.status}
-            onChange={handleChange}
-            className="w-full p-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md focus:outline-none focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400"
+
+        <div className="flex flex-col sm:flex-row gap-3 pt-4">
+          <button
+            onClick={handleApply}
+            className="btn btn-primary flex-1"
           >
-            {statusOptions.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
+            <Filter size={18} />
+            Apply Selection
+          </button>
+          <button
+            onClick={handleReset}
+            className="btn btn-secondary px-8"
+          >
+            <RotateCcw size={18} />
+            Reset
+          </button>
         </div>
-      </div>
-      <div className="flex space-x-2">
-        <button
-          onClick={handleApply}
-          className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
-        >
-          Apply Filters
-        </button>
-        <button
-          onClick={handleReset}
-          className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-4 py-2 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-600"
-        >
-          Reset
-        </button>
       </div>
     </div>
   );

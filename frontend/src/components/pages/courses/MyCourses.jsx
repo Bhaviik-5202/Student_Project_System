@@ -44,25 +44,26 @@ const MyCourses = memo(() => {
   }
 
   return (
-    <div className="course-page">
-      <div className="course-header">
-        <div>
-          <h1 className="course-title">My Learning Journey</h1>
-          <p className="course-subtitle">Track your academic progress and enrolled modules</p>
+    <div className="course-page animate-fade-in">
+      {/* Header Section (Standardized with Project Catalog style) */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+        <div className="flex items-center gap-5">
+
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">My Learning Journey</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Track your academic progress and enrolled modules</p>
+          </div>
         </div>
         <button
           onClick={() => navigate("/courses/register")}
-          className="course-btn course-btn-primary"
+          className="btn btn-secondary"
         >
-          <Plus className="course-icon-md course-mr-2" /> New Enrollment
+          <Plus size={18} /> New Enrollment
         </button>
       </div>
 
       {courses.length === 0 ? (
         <div className="course-card-simple" style={{ textAlign: "center", padding: "64px", maxWidth: "600px", margin: "40px auto" }}>
-          <div style={{ width: "80px", height: "80px", backgroundColor: "var(--course-bg-light)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px" }}>
-            <BookOpen className="course-icon-xl" style={{ color: "var(--course-text-muted)" }} />
-          </div>
           <h3 style={{ fontSize: "20px", fontWeight: "700", marginBottom: "8px" }}>No active courses</h3>
           <p style={{ color: "var(--course-text-muted)", marginBottom: "32px" }}>You haven't registered for any modules this semester yet.</p>
           <button

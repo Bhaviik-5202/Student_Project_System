@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useCallback, memo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { FileText, Calendar, Download, Eye, Plus, Search } from "lucide-react";
 import resourceService from "../../../services/resourceService";
 import useNotification from "../../../hooks/useNotification";
 
@@ -22,9 +23,9 @@ const TemplateCard = memo(({ template, onDownload, onPreview }) => (
   <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-5 hover:shadow-md transition-shadow bg-white dark:bg-gray-800">
     <div className="flex items-start justify-between mb-4">
       <div className="w-12 h-12 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
-        <i className="fas fa-file-invoice text-blue-500 text-xl" />
+        <FileText className="text-blue-500" size={24} />
       </div>
-      <span className="text-xs font-medium px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded uppercase">
+      <span className="text-[10px] font-bold px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 rounded">
         {template.type}
       </span>
     </div>
@@ -38,7 +39,7 @@ const TemplateCard = memo(({ template, onDownload, onPreview }) => (
 
     <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mb-4">
       <span className="flex items-center">
-        <i className="fas fa-calendar mr-1" />
+        <Calendar size={14} className="mr-1" />
         {new Date(template.createdAt).toLocaleDateString()}
       </span>
       <span>{template.size || "MB"}</span>
@@ -47,16 +48,16 @@ const TemplateCard = memo(({ template, onDownload, onPreview }) => (
     <div className="flex space-x-2">
       <button
         onClick={() => onDownload(template)}
-        className="flex-1 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white rounded-lg flex items-center justify-center"
+        className="flex-1 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg flex items-center justify-center transition-colors"
       >
-        <i className="fas fa-download mr-2" />
+        <Download size={18} className="mr-2" />
         Download
       </button>
       <button
         onClick={() => onPreview(template)}
-        className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
+        className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
       >
-        <i className="fas fa-eye" />
+        <Eye size={18} />
       </button>
     </div>
   </div>
@@ -152,8 +153,8 @@ const TemplateLibrary = memo(() => {
         </div>
         <button 
           onClick={() => navigate("/resource-upload")}
-          className="mt-4 md:mt-0 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white rounded-lg flex items-center">
-          <i className="fas fa-plus mr-2" />
+          className="mt-4 md:mt-0 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg flex items-center transition-colors">
+          <Plus size={18} className="mr-2" />
           Upload Template
         </button>
       </div>
@@ -169,7 +170,7 @@ const TemplateLibrary = memo(() => {
             <div className="flex flex-col md:flex-row gap-4">
               <div className="flex-1">
                 <div className="relative">
-                  <i className="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+                  <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" />
                   <input
                     type="text"
                     placeholder="Search templates..."
@@ -222,7 +223,7 @@ const TemplateLibrary = memo(() => {
           {/* Empty State */}
           {filteredTemplates.length === 0 && (
             <div className="text-center py-12">
-              <i className="fas fa-search text-gray-300 dark:text-gray-600 text-4xl mb-3" />
+              <Search className="mx-auto text-gray-300 dark:text-gray-600 mb-3" size={48} />
               <h3 className="text-lg font-medium text-gray-700 dark:text-gray-200 mb-2">
                 No templates found
               </h3>

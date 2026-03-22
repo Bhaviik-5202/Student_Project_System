@@ -37,6 +37,7 @@ const ProjectList = lazy(() => import("../components/pages/projects/ProjectList"
 const ProjectDetails = lazy(() => import("../components/pages/projects/ProjectDetails"));
 const ProjectProposal = lazy(() => import("../components/pages/projects/ProjectProposal"));
 const ProjectTypes = lazy(() => import("../components/pages/projects/ProjectTypes"));
+const ProjectArchitectureForm = lazy(() => import("../components/pages/projects/ProjectArchitectureForm"));
 const ProjectGroups = lazy(() => import("../components/pages/projects/ProjectGroups"));
 const GuideAllocation = lazy(() => import("../components/pages/projects/GuideAllocation"));
 
@@ -166,15 +167,17 @@ const AppRoutes = () => {
         <Route path="projects/:id" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><ProjectDetails /></ProtectedRoute>} />
         <Route path="projects/:id/edit" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><ProjectProposal /></ProtectedRoute>} />
         <Route path="project-types" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><ProjectTypes /></ProtectedRoute>} />
+        <Route path="project-types/new" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><ProjectArchitectureForm /></ProtectedRoute>} />
+        <Route path="project-types/:id/edit" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><ProjectArchitectureForm /></ProtectedRoute>} />
         <Route path="project-groups" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><ProjectGroups /></ProtectedRoute>} />
         <Route path="guide-allocation" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><GuideAllocation /></ProtectedRoute>} />
 
         {/* Meeting Routes */}
         <Route path="meetings" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><MeetingCalendar /></ProtectedRoute>} />
-        <Route path="meetings/list" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><MeetingList /></ProtectedRoute>} />
         <Route path="meetings/new" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><MeetingForm /></ProtectedRoute>} />
         <Route path="meetings/:id" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><MeetingForm /></ProtectedRoute>} />
         <Route path="meetings/:id/edit" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><MeetingForm /></ProtectedRoute>} />
+        <Route path="meetings/list" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><MeetingList /></ProtectedRoute>} />
 
         {/* Course Routes */}
         <Route path="courses" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><MyCourses /></ProtectedRoute>} />
@@ -242,7 +245,7 @@ const AppRoutes = () => {
         <Route path="milestones" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><MilestoneTracker /></ProtectedRoute>} />
         <Route path="roadmap" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><RoadmapViewer /></ProtectedRoute>} />
         <Route path="sprint-planner" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><SprintPlanner /></ProtectedRoute>} />
-        <Route path="timeline-editor" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><TimelineEditor /></ProtectedRoute>} />
+        <Route path="timeline-editor/:id?" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><TimelineEditor /></ProtectedRoute>} />
 
         {/* Attendance Route */}
         <Route path="attendance" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><StudentAttendance /></ProtectedRoute>} />

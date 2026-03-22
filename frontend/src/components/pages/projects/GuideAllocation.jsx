@@ -11,10 +11,9 @@ const GuideCard = memo(({ guide }) => {
       : "text-amber-600 bg-amber-50";
 
   return (
-    <div className="bg-white dark:bg-slate-800 p-5 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm">
+    <div className="project-card-simple">
       <div className="flex items-center gap-4 mb-4">
         <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center">
-          <i className="fas fa-user-tie text-indigo-600" />
         </div>
         <div>
           <h3 className="text-sm font-bold text-gray-900 dark:text-white leading-tight">
@@ -26,7 +25,7 @@ const GuideCard = memo(({ guide }) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-2 text-[11px] font-medium uppercase tracking-wider">
+      <div className="grid grid-cols-2 gap-2 text-[11px] font-medium tracking-wider">
         <div className="p-2 bg-gray-50 dark:bg-slate-900/50 rounded-lg">
           <p className="text-gray-400 mb-0.5">Capacity</p>
           <p className="text-gray-900 dark:text-white">{guide.allocatedGroups}/{guide.maxCapacity}</p>
@@ -54,8 +53,8 @@ const AllocationRow = memo(({ project, availableGuides, onAssign }) => {
 
   return (
     <tr className="hover:bg-gray-50 dark:hover:bg-slate-900/50 transition-colors">
-      <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-600 dark:text-gray-300">
-        {project.id}
+      <td className="px-6 py-4 whitespace-nowrap text-xs font-bold font-mono text-gray-400 dark:text-slate-500" title={project.id}>
+        #{project.id.slice(-4).toUpperCase()}
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
         <p className="text-sm font-semibold text-gray-900 dark:text-white">
@@ -83,16 +82,16 @@ const AllocationRow = memo(({ project, availableGuides, onAssign }) => {
         </select>
         <button 
           onClick={handleAssignClick}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-1.5 px-3 rounded-lg transition-colors shadow-sm"
+          className="project-btn project-btn-primary py-1.5 px-3"
         >
           Assign
         </button>
         <button 
           onClick={() => navigate(`/projects/${project.id}`)}
-          className="border border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700 p-1.5 rounded-lg transition-colors"
+          className="project-btn project-btn-secondary p-1.5"
           title="View Details"
         >
-          <i className="fas fa-external-link-alt text-gray-400" />
+          Details
         </button>
       </td>
     </tr>
@@ -169,23 +168,23 @@ const GuideAllocationList = memo(() => {
   };
 
   return (
-    <div className="p-4 md:p-6 space-y-8 print:p-0">
-      <div className="flex justify-between items-center no-print">
+    <div className="project-page animate-fade-in text-gray-600 dark:text-gray-400 print:p-0">
+      <div className="project-header no-print">
         <div>
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">Guide Allocation</h2>
-          <p className="text-sm text-gray-500">Manage mentor assignments and capacity</p>
+          <h2 className="project-title text-gray-900 dark:text-white">Guide Allocation</h2>
+          <p className="project-subtitle">Manage mentor assignments and capacity</p>
         </div>
         <button 
           onClick={handlePrint}
-          className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 hover:bg-gray-50 transition-colors shadow-sm"
+          className="project-btn project-btn-secondary"
         >
-          <i className="fas fa-print text-gray-400" /> Print Report
+          Print Report
         </button>
       </div>
 
       {/* Guides Grid */}
       <div className="space-y-4 no-print">
-        <h3 className="text-xs font-bold uppercase tracking-widest text-gray-400">Mentor Availability</h3>
+        <h3 className="text-xs font-bold tracking-widest text-gray-400">Mentor Availability</h3>
         {loadingGuides ? (
           <div className="text-center py-10 text-gray-400 text-sm">Loading mentors...</div>
         ) : allocations.length === 0 ? (
@@ -200,20 +199,20 @@ const GuideAllocationList = memo(() => {
       </div>
 
       {/* Projects Table */}
-      <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm overflow-hidden print:border-none">
+      <div className="project-card-simple overflow-hidden print:border-none">
         <div className="px-6 py-4 border-b border-gray-100 dark:border-slate-700 flex justify-between items-center no-print">
           <h3 className="font-bold text-gray-900 dark:text-white tabular-nums">Allocation Management</h3>
-          <span className="text-[10px] font-bold bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full uppercase tracking-tighter">Total Projects: {projects.length}</span>
+          <span className="text-[10px] font-bold bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded-full tracking-tighter">Total Projects: {projects.length}</span>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead className="bg-gray-50 dark:bg-slate-900/50">
               <tr>
-                <th className="px-6 py-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">ID</th>
-                <th className="px-6 py-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Name</th>
-                <th className="px-6 py-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Group</th>
-                <th className="px-6 py-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Guide</th>
-                <th className="px-6 py-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest no-print">Actions</th>
+                <th className="px-6 py-3 text-[10px] font-bold text-gray-400 tracking-wider">ID</th>
+                <th className="px-6 py-3 text-[10px] font-bold text-gray-400 tracking-wider">Name</th>
+                <th className="px-6 py-3 text-[10px] font-bold text-gray-400 tracking-wider">Group</th>
+                <th className="px-6 py-3 text-[10px] font-bold text-gray-400 tracking-wider">Guide</th>
+                <th className="px-6 py-3 text-[10px] font-bold text-gray-400 tracking-wider no-print">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-slate-800">

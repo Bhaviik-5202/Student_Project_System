@@ -44,31 +44,28 @@ const ProjectTimeline = memo(() => {
   const months = useMemo(() => ["Jan", "Feb", "Mar", "Apr", "May", "Jun"], []);
 
   return (
-    <div className="p-4 md:p-6 space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="project-page animate-fade-in text-gray-600 dark:text-gray-400">
+      <div className="project-header">
         <div>
-          <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-            Project Timelines
-          </h1>
-          <p className="text-sm text-gray-500">
-            Orchestration of active academic ventures
-          </p>
+          <h1 className="project-title text-gray-900 dark:text-white">Project Timelines</h1>
+          <p className="project-subtitle">Orchestration of active academic ventures</p>
         </div>
         <button 
           onClick={() => navigate('/projects/new')}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm transition-colors"
+          className="project-btn project-btn-primary"
         >
           New Project
         </button>
       </div>
+
 
       {loading ? (
         <div className="p-20 text-center text-gray-400 text-sm italic">Synchronizing roadmap...</div>
       ) : (
         <div className="space-y-6">
           {/* Timeline Visualization Card */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6 shadow-sm overflow-hidden">
-            <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-8">Temporal Overview</h3>
+          <div className="project-card-simple overflow-hidden">
+            <h3 className="text-[10px] font-bold text-gray-400 mb-8">Temporal Overview</h3>
             
             <div className="relative">
               {/* Grid Headers */}
@@ -76,7 +73,7 @@ const ProjectTimeline = memo(() => {
                 <div className="w-1/4"></div>
                 <div className="flex-1 flex justify-between px-2">
                   {months.map((month) => (
-                    <span key={month} className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">{month}</span>
+                    <span key={month} className="text-[10px] font-bold text-gray-300">{month}</span>
                   ))}
                 </div>
               </div>
@@ -94,9 +91,7 @@ const ProjectTimeline = memo(() => {
                         <div className="text-xs font-bold text-gray-900 dark:text-white truncate" title={project.name}>
                           {project.name}
                         </div>
-                        <div className="text-[8px] font-bold text-gray-400 uppercase mt-0.5">
-                          {project.progress}% Complete
-                        </div>
+                        <div className="text-[10px] text-gray-500 mt-1">{project.progress}% Complete</div>
                       </div>
                       <div className="flex-1 relative h-6 bg-gray-50 dark:bg-slate-900 rounded-lg overflow-hidden border border-gray-100 dark:border-slate-800">
                         <div
@@ -120,15 +115,15 @@ const ProjectTimeline = memo(() => {
           </div>
 
           {/* Project Details List */}
-          <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm overflow-hidden">
+          <div className="project-card-simple overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left">
                 <thead>
                   <tr className="bg-gray-50/50 dark:bg-slate-900/40 border-b border-gray-100 dark:border-slate-700">
-                    <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Venture</th>
-                    <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Schedule</th>
-                    <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Status</th>
-                    <th className="px-6 py-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-right">Actions</th>
+                    <th className="px-6 py-4 text-[10px] font-bold text-gray-400">Venture</th>
+                    <th className="px-6 py-4 text-[10px] font-bold text-gray-400">Schedule</th>
+                    <th className="px-6 py-4 text-[10px] font-bold text-gray-400">Status</th>
+                    <th className="px-6 py-4 text-[10px] font-bold text-gray-400 text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50 dark:divide-slate-700/50">
@@ -152,8 +147,8 @@ const ProjectTimeline = memo(() => {
                       </td>
                       <td className="px-6 py-4 text-right">
                         <button
-                          onClick={() => navigate(`/projects/${project.id || project._id}`)}
-                          className="text-[10px] font-bold text-indigo-600 uppercase hover:underline"
+                          onClick={() => navigate(`/projects/${project.projectId}`)}
+                          className="text-[10px] font-bold text-indigo-600"
                         >
                           Review
                         </button>

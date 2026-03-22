@@ -30,6 +30,36 @@ exports.getAllProjectTypes = async (req, res) => {
 };
 
 /**
+ * Get project type by id
+ * @route GET /api/v1/projects/types/:id
+ * @access Authenticated
+ */
+exports.getProjectTypeById = async (req, res) => {
+  try {
+    const type = await ProjectType.findById(req.params.id);
+    
+    if (!type) {
+      return sendResponse(res, {
+        success: false,
+        message: "Project type not found"
+      }, 404);
+    }
+    
+    sendResponse(res, {
+      success: true,
+      message: "Project type fetched successfully",
+      data: type
+    });
+  } catch (error) {
+    sendResponse(res, {
+      success: false,
+      message: "Failed to fetch project type",
+      error: error.message
+    }, 500);
+  }
+};
+
+/**
  * Create a new project type
  * @route POST /api/v1/projects/types
  * @access Private (Admin/Faculty)

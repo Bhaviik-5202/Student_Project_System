@@ -14,7 +14,7 @@
     --assignment-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
-.dark .assignment-page {
+.dark {
     --assignment-bg-light: #0f172a;
     --assignment-white: #1e293b;
     --assignment-text-main: #f1f5f9;
@@ -22,6 +22,14 @@
     --assignment-border: #334155;
     --assignment-secondary: #1e293b;
     --assignment-secondary-hover: #334155;
+}
+
+.dark .assignment-card {
+    background-color: var(--assignment-white);
+}
+
+.dark .assignment-table-container {
+    background-color: var(--assignment-white);
 }
 
 /* Page Layout */
@@ -94,7 +102,6 @@
     color: var(--assignment-text-muted);
     font-size: 12px;
     font-weight: 600;
-    text-transform: uppercase;
     letter-spacing: 0.05em;
     border-bottom: 1px solid var(--assignment-border);
 }
@@ -181,7 +188,7 @@
 }
 
 .assignment-btn-text:hover {
-    text-decoration: underline;
+    text-decoration: none;
 }
 
 /* Forms */

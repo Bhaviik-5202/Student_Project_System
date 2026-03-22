@@ -66,89 +66,86 @@ const SubmissionHistory = memo(() => {
   }
 
   return (
-    <div className="assignment-page">
-      <div className="assignment-container">
-        <div className="assignment-header">
-          <div>
-            <h1 className="assignment-title">Submission History</h1>
-            <p className="assignment-subtitle">Review your past academic performance and feedback</p>
-          </div>
-          <button onClick={() => navigate(-1)} className="assignment-btn assignment-btn-outline">
-            Back
-          </button>
+    <div className="p-4 md:p-6 space-y-8 animate-fade-in">
+      <div className="flex justify-between items-center mb-8 pb-4 border-b border-gray-100 dark:border-slate-800">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Submission History</h1>
+          <p className="text-sm text-gray-500 mt-1 font-medium">Review your past academic performance and feedback</p>
         </div>
+        <button 
+          onClick={() => navigate(-1)} 
+          className="btn btn-secondary"
+        >
+          Back
+        </button>
+      </div>
 
-        <div className="assignment-card" style={{ padding: 0, overflow: "hidden" }}>
-          {error ? (
-            <div style={{ padding: "40px", textAlign: "center" }}>
-              <p style={{ color: "var(--color-error)" }}>{error}</p>
-            </div>
-          ) : submissions.length === 0 ? (
-            <div style={{ padding: "40px", textAlign: "center" }}>
-              <p className="assignment-subtitle">You haven't submitted any assignments yet.</p>
-              <button 
-                onClick={() => navigate("/assignments")} 
-                className="assignment-btn assignment-btn-primary" 
-                style={{ marginTop: "16px" }}
-              >
-                Go to Assignments
-              </button>
-            </div>
-          ) : (
-            <div className="assignment-table-container">
-              <table className="assignment-table">
-                <thead>
-                  <tr>
-                    <th>Assignment</th>
-                    <th>Course</th>
-                    <th>Submitted</th>
-                    <th>Grade</th>
-                    <th>Status</th>
-                    <th>Files</th>
-                    <th>Actions</th>
+      <div className="card shadow-sm overflow-hidden">
+        {error ? (
+          <div className="p-12 text-center">
+            <p className="text-red-500 font-bold">{error}</p>
+          </div>
+        ) : submissions.length === 0 ? (
+          <div className="p-20 text-center flex flex-col items-center gap-4">
+            <p className="text-gray-500 font-medium">You haven't submitted any assignments yet.</p>
+            <button 
+              onClick={() => navigate("/assignments")} 
+              className="btn btn-primary"
+            >
+              Go to Assignments
+            </button>
+          </div>
+        ) : (
+          <div className="table-responsive">
+            <table className="table">
+              <thead>
+                <tr className="bg-gray-50/50 dark:bg-slate-900/50">
+                  <th className="px-6 py-4 text-left text-[11px] font-bold text-gray-400">Assignment</th>
+                  <th className="px-6 py-4 text-left text-[11px] font-bold text-gray-400">Course</th>
+                  <th className="px-6 py-4 text-left text-[11px] font-bold text-gray-400">Submitted</th>
+                  <th className="px-6 py-4 text-left text-[11px] font-bold text-gray-400">Grade</th>
+                  <th className="px-6 py-4 text-left text-[11px] font-bold text-gray-400">Status</th>
+                  <th className="px-6 py-4 text-left text-[11px] font-bold text-gray-400">Files</th>
+                  <th className="px-6 py-4 text-right text-[11px] font-bold text-gray-400">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {submissions.map((item) => (
+                  <tr key={item.id} className="hover:bg-gray-50 dark:hover:bg-slate-900/50 transition-colors group text-sm">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 transition-colors">{item.assignment}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-gray-600 dark:text-gray-400 font-medium">{item.course}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-gray-600 dark:text-gray-400">{item.submittedDate}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 py-0.5 text-[10px] font-bold rounded-full ${
+                        item.grade !== "Pending" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" : "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400"
+                      }`}>
+                        {item.grade}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 py-0.5 text-[10px] font-bold rounded-full ${
+                        item.status === "Graded" ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" : "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
+                      }`}>
+                        {item.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-gray-600 dark:text-gray-400 font-bold">{item.filesCount}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right">
+                      <button 
+                        onClick={() => navigate(`/assignments/details/${item.assignmentId || item.id}`)}
+                        className="text-indigo-600 dark:text-indigo-400 font-bold"
+                      >
+                        View
+                      </button>
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {submissions.map((item) => (
-                    <tr key={item.id}>
-                      <td>
-                        <div style={{ fontWeight: "600" }}>{item.assignment}</div>
-                      </td>
-                      <td>{item.course}</td>
-                      <td>{item.submittedDate}</td>
-                      <td>
-                        <span className={`assignment-badge ${
-                          item.grade !== "Pending" ? "badge-submitted" : "badge-pending"
-                        }`}>
-                          {item.grade}
-                        </span>
-                      </td>
-                      <td>
-                        <span className={`assignment-badge ${
-                          item.status === "Graded" ? "badge-submitted" : "badge-pending"
-                        }`}>
-                          {item.status}
-                        </span>
-                      </td>
-                      <td>{item.filesCount}</td>
-                      <td>
-                        <div style={{ display: "flex", gap: "8px" }}>
-                          <button 
-                            className="assignment-btn-text" 
-                            style={{ color: "var(--assignment-primary)" }}
-                            onClick={() => navigate(`/assignments/details/${item.assignmentId || item.id}`)}
-                          >
-                            View
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );

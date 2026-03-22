@@ -1,5 +1,19 @@
 import React, { useState, useCallback, memo, useEffect } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
+import {
+  Calendar,
+  Clock,
+  MapPin,
+  Video,
+  X,
+  Plus,
+  Save,
+  Users,
+  Info,
+  ChevronRight,
+  UserPlus,
+  ArrowLeft
+} from "lucide-react";
 import { toast } from "react-hot-toast";
 import meetingService from "../../../services/meetingService";
 
@@ -38,7 +52,7 @@ const MeetingForm = memo(() => {
           });
         } else {
           toast.error("Failed to load meeting details");
-          navigate("/meetings/list");
+          navigate("/meetings");
         }
         setInitialLoading(false);
       };
@@ -50,6 +64,14 @@ const MeetingForm = memo(() => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   }, []);
+
+  const handleClose = useCallback(() => {
+    if (location.pathname.startsWith("/meetings/list")) {
+      navigate("/meetings/list");
+    } else {
+      navigate("/meetings");
+    }
+  }, [navigate, location.pathname]);
 
   const handleSubmit = useCallback(
     async (e) => {
@@ -68,13 +90,13 @@ const MeetingForm = memo(() => {
           participants: potentialParticipants,
         };
 
-        const res = isEditing 
+        const res = isEditing
           ? await meetingService.updateMeeting(id, meetingData)
           : await meetingService.createMeeting(meetingData);
 
         if (res.success) {
           toast.success(`Meeting ${isEditing ? "updated" : "scheduled"} successfully`);
-          navigate("/meetings/list");
+          handleClose();
         } else {
           toast.error(res.message || `Failed to ${isEditing ? "update" : "schedule"} meeting`);
         }
@@ -84,162 +106,202 @@ const MeetingForm = memo(() => {
         setLoading(false);
       }
     },
-    [formData, navigate, id, isEditing],
+    [formData, id, isEditing, handleClose],
   );
 
-  if (initialLoading) {
-    return (
-      <div className="p-12 text-center text-gray-400 text-sm italic">
-        Loading session particulars...
-      </div>
-    );
-  }
-
   return (
-    <div className="p-4 md:p-6 space-y-6">
-      <div className="flex justify-between items-start gap-4">
-        <div>
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-            {isViewing ? "Meeting Particulars" : isEditing ? "Modify Meeting" : "Schedule Meeting"}
-          </h2>
-          <p className="text-sm text-gray-500">
-            {isViewing ? "Review session details and agenda" : isEditing ? "Update existing session details" : "Orchestrate a new collaborative session"}
-          </p>
-        </div>
-        <button
-          onClick={() => navigate("/meetings")}
-          className="text-gray-400 hover:text-gray-600 text-xs font-bold uppercase tracking-widest"
-        >
-          Cancel
-        </button>
-      </div>
-
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6 shadow-sm">
-            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-6">Principal Data</h3>
-            <div className="space-y-4">
+    <div className="p-4 md:p-6 space-y-6 animate-fade-in mb-20">
+      <div className="w-full max-w-2xl mx-auto space-y-6">
+        {/* Header Card (Mirroring StudentForm Registry style) */}
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 p-6 md:p-8">
+            <div className="flex items-center gap-5">
               <div>
-                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
-                  Meeting Title
-                </label>
-                <input
-                  type="text"
-                  name="title"
-                  required
-                  value={formData.title}
-                  onChange={handleChange}
-                  readOnly={isViewing}
-                  className={`w-full bg-gray-50 dark:bg-slate-900 border border-transparent focus:border-indigo-500 dark:focus:border-indigo-500 rounded-lg px-4 py-3 text-sm font-semibold transition-all outline-none ${isViewing ? 'cursor-not-allowed opacity-70' : ''}`}
-                  placeholder="Official session name..."
-                />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
-                    Date
-                  </label>
-                  <input
-                    type="date"
-                    name="date"
-                    required
-                    value={formData.date}
-                    onChange={handleChange}
-                    readOnly={isViewing}
-                    className={`w-full bg-gray-50 dark:bg-slate-900 border border-transparent focus:border-indigo-500 dark:focus:border-indigo-500 rounded-lg px-4 py-3 text-sm font-semibold transition-all outline-none ${isViewing ? 'cursor-not-allowed opacity-70' : ''}`}
-                  />
-                </div>
-                <div>
-                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
-                    Time
-                  </label>
-                  <input
-                    type="time"
-                    name="time"
-                    required
-                    value={formData.time}
-                    onChange={handleChange}
-                    readOnly={isViewing}
-                    className={`w-full bg-gray-50 dark:bg-slate-900 border border-transparent focus:border-indigo-500 dark:focus:border-indigo-500 rounded-lg px-4 py-3 text-sm font-semibold transition-all outline-none ${isViewing ? 'cursor-not-allowed opacity-70' : ''}`}
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
-                  Location
-                </label>
-                <input
-                  type="text"
-                  name="location"
-                  required
-                  value={formData.location}
-                  onChange={handleChange}
-                  readOnly={isViewing}
-                  className={`w-full bg-gray-50 dark:bg-slate-900 border border-transparent focus:border-indigo-500 dark:focus:border-indigo-500 rounded-lg px-4 py-3 text-sm font-semibold transition-all outline-none ${isViewing ? 'cursor-not-allowed opacity-70' : ''}`}
-                  placeholder="Physical room or virtual link..."
-                />
+                <h1 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
+                  {isViewing ? "Meeting Management" : isEditing ? "Meeting Management" : "Meeting Management"}
+                </h1>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 font-medium">
+                  {isViewing ? "Reviewing project coordination" : "Create a new meeting entry in the system"}
+                </p>
               </div>
             </div>
-          </div>
-
-          <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6 shadow-sm">
-            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-6">Session Details</h3>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
-                  Agenda & Description
-                </label>
-                <textarea
-                  name="description"
-                  rows="4"
-                  value={formData.description}
-                  onChange={handleChange}
-                  readOnly={isViewing}
-                  className={`w-full bg-gray-50 dark:bg-slate-900 border border-transparent focus:border-indigo-500 dark:focus:border-indigo-500 rounded-lg px-4 py-3 text-sm font-semibold transition-all outline-none resize-none ${isViewing ? 'cursor-not-allowed opacity-70' : ''}`}
-                  placeholder="Items to discuss and key takeaways..."
-                />
-              </div>
-            </div>
+            <button
+              onClick={handleClose}
+              className="text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all p-2.5 rounded-xl"
+              title="Discard changes"
+            >
+              <X size={20} />
+            </button>
           </div>
         </div>
 
-        <div className="space-y-6">
-          <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6 shadow-sm">
-            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-6">Participants</h3>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">
-                  Member IDs (Comma Separated)
-                </label>
-                <textarea
-                  name="attendees"
-                  rows="3"
-                  value={formData.attendees}
-                  onChange={handleChange}
-                  readOnly={isViewing}
-                  className={`w-full bg-gray-50 dark:bg-slate-900 border border-transparent focus:border-indigo-500 dark:focus:border-indigo-500 rounded-lg px-4 py-3 text-sm font-semibold transition-all outline-none resize-none ${isViewing ? 'cursor-not-allowed opacity-70' : ''}`}
-                  placeholder="User ObjectIds (24 characters)..."
-                />
-                {!isViewing && (
-                  <p className="text-[10px] text-gray-400 mt-2 italic">
-                    Note: Only valid User IDs will be registered as participants.
-                  </p>
-                )}
+
+        {initialLoading ? (
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 p-20 text-center shadow-sm">
+            <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
+            <p className="mt-4 text-gray-400 font-medium italic">Fetching session data...</p>
+          </div>
+        ) : (
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
+            <form onSubmit={handleSubmit} className="p-6 md:p-10 space-y-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Meeting Title - Full Width */}
+                <div className="md:col-span-2">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 block ml-1">
+                    Session Title
+                  </label>
+                  <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700">
+                    <Video size={18} className="text-indigo-500" />
+                    <input
+                      type="text"
+                      name="title"
+                      required
+                      value={formData.title}
+                      onChange={handleChange}
+                      readOnly={isViewing}
+                      className="w-full bg-transparent outline-none text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400"
+                      placeholder={isViewing ? "" : "e.g. Weekly Sprint Alignment"}
+                    />
+                  </div>
+                </div>
+
+                {/* Date */}
+                <div>
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 block ml-1">
+                    Scheduled Date
+                  </label>
+                  <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700">
+                    <Calendar size={18} className="text-gray-400" />
+                    <input
+                      type="date"
+                      name="date"
+                      required
+                      value={formData.date}
+                      onChange={handleChange}
+                      readOnly={isViewing}
+                      className="w-full bg-transparent outline-none text-sm font-medium text-gray-900 dark:text-white"
+                    />
+                  </div>
+                </div>
+
+                {/* Time */}
+                <div>
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 block ml-1">
+                    Session Timing
+                  </label>
+                  <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700">
+                    <Clock size={18} className="text-gray-400" />
+                    <input
+                      type="time"
+                      name="time"
+                      required
+                      value={formData.time}
+                      onChange={handleChange}
+                      readOnly={isViewing}
+                      className="w-full bg-transparent outline-none text-sm font-medium text-gray-900 dark:text-white"
+                    />
+                  </div>
+                </div>
+
+                {/* Location */}
+                <div className="md:col-span-2">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 block ml-1">
+                    Venue / Meeting URL
+                  </label>
+                  <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700">
+                    <MapPin size={18} className="text-gray-400" />
+                    <input
+                      type="text"
+                      name="location"
+                      required
+                      value={formData.location}
+                      onChange={handleChange}
+                      readOnly={isViewing}
+                      className="w-full bg-transparent outline-none text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400"
+                      placeholder={isViewing ? "" : "Physical room or digital link"}
+                    />
+                  </div>
+                </div>
+
+                {/* Description */}
+                <div className="md:col-span-2">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 block ml-1">
+                    Meeting Agenda
+                  </label>
+                  <div className="flex items-start gap-3 p-3 bg-gray-50 dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700">
+                    <Info size={18} className="text-gray-400 mt-1" />
+                    <textarea
+                      name="description"
+                      rows="3"
+                      value={formData.description}
+                      onChange={handleChange}
+                      readOnly={isViewing}
+                      className="w-full bg-transparent outline-none text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400 resize-none"
+                      placeholder={isViewing ? "" : "Outline key objectives..."}
+                    />
+                  </div>
+                </div>
+
+                {/* Participants */}
+                <div className="md:col-span-2">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 block ml-1">
+                    Collaborators (User IDs)
+                  </label>
+                  <div className="flex items-start gap-3 p-3 bg-gray-50 dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700">
+                    <UserPlus size={18} className="text-gray-400 mt-1" />
+                    <textarea
+                      name="attendees"
+                      rows="2"
+                      value={formData.attendees}
+                      onChange={handleChange}
+                      readOnly={isViewing}
+                      className="w-full bg-transparent outline-none text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400 resize-none"
+                      placeholder={isViewing ? "" : "User ObjectIds separated by commas..."}
+                    />
+                  </div>
+                  {!isViewing && (
+                    <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest mt-3 flex items-center gap-2 opacity-60">
+                      <ChevronRight size={10} className="text-indigo-500" />
+                      Participants will be registered by their unique system identifiers
+                    </p>
+                  )}
+                </div>
               </div>
-              
+
+              {/* Form Actions */}
               {!isViewing && (
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-4 rounded-xl shadow-lg shadow-indigo-200 dark:shadow-none transition-all disabled:opacity-50"
-                >
-                  {loading ? (isEditing ? "Updating..." : "Scheduling...") : (isEditing ? "Update Meeting" : "Schedule Meeting")}
-                </button>
+                <div className="flex flex-col sm:flex-row gap-4 pt-10 border-t border-gray-50 dark:border-slate-800">
+                  <button
+                    type="button"
+                    onClick={handleClose}
+                    className="flex-1 h-12 bg-gray-50 dark:bg-slate-800/50 hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-600 dark:text-gray-400 text-[11px] font-bold uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2"
+                  >
+                    <ArrowLeft size={16} />
+                    Back to List
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="flex-[2] h-12 bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-bold uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2"
+                  >
+                    {loading ? (
+                      <>
+                        <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        Syncing...
+                      </>
+                    ) : (
+                      <>
+                        <Save size={18} />
+                        {isEditing ? "Update Session Profile" : "Execute Schedule Registry"}
+                      </>
+                    )}
+                  </button>
+                </div>
               )}
-            </div>
+            </form>
           </div>
-        </div>
-      </form>
+        )}
+      </div>
     </div>
   );
 });

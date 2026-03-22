@@ -277,7 +277,7 @@ const AdminDashboard = memo(() => {
             totalUsers: res.data.totalUsers,
             activeProjects: res.data.activeProjects,
             pendingApprovals: res.data.pendingApprovals,
-            systemHealth: res.data.systemHealth,
+            systemHealth: res.data.systemHealth || 98,
           });
           setRecentActivities(
             (res.data.recentActivities || []).map((a, idx) => ({

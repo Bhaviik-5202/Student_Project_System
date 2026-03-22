@@ -1,0 +1,151 @@
+/* src/assets/styles/projects.css */
+
+:root {
+    --project-primary: #2563eb;
+    --project-primary-hover: #1d4ed8;
+    --project-secondary: #f1f5f9;
+    --project-secondary-hover: #e2e8f0;
+    --project-text-main: #0f172a;
+    --project-text-muted: #64748b;
+    --project-border: #e2e8f0;
+    --project-bg-light: #f8fafc;
+    --project-white: #ffffff;
+    --project-radius: 8px;
+    --project-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.dark {
+    --project-bg-light: #0f172a;
+    --project-white: #1e293b;
+    --project-text-main: #f1f5f9;
+    --project-text-muted: #94a3b8;
+    --project-border: #334155;
+    --project-secondary: #1e293b;
+    --project-secondary-hover: #334155;
+}
+
+/* Page Layout */
+.project-page {
+    padding: 24px;
+    background-color: var(--project-bg-light);
+    color: var(--project-text-main);
+    min-height: 100vh;
+}
+
+.project-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.project-header {
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.project-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.project-subtitle {
+    color: var(--project-text-muted);
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+/* Cards */
+.project-card-simple {
+    background-color: var(--project-white);
+    border: 1px solid var(--project-border);
+    border-radius: var(--project-radius);
+    padding: 20px;
+    box-shadow: var(--project-shadow-sm);
+    transition: all 0.2s;
+}
+
+.dark .project-card-simple {
+    background-color: var(--project-white);
+}
+
+.project-card-header {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--project-border);
+}
+
+/* Buttons */
+.project-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+}
+
+.project-btn-primary {
+    background-color: var(--project-primary);
+    color: white;
+}
+
+.project-btn-primary:hover {
+    background-color: var(--project-primary-hover);
+}
+
+.project-btn-secondary {
+    background-color: var(--project-white);
+    border-color: var(--project-border);
+    color: var(--project-text-main);
+}
+
+.project-btn-secondary:hover {
+    background-color: var(--project-secondary-hover);
+}
+
+/* Badges */
+.project-badge {
+    display: inline-flex;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Forms */
+.project-form-group {
+    margin-bottom: 20px;
+}
+
+.project-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--project-text-main);
+}
+
+.project-input, .project-textarea, .project-select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--project-border);
+    border-radius: var(--project-radius);
+    background-color: var(--project-white);
+    color: var(--project-text-main);
+    font-size: 14px;
+}
+
+.project-input:focus, .project-textarea:focus, .project-select:focus {
+    outline: none;
+    border-color: var(--project-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}

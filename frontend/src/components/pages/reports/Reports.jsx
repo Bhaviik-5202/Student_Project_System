@@ -1,6 +1,11 @@
 import React, { useState, useMemo, useCallback, memo, useEffect } from "react";
 import { useAuth } from "../../../hooks/useAuth";
 import reportService from "../../../services/reportService";
+import { 
+  PieChart, Users, CalendarCheck, Settings, Layout, Briefcase, 
+  FileText, FileSpreadsheet, FileCode, FileType, ChevronDown, 
+  Download, Clock, Info, CheckCircle2, Check, Loader2, Save, X, Edit, FileUp, Search
+} from "lucide-react";
 
 /**
  * Reports Component
@@ -354,9 +359,9 @@ const Reports = memo(() => {
           </div>
           <button 
             onClick={handleExportAll}
-            className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white rounded-lg transition duration-150 flex items-center focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition duration-150 flex items-center focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
           >
-            <i className="fas fa-download mr-2" /> Export All
+            <Download size={18} className="mr-2" /> Export All
           </button>
         </div>
       </div>
@@ -379,9 +384,13 @@ const Reports = memo(() => {
                 <div
                   className={`w-12 h-12 ${colorStyles[report.color]?.bg || colorStyles.blue.bg} rounded-lg flex items-center justify-center mr-4`}
                 >
-                  <i
-                    className={`fas ${report.icon} ${colorStyles[report.color]?.text || colorStyles.blue.text} text-xl`}
-                  />
+                  {report.id === 'project-status' && <PieChart className={colorStyles[report.color]?.text} size={24} />}
+                  {report.id === 'student-performance' && <Users className={colorStyles[report.color]?.text} size={24} />}
+                  {report.id === 'attendance' && <CalendarCheck className={colorStyles[report.color]?.text} size={24} />}
+                  {report.id === 'resource-utilization' && <Settings className={colorStyles[report.color]?.text} size={24} />}
+                  {report.id === 'timeline' && <Layout className={colorStyles[report.color]?.text} size={24} />}
+                  {report.id === 'guide-performance' && <Briefcase className={colorStyles[report.color]?.text} size={24} />}
+                  {!['project-status', 'student-performance', 'attendance', 'resource-utilization', 'timeline', 'guide-performance'].includes(report.id) && <FileText className={colorStyles[report.color]?.text} size={24} />}
                 </div>
                 <div className="flex-1">
                   <h4 className="font-semibold text-gray-900 dark:text-white mb-1">
@@ -393,8 +402,8 @@ const Reports = memo(() => {
                 </div>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-xs text-gray-500 dark:text-gray-400">
-                  <i className="fas fa-clock mr-1" />
+                <span className="text-xs text-gray-500 dark:text-gray-400 flex items-center">
+                  <Clock size={12} className="mr-1" />
                   Generated 2 hours ago
                 </span>
                 <button
@@ -589,9 +598,9 @@ const Reports = memo(() => {
             </button>
             <button
               onClick={handleExport}
-              className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 text-white rounded-lg transition duration-150 flex items-center"
+              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition duration-150 flex items-center"
             >
-              <i className="fas fa-file-export mr-2" /> Export Selected
+              <FileUp size={18} className="mr-2" /> Export Selected
             </button>
           </div>
         </div>
@@ -608,9 +617,10 @@ const Reports = memo(() => {
               onClick={() => setExportFormat(option.id)}
             >
               <div className="flex items-center mb-3">
-                <i
-                  className={`fas ${option.icon} ${colorStyles[option.color]?.text || colorStyles.blue.text} text-xl mr-3`}
-                />
+                {option.id === 'pdf' && <FileText className={`${colorStyles[option.color]?.text} mr-3`} size={20} />}
+                {option.id === 'excel' && <FileSpreadsheet className={`${colorStyles[option.color]?.text} mr-3`} size={20} />}
+                {option.id === 'csv' && <FileCode className={`${colorStyles[option.color]?.text} mr-3`} size={20} />}
+                {option.id === 'word' && <FileType className={`${colorStyles[option.color]?.text} mr-3`} size={20} />}
                 <div>
                   <h4 className="font-medium text-gray-900 dark:text-white">
                     {option.title}
@@ -620,7 +630,7 @@ const Reports = memo(() => {
                   </p>
                 </div>
                 {exportFormat === option.id && (
-                  <i className="fas fa-check-circle text-green-500 ml-auto"></i>
+                  <CheckCircle2 className="text-green-500 ml-auto" size={18} />
                 )}
               </div>
 
@@ -630,7 +640,7 @@ const Reports = memo(() => {
                     key={idx}
                     className="flex items-center text-xs text-gray-600 dark:text-gray-400"
                   >
-                    <i className="fas fa-check text-green-500 mr-2 text-xs" />
+                    <Check className="text-green-500 mr-2" size={12} />
                     {feature}
                   </div>
                 ))}
@@ -666,7 +676,7 @@ const Reports = memo(() => {
             </div>
             <div className="text-sm text-gray-600 dark:text-gray-400">
               <div className="flex items-center">
-                <i className="fas fa-info-circle text-blue-500 mr-2" />
+                <Info size={16} className="text-blue-500 mr-2" />
                 <span>File size: ~2.5MB • Estimated time: 15 seconds</span>
               </div>
             </div>
@@ -709,7 +719,7 @@ const Reports = memo(() => {
               {loading ? (
                 <tr>
                   <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
-                    <i className="fas fa-spinner fa-spin mr-2" /> Loading reports...
+                    <Loader2 size={20} className="animate-spin mr-2 inline-block" /> Loading reports...
                   </td>
                 </tr>
               ) : recentReports.length === 0 ? (
@@ -724,7 +734,7 @@ const Reports = memo(() => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mr-3">
-                          <i className={`fas ${reportTypes.find(r => r.id === report.type)?.icon || 'fa-file-alt'} text-blue-600 dark:text-blue-400`} />
+                          <FileText size={16} className="text-blue-600 dark:text-blue-400" />
                         </div>
                         <div>
                           <div className="text-sm font-medium text-gray-900 dark:text-white">
@@ -771,14 +781,14 @@ const Reports = memo(() => {
                             className="text-green-600 hover:text-green-800 p-1"
                             title="Save Changes"
                           >
-                            <i className="fas fa-save" />
+                            <Save size={16} />
                           </button>
                           <button 
                             onClick={cancelEdit} 
                             className="text-rose-600 hover:text-rose-800 p-1"
                             title="Cancel"
                           >
-                            <i className="fas fa-times" />
+                            <X size={16} />
                           </button>
                         </div>
                       ) : (
@@ -787,13 +797,13 @@ const Reports = memo(() => {
                             onClick={() => handleEditReport(report)}
                             className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 mr-3"
                           >
-                            <i className="fas fa-edit" />
+                            <Edit size={16} />
                           </button>
                           <button 
                             onClick={() => handleExport()}
                             className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 mr-3"
                           >
-                            <i className="fas fa-download" />
+                            <Download size={16} />
                           </button>
                           <button 
                             onClick={() => handleDeleteReport(report._id)}

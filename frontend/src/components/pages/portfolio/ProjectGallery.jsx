@@ -135,7 +135,7 @@ const ProjectGallery = () => {
                   <p className="text-[10px] text-gray-400 uppercase font-bold tracking-widest mt-0.5">{project.category} • {project.date}</p>
                 </div>
               </div>
-              <button className="text-[10px] font-bold text-indigo-600 uppercase hover:underline">Review</button>
+              <button className="text-[10px] font-bold text-indigo-600 uppercase">Review</button>
             </div>
           ))}
         </div>

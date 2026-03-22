@@ -9,20 +9,12 @@ import {
   ChevronLeft,
   ChevronRight
 } from "lucide-react";
+import { useNavigate, Outlet } from "react-router-dom";
 import meetingService from "../../../services/meetingService";
 import { toast } from "react-hot-toast";
 const MeetingCalendar = memo(() => {
+  const navigate = useNavigate();
   const [viewDate, setViewDate] = useState(new Date());
-  const [showModal, setShowModal] = useState(false);
-  const [meetingForm, setMeetingForm] = useState({
-    title: "",
-    date: "",
-    time: "",
-    duration: "1.5",
-    location: "",
-    description: "",
-    participants: [],
-  });
   const [selectedDate, setSelectedDate] = useState(null);
 
   const [meetings, setMeetings] = useState([]);
@@ -82,34 +74,6 @@ const MeetingCalendar = memo(() => {
     setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() + offset, 1));
   };
 
-  const handleFormChange = useCallback((e) => {
-    const { name, value } = e.target;
-    setMeetingForm((prev) => ({ ...prev, [name]: value }));
-  }, []);
-
-  const handleScheduleMeeting = useCallback(async () => {
-    if (!meetingForm.title || !meetingForm.date || !meetingForm.time) {
-      toast.error("Please fill in all required fields");
-      return;
-    }
-
-    try {
-      const response = await meetingService.createMeeting(meetingForm);
-      if (response.success) {
-        toast.success("Meeting scheduled successfully!");
-        setShowModal(false);
-        setMeetingForm({
-          title: "", date: "", time: "", duration: "1.5",
-          location: "", description: "", participants: [],
-        });
-        fetchMeetings();
-      } else {
-        toast.error(response.message || "Failed to schedule meeting");
-      }
-    } catch (error) {
-      toast.error("Failed to schedule meeting");
-    }
-  }, [meetingForm, fetchMeetings]);
 
   const monthName = viewDate.toLocaleString('default', { month: 'long' });
   const yearName = viewDate.getFullYear();
@@ -136,7 +100,7 @@ const MeetingCalendar = memo(() => {
             Monitor and schedule your project sessions
           </p>
         </div>
-        <button onClick={() => setShowModal(true)} className="btn btn-primary">
+        <button onClick={() => navigate("/meetings/new")} className="btn btn-primary">
           <Plus className="w-5 h-5" /> Schedule Meeting
         </button>
       </div>
@@ -217,7 +181,7 @@ const MeetingCalendar = memo(() => {
             {selectedDate && (
               <button 
                 onClick={() => setSelectedDate(null)}
-                className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest hover:underline"
+                className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest"
               >
                 View All
               </button>
@@ -260,92 +224,7 @@ const MeetingCalendar = memo(() => {
         </div>
       </div>
 
-      {showModal && (
-        <div className="modal-overlay">
-          <div className="modal-content max-w-lg">
-            <div className="modal-header">
-              <h2 className="modal-title">Schedule New Session</h2>
-              <button
-                onClick={() => setShowModal(false)}
-                className="modal-close"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="modal-body space-y-4">
-              <div className="form-group">
-                <label className="form-label">Session Title</label>
-                <input
-                  type="text"
-                  name="title"
-                  required
-                  value={meetingForm.title}
-                  onChange={handleFormChange}
-                  className="form-control"
-                  placeholder="e.g. Project Review, Sprint Planning"
-                />
-              </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="form-group">
-                  <label className="form-label">Date</label>
-                  <input
-                    type="date"
-                    name="date"
-                    required
-                    value={meetingForm.date}
-                    onChange={handleFormChange}
-                    className="form-control"
-                  />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Time</label>
-                  <input
-                    type="time"
-                    name="time"
-                    required
-                    value={meetingForm.time}
-                    onChange={handleFormChange}
-                    className="form-control"
-                  />
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">Location / Link</label>
-                <input
-                  type="text"
-                  name="location"
-                  value={meetingForm.location}
-                  onChange={handleFormChange}
-                  className="form-control"
-                  placeholder="Physical room or meeting URL"
-                />
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">Agenda</label>
-                <textarea
-                  name="description"
-                  rows="3"
-                  value={meetingForm.description}
-                  onChange={handleFormChange}
-                  className="form-control resize-none"
-                  placeholder="What will be discussed during this session?"
-                />
-              </div>
-            </div>
-            <div className="modal-footer">
-              <button onClick={() => setShowModal(false)} className="btn btn-secondary">
-                Cancel
-              </button>
-              <button onClick={handleScheduleMeeting} className="btn btn-primary">
-                Confirm Session
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 });

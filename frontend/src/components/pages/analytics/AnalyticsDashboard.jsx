@@ -1,5 +1,6 @@
 import { useEffect, useState, memo } from "react";
 import { useNavigate } from "react-router-dom";
+import { GraduationCap, CheckSquare, TrendingUp, Percent } from "lucide-react";
 import analyticsService from "../../../services/analyticsService";
 
 /**
@@ -40,12 +41,12 @@ const AnalyticsDashboard = memo(() => {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
               Analytics Dashboard
             </h1>
-            <p className="text-slate-600 dark:text-slate-400">
+            <p className="text-slate-600 dark:text-slate-400 mt-1">
               System performance and analytics overview
             </p>
           </div>
@@ -68,7 +69,7 @@ const AnalyticsDashboard = memo(() => {
               <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
                 <div className="flex items-center">
                   <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mr-4">
-                    <i className="fas fa-user-graduate text-xl text-blue-600 dark:text-blue-400"></i>
+                    <GraduationCap className="text-blue-600 dark:text-blue-400" size={24} />
                   </div>
                   <div>
                     <div className="text-2xl font-bold text-slate-900 dark:text-white">
@@ -85,7 +86,7 @@ const AnalyticsDashboard = memo(() => {
               <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
                 <div className="flex items-center">
                   <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mr-4">
-                    <i className="fas fa-tasks text-xl text-green-600 dark:text-green-400"></i>
+                    <CheckSquare className="text-green-600 dark:text-green-400" size={24} />
                   </div>
                   <div>
                     <div className="text-2xl font-bold text-slate-900 dark:text-white">
@@ -102,7 +103,7 @@ const AnalyticsDashboard = memo(() => {
               <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
                 <div className="flex items-center">
                   <div className="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center mr-4">
-                    <i className="fas fa-chart-line text-xl text-yellow-600 dark:text-yellow-400"></i>
+                    <TrendingUp className="text-yellow-600 dark:text-yellow-400" size={24} />
                   </div>
                   <div>
                     <div className="text-2xl font-bold text-slate-900 dark:text-white">
@@ -119,7 +120,7 @@ const AnalyticsDashboard = memo(() => {
               <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
                 <div className="flex items-center">
                   <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mr-4">
-                    <i className="fas fa-percentage text-xl text-purple-600 dark:text-purple-400"></i>
+                    <Percent className="text-purple-600 dark:text-purple-400" size={24} />
                   </div>
                   <div>
                     <div className="text-2xl font-bold text-slate-900 dark:text-white">

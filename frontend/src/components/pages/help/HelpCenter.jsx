@@ -1,5 +1,6 @@
 import React, { memo, useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { Search, X, BookOpen, HelpCircle, PlayCircle, Loader2 } from "lucide-react";
 import api from "../../../utils/api";
 
 const HelpCenter = memo(() => {
@@ -68,14 +69,14 @@ const HelpCenter = memo(() => {
               className="w-full px-4 py-3 pl-12 border border-slate-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-white transition-all"
             />
             <div className="absolute left-4 top-3.5 text-slate-400">
-              <i className="fas fa-search" />
+              <Search size={18} />
             </div>
             {searchTerm && (
               <button 
                 onClick={() => setSearchTerm("")}
                 className="absolute right-4 top-3.5 text-slate-400 hover:text-slate-600"
               >
-                <i className="fas fa-times" />
+                <X size={18} />
               </button>
             )}
           </div>
@@ -84,9 +85,9 @@ const HelpCenter = memo(() => {
         {/* Navigation Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           {[
-            { title: "User Guide", icon: "fa-book", desc: "Browse full documentation", link: "/user-guide", color: "blue" },
-            { title: "FAQs", icon: "fa-question-circle", desc: "Common questions & answers", link: "/faq", color: "indigo" },
-            { title: "Tutorials", icon: "fa-play-circle", desc: "Watch help videos", link: "/help/tutorials", color: "emerald" },
+            { title: "User Guide", icon: <BookOpen className="text-blue-600 dark:text-blue-400" size={20} />, desc: "Browse full documentation", link: "/user-guide", color: "blue" },
+            { title: "FAQs", icon: <HelpCircle className="text-indigo-600 dark:text-indigo-400" size={20} />, desc: "Common questions & answers", link: "/faq", color: "indigo" },
+            { title: "Tutorials", icon: <PlayCircle className="text-emerald-600 dark:text-emerald-400" size={20} />, desc: "Watch help videos", link: "/help/tutorials", color: "emerald" },
           ].map((card) => (
             <button
               key={card.title}
@@ -95,7 +96,7 @@ const HelpCenter = memo(() => {
             >
               <div className="flex items-center mb-4">
                 <div className={`w-10 h-10 rounded bg-${card.color}-100 dark:bg-${card.color}-900/30 flex items-center justify-center mr-3`}>
-                  <i className={`fas ${card.icon} text-lg text-${card.color}-600 dark:text-${card.color}-400`} />
+                  {card.icon}
                 </div>
                 <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
                   {card.title}
@@ -135,7 +136,7 @@ const HelpCenter = memo(() => {
           <div className="divide-y divide-slate-200 dark:divide-slate-700">
             {loading ? (
               <div className="p-8 text-center text-slate-500">
-                <i className="fas fa-spinner fa-spin mr-2" /> Loading...
+                <Loader2 size={24} className="animate-spin mr-2 inline-block" /> Loading...
               </div>
             ) : filteredFaqs.length > 0 ? (
               filteredFaqs.map((faq) => (
@@ -144,7 +145,7 @@ const HelpCenter = memo(() => {
                     <h3 className="font-medium text-slate-900 dark:text-white">
                       {faq.question}
                     </h3>
-                    <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 rounded">
+                    <span className="text-[10px] font-bold px-2 py-0.5 bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 rounded">
                       {faq.category}
                     </span>
                   </div>

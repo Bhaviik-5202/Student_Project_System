@@ -15,6 +15,7 @@ import RecentActivity from "./RecentActivity";
 import UpcomingMeetings from "./UpcomingMeetings";
 import ProgressVisualization from "./ProgressVisualization";
 import analyticsService from "../../../services/analyticsService";
+import { exportDashboardToCSV } from "../../../utils/exportUtils";
 
 // Import icons from lucide-react
 import {
@@ -182,7 +183,7 @@ const AnimatedStatCard = ({ stat, index, onClick }) => {
           />
         </div>
         <div className="mt-4 pt-4 border-t border-gray-100 dark:border-slate-700">
-          <span className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors duration-300 font-medium flex items-center group-hover:underline">
+          <span className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors duration-300 font-medium flex items-center">
             View details
             <ChevronRightIcon className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform duration-300" />
           </span>
@@ -243,36 +244,24 @@ const Dashboard = () => {
       setTimeOfDay(timeGreeting);
 
       // Personalized greeting based on time and role
-      const studentGreetings = [
-        "Ready to tackle today's assignments?",
-        "Great to see you back! Ready to learn?",
-        "Let's make today productive and insightful!",
-        "Your progress looks amazing! Keep it up!",
-        "Time to achieve great things today!",
-      ];
-
-      const facultyGreetings = [
-        "Ready to guide today's learning?",
-        "Great to have you back! Students await your guidance.",
-        "Let's make today impactful for our students!",
-        "Your mentorship makes a difference!",
-        "Time to inspire and educate today!",
-      ];
-
-      const adminGreetings = [
-        "Ready to manage today's operations?",
-        "Great to see you back! System awaits your oversight.",
-        "Let's ensure everything runs smoothly today!",
-        "Your management keeps everything on track!",
-        "Time to optimize and improve today!",
-      ];
-
       const greetings =
         user?.role === "student"
-          ? studentGreetings
+          ? [
+              "Welcome back! Ready to track your progress?",
+              "Great to see you! How are your projects coming along?",
+              "Ready to achieve your milestones today?"
+            ]
           : user?.role === "faculty"
-            ? facultyGreetings
-            : adminGreetings;
+            ? [
+                "Welcome back! Your students value your guidance.",
+                "Ready to review today's project milestones?",
+                "Great to have you back in the workspace."
+              ]
+            : [
+                "Welcome to the management console.",
+                "System oversight is ready for your review.",
+                "Ready to optimize organizational performance?"
+              ];
       setGreeting(greetings[Math.floor(Math.random() * greetings.length)]);
 
       // Fetch dashboard data from API
@@ -334,7 +323,7 @@ const Dashboard = () => {
                 value: todayMeetings.length || 0,
                 icon: CalendarIcon,
                 color: "purple",
-                change: todayMeetings.length > 0 ? `Next: ${todayMeetings[0].time}` : "No meetings",
+                change: todayMeetings.length > 0 ? `Next: ${todayMeetings[0].time}` : "No meetings today",
                 trend: "info",
                 onClick: () => navigate("/meetings"),
               },
@@ -714,18 +703,11 @@ const Dashboard = () => {
               <button
                 onClick={() => {
                   try {
-                    const { exportDashboardToCSV } = require("../../../utils/exportUtils");
                     exportDashboardToCSV(dashboardData, user?.role || "user");
                     toast.success("Report generated successfully!");
                   } catch (error) {
-                    // Fallback for direct import if require fails in this environment
-                    import("../../../utils/exportUtils").then(module => {
-                      module.exportDashboardToCSV(dashboardData, user?.role || "user");
-                      toast.success("Report generated successfully!");
-                    }).catch(err => {
-                      console.error("Export failed:", err);
-                      toast.error("Failed to generate report");
-                    });
+                    console.error("Export failed:", error);
+                    toast.error("Failed to generate report");
                   }
                 }}
                 className="group relative inline-flex items-center px-5 py-2.5 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 rounded-xl hover:border-transparent hover:shadow-lg transition-all duration-300 font-medium overflow-hidden"

@@ -65,7 +65,7 @@ const ForgotPassword = memo(() => {
         </button>
 
         <div className="text-center">
-          <Link to="/login" className="text-sm font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center justify-center gap-2">
+          <Link to="/login" className="text-sm font-bold text-blue-600 dark:text-blue-400 flex items-center justify-center gap-2">
             <i className="fas fa-arrow-left text-xs"></i>
             Back to Sign In
           </Link>

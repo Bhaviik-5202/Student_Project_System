@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Plus, Users, Clock, MapPin, Video, MoreHorizontal, Calendar as CalendarIcon } from "lucide-react";
 
 const UpcomingMeetings = ({ meetings = [], userRole }) => {
   return (
@@ -16,7 +17,7 @@ const UpcomingMeetings = ({ meetings = [], userRole }) => {
           to="/meetings/new"
           className="text-sm text-primary-600 hover:text-primary-700 font-medium flex items-center"
         >
-          <i className="fas fa-plus mr-1"></i> Schedule
+          <Plus size={16} className="mr-1" /> Schedule
         </Link>
       </div>
       <div className="space-y-4">
@@ -50,8 +51,8 @@ const UpcomingMeetings = ({ meetings = [], userRole }) => {
                           ? "Faculty Meeting"
                           : "Weekly Sync"}
                     </span>
-                    <span className="text-xs text-slate-500 dark:text-slate-400">
-                      <i className="fas fa-users mr-1"></i>
+                    <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center">
+                      <Users size={12} className="mr-1" />
                       {meeting.participants || 0} people
                     </span>
                   </div>
@@ -60,11 +61,11 @@ const UpcomingMeetings = ({ meetings = [], userRole }) => {
                   </h4>
                   <div className="flex flex-wrap items-center gap-3 text-sm text-slate-600 dark:text-slate-400">
                     <span className="flex items-center">
-                      <i className="fas fa-clock mr-1"></i>
+                      <Clock size={14} className="mr-1" />
                       {meeting.time}
                     </span>
                     <span className="flex items-center">
-                      <i className="fas fa-map-marker-alt mr-1"></i>
+                      <MapPin size={14} className="mr-1" />
                       {meeting.location}
                     </span>
                   </div>
@@ -79,14 +80,14 @@ const UpcomingMeetings = ({ meetings = [], userRole }) => {
                   >
                     {meeting.type === "review" ? (
                       <>
-                        <i className="fas fa-video mr-1"></i> Join
+                        <Video size={14} className="mr-1" /> Join
                       </>
                     ) : (
                       "Details"
                     )}
                   </button>
                   <button className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 rounded-lg hover:bg-white dark:hover:bg-slate-700 transition duration-150">
-                    <i className="fas fa-ellipsis-h"></i>
+                    <MoreHorizontal size={16} />
                   </button>
                 </div>
               </div>
@@ -103,7 +104,7 @@ const UpcomingMeetings = ({ meetings = [], userRole }) => {
       <div className="mt-6 pt-6 border-t border-gray-200">
         <div className="flex items-center justify-between text-sm">
           <div className="flex items-center">
-            <i className="fas fa-calendar-alt text-gray-400 mr-2"></i>
+            <CalendarIcon size={16} className="text-gray-400 mr-2" />
             <span className="text-gray-600">Total:</span>
             <span className="font-medium text-gray-900 ml-1">
               {meetings.length} meetings

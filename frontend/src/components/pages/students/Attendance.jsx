@@ -1,34 +1,55 @@
 import React, { memo, useMemo, useState, useEffect, useCallback } from "react";
+import { 
+  Calendar, 
+  CheckCircle2, 
+  XCircle, 
+  AlertCircle,
+  Activity,
+  History,
+  ChevronDown,
+  ChevronUp,
+  Clock
+} from "lucide-react";
 import useAuth from "../../../hooks/useAuth";
 import attendanceService from "../../../services/attendanceService";
 
 const AttendanceRow = memo(({ record }) => {
-  const statusStyles = {
-    green: "bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400",
-    red: "bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400",
-    yellow: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400",
+  const getStatusConfig = (status) => {
+    switch(status.toLowerCase()) {
+      case "present": return { class: "status-active", icon: CheckCircle2 };
+      case "absent": return { class: "status-error", icon: XCircle };
+      default: return { class: "status-warning", icon: AlertCircle };
+    }
   };
 
-  const statusClass = statusStyles[record.statusColor] || statusStyles.green;
+  const config = getStatusConfig(record.status);
+  const Icon = config.icon;
 
   return (
-    <tr className="hover:bg-gray-50 dark:hover:bg-slate-900/50 transition-colors">
-      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
-        {new Date(record.date).toLocaleDateString()}
+    <tr className="hover:bg-gray-50 dark:hover:bg-slate-900/50 transition-colors group">
+      <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900 dark:text-white">
+        {new Date(record.date).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}
       </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wider text-[10px]">
         {record.day}
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
-        <p className="text-sm font-semibold text-gray-900 dark:text-white">
-          {record.meeting}
-        </p>
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-        {record.time}
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-indigo-400" />
+          <p className="text-sm font-bold text-gray-800 dark:text-gray-200 group-hover:text-indigo-600 transition-colors">
+            {record.meeting}
+          </p>
+        </div>
       </td>
       <td className="px-6 py-4 whitespace-nowrap">
-        <span className={`px-2 py-1 text-[10px] font-bold uppercase rounded-full ${statusClass}`}>
+        <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400 font-medium">
+          <Clock size={12} />
+          {record.time}
+        </div>
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap">
+        <span className={`table-status ${config.class} flex items-center gap-1.5 w-fit`}>
+          <Icon size={12} />
           {record.status}
         </span>
       </td>
@@ -78,63 +99,86 @@ const StudentAttendance = memo(() => {
     totalMeetings: allRecords.length,
     present: allRecords.filter(r => r.status === "Present").length,
     absent: allRecords.filter(r => r.status === "Absent").length,
-    attendancePercentage: ((allRecords.filter(r => r.status === "Present").length / allRecords.length) * 100).toFixed(1),
+    attendancePercentage: allRecords.length > 0 
+      ? ((allRecords.filter(r => r.status === "Present").length / allRecords.length) * 100).toFixed(1)
+      : "0.0",
   };
 
   return (
-    <div className="p-4 md:p-6 space-y-6">
-      <div>
-        <h2 className="text-xl font-bold text-gray-900 dark:text-white">Attendance Overview</h2>
-        <p className="text-sm text-gray-500">Track and monitor academic presence</p>
+    <div className="p-4 md:p-6 space-y-8 animate-fade-in">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight">Attendance Tracking</h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 font-medium">Detailed history of your academic sessions and presencia</p>
+        </div>
+        <div className="flex items-center gap-2 px-4 py-2 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400 rounded-xl border border-indigo-100 dark:border-indigo-800/30">
+          <History size={16} />
+          <span className="text-xs font-bold uppercase tracking-wider">Semester Logs</span>
+        </div>
       </div>
 
-      {/* Basic Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
-          { label: "Total Meetings", value: stats.totalMeetings, icon: "fa-calendar", color: "text-blue-600 bg-blue-50" },
-          { label: "Present", value: stats.present, icon: "fa-check", color: "text-green-600 bg-green-50" },
-          { label: "Absent", value: stats.absent, icon: "fa-times", color: "text-red-600 bg-red-50" },
-          { label: "Attendance %", value: `${stats.attendancePercentage}%`, icon: "fa-percent", color: "text-indigo-600 bg-indigo-50" },
-        ].map((stat, idx) => (
-          <div key={idx} className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm flex items-center gap-4">
-            <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${stat.color} dark:bg-opacity-10`}>
-              <i className={`fas ${stat.icon}`} />
+          { label: "Total Sessions", value: stats.totalMeetings, icon: Calendar, color: "text-blue-600 bg-blue-50 dark:bg-blue-900/30 border-blue-100 dark:border-blue-800" },
+          { label: "Present Days", value: stats.present, icon: CheckCircle2, color: "text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 border-emerald-100 dark:border-emerald-800" },
+          { label: "Absent Days", value: stats.absent, icon: XCircle, color: "text-rose-600 bg-rose-50 dark:bg-rose-900/30 border-rose-100 dark:border-rose-800" },
+          { label: "Presence Rate", value: `${stats.attendancePercentage}%`, icon: Activity, color: "text-indigo-600 bg-indigo-50 dark:bg-indigo-900/30 border-indigo-100 dark:border-indigo-800" },
+        ].map((stat, idx) => {
+          const Icon = stat.icon;
+          return (
+            <div key={idx} className="card hover:shadow-lg transition-all duration-300">
+              <div className="card-body flex items-center gap-4">
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border ${stat.color} shadow-sm transition-transform hover:scale-110`}>
+                  <Icon size={22} />
+                </div>
+                <div>
+                  <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest leading-none mb-1">{stat.label}</p>
+                  <p className="text-xl font-black text-gray-900 dark:text-white">{stat.value}</p>
+                </div>
+              </div>
             </div>
-            <div>
-              <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">{stat.label}</p>
-              <p className="text-lg font-bold text-gray-900 dark:text-white">{stat.value}</p>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
-      {/* Attendance List */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 shadow-sm overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-100 dark:border-slate-700 flex justify-between items-center">
-          <h3 className="font-bold text-gray-900 dark:text-white">Recent Sessions</h3>
+      {/* Attendance History Table */}
+      <div className="table-container shadow-md">
+        <div className="px-6 py-5 border-b border-gray-100 dark:border-slate-800 flex justify-between items-center bg-white dark:bg-slate-800">
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <History size={18} className="text-indigo-500" />
+            Session History
+          </h3>
+          <span className="text-xs font-bold px-3 py-1 bg-gray-100 dark:bg-slate-700 text-gray-600 dark:text-gray-300 rounded-full">
+            Showing {displayedRecords.length} of {allRecords.length}
+          </span>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-left">
-            <thead className="bg-gray-50 dark:bg-slate-900/50">
+          <table className="table">
+            <thead>
               <tr>
-                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Date</th>
-                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Day</th>
-                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Meeting</th>
-                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Time</th>
-                <th className="px-6 py-3 text-xs font-semibold text-gray-500 uppercase">Status</th>
+                <th className="w-40">Date</th>
+                <th className="w-32">Day</th>
+                <th>Academic Session</th>
+                <th className="w-32">Time</th>
+                <th className="w-32">Presence</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100 dark:divide-slate-800">
+            <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan="5" className="px-6 py-10 text-center text-gray-400 text-sm italic">Synchronizing logs...</td>
+                  <td colSpan="5" className="py-20 text-center text-gray-400 font-medium italic animate-pulse">
+                    Accessing attendance archives...
+                  </td>
                 </tr>
               ) : displayedRecords.length === 0 ? (
                 <tr>
-                  <td colSpan="5" className="px-6 py-12 text-center">
-                    <div className="flex flex-col items-center">
-                      <i className="fas fa-calendar-times text-gray-200 text-4xl mb-3" />
-                      <p className="text-gray-400 text-sm font-medium">No attendance records found</p>
+                  <td colSpan="5" className="py-20 text-center">
+                    <div className="flex flex-col items-center gap-3">
+                      <div className="w-16 h-16 bg-gray-50 dark:bg-slate-700/30 rounded-full flex items-center justify-center border-2 border-dashed border-gray-200 dark:border-slate-700">
+                        <Calendar size={24} className="text-gray-300" />
+                      </div>
+                      <p className="text-gray-400 font-bold italic">No attendance records found</p>
                     </div>
                   </td>
                 </tr>
@@ -146,23 +190,15 @@ const StudentAttendance = memo(() => {
             </tbody>
           </table>
         </div>
-        {!showAll && allRecords.length > 4 && (
-          <div className="p-4 bg-gray-50 dark:bg-slate-900/30 text-center">
+        
+        {allRecords.length > 4 && (
+          <div className="p-4 bg-gray-50 dark:bg-slate-900/50 border-t border-gray-100 dark:border-slate-800 text-center">
             <button 
-              onClick={() => setShowAll(true)}
-              className="text-sm font-bold text-indigo-600 hover:text-indigo-700 transition-colors"
+              onClick={() => setShowAll(!showAll)}
+              className="btn btn-secondary text-xs uppercase tracking-widest font-bold py-2 mx-auto"
             >
-              View All Records
-            </button>
-          </div>
-        )}
-        {showAll && (
-          <div className="p-4 bg-gray-50 dark:bg-slate-900/30 text-center">
-            <button 
-              onClick={() => setShowAll(false)}
-              className="text-sm font-bold text-gray-500 hover:text-gray-700 transition-colors"
-            >
-              Show Less
+              {showAll ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+              {showAll ? "Show Less" : `View Full History (${allRecords.length})`}
             </button>
           </div>
         )}

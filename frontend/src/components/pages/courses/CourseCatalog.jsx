@@ -103,34 +103,35 @@ const CourseCatalog = memo(() => {
   const canAddCourse = user?.role === "admin" || user?.role === "faculty";
 
   return (
-    <div className="course-page">
-      <div className="course-catalog-header">
-        <div>
-          <h1 className="course-title">
-            Academic Catalog
-          </h1>
-          <p className="course-subtitle">
-            Explore and register for available modules
-          </p>
+    <div className="course-page animate-fade-in">
+      {/* Header Section (Standardized with Project Catalog style) */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+        <div className="flex items-center gap-5">
+
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Academic Catalog</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Explore and register for available modules</p>
+          </div>
         </div>
         
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
-          <div className="course-search-container">
-            <Search style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", width: "16px", height: "16px", color: "var(--course-text-muted)" }} />
+        <div className="flex flex-wrap items-center gap-4">
+          <div className="relative group max-w-sm">
+            <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-indigo-500 transition-colors z-10" />
+            <div className="absolute left-12 top-1/2 -translate-y-1/2 w-[1px] h-5 bg-gray-200 dark:bg-slate-700 z-10" />
             <input
               type="text"
-              placeholder="Search modules..."
+              placeholder="Filter modules..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="course-search-input"
+              className="form-control pl-16 bg-gray-100/50 dark:bg-slate-900/50 border-gray-100 dark:border-slate-800 focus:bg-slate-50 dark:focus:bg-slate-800 transition-all text-sm h-11"
             />
           </div>
           {canAddCourse && (
             <button 
               onClick={() => navigate("/courses/new")}
-              className="course-btn course-btn-primary"
+              className="btn btn-secondary"
             >
-              <Plus className="course-icon-md course-mr-2" /> New Module
+              <Plus size={18} /> New Module
             </button>
           )}
         </div>
@@ -143,9 +144,6 @@ const CourseCatalog = memo(() => {
         </div>
       ) : filteredCourses.length === 0 ? (
         <div className="course-card-simple" style={{ textAlign: "center", padding: "48px", maxWidth: "512px", margin: "40px auto" }}>
-          <div style={{ width: "64px", height: "64px", backgroundColor: "var(--course-secondary)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px" }}>
-            <Search className="course-icon-xl" style={{ color: "var(--course-text-muted)" }} />
-          </div>
           <h3 style={{ fontSize: "20px", fontWeight: "700", marginBottom: "8px" }}>No Modules Found</h3>
           <p style={{ color: "var(--course-text-muted)" }}>
             Try adjusting your search for "{searchTerm}"

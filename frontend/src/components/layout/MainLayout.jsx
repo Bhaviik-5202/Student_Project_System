@@ -69,7 +69,7 @@ const MainLayout = () => {
 
           <main
             id="main-content"
-            className="flex-1 px-4 md:px-6 py-4 pb-6 relative z-0"
+            className="flex-1 px-4 md:px-6 py-4 pb-6 relative z-10"
           >
             <ErrorBoundary>
               <Suspense

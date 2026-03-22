@@ -94,7 +94,6 @@ const CourseSchedule = memo(() => {
         </div>
         <div style={{ display: "flex", gap: "12px" }}>
           <div className="course-card-simple" style={{ padding: "8px 16px", display: "flex", alignItems: "center", gap: "12px" }}>
-            <Calendar className="course-icon-md" style={{ color: "var(--course-primary)" }} />
             <span style={{ fontWeight: "700", fontSize: "14px" }}>
               {new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'long' })}
             </span>
@@ -118,15 +117,11 @@ const CourseSchedule = memo(() => {
       <div className="course-details-grid">
         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
-            <Layout className="course-icon-md" style={{ color: "var(--course-primary)" }} />
             <h3 style={{ fontSize: "18px", fontWeight: "700" }}>{selectedDay} Modules</h3>
           </div>
 
           {todaySchedule.length === 0 ? (
             <div className="course-card-simple" style={{ textAlign: "center", padding: "64px" }}>
-              <div style={{ width: "64px", height: "64px", backgroundColor: "var(--course-bg-light)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px" }}>
-                <Coffee className="course-icon-xl" style={{ color: "var(--course-text-muted)" }} />
-              </div>
               <h3 style={{ fontSize: "18px", fontWeight: "700" }}>No lectures today</h3>
               <p style={{ color: "var(--course-text-muted)" }}>Enjoy your break or catch up on self-study.</p>
             </div>
@@ -163,16 +158,16 @@ const CourseSchedule = memo(() => {
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
-          <div className="course-card-simple" style={{ backgroundColor: "var(--course-primary)", color: "white", border: "none" }}>
-            <h3 style={{ fontSize: "11px", fontWeight: "700", textTransform: "uppercase", letterSpacing: "1px", color: "rgba(255,255,255,0.7)", marginBottom: "20px" }}>Semester Overview</h3>
+          <div className="course-card-simple">
+            <h3 style={{ fontSize: "11px", fontWeight: "800", textTransform: "uppercase", letterSpacing: "1px", color: "var(--course-text-muted)", marginBottom: "20px" }}>Semester Overview</h3>
             <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", backgroundColor: "rgba(255,255,255,0.1)", padding: "12px", borderRadius: "12px" }}>
-                <span style={{ fontSize: "13px", fontWeight: "500" }}>Active Modules</span>
-                <span style={{ fontSize: "20px", fontWeight: "700" }}>{courses.length}</span>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", backgroundColor: "rgba(0,0,0,0.03)", padding: "12px", borderRadius: "12px" }} className="dark:bg-white/5">
+                <span style={{ fontSize: "13px", fontWeight: "600" }}>Active Modules</span>
+                <span style={{ fontSize: "20px", fontWeight: "800", color: "var(--course-primary)" }}>{courses.length}</span>
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", backgroundColor: "rgba(255,255,255,0.1)", padding: "12px", borderRadius: "12px" }}>
-                <span style={{ fontSize: "13px", fontWeight: "500" }}>Total Units</span>
-                <span style={{ fontSize: "20px", fontWeight: "700" }}>{totalCredits}</span>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", backgroundColor: "rgba(0,0,0,0.03)", padding: "12px", borderRadius: "12px" }} className="dark:bg-white/5">
+                <span style={{ fontSize: "13px", fontWeight: "600" }}>Total Units</span>
+                <span style={{ fontSize: "20px", fontWeight: "800", color: "var(--course-primary)" }}>{totalCredits}</span>
               </div>
             </div>
           </div>

@@ -260,7 +260,7 @@ const CourseRegistration = memo(() => {
               </div>
 
               {currentCredits > maxCredits && (
-                <div style={{ padding: "8px", backgroundColor: "#fef2f2", color: "#991b1b", borderRadius: "8px", fontSize: "11px", display: "flex", gap: "6px", alignItems: "center" }}>
+                <div className="p-2 bg-red-50 dark:bg-red-900/30 text-red-800 dark:text-red-300 rounded-lg text-[11px] flex gap-2 items-center">
                   <AlertCircle className="course-icon-sm" /> Credit limit reached.
                 </div>
               )}

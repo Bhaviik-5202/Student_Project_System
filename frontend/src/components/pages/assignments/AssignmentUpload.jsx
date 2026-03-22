@@ -1,16 +1,23 @@
 import { useState, useEffect, useCallback, memo } from "react";
 import { useNavigate } from "react-router-dom";
+import { 
+  FileText, 
+  BookOpen, 
+  Calendar, 
+  Award, 
+  Plus, 
+  X, 
+  Save, 
+  ArrowLeft, 
+  Upload, 
+  Info,
+  Layout,
+  ChevronRight
+} from "lucide-react";
 import assignmentService from "../../../services/assignmentService";
 import courseService from "../../../services/courseService";
 import toast from "react-hot-toast";
 
-/**
- * AssignmentUpload Component
- * 
- * A specialized interface for faculty to create new academic tasks.
- * Includes fields for title, detailed description, course selection,
- * due date, point allocation, and resource file uploads.
- */
 const AssignmentUpload = memo(() => {
   const navigate = useNavigate();
   const [courses, setCourses] = useState([]);
@@ -78,8 +85,8 @@ const AssignmentUpload = memo(() => {
       const assignmentData = new FormData();
       assignmentData.append("title", formData.title);
       assignmentData.append("description", formData.description);
-      assignmentData.append("course", formData.courseId); // Changed courseId -> course
-      assignmentData.append("dueDate", formData.deadline); // Changed deadline -> dueDate
+      assignmentData.append("course", formData.courseId);
+      assignmentData.append("dueDate", formData.deadline);
       assignmentData.append("maxScore", formData.maxScore);
       assignmentData.append("instructions", formData.instructions);
       
@@ -107,175 +114,196 @@ const AssignmentUpload = memo(() => {
 
   if (loading) {
     return (
-      <div className="assignment-page" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-        <p className="assignment-subtitle">Loading creation form...</p>
+      <div className="flex flex-col items-center justify-center p-20 space-y-4">
+        <div className="w-10 h-10 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+        <p className="text-gray-500 font-medium text-sm italic">Initializing assignment registry...</p>
       </div>
     );
   }
 
   return (
-    <div className="assignment-page">
-      <div className="assignment-container" style={{ maxWidth: "900px" }}>
-        <div className="assignment-header">
-          <div>
-            <h1 className="assignment-title">Create New Assignment</h1>
-            <p className="assignment-subtitle">Set up a new academic task for your students</p>
-          </div>
+    <div className="p-4 md:p-6 space-y-8 animate-fade-in">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-8 pb-4 border-b border-gray-100 dark:border-slate-800">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Assignment Registry</h1>
+          <p className="text-sm text-gray-500 mt-1 font-medium">Set up a new academic task for your students</p>
         </div>
+        <button
+          onClick={() => navigate(-1)}
+          className="btn btn-secondary p-2.5 rounded-xl shadow-sm"
+          title="Discard changes"
+        >
+          <X size={20} />
+        </button>
+      </div>
 
-        <div className="assignment-card">
-          <form onSubmit={handleSubmit}>
-            <div className="assignment-grid assignment-grid-2">
-              <div className="assignment-form-group">
-                <label className="assignment-label">Assignment Title</label>
-                <input
-                  type="text"
-                  name="title"
-                  value={formData.title}
-                  onChange={handleInputChange}
-                  className="assignment-input"
-                  placeholder="e.g. Database Design Phase 1"
-                  required
-                />
-              </div>
-
-              <div className="assignment-form-group">
-                <label className="assignment-label">Course</label>
-                <select
-                  name="courseId"
-                  value={formData.courseId}
-                  onChange={handleInputChange}
-                  className="assignment-select"
-                  required
-                >
-                  <option value="">Select a Course</option>
-                  {courses.map((course) => (
-                    <option key={course.id || course._id} value={course.id || course._id}>
-                      {course.title || course.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="assignment-form-group">
-                <label className="assignment-label">Due Date</label>
-                <input
-                  type="datetime-local"
-                  name="deadline"
-                  value={formData.deadline}
-                  onChange={handleInputChange}
-                  onClick={(e) => e.target.showPicker()}
-                  onFocus={(e) => e.target.showPicker()}
-                  onKeyDown={(e) => e.preventDefault()}
-                  className="assignment-input"
-                  required
-                />
-              </div>
-
-              <div className="assignment-form-group">
-                <label className="assignment-label">Total Points</label>
-                <input
-                  type="number"
-                  name="maxScore"
-                  value={formData.maxScore}
-                  onChange={handleInputChange}
-                  className="assignment-input"
-                  min="0"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="assignment-form-group">
-              <label className="assignment-label">Description</label>
-              <textarea
-                name="description"
-                value={formData.description}
+      <div className="card shadow-lg border-gray-100 dark:border-slate-800">
+        <form onSubmit={handleSubmit} className="card-body p-6 md:p-10 space-y-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+            {/* Title */}
+            <div className="form-group md:col-span-2">
+              <label className="form-label font-bold text-gray-700 dark:text-gray-300 mb-2">Assignment Title</label>
+              <input
+                type="text"
+                name="title"
+                value={formData.title}
                 onChange={handleInputChange}
-                className="assignment-textarea"
-                placeholder="Brief summary of the assignment"
-                rows="3"
+                className="input py-3"
+                placeholder="e.g. Database Design Phase 1"
                 required
               />
             </div>
 
-            <div className="assignment-form-group">
-              <label className="assignment-label">Instructions</label>
+            {/* Course */}
+            <div className="form-group">
+              <label className="form-label font-bold text-gray-700 dark:text-gray-300 mb-2">Target Course</label>
+              <select
+                name="courseId"
+                value={formData.courseId}
+                onChange={handleInputChange}
+                className="select input py-3"
+                required
+              >
+                <option value="">Select a Course</option>
+                {courses.map((course) => (
+                  <option key={course.id || course._id} value={course.id || course._id}>
+                    {course.title || course.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Due Date */}
+            <div className="form-group">
+              <label className="form-label font-bold text-gray-700 dark:text-gray-300 mb-2">Submission Deadline</label>
+              <input
+                type="datetime-local"
+                name="deadline"
+                value={formData.deadline}
+                onChange={handleInputChange}
+                onClick={(e) => e.target.showPicker()}
+                onFocus={(e) => e.target.showPicker()}
+                onKeyDown={(e) => e.preventDefault()}
+                className="input py-3"
+                required
+              />
+            </div>
+
+            {/* Total Points */}
+            <div className="form-group">
+              <label className="form-label font-bold text-gray-700 dark:text-gray-300 mb-2">Max Score Allocation</label>
+              <input
+                type="number"
+                name="maxScore"
+                value={formData.maxScore}
+                onChange={handleInputChange}
+                className="input py-3"
+                min="0"
+                required
+              />
+            </div>
+
+            {/* Description */}
+            <div className="form-group md:col-span-2">
+              <label className="form-label font-bold text-gray-700 dark:text-gray-300 mb-2">Brief Description</label>
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                className="input textarea py-3"
+                placeholder="Summary of the academic task..."
+                rows="2"
+                required
+              />
+            </div>
+
+            {/* Instructions */}
+            <div className="form-group md:col-span-2">
+              <label className="form-label font-bold text-gray-700 dark:text-gray-300 mb-2">Detailed Instructions</label>
               <textarea
                 name="instructions"
                 value={formData.instructions}
                 onChange={handleInputChange}
-                className="assignment-textarea"
-                placeholder="Detailed instructions for students..."
-                rows="5"
+                className="input textarea py-3"
+                placeholder="Tell students exactly what is expected..."
+                rows="4"
               />
             </div>
 
-            <div className="assignment-form-group">
-              <label className="assignment-label">Attachments & Resources</label>
+            {/* File Upload Area */}
+            <div className="form-group md:col-span-2">
+              <label className="form-label font-bold text-gray-700 dark:text-gray-300 mb-2">Supporting Resources</label>
               <div 
-                className="assignment-upload-area"
+                className="border-2 border-dashed border-gray-100 dark:border-slate-800 rounded-2xl p-10 text-center cursor-pointer hover:border-indigo-500 hover:bg-indigo-50/10 transition-all group shadow-inner-top bg-gray-50/30 dark:bg-slate-900/20"
                 onClick={() => document.getElementById("fileInput").click()}
               >
-                <div style={{ color: "var(--assignment-text-muted)" }}>
-                  <p style={{ fontWeight: "600", color: "var(--assignment-primary)", marginBottom: "4px" }}>
-                    Click to upload
-                  </p>
-                  <p style={{ fontSize: "12px" }}>Resource files for students (PDF, ZIP, etc.)</p>
+                <div className="flex flex-col items-center gap-3">
+                  <div className="w-14 h-14 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center group-hover:bg-indigo-500 group-hover:text-white transition-all text-gray-400 shadow-sm border border-gray-100 dark:border-slate-700">
+                    <Upload size={24} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-gray-900 dark:text-white">Click to upload resource files</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Documents, ZIPs, or reference materials</p>
+                  </div>
                 </div>
                 <input
                   id="fileInput"
                   type="file"
                   multiple
                   onChange={handleFileChange}
-                  style={{ display: "none" }}
+                  className="hidden"
                 />
               </div>
 
               {formData.files.length > 0 && (
-                <div className="assignment-file-list">
+                <div className="mt-8 flex flex-col gap-3">
                   {formData.files.map((file, index) => (
-                    <div key={index} className="assignment-file-item">
-                      <span style={{ fontSize: "14px" }}>{file.name}</span>
+                    <div key={index} className="flex items-center justify-between p-4 bg-gray-50/50 dark:bg-slate-800/50 rounded-xl border border-gray-100 dark:border-slate-800 animate-slide-in">
+                      <div className="flex items-center gap-4">
+                        <div className="w-8 h-8 bg-white dark:bg-slate-800 rounded-lg flex items-center justify-center text-indigo-500 border border-gray-100 dark:border-slate-700 shadow-sm">
+                          <FileText size={18} />
+                        </div>
+                        <span className="text-sm font-bold text-gray-700 dark:text-gray-300">{file.name}</span>
+                      </div>
                       <button
                         type="button"
                         onClick={() => removeFile(index)}
-                        className="assignment-btn-text"
-                        style={{ color: "var(--color-error)" }}
+                        className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all"
                       >
-                        Remove
+                        <X size={18} />
                       </button>
                     </div>
                   ))}
                 </div>
               )}
             </div>
+          </div>
 
-            <div style={{ display: "flex", gap: "12px", marginTop: "32px" }}>
-              <button
-                type="button"
-                onClick={() => navigate(-1)}
-                className="assignment-btn assignment-btn-outline"
-                style={{ flex: 1 }}
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                disabled={submitting}
-                className="assignment-btn assignment-btn-primary"
-                style={{ flex: 2 }}
-              >
-                {submitting ? "Processing..." : "Create Assignment"}
-              </button>
-            </div>
-          </form>
-        </div>
+          <div className="flex flex-col sm:flex-row gap-4 pt-10 border-t border-gray-100 dark:border-slate-800">
+            <button
+              type="button"
+              onClick={() => navigate(-1)}
+              className="btn btn-secondary flex-1 h-14 font-bold text-base"
+            >
+              Cancel & Exit
+            </button>
+            <button
+              type="submit"
+              disabled={submitting}
+              className="btn btn-primary flex-[2] h-14 font-bold text-base"
+            >
+              {submitting ? (
+                "Finalizing..."
+              ) : (
+                "Create Assignment Registry"
+              )}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
 });
 
 AssignmentUpload.displayName = "AssignmentUpload";
-
 export default AssignmentUpload;

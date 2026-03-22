@@ -3,55 +3,67 @@ import api from "../utils/api";
 const timelineService = {
   getAll: async () => {
     try {
-      const response = await api.get("/timelines");
-      return response.data;
+      return await api.get("/timelines");
     } catch (error) {
-      throw error.response?.data || error.message;
+      return {
+        success: false,
+        message: error.response?.data?.message || "Failed to fetch timelines",
+      };
     }
   },
 
   getById: async (id) => {
     try {
-      const response = await api.get(`/timelines/${id}`);
-      return response.data;
+      return await api.get(`/timelines/${id}`);
     } catch (error) {
-      throw error.response?.data || error.message;
+      return {
+        success: false,
+        message: error.response?.data?.message || "Failed to fetch timeline",
+      };
     }
   },
 
   getByProject: async (projectId) => {
     try {
-      const response = await api.get(`/timelines/project/${projectId}`);
-      return response.data;
+      return await api.get(`/timelines/project/${projectId}`);
     } catch (error) {
-      throw error.response?.data || error.message;
+      return {
+        success: false,
+        message: error.response?.data?.message || "Failed to fetch project timeline",
+      };
     }
   },
 
   create: async (data) => {
     try {
-      const response = await api.post("/timelines", data);
-      return response.data;
+      return await api.post("/timelines", data);
     } catch (error) {
-      throw error.response?.data || error.message;
+      return {
+        success: false,
+        message: error.response?.data?.message || "Failed to create timeline",
+      };
     }
   },
 
   update: async (id, data) => {
     try {
-      const response = await api.put(`/timelines/${id}`, data);
-      return response.data;
+      return await api.put(`/timelines/${id}`, data);
     } catch (error) {
-      throw error.response?.data || error.message;
+      return {
+        success: false,
+        message: error.response?.data?.message || "Failed to update timeline",
+      };
     }
   },
 
   remove: async (id) => {
     try {
-      const response = await api.delete(`/timelines/${id}`);
-      return response.data;
+      return await api.delete(`/timelines/${id}`);
     } catch (error) {
-      throw error.response?.data || error.message;
+      return {
+        success: false,
+        message: error.response?.data?.message || "Failed to delete timeline",
+      };
     }
   },
 };

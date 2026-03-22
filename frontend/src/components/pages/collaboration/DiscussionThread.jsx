@@ -87,7 +87,7 @@ const DiscussionThread = memo(() => {
         <p className="text-slate-600 dark:text-slate-400 mb-4">Discussion not found.</p>
         <button
           onClick={() => navigate("/discussions")}
-          className="text-blue-600 hover:underline"
+          className="text-blue-600"
         >
           Back to Discussions
         </button>

@@ -55,20 +55,20 @@ const SystemSettings = memo(() => {
             <div className="flex items-center gap-2 mb-2">
               <button
                 onClick={() => navigate("/admin-dashboard")}
-                className="text-blue-600 hover:text-blue-800 text-sm font-semibold"
+                className="text-blue-600 hover:text-blue-800 text-sm font-medium"
               >
                 ← Back to Dashboard
               </button>
             </div>
             <h1 className="admin-title">System Settings</h1>
-            <p className="admin-subtitle">Global configuration and platform preferences</p>
+            <p className="admin-subtitle">Global platform configuration and parameters</p>
           </div>
           <button
             onClick={handleSubmit}
             disabled={loading}
             className="admin-btn admin-btn-primary"
           >
-            {loading ? "Saving..." : "Save All Changes"}
+            {loading ? "Saving..." : "Save Settings"}
           </button>
         </header>
 

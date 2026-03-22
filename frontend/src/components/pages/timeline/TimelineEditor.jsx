@@ -115,21 +115,34 @@ const TimelineEditor = memo(() => {
     
     setLoading(true);
     try {
+      // Prepare milestones by removing temporary IDs
+      const cleanedMilestones = timeline.milestones.map(m => {
+        const { _id, ...rest } = m;
+        // Only keep _id if it's a valid MongoDB ObjectId (24 chars hex)
+        if (_id && /^[0-9a-fA-F]{24}$/.test(_id)) {
+          return { _id, ...rest };
+        }
+        return rest;
+      });
+
       let response;
       if (timeline._id) {
-        response = await timelineService.update(timeline._id, timeline);
+        response = await timelineService.update(timeline._id, {
+          ...timeline,
+          milestones: cleanedMilestones
+        });
       } else {
         response = await timelineService.create({
           project: selectedProjectId,
-          milestones: timeline.milestones.map(({ _id, ...rest }) => rest) // Remove temp IDs if any
+          milestones: cleanedMilestones
         });
       }
       
-      if (response.success) {
+      if (response && response.success) {
         toast.success("Timeline successfully synchronized");
         navigate("/timeline");
       } else {
-        toast.error(response.message || "Failed to preserve timeline");
+        toast.error(response?.message || "Failed to preserve timeline");
       }
     } catch (error) {
       toast.error("Critical synchronization failure");
@@ -146,164 +159,156 @@ const TimelineEditor = memo(() => {
   const inputClass = "w-full px-4 py-3 bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-700 rounded-2xl text-sm font-bold text-slate-900 dark:text-white placeholder:text-slate-300 dark:placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all";
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 font-sans selection:bg-indigo-100 selection:text-indigo-900">
-      <div className="container mx-auto px-4 py-8 max-w-5xl">
-        <div className="mb-8 animate-in fade-in slide-in-from-top-4 duration-700">
+    <div className="p-4 md:p-6 space-y-6">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
           <button
             onClick={() => handleNavigate("/timeline")}
-            className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 flex items-center mb-6 text-xs font-black uppercase tracking-[0.2em] transition-all hover:-translate-x-1"
+            className="text-indigo-600 dark:text-indigo-400 text-xs font-bold tracking-wider mb-2 flex items-center gap-1"
           >
-            ← Back to Overviews
+            <i className="fas fa-arrow-left" /> Back to Timelines
           </button>
           
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-white dark:bg-slate-800 p-10 rounded-[2.5rem] border border-gray-100 dark:border-slate-700 shadow-xl shadow-gray-200/50 dark:shadow-none relative overflow-hidden">
-            <div className="flex flex-col relative z-10">
-              <h1 className="text-3xl font-black text-slate-900 dark:text-white tracking-tighter uppercase italic leading-none mb-3">
-                Timeline Architect
-              </h1>
-              <div className="flex items-center gap-3">
-                 <div className="px-3 py-1 bg-indigo-50 dark:bg-indigo-950/30 rounded-full flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-indigo-600 animate-pulse"></span>
-                    <span className="text-[10px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">Structural Management</span>
-                 </div>
-                 <select 
-                    value={selectedProjectId}
-                    onChange={handleProjectChange}
-                    className="bg-transparent border-none text-[11px] font-black text-slate-400 dark:text-slate-500 focus:ring-0 p-0 cursor-pointer uppercase tracking-widest hover:text-indigo-600 transition-colors"
-                  >
-                    <option value="" disabled>Select Venture</option>
-                    {projects.map(p => (
-                      <option key={p._id} value={p._id} className="text-slate-900 dark:text-white bg-white dark:bg-slate-800">{p.title}</option>
-                    ))}
-                  </select>
-              </div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            Timeline Editor
+          </h1>
+          <div className="flex items-center gap-3 mt-2">
+            <div className="px-2 py-0.5 bg-indigo-50 dark:bg-indigo-900/40 rounded-full flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-indigo-600"></span>
+              <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 tracking-widest">Editor</span>
             </div>
-            
-            <div className="flex gap-4 w-full md:w-auto relative z-10">
-              <button
-                onClick={saveTimeline}
-                disabled={loading}
-                className="flex-1 md:flex-none px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] shadow-2xl shadow-indigo-200 dark:shadow-none transition-all hover:scale-105 active:scale-95 disabled:opacity-50"
-              >
-                {loading ? "Synchronizing..." : "Preserve Timeline"}
-              </button>
-            </div>
-            
-            {/* Background Accent */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-600/5 blur-[100px] rounded-full -mr-32 -mt-32"></div>
+            <select 
+              value={selectedProjectId}
+              onChange={handleProjectChange}
+              className="bg-transparent border-none text-xs font-bold text-gray-500 dark:text-gray-400 focus:ring-0 p-0 cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+            >
+              <option value="" disabled>Select Project</option>
+              {projects.map(p => (
+                <option key={p._id} value={p._id} className="text-gray-900 dark:text-white bg-white dark:bg-slate-800 text-sm">{p.title}</option>
+              ))}
+            </select>
           </div>
         </div>
+        
+        <div className="flex gap-2">
+          <button 
+            onClick={saveTimeline}
+            disabled={loading}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2 px-6 rounded-lg shadow-sm transition-colors disabled:opacity-50"
+          >
+            <i className="fas fa-save mr-2" /> {loading ? "Saving..." : "Save Timeline"}
+          </button>
+        </div>
+      </div>
 
-        {fetching ? (
-          <div className="py-32 text-center flex flex-col items-center">
-            <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-6"></div>
-            <span className="text-xs font-black text-gray-400 uppercase tracking-widest animate-pulse">Decoding Architecture...</span>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+      {fetching ? (
+        <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-20 text-center shadow-sm">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+          <p className="text-sm text-gray-400 italic">Accessing timeline archives...</p>
+        </div>
+      ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
              {/* Configuration Panel */}
-             <div className="lg:col-span-1 space-y-8">
-                <div className="bg-white dark:bg-slate-800 rounded-[2rem] border border-gray-100 dark:border-slate-700 p-8 shadow-sm">
-                   <h3 className="text-xs font-black text-slate-900 dark:text-white mb-6 uppercase tracking-[0.2em] flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-indigo-600"></div>
+             <div className="lg:col-span-1 space-y-6">
+                <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6 shadow-sm">
+                   <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-6 tracking-widest border-b border-gray-50 dark:border-slate-700 pb-2">
                       New Milestone
                    </h3>
-                   <div className="space-y-6">
+                   <div className="space-y-4">
                       <div>
-                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block px-1">Objective Title</label>
+                        <label className="text-[10px] font-bold text-gray-400 tracking-widest mb-1 shadow-sm block">Objective Title</label>
                         <input
                           type="text"
                           name="title"
                           placeholder="e.g. Beta Launch"
-                          className={inputClass}
+                          className="w-full px-3 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg text-sm font-medium focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all placeholder:text-gray-400"
                           value={newMilestone.title}
                           onChange={handleNewMilestoneChange}
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block px-1">Target Delivery</label>
+                        <label className="text-[10px] font-bold text-gray-400 tracking-widest mb-1 block">Target Delivery</label>
                         <input
                           type="date"
                           name="dueDate"
-                          className={inputClass}
+                          className="w-full px-3 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg text-sm font-medium focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
                           value={newMilestone.dueDate}
                           onChange={handleNewMilestoneChange}
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block px-1">Scope Description</label>
+                        <label className="text-[10px] font-bold text-gray-400 tracking-widest mb-1 block">Scope Description</label>
                         <textarea
                           name="description"
                           rows="3"
                           placeholder="What must be achieved?"
-                          className={`${inputClass} resize-none`}
+                          className="w-full px-3 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg text-sm font-medium focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all resize-none placeholder:text-gray-400"
                           value={newMilestone.description}
                           onChange={handleNewMilestoneChange}
                         ></textarea>
                       </div>
                       <button
                         onClick={addMilestone}
-                        className="w-full py-4 bg-gray-900 dark:bg-white text-white dark:text-slate-900 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-black dark:hover:bg-indigo-400 dark:hover:text-white transition-all active:scale-95"
+                        className="w-full py-2 bg-gray-900 dark:bg-indigo-600 text-white rounded-lg text-xs font-bold tracking-wider hover:opacity-90 transition-all active:scale-95"
                       >
-                        Stage Objective
+                        <i className="fas fa-plus mr-2" /> Stage Objective
                       </button>
                    </div>
                 </div>
                 
-                <div className="bg-indigo-600/5 dark:bg-indigo-950/20 p-8 rounded-[2rem] border border-indigo-100 dark:border-indigo-900/50">
-                    <h4 className="text-[11px] font-black text-indigo-700 dark:text-indigo-300 uppercase tracking-widest mb-2 italic">Architect's Note</h4>
-                    <p className="text-[10px] font-bold text-indigo-600/70 dark:text-indigo-400/60 leading-relaxed uppercase tracking-tight">Staged objectives are only preserved once you commit to 'Preserve Timeline'. Ensure your trajectory is logically consistent.</p>
+                <div className="bg-indigo-50/50 dark:bg-indigo-900/10 p-6 rounded-xl border border-indigo-100 dark:border-slate-700 shadow-sm">
+                    <h4 className="text-[10px] font-bold text-indigo-700 dark:text-indigo-400 tracking-widest mb-2 flex items-center gap-2">
+                        <i className="fas fa-info-circle text-[8px]" /> Editor's Note
+                    </h4>
+                    <p className="text-[10px] text-gray-500 dark:text-gray-400 leading-relaxed font-medium">Staged objectives are only preserved once you save the timeline. Ensure your trajectory is logically consistent.</p>
                 </div>
              </div>
 
              {/* Trajectory Manifest */}
-             <div className="lg:col-span-2 space-y-8">
-                <div className="bg-white dark:bg-slate-800 rounded-[2.5rem] border border-gray-100 dark:border-slate-700 p-10 shadow-sm relative overflow-hidden min-h-[600px]">
-                   <div className="flex justify-between items-center mb-10 relative z-10">
-                      <h3 className="text-xl font-black text-slate-900 dark:text-white tracking-tighter uppercase italic">Phase Manifest ({timeline.milestones.length})</h3>
-                      <div className="h-px flex-1 mx-8 bg-gray-50 dark:bg-slate-700/50"></div>
+             <div className="lg:col-span-2 space-y-6">
+                <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6 shadow-sm min-h-[500px]">
+                   <div className="flex justify-between items-center mb-6">
+                      <h3 className="text-sm font-bold text-gray-900 dark:text-white tracking-widest">Phase Manifest ({timeline.milestones.length})</h3>
+                      <div className="h-px flex-1 mx-6 bg-gray-50 dark:bg-slate-700/50"></div>
                    </div>
                    
                    {timeline.milestones.length === 0 ? (
-                     <div className="flex flex-col items-center justify-center py-24 text-center">
-                        <div className="w-16 h-16 bg-gray-50 dark:bg-slate-900 rounded-3xl flex items-center justify-center mb-6 border border-gray-100 dark:border-slate-700/50 rotate-3 group-hover:rotate-0 transition-transform">
-                           <svg className="w-6 h-6 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-                        </div>
-                        <h4 className="text-lg font-black text-slate-900 dark:text-white uppercase tracking-tight mb-2 leading-none">Trajectory Uninitialized</h4>
-                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest max-w-xs leading-relaxed">Stage your first objective to begin architectural planning.</p>
+                     <div className="flex flex-col items-center justify-center py-20 text-center">
+                        <i className="fas fa-history text-gray-200 text-4xl mb-4" />
+                        <h4 className="text-sm font-bold text-gray-900 dark:text-white tracking-widest mb-2">Timeline Uninitialized</h4>
+                        <p className="text-xs text-gray-400 max-w-xs leading-relaxed">Stage your first objective to begin planning your project timeline archives.</p>
                      </div>
                    ) : (
-                     <div className="space-y-6 relative z-10">
+                     <div className="space-y-4">
                         {timeline.milestones.map((m, i) => (
-                           <div key={m._id || m.id} className="group relative bg-white dark:bg-slate-900/40 border-2 border-transparent hover:border-indigo-500/30 rounded-3xl p-6 transition-all duration-500 shadow-sm hover:shadow-2xl hover:shadow-indigo-500/5">
-                              <div className="flex items-start justify-between gap-6">
-                                 <div className="flex items-center gap-5 flex-1">
+                           <div key={m._id || m.id} className="bg-gray-50/50 dark:bg-slate-900/40 border border-gray-100 dark:border-slate-700/50 rounded-xl p-6 hover:border-indigo-500/30 transition-all">
+                              <div className="flex items-start justify-between gap-4">
+                                 <div className="flex items-center gap-4 flex-1">
                                     <button 
                                       onClick={() => toggleMilestoneStatus(m._id || m.id)}
-                                      className={`w-10 h-10 rounded-xl flex items-center justify-center border-2 transition-all ${
+                                      className={`w-8 h-8 rounded-lg flex items-center justify-center border transition-all ${
                                         m.completed 
-                                          ? 'bg-emerald-500 border-emerald-500 text-white shadow-lg shadow-emerald-500/20' 
-                                          : 'border-gray-100 dark:border-slate-700 text-transparent hover:border-indigo-500'
+                                          ? 'bg-emerald-500 border-emerald-500 text-white' 
+                                          : 'border-gray-200 dark:border-slate-700 text-transparent hover:border-indigo-500'
                                       }`}
                                     >
-                                       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                                       <i className="fas fa-check text-xs" />
                                     </button>
-                                    <div>
-                                       <div className="flex items-center gap-3 mb-1">
-                                          <h4 className={`text-xl font-black tracking-tighter leading-none italic transition-all ${m.completed ? 'text-slate-400 line-through decoration-2' : 'text-slate-900 dark:text-white'}`}>
-                                            "{m.title}"
+                                    <div className="flex-1">
+                                       <div className="flex items-center gap-2 mb-1">
+                                          <h4 className={`text-base font-bold transition-all ${m.completed ? 'text-gray-400 line-through' : 'text-gray-900 dark:text-white'}`}>
+                                            {m.title}
                                           </h4>
-                                          <span className="text-[10px] font-black text-indigo-500/50 font-mono">0{i + 1}</span>
+                                          <span className="text-[10px] font-bold text-indigo-500/50">#{i + 1}</span>
                                        </div>
                                        <div className="flex items-center gap-3">
-                                          <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest tabular-nums">Deadline: {new Date(m.dueDate).toLocaleDateString()}</span>
-                                          <div className="w-1 h-1 rounded-full bg-gray-200"></div>
-                                          <span className={`text-[9px] font-black uppercase tracking-widest ${m.completed ? 'text-emerald-500' : 'text-indigo-500'}`}>
+                                          <span className="text-[10px] font-bold text-gray-400 tracking-widest tabular-nums">Due: {new Date(m.dueDate).toLocaleDateString()}</span>
+                                          <span className={`text-[10px] font-bold tracking-widest ${m.completed ? 'text-emerald-500' : 'text-indigo-500'}`}>
                                             {m.completed ? 'Validated' : 'Scheduled'}
                                           </span>
                                        </div>
                                        {m.description && (
-                                         <p className="mt-4 text-xs font-bold text-slate-500 leading-relaxed italic border-l-2 border-gray-50 dark:border-slate-800 pl-4">
+                                         <p className="mt-3 text-xs text-gray-500 leading-relaxed italic border-l-2 border-gray-100 dark:border-slate-800 pl-4">
                                            {m.description}
                                          </p>
                                        )}
@@ -312,23 +317,19 @@ const TimelineEditor = memo(() => {
                                  
                                  <button
                                    onClick={() => removeMilestone(m._id || m.id)}
-                                   className="w-10 h-10 rounded-xl border border-gray-100 dark:border-slate-700 flex items-center justify-center text-gray-300 hover:text-rose-500 hover:border-rose-500/30 hover:bg-rose-50/50 transition-all"
+                                   className="w-8 h-8 rounded-lg border border-gray-100 dark:border-slate-700 flex items-center justify-center text-gray-300 hover:text-red-500 hover:border-red-500/30 transition-all"
                                  >
-                                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                    <i className="fas fa-trash-alt text-xs" />
                                  </button>
                               </div>
                            </div>
                         ))}
                      </div>
                    )}
-                   
-                   {/* Background Overlay */}
-                   <div className="absolute bottom-0 right-0 w-64 h-64 bg-indigo-600/5 blur-[100px] rounded-full -mr-32 -mb-32"></div>
                 </div>
              </div>
           </div>
         )}
-      </div>
     </div>
   );
 });

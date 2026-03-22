@@ -66,6 +66,13 @@ router.get("/", authMiddleware, projectController.getAllProjects);
 router.get("/types", authMiddleware, projectTypeController.getAllProjectTypes);
 
 /**
+ * @route   GET /api/v1/projects/types/:id
+ * @desc    Retrieve a single project type
+ * @access  Private (Authenticated Users)
+ */
+router.get("/types/:id", authMiddleware, projectTypeController.getProjectTypeById);
+
+/**
  * @route   POST /api/v1/projects/types
  * @desc    Create a new project type
  * @access  Private (Admin/Faculty)

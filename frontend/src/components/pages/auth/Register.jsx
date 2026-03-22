@@ -129,7 +129,7 @@ const Register = memo(() => {
       <div className="text-center pt-2">
         <p className="text-sm text-slate-600 dark:text-slate-400">
           Already have an account?{" "}
-          <Link to="/login" className="font-bold text-blue-600 dark:text-blue-400 hover:underline">Sign In</Link>
+          <Link to="/login" className="font-bold text-blue-600 dark:text-blue-400">Sign In</Link>
         </p>
       </div>
     </div>
