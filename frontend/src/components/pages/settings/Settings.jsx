@@ -1,5 +1,7 @@
 import { useCallback, useMemo, useState, memo, useEffect } from 'react';
 import { useTheme } from '../../../hooks/useTheme';
+import { useAuth } from '../../../hooks/useAuth';
+import { toast } from 'react-hot-toast';
 
 /**
  * Settings Component
@@ -10,7 +12,9 @@ import { useTheme } from '../../../hooks/useTheme';
  */
 const Settings = memo(() => {
   const { themeMode, setThemeMode, THEME_MODES } = useTheme();
+  const { user, updateSettings, deleteAccount } = useAuth();
   const [activeTab, setActiveTab] = useState('general');
+  const [loading, setLoading] = useState(false);
 
   const [settings, setSettings] = useState({
     // General Settings
@@ -33,7 +37,18 @@ const Settings = memo(() => {
     // Appearance (theme is handled separately via context)
     fontSize: 'medium',
     density: 'comfortable',
+    theme: 'auto',
   });
+
+  // Load user settings on mount
+  useEffect(() => {
+    if (user && user.settings) {
+      setSettings((prev) => ({
+        ...prev,
+        ...user.settings,
+      }));
+    }
+  }, [user]);
 
   const handleChange = useCallback((e) => {
     const { name, value, type, checked } = e.target;
@@ -48,18 +63,52 @@ const Settings = memo(() => {
     (e) => {
       const { value } = e.target;
       setThemeMode(value);
+      setSettings((prev) => ({ ...prev, theme: value }));
     },
     [setThemeMode]
   );
 
-  const handleSave = useCallback(() => {
-    // In a real app, this would save to backend
-    alert('Settings saved successfully!');
-  }, []);
+  const handleSave = useCallback(async () => {
+    setLoading(true);
+    try {
+      await updateSettings(settings);
+    } finally {
+      setLoading(false);
+    }
+  }, [settings, updateSettings]);
+
+  const handleDeleteAccount = useCallback(async () => {
+    if (
+      window.confirm(
+        'CRITICAL: Are you sure you want to PERMANENTLY delete your account? This action cannot be undone.'
+      )
+    ) {
+      await deleteAccount();
+    }
+  }, [deleteAccount]);
+
+  const handleExportData = useCallback(() => {
+    // Mock export functionality
+    const dataStr =
+      'data:text/json;charset=utf-8,' +
+      encodeURIComponent(
+        JSON.stringify({ user, exportDate: new Date().toISOString() })
+      );
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute('href', dataStr);
+    downloadAnchorNode.setAttribute(
+      'download',
+      `account_data_${user?.name || 'user'}.json`
+    );
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+    toast.success('Your data has been exported successfully.');
+  }, [user]);
 
   const handleReset = useCallback(() => {
     if (window.confirm('Are you sure you want to reset all settings?')) {
-      setSettings({
+      const defaultSettings = {
         language: 'English',
         timezone: 'UTC-05:00',
         dateFormat: 'MM/DD/YYYY',
@@ -73,12 +122,13 @@ const Settings = memo(() => {
         showPhone: false,
         fontSize: 'medium',
         density: 'comfortable',
-      });
-      // Reset theme to auto
+        theme: THEME_MODES.AUTO,
+      };
+      setSettings(defaultSettings);
       setThemeMode(THEME_MODES.AUTO);
-      alert('Settings have been reset to default.');
+      updateSettings(defaultSettings);
     }
-  }, [setThemeMode, THEME_MODES]);
+  }, [setThemeMode, THEME_MODES, updateSettings]);
 
   const tabs = useMemo(
     () => [
@@ -428,7 +478,10 @@ const Settings = memo(() => {
           <p className='mb-3 text-sm text-slate-500 dark:text-slate-400'>
             Download all your data from this platform
           </p>
-          <button className='rounded-lg bg-blue-50 px-4 py-2 text-blue-700 hover:bg-blue-100 dark:bg-blue-950/40 dark:text-blue-300 dark:hover:bg-blue-900/40'>
+          <button
+            onClick={handleExportData}
+            className='rounded-lg bg-blue-50 px-4 py-2 text-blue-700 hover:bg-blue-100 dark:bg-blue-950/40 dark:text-blue-300 dark:hover:bg-blue-900/40'
+          >
             <i className='fas fa-download mr-2'></i> Export My Data
           </button>
         </div>
@@ -440,7 +493,10 @@ const Settings = memo(() => {
           <p className='mb-3 text-sm text-rose-600 dark:text-rose-300'>
             This will permanently delete your account and all data
           </p>
-          <button className='rounded-lg bg-rose-50 px-4 py-2 text-rose-700 hover:bg-rose-100 dark:bg-rose-950/40 dark:text-rose-300 dark:hover:bg-rose-900/40'>
+          <button
+            onClick={handleDeleteAccount}
+            className='rounded-lg bg-rose-50 px-4 py-2 text-rose-700 hover:bg-rose-100 dark:bg-rose-950/40 dark:text-rose-300 dark:hover:bg-rose-900/40'
+          >
             <i className='fas fa-trash mr-2'></i> Delete Account
           </button>
         </div>
@@ -507,9 +563,10 @@ const Settings = memo(() => {
               </button>
               <button
                 onClick={handleSave}
-                className='rounded-lg bg-blue-600 px-4 py-2 text-white transition duration-150 hover:bg-blue-700'
+                disabled={loading}
+                className='rounded-lg bg-blue-600 px-4 py-2 text-white transition duration-150 hover:bg-blue-700 disabled:opacity-50'
               >
-                Save Changes
+                {loading ? 'Saving...' : 'Save Changes'}
               </button>
             </div>
           </div>

@@ -41,6 +41,26 @@ const userSchema = new mongoose.Schema(
       trim: true,
       default: null,
     },
+    phone: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    bio: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    department: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    year: {
+      type: String,
+      trim: true,
+      default: '',
+    },
 
     resetPasswordToken: {
       type: String,
@@ -50,6 +70,26 @@ const userSchema = new mongoose.Schema(
     resetPasswordExpires: {
       type: Date,
       select: false,
+    },
+    settings: {
+      language: { type: String, default: 'English' },
+      timezone: { type: String, default: 'UTC-05:00' },
+      dateFormat: { type: String, default: 'MM/DD/YYYY' },
+      emailNotifications: { type: Boolean, default: true },
+      pushNotifications: { type: Boolean, default: true },
+      meetingReminders: { type: Boolean, default: true },
+      projectUpdates: { type: Boolean, default: true },
+      weeklyReports: { type: Boolean, default: false },
+      profileVisibility: {
+        type: String,
+        enum: ['public', 'community', 'private'],
+        default: 'public',
+      },
+      showEmail: { type: Boolean, default: true },
+      showPhone: { type: Boolean, default: false },
+      fontSize: { type: String, default: 'medium' },
+      density: { type: String, default: 'comfortable' },
+      theme: { type: String, default: 'auto' },
     },
   },
   {

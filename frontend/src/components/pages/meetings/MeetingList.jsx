@@ -2,76 +2,87 @@ import React, { useState, useEffect, useCallback, memo } from 'react';
 import { useNavigate, Outlet } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import meetingService from '../../../services/meetingService';
+import { useAuth } from '../../../hooks/useAuth';
 import '../../../assets/styles/meetings.css';
 
-const MeetingRow = memo(({ meeting, onView, onEdit, onDelete }) => {
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'scheduled':
-        return 'text-indigo-600 bg-indigo-50 dark:bg-indigo-900/30';
-      case 'completed':
-        return 'text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30';
-      case 'cancelled':
-        return 'text-rose-600 bg-rose-50 dark:bg-rose-900/30';
-      default:
-        return 'text-gray-600 bg-gray-50 dark:bg-slate-800';
-    }
-  };
+const MeetingRow = memo(
+  ({ meeting, onView, onEdit, onDelete, currentUser }) => {
+    const isAdmin = currentUser?.role === 'admin';
+    const getStatusColor = (status) => {
+      switch (status) {
+        case 'scheduled':
+          return 'text-indigo-600 bg-indigo-50 dark:bg-indigo-900/30';
+        case 'completed':
+          return 'text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30';
+        case 'cancelled':
+          return 'text-rose-600 bg-rose-50 dark:bg-rose-900/30';
+        default:
+          return 'text-gray-600 bg-gray-50 dark:bg-slate-800';
+      }
+    };
 
-  return (
-    <tr>
-      <td>
-        <div className='font-bold text-gray-900 dark:text-white'>
-          {meeting.title}
-        </div>
-        <div className='meeting-subtitle'>{meeting.type || 'Sync Session'}</div>
-      </td>
-      <td>
-        <div className='font-medium text-gray-600 dark:text-gray-400'>
-          {meeting.organizer?.name || 'Faculty Member'}
-        </div>
-      </td>
-      <td>
-        <div className='font-medium text-gray-900 dark:text-white'>
-          {new Date(meeting.date).toLocaleDateString()}
-        </div>
-        <div className='text-[10px] font-bold uppercase tracking-widest text-gray-400'>
-          {meeting.time || '10:00 AM'}
-        </div>
-      </td>
-      <td>
-        <span
-          className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest ${getStatusColor(meeting.status)}`}
-        >
-          {meeting.status}
-        </span>
-      </td>
-      <td className='text-right'>
-        <button
-          onClick={() => onView(meeting.id)}
-          className='meeting-btn meeting-btn-secondary mr-2'
-        >
-          View
-        </button>
-        <button
-          onClick={() => onEdit(meeting.id)}
-          className='meeting-btn meeting-btn-secondary mr-2'
-        >
-          Edit
-        </button>
-        <button
-          onClick={() => onDelete(meeting.id)}
-          className='meeting-btn meeting-btn-danger'
-        >
-          Delete
-        </button>
-      </td>
-    </tr>
-  );
-});
+    return (
+      <tr>
+        <td>
+          <div className='font-bold text-gray-900 dark:text-white'>
+            {meeting.title}
+          </div>
+          <div className='meeting-subtitle'>
+            {meeting.type || 'Sync Session'}
+          </div>
+        </td>
+        <td>
+          <div className='font-medium text-gray-600 dark:text-gray-400'>
+            {meeting.organizer?.name || 'Faculty Member'}
+          </div>
+        </td>
+        <td>
+          <div className='font-medium text-gray-900 dark:text-white'>
+            {new Date(meeting.date).toLocaleDateString()}
+          </div>
+          <div className='text-[10px] font-bold uppercase tracking-widest text-gray-400'>
+            {meeting.time || '10:00 AM'}
+          </div>
+        </td>
+        <td>
+          <span
+            className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest ${getStatusColor(meeting.status)}`}
+          >
+            {meeting.status}
+          </span>
+        </td>
+        <td className='text-right'>
+          <button
+            onClick={() => onView(meeting.id)}
+            className='meeting-btn meeting-btn-secondary mr-2'
+          >
+            View
+          </button>
+          {isAdmin && (
+            <>
+              <button
+                onClick={() => onEdit(meeting.id)}
+                className='meeting-btn meeting-btn-secondary mr-2'
+              >
+                Edit
+              </button>
+              <button
+                onClick={() => onDelete(meeting.id)}
+                className='meeting-btn meeting-btn-danger'
+              >
+                Delete
+              </button>
+            </>
+          )}
+        </td>
+      </tr>
+    );
+  }
+);
 
 const MeetingList = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [meetings, setMeetings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -133,12 +144,14 @@ const MeetingList = () => {
               Control and organize project sessions
             </p>
           </div>
-          <button
-            onClick={() => navigate('/meetings/new')}
-            className='meeting-btn meeting-btn-primary'
-          >
-            Schedule New Meeting
-          </button>
+          {user?.role === 'admin' && (
+            <button
+              onClick={() => navigate('/meetings/new')}
+              className='meeting-btn meeting-btn-primary'
+            >
+              Schedule New Meeting
+            </button>
+          )}
         </div>
 
         <div className='meeting-card'>
@@ -187,6 +200,7 @@ const MeetingList = () => {
                       onView={handleView}
                       onEdit={handleEdit}
                       onDelete={handleDelete}
+                      currentUser={user}
                     />
                   ))}
                 </tbody>

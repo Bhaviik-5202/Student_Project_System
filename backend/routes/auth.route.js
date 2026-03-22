@@ -12,6 +12,7 @@ const router = express.Router();
 const authController = require('../controllers/auth.controller');
 const authMiddleware = require('../middleware/auth.middleware');
 const validateRequest = require('../middleware/validateRequest');
+const upload = require('../utils/upload');
 
 /**
  * @route   POST /api/v1/auth/register
@@ -80,7 +81,12 @@ router.get('/profile', authMiddleware, authController.getProfile);
  * @desc    Update current user profile
  * @access  Private
  */
-router.put('/profile', authMiddleware, authController.updateProfile);
+router.put(
+  '/profile',
+  authMiddleware,
+  upload.single('avatar'),
+  authController.updateProfile
+);
 
 /**
  * @route   POST /api/v1/auth/change-password
@@ -88,5 +94,19 @@ router.put('/profile', authMiddleware, authController.updateProfile);
  * @access  Private
  */
 router.post('/change-password', authMiddleware, authController.changePassword);
+
+/**
+ * @route   PATCH /api/v1/auth/settings
+ * @desc    Update current user settings
+ * @access  Private
+ */
+router.patch('/settings', authMiddleware, authController.updateSettings);
+
+/**
+ * @route   DELETE /api/v1/auth/account
+ * @desc    Delete current user account
+ * @access  Private
+ */
+router.delete('/account', authMiddleware, authController.deleteAccount);
 
 module.exports = router;

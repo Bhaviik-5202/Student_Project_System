@@ -1,4 +1,5 @@
 import React, { memo, useEffect, useState, useMemo, useCallback } from 'react';
+import { useAuth } from '../../../hooks/useAuth';
 import {
   User as UserIcon,
   UserPlus as UserPlusIcon,
@@ -15,7 +16,7 @@ import { useNavigate, Outlet } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import studentService from '../../../services/studentService';
 
-const StudentRow = memo(({ student, onEdit, onDelete }) => (
+const StudentRow = memo(({ student, onEdit, onDelete, userRole }) => (
   <tr className='group transition-colors hover:bg-gray-50 dark:hover:bg-slate-900/50'>
     <td className='whitespace-nowrap px-4 py-4'>
       <div className='font-mono text-[10px] font-bold text-gray-400 dark:text-slate-500'>
@@ -64,27 +65,30 @@ const StudentRow = memo(({ student, onEdit, onDelete }) => (
       </span>
     </td>
     <td className='whitespace-nowrap px-4 py-4 text-right text-sm'>
-      <div className='flex justify-end gap-2 opacity-0 transition-opacity group-hover:opacity-100'>
-        <button
-          onClick={() => onEdit(student.id)}
-          className='rounded-xl p-2 text-indigo-600 transition-all hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-900/30'
-          title='Update Profile'
-        >
-          <EditIcon size={16} />
-        </button>
-        <button
-          onClick={() => onDelete(student.id)}
-          className='rounded-xl p-2 text-red-600 transition-all hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30'
-          title='Remove Record'
-        >
-          <TrashIcon size={16} />
-        </button>
-      </div>
+      {userRole !== 'faculty' && (
+        <div className='flex justify-end gap-2 opacity-0 transition-opacity group-hover:opacity-100'>
+          <button
+            onClick={() => onEdit(student.id)}
+            className='rounded-xl p-2 text-indigo-600 transition-all hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-900/30'
+            title='Update Profile'
+          >
+            <EditIcon size={16} />
+          </button>
+          <button
+            onClick={() => onDelete(student.id)}
+            className='rounded-xl p-2 text-red-600 transition-all hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30'
+            title='Remove Record'
+          >
+            <TrashIcon size={16} />
+          </button>
+        </div>
+      )}
     </td>
   </tr>
 ));
 
 const StudentsList = memo(() => {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -181,13 +185,15 @@ const StudentsList = memo(() => {
             Manage and track academic records
           </p>
         </div>
-        <button
-          onClick={() => navigate('/students/new')}
-          className='flex items-center gap-2 rounded-lg bg-indigo-600 px-6 py-2.5 text-xs font-bold uppercase tracking-widest text-white shadow-sm transition-colors hover:bg-indigo-700'
-        >
-          <i className='fas fa-user-plus text-sm'></i>
-          Registration Enrollment
-        </button>
+        {user?.role !== 'faculty' && (
+          <button
+            onClick={() => navigate('/students/new')}
+            className='flex items-center gap-2 rounded-lg bg-indigo-600 px-6 py-2.5 text-xs font-bold uppercase tracking-widest text-white shadow-sm transition-colors hover:bg-indigo-700'
+          >
+            <i className='fas fa-user-plus text-sm'></i>
+            Registration Enrollment
+          </button>
+        )}
       </div>
 
       {/* Basic Filter Toolbar */}
@@ -293,6 +299,7 @@ const StudentsList = memo(() => {
                   student={student}
                   onEdit={handleEdit}
                   onDelete={handleDelete}
+                  userRole={user?.role}
                 />
               ))
             ) : (
@@ -301,9 +308,13 @@ const StudentsList = memo(() => {
                   colSpan='6'
                   className='py-20 text-center font-medium italic text-gray-400'
                 >
-                  {loading
-                    ? 'Accessing student archives...'
-                    : 'No matching records found in the registry.'}
+                  {loading ? (
+                    'Accessing student archives...'
+                  ) : error ? (
+                    <span className='text-red-500'>{error}</span>
+                  ) : (
+                    'No matching records found in the registry.'
+                  )}
                 </td>
               </tr>
             )}

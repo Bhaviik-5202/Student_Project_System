@@ -34,7 +34,7 @@ export const navigationItems = [
       {
         title: 'Project Proposal',
         path: '/projects/new',
-        roles: ROLE_COMBINATIONS.ALL,
+        roles: ROLE_COMBINATIONS.ADMIN_FACULTY,
       },
       {
         title: 'Project Groups',
@@ -44,7 +44,7 @@ export const navigationItems = [
       {
         title: 'Guide Allocation',
         path: '/guide-allocation',
-        roles: ROLE_COMBINATIONS.ADMIN_FACULTY,
+        roles: ROLE_COMBINATIONS.ADMIN_ONLY,
       },
       { title: 'Timeline', path: '/timeline', roles: ROLE_COMBINATIONS.ALL },
       {
@@ -68,7 +68,7 @@ export const navigationItems = [
       {
         title: 'Attendance',
         path: '/attendance',
-        roles: ROLE_COMBINATIONS.ADMIN_FACULTY,
+        roles: ROLE_COMBINATIONS.ADMIN_ONLY,
       },
     ],
   },
@@ -87,7 +87,7 @@ export const navigationItems = [
       {
         title: 'Schedule Meeting',
         path: '/meetings/new',
-        roles: ROLE_COMBINATIONS.ADMIN_FACULTY,
+        roles: ROLE_COMBINATIONS.ADMIN_ONLY,
       },
     ],
   },
@@ -95,23 +95,27 @@ export const navigationItems = [
     title: 'Courses',
     icon: 'book',
     path: '/courses',
-    roles: ROLE_COMBINATIONS.ALL,
+    roles: ROLE_COMBINATIONS.ADMIN_ONLY,
     submenu: [
-      { title: 'My Courses', path: '/courses', roles: ROLE_COMBINATIONS.ALL },
+      {
+        title: 'My Courses',
+        path: '/courses',
+        roles: ROLE_COMBINATIONS.ADMIN_ONLY,
+      },
       {
         title: 'Course Catalog',
         path: '/courses/catalog',
-        roles: ROLE_COMBINATIONS.ALL,
+        roles: ROLE_COMBINATIONS.ADMIN_ONLY,
       },
       {
         title: 'Module Registration',
         path: '/courses/register',
-        roles: ROLE_COMBINATIONS.ALL,
+        roles: ROLE_COMBINATIONS.ADMIN_ONLY,
       },
       {
         title: 'Course Schedule',
         path: '/courses/schedule',
-        roles: ROLE_COMBINATIONS.ALL,
+        roles: ROLE_COMBINATIONS.ADMIN_ONLY,
       },
     ],
   },

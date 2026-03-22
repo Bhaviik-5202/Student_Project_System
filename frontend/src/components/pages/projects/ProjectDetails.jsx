@@ -2,10 +2,12 @@ import React, { useState, useEffect, useCallback, useMemo, memo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import api from '../../../utils/api';
+import { useAuth } from '../../../hooks/useAuth';
 
 const ProjectDetails = memo(() => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -107,7 +109,7 @@ const ProjectDetails = memo(() => {
               <i className='fas fa-arrow-left' /> Back to Projects
             </button>
             <h1 className='text-3xl font-black text-gray-900 dark:text-white'>
-              {project.title}
+              {project?.title}
             </h1>
             <div className='mt-2 flex items-center gap-3'>
               <span
@@ -120,16 +122,18 @@ const ProjectDetails = memo(() => {
               </span>
             </div>
           </div>
-          <button
-            onClick={() =>
-              navigate(
-                `/projects/${project.slug || project.id || project._id}/edit`
-              )
-            }
-            className='project-btn project-btn-primary'
-          >
-            Edit Project
-          </button>
+          {user?.role !== 'faculty' && (
+            <button
+              onClick={() =>
+                navigate(
+                  `/projects/${project.slug || project.id || project._id}/edit`
+                )
+              }
+              className='project-btn project-btn-primary'
+            >
+              Edit Project
+            </button>
+          )}
         </div>
 
         <div className='grid grid-cols-1 gap-6 lg:grid-cols-3'>

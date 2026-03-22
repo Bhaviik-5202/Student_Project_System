@@ -67,16 +67,10 @@ const Profile = memo(() => {
     return {
       name: currentUser.name || '',
       email: currentUser.email || '',
-      phone: currentUser.phone || '+1 (555) 123-4567',
-      department:
-        currentUser.department ||
-        (currentUser.role === 'student' ? 'Computer Science' : 'Faculty'),
-      year:
-        currentUser.year ||
-        (currentUser.role === 'student' ? 'Final Year' : ''),
-      bio:
-        currentUser.bio ||
-        'Passionate about technology and education. Currently working on innovative projects and mentoring students.',
+      phone: currentUser.phone || '',
+      department: currentUser.department || '',
+      year: currentUser.year || '',
+      bio: currentUser.bio || '',
       avatar: currentUser.avatar || null,
     };
   }, []);
@@ -110,7 +104,7 @@ const Profile = memo(() => {
         return;
       }
       const imageUrl = URL.createObjectURL(file);
-      setFormData((prev) => ({ ...prev, avatar: imageUrl }));
+      setFormData((prev) => ({ ...prev, avatar: imageUrl, avatarFile: file }));
     }
   }, []);
 
@@ -118,8 +112,17 @@ const Profile = memo(() => {
     e.preventDefault();
     setIsLoading(true);
 
+    const data = new FormData();
+    Object.keys(formData).forEach((key) => {
+      if (key === 'avatarFile') {
+        if (formData[key]) data.append('avatar', formData[key]);
+      } else if (key !== 'avatar') {
+        data.append(key, formData[key]);
+      }
+    });
+
     try {
-      const res = await updateProfile(formData);
+      const res = await updateProfile(data);
       if (res.success) {
         setIsEditing(false);
         toast.success('Profile updated successfully!');

@@ -2,10 +2,12 @@ import { useState, useCallback, useMemo, useEffect, memo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import timelineService from '../../../services/timelineService';
 import projectService from '../../../services/projectService';
+import { useAuth } from '../../../hooks/useAuth';
 
 const MilestoneTracker = memo(() => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [projects, setProjects] = useState([]);
   const [selectedProjectId, setSelectedProjectId] = useState('');
   const [projectData, setProjectData] = useState(null);
@@ -189,12 +191,16 @@ const MilestoneTracker = memo(() => {
           >
             Temporal View
           </button>
-          <button
-            onClick={() => navigate(`/timeline-editor/${selectedProjectSlug}`)}
-            className='project-btn project-btn-primary'
-          >
-            New Milestone
-          </button>
+          {user?.role !== 'student' && (
+            <button
+              onClick={() =>
+                navigate(`/timeline-editor/${selectedProjectSlug}`)
+              }
+              className='project-btn project-btn-primary'
+            >
+              New Milestone
+            </button>
+          )}
         </div>
       </div>
 
@@ -306,14 +312,18 @@ const MilestoneTracker = memo(() => {
                         >
                           View Details
                         </button>
-                        <button
-                          onClick={() =>
-                            navigate(`/timeline-editor/${selectedProjectSlug}`)
-                          }
-                          className='project-btn project-btn-secondary w-full sm:w-auto'
-                        >
-                          Edit
-                        </button>
+                        {user?.role !== 'student' && (
+                          <button
+                            onClick={() =>
+                              navigate(
+                                `/timeline-editor/${selectedProjectSlug}`
+                              )
+                            }
+                            className='project-btn project-btn-secondary w-full sm:w-auto'
+                          >
+                            Edit
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>

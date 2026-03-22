@@ -57,7 +57,7 @@ router.get(
 router.get(
   '/performance',
   authMiddleware,
-  roleMiddleware(['admin']),
+  roleMiddleware(['admin', 'faculty']),
   analyticsController.getPerformanceMetrics
 );
 router.get(
@@ -69,8 +69,22 @@ router.get(
 router.get(
   '/usage',
   authMiddleware,
-  roleMiddleware(['admin']),
+  roleMiddleware(['admin', 'faculty']),
   analyticsController.getUsageStatistics
+);
+
+router.get(
+  '/projects',
+  authMiddleware,
+  roleMiddleware(['admin', 'faculty']),
+  analyticsController.getProjectAnalytics
+);
+
+router.get(
+  '/users',
+  authMiddleware,
+  roleMiddleware(['admin']),
+  analyticsController.getUserAnalytics
 );
 
 module.exports = router;

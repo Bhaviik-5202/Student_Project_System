@@ -1,10 +1,20 @@
 import { useState, memo, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
-import authService from '../../../services/authService';
+import {
+  User,
+  Mail,
+  Lock,
+  ShieldCheck,
+  UserPlus,
+  ArrowRight,
+  Loader2,
+} from 'lucide-react';
+import { useAuth } from '../../../hooks/useAuth';
 
 /**
  * Register Component - Account creation form
+ * Enhanced with premium UI, animations and better UX.
  */
 const Register = memo(() => {
   const [formData, setFormData] = useState({
@@ -15,7 +25,7 @@ const Register = memo(() => {
     role: 'student',
   });
 
-  const [loading, setLoading] = useState(false);
+  const { register, isLoading: loading } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = useCallback(
@@ -27,27 +37,21 @@ const Register = memo(() => {
         return;
       }
 
-      setLoading(true);
       try {
-        const res = await authService.register({
+        const res = await register({
           name: formData.name,
           email: formData.email,
           password: formData.password,
           role: formData.role,
         });
         if (res.success) {
-          toast.success('Account created! Please sign in.');
           navigate('/login');
-        } else {
-          toast.error(res.message || 'Registration failed');
         }
       } catch (error) {
-        toast.error(error.message || 'Registration failed');
-      } finally {
-        setLoading(false);
+        console.error('Registration error:', error);
       }
     },
-    [formData, navigate]
+    [formData, register, navigate]
   );
 
   const handleChange = useCallback((e) => {
@@ -58,95 +62,160 @@ const Register = memo(() => {
     <div className='space-y-6'>
       <div className='text-center'>
         <div className='mb-4 flex justify-center'>
-          <div className='flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-xl'>
-            <i className='fas fa-user-plus text-2xl text-white'></i>
+          <div className='flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-600 shadow-md'>
+            <UserPlus className='h-8 w-8 text-white' />
           </div>
         </div>
-        <h2 className='text-3xl font-bold text-slate-900 dark:text-white'>
-          Join Us
+        <h2 className='text-3xl font-bold tracking-tight text-slate-900 dark:text-white'>
+          Create Account
         </h2>
-        <p className='mt-2 text-slate-600 dark:text-slate-400'>
-          Create your academic account
+        <p className='mt-2 text-sm text-slate-600 dark:text-slate-400'>
+          Join the student project management portal
         </p>
       </div>
 
       <form className='space-y-4' onSubmit={handleSubmit}>
-        <div>
-          <label className='mb-1.5 block text-sm font-semibold text-slate-700 dark:text-slate-300'>
-            Full Name
-          </label>
-          <input
-            name='name'
-            type='text'
-            required
-            value={formData.name}
-            onChange={handleChange}
-            className='w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 transition-all focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-700/50 dark:text-white'
-            placeholder='John Doe'
-          />
-        </div>
-
-        <div>
-          <label className='mb-1.5 block text-sm font-semibold text-slate-700 dark:text-slate-300'>
-            Email Address
-          </label>
-          <input
-            name='email'
-            type='email'
-            required
-            value={formData.email}
-            onChange={handleChange}
-            className='w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 transition-all focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-700/50 dark:text-white'
-            placeholder='john@university.edu'
-          />
-        </div>
-
-        <div className='grid grid-cols-2 gap-4'>
-          <div>
-            <label className='mb-1.5 block text-sm font-semibold text-slate-700 dark:text-slate-300'>
-              Password
+        <div className='space-y-4'>
+          <div className='group'>
+            <label className='mb-1.5 block text-sm font-bold text-slate-700 dark:text-slate-300'>
+              Full Name
             </label>
-            <input
-              name='password'
-              type='password'
-              required
-              value={formData.password}
-              onChange={handleChange}
-              className='w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 transition-all focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-700/50 dark:text-white'
-              placeholder='••••••••'
-            />
+            <div className='relative'>
+              <div className='absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400'>
+                <User className='h-5 w-5' />
+              </div>
+              <input
+                name='name'
+                type='text'
+                required
+                value={formData.name}
+                onChange={handleChange}
+                className='w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-11 pr-4 text-sm focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-blue-500'
+                placeholder='Jane Smith'
+              />
+            </div>
           </div>
-          <div>
-            <label className='mb-1.5 block text-sm font-semibold text-slate-700 dark:text-slate-300'>
-              Confirm
+
+          <div className='group'>
+            <label className='mb-1.5 block text-sm font-bold text-slate-700 dark:text-slate-300'>
+              Email Address
             </label>
-            <input
-              name='confirmPassword'
-              type='password'
-              required
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              className='w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 transition-all focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-700/50 dark:text-white'
-              placeholder='••••••••'
-            />
+            <div className='relative'>
+              <div className='absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400'>
+                <Mail className='h-5 w-5' />
+              </div>
+              <input
+                name='email'
+                type='email'
+                required
+                value={formData.email}
+                onChange={handleChange}
+                className='w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-11 pr-4 text-sm focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-blue-500'
+                placeholder='jane@university.edu'
+              />
+            </div>
+          </div>
+
+          <div className='group'>
+            <label className='mb-1.5 block text-sm font-bold text-slate-700 dark:text-slate-300'>
+              Account Role
+            </label>
+            <div className='relative'>
+              <div className='absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400'>
+                <UserPlus className='h-5 w-5' />
+              </div>
+              <select
+                name='role'
+                required
+                value={formData.role}
+                onChange={handleChange}
+                className='w-full appearance-none rounded-xl border border-slate-200 bg-slate-50 py-3 pl-11 pr-4 text-sm focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-blue-500'
+              >
+                <option value='student'>Student</option>
+                <option value='faculty'>Faculty</option>
+                <option value='admin'>Admin</option>
+              </select>
+              <div className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400'>
+                <svg className='h-4 w-4 fill-current' viewBox='0 0 20 20'>
+                  <path d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' />
+                </svg>
+              </div>
+            </div>
+            {formData.role === 'admin' && (
+              <p className='mt-2 rounded-lg border border-amber-100 bg-amber-50 p-2 text-[11px] font-medium text-amber-600 dark:border-amber-900/30 dark:bg-amber-900/20 dark:text-amber-400'>
+                Note: The Administrator account is predefined. Personal "Admin"
+                accounts cannot be created.
+              </p>
+            )}
+          </div>
+
+          <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+            <div className='group'>
+              <label className='mb-1.5 block text-sm font-bold text-slate-700 dark:text-slate-300'>
+                Password
+              </label>
+              <div className='relative'>
+                <div className='absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400'>
+                  <Lock className='h-5 w-5' />
+                </div>
+                <input
+                  name='password'
+                  type='password'
+                  required
+                  value={formData.password}
+                  onChange={handleChange}
+                  className='w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-11 pr-4 text-sm focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-blue-500'
+                  placeholder='••••••••'
+                />
+              </div>
+            </div>
+            <div className='group'>
+              <label className='mb-1.5 block text-sm font-bold text-slate-700 dark:text-slate-300'>
+                Confirm
+              </label>
+              <div className='relative'>
+                <div className='absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400'>
+                  <ShieldCheck className='h-5 w-5' />
+                </div>
+                <input
+                  name='confirmPassword'
+                  type='password'
+                  required
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  className='w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-11 pr-4 text-sm focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-blue-500'
+                  placeholder='••••••••'
+                />
+              </div>
+            </div>
           </div>
         </div>
 
         <button
           type='submit'
           disabled={loading}
-          className='mt-2 w-full rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 py-3.5 font-bold text-white shadow-lg transition-all hover:from-blue-700 hover:to-indigo-700 active:scale-[0.98] disabled:opacity-50'
+          className='mt-2 flex w-full items-center justify-center rounded-xl bg-blue-600 py-4 font-bold text-white shadow-md transition-all hover:bg-blue-700 disabled:opacity-50'
         >
-          {loading ? 'Creating Account...' : 'Create Account'}
+          {loading ? (
+            <div className='flex items-center gap-2'>
+              <Loader2 className='h-5 w-5 animate-spin' />
+              <span>Creating Account...</span>
+            </div>
+          ) : (
+            <div className='flex items-center gap-2'>
+              <span>Create Account</span>
+              <ArrowRight className='h-5 w-5' />
+            </div>
+          )}
         </button>
       </form>
 
       <div className='pt-2 text-center'>
-        <p className='text-sm text-slate-600 dark:text-slate-400'>
+        <p className='text-sm font-medium text-slate-600 dark:text-slate-400'>
           Already have an account?{' '}
           <Link
             to='/login'
-            className='font-bold text-blue-600 dark:text-blue-400'
+            className='font-bold text-blue-600 hover:underline dark:text-blue-400'
           >
             Sign In
           </Link>

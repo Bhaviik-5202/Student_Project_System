@@ -41,7 +41,7 @@ const projectValidation = [
 router.post(
   '/',
   authMiddleware,
-  roleMiddleware(['admin', 'faculty', 'student']),
+  roleMiddleware(['admin', 'faculty']),
   upload.single('document'),
   [
     body('title').notEmpty().withMessage('Title is required'),
@@ -84,7 +84,7 @@ router.get(
 router.post(
   '/types',
   authMiddleware,
-  roleMiddleware(['admin', 'faculty']),
+  roleMiddleware(['admin']),
   projectTypeController.createProjectType
 );
 
@@ -96,7 +96,7 @@ router.post(
 router.put(
   '/types/:id',
   authMiddleware,
-  roleMiddleware(['admin', 'faculty']),
+  roleMiddleware(['admin']),
   projectTypeController.updateProjectType
 );
 
@@ -108,7 +108,7 @@ router.put(
 router.delete(
   '/types/:id',
   authMiddleware,
-  roleMiddleware(['admin', 'faculty']),
+  roleMiddleware(['admin']),
   projectTypeController.deleteProjectType
 );
 
@@ -134,7 +134,7 @@ router.get('/:id', authMiddleware, projectController.getProjectById);
 router.put(
   '/:id',
   authMiddleware,
-  roleMiddleware(['admin', 'faculty', 'student']),
+  roleMiddleware(['admin', 'faculty']),
   upload.single('document'),
   projectValidation,
   validateRequest,
@@ -149,7 +149,7 @@ router.put(
 router.delete(
   '/:id',
   authMiddleware,
-  roleMiddleware(['admin', 'faculty', 'student']),
+  roleMiddleware(['admin']),
   projectController.deleteProject
 );
 

@@ -11,6 +11,7 @@ const router = express.Router();
 // Controllers and Middlewares
 const evaluationController = require('../controllers/evaluation.controller');
 const authMiddleware = require('../middleware/auth.middleware');
+const roleMiddleware = require('../middleware/roleMiddleware');
 const validateRequest = require('../middleware/validateRequest');
 
 /**
@@ -18,14 +19,24 @@ const validateRequest = require('../middleware/validateRequest');
  * @desc    Create a new evaluation
  * @access  Private (Authenticated Users)
  */
-router.post('/', authMiddleware, evaluationController.createEvaluation);
+router.post(
+  '/',
+  authMiddleware,
+  roleMiddleware(['admin', 'faculty']),
+  evaluationController.createEvaluation
+);
 
 /**
  * @route   GET /api/v1/evaluations
  * @desc    Retrieve all evaluations
  * @access  Private (Authenticated Users)
  */
-router.get('/', authMiddleware, evaluationController.getAllEvaluations);
+router.get(
+  '/',
+  authMiddleware,
+  roleMiddleware(['admin', 'faculty']),
+  evaluationController.getAllEvaluations
+);
 
 /**
  * @route   GET /api/v1/evaluations/:id
@@ -42,6 +53,7 @@ router.get('/:id', authMiddleware, evaluationController.getEvaluationById);
 router.put(
   '/:id',
   authMiddleware,
+  roleMiddleware(['admin', 'faculty']),
   [
     body('title').optional().notEmpty().withMessage('Title cannot be empty'),
     body('description')
@@ -58,6 +70,11 @@ router.put(
  * @desc    Delete an evaluation
  * @access  Private (Authenticated Users)
  */
-router.delete('/:id', authMiddleware, evaluationController.deleteEvaluation);
+router.delete(
+  '/:id',
+  authMiddleware,
+  roleMiddleware(['admin', 'faculty']),
+  evaluationController.deleteEvaluation
+);
 
 module.exports = router;

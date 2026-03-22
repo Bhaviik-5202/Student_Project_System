@@ -165,6 +165,21 @@ exports.updateUser = async (req, res) => {
       );
     }
 
+    const userResult = await userService.getById(req.params.id);
+    if (
+      userResult.data &&
+      userResult.data.email === 'er.bhavik5202@gmail.com'
+    ) {
+      return sendResponse(
+        res,
+        {
+          success: false,
+          message: 'Master administrator cannot be modified via this endpoint',
+        },
+        403
+      );
+    }
+
     const result = await userService.update(req.params.id, req.body);
 
     if (!result.error && result.data) {
@@ -208,6 +223,18 @@ exports.updateUser = async (req, res) => {
  */
 exports.deleteUser = async (req, res) => {
   try {
+    const userResult = await userService.getById(req.params.id);
+    if (
+      userResult.data &&
+      userResult.data.email === 'er.bhavik5202@gmail.com'
+    ) {
+      return sendResponse(
+        res,
+        { success: false, message: 'Master administrator cannot be deleted' },
+        403
+      );
+    }
+
     const result = await userService.remove(req.params.id);
 
     if (!result.error) {

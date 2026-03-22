@@ -176,6 +176,8 @@ const authService = {
    */
   updateProfile: async (userData) => {
     try {
+      // If we are sending a file, userData will be FormData.
+      // Axios automatically sets headers for FormData.
       const response = await api.put('/auth/profile', userData);
       if (response.success && response.data) {
         localStorage.setItem(
@@ -283,6 +285,49 @@ const authService = {
       return {
         success: false,
         message: error.response?.data?.message || 'Reset failed',
+      };
+    }
+  },
+  /**
+   * Update current user settings
+   * @param {Object} settings - Settings object to update
+   * @returns {Promise<Object>} Update response
+   */
+  updateSettings: async (settings) => {
+    try {
+      const response = await api.patch('/auth/settings', settings);
+      if (response.success && response.data) {
+        const user = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEYS.USER));
+        const updatedUser = { ...user, settings: response.data };
+        localStorage.setItem(
+          LOCAL_STORAGE_KEYS.USER,
+          JSON.stringify(updatedUser)
+        );
+      }
+      return response;
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Settings update failed',
+      };
+    }
+  },
+
+  /**
+   * Delete current user account
+   * @returns {Promise<Object>} Delete response
+   */
+  deleteAccount: async () => {
+    try {
+      const response = await api.delete('/auth/account');
+      if (response.success) {
+        authService.logout();
+      }
+      return response;
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Account deletion failed',
       };
     }
   },

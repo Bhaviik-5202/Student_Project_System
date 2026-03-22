@@ -11,6 +11,7 @@ const router = express.Router();
 // Controllers and Middlewares
 const resourceController = require('../controllers/resource.controller');
 const authMiddleware = require('../middleware/auth.middleware');
+const roleMiddleware = require('../middleware/roleMiddleware');
 const validateRequest = require('../middleware/validateRequest');
 const upload = require('../utils/upload');
 
@@ -22,9 +23,13 @@ const upload = require('../utils/upload');
 router.post(
   '/',
   authMiddleware,
+  roleMiddleware(['admin', 'faculty']),
   upload.array('files'),
   [
-    body('title').notEmpty().withMessage('Title is required'),
+    body('title')
+      .optional()
+      .notEmpty()
+      .withMessage('Title cannot be empty if provided'),
 
     body('type')
       .notEmpty()
@@ -54,6 +59,11 @@ router.get('/:id', authMiddleware, resourceController.getResourceById);
  * @desc    Delete a resource
  * @access  Private (Authenticated Users)
  */
-router.delete('/:id', authMiddleware, resourceController.deleteResource);
+router.delete(
+  '/:id',
+  authMiddleware,
+  roleMiddleware(['admin', 'faculty']),
+  resourceController.deleteResource
+);
 
 module.exports = router;

@@ -97,17 +97,36 @@ exports.getSubmissionById = async (req, res) => {
   try {
     const result = await submissionService.getById(req.params.id);
 
+    const submission = await submissionService.getById(req.params.id);
+    if (!submission || submission.error) {
+      return sendResponse(
+        res,
+        { success: false, message: 'Submission not found' },
+        404
+      );
+    }
+
+    // RBAC: Only owner, admin, or faculty can view
+    const isOwner = submission.data.student?.toString() === req.user.id;
+    const isAdminOrFaculty = ['admin', 'faculty'].includes(req.user.role);
+
+    if (!isOwner && !isAdminOrFaculty) {
+      return sendResponse(
+        res,
+        { success: false, message: 'Access denied' },
+        403
+      );
+    }
+
     sendResponse(
       res,
       {
-        success: !result.error,
-        message: result.error
-          ? 'Submission not found'
-          : 'Submission fetched successfully',
-        data: result.data || null,
-        error: result.error || null,
+        success: true,
+        message: 'Submission fetched successfully',
+        data: submission.data,
+        error: null,
       },
-      result.error ? 404 : 200
+      200
     );
   } catch (error) {
     sendResponse(
@@ -130,6 +149,27 @@ exports.getSubmissionById = async (req, res) => {
  */
 exports.updateSubmission = async (req, res) => {
   try {
+    const submission = await submissionService.getById(req.params.id);
+    if (!submission || submission.error) {
+      return sendResponse(
+        res,
+        { success: false, message: 'Submission not found' },
+        404
+      );
+    }
+
+    // RBAC: Only owner, admin, or faculty can update
+    const isOwner = submission.data.student?.toString() === req.user.id;
+    const isAdminOrFaculty = ['admin', 'faculty'].includes(req.user.role);
+
+    if (!isOwner && !isAdminOrFaculty) {
+      return sendResponse(
+        res,
+        { success: false, message: 'Access denied' },
+        403
+      );
+    }
+
     const result = await submissionService.update(req.params.id, req.body);
 
     sendResponse(
@@ -160,6 +200,27 @@ exports.updateSubmission = async (req, res) => {
 
 exports.deleteSubmission = async (req, res) => {
   try {
+    const submission = await submissionService.getById(req.params.id);
+    if (!submission || submission.error) {
+      return sendResponse(
+        res,
+        { success: false, message: 'Submission not found' },
+        404
+      );
+    }
+
+    // RBAC: Only owner, admin, or faculty can delete
+    const isOwner = submission.data.student?.toString() === req.user.id;
+    const isAdminOrFaculty = ['admin', 'faculty'].includes(req.user.role);
+
+    if (!isOwner && !isAdminOrFaculty) {
+      return sendResponse(
+        res,
+        { success: false, message: 'Access denied' },
+        403
+      );
+    }
+
     const result = await submissionService.remove(req.params.id);
 
     sendResponse(

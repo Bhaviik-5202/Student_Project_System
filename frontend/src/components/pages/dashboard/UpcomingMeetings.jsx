@@ -21,12 +21,14 @@ const UpcomingMeetings = ({ meetings = [], userRole }) => {
             Your scheduled meetings and events
           </p>
         </div>
-        <Link
-          to='/meetings/new'
-          className='flex items-center text-sm font-medium text-primary-600 hover:text-primary-700'
-        >
-          <Plus size={16} className='mr-1' /> Schedule
-        </Link>
+        {userRole !== 'faculty' && (
+          <Link
+            to='/meetings/new'
+            className='flex items-center text-sm font-medium text-primary-600 hover:text-primary-700'
+          >
+            <Plus size={16} className='mr-1' /> Schedule
+          </Link>
+        )}
       </div>
       <div className='space-y-4'>
         {meetings.length > 0 ? (

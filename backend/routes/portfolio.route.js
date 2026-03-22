@@ -11,6 +11,7 @@ const router = express.Router();
 // Controllers and Middlewares
 const portfolioController = require('../controllers/portfolio.controller');
 const authMiddleware = require('../middleware/auth.middleware');
+const roleMiddleware = require('../middleware/roleMiddleware');
 const validateRequest = require('../middleware/validateRequest');
 
 /**
@@ -21,6 +22,7 @@ const validateRequest = require('../middleware/validateRequest');
 router.post(
   '/',
   authMiddleware,
+  roleMiddleware(['student']),
   [
     body('student').notEmpty().withMessage('Student is required'),
 
@@ -50,6 +52,7 @@ router.post(
 router.get(
   '/student/:studentId',
   authMiddleware,
+  roleMiddleware(['admin', 'faculty', 'student']),
   portfolioController.getPortfolioByStudent
 );
 
@@ -61,6 +64,7 @@ router.get(
 router.put(
   '/:id',
   authMiddleware,
+  roleMiddleware(['admin', 'faculty', 'student']),
   [
     body('projects')
       .optional()

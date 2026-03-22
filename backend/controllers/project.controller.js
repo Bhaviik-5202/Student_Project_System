@@ -297,6 +297,27 @@ exports.getProjectById = async (req, res) => {
  */
 exports.updateProject = async (req, res) => {
   try {
+    const project = await projectService.getById(req.params.id);
+    if (!project || project.error) {
+      return sendResponse(
+        res,
+        { success: false, message: 'Project not found' },
+        404
+      );
+    }
+
+    // RBAC: Only owner, admin, or faculty can update
+    const isOwner = project.data.createdBy?.toString() === req.user.id;
+    const isAdminOrFaculty = ['admin', 'faculty'].includes(req.user.role);
+
+    if (!isOwner && !isAdminOrFaculty) {
+      return sendResponse(
+        res,
+        { success: false, message: 'Access denied' },
+        403
+      );
+    }
+
     const updateData = { ...req.body };
     if (req.file) {
       updateData.document = req.file.path;
@@ -304,6 +325,25 @@ exports.updateProject = async (req, res) => {
 
     // Sanitize guide and members to prevent Cast to ObjectId failed for empty strings
     if (updateData.guide === '') updateData.guide = null;
+
+    // RBAC: Faculty cannot select or assign a guide
+    if (
+      req.user.role === 'faculty' &&
+      updateData.guide !== undefined &&
+      updateData.guide !== project.data.guide
+    ) {
+      return sendResponse(
+        res,
+        {
+          success: false,
+          message: 'Access denied: Faculty cannot select or assign a guide',
+          data: null,
+          error: 'Unauthorized field update',
+        },
+        403
+      );
+    }
+
     if (Array.isArray(updateData.members)) {
       updateData.members = updateData.members.filter((m) => m !== '');
     }
@@ -340,6 +380,27 @@ exports.updateProject = async (req, res) => {
  */
 exports.deleteProject = async (req, res) => {
   try {
+    const project = await projectService.getById(req.params.id);
+    if (!project || project.error) {
+      return sendResponse(
+        res,
+        { success: false, message: 'Project not found' },
+        404
+      );
+    }
+
+    // RBAC: Only owner, admin, or faculty can delete
+    const isOwner = project.data.createdBy?.toString() === req.user.id;
+    const isAdminOrFaculty = ['admin', 'faculty'].includes(req.user.role);
+
+    if (!isOwner && !isAdminOrFaculty) {
+      return sendResponse(
+        res,
+        { success: false, message: 'Access denied' },
+        403
+      );
+    }
+
     const result = await projectService.remove(req.params.id);
 
     sendResponse(

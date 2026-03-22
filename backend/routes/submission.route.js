@@ -10,6 +10,7 @@ const router = express.Router();
 // Controllers and Middlewares
 const submissionController = require('../controllers/submission.controller');
 const authMiddleware = require('../middleware/auth.middleware');
+const roleMiddleware = require('../middleware/roleMiddleware');
 const upload = require('../utils/upload');
 
 /**
@@ -20,6 +21,7 @@ const upload = require('../utils/upload');
 router.post(
   '/',
   authMiddleware,
+  roleMiddleware(['student']),
   upload.array('file'),
   submissionController.createSubmission
 );
@@ -32,6 +34,7 @@ router.post(
 router.get(
   '/history',
   authMiddleware,
+  roleMiddleware(['student', 'faculty', 'admin']),
   submissionController.getSubmissionHistory
 );
 
@@ -40,7 +43,12 @@ router.get(
  * @desc    Retrieve all submissions
  * @access  Private (Authenticated Users)
  */
-router.get('/', authMiddleware, submissionController.getAllSubmissions);
+router.get(
+  '/',
+  authMiddleware,
+  roleMiddleware(['admin', 'faculty']),
+  submissionController.getAllSubmissions
+);
 
 /**
  * @route   GET /api/v1/submissions/:id

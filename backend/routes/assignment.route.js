@@ -11,6 +11,7 @@ const router = express.Router();
 // Controllers and Middlewares
 const assignmentController = require('../controllers/assignment.controller');
 const authMiddleware = require('../middleware/auth.middleware');
+const roleMiddleware = require('../middleware/roleMiddleware');
 const upload = require('../utils/upload');
 
 /**
@@ -57,6 +58,7 @@ const updateAssignmentValidation = [
 router.post(
   '/',
   authMiddleware,
+  roleMiddleware(['admin', 'faculty']),
   upload.array('attachments'),
   createAssignmentValidation,
   assignmentController.createAssignment
@@ -84,6 +86,7 @@ router.get('/:id', authMiddleware, assignmentController.getAssignmentById);
 router.put(
   '/:id',
   authMiddleware,
+  roleMiddleware(['admin', 'faculty']),
   updateAssignmentValidation,
   assignmentController.updateAssignment
 );
@@ -107,6 +110,11 @@ router.post('/rubric/:id', authMiddleware, assignmentController.saveRubric);
  * @desc    Delete an assignment
  * @access  Private (Authenticated Users)
  */
-router.delete('/:id', authMiddleware, assignmentController.deleteAssignment);
+router.delete(
+  '/:id',
+  authMiddleware,
+  roleMiddleware(['admin', 'faculty']),
+  assignmentController.deleteAssignment
+);
 
 module.exports = router;

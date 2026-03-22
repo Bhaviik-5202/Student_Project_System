@@ -11,6 +11,7 @@ const router = express.Router();
 // Controllers and Middlewares
 const studentController = require('../controllers/student.controller');
 const authMiddleware = require('../middleware/auth.middleware');
+const roleMiddleware = require('../middleware/roleMiddleware');
 const validateRequest = require('../middleware/validateRequest');
 
 /**
@@ -21,6 +22,7 @@ const validateRequest = require('../middleware/validateRequest');
 router.post(
   '/',
   authMiddleware,
+  roleMiddleware(['admin']),
   [
     body('name').notEmpty().withMessage('Name is required'),
 
@@ -43,14 +45,24 @@ router.post(
  * @desc    Retrieve all students
  * @access  Private (Authenticated Users)
  */
-router.get('/', authMiddleware, studentController.getAllStudents);
+router.get(
+  '/',
+  authMiddleware,
+  roleMiddleware(['admin', 'faculty']),
+  studentController.getAllStudents
+);
 
 /**
  * @route   GET /api/v1/students/:id
  * @desc    Retrieve a student by ID
  * @access  Private (Authenticated Users)
  */
-router.get('/:id', authMiddleware, studentController.getStudentById);
+router.get(
+  '/:id',
+  authMiddleware,
+  roleMiddleware(['admin', 'faculty']),
+  studentController.getStudentById
+);
 
 /**
  * @route   PUT /api/v1/students/:id
@@ -60,6 +72,7 @@ router.get('/:id', authMiddleware, studentController.getStudentById);
 router.put(
   '/:id',
   authMiddleware,
+  roleMiddleware(['admin']),
   [
     body('name').optional().notEmpty().withMessage('Name cannot be empty'),
 
@@ -89,6 +102,11 @@ router.put(
  * @desc    Delete a student
  * @access  Private (Authenticated Users)
  */
-router.delete('/:id', authMiddleware, studentController.deleteStudent);
+router.delete(
+  '/:id',
+  authMiddleware,
+  roleMiddleware(['admin']),
+  studentController.deleteStudent
+);
 
 module.exports = router;

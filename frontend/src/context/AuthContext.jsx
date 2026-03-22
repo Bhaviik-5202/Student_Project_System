@@ -294,6 +294,62 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   /**
+   * Update the current user's application settings
+   */
+  const updateSettings = useCallback(
+    async (settingsData) => {
+      try {
+        setIsLoading(true);
+        const res = await authService.updateSettings(settingsData);
+        if (res.success) {
+          const updatedUser = { ...user, settings: res.data };
+          setUser(updatedUser);
+          safeLocalStorage.setItem(
+            STORAGE_KEYS.USER,
+            JSON.stringify(updatedUser)
+          );
+          toast.success('Settings updated successfully');
+          return { success: true, settings: res.data };
+        } else {
+          toast.error(res.message || 'Failed to update settings');
+          return { success: false, message: res.message };
+        }
+      } catch (error) {
+        console.error('Update settings error:', error);
+        toast.error('An error occurred while updating settings');
+        return { success: false, message: error.message };
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [user, safeLocalStorage]
+  );
+
+  /**
+   * Delete the current user's account
+   */
+  const deleteAccount = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const res = await authService.deleteAccount();
+      if (res.success) {
+        clearAuthData();
+        toast.success('Your account has been permanently deleted');
+        return { success: true };
+      } else {
+        toast.error(res.message || 'Failed to delete account');
+        return { success: false, message: res.message };
+      }
+    } catch (error) {
+      console.error('Delete account error:', error);
+      toast.error('An error occurred while deleting account');
+      return { success: false, message: error.message };
+    } finally {
+      setIsLoading(false);
+    }
+  }, [clearAuthData]);
+
+  /**
    * Update the current user's locally stored profile data
    * @param {Object} updates - Attributes to update
    * @returns {Object} Updated status and user data
@@ -403,6 +459,8 @@ export const AuthProvider = ({ children }) => {
       hasAnyRole,
       refreshSession,
       getSessionTimeRemaining,
+      updateSettings,
+      deleteAccount,
     }),
     [
       user,
@@ -419,6 +477,8 @@ export const AuthProvider = ({ children }) => {
       hasAnyRole,
       refreshSession,
       getSessionTimeRemaining,
+      updateSettings,
+      deleteAccount,
     ]
   );
 

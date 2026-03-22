@@ -1,14 +1,18 @@
 import { useState, useCallback, memo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import {
+  Mail,
+  Lock,
+  LogIn,
+  ArrowRight,
+  Loader2,
+  AlertCircle,
+} from 'lucide-react';
 import { useAuth } from '../../../hooks/useAuth';
 
 /**
  * Login Component
- *
- * The primary entry point for user authentication. Features a
- * responsive, secure credential acquisition form with integrated
- * error handling, loading states, and direct links to registration
- * and recovery workflows.
+ * Enhanced with premium UI, animations and better UX.
  */
 const Login = memo(() => {
   const [email, setEmail] = useState('');
@@ -46,62 +50,68 @@ const Login = memo(() => {
     <div className='space-y-6'>
       <div className='text-center'>
         <div className='mb-4 flex justify-center'>
-          <div className='animate-bounce-slow flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-xl'>
-            <i className='fas fa-lock text-2xl text-white'></i>
+          <div className='flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-600 shadow-md'>
+            <Lock className='h-8 w-8 text-white' />
           </div>
         </div>
-        <h2 className='text-3xl font-bold text-slate-900 dark:text-white'>
+        <h2 className='text-3xl font-bold tracking-tight text-slate-900 dark:text-white'>
           Welcome Back
         </h2>
-        <p className='mt-2 text-slate-600 dark:text-slate-400'>
-          Sign in to your account
+        <p className='mt-2 text-sm text-slate-600 dark:text-slate-400'>
+          Sign in to your academic dashboard
         </p>
       </div>
 
       {error && (
-        <div className='animate-shake flex gap-3 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/40 dark:text-red-400'>
-          <i className='fas fa-exclamation-circle mt-0.5'></i>
-          <span>{error}</span>
+        <div className='flex items-center gap-3 rounded-xl border border-red-100 bg-red-50 p-4 text-sm text-red-600 dark:border-red-900/30 dark:bg-red-900/20 dark:text-red-400'>
+          <AlertCircle className='h-5 w-5' />
+          <span className='font-medium'>{error}</span>
         </div>
       )}
 
       <form className='space-y-5' onSubmit={handleSubmit}>
         <div className='space-y-4'>
-          <div>
-            <label className='mb-1.5 block text-sm font-semibold text-slate-700 dark:text-slate-300'>
+          <div className='group'>
+            <label className='mb-1.5 block text-sm font-bold text-slate-700 dark:text-slate-300'>
               Email Address
             </label>
             <div className='relative'>
-              <i className='fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-400'></i>
+              <div className='absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400'>
+                <Mail className='h-5 w-5' />
+              </div>
               <input
                 type='email'
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className='w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-11 pr-4 transition-all focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-700/50 dark:text-white'
+                className='w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-11 pr-4 text-sm focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-blue-500'
                 placeholder='you@university.edu'
               />
             </div>
           </div>
 
-          <div>
+          <div className='group'>
             <div className='mb-1.5 flex items-center justify-between'>
+              <label className='block text-sm font-bold text-slate-700 dark:text-slate-300'>
+                Password
+              </label>
               <Link
                 to='/forgot-password'
-                size='text-xs'
-                className='text-xs font-medium text-blue-600 dark:text-blue-400'
+                className='text-xs font-bold text-blue-600 hover:underline dark:text-blue-400'
               >
                 Forgot password?
               </Link>
             </div>
             <div className='relative'>
-              <i className='fas fa-key absolute left-4 top-1/2 -translate-y-1/2 text-slate-400'></i>
+              <div className='absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400'>
+                <Lock className='h-5 w-5' />
+              </div>
               <input
                 type='password'
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className='w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-11 pr-4 transition-all focus:border-transparent focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-700/50 dark:text-white'
+                className='w-full rounded-xl border border-slate-200 bg-slate-50 py-3 pl-11 pr-4 text-sm focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-blue-500'
                 placeholder='••••••••'
               />
             </div>
@@ -111,23 +121,28 @@ const Login = memo(() => {
         <button
           type='submit'
           disabled={loading}
-          className='w-full rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 py-3.5 font-bold text-white shadow-lg transition-all hover:from-blue-700 hover:to-indigo-700 hover:shadow-blue-500/25 active:scale-[0.98] disabled:opacity-50'
+          className='flex w-full items-center justify-center rounded-xl bg-blue-600 py-4 font-bold text-white shadow-md transition-all hover:bg-blue-700 disabled:opacity-50'
         >
           {loading ? (
-            <span className='flex items-center justify-center gap-2'>
-              <i className='fas fa-circle-notch fa-spin'></i> Authenticating...
-            </span>
+            <div className='flex items-center gap-2'>
+              <Loader2 className='h-5 w-5 animate-spin' />
+              <span>Sign In...</span>
+            </div>
           ) : (
-            'Sign In'
+            <div className='flex items-center gap-2'>
+              <span>Sign In</span>
+              <ArrowRight className='h-5 w-5' />
+            </div>
           )}
         </button>
       </form>
 
       <div className='pt-2 text-center'>
-        <p className='text-sm text-slate-600 dark:text-slate-400'>
+        <p className='text-sm font-medium text-slate-600 dark:text-slate-400'>
+          Don't have an account?{' '}
           <Link
             to='/register'
-            className='font-bold text-blue-600 dark:text-blue-400'
+            className='font-bold text-blue-600 hover:underline dark:text-blue-400'
           >
             Create Account
           </Link>

@@ -5,6 +5,8 @@ const meetingRepository = require('../repositories/meeting.repository');
 const evaluationRepository = require('../repositories/evaluation.repository');
 const attendanceRepository = require('../repositories/attendance.repository');
 const submissionRepository = require('../repositories/submission.repository');
+const studentRepository = require('../repositories/student.repository');
+const staffRepository = require('../repositories/staff.repository');
 
 /**
  * Standardized response helper for services
@@ -606,20 +608,41 @@ exports.getUserStats = async () => {
  * @param {string} facultyId - Faculty identifier
  * @returns {Promise<Object>} Formatted service response with faculty stats
  */
-exports.getFacultyDashboardStats = async (facultyId) => {
+exports.getFacultyDashboardStats = async (userId) => {
   try {
+    const user = await userRepository.findById(userId);
+    if (!user) throw new Error('User not found');
+
+    const staff = await staffRepository.findAll({ email: user.email });
+    const staffId = staff.length > 0 ? staff[0]._id : null;
+
+    // Create a list of possible IDs for the faculty (Staff ID and User ID)
+    const facultyIds = [userId];
+    if (staffId) facultyIds.push(staffId);
+
     const totalProjectsCount = await projectRepository.count();
-    const myProjectsCount = await projectRepository.count({ guide: facultyId });
-    const activeStudents = await userRepository.count({
-      role: 'student',
-      status: 'active',
+    const myProjectsCount = await projectRepository.count({
+      guide: { $in: facultyIds },
     });
+
+    // Count unique students directly assigned to projects this faculty guides
+    const myProjects = await projectRepository.findAll({
+      guide: { $in: facultyIds },
+    });
+    const studentIds = new Set();
+    myProjects.forEach((p) => {
+      if (Array.isArray(p.members)) {
+        p.members.forEach((m) => studentIds.add(m.toString()));
+      }
+    });
+    const assignedStudentsCount = studentIds.size;
+
     const pendingReviewsCount = await projectRepository.count({
-      guide: facultyId,
+      guide: { $in: facultyIds },
       status: 'planning',
     });
     const todayMeetingsCount = await meetingRepository.count({
-      guide: facultyId,
+      guide: { $in: facultyIds },
       date: {
         $gte: new Date().setHours(0, 0, 0, 0),
         $lte: new Date().setHours(23, 59, 59, 999),
@@ -627,7 +650,7 @@ exports.getFacultyDashboardStats = async (facultyId) => {
     });
 
     const recentProjects = await projectRepository.findAll(
-      { guide: facultyId },
+      { guide: { $in: facultyIds } },
       {
         sort: { updatedAt: -1 },
         limit: 5,
@@ -635,14 +658,16 @@ exports.getFacultyDashboardStats = async (facultyId) => {
       }
     );
 
-    const todayMeetings = await getTodayMeetings({ guide: facultyId });
+    const todayMeetings = await getTodayMeetings({
+      guide: { $in: facultyIds },
+    });
 
     return response(
       false,
       {
         totalProjects: totalProjectsCount,
         myProjects: myProjectsCount,
-        activeStudents,
+        activeStudents: assignedStudentsCount,
         pendingReviews: pendingReviewsCount,
         todayMeetings: todayMeetings.map((m) => ({
           id: m._id,
@@ -663,7 +688,7 @@ exports.getFacultyDashboardStats = async (facultyId) => {
           description: `Project update for ${p.title}${p.createdBy ? ` by ${p.createdBy.name}` : ''}`,
         })),
         projectProgress: await exports._getProjectProgressData({
-          guide: facultyId,
+          guide: { $in: facultyIds },
         }),
       },
       'Faculty dashboard statistics fetched successfully'
@@ -685,17 +710,63 @@ exports.getFacultyDashboardStats = async (facultyId) => {
 exports.getStudentDashboardStats = async (studentId) => {
   try {
     const totalProjectsCount = await projectRepository.count();
+    const user = await userRepository.findById(studentId);
+    if (!user) throw new Error('User not found');
+
+    const student = await studentRepository.findByEmail(user.email);
+    if (!student) {
+      // Fallback if no student profile linked to this user
+      return response(
+        false,
+        {
+          totalProjects: await projectRepository.count({
+            $or: [{ createdBy: studentId }, { members: studentId }],
+          }),
+          myProjects: await projectRepository.count({
+            $or: [{ createdBy: studentId }, { members: studentId }],
+          }),
+          upcomingDeadlines: [],
+          todayMeetings: [],
+          currentGrade: 'N/A',
+          recentActivities: [],
+          projectProgress: [],
+        },
+        'Student profile not found'
+      );
+    }
+
     const myProjectsCount = await projectRepository.count({
       $or: [{ createdBy: studentId }, { members: studentId }],
     });
-    const completedAssignmentsCount = await assignmentRepository.count({
-      student: studentId,
-      status: 'completed',
+
+    const enrolledCourses = student.enrolledCourses || [];
+
+    // Get all assignments for the student's courses
+    const allAssignments = await assignmentRepository.findAll({
+      course: { $in: enrolledCourses },
     });
-    const upcomingDeadlinesCount = await assignmentRepository.count({
-      student: studentId,
-      dueDate: { $gte: new Date() },
+
+    // Get all submissions by this student
+    const mySubmissions = await submissionRepository.findAll({
+      student: student._id,
     });
+
+    const submittedAssignmentIds = mySubmissions.map((s) =>
+      s.assignment.toString()
+    );
+
+    // Filter upcoming assignments that haven't been submitted
+    const upcomingAssignmentsData = allAssignments
+      .filter(
+        (a) =>
+          !submittedAssignmentIds.includes(a._id.toString()) &&
+          new Date(a.dueDate) >= new Date()
+      )
+      .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
+      .slice(0, 5);
+
+    const upcomingDeadlinesCount = upcomingAssignmentsData.length;
+    const completedAssignmentsCount = submittedAssignmentIds.length;
 
     const recentProjects = await projectRepository.findAll(
       {
@@ -714,14 +785,17 @@ exports.getStudentDashboardStats = async (studentId) => {
       ],
     });
 
-    const upcomingDeadlines = await assignmentRepository.findAll(
-      {
-        student: studentId,
-        status: { $ne: 'completed' },
-        dueDate: { $gte: new Date() },
-      },
-      { limit: 5, sort: { dueDate: 1 } }
-    );
+    const upcomingDeadlines = upcomingAssignmentsData.map((a) => ({
+      id: a._id,
+      title: a.title,
+      due: new Date(a.dueDate).toLocaleDateString(),
+      time: new Date(a.dueDate).toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+      }),
+      priority:
+        new Date(a.dueDate) - new Date() < 86400000 * 2 ? 'high' : 'medium',
+    }));
 
     // Calculate Student Grade Dynamically
     const studentEvaluations = await evaluationRepository.findAll({
@@ -747,17 +821,7 @@ exports.getStudentDashboardStats = async (studentId) => {
         totalProjects: totalProjectsCount,
         myProjects: myProjectsCount,
         completedAssignments: completedAssignmentsCount,
-        upcomingDeadlines: upcomingDeadlines.map((a) => ({
-          id: a._id,
-          title: a.title,
-          due: new Date(a.dueDate).toLocaleDateString(),
-          time: new Date(a.dueDate).toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit',
-          }),
-          priority:
-            new Date(a.dueDate) - new Date() < 86400000 * 2 ? 'high' : 'medium',
-        })),
+        upcomingDeadlines,
         todayMeetings: todayMeetings.map((m) => ({
           id: m._id,
           title: m.title,

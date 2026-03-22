@@ -11,6 +11,7 @@ const router = express.Router();
 // Controllers and Middlewares
 const attendanceController = require('../controllers/attendance.controller');
 const authMiddleware = require('../middleware/auth.middleware');
+const roleMiddleware = require('../middleware/roleMiddleware');
 const validateRequest = require('../middleware/validateRequest');
 
 /**
@@ -38,6 +39,7 @@ const markAttendanceValidation = [
 router.post(
   '/',
   authMiddleware,
+  roleMiddleware(['admin']),
   markAttendanceValidation,
   validateRequest,
   attendanceController.markAttendance
@@ -48,7 +50,12 @@ router.post(
  * @desc    Retrieve all attendance records
  * @access  Private (Authenticated Users)
  */
-router.get('/', authMiddleware, attendanceController.getAllAttendance);
+router.get(
+  '/',
+  authMiddleware,
+  roleMiddleware(['admin']),
+  attendanceController.getAllAttendance
+);
 
 /**
  * @route   GET /api/v1/attendance/student/:studentId

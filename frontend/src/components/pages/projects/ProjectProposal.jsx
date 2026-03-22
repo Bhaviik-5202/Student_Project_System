@@ -37,12 +37,24 @@ const ProjectProposal = memo(() => {
           api.get('/staff'),
         ]);
 
-        if (typesRes.success || Array.isArray(typesRes.data)) {
-          setProjectTypes(typesRes.data || typesRes);
+        if (
+          typesRes.success ||
+          Array.isArray(typesRes.data) ||
+          Array.isArray(typesRes)
+        ) {
+          setProjectTypes(
+            typesRes.data || (Array.isArray(typesRes) ? typesRes : [])
+          );
         }
 
-        if (staffRes.success || Array.isArray(staffRes.data)) {
-          setStaffMembers(staffRes.data || staffRes);
+        if (
+          staffRes.success ||
+          Array.isArray(staffRes.data) ||
+          Array.isArray(staffRes)
+        ) {
+          setStaffMembers(
+            staffRes.data || (Array.isArray(staffRes) ? staffRes : [])
+          );
         }
 
         if (isEditing) {

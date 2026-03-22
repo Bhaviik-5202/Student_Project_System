@@ -22,7 +22,16 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const compression = require('compression');
 
+const path = require('path');
 const connectDB = require('./config/db');
+const seedAdmin = async () => {
+  try {
+    const seed = require('./utils/seedAdmin');
+    await seed();
+  } catch (err) {
+    console.error('Failed to seed admin:', err.message);
+  }
+};
 const morganLogger = require('./middleware/logger');
 const errorHandler = require('./middleware/errorHandler');
 const sendResponse = require('./utils/response');
@@ -74,6 +83,9 @@ require('./config/swagger')(app);
 const apiRoutes = require('./routes');
 app.use('/api/v1', apiRoutes);
 
+// Static files for uploads
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 //  404 Handler
 app.use((req, res) => {
   sendResponse(
@@ -92,6 +104,7 @@ app.use(errorHandler);
 const startServer = async () => {
   try {
     await connectDB();
+    await seedAdmin();
 
     if (require.main === module) {
       const PORT = process.env.PORT || 5000;

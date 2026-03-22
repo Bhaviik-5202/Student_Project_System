@@ -24,12 +24,29 @@ const response = (error, data, message) => ({ error, data, message });
  * @param {string} userData.role - User role (student, faculty, admin)
  * @returns {Promise<Object>} Formatted service response
  */
-exports.register = async ({ name, email, password, role }) => {
+exports.register = async ({ name, email, password, role = 'student' }) => {
   try {
+    // Role validation: Only faculty and student are allowed to register publicly
+    // Admin is a predefined role and cannot be registered via public signup
+    if (role === 'admin') {
+      return response(
+        true,
+        null,
+        'The Administrator account is predefined. Please login with fixed credentials.'
+      );
+    }
+
+    const finalRole = ['student', 'faculty'].includes(role) ? role : 'student';
+
     const existing = await userRepository.findByEmail(email);
     if (existing) return response(true, null, 'Email already registered');
 
-    const user = await userRepository.create({ name, email, password, role });
+    const user = await userRepository.create({
+      name,
+      email,
+      password,
+      role: finalRole,
+    });
 
     // If registered as a student, create a student profile
     if (role === 'student') {

@@ -1,9 +1,11 @@
 import { useCallback, useState, useEffect, useMemo, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import timelineService from '../../../services/timelineService';
+import { useAuth } from '../../../hooks/useAuth';
 
 const ProjectTimeline = memo(() => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -65,12 +67,14 @@ const ProjectTimeline = memo(() => {
             Orchestration of active academic ventures
           </p>
         </div>
-        <button
-          onClick={() => navigate('/projects/new')}
-          className='project-btn project-btn-primary'
-        >
-          New Project
-        </button>
+        {user?.role !== 'student' && (
+          <button
+            onClick={() => navigate('/projects/new')}
+            className='project-btn project-btn-primary'
+          >
+            New Project
+          </button>
+        )}
       </div>
 
       {loading ? (

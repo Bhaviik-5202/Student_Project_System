@@ -170,7 +170,7 @@ const AnimatedStatCard = ({ stat, index, onClick }) => {
           </span>
         </div>
         <div className='mb-2 text-3xl font-bold tabular-nums text-gray-900 dark:text-white'>
-          {numericPart > 0 ? animatedValue : ''}
+          {animatedValue}
           {suffix}
         </div>
         <div className='text-lg font-medium text-gray-600 dark:text-gray-400'>
@@ -370,7 +370,7 @@ const Dashboard = () => {
               },
               {
                 title: 'Meetings Today',
-                value: statsData.todayMeetings || 0,
+                value: statsData.todayMeetings?.length || 0,
                 icon: CalendarIcon,
                 color: 'purple',
                 change: '10:00 AM & 2:00 PM',
@@ -561,7 +561,6 @@ const Dashboard = () => {
                   </div>
                 </div>
               </div>
-
             </div>
 
             {/* Action Buttons with enhanced animations */}
@@ -626,7 +625,8 @@ const Dashboard = () => {
       </div>
 
       {/* Urgent Alert Section */}
-      {upcomingDeadlines.filter((d) => d.priority === 'high').length > 0 && (
+      {(upcomingDeadlines?.filter((d) => d.priority === 'high')?.length || 0) >
+        0 && (
         <div className='rounded-2xl border border-red-200 bg-gradient-to-r from-red-50 to-red-100/50 p-6 shadow-sm dark:border-red-800 dark:from-red-900/30 dark:to-red-800/20'>
           <div className='flex flex-col md:flex-row md:items-center'>
             <div className='flex items-start md:items-center'>
@@ -639,21 +639,21 @@ const Dashboard = () => {
                 </h3>
                 <p className='text-gray-700 dark:text-gray-300'>
                   {
-                    upcomingDeadlines.filter((d) => d.priority === 'high')[0]
-                      .title
+                    upcomingDeadlines?.filter((d) => d.priority === 'high')[0]
+                      ?.title
                   }{' '}
                   due{' '}
                   <span className='font-semibold'>
                     {
-                      upcomingDeadlines.filter((d) => d.priority === 'high')[0]
-                        .due
+                      upcomingDeadlines?.filter((d) => d.priority === 'high')[0]
+                        ?.due
                     }
                   </span>{' '}
                   at{' '}
                   <span className='font-semibold'>
                     {
-                      upcomingDeadlines.filter((d) => d.priority === 'high')[0]
-                        .time
+                      upcomingDeadlines?.filter((d) => d.priority === 'high')[0]
+                        ?.time
                     }
                   </span>
                 </p>

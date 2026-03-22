@@ -2,7 +2,6 @@ import { lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import MainLayout from '../components/layout/MainLayout';
 import AuthLayout from '../components/layout/AuthLayout';
-// import LoadingSpinner from "../components/common/LoadingSpinner";
 import ProtectedRoute from '../components/common/ProtectedRoute';
 import PublicRoute from '../components/common/PublicRoute';
 import { ROLE_COMBINATIONS } from '../config/roles';
@@ -16,6 +15,7 @@ const ForgotPassword = lazy(
 const ResetPassword = lazy(
   () => import('../components/pages/auth/ResetPassword')
 );
+const Landing = lazy(() => import('../components/pages/public/Landing'));
 
 // Dashboard Pages
 const Dashboard = lazy(() => import('../components/pages/dashboard/Dashboard'));
@@ -289,7 +289,14 @@ const AddCourse = lazy(() => import('../components/pages/courses/AddCourse'));
 const AppRoutes = () => {
   return (
     <Routes>
-      {/* Public/Auth Routes */}
+      <Route
+        path='/'
+        element={
+          <PublicRoute>
+            <Landing />
+          </PublicRoute>
+        }
+      />
       <Route
         path='/login'
         element={
@@ -340,7 +347,7 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       >
-        <Route index element={<Navigate to='/dashboard' replace />} />
+        <Route index element={<Dashboard />} />
         <Route path='dashboard' element={<Dashboard />} />
         <Route
           path='admin-dashboard'
@@ -363,7 +370,7 @@ const AppRoutes = () => {
         <Route
           path='students/new'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <StudentForm />
             </ProtectedRoute>
           }
@@ -371,7 +378,7 @@ const AppRoutes = () => {
         <Route
           path='students/:id/edit'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <StudentForm />
             </ProtectedRoute>
           }
@@ -379,7 +386,7 @@ const AppRoutes = () => {
         <Route
           path='students/filters'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <StudentFilters />
             </ProtectedRoute>
           }
@@ -453,7 +460,7 @@ const AppRoutes = () => {
         <Route
           path='projects/new'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
               <ProjectProposal />
             </ProtectedRoute>
           }
@@ -473,7 +480,7 @@ const AppRoutes = () => {
         <Route
           path='projects/:id/edit'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
               <ProjectProposal />
             </ProtectedRoute>
           }
@@ -481,7 +488,7 @@ const AppRoutes = () => {
         <Route
           path='project-types'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <ProjectTypes />
             </ProtectedRoute>
           }
@@ -489,7 +496,7 @@ const AppRoutes = () => {
         <Route
           path='project-types/new'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <ProjectArchitectureForm />
             </ProtectedRoute>
           }
@@ -497,7 +504,7 @@ const AppRoutes = () => {
         <Route
           path='project-types/:id/edit'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <ProjectArchitectureForm />
             </ProtectedRoute>
           }
@@ -513,7 +520,7 @@ const AppRoutes = () => {
         <Route
           path='guide-allocation'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <GuideAllocation />
             </ProtectedRoute>
           }
@@ -531,7 +538,7 @@ const AppRoutes = () => {
         <Route
           path='meetings/new'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <MeetingForm />
             </ProtectedRoute>
           }
@@ -547,7 +554,7 @@ const AppRoutes = () => {
         <Route
           path='meetings/:id/edit'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <MeetingForm />
             </ProtectedRoute>
           }
@@ -565,7 +572,7 @@ const AppRoutes = () => {
         <Route
           path='courses'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <MyCourses />
             </ProtectedRoute>
           }
@@ -573,7 +580,7 @@ const AppRoutes = () => {
         <Route
           path='courses/new'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <AddCourse />
             </ProtectedRoute>
           }
@@ -581,7 +588,7 @@ const AppRoutes = () => {
         <Route
           path='courses/catalog'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <CourseCatalog />
             </ProtectedRoute>
           }
@@ -589,7 +596,7 @@ const AppRoutes = () => {
         <Route
           path='courses/register'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <CourseRegistration />
             </ProtectedRoute>
           }
@@ -597,7 +604,7 @@ const AppRoutes = () => {
         <Route
           path='courses/schedule'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <CourseSchedule />
             </ProtectedRoute>
           }
@@ -605,7 +612,7 @@ const AppRoutes = () => {
         <Route
           path='courses/:id'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <CourseDetails />
             </ProtectedRoute>
           }
@@ -997,7 +1004,7 @@ const AppRoutes = () => {
         <Route
           path='attendance'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <StudentAttendance />
             </ProtectedRoute>
           }

@@ -11,10 +11,12 @@ import {
 import { useNavigate } from 'react-router-dom';
 import meetingService from '../../../services/meetingService';
 import { toast } from 'react-hot-toast';
+import { useAuth } from '../../../hooks/useAuth';
 import '../../../assets/styles/meetings.css';
 
 const MeetingCalendar = memo(() => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [meetings, setMeetings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -99,13 +101,15 @@ const MeetingCalendar = memo(() => {
               </p>
             </div>
           </div>
-          <button
-            onClick={() => navigate('/meetings/new')}
-            className='meeting-btn meeting-btn-primary'
-          >
-            <Plus className='h-4 w-4' />
-            Schedule Meeting
-          </button>
+          {user?.role === 'admin' && (
+            <button
+              onClick={() => navigate('/meetings/new')}
+              className='meeting-btn meeting-btn-primary'
+            >
+              <Plus className='h-4 w-4' />
+              Schedule Meeting
+            </button>
+          )}
         </div>
 
         <div className='meeting-card'>

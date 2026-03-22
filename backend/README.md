@@ -65,7 +65,7 @@ Key folders:
    npm run dev
    ```
 5. **API Documentation**
-   - Visit [http://localhost:3000/api-docs](http://localhost:3000/api-docs) for Swagger UI
+   - Visit [http://localhost:5000/api-docs](http://localhost:5000/api-docs) for Swagger UI
 6. **Run tests**
    ```sh
    npm test
@@ -152,7 +152,7 @@ For troubleshooting, see code comments, module docs, or open an issue.
 
 - Role-based access control (RBAC)
 - Pagination and filtering for all list endpoints
-- Swagger/OpenAPI documentation at `/api-docs`
+- Swagger/OpenAPI documentation at `http://localhost:5000/api-docs`
 - Centralized error and validation handling
 - Inline code comments for maintainability
 - Automated tests with Mocha, Chai, Supertest

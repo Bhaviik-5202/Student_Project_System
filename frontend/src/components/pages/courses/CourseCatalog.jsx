@@ -112,7 +112,7 @@ const CourseCatalog = memo(() => {
     );
   });
 
-  const canAddCourse = user?.role === 'admin' || user?.role === 'faculty';
+  const canAddCourse = user?.role === 'admin';
 
   return (
     <div className='course-page animate-fade-in'>

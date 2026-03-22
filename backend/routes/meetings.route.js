@@ -10,13 +10,19 @@ const router = express.Router();
 // Controllers and Middlewares
 const meetingController = require('../controllers/meeting.controller');
 const authMiddleware = require('../middleware/auth.middleware');
+const roleMiddleware = require('../middleware/roleMiddleware');
 
 /**
  * @route   POST /api/v1/meetings
  * @desc    Create a new meeting
  * @access  Private (Authenticated Users)
  */
-router.post('/', authMiddleware, meetingController.createMeeting);
+router.post(
+  '/',
+  authMiddleware,
+  roleMiddleware(['admin']),
+  meetingController.createMeeting
+);
 
 /**
  * @route   GET /api/v1/meetings
@@ -44,13 +50,23 @@ router.post('/:id/join', authMiddleware, meetingController.joinMeeting);
  * @desc    Update a meeting
  * @access  Private (Authenticated Users)
  */
-router.put('/:id', authMiddleware, meetingController.updateMeeting);
+router.put(
+  '/:id',
+  authMiddleware,
+  roleMiddleware(['admin']),
+  meetingController.updateMeeting
+);
 
 /**
  * @route   DELETE /api/v1/meetings/:id
  * @desc    Delete a meeting
  * @access  Private (Authenticated Users)
  */
-router.delete('/:id', authMiddleware, meetingController.deleteMeeting);
+router.delete(
+  '/:id',
+  authMiddleware,
+  roleMiddleware(['admin']),
+  meetingController.deleteMeeting
+);
 
 module.exports = router;

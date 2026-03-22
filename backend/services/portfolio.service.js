@@ -55,3 +55,18 @@ exports.updatePortfolio = async (id, data) => {
     return response(true, null, err.message || 'Failed to update portfolio');
   }
 };
+
+/**
+ * Fetch a portfolio by its ID
+ * @param {string} id - Portfolio identifier
+ * @returns {Promise<Object>} Formatted service response
+ */
+exports.getById = async (id) => {
+  try {
+    const portfolio = await portfolioRepository.findById(id);
+    if (!portfolio) return response(true, null, 'Portfolio not found');
+    return response(false, portfolio, 'Portfolio fetched successfully');
+  } catch (err) {
+    return response(true, null, err.message || 'Failed to fetch portfolio');
+  }
+};

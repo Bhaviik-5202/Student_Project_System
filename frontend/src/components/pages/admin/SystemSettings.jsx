@@ -38,7 +38,7 @@ const SystemSettings = memo(() => {
       setLoading(true);
 
       try {
-        await api.put('/admin/settings', settings);
+        await api.put('/settings', settings);
         toast.success('Settings updated successfully');
       } catch (error) {
         console.error('Failed to update settings', error);

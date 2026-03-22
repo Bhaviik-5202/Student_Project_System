@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../hooks/useAuth';
+import authService from '../../../services/authService';
 import { toast } from 'react-hot-toast';
 
 const ProfileSettings = memo(() => {
-  const { user, updateProfile } = useAuth();
+  const { user, updateProfile, changePassword } = useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
@@ -59,18 +60,39 @@ const ProfileSettings = memo(() => {
     async (e) => {
       e.preventDefault();
 
-      if (
-        formData.newPassword &&
-        formData.newPassword !== formData.confirmPassword
-      ) {
+      const { currentPassword, newPassword, confirmPassword, ...profileData } =
+        formData;
+
+      if (newPassword && newPassword !== confirmPassword) {
         toast.error('New passwords do not match');
         return;
       }
 
       setLoading(true);
       try {
-        await updateProfile(formData);
-        toast.success('Profile updated successfully');
+        // Update profile
+        const profileRes = await updateProfile(profileData);
+
+        // Handle password change if requested
+        if (newPassword) {
+          if (!currentPassword) {
+            toast.error('Current password is required to change password');
+            setLoading(false);
+            return;
+          }
+          const passwordRes = await changePassword(
+            currentPassword,
+            newPassword
+          );
+          if (!passwordRes.success) {
+            // Error already handled by toast in AuthContext potentially,
+            // but we'll check just in case.
+          }
+        }
+
+        if (profileRes.success) {
+          toast.success('Profile updated successfully');
+        }
       } catch (error) {
         toast.error('Failed to update profile');
       } finally {

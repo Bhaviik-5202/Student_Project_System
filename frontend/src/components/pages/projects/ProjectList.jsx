@@ -1,8 +1,11 @@
 import React, { memo, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import projectService from '../../../services/projectService';
+import { useAuth } from '../../../hooks/useAuth';
 
-const ProjectCard = memo(({ project, onNavigate }) => {
+const ProjectCard = memo(({ project, onNavigate, currentUser }) => {
+  const canEdit =
+    currentUser?.role === 'admin' || currentUser?.role === 'faculty';
   const statusStyles = {
     blue: 'bg-blue-50 text-blue-700',
     green: 'bg-green-50 text-green-700',
@@ -39,16 +42,18 @@ const ProjectCard = memo(({ project, onNavigate }) => {
           >
             Details
           </button>
-          <button
-            onClick={() =>
-              onNavigate(
-                `/projects/${project.slug || project.id || project._id}/edit`
-              )
-            }
-            className='project-btn project-btn-secondary'
-          >
-            Edit
-          </button>
+          {canEdit && (
+            <button
+              onClick={() =>
+                onNavigate(
+                  `/projects/${project.slug || project.id || project._id}/edit`
+                )
+              }
+              className='project-btn project-btn-secondary'
+            >
+              Edit
+            </button>
+          )}
         </div>
       </div>
 
@@ -94,6 +99,7 @@ ProjectCard.displayName = 'ProjectCard';
 
 const ProjectList = memo(() => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -122,12 +128,14 @@ const ProjectList = memo(() => {
           </h2>
           <p className='project-subtitle'>Track milestones and deliverables</p>
         </div>
-        <button
-          onClick={() => navigate('/projects/new')}
-          className='project-btn project-btn-primary'
-        >
-          New Project
-        </button>
+        {user?.role !== 'student' && (
+          <button
+            onClick={() => navigate('/projects/new')}
+            className='project-btn project-btn-primary'
+          >
+            New Project
+          </button>
+        )}
       </div>
 
       {loading ? (
@@ -146,6 +154,7 @@ const ProjectList = memo(() => {
                 key={project.id || project._id}
                 project={project}
                 onNavigate={navigate}
+                currentUser={user}
               />
             ))
           ) : (

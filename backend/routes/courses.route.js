@@ -17,7 +17,12 @@ const roleMiddleware = require('../middleware/roleMiddleware');
  * @desc    Get all courses
  * @access  Public
  */
-router.get('/', coursesController.getAllCourses);
+router.get(
+  '/',
+  authMiddleware,
+  roleMiddleware(['admin']),
+  coursesController.getAllCourses
+);
 
 /**
  * @route   GET /api/v1/courses/my
@@ -27,7 +32,7 @@ router.get('/', coursesController.getAllCourses);
 router.get(
   '/my',
   authMiddleware,
-  roleMiddleware(['student', 'admin']),
+  roleMiddleware(['admin']),
   coursesController.getMyCourses
 );
 
@@ -39,7 +44,7 @@ router.get(
 router.post(
   '/',
   authMiddleware,
-  roleMiddleware(['admin', 'faculty']),
+  roleMiddleware(['admin']),
   coursesController.createCourse
 );
 
@@ -48,7 +53,12 @@ router.post(
  * @desc    Get course by ID
  * @access  Public
  */
-router.get('/:id', coursesController.getCourseById);
+router.get(
+  '/:id',
+  authMiddleware,
+  roleMiddleware(['admin']),
+  coursesController.getCourseById
+);
 
 /**
  * @route   POST /api/v1/courses/:id/enroll
@@ -58,7 +68,7 @@ router.get('/:id', coursesController.getCourseById);
 router.post(
   '/:id/enroll',
   authMiddleware,
-  roleMiddleware(['student', 'admin']),
+  roleMiddleware(['admin']),
   coursesController.enrollCourse
 );
 
@@ -70,7 +80,7 @@ router.post(
 router.put(
   '/:id',
   authMiddleware,
-  roleMiddleware(['admin', 'faculty']),
+  roleMiddleware(['admin']),
   coursesController.updateCourse
 );
 

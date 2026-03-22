@@ -52,6 +52,18 @@ exports.createPortfolio = async (req, res) => {
  */
 exports.getPortfolioByStudent = async (req, res) => {
   try {
+    // RBAC: Only owner, admin, or faculty can view
+    const isOwner = req.params.studentId === req.user.id;
+    const isAdminOrFaculty = ['admin', 'faculty'].includes(req.user.role);
+
+    if (!isOwner && !isAdminOrFaculty) {
+      return sendResponse(
+        res,
+        { success: false, message: 'Access denied' },
+        403
+      );
+    }
+
     const result = await portfolioService.getPortfolioByStudent(
       req.params.studentId
     );
@@ -88,6 +100,27 @@ exports.getPortfolioByStudent = async (req, res) => {
  */
 exports.updatePortfolio = async (req, res) => {
   try {
+    const portfolio = await portfolioService.getById(req.params.id);
+    if (!portfolio || portfolio.error) {
+      return sendResponse(
+        res,
+        { success: false, message: 'Portfolio not found' },
+        404
+      );
+    }
+
+    // RBAC: Only owner, admin, or faculty can update
+    const isOwner = portfolio.data.student?.toString() === req.user.id;
+    const isAdminOrFaculty = ['admin', 'faculty'].includes(req.user.role);
+
+    if (!isOwner && !isAdminOrFaculty) {
+      return sendResponse(
+        res,
+        { success: false, message: 'Access denied' },
+        403
+      );
+    }
+
     const result = await portfolioService.updatePortfolio(
       req.params.id,
       req.body

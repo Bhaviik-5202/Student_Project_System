@@ -346,6 +346,51 @@ const Staff = memo(() => {
     );
   }, [staffMembers, searchQuery]);
 
+  const handleExport = useCallback(() => {
+    if (filteredStaff.length === 0) {
+      toast.error('No staff records to export');
+      return;
+    }
+
+    const headers = [
+      'Staff ID',
+      'Name',
+      'Role',
+      'Department',
+      'Email',
+      'Phone',
+      'Status',
+    ];
+    const csvData = filteredStaff.map((s) => [
+      s.id,
+      s.name,
+      s.role,
+      s.department,
+      s.email,
+      s.phone,
+      s.status,
+    ]);
+
+    const csvContent = [
+      headers.join(','),
+      ...csvData.map((row) => row.map((cell) => `"${cell}"`).join(',')),
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute(
+      'download',
+      `staff_directory_${new Date().toISOString().split('T')[0]}.csv`
+    );
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success('Staff directory exported successfully');
+  }, [filteredStaff]);
+
   return (
     <div className='animate-fade-in space-y-6 p-4 md:p-6'>
       <div className='flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center'>

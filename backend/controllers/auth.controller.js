@@ -212,6 +212,11 @@ exports.updateProfile = async (req, res) => {
   try {
     // Prevent role change via profile update
     const { role, ...updateData } = req.body;
+
+    if (req.file) {
+      updateData.avatar = req.file.path;
+    }
+
     const result = await userService.update(req.user.id, updateData);
     sendResponse(
       res,
@@ -270,6 +275,103 @@ exports.changePassword = async (req, res) => {
       {
         success: !result.error,
         message: result.message,
+        data: null,
+        error: result.error || null,
+      },
+      result.error ? 400 : 200
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: 'Internal server error',
+        data: null,
+        error: error.message,
+      },
+      500
+    );
+  }
+};
+
+/**
+ * Update current user settings
+ * @route PATCH /auth/settings
+ * @access Private
+ */
+exports.updateSettings = async (req, res) => {
+  try {
+    const result = await userService.update(req.user.id, {
+      settings: req.body,
+    });
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? 'Failed to update settings'
+          : 'Settings updated successfully',
+        data: result.data ? result.data.settings : null,
+        error: result.error || null,
+      },
+      result.error ? 400 : 200
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: 'Internal server error',
+        data: null,
+        error: error.message,
+      },
+      500
+    );
+  }
+};
+
+/**
+ * Delete current user account
+ * @route DELETE /auth/account
+ * @access Private
+ */
+exports.deleteAccount = async (req, res) => {
+  try {
+    // Protect master admin from self-deletion
+    const userResult = await userService.getById(req.user.id);
+    if (
+      userResult.data &&
+      userResult.data.email === 'er.bhavik5202@gmail.com'
+    ) {
+      return sendResponse(
+        res,
+        {
+          success: false,
+          message: 'Master administrator account cannot be deleted',
+        },
+        403
+      );
+    }
+
+    const result = await userService.remove(req.user.id);
+
+    if (!result.error) {
+      await auditLogService.create({
+        action: 'Account Deletion',
+        user: req.user.id,
+        details: `User deleted their own account: ${userResult.data.email}`,
+        status: 'Success',
+        ip: req.ip || '127.0.0.1',
+      });
+    }
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? 'Failed to delete account'
+          : 'Account deleted successfully',
         data: null,
         error: result.error || null,
       },

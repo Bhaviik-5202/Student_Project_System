@@ -158,7 +158,7 @@ const Header = memo(
         },
       ];
 
-      if (user?.role === 'admin' || user?.role === 'faculty') {
+      if (user?.role === 'admin') {
         baseActions.push({
           icon: 'user-plus',
           label: 'Add Student',
@@ -168,7 +168,16 @@ const Header = memo(
         });
       }
 
-      return baseActions;
+      // Filter actions based on role requirements
+      return baseActions.filter((action) => {
+        if (user?.role === 'faculty') {
+          // Faculty cannot create meetings
+          if (action.path === '/meetings/new') return false;
+          // Faculty cannot add students (already handled by the if above, but good for clarity)
+          if (action.path === '/students/new') return false;
+        }
+        return true;
+      });
     }, [user?.role]);
 
     const handleQuickAction = useCallback(
