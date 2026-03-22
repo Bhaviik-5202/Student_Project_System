@@ -2,6 +2,8 @@ const projectRepository = require("../repositories/project.repository");
 const userRepository = require("../repositories/user.repository");
 const assignmentRepository = require("../repositories/assignment.repository");
 const meetingRepository = require("../repositories/meeting.repository");
+const evaluationRepository = require("../repositories/evaluation.repository");
+const attendanceRepository = require("../repositories/attendance.repository");
 
 /**
  * Standardized response helper for services
@@ -85,12 +87,26 @@ exports.getDashboardStats = async () => {
         updatedAt: { $gte: start, $lte: end }
       });
 
+      const monthEvaluations = await evaluationRepository.findAll({
+        createdAt: { $gte: start, $lte: end },
+        type: "faculty"
+      });
+      let monthTotalScore = 0;
+      let monthScoreCount = 0;
+      monthEvaluations.forEach(ev => {
+        ev.criteria.forEach(c => {
+          monthTotalScore += c.score;
+          monthScoreCount++;
+        });
+      });
+      const monthAvgGrade = monthScoreCount > 0 ? (monthTotalScore / monthScoreCount).toFixed(1) : "N/A";
+
       performanceData.push({
         month: monthLabel,
         projects: count,
         submissions: count,
         completions: completedCount,
-        grades: "B+"
+        grades: monthAvgGrade
       });
     }
 
@@ -113,6 +129,20 @@ exports.getDashboardStats = async () => {
     const projectGrowth = await calculateGrowth(projectRepository);
     const userGrowth = await calculateGrowth(userRepository);
     const todayMeetings = await getTodayMeetings();
+
+    // Calculate Avg Grade Dynamically
+    const evaluations = await evaluationRepository.findAll({ type: "faculty" });
+    let totalScore = 0;
+    let scoreCount = 0;
+    
+    evaluations.forEach(ev => {
+      ev.criteria.forEach(c => {
+        totalScore += c.score;
+        scoreCount++;
+      });
+    });
+    
+    const avgGradeValue = scoreCount > 0 ? (totalScore / scoreCount).toFixed(1) : "N/A";
 
     return response(
       false,
@@ -138,22 +168,24 @@ exports.getDashboardStats = async () => {
           participants: m.participants?.length || 0
         })),
         recentActivities: recentActivities.map((p) => ({
+          id: p._id,
           title: p.title,
           updatedAt: p.updatedAt,
           owner: p.createdBy ? { name: p.createdBy.name } : null,
           status: p.status,
           icon: p.status === "completed" ? "check-circle" : "file-text",
           color: p.status === "completed" ? "green" : "blue",
-          description: `Project "${p.title}" was ${p.status.replace("_", " ")}.`
+          description: `Project "${p.title}" was ${p.status.replace("_", " ")}${p.createdBy ? ` by ${p.createdBy.name}` : ""}.`
         })),
         stats: {
           totalStudents,
           activeProjects,
-          avgGrade: "B+",
+          avgGrade: avgGradeValue,
           completionRate
         },
         performanceData,
         activityData,
+        projectProgress: (await exports._getProjectProgressData({})),
       },
       "Dashboard statistics fetched successfully",
     );
@@ -187,12 +219,59 @@ exports.getGradeDistribution = async () => {
 
 exports.getPerformanceMetrics = async () => {
   try {
+    const totalProjects = await projectRepository.count();
+    const completedProjects = await projectRepository.count({ status: "completed" });
+    
+    const attendanceRecords = await attendanceRepository.findAll();
+    const presentCount = attendanceRecords.filter(r => r.status === "present").length;
+    const totalAttendance = attendanceRecords.length;
+    
+    const totalAssignments = await assignmentRepository.count();
+    const totalSubmissions = await submissionRepository.count();
+    
+    const projectRate = totalProjects > 0 ? Math.round((completedProjects / totalProjects) * 100) : 0;
+    const attendanceRate = totalAttendance > 0 ? Math.round((presentCount / totalAttendance) * 100) : 0;
+    const assignmentRate = totalAssignments > 0 ? Math.round((totalSubmissions / totalAssignments) * 100) : 0;
+    
+    const overallRate = Math.round((projectRate + attendanceRate + assignmentRate) / 3);
+
+    // Historical Trends (Last 5 Months)
+    const months = ["Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"];
+    const now = new Date();
+    const performanceTrends = [];
+
+    for (let i = 4; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const monthLabel = months[d.getMonth()];
+      const start = new Date(d.getFullYear(), d.getMonth(), 1);
+      const end = new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 59, 999);
+
+      const pCount = await projectRepository.count({ createdAt: { $lte: end } });
+      const cCount = await projectRepository.count({ status: "completed", updatedAt: { $lte: end } });
+      const pRate = pCount > 0 ? Math.round((cCount / pCount) * 100) : 0;
+
+      const attRecords = await attendanceRepository.findAll({ date: { $gte: start, $lte: end } });
+      const attRate = attRecords.length > 0 ? Math.round((attRecords.filter(r => r.status === "present").length / attRecords.length) * 100) : 0;
+
+      const subCount = await submissionRepository.count({ createdAt: { $lte: end } });
+      const assCount = await assignmentRepository.count({ createdAt: { $lte: end } });
+      const assRate = assCount > 0 ? Math.round((subCount / assCount) * 100) : 0;
+
+      performanceTrends.push({
+        month: monthLabel,
+        overall: Math.round((pRate + attRate + assRate) / 3),
+        attendance: attRate,
+        assignments: assRate
+      });
+    }
+
     const metrics = {
-      overall: { current: 85, target: 90, trend: "up" },
-      attendance: { current: 92, target: 95, trend: "stable" },
-      assignments: { current: 88, target: 85, trend: "up" },
-      projects: { current: 82, target: 80, trend: "up" },
-      participation: { current: 78, target: 75, trend: "stable" },
+      overall: { current: overallRate, target: 90, trend: overallRate >= 80 ? "up" : "stable" },
+      attendance: { current: attendanceRate, target: 95, trend: "stable" },
+      assignments: { current: assignmentRate, target: 85, trend: "up" },
+      projects: { current: projectRate, target: 80, trend: "up" },
+      participation: { current: attendanceRate > 50 ? 82 : 65, target: 75, trend: "stable" },
+      trends: performanceTrends
     };
     return response(false, metrics, "Performance metrics fetched successfully");
   } catch (err) {
@@ -200,41 +279,76 @@ exports.getPerformanceMetrics = async () => {
   }
 };
 
-exports.getProgressAnalytics = async () => {
+exports.getProgressAnalytics = async (filter = {}) => {
   try {
-    const projects = await projectRepository.findAll({}, { limit: 10, populate: "createdBy" });
-    const formatted = projects.map(p => ({
-      id: p._id,
-      title: p.title,
-      progress: p.status === "completed" ? 100 : p.status === "in_progress" ? 65 : 15,
-      timeline: p.status === "completed" ? "On Track" : "Slightly Behind",
-      teamSize: p.members?.length || 1
-    }));
+    const projects = await projectRepository.findAll(filter, { limit: 20, populate: "createdBy" });
+    const formatted = projects.map(p => {
+      let timelineStatus = "On Track";
+      if (p.endDate && new Date(p.endDate) < new Date() && p.progress < 100) {
+        timelineStatus = "Behind Schedule";
+      } else if (p.progress > 80 && p.status !== "completed") {
+        timelineStatus = "Ahead";
+      } else if (p.progress < 30 && p.status === "in_progress") {
+        timelineStatus = "Slightly Behind";
+      }
+
+      return {
+        id: p._id,
+        title: p.title,
+        progress: p.progress || 0,
+        timeline: timelineStatus,
+        teamSize: p.members?.length || 1
+      };
+    });
     return response(false, formatted, "Progress analytics fetched successfully");
   } catch (err) {
     return response(true, null, err.message);
   }
 };
 
+/**
+ * Internal helper to get formatted progress data
+ */
+exports._getProjectProgressData = async (filter) => {
+  try {
+    const projects = await projectRepository.findAll(filter, { limit: 5, sort: { updatedAt: -1 } });
+    return projects.map(p => ({
+      id: p._id,
+      name: p.title,
+      progress: p.progress || 0,
+      status: p.status,
+      color: p.status === "completed" ? "green" : p.progress > 50 ? "blue" : "yellow",
+      students: p.members?.length || 0
+    }));
+  } catch (err) {
+    return [];
+  }
+};
+
 exports.getUsageStatistics = async () => {
   try {
     const userCount = await userRepository.count();
+    const activeUserCount = await userRepository.count({ status: "active" });
+    const projectCount = await projectRepository.count();
+    const assignmentCount = await assignmentRepository.count();
+    
+    // Growth calculation (simplified for now)
     const stats = {
-      activeUsers: { current: userCount, change: "+5%" },
-      dailyLogins: { current: Math.round(userCount * 0.7), change: "+12%" },
-      pageViews: { current: "1.2K", change: "+15%" },
-      storageUsed: { current: "2.4 GB", change: "+2%" },
+      activeUsers: { current: activeUserCount, change: "+2%" },
+      dailyLogins: { current: Math.round(activeUserCount * 0.4), change: "+5%" },
+      pageViews: { current: "N/A", change: "0%" },
+      storageUsed: { current: (projectCount * 0.5).toFixed(1) + " MB", change: "+1%" },
       usageData: [
-        { feature: "Projects", usage: 95, users: userCount },
-        { feature: "Assignments", usage: 88, users: Math.round(userCount * 0.9) },
-        { feature: "Discussions", usage: 72, users: Math.round(userCount * 0.7) }
+        { feature: "Projects", usage: 100, users: userCount },
+        { feature: "Assignments", usage: Math.round((assignmentCount / (projectCount || 1)) * 100), users: activeUserCount },
+        { feature: "Communications", usage: 45, users: Math.round(activeUserCount * 0.3) }
       ],
       dailyUsers: [
-        { day: "Mon", users: 45, trend: "up" },
-        { day: "Tue", users: 52, trend: "up" },
-        { day: "Wed", users: 48, trend: "stable" },
-        { day: "Thu", users: 60, trend: "up" },
-        { day: "Fri", users: 55, trend: "down" }
+        { day: "Mon", users: Math.round(activeUserCount * 0.6), trend: "up" },
+        { day: "Tue", users: Math.round(activeUserCount * 0.7), trend: "up" },
+        { day: "Wed", users: Math.round(activeUserCount * 0.65), trend: "stable" },
+        { day: "Thu", users: Math.round(activeUserCount * 0.8), trend: "up" },
+        { day: "Fri", users: Math.round(activeUserCount * 0.5), trend: "down" }
       ]
     };
     return response(false, stats, "Usage statistics fetched successfully");
@@ -332,14 +446,16 @@ exports.getFacultyDashboardStats = async (facultyId) => {
           participants: m.participants?.length || 0
         })),
         recentActivities: recentProjects.map((p) => ({
+          id: p._id,
           title: p.title,
           updatedAt: p.updatedAt,
           owner: p.createdBy ? { name: p.createdBy.name } : null,
           status: p.status,
           icon: "file-text",
           color: "blue",
-          description: `Project update for ${p.title}`
+          description: `Project update for ${p.title}${p.createdBy ? ` by ${p.createdBy.name}` : ""}`,
         })),
+        projectProgress: await exports._getProjectProgressData({ guide: facultyId }),
       },
       "Faculty dashboard statistics fetched successfully",
     );
@@ -401,6 +517,21 @@ exports.getStudentDashboardStats = async (studentId) => {
       dueDate: { $gte: new Date() }
     }, { limit: 5, sort: { dueDate: 1 } });
 
+    // Calculate Student Grade Dynamically
+    const studentEvaluations = await evaluationRepository.findAll({ 
+      evaluatee: studentId,
+      type: "faculty" 
+    });
+    let studentTotalScore = 0;
+    let studentScoreCount = 0;
+    studentEvaluations.forEach(ev => {
+      ev.criteria.forEach(c => {
+        studentTotalScore += c.score;
+        studentScoreCount++;
+      });
+    });
+    const currentGradeValue = studentScoreCount > 0 ? (studentTotalScore / studentScoreCount).toFixed(1) : "N/A";
+
     return response(
       false,
       {
@@ -422,15 +553,19 @@ exports.getStudentDashboardStats = async (studentId) => {
           type: m.type,
           participants: m.participants?.length || 0
         })),
-        currentGrade: "B+",
+        currentGrade: currentGradeValue,
         recentActivities: recentProjects.map((p) => ({
+          id: p._id,
           title: p.title,
           updatedAt: p.updatedAt,
           status: p.status,
           icon: "file-text",
           color: "blue",
-          description: `You updated ${p.title}`
+          description: `You updated ${p.title}`,
         })),
+        projectProgress: await exports._getProjectProgressData({ 
+          $or: [{ createdBy: studentId }, { members: studentId }] 
+        }),
       },
       "Student dashboard statistics fetched successfully",
     );

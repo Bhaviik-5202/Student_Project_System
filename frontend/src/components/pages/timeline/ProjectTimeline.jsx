@@ -24,6 +24,7 @@ const ProjectTimeline = memo(() => {
             return {
               id: t._id,
               projectId: t.project?._id,
+              projectSlug: t.project?.slug,
               name: t.project?.title || "Unknown Project",
               progress: total > 0 ? Math.round((completed / total) * 100) : 0,
               start: start,
@@ -147,7 +148,7 @@ const ProjectTimeline = memo(() => {
                       </td>
                       <td className="px-6 py-4 text-right">
                         <button
-                          onClick={() => navigate(`/projects/${project.projectId}`)}
+                          onClick={() => navigate(`/projects/${project.projectSlug || project.projectId}`)}
                           className="text-[10px] font-bold text-indigo-600"
                         >
                           Review

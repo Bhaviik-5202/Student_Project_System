@@ -1,9 +1,10 @@
 // src/App.jsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import AppRoutes from "./routes/AppRoutes";
 import SplashScreen from "./components/common/SplashScreen";
 import ScrollToTop from "./components/common/ScrollToTop";
+import RouteProgressBar from "./components/common/RouteProgressBar";
 
 const SPLASH_SCREEN_DELAY = 1200; // ms
 
@@ -28,7 +29,10 @@ function App() {
   return (
     <Router>
       <ScrollToTop />
-      <AppRoutes />
+      <RouteProgressBar />
+      <Suspense fallback={null}>
+        <AppRoutes />
+      </Suspense>
     </Router>
   );
 }

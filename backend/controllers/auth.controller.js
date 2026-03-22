@@ -1,5 +1,7 @@
 const userService = require("../services/user.service");
+const auditLogService = require("../services/auditlog.service");
 const sendResponse = require("../utils/response");
+
 /**
  * Auth Controller
  * Handles user authentication, registration, and password management.
@@ -18,6 +20,17 @@ const sendResponse = require("../utils/response");
 exports.register = async (req, res) => {
   try {
     const result = await userService.register(req.body);
+
+    if (!result.error && result.data) {
+      // Log successful registration
+      await auditLogService.create({
+        action: "User Registration",
+        user: result.data.id || result.data._id,
+        details: `New user registered: ${req.body.email}`,
+        status: "Success",
+        ip: req.ip || "127.0.0.1",
+      });
+    }
 
     sendResponse(
       res,
@@ -53,6 +66,17 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const result = await userService.login(req.body);
+
+    if (!result.error && result.data && result.data.user) {
+      // Log successful login
+      await auditLogService.create({
+        action: "User Login",
+        user: result.data.user.id || result.data.user._id,
+        details: `User logged in: ${req.body.email}`,
+        status: "Success",
+        ip: req.ip || "127.0.0.1",
+      });
+    }
 
     sendResponse(
       res,

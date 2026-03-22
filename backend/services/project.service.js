@@ -64,11 +64,23 @@ exports.getAll = async ({ page = 1, limit = 10, filters = {} } = {}) => {
  * @param {string} id - Project ID
  * @returns {Promise<Object>} Formatted service response with project details
  */
-exports.getById = async (id) => {
+exports.getById = async (idOrSlug) => {
   try {
-    const project = await projectRepository.findById(id, {
-      populate: "guide members",
-    });
+    let project;
+    const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(idOrSlug);
+
+    if (isValidObjectId) {
+      project = await projectRepository.findById(idOrSlug, {
+        populate: "guide members",
+      });
+    }
+
+    if (!project) {
+      project = await projectRepository.findOne({ slug: idOrSlug }, {
+        populate: "guide members",
+      });
+    }
+
     if (!project) return response(true, null, "Project not found");
     return response(false, project, "Project fetched successfully");
   } catch (err) {
@@ -77,16 +89,36 @@ exports.getById = async (id) => {
 };
 
 /**
+ * Helper to resolve an ID or Slug to a Project document
+ */
+const resolveProject = async (idOrSlug) => {
+  const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(idOrSlug);
+  if (isValidObjectId) {
+    const project = await projectRepository.findById(idOrSlug);
+    if (project) return project;
+  }
+  return await projectRepository.findOne({ slug: idOrSlug });
+};
+
+/**
  * Update existing project metadata or state
  * @param {string} id - Project ID
  * @param {Object} data - Updated attributes
  * @returns {Promise<Object>} Formatted service response with updated project
  */
-exports.update = async (id, data) => {
+exports.update = async (idOrSlug, data) => {
   try {
-    const project = await projectRepository.update(id, data);
+    const project = await resolveProject(idOrSlug);
     if (!project) return response(true, null, "Project not found");
-    return response(false, project, "Project updated successfully");
+
+    const updated = await projectRepository.update(project._id, data);
+    
+    // Populate the updated project record
+    const populated = await projectRepository.findById(project._id, {
+      populate: "guide members",
+    });
+    
+    return response(false, populated, "Project updated successfully");
   } catch (err) {
     return response(true, null, err.message || "Failed to update project");
   }
@@ -97,10 +129,12 @@ exports.update = async (id, data) => {
  * @param {string} id - Project ID
  * @returns {Promise<Object>} Formatted service response
  */
-exports.remove = async (id) => {
+exports.remove = async (idOrSlug) => {
   try {
-    const project = await projectRepository.remove(id);
+    const project = await resolveProject(idOrSlug);
     if (!project) return response(true, null, "Project not found");
+    
+    await projectRepository.remove(project._id);
     return response(false, null, "Project deleted successfully");
   } catch (err) {
     return response(true, null, err.message || "Failed to delete project");

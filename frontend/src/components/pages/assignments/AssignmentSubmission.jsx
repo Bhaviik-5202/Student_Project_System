@@ -3,15 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import submissionService from "../../../services/submissionService";
 import assignmentService from "../../../services/assignmentService";
 import toast from "react-hot-toast";
+import "../../../assets/styles/assignments.css";
 
-/**
- * AssignmentSubmission Component
- * 
- * A specialized interface for students to submit their completed 
- * project work. Features a multi-input form for title, description, 
- * file uploads, and student comments, with real-time submission 
- * status feedback.
- */
 const AssignmentSubmission = memo(() => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -78,13 +71,13 @@ const AssignmentSubmission = memo(() => {
       const toastId = toast.loading("Submitting assignment...");
       
       const submissionData = new FormData();
-      submissionData.append("assignment", id); // Changed assignmentId -> assignment
+      submissionData.append("assignment", id);
       submissionData.append("title", formData.title);
       submissionData.append("description", formData.description);
       submissionData.append("comments", formData.comment);
       
       formData.files.forEach((file) => {
-        submissionData.append("file", file); // Backend expects 'file' or 'files'? Based on controller it might be Single file or plural.
+        submissionData.append("file", file);
       });
 
       const response = await submissionService.createSubmission(submissionData);
@@ -105,8 +98,8 @@ const AssignmentSubmission = memo(() => {
 
   if (loading) {
     return (
-      <div className="assignment-page" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-        <p className="assignment-subtitle">Loading assignment details...</p>
+      <div className="assignment-page flex flex-col items-center justify-center">
+        <p className="assignment-subtitle italic">Loading assignment details...</p>
       </div>
     );
   }
@@ -118,13 +111,13 @@ const AssignmentSubmission = memo(() => {
           <div>
             <h1 className="assignment-title">Submit Assignment</h1>
             <p className="assignment-subtitle">
-              {assignment?.title} - {assignment?.course || (assignment?.courseId?.title) || "Course Name"}
+              {assignment?.title} - {assignment?.course?.title || (assignment?.courseId?.title) || "Course Name"}
             </p>
           </div>
         </div>
 
         <div className="assignment-card">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="assignment-form-group">
               <label className="assignment-label">Submission Title</label>
               <input
@@ -156,18 +149,18 @@ const AssignmentSubmission = memo(() => {
                 className="assignment-upload-area"
                 onClick={() => document.getElementById("fileInput").click()}
               >
-                <div style={{ color: "var(--assignment-text-muted)" }}>
-                  <p style={{ fontWeight: "600", color: "var(--assignment-primary)", marginBottom: "4px" }}>
+                <div>
+                  <p className="text-sm font-bold text-indigo-600 mb-1">
                     Click to upload
                   </p>
-                  <p style={{ fontSize: "12px" }}>PDF, ZIP, DOCX up to 10MB</p>
+                  <p className="text-xs text-gray-400 uppercase font-black tracking-tight">PDF, ZIP, DOCX up to 10MB</p>
                 </div>
                 <input
                   id="fileInput"
                   type="file"
                   multiple
                   onChange={handleFileChange}
-                  style={{ display: "none" }}
+                  className="hidden"
                 />
               </div>
 
@@ -175,14 +168,13 @@ const AssignmentSubmission = memo(() => {
                 <div className="assignment-file-list">
                   {formData.files.map((file, index) => (
                     <div key={index} className="assignment-file-item">
-                      <span style={{ fontSize: "14px", overflow: "hidden", textOverflow: "ellipsis" }}>
+                      <span className="text-sm font-bold text-gray-700 dark:text-gray-300 truncate">
                         {file.name}
                       </span>
                       <button
                         type="button"
                         onClick={() => removeFile(index)}
-                        className="assignment-btn-text"
-                        style={{ color: "var(--color-error)" }}
+                        className="assignment-btn-text text-red-500 hover:text-red-600"
                       >
                         Remove
                       </button>
@@ -204,20 +196,18 @@ const AssignmentSubmission = memo(() => {
               />
             </div>
 
-            <div style={{ display: "flex", gap: "12px", marginTop: "32px" }}>
+            <div className="flex flex-col sm:flex-row gap-4 pt-6 mt-8 border-t border-gray-100 dark:border-slate-800">
               <button
                 type="button"
                 onClick={() => navigate(-1)}
-                className="assignment-btn assignment-btn-outline"
-                style={{ flex: 1 }}
+                className="assignment-btn assignment-btn-secondary flex-1"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={submitting}
-                className="assignment-btn assignment-btn-primary"
-                style={{ flex: 2 }}
+                className="assignment-btn assignment-btn-primary flex-2"
               >
                 {submitting ? "Submitting..." : "Submit Assignment"}
               </button>
@@ -230,5 +220,4 @@ const AssignmentSubmission = memo(() => {
 });
 
 AssignmentSubmission.displayName = "AssignmentSubmission";
-
 export default AssignmentSubmission;

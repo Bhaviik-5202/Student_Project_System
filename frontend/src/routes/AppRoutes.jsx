@@ -242,7 +242,7 @@ const AppRoutes = () => {
         {/* Timeline Routes */}
         <Route path="timeline" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><ProjectTimeline /></ProtectedRoute>} />
         <Route path="gantt" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><GanttChart /></ProtectedRoute>} />
-        <Route path="milestones" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><MilestoneTracker /></ProtectedRoute>} />
+        <Route path="milestones/:id?" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}><MilestoneTracker /></ProtectedRoute>} />
         <Route path="roadmap" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><RoadmapViewer /></ProtectedRoute>} />
         <Route path="sprint-planner" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><SprintPlanner /></ProtectedRoute>} />
         <Route path="timeline-editor/:id?" element={<ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}><TimelineEditor /></ProtectedRoute>} />

@@ -197,6 +197,7 @@
 .admin-badge-blue { background-color: #eff6ff; color: #1e40af; }
 .admin-badge-gray { background-color: #f1f5f9; color: #475569; }
 .admin-badge-danger { background-color: #fef2f2; color: #991b1b; }
+.admin-badge-warning { background-color: #fffbeb; color: #92400e; }
 
 .admin-modal-overlay {
     position: fixed;

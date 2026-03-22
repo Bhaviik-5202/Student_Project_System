@@ -4,49 +4,51 @@ import api from "../../../utils/api";
 
 const GroupCard = memo(({ group }) => {
   const navigate = useNavigate();
-  const isActive = group.status === "Active";
-  const statusClass = isActive
-    ? "bg-green-50 text-green-700"
-    : "bg-blue-50 text-blue-700";
 
   return (
-    <div className="project-card-simple">
-      <div className="flex justify-between items-start gap-4 mb-4">
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-1">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">
-              {group.name}
-            </h3>
-            <span className={`project-badge ${statusClass}`}>
+    <div className="project-card-simple flex flex-col gap-5">
+      <div className="flex justify-between items-start">
+        <div className="min-w-0">
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white truncate mb-1">
+            {group.name}
+          </h3>
+          <div className="flex items-center gap-2">
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">
               {group.status}
             </span>
-          </div>
-          <div className="flex flex-col gap-1 text-sm text-gray-500">
-            <span className="flex items-center gap-2">
-              {group.guide}
-            </span>
-            <span className="flex items-center gap-2">
-              {group.members.join(", ")}
+            <span className="text-[10px] font-bold text-gray-400 uppercase">
+              {group.progress || 0}% PROGRESS
             </span>
           </div>
         </div>
-        <button 
-          onClick={() => navigate(`/projects/${group.projectId || group.id || group._id}`)}
-          className="project-btn project-btn-primary"
+        <button
+          onClick={() => navigate(`/projects/${group.slug || group.projectId || group.id || group._id}`)}
+          className="project-btn project-btn-primary px-4 py-2 text-xs"
         >
           Details
         </button>
       </div>
 
-      <div className="pt-4 border-t border-gray-50 dark:border-slate-700">
-        <div className="flex justify-between items-center mb-2">
-          <span className="text-[10px] font-bold text-gray-400">Progress</span>
-          <span className="text-xs font-bold text-gray-900 dark:text-white">{group.progress}%</span>
+      <div className="space-y-3">
+        <div className="flex items-center gap-3">
+          <i className="fas fa-user-tie text-xs text-indigo-500" />
+          <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+            <strong>Guide:</strong> {group.guide}
+          </p>
         </div>
+        <div className="flex items-center gap-3">
+          <i className="fas fa-users text-xs text-indigo-500" />
+          <p className="text-sm font-medium text-gray-600 dark:text-gray-400 truncate">
+            <strong>Team:</strong> {group.members.join(", ")}
+          </p>
+        </div>
+      </div>
+
+      <div className="pt-4 border-t border-gray-50 dark:border-slate-700">
         <div className="w-full bg-gray-100 dark:bg-slate-900 rounded-full h-1.5 overflow-hidden">
           <div
-            className="h-full bg-indigo-500 transition-all duration-700 ease-out rounded-full"
-            style={{ width: `${group.progress}%` }}
+            className="h-full bg-indigo-500 transition-all duration-700"
+            style={{ width: `${group.progress || 0}%` }}
           />
         </div>
       </div>
@@ -103,6 +105,10 @@ const ProjectGroupsList = memo(() => {
           {groups.map((group) => (
             <GroupCard key={group.id || group._id} group={group} />
           ))}
+          {/* Diagnostic segment - only for troubleshooting */}
+          <div className="hidden opacity-0 h-0 overflow-hidden pointer-events-none" id="diagnostic-data">
+            {JSON.stringify(groups)}
+          </div>
         </div>
       )}
     </div>

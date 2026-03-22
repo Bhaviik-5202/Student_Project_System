@@ -1,234 +1,181 @@
-import React, { useState, useCallback, memo, useEffect, useMemo } from "react";
-import {
-  Calendar,
-  Clock,
-  MapPin,
-  Video,
+import React, { useState, useEffect, useMemo, useCallback, memo } from "react";
+import { 
+  ChevronLeft, 
+  ChevronRight, 
+  Calendar as CalendarIcon, 
+  Clock, 
+  MapPin, 
   Plus,
-  X,
-  ChevronLeft,
-  ChevronRight
+  Users
 } from "lucide-react";
-import { useNavigate, Outlet } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import meetingService from "../../../services/meetingService";
 import { toast } from "react-hot-toast";
+import "../../../assets/styles/meetings.css";
+
 const MeetingCalendar = memo(() => {
   const navigate = useNavigate();
-  const [viewDate, setViewDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState(null);
-
+  const [currentDate, setCurrentDate] = useState(new Date());
   const [meetings, setMeetings] = useState([]);
-  const [calendarDays, setCalendarDays] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const fetchMeetings = useCallback(async () => {
-    try {
-      const response = await meetingService.getMeetings();
-      if (response.success) {
-        setMeetings(response.data || []);
-      }
-    } catch (error) {
-      console.error("Failed to fetch meetings", error);
-    } finally {
-      setLoading(false);
+    setLoading(true);
+    const res = await meetingService.getAllMeetings();
+    if (res.success) {
+      setMeetings(res.data || []);
     }
+    setLoading(false);
   }, []);
 
   useEffect(() => {
     fetchMeetings();
   }, [fetchMeetings]);
 
-  useEffect(() => {
-    const year = viewDate.getFullYear();
-    const month = viewDate.getMonth();
+  const daysInMonth = useMemo(() => {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
     const firstDay = new Date(year, month, 1).getDay();
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-
     const days = [];
+    
+    // Previous month filler
     const prevMonthLastDay = new Date(year, month, 0).getDate();
     for (let i = firstDay - 1; i >= 0; i--) {
-      days.push({ day: prevMonthLastDay - i, month: "prev", meetings: 0 });
+      days.push({ day: prevMonthLastDay - i, month: 'prev', date: new Date(year, month - 1, prevMonthLastDay - i) });
     }
 
-    const now = new Date();
-    for (let i = 1; i <= daysInMonth; i++) {
-      const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
-      const dayMeetings = meetings.filter(m => m.date && m.date.startsWith(dateStr)).length;
-      days.push({
-        day: i,
-        month: "current",
-        current: i === now.getDate() && month === now.getMonth() && year === now.getFullYear(),
-        meetings: dayMeetings
-      });
+    // Current month days
+    const lastDay = new Date(year, month + 1, 0).getDate();
+    for (let i = 1; i <= lastDay; i++) {
+      days.push({ day: i, month: 'curr', date: new Date(year, month, i) });
     }
 
+    // Next month filler
     const remainingDays = 42 - days.length;
     for (let i = 1; i <= remainingDays; i++) {
-      days.push({ day: i, month: "next", meetings: 0 });
+      days.push({ day: i, month: 'next', date: new Date(year, month + 1, i) });
     }
 
-    setCalendarDays(days);
-  }, [viewDate, meetings]);
+    return days;
+  }, [currentDate]);
+
+  const monthName = currentDate.toLocaleString('default', { month: 'long' });
+  const year = currentDate.getFullYear();
+
+  const getMeetingsForDate = useCallback((date) => {
+    return meetings.filter(m => {
+      if (!m.date) return false;
+      const mDate = new Date(m.date);
+      return mDate.toDateString() === date.toDateString();
+    });
+  }, [meetings]);
 
   const changeMonth = (offset) => {
-    setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() + offset, 1));
-  };
-
-
-  const monthName = viewDate.toLocaleString('default', { month: 'long' });
-  const yearName = viewDate.getFullYear();
-
-  const filteredMeetings = useMemo(() => {
-    if (!selectedDate) return meetings;
-    return meetings.filter(m => m.date && m.date.startsWith(selectedDate));
-  }, [meetings, selectedDate]);
-
-  const handleDayClick = (dayObj) => {
-    if (dayObj.month !== "current") return;
-    const dateStr = `${viewDate.getFullYear()}-${String(viewDate.getMonth() + 1).padStart(2, '0')}-${String(dayObj.day).padStart(2, '0')}`;
-    setSelectedDate(selectedDate === dateStr ? null : dateStr);
+    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + offset, 1));
   };
 
   return (
-    <div className="dashboard-content">
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Meeting Calendar
-          </h1>
-          <p className="text-gray-500 dark:text-gray-400">
-            Monitor and schedule your project sessions
-          </p>
+    <div className="meeting-page">
+      <div className="meeting-container">
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
+          <div className="flex items-center gap-4">
+            <div className="p-3 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-xl">
+              <CalendarIcon className="w-6 h-6" />
+            </div>
+            <div>
+              <h1 className="meeting-title">Meeting Calendar</h1>
+              <p className="meeting-subtitle">Track and schedule project sessions</p>
+            </div>
+          </div>
+          <button 
+            onClick={() => navigate("/meetings/new")}
+            className="meeting-btn meeting-btn-primary"
+          >
+            <Plus className="w-4 h-4" />
+            Schedule Meeting
+          </button>
         </div>
-        <button onClick={() => navigate("/meetings/new")} className="btn btn-primary">
-          <Plus className="w-5 h-5" /> Schedule Meeting
-        </button>
-      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 card">
-          <div className="card-header flex justify-between items-center">
-            <h2 className="card-title">
-              {monthName} {yearName}
+        <div className="meeting-card">
+          {/* Calendar Controls */}
+          <div className="meeting-card-header">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+              {monthName} <span className="text-indigo-600">{year}</span>
             </h2>
-            <div className="flex items-center gap-2">
-              <button onClick={() => changeMonth(-1)} className="btn btn-secondary btn-sm">
-                <ChevronLeft className="w-4 h-4" />
+            <div className="flex gap-2">
+              <button 
+                onClick={() => changeMonth(-1)}
+                className="meeting-btn meeting-btn-secondary p-2"
+              >
+                <ChevronLeft className="w-5 h-5" />
               </button>
-              <button onClick={() => setViewDate(new Date())} className="btn btn-secondary btn-sm">
+              <button 
+                onClick={() => setCurrentDate(new Date())}
+                className="meeting-btn meeting-btn-secondary text-xs uppercase tracking-widest font-bold"
+              >
                 Today
               </button>
-              <button onClick={() => changeMonth(1)} className="btn btn-secondary btn-sm">
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-          <div className="card-body p-0">
-            <div className="grid grid-cols-7 border-b border-gray-100 dark:border-gray-800">
-              {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-                <div key={day} className="py-3 text-center text-xs font-semibold text-gray-400 uppercase tracking-wider bg-gray-50 dark:bg-gray-900/50">
-                  {day}
-                </div>
-              ))}
-            </div>
-            <div className="grid grid-cols-7 gap-px bg-gray-100 dark:bg-gray-800">
-              {calendarDays.map((day, index) => {
-                const dateStr = day.month === "current" 
-                  ? `${viewDate.getFullYear()}-${String(viewDate.getMonth() + 1).padStart(2, '0')}-${String(day.day).padStart(2, '0')}`
-                  : null;
-                const isSelected = selectedDate === dateStr;
-                const dayMeetings = meetings.filter(m => m.date && m.date.startsWith(dateStr));
-
-                return (
-                  <div 
-                    key={index} 
-                    onClick={() => handleDayClick(day)}
-                    className={`min-h-[110px] bg-white dark:bg-slate-800 p-2 transition-all cursor-pointer border-r border-b border-gray-100 dark:border-gray-800 ${
-                      day.month !== "current" ? "bg-gray-50/50 dark:bg-slate-900/30 opacity-30 pointer-events-none" : "hover:bg-indigo-50/30 dark:hover:bg-indigo-900/10"
-                    } ${isSelected ? "ring-2 ring-inset ring-indigo-500 bg-indigo-50/50 dark:bg-indigo-900/20" : ""}`}
-                  >
-                    <div className="flex justify-between items-center mb-1">
-                      <span className={`text-xs font-bold ${
-                        day.current ? "bg-indigo-600 text-white w-6 h-6 flex items-center justify-center rounded-lg shadow-md shadow-indigo-200" : "text-gray-500 dark:text-gray-400"
-                      }`}>
-                        {day.day}
-                      </span>
-                    </div>
-                    <div className="mt-1 space-y-1 overflow-hidden">
-                      {dayMeetings.slice(0, 2).map((m, i) => (
-                        <div key={i} className="px-1.5 py-0.5 bg-indigo-100/50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 text-[9px] font-bold rounded border border-indigo-200/50 dark:border-indigo-800/50 truncate">
-                          {m.title}
-                        </div>
-                      ))}
-                      {dayMeetings.length > 2 && (
-                        <div className="text-[9px] text-gray-400 font-bold pl-1">
-                          +{dayMeetings.length - 2} more
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
-        <div className="card flex flex-col h-full border-indigo-100 dark:border-indigo-900/30 shadow-indigo-100/20 shadow-xl">
-          <div className="card-header flex justify-between items-center">
-            <h2 className="card-title">
-              {selectedDate ? "Day Schedule" : "Upcoming Sessions"}
-            </h2>
-            {selectedDate && (
               <button 
-                onClick={() => setSelectedDate(null)}
-                className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest"
+                onClick={() => changeMonth(1)}
+                className="meeting-btn meeting-btn-secondary p-2"
               >
-                View All
+                <ChevronRight className="w-5 h-5" />
               </button>
-            )}
+            </div>
           </div>
-          <div className="card-body overflow-y-auto max-h-[600px] space-y-4">
-            {loading ? (
-              <div className="text-center py-10 text-gray-400">Loading...</div>
-            ) : filteredMeetings.length === 0 ? (
-              <div className="text-center py-14">
-                <Calendar className="w-12 h-12 text-gray-100 dark:text-gray-800 mx-auto mb-4" />
-                <p className="text-gray-400 text-sm font-medium">No sessions {selectedDate ? "on this date" : "scheduled"}</p>
+
+          {/* Calendar Grid */}
+          <div className="meeting-calendar-grid">
+            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+              <div key={day} className="bg-gray-50 dark:bg-slate-900/50 p-4 text-center">
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{day}</span>
               </div>
-            ) : (
-              filteredMeetings.map((meeting) => (
-                <div key={meeting.id || meeting._id} className="p-4 bg-gray-50/50 dark:bg-gray-900/50 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-indigo-300 dark:hover:border-indigo-800 hover:bg-white dark:hover:bg-gray-900 transition-all group">
+            ))}
+            
+            {daysInMonth.map((item, index) => {
+              const dayMeetings = getMeetingsForDate(item.date);
+              const isToday = item.date.toDateString() === new Date().toDateString();
+              
+              return (
+                <div 
+                  key={index} 
+                  className={`meeting-calendar-day ${item.month !== 'curr' ? 'inactive' : ''} ${isToday ? 'selected' : ''}`}
+                >
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-sm font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 transition-colors">
-                      {meeting.title}
-                    </h3>
-                    <div className="p-1.5 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg group-hover:bg-indigo-100 dark:group-hover:bg-indigo-900/50 transition-colors">
-                      <Video className="w-3.5 h-3.5 text-indigo-500" />
-                    </div>
+                    <span className={`text-sm font-bold ${isToday ? 'text-indigo-600' : 'text-gray-500'}`}>
+                      {item.day}
+                    </span>
+                    {dayMeetings.length > 0 && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+                    )}
                   </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-4 line-clamp-2 leading-relaxed">
-                    {meeting.description || "Project alignment session."}
-                  </p>
-                  <div className="flex items-center gap-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                    <span className="flex items-center gap-1.5">
-                      <Clock className="w-3.5 h-3.5 text-indigo-400" /> {meeting.time || "10:00 AM"}
-                    </span>
-                    <span className="flex items-center gap-1.5 truncate max-w-[120px]">
-                      <MapPin className="w-3.5 h-3.5 text-indigo-400" /> {meeting.location || "Online"}
-                    </span>
+                  
+                  <div className="space-y-1">
+                    {dayMeetings.slice(0, 2).map((m, i) => (
+                      <div 
+                        key={i}
+                        onClick={() => navigate(`/meetings/${m._id || m.id}`)}
+                        className="p-1 text-[9px] font-bold bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded border border-indigo-100 dark:border-indigo-800/30 truncate cursor-pointer hover:bg-indigo-100 transition-colors"
+                      >
+                        {m.time ? `${m.time} ${m.title}` : m.title}
+                      </div>
+                    ))}
+                    {dayMeetings.length > 2 && (
+                      <div className="text-[9px] text-gray-400 font-bold pl-1">
+                        +{dayMeetings.length - 2} more
+                      </div>
+                    )}
                   </div>
                 </div>
-              ))
-            )}
+              );
+            })}
           </div>
         </div>
       </div>
-
-
     </div>
   );
 });
 
 MeetingCalendar.displayName = "MeetingCalendar";
-
 export default MeetingCalendar;

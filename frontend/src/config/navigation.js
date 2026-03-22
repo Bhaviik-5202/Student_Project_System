@@ -226,6 +226,11 @@ export const navigationItems = [
         roles: ROLE_COMBINATIONS.ADMIN_FACULTY,
       },
       {
+        title: "Grades",
+        path: "/analytics/grades",
+        roles: ROLE_COMBINATIONS.ADMIN_FACULTY,
+      },
+      {
         title: "Reports",
         path: "/reports",
         roles: ROLE_COMBINATIONS.ADMIN_FACULTY,

@@ -14,6 +14,7 @@ const GuideCard = memo(({ guide }) => {
     <div className="project-card-simple">
       <div className="flex items-center gap-4 mb-4">
         <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center">
+          <i className="fas fa-user-tie text-indigo-600"></i>
         </div>
         <div>
           <h3 className="text-sm font-bold text-gray-900 dark:text-white leading-tight">
@@ -70,24 +71,24 @@ const AllocationRow = memo(({ project, availableGuides, onAssign }) => {
         </span>
       </td>
       <td className="px-6 py-4 whitespace-nowrap text-sm flex items-center gap-2">
-        <select 
+        <select
           value={selectedGuide}
           onChange={(e) => setSelectedGuide(e.target.value)}
-          className="text-xs bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg px-2 py-1.5 focus:ring-2 focus:ring-indigo-500 outline-none"
+          className="text-xs bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg px-2 py-1.5 focus:ring-2 focus:ring-indigo-500 outline-none w-full max-w-[150px]"
         >
           <option value="">Select Guide</option>
           {availableGuides.map(guide => (
             <option key={guide.id} value={guide.id}>{guide.guide}</option>
           ))}
         </select>
-        <button 
+        <button
           onClick={handleAssignClick}
           className="project-btn project-btn-primary py-1.5 px-3"
         >
           Assign
         </button>
-        <button 
-          onClick={() => navigate(`/projects/${project.id}`)}
+        <button
+          onClick={() => navigate(`/projects/${project.slug || project.id}`)}
           className="project-btn project-btn-secondary p-1.5"
           title="View Details"
         >
@@ -135,9 +136,10 @@ const GuideAllocationList = memo(() => {
         setProjects(
           (res.data || []).map(p => ({
             id: p._id || p.id,
+            slug: p.slug,
             name: p.title,
-            group: Array.isArray(p.members) && p.members.length > 0 
-              ? p.members.map(m => m.name || m).join(", ") 
+            group: Array.isArray(p.members) && p.members.length > 0
+              ? p.members.map(m => m.name || m).join(", ")
               : p.teamMembers || "Ungrouped",
             currentGuide: p.guide?.name || "None",
           }))
@@ -154,7 +156,7 @@ const GuideAllocationList = memo(() => {
     const guideName = allocations.find(g => g.id === guideId)?.guide;
     const res = await projectService.updateProject(projectId, { guide: guideId });
     if (res.success) {
-      setProjects(prev => prev.map(p => 
+      setProjects(prev => prev.map(p =>
         p.id === projectId ? { ...p, currentGuide: guideName || "Assigned" } : p
       ));
       alert("Guide assigned successfully!");
@@ -174,7 +176,7 @@ const GuideAllocationList = memo(() => {
           <h2 className="project-title text-gray-900 dark:text-white">Guide Allocation</h2>
           <p className="project-subtitle">Manage mentor assignments and capacity</p>
         </div>
-        <button 
+        <button
           onClick={handlePrint}
           className="project-btn project-btn-secondary"
         >
@@ -222,13 +224,13 @@ const GuideAllocationList = memo(() => {
                 </tr>
               ) : projects.length === 0 ? (
                 <tr>
-                   <td colSpan="5" className="px-6 py-10 text-center text-gray-400 text-sm">All projects have been allocated guides.</td>
+                  <td colSpan="5" className="px-6 py-10 text-center text-gray-400 text-sm">All projects have been allocated guides.</td>
                 </tr>
               ) : (
                 projects.map((project) => (
-                  <AllocationRow 
-                    key={project.id} 
-                    project={project} 
+                  <AllocationRow
+                    key={project.id}
+                    project={project}
                     availableGuides={allocations}
                     onAssign={handleAssignGuide}
                   />

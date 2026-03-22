@@ -1,177 +1,182 @@
 import React, { useState, useEffect, useCallback, memo } from "react";
 import { useNavigate, Outlet } from "react-router-dom";
+import { toast } from "react-hot-toast";
 import meetingService from "../../../services/meetingService";
+import "../../../assets/styles/meetings.css";
 
-const MeetingRow = memo(({ meeting, onView, onEdit }) => {
-  const statusStyles = {
-    Upcoming:
-      "bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200",
-    Cancelled: "bg-rose-100 dark:bg-rose-900 text-rose-800 dark:text-rose-200",
-    Completed:
-      "bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200",
+const MeetingRow = memo(({ meeting, onView, onEdit, onDelete }) => {
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "scheduled": return "text-indigo-600 bg-indigo-50 dark:bg-indigo-900/30";
+      case "completed": return "text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30";
+      case "cancelled": return "text-rose-600 bg-rose-50 dark:bg-rose-900/30";
+      default: return "text-gray-600 bg-gray-50 dark:bg-slate-800";
+    }
   };
-  const statusClass = statusStyles[meeting.status] || statusStyles.Completed;
 
   return (
-    <tr className="hover:bg-gray-50 dark:hover:bg-gray-700">
-      <td className="px-6 py-4 whitespace-nowrap">
-        <div className="font-medium text-slate-900 dark:text-white">
-          {meeting.title}
+    <tr>
+      <td>
+        <div className="font-bold text-gray-900 dark:text-white">{meeting.title}</div>
+        <div className="meeting-subtitle">{meeting.type || "Sync Session"}</div>
+      </td>
+      <td>
+        <div className="text-gray-600 dark:text-gray-400 font-medium">
+          {meeting.organizer?.name || "Faculty Member"}
         </div>
       </td>
-      <td className="px-6 py-4 whitespace-nowrap">
-        <div className="text-slate-900 dark:text-white">{meeting.date}</div>
-        <div className="text-slate-500 dark:text-slate-400 text-sm">
-          {meeting.time}
+      <td>
+        <div className="text-gray-900 dark:text-white font-medium">
+          {new Date(meeting.date).toLocaleDateString()}
+        </div>
+        <div className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
+          {meeting.time || "10:00 AM"}
         </div>
       </td>
-      <td className="px-6 py-4 whitespace-nowrap text-slate-900 dark:text-white">
-        {meeting.location}
-      </td>
-      <td className="px-6 py-4 whitespace-nowrap">
-        <span className={`px-2 py-1 text-xs rounded-full ${statusClass}`}>
+      <td>
+        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest ${getStatusColor(meeting.status)}`}>
           {meeting.status}
         </span>
       </td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+      <td className="text-right">
         <button
           onClick={() => onView(meeting.id)}
-          className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 mr-3"
+          className="meeting-btn meeting-btn-secondary mr-2"
         >
           View
         </button>
         <button
           onClick={() => onEdit(meeting.id)}
-          className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors"
+          className="meeting-btn meeting-btn-secondary mr-2"
         >
           Edit
+        </button>
+        <button
+          onClick={() => onDelete(meeting.id)}
+          className="meeting-btn meeting-btn-danger"
+        >
+          Delete
         </button>
       </td>
     </tr>
   );
 });
 
-MeetingRow.displayName = "MeetingRow";
-
-const MeetingList = memo(() => {
+const MeetingList = () => {
   const navigate = useNavigate();
   const [meetings, setMeetings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchMeetings = async () => {
-      setLoading(true);
-      setError(null);
-      const res = await meetingService.getAllMeetings();
-      if (res.success) {
-        setMeetings(
-          (res.data || []).map(m => ({
-            id: m._id || m.id,
-            title: m.title,
-            date: m.date ? m.date.split("T")[0] : "TBD",
-            time: m.time || "TBD",
-            location: m.location || "Online",
-            attendees: m.attendees || [],
-            status: m.status || "Upcoming",
-          }))
-        );
-      } else {
-        setError(res.message || "Failed to load meetings");
-      }
-      setLoading(false);
-    };
-    fetchMeetings();
+  const fetchMeetings = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    const res = await meetingService.getAllMeetings();
+    if (res.success) {
+      setMeetings(
+        (res.data || []).map(m => ({
+          id: m._id || m.id,
+          title: m.title,
+          date: m.date,
+          time: m.time,
+          location: m.location,
+          status: m.status,
+          organizer: m.organizer,
+          type: m.type
+        }))
+      );
+    } else {
+      setError(res.message || "Failed to load meetings");
+    }
+    setLoading(false);
   }, []);
 
-  // Schedule Meeting button handler
-  const handleCreate = useCallback(() => {
-    navigate("/meetings/new");
-  }, [navigate]);
+  useEffect(() => {
+    fetchMeetings();
+  }, [fetchMeetings]);
 
-  const handleView = useCallback(
-    (id) => {
-      navigate(`/meetings/${id}`);
-    },
-    [navigate],
-  );
-
-  const handleEdit = useCallback(
-    (id) => {
-      navigate(`/meetings/${id}/edit`);
-    },
-    [navigate],
-  );
+  const handleView = useCallback((id) => navigate(`/meetings/${id}`), [navigate]);
+  const handleEdit = useCallback((id) => navigate(`/meetings/${id}/edit`), [navigate]);
+  const handleDelete = useCallback(async (id) => {
+    if (!window.confirm("Are you sure you want to delete this meeting?")) return;
+    const res = await meetingService.deleteMeeting(id);
+    if (res.success) {
+      toast.success("Meeting deleted successfully");
+      setMeetings(prev => prev.filter(m => m.id !== id));
+    } else {
+      toast.error(res.message || "Failed to delete meeting");
+    }
+  }, []);
 
   return (
-    <div className="p-4 md:p-6 space-y-6 animate-fade-in">
-      {/* Header Section (Standardized with Project Catalog style) */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
-        <div className="flex items-center gap-5">
-
+    <div className="meeting-page">
+      <div className="meeting-container">
+        <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Meeting Management</h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">View and manage all scheduled academic sessions</p>
+            <h1 className="meeting-title">Meeting Management</h1>
+            <p className="meeting-subtitle">Control and organize project sessions</p>
           </div>
+          <button 
+            onClick={() => navigate("/meetings/new")} 
+            className="meeting-btn meeting-btn-primary"
+          >
+            Schedule New Meeting
+          </button>
         </div>
-        <button
-          onClick={handleCreate}
-          className="btn btn-secondary"
-        >
-          Schedule New Meeting
-        </button>
-      </div>
 
-      <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 overflow-hidden shadow-sm">
-        <div className="overflow-x-auto">
-          {loading ? (
-            <div className="p-12 text-center text-gray-400 text-sm italic">Loading sessions...</div>
-          ) : error ? (
-            <div className="p-12 text-center text-red-500 text-sm font-semibold">{error}</div>
-          ) : meetings.length === 0 ? (
-            <div className="p-12 text-center text-gray-400 flex flex-col items-center">
-              <p className="text-sm italic">No meetings scheduled at this time.</p>
+        <div className="meeting-card">
+          <div className="meeting-card-header">
+            <div>
+              <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+                All Scheduled Meetings
+              </h2>
+              <p className="meeting-subtitle mt-0.5">
+                History of all project synchronization sessions
+              </p>
             </div>
-          ) : (
-            <table className="min-w-full divide-y divide-gray-100 dark:divide-slate-700">
-              <thead className="bg-gray-50 dark:bg-slate-900/50">
-                <tr>
-                  <th className="px-6 py-4 text-left text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                    Title
-                  </th>
-                  <th className="px-6 py-4 text-left text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                    Date & Time
-                  </th>
-                  <th className="px-6 py-4 text-left text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                    Location
-                  </th>
-                  <th className="px-6 py-4 text-left text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                    Status
-                  </th>
-                  <th className="px-6 py-4 text-right text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100 dark:divide-slate-700">
-                {meetings.map((meeting) => (
-                  <MeetingRow
-                    key={meeting.id}
-                    meeting={meeting}
-                    onView={handleView}
-                    onEdit={handleEdit}
-                  />
-                ))}
-              </tbody>
-            </table>
-          )}
+          </div>
+          
+          <div className="meeting-table-container">
+            {loading ? (
+              <div className="p-12 text-center text-gray-400 text-sm italic font-medium">Loading sessions...</div>
+            ) : error ? (
+              <div className="p-12 text-center text-red-500 text-sm font-bold uppercase tracking-widest">{error}</div>
+            ) : meetings.length === 0 ? (
+              <div className="p-12 text-center">
+                <p className="text-sm italic text-gray-400 font-medium">No meetings scheduled at this time.</p>
+              </div>
+            ) : (
+              <table className="meeting-table">
+                <thead>
+                  <tr>
+                    <th>Title & Session</th>
+                    <th>Organizer</th>
+                    <th>Date & Time</th>
+                    <th>Status</th>
+                    <th className="text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {meetings.map((meeting) => (
+                    <MeetingRow
+                      key={meeting.id}
+                      meeting={meeting}
+                      onView={handleView}
+                      onEdit={handleEdit}
+                      onDelete={handleDelete}
+                    />
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
         </div>
       </div>
       <Outlet />
     </div>
   );
-});
+};
 
+MeetingRow.displayName = "MeetingRow";
 MeetingList.displayName = "MeetingList";
-
 export default MeetingList;

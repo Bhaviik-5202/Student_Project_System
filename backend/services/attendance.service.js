@@ -51,9 +51,10 @@ exports.getAllAttendance = async () => {
  */
 exports.getAttendanceByStudent = async (studentId) => {
   try {
-    const attendance = await attendanceRepository.findAll({
-      student: studentId,
-    });
+    const attendance = await attendanceRepository.findAll(
+      { student: studentId },
+      { populate: "meeting" }
+    );
     return response(
       false,
       attendance,

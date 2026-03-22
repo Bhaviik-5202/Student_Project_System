@@ -109,7 +109,7 @@ const StudentAttendance = memo(() => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight">Attendance Tracking</h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 font-medium">Detailed history of your academic sessions and presencia</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 font-medium">Detailed history of your academic sessions and presence</p>
         </div>
         <div className="flex items-center gap-2 px-4 py-2 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400 rounded-xl border border-indigo-100 dark:border-indigo-800/30">
           <History size={16} />

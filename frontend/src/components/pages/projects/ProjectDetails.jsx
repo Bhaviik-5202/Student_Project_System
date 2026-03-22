@@ -8,17 +8,21 @@ const ProjectDetails = memo(() => {
   const navigate = useNavigate();
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchProject = useCallback(async () => {
     setLoading(true);
+    setError(null);
     try {
       const response = await api.get(`/projects/${id}`);
-      if (response.success) {
+      if (response.success && response.data) {
         setProject(response.data);
       } else {
+        setError(response.message || "Project specifications not found in registry.");
         toast.error(response.message || "Failed to load project details");
       }
     } catch (error) {
+      setError("Critical system error while retrieving project data.");
       toast.error("Failed to load project details");
     } finally {
       setLoading(false);
@@ -29,22 +33,45 @@ const ProjectDetails = memo(() => {
     fetchProject();
   }, [fetchProject]);
 
+  useEffect(() => {
+    if (project?.title) {
+      document.title = `${project.title} | Student Project System`;
+    }
+    return () => {
+      document.title = "Student Project System";
+    };
+  }, [project]);
+
   const statusStyles = useMemo(
     () => ({
-      Completed: "bg-green-50 text-green-700",
-      "In Progress": "bg-blue-50 text-blue-700",
-      Pending: "bg-yellow-50 text-yellow-700",
-      planning: "bg-yellow-50 text-yellow-700",
-      in_progress: "bg-blue-50 text-blue-700",
-      completed: "bg-green-50 text-green-700",
+      Completed: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+      "In Progress": "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+      Pending: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
+      planning: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
+      in_progress: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+      completed: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
     }),
     [],
   );
 
   if (loading) {
     return (
-      <div className="p-8 text-center text-gray-400 text-sm italic">
-        Retrieving project specifications...
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+        <div className="w-12 h-12 border-4 border-indigo-100 border-t-indigo-500 rounded-full animate-spin" />
+        <p className="text-gray-400 text-sm font-medium animate-pulse">Synchronizing project directives...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-8 text-center max-w-md mx-auto">
+        <div className="w-16 h-16 bg-red-50 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i className="fas fa-exclamation-triangle text-red-500 text-2xl" />
+        </div>
+        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Registry Error</h3>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">{error}</p>
+        <button onClick={() => navigate("/projects")} className="project-btn project-btn-primary px-8">Return to Catalog</button>
       </div>
     );
   }
@@ -52,116 +79,122 @@ const ProjectDetails = memo(() => {
   if (!project) return null;
 
   return (
-    <div className="p-4 md:p-6 space-y-6">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div>
-          <button
-            onClick={() => navigate("/projects")}
-            className="text-indigo-600 dark:text-indigo-400 text-xs font-bold uppercase tracking-wider mb-2 flex items-center gap-1 hover:underline"
-          >
-            <i className="fas fa-arrow-left" /> Back to Catalog
-          </button>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            {project.title}
-          </h1>
-          <div className="flex items-center gap-3 mt-2">
-            <span className={`px-2 py-0.5 text-[10px] font-bold uppercase rounded-full ${statusStyles[project.status] || statusStyles.Pending}`}>
-              {project.status}
-            </span>
-            <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">
-              ID: {project.id || project._id}
-            </span>
+    <div className="project-page animate-fade-in">
+      <div className="project-container">
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <button
+              onClick={() => navigate("/projects")}
+              className="text-indigo-600 dark:text-indigo-400 font-bold text-sm mb-2 flex items-center gap-2 hover:underline"
+            >
+              <i className="fas fa-arrow-left" /> Back to Projects
+            </button>
+            <h1 className="text-3xl font-black text-gray-900 dark:text-white">
+              {project.title}
+            </h1>
+            <div className="flex items-center gap-3 mt-2">
+              <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${statusStyles[project.status] || statusStyles.Pending}`}>
+                {project.status?.replace('_', ' ')}
+              </span>
+              <span className="text-xs font-bold text-gray-400">
+                {project.type}
+              </span>
+            </div>
           </div>
-        </div>
-        <div className="flex gap-2">
           <button 
-            onClick={() => navigate(`/projects/${id}/edit`)}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2 px-6 rounded-lg shadow-sm transition-colors"
+            onClick={() => navigate(`/projects/${project.slug || project.id || project._id}/edit`)}
+            className="project-btn project-btn-primary"
           >
-            Edit Metadata
+            Edit Project
           </button>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
-          <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6 shadow-sm">
-            <h2 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest mb-4 border-b border-gray-50 dark:border-slate-700 pb-2">
-              Objective & Scope
-            </h2>
-            <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-sm">
-              {project.description}
-            </p>
-          </div>
-
-          <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6 shadow-sm">
-            <h2 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest mb-6 border-b border-gray-50 dark:border-slate-700 pb-2">
-              Execution Strategy
-            </h2>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center text-xs font-bold text-gray-400 uppercase tracking-widest">
-                <span>Phase Completion</span>
-                <span className="text-indigo-600">{project.progress}%</span>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-6">
+            <div className="project-card-simple pb-8">
+              <h2 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">Description</h2>
+              <div className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                {project.abstract || project.description}
               </div>
-              <div className="w-full bg-gray-100 dark:bg-slate-900 rounded-full h-2 overflow-hidden">
-                <div
-                  className="h-full bg-indigo-500 rounded-full transition-all duration-1000 ease-out"
-                  style={{ width: `${project.progress}%` }}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="space-y-6">
-          <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6 shadow-sm">
-            <h2 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest mb-4 border-b border-gray-50 dark:border-slate-700 pb-2">
-              Vital Statistics
-            </h2>
-            <div className="space-y-4">
-              <div>
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Primary Mentor</p>
-                <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                  {project.guide?.name || project.guide || "Awaiting Assignment"}
-                </p>
-              </div>
-              <div>
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Initiation</p>
-                <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                  {project.startDate}
-                </p>
-              </div>
-              <div>
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Target Culmination</p>
-                <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                  {project.endDate}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6 shadow-sm">
-            <h2 className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-widest mb-4 border-b border-gray-50 dark:border-slate-700 pb-2">
-              Collaborative Unit
-            </h2>
-            <div className="space-y-3 mt-4">
-              {Array.isArray(project.members) && project.members.length > 0 ? (
-                project.members.map((member, index) => (
-                  <div key={member._id || index} className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-slate-900 flex items-center justify-center text-xs font-bold text-indigo-600 border border-indigo-100 dark:border-slate-700">
-                      {(member.name || member).charAt(0).toUpperCase()}
-                    </div>
-                    <div>
-                      <span className="text-sm font-bold text-gray-900 dark:text-white block">
-                        {member.name || member}
-                      </span>
-                      {member.rollNumber && <span className="text-[10px] font-bold text-gray-400 uppercase">{member.rollNumber}</span>}
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <p className="text-xs text-gray-400 italic">No collaborative data available</p>
+              
+              {project.objectives && (
+                <div className="mt-6 pt-6 border-t border-gray-50 dark:border-slate-700">
+                  <h2 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">Objectives</h2>
+                  <p className="text-sm italic">{project.objectives}</p>
+                </div>
               )}
+            </div>
+
+            <div className="project-card-simple">
+              <h2 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-6">Execution Status</h2>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center mb-1">
+                  <span className="text-[10px] font-black text-gray-400">PROGRESS</span>
+                  <span className="text-sm font-black text-indigo-600">{project.progress}%</span>
+                </div>
+                <div className="w-full bg-gray-100 dark:bg-slate-900 rounded-full h-2">
+                  <div
+                    className="h-full bg-indigo-500 rounded-full transition-all duration-1000"
+                    style={{ width: `${project.progress}%` }}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4 mt-6">
+                  <div>
+                    <span className="text-[10px] font-black text-gray-400 block mb-1">START DATE</span>
+                    <p className="text-sm font-bold text-gray-900 dark:text-white">
+                      {project.startDate ? new Date(project.startDate).toLocaleDateString() : "N/A"}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-black text-gray-400 block mb-1">END DATE</span>
+                    <p className="text-sm font-bold text-gray-900 dark:text-white">
+                      {project.endDate ? new Date(project.endDate).toLocaleDateString() : "N/A"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <div className="project-card-simple">
+              <h2 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">Project Guide</h2>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-slate-900 flex items-center justify-center text-indigo-500 border border-indigo-100 dark:border-slate-700">
+                  <i className="fas fa-user-tie" />
+                </div>
+                <div>
+                  <p className="text-sm font-black text-gray-900 dark:text-white">
+                    {project.guide?.name || project.guide || "Not Assigned"}
+                  </p>
+                  <p className="text-[10px] text-gray-400 font-bold uppercase">Faculty Mentor</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="project-card-simple">
+              <h2 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">Members</h2>
+              <div className="space-y-3">
+                {Array.isArray(project.members) && project.members.length > 0 ? (
+                  project.members.map((member, index) => (
+                    <div key={member._id || index} className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-gray-100 dark:bg-slate-900 flex items-center justify-center text-xs font-bold text-gray-500">
+                        {member.name?.charAt(0) || "M"}
+                      </div>
+                      <span className="text-sm font-bold text-gray-900 dark:text-white">
+                        {member.name || (typeof member === 'string' ? member : "Unknown")}
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-xs italic text-gray-400">No members assigned</p>
+                )}
+                {project.teamMembers && (
+                  <div className="mt-2 pt-2 border-t border-gray-50 dark:border-slate-700 text-xs text-gray-500">
+                    <strong>Other:</strong> {project.teamMembers}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

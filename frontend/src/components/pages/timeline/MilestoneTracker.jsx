@@ -7,7 +7,7 @@ const MilestoneTracker = memo(() => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
-  const [selectedProjectId, setSelectedProjectId] = useState(id || "");
+  const [selectedProjectId, setSelectedProjectId] = useState("");
   const [projectData, setProjectData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -18,9 +18,19 @@ const MilestoneTracker = memo(() => {
         const response = await projectService.getAllProjects();
         if (response.success && Array.isArray(response.data)) {
           setProjects(response.data);
-          if (!selectedProjectId && response.data.length > 0) {
+          
+          if (id) {
+            const foundProject = response.data.find(p => (p._id || p.id) === id || p.slug === id);
+            if (foundProject) {
+              setSelectedProjectId(foundProject._id || foundProject.id);
+            } else if (response.data.length > 0) {
+              setSelectedProjectId(response.data[0]._id || response.data[0].id);
+            } else {
+              setLoading(false);
+            }
+          } else if (response.data.length > 0) {
             setSelectedProjectId(response.data[0]._id || response.data[0].id);
-          } else if (response.data.length === 0) {
+          } else {
             setLoading(false);
           }
         } else {
@@ -32,7 +42,7 @@ const MilestoneTracker = memo(() => {
       }
     };
     fetchProjects();
-  }, [selectedProjectId]);
+  }, [id]);
 
   // Fetch timeline for selected project
   useEffect(() => {
@@ -76,7 +86,13 @@ const MilestoneTracker = memo(() => {
 
 
   const handleProjectChange = (e) => {
-    setSelectedProjectId(e.target.value);
+    const newId = e.target.value;
+    const project = projects.find(p => (p._id || p.id) === newId);
+    if (project) {
+      navigate(`/milestones/${project.slug || newId}`);
+    } else {
+      setSelectedProjectId(newId);
+    }
   };
 
   const statusStyles = {
@@ -113,6 +129,11 @@ const MilestoneTracker = memo(() => {
     navigate(path);
   }, [navigate]);
 
+  const selectedProjectSlug = useMemo(() => {
+    const p = projects.find(p => (p._id || p.id) === selectedProjectId);
+    return p?.slug || selectedProjectId;
+  }, [projects, selectedProjectId]);
+
   return (
     <div className="project-page animate-fade-in text-gray-600 dark:text-gray-400">
       <div className="project-header">
@@ -141,7 +162,7 @@ const MilestoneTracker = memo(() => {
             Temporal View
           </button>
           <button 
-            onClick={() => navigate(`/timeline-editor/${selectedProjectId}`)}
+            onClick={() => navigate(`/timeline-editor/${selectedProjectSlug}`)}
             className="project-btn project-btn-primary"
           >
             New Milestone
@@ -235,13 +256,13 @@ const MilestoneTracker = memo(() => {
 
                         <div className="flex flex-col sm:flex-row items-center gap-2 pt-4 border-t border-gray-50 dark:border-slate-700/50">
                           <button 
-                            onClick={() => navigate(`/projects/${selectedProjectId}`)}
+                            onClick={() => navigate(`/projects/${selectedProjectSlug}`)}
                             className="project-btn project-btn-primary w-full sm:flex-1"
                           >
                             View Details
                           </button>
                           <button 
-                            onClick={() => navigate(`/timeline-editor/${selectedProjectId}`)}
+                            onClick={() => navigate(`/timeline-editor/${selectedProjectSlug}`)}
                             className="project-btn project-btn-secondary w-full sm:w-auto"
                           >
                             Edit

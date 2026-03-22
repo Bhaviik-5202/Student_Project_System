@@ -26,6 +26,17 @@ exports.findById = (id, options = {}) =>
     .select(options.select || "");
 
 /**
+ * Locate a single project by arbitrary criteria
+ * @param {Object} filter - Mongoose filter object
+ * @param {Object} options - Query options (populate, select)
+ * @returns {Promise<Object|null>} Project document or null
+ */
+exports.findOne = (filter, options = {}) =>
+  Project.findOne(filter)
+    .populate(options.populate || "")
+    .select(options.select || "");
+
+/**
  * Persist a new project record to the database
  * @param {Object} data - Project data object
  * @returns {Promise<Object>} Created project document

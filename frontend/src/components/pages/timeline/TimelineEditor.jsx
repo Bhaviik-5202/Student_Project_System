@@ -8,7 +8,7 @@ const TimelineEditor = memo(() => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
-  const [selectedProjectId, setSelectedProjectId] = useState(id || "");
+  const [selectedProjectId, setSelectedProjectId] = useState("");
   const [timeline, setTimeline] = useState({
     project: "",
     milestones: [],
@@ -29,7 +29,17 @@ const TimelineEditor = memo(() => {
         const response = await projectService.getAllProjects();
         if (response.success) {
           setProjects(response.data);
-          if (!selectedProjectId && response.data.length > 0) {
+          
+          // If we have an ID or slug from URL, find the matching project
+          if (id) {
+            const foundProject = response.data.find(p => p._id === id || p.slug === id);
+            if (foundProject) {
+              setSelectedProjectId(foundProject._id);
+            } else if (response.data.length > 0) {
+              // Fallback to first project if the specific ID/slug wasn't found
+              setSelectedProjectId(response.data[0]._id);
+            }
+          } else if (response.data.length > 0) {
             setSelectedProjectId(response.data[0]._id);
           }
         }
@@ -38,7 +48,7 @@ const TimelineEditor = memo(() => {
       }
     };
     fetchProjects();
-  }, [selectedProjectId]);
+  }, [id]);
 
   // Fetch timeline for the selected project
   useEffect(() => {
@@ -67,7 +77,13 @@ const TimelineEditor = memo(() => {
   }, [selectedProjectId]);
 
   const handleProjectChange = (e) => {
-    setSelectedProjectId(e.target.value);
+    const newId = e.target.value;
+    const project = projects.find(p => p._id === newId);
+    if (project) {
+      navigate(`/timeline-editor/${project.slug || newId}`);
+    } else {
+      setSelectedProjectId(newId);
+    }
   };
 
   const handleNewMilestoneChange = useCallback((e) => {

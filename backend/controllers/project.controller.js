@@ -214,6 +214,7 @@ exports.getProjectGroups = async (req, res) => {
     // We just need to ensure the structure matches what ProjectGroups.jsx expects.
     const formattedGroups = result.data.projects.map(project => ({
       id: project.id || project._id,
+      slug: project.slug,
       name: project.title,
       project: project.title,
       guide: project.guide ? project.guide.name : "Not Assigned",
@@ -221,6 +222,9 @@ exports.getProjectGroups = async (req, res) => {
       status: project.status.charAt(0).toUpperCase() + project.status.slice(1).replace('_', ' '),
       progress: project.progress || 0
     }));
+
+    console.log(`Sending ${formattedGroups.length} formatted groups to frontend.`);
+    formattedGroups.forEach(g => console.log(`- Project: ${g.name}, Guide: ${g.guide}`));
 
     sendResponse(
       res,

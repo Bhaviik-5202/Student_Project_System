@@ -1,4 +1,4 @@
-import { memo, useMemo, useState, useEffect } from "react";
+import { memo, useMemo, useState, useEffect, Suspense } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
@@ -111,7 +111,14 @@ const AuthLayout = ({ children }) => {
         <div
           className={`w-full max-w-md bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl p-8 sm:p-10 rounded-3xl shadow-2xl border border-white/40 dark:border-slate-700/40 relative z-10 transition-all duration-700 ${showContent ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"}`}
         >
-          {children}
+          <Suspense fallback={
+            <div className="h-64 flex flex-col items-center justify-center gap-4">
+              <div className="w-10 h-10 border-3 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+              <p className="text-slate-400 text-sm animate-pulse">Initializing security module...</p>
+            </div>
+          }>
+            {children}
+          </Suspense>
         </div>
       </div>
     </div>

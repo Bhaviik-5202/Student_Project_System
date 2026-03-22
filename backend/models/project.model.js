@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const slugify = require("../utils/slugify");
 
 const projectSchema = new mongoose.Schema(
   {
@@ -7,6 +8,13 @@ const projectSchema = new mongoose.Schema(
       required: [true, "Project title is required"],
       trim: true,
       maxlength: [200, "Title cannot exceed 200 characters"],
+    },
+    slug: {
+      type: String,
+      unique: true,
+      index: true,
+      lowercase: true,
+      trim: true,
     },
     description: {
       type: String,
@@ -75,7 +83,7 @@ const projectSchema = new mongoose.Schema(
     ],
     guide: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Staff",
       default: null,
       index: true,
     },
@@ -89,6 +97,26 @@ const projectSchema = new mongoose.Schema(
     timestamps: true,
   },
 );
+
+// Pre-save hook to generate slug
+projectSchema.pre("save", async function () {
+  if (this.isModified("title") || !this.slug) {
+    let baseSlug = slugify(this.title);
+    let slug = baseSlug;
+    let counter = 1;
+
+    // Check for slug uniqueness
+    while (true) {
+      const existingProject = await this.constructor.findOne({
+        slug,
+        _id: { $ne: this._id },
+      });
+      if (!existingProject) break;
+      slug = `${baseSlug}-${counter++}`;
+    }
+    this.slug = slug;
+  }
+});
 
 projectSchema.set("toJSON", {
   virtuals: true,

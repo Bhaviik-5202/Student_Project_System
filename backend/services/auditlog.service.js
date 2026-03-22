@@ -52,7 +52,11 @@ exports.getAll = async ({ page = 1, limit = 20, filters = {} }) => {
     }
 
     const [auditLogs, total] = await Promise.all([
-      auditLogRepository.findAll(query, { skip, limit: Number(limit) }),
+      auditLogRepository.findAll(query, { 
+        skip, 
+        limit: Number(limit),
+        populate: "user"
+      }),
       auditLogRepository.count(query),
     ]);
 

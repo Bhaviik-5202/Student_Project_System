@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect, memo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import projectService from "../../../services/projectService";
+import api from "../../../utils/api";
 
 const ProjectProposal = memo(() => {
   const { id } = useParams();
@@ -20,15 +21,31 @@ const ProjectProposal = memo(() => {
     endDate: "",
     resources: "",
     budget: "",
+    progress: 0,
     document: null,
   });
   const [projectTypes, setProjectTypes] = useState([]);
+  const [staffMembers, setStaffMembers] = useState([]);
   const [loading, setLoading] = useState(isEditing);
 
   useEffect(() => {
-    if (isEditing) {
-      const fetchProject = async () => {
-        try {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const [typesRes, staffRes] = await Promise.all([
+          projectService.getProjectTypes(),
+          api.get("/staff")
+        ]);
+        
+        if (typesRes.success || Array.isArray(typesRes.data)) {
+          setProjectTypes(typesRes.data || typesRes);
+        }
+        
+        if (staffRes.success || Array.isArray(staffRes.data)) {
+          setStaffMembers(staffRes.data || staffRes);
+        }
+
+        if (isEditing) {
           const res = await projectService.getProjectById(id);
           if (res.success && res.data) {
             const data = res.data;
@@ -36,7 +53,7 @@ const ProjectProposal = memo(() => {
               title: data.title || "",
               type: data.type || "",
               teamMembers: Array.isArray(data.teamMembers) ? data.teamMembers.join(", ") : (data.teamMembers || ""),
-              guide: data.guide || "",
+              guide: data.guide?._id || data.guide?.id || data.guide || "",
               abstract: data.abstract || "",
               objectives: data.objectives || "",
               outcomes: data.outcomes || "",
@@ -44,36 +61,19 @@ const ProjectProposal = memo(() => {
               endDate: data.endDate ? data.endDate.split('T')[0] : "",
               resources: data.resources || "",
               budget: data.budget || "",
+              progress: data.progress || 0,
               document: null, 
             });
-          } else {
-            toast.error("Failed to fetch project details");
-            navigate("/projects");
           }
-        } catch (error) {
-          toast.error("Error fetching project");
-          navigate("/projects");
-        } finally {
-          setLoading(false);
-        }
-      };
-      fetchProject();
-    }
-  }, [id, isEditing, navigate]);
-
-  useEffect(() => {
-    const fetchProjectTypes = async () => {
-      try {
-        const res = await projectService.getProjectTypes();
-        if (res.success || Array.isArray(res.data)) {
-          setProjectTypes(res.data || res);
         }
       } catch (error) {
-        console.error("Failed to fetch project types");
+        console.error("Failed to fetch auxiliary data");
+      } finally {
+        setLoading(false);
       }
     };
-    fetchProjectTypes();
-  }, []);
+    fetchData();
+  }, [id, isEditing]);
 
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
@@ -92,7 +92,7 @@ const ProjectProposal = memo(() => {
       try {
         const data = new FormData();
         Object.keys(formData).forEach((key) => {
-          if (formData[key] !== null && formData[key] !== "") {
+          if (formData[key] !== null && (formData[key] !== "" || key === "progress")) {
             data.append(key, formData[key]);
           }
         });
@@ -173,6 +173,23 @@ const ProjectProposal = memo(() => {
                   </select>
                 </div>
                 <div>
+                  <label className="project-label mb-1.5">Primary Guide</label>
+                  <select
+                    name="guide"
+                    required
+                    value={typeof formData.guide === 'object' ? formData.guide?._id || formData.guide?.id || "" : formData.guide}
+                    onChange={handleChange}
+                    className="project-select"
+                  >
+                    <option value="">Awaiting Assignment</option>
+                    {staffMembers.map((staff) => (
+                      <option key={staff._id || staff.id} value={staff._id || staff.id}>
+                        {staff.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
                   <label className="project-label mb-1.5">Collaborative Team</label>
                   <input
                     type="text"
@@ -246,6 +263,22 @@ const ProjectProposal = memo(() => {
                     className="project-input"
                   />
                 </div>
+              </div>
+              <div>
+                <div className="flex justify-between items-center mb-1.5">
+                  <label className="project-label">Execution Progress</label>
+                  <span className="text-xs font-bold text-indigo-600">{formData.progress}%</span>
+                </div>
+                <input
+                  type="range"
+                  name="progress"
+                  min="0"
+                  max="100"
+                  step="5"
+                  value={formData.progress}
+                  onChange={handleChange}
+                  className="w-full h-1.5 bg-gray-100 dark:bg-slate-900 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                />
               </div>
               <div>
                 <label className="project-label mb-1.5">Technical Resources</label>

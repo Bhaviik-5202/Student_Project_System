@@ -58,12 +58,13 @@ const PerformanceMetrics = memo(() => {
           <div className="p-8 text-center text-slate-500">No performance data available.</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            {Object.entries(metrics).map(([key, metric]) => (
+            {Object.entries(metrics)
+              .filter(([key]) => key !== "trends")
+              .map(([key, metric]) => (
               <div
                 key={key}
                 className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6"
               >
-                {/* ... existing metric card content ... */}
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <div className="text-sm font-medium text-slate-500 dark:text-slate-300 uppercase tracking-wider">
@@ -98,38 +99,48 @@ const PerformanceMetrics = memo(() => {
           <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-6">
             Performance Trends
           </h3>
-          <div className="space-y-6">
-            {[
-              { month: "Sep", overall: 78, attendance: 85, assignments: 72 },
-              { month: "Oct", overall: 80, attendance: 88, assignments: 75 },
-              { month: "Nov", overall: 82, attendance: 90, assignments: 78 },
-              { month: "Dec", overall: 83, attendance: 91, assignments: 80 },
-              { month: "Jan", overall: 85, attendance: 92, assignments: 82 },
-            ].map((data, index) => (
-              <div key={index}>
-                <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400 mb-2">
-                  <span className="font-medium">{data.month}</span>
-                  <span>
-                    Overall: {data.overall}% | Attendance: {data.attendance}% |
-                    Assignments: {data.assignments}%
-                  </span>
+          <div className="space-y-8">
+            <div className="flex justify-end gap-6 mb-2">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-blue-500 rounded-sm"></div>
+                <span className="text-xs text-slate-500">Overall</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-emerald-500 rounded-sm"></div>
+                <span className="text-xs text-slate-500">Attendance</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-purple-500 rounded-sm"></div>
+                <span className="text-xs text-slate-500">Assignments</span>
+              </div>
+            </div>
+            
+            {(metrics.trends || [
+              { month: "Sep", overall: 0, attendance: 0, assignments: 0 },
+              { month: "Oct", overall: 0, attendance: 0, assignments: 0 },
+              { month: "Nov", overall: 0, attendance: 0, assignments: 0 },
+              { month: "Dec", overall: 0, attendance: 0, assignments: 0 },
+              { month: "Jan", overall: 0, attendance: 0, assignments: 0 },
+            ]).map((data, index) => (
+              <div key={index} className="space-y-2">
+                <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400">
+                  <span className="font-semibold text-slate-700 dark:text-slate-300 w-12">{data.month}</span>
+                  <div className="flex gap-4">
+                    <span>O: {data.overall}%</span>
+                    <span>A: {data.attendance}%</span>
+                    <span>S: {data.assignments}%</span>
+                  </div>
                 </div>
-                <div className="flex h-8 rounded-lg overflow-hidden">
-                  <div
-                    className="bg-blue-500"
-                    style={{ width: `${data.overall}%` }}
-                    title={`Overall: ${data.overall}%`}
-                  ></div>
-                  <div
-                    className="bg-emerald-500"
-                    style={{ width: `${data.attendance}%` }}
-                    title={`Attendance: ${data.attendance}%`}
-                  ></div>
-                  <div
-                    className="bg-purple-500"
-                    style={{ width: `${data.assignments}%` }}
-                    title={`Assignments: ${data.assignments}%`}
-                  ></div>
+                <div className="space-y-1">
+                  <div className="w-full bg-slate-100 dark:bg-slate-700/50 rounded-full h-1.5 overflow-hidden">
+                    <div className="bg-blue-500 h-full rounded-full transition-all duration-500" style={{ width: `${data.overall}%` }}></div>
+                  </div>
+                  <div className="w-full bg-slate-100 dark:bg-slate-700/50 rounded-full h-1.5 overflow-hidden">
+                    <div className="bg-emerald-500 h-full rounded-full transition-all duration-500" style={{ width: `${data.attendance}%` }}></div>
+                  </div>
+                  <div className="w-full bg-slate-100 dark:bg-slate-700/50 rounded-full h-1.5 overflow-hidden">
+                    <div className="bg-purple-500 h-full rounded-full transition-all duration-500" style={{ width: `${data.assignments}%` }}></div>
+                  </div>
                 </div>
               </div>
             ))}

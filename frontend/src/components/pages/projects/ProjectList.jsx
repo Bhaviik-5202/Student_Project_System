@@ -30,13 +30,13 @@ const ProjectCard = memo(({ project, onNavigate }) => {
         </div>
         <div className="flex gap-2">
           <button 
-            onClick={() => onNavigate(`/projects/${project.id || project._id}`)}
+            onClick={() => onNavigate(`/projects/${project.slug || project.id || project._id}`)}
             className="project-btn project-btn-primary"
           >
             Details
           </button>
           <button 
-            onClick={() => onNavigate(`/projects/${project.id || project._id}/edit`)}
+            onClick={() => onNavigate(`/projects/${project.slug || project.id || project._id}/edit`)}
             className="project-btn project-btn-secondary"
           >
             Edit

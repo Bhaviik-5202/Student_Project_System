@@ -8,6 +8,7 @@ import LoadingSpinner from "../common/LoadingSpinner";
 import BackToTop from "../common/BackToTop.jsx";
 import PageTransition from "../common/PageTransition";
 import ErrorBoundary from "../common/ErrorBoundary";
+import Skeleton, { DashboardSkeleton, TableSkeleton } from "../common/Skeleton";
 import useScreenSize from "../../hooks/useScreenSize";
 
 const MainLayout = () => {
@@ -74,8 +75,22 @@ const MainLayout = () => {
             <ErrorBoundary>
               <Suspense
                 fallback={
-                  <div className="flex items-center justify-center min-h-[50vh]">
-                    <LoadingSpinner size="lg" />
+                  <div className="p-4 md:p-6 animate-fade-in">
+                    {location.pathname.includes("dashboard") ? (
+                      <DashboardSkeleton />
+                    ) : location.pathname.includes("list") || location.pathname.includes("audit") || location.pathname.includes("projects") ? (
+                      <TableSkeleton />
+                    ) : (
+                      <div className="space-y-6">
+                        <Skeleton height="40px" width="300px" className="mb-8" />
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                          <Skeleton height="200px" />
+                          <Skeleton height="200px" />
+                          <Skeleton height="200px" />
+                        </div>
+                        <Skeleton height="400px" />
+                      </div>
+                    )}
                   </div>
                 }
               >

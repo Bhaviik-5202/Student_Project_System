@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import meetingService from "../../../services/meetingService";
+import "../../../assets/styles/meetings.css";
 
 const MeetingForm = memo(() => {
   const navigate = useNavigate();
@@ -110,48 +111,36 @@ const MeetingForm = memo(() => {
   );
 
   return (
-    <div className="p-4 md:p-6 space-y-6 animate-fade-in mb-20">
-      <div className="w-full max-w-2xl mx-auto space-y-6">
-        {/* Header Card (Mirroring StudentForm Registry style) */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 p-6 md:p-8">
-            <div className="flex items-center gap-5">
-              <div>
-                <h1 className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
-                  {isViewing ? "Meeting Management" : isEditing ? "Meeting Management" : "Meeting Management"}
-                </h1>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 font-medium">
-                  {isViewing ? "Reviewing project coordination" : "Create a new meeting entry in the system"}
-                </p>
-              </div>
+    <div className="meeting-page">
+      <div className="meeting-container" style={{ maxWidth: '800px' }}>
+        <div className="meeting-card">
+          {/* Header */}
+          <div className="meeting-card-header">
+            <div>
+              <h1 className="meeting-title">
+                {isViewing ? "Meeting Details" : isEditing ? "Edit Meeting" : "Schedule Meeting"}
+              </h1>
+              <p className="meeting-subtitle mt-1">Project Synchronization</p>
             </div>
             <button
               onClick={handleClose}
-              className="text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all p-2.5 rounded-xl"
-              title="Discard changes"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors text-gray-400"
             >
-              <X size={20} />
+              <X className="w-5 h-5" />
             </button>
           </div>
-        </div>
 
-
-        {initialLoading ? (
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 p-20 text-center shadow-sm">
-            <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto"></div>
-            <p className="mt-4 text-gray-400 font-medium italic">Fetching session data...</p>
-          </div>
-        ) : (
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-100 dark:border-slate-800 shadow-sm overflow-hidden">
-            <form onSubmit={handleSubmit} className="p-6 md:p-10 space-y-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Meeting Title - Full Width */}
-                <div className="md:col-span-2">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 block ml-1">
-                    Session Title
-                  </label>
-                  <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700">
-                    <Video size={18} className="text-indigo-500" />
+          {initialLoading ? (
+            <div className="p-20 text-center">
+              <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+              <p className="meeting-subtitle mt-4">Loading...</p>
+            </div>
+          ) : (
+            <div className="meeting-card-body">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="md:col-span-2 meeting-form-group">
+                    <label className="meeting-label">Meeting Title</label>
                     <input
                       type="text"
                       name="title"
@@ -159,19 +148,13 @@ const MeetingForm = memo(() => {
                       value={formData.title}
                       onChange={handleChange}
                       readOnly={isViewing}
-                      className="w-full bg-transparent outline-none text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400"
-                      placeholder={isViewing ? "" : "e.g. Weekly Sprint Alignment"}
+                      placeholder="e.g. Design Review"
+                      className="meeting-input"
                     />
                   </div>
-                </div>
 
-                {/* Date */}
-                <div>
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 block ml-1">
-                    Scheduled Date
-                  </label>
-                  <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700">
-                    <Calendar size={18} className="text-gray-400" />
+                  <div className="meeting-form-group">
+                    <label className="meeting-label">Date</label>
                     <input
                       type="date"
                       name="date"
@@ -179,18 +162,12 @@ const MeetingForm = memo(() => {
                       value={formData.date}
                       onChange={handleChange}
                       readOnly={isViewing}
-                      className="w-full bg-transparent outline-none text-sm font-medium text-gray-900 dark:text-white"
+                      className="meeting-input"
                     />
                   </div>
-                </div>
 
-                {/* Time */}
-                <div>
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 block ml-1">
-                    Session Timing
-                  </label>
-                  <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700">
-                    <Clock size={18} className="text-gray-400" />
+                  <div className="meeting-form-group">
+                    <label className="meeting-label">Time</label>
                     <input
                       type="time"
                       name="time"
@@ -198,109 +175,77 @@ const MeetingForm = memo(() => {
                       value={formData.time}
                       onChange={handleChange}
                       readOnly={isViewing}
-                      className="w-full bg-transparent outline-none text-sm font-medium text-gray-900 dark:text-white"
+                      className="meeting-input"
                     />
                   </div>
-                </div>
 
-                {/* Location */}
-                <div className="md:col-span-2">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 block ml-1">
-                    Venue / Meeting URL
-                  </label>
-                  <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700">
-                    <MapPin size={18} className="text-gray-400" />
-                    <input
-                      type="text"
-                      name="location"
-                      required
-                      value={formData.location}
-                      onChange={handleChange}
-                      readOnly={isViewing}
-                      className="w-full bg-transparent outline-none text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400"
-                      placeholder={isViewing ? "" : "Physical room or digital link"}
-                    />
+                  <div className="md:col-span-2 meeting-form-group">
+                    <label className="meeting-label">Location / Link</label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        name="location"
+                        required
+                        value={formData.location}
+                        onChange={handleChange}
+                        readOnly={isViewing}
+                        placeholder="e.g. Room 101 or https://meet.google.com/abc-defg-hij"
+                        className="meeting-input pl-10"
+                      />
+                    </div>
                   </div>
-                </div>
 
-                {/* Description */}
-                <div className="md:col-span-2">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 block ml-1">
-                    Meeting Agenda
-                  </label>
-                  <div className="flex items-start gap-3 p-3 bg-gray-50 dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700">
-                    <Info size={18} className="text-gray-400 mt-1" />
+                  <div className="md:col-span-2 meeting-form-group">
+                    <label className="meeting-label">Agenda & Description</label>
                     <textarea
                       name="description"
-                      rows="3"
+                      rows="4"
                       value={formData.description}
                       onChange={handleChange}
                       readOnly={isViewing}
-                      className="w-full bg-transparent outline-none text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400 resize-none"
-                      placeholder={isViewing ? "" : "Outline key objectives..."}
+                      placeholder="What will be discussed?"
+                      className="meeting-textarea"
                     />
+                  </div>
+
+                  <div className="md:col-span-2 meeting-form-group">
+                    <label className="meeting-label">Attendees (IDs)</label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        name="attendees"
+                        value={formData.attendees}
+                        onChange={handleChange}
+                        readOnly={isViewing}
+                        placeholder="e.g. 507f1f1... (Comma-separated User IDs)"
+                        className="meeting-input pl-10"
+                      />
+                    </div>
                   </div>
                 </div>
 
-                {/* Participants */}
-                <div className="md:col-span-2">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 block ml-1">
-                    Collaborators (User IDs)
-                  </label>
-                  <div className="flex items-start gap-3 p-3 bg-gray-50 dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700">
-                    <UserPlus size={18} className="text-gray-400 mt-1" />
-                    <textarea
-                      name="attendees"
-                      rows="2"
-                      value={formData.attendees}
-                      onChange={handleChange}
-                      readOnly={isViewing}
-                      className="w-full bg-transparent outline-none text-sm font-medium text-gray-900 dark:text-white placeholder:text-gray-400 resize-none"
-                      placeholder={isViewing ? "" : "User ObjectIds separated by commas..."}
-                    />
+                {!isViewing && (
+                  <div className="flex gap-4 pt-8 border-t border-gray-100 dark:border-slate-800">
+                    <button
+                      type="button"
+                      onClick={handleClose}
+                      className="meeting-btn meeting-btn-secondary"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="meeting-btn meeting-btn-primary flex-1"
+                    >
+                      {loading ? "Saving..." : id ? "Update Meeting" : "Schedule Meeting"}
+                    </button>
                   </div>
-                  {!isViewing && (
-                    <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest mt-3 flex items-center gap-2 opacity-60">
-                      <ChevronRight size={10} className="text-indigo-500" />
-                      Participants will be registered by their unique system identifiers
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              {/* Form Actions */}
-              {!isViewing && (
-                <div className="flex flex-col sm:flex-row gap-4 pt-10 border-t border-gray-50 dark:border-slate-800">
-                  <button
-                    type="button"
-                    onClick={handleClose}
-                    className="flex-1 h-12 bg-gray-50 dark:bg-slate-800/50 hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-600 dark:text-gray-400 text-[11px] font-bold uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2"
-                  >
-                    <ArrowLeft size={16} />
-                    Back to List
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="flex-[2] h-12 bg-blue-600 hover:bg-blue-700 text-white text-[11px] font-bold uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2"
-                  >
-                    {loading ? (
-                      <>
-                        <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                        Syncing...
-                      </>
-                    ) : (
-                      <>
-                        <Save size={18} />
-                        {isEditing ? "Update Session Profile" : "Execute Schedule Registry"}
-                      </>
-                    )}
-                  </button>
-                </div>
-              )}
-            </form>
-          </div>
-        )}
+                )}
+              </form>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

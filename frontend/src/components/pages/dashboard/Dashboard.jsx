@@ -14,6 +14,7 @@ import { Fragment } from "react";
 import RecentActivity from "./RecentActivity";
 import UpcomingMeetings from "./UpcomingMeetings";
 import ProgressVisualization from "./ProgressVisualization";
+import SystemMetrics from "./SystemMetrics";
 import analyticsService from "../../../services/analyticsService";
 import { exportDashboardToCSV } from "../../../utils/exportUtils";
 
@@ -797,12 +798,12 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column - 2/3 width */}
         <div className="lg:col-span-2 space-y-8">
-          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm p-6">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 p-6 shadow-sm hover:shadow-md transition-all">
             <RecentActivity activities={recentActivities} userRole={user?.role} />
           </div>
 
           {/* Upcoming Deadlines */}
-          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm p-6">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 p-6 shadow-sm hover:shadow-md transition-all">
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center">
                 <div className="w-10 h-10 bg-gradient-to-br from-orange-50 to-orange-100/50 dark:from-orange-900/30 dark:to-orange-800/20 rounded-lg flex items-center justify-center mr-3">
@@ -872,7 +873,7 @@ const Dashboard = () => {
         {/* Right Column - 1/3 width */}
         <div className="space-y-8">
           {/* Notification Center */}
-          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm p-6">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 p-6 shadow-sm hover:shadow-md transition-all">
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center">
                 <div className="w-10 h-10 bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/30 dark:to-blue-800/20 rounded-lg flex items-center justify-center mr-3">
@@ -947,7 +948,7 @@ const Dashboard = () => {
           )}
 
           {/* Quick Resources */}
-          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm p-6">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 p-6 shadow-sm hover:shadow-md transition-all">
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center">
                 <div className="w-10 h-10 bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-900/30 dark:to-green-800/20 rounded-lg flex items-center justify-center mr-3">
@@ -1040,7 +1041,7 @@ const Dashboard = () => {
       {/* Bottom Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Project Progress */}
-          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm p-6">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 p-6 shadow-sm hover:shadow-md transition-all">
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center">
                 <div className="w-10 h-10 bg-gradient-to-br from-indigo-50 to-indigo-100/50 dark:from-indigo-900/30 dark:to-indigo-800/20 rounded-lg flex items-center justify-center mr-3">
@@ -1067,121 +1068,8 @@ const Dashboard = () => {
             <ProgressVisualization projects={projectProgressData} userRole={user?.role} />
           </div>
 
-        {/* System Metrics */}
-        <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-6 text-white shadow-xl">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <div className="flex items-center mb-2">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-900/30 to-blue-800/20 rounded-lg flex items-center justify-center mr-3 border border-blue-800/30">
-                  <ChartPieIcon className="w-5 h-5 text-blue-400" />
-                </div>
-                <h3 className="text-xl font-bold">System Metrics</h3>
-              </div>
-              <p className="text-sm text-gray-400 mt-1">
-                Live performance monitoring
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs px-3 py-1.5 bg-gradient-to-r from-green-900/40 to-green-800/30 text-green-400 rounded-full border border-green-800/30 font-bold">
-                LIVE
-              </span>
-              <div className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse"></div>
-            </div>
-          </div>
-
-          <div className="space-y-6">
-            {[
-              {
-                icon: ServerIcon,
-                label: "System Performance",
-                value: `${statsData.systemPerformance || 92}%`,
-                change: statsData.performanceChange || "+2.5%",
-                color: "green",
-                progress: statsData.systemPerformance || 92,
-              },
-              {
-                icon: BoltIcon,
-                label: "Response Time",
-                value: `${statsData.responseTime || 128}ms`,
-                change: statsData.responseTimeChange || "-12ms",
-                color: "blue",
-                progress: 85,
-              },
-              {
-                icon: UserGroupIcon,
-                label: "Active Users",
-                value: statsData.activeUsers || 156,
-                change: statsData.userChange || "+8",
-                color: "purple",
-                progress: 75,
-              },
-              {
-                icon: ShieldCheckIcon,
-                label: "Data Accuracy",
-                value: statsData.dataAccuracy || "99.8%",
-                change: "Verified",
-                color: "green",
-                progress: 99,
-              },
-            ].map((metric, index) => (
-              <div key={index}>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center">
-                    <metric.icon
-                      className={`w-5 h-5 mr-3 ${
-                        metric.color === "green"
-                          ? "text-green-400"
-                          : metric.color === "blue"
-                            ? "text-blue-400"
-                            : "text-purple-400"
-                      }`}
-                    />
-                    <span className="font-medium text-gray-300">
-                      {metric.label}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="font-bold text-lg">{metric.value}</span>
-                    <span
-                      className={`text-xs px-3 py-1 rounded-full font-bold ${
-                        metric.color === "green"
-                          ? "bg-gradient-to-r from-green-900/40 to-green-800/30 text-green-400 border border-green-800/30"
-                          : metric.color === "blue"
-                            ? "bg-gradient-to-r from-blue-900/40 to-blue-800/30 text-blue-400 border border-blue-800/30"
-                            : "bg-gradient-to-r from-purple-900/40 to-purple-800/30 text-purple-400 border border-purple-800/30"
-                      }`}
-                    >
-                      {metric.change}
-                    </span>
-                  </div>
-                </div>
-                <div className="w-full bg-gray-800 rounded-full h-2">
-                  <div
-                    className={`h-2 rounded-full ${
-                      metric.color === "green"
-                        ? "bg-gradient-to-r from-green-500 to-green-400"
-                        : metric.color === "blue"
-                          ? "bg-gradient-to-r from-blue-500 to-blue-400"
-                          : "bg-gradient-to-r from-purple-500 to-purple-400"
-                    }`}
-                    style={{ width: `${metric.progress}%` }}
-                  ></div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-8 pt-6 border-t border-gray-800">
-            <div className="text-sm text-gray-400">Last updated</div>
-            <div className="text-lg font-bold flex items-center">
-              {new Date().toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-              <div className="w-1 h-1 bg-green-500 rounded-full animate-pulse ml-2"></div>
-            </div>
-          </div>
-        </div>
+          {/* System Metrics */}
+          <SystemMetrics stats={statsData} />
       </div>
 
       {/* Role-specific Content */}
