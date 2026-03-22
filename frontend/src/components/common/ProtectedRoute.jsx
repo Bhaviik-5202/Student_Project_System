@@ -1,7 +1,7 @@
-import { Suspense } from "react";
-import { Navigate } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
-import LoadingSpinner from "./LoadingSpinner";
+import { Suspense } from 'react';
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
+import LoadingSpinner from './LoadingSpinner';
 
 /**
  * ProtectedRoute Component
@@ -18,18 +18,18 @@ const ProtectedRoute = ({ children, allowedRoles = [] }) => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className='flex min-h-screen items-center justify-center'>
         <LoadingSpinner />
       </div>
     );
   }
 
   if (!user) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to='/login' replace />;
   }
 
   if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to='/dashboard' replace />;
   }
 
   return <Suspense fallback={<LoadingSpinner />}>{children}</Suspense>;

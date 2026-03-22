@@ -1,5 +1,5 @@
-import api from "../utils/api";
-import { LOCAL_STORAGE_KEYS, ROLES } from "../utils/constants";
+import api from '../utils/api';
+import { LOCAL_STORAGE_KEYS, ROLES } from '../utils/constants';
 
 /**
  * Authentication Service
@@ -14,7 +14,7 @@ const authService = {
    */
   login: async (email, password) => {
     try {
-      const response = await api.post("/auth/login", { email, password });
+      const response = await api.post('/auth/login', { email, password });
 
       // The interceptor now returns the standardized object { success, message, data }
       if (response.success && response.data) {
@@ -28,7 +28,7 @@ const authService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Login failed",
+        message: error.response?.data?.message || 'Login failed',
       };
     }
   },
@@ -40,11 +40,11 @@ const authService = {
    */
   register: async (formData) => {
     try {
-      return await api.post("/auth/register", formData);
+      return await api.post('/auth/register', formData);
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Registration failed",
+        message: error.response?.data?.message || 'Registration failed',
       };
     }
   },
@@ -93,7 +93,7 @@ const authService = {
     if (!token) return false;
     try {
       // Decode JWT token (basic check)
-      const parts = token.split(".");
+      const parts = token.split('.');
       if (parts.length !== 3) return false;
       const decoded = JSON.parse(atob(parts[1]));
       // Check if token is expired
@@ -102,7 +102,7 @@ const authService = {
       }
       return true;
     } catch (error) {
-      console.error("Token validation error:", error);
+      console.error('Token validation error:', error);
       return false;
     }
   },
@@ -140,29 +140,29 @@ const authService = {
     // Define role-based permissions
     const rolePermissions = {
       [ROLES.ADMIN]: [
-        "view_all_projects",
-        "create_project",
-        "edit_project",
-        "delete_project",
-        "view_all_students",
-        "manage_users",
-        "view_reports",
-        "export_data",
+        'view_all_projects',
+        'create_project',
+        'edit_project',
+        'delete_project',
+        'view_all_students',
+        'manage_users',
+        'view_reports',
+        'export_data',
       ],
       [ROLES.FACULTY]: [
-        "view_assigned_projects",
-        "view_assigned_students",
-        "create_project",
-        "edit_assigned_project",
-        "view_reports",
-        "schedule_meetings",
+        'view_assigned_projects',
+        'view_assigned_students',
+        'create_project',
+        'edit_assigned_project',
+        'view_reports',
+        'schedule_meetings',
       ],
       [ROLES.STUDENT]: [
-        "view_assigned_projects",
-        "submit_project",
-        "view_meetings",
-        "view_grades",
-        "edit_profile",
+        'view_assigned_projects',
+        'submit_project',
+        'view_meetings',
+        'view_grades',
+        'edit_profile',
       ],
     };
 
@@ -176,18 +176,18 @@ const authService = {
    */
   updateProfile: async (userData) => {
     try {
-      const response = await api.put("/auth/profile", userData);
+      const response = await api.put('/auth/profile', userData);
       if (response.success && response.data) {
         localStorage.setItem(
           LOCAL_STORAGE_KEYS.USER,
-          JSON.stringify(response.data),
+          JSON.stringify(response.data)
         );
       }
       return response;
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Update failed",
+        message: error.response?.data?.message || 'Update failed',
       };
     }
   },
@@ -200,14 +200,14 @@ const authService = {
    */
   changePassword: async (currentPassword, newPassword) => {
     try {
-      return await api.post("/auth/change-password", {
+      return await api.post('/auth/change-password', {
         currentPassword,
         newPassword,
       });
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Password change failed",
+        message: error.response?.data?.message || 'Password change failed',
       };
     }
   },
@@ -220,10 +220,10 @@ const authService = {
     try {
       const refreshToken = authService.getRefreshToken();
       if (!refreshToken) {
-        return { success: false, message: "No refresh token available" };
+        return { success: false, message: 'No refresh token available' };
       }
 
-      const response = await api.post("/auth/refresh-token", {
+      const response = await api.post('/auth/refresh-token', {
         refreshToken,
       });
 
@@ -235,7 +235,7 @@ const authService = {
         if (newRefreshToken) {
           localStorage.setItem(
             LOCAL_STORAGE_KEYS.REFRESH_TOKEN,
-            newRefreshToken,
+            newRefreshToken
           );
         }
       }
@@ -246,7 +246,7 @@ const authService = {
       localStorage.removeItem(LOCAL_STORAGE_KEYS.REFRESH_TOKEN);
       return {
         success: false,
-        message: error.response?.data?.message || "Token refresh failed",
+        message: error.response?.data?.message || 'Token refresh failed',
       };
     }
   },
@@ -258,11 +258,11 @@ const authService = {
    */
   requestPasswordReset: async (email) => {
     try {
-      return await api.post("/auth/forgot-password", { email });
+      return await api.post('/auth/forgot-password', { email });
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Request failed",
+        message: error.response?.data?.message || 'Request failed',
       };
     }
   },
@@ -275,14 +275,14 @@ const authService = {
    */
   resetPassword: async (token, newPassword) => {
     try {
-      return await api.post("/auth/reset-password", {
+      return await api.post('/auth/reset-password', {
         token,
         password: newPassword,
       });
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Reset failed",
+        message: error.response?.data?.message || 'Reset failed',
       };
     }
   },

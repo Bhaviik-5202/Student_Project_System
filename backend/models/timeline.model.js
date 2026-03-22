@@ -1,11 +1,11 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const timelineSchema = new mongoose.Schema(
   {
     project: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Project",
-      required: [true, "Project is required"],
+      ref: 'Project',
+      required: [true, 'Project is required'],
     },
     milestones: [
       {
@@ -13,7 +13,7 @@ const timelineSchema = new mongoose.Schema(
           type: String,
           required: true,
           trim: true,
-          maxlength: [200, "Milestone title cannot exceed 200 characters"],
+          maxlength: [200, 'Milestone title cannot exceed 200 characters'],
         },
         description: {
           type: String,
@@ -36,7 +36,7 @@ const timelineSchema = new mongoose.Schema(
           type: String,
           required: true,
           trim: true,
-          maxlength: [150, "Sprint name cannot exceed 150 characters"],
+          maxlength: [150, 'Sprint name cannot exceed 150 characters'],
         },
         startDate: {
           type: Date,
@@ -57,10 +57,10 @@ const timelineSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 timelineSchema.index({ project: 1 }, { unique: true });
-timelineSchema.index({ "milestones.completed": 1 });
+timelineSchema.index({ 'milestones.completed': 1 });
 
-module.exports = mongoose.model("Timeline", timelineSchema);
+module.exports = mongoose.model('Timeline', timelineSchema);

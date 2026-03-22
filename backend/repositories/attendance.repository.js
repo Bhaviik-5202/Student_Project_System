@@ -1,4 +1,4 @@
-const Attendance = require("../models/attendance.model");
+const Attendance = require('../models/attendance.model');
 
 /**
  * Find all attendance records matching a specific filter
@@ -11,8 +11,8 @@ exports.findAll = (filter = {}, options = {}) =>
     .sort(options.sort || { date: -1 })
     .skip(options.skip || 0)
     .limit(options.limit || 0)
-    .populate(options.populate || "")
-    .select(options.select || "");
+    .populate(options.populate || '')
+    .select(options.select || '');
 
 /**
  * Locate a single attendance record by its unique identifier
@@ -22,8 +22,8 @@ exports.findAll = (filter = {}, options = {}) =>
  */
 exports.findById = (id, options = {}) =>
   Attendance.findById(id)
-    .populate(options.populate || "")
-    .select(options.select || "");
+    .populate(options.populate || '')
+    .select(options.select || '');
 
 /**
  * Persist a new attendance record to the database

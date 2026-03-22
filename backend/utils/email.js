@@ -1,11 +1,11 @@
 /**
  * Email Utility
  * ------------------------------------------------------------------
- * Sends emails using Nodemailer. Falls back to console logging in 
+ * Sends emails using Nodemailer. Falls back to console logging in
  * development if no SMTP configuration is present.
  */
 
-const nodemailer = require("nodemailer");
+const nodemailer = require('nodemailer');
 
 /**
  * Dispatch an email message
@@ -22,11 +22,11 @@ async function sendEmail({ to, subject, text, html }) {
   }
 
   if (!process.env.EMAIL_HOST) {
-    console.log("📧 [DEV EMAIL LOG]");
-    console.log("To:", to);
-    console.log("Subject:", subject);
-    console.log("Text:", text);
-    console.log("HTML:", html);
+    console.log('📧 [DEV EMAIL LOG]');
+    console.log('To:', to);
+    console.log('Subject:', subject);
+    console.log('Text:', text);
+    console.log('HTML:', html);
     return;
   }
 

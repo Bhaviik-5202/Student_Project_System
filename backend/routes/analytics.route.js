@@ -4,13 +4,13 @@
  * Provides system analytics and dashboard statistics.
  */
 
-const express = require("express");
+const express = require('express');
 const router = express.Router();
 
 // Controllers and Middlewares
-const analyticsController = require("../controllers/analytics.controller");
-const authMiddleware = require("../middleware/auth.middleware");
-const roleMiddleware = require("../middleware/roleMiddleware");
+const analyticsController = require('../controllers/analytics.controller');
+const authMiddleware = require('../middleware/auth.middleware');
+const roleMiddleware = require('../middleware/roleMiddleware');
 
 /**
  * @route   GET /api/v1/analytics/dashboard
@@ -18,10 +18,10 @@ const roleMiddleware = require("../middleware/roleMiddleware");
  * @access  Private (Admin Only)
  */
 router.get(
-  "/dashboard",
+  '/dashboard',
   authMiddleware,
-  roleMiddleware(["admin"]),
-  analyticsController.getDashboardStats,
+  roleMiddleware(['admin']),
+  analyticsController.getDashboardStats
 );
 
 /**
@@ -30,10 +30,10 @@ router.get(
  * @access  Private (Faculty Only)
  */
 router.get(
-  "/faculty-dashboard",
+  '/faculty-dashboard',
   authMiddleware,
-  roleMiddleware(["faculty"]),
-  analyticsController.getFacultyDashboardStats,
+  roleMiddleware(['faculty']),
+  analyticsController.getFacultyDashboardStats
 );
 
 /**
@@ -42,15 +42,35 @@ router.get(
  * @access  Private (Student Only)
  */
 router.get(
-  "/student-dashboard",
+  '/student-dashboard',
   authMiddleware,
-  roleMiddleware(["student"]),
-  analyticsController.getStudentDashboardStats,
+  roleMiddleware(['student']),
+  analyticsController.getStudentDashboardStats
 );
 
-router.get("/grades", authMiddleware, roleMiddleware(["admin", "faculty"]), analyticsController.getGradeDistribution);
-router.get("/performance", authMiddleware, roleMiddleware(["admin"]), analyticsController.getPerformanceMetrics);
-router.get("/progress", authMiddleware, roleMiddleware(["admin", "faculty"]), analyticsController.getProgressAnalytics);
-router.get("/usage", authMiddleware, roleMiddleware(["admin"]), analyticsController.getUsageStatistics);
+router.get(
+  '/grades',
+  authMiddleware,
+  roleMiddleware(['admin', 'faculty']),
+  analyticsController.getGradeDistribution
+);
+router.get(
+  '/performance',
+  authMiddleware,
+  roleMiddleware(['admin']),
+  analyticsController.getPerformanceMetrics
+);
+router.get(
+  '/progress',
+  authMiddleware,
+  roleMiddleware(['admin', 'faculty']),
+  analyticsController.getProgressAnalytics
+);
+router.get(
+  '/usage',
+  authMiddleware,
+  roleMiddleware(['admin']),
+  analyticsController.getUsageStatistics
+);
 
 module.exports = router;

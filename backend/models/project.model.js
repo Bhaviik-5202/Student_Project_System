@@ -1,13 +1,13 @@
-const mongoose = require("mongoose");
-const slugify = require("../utils/slugify");
+const mongoose = require('mongoose');
+const slugify = require('../utils/slugify');
 
 const projectSchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      required: [true, "Project title is required"],
+      required: [true, 'Project title is required'],
       trim: true,
-      maxlength: [200, "Title cannot exceed 200 characters"],
+      maxlength: [200, 'Title cannot exceed 200 characters'],
     },
     slug: {
       type: String,
@@ -23,8 +23,8 @@ const projectSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["planning", "in_progress", "completed", "on_hold", "cancelled"],
-      default: "planning",
+      enum: ['planning', 'in_progress', 'completed', 'on_hold', 'cancelled'],
+      default: 'planning',
       lowercase: true,
       trim: true,
       index: true,
@@ -78,29 +78,29 @@ const projectSchema = new mongoose.Schema(
     members: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Student",
+        ref: 'Student',
       },
     ],
     guide: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Staff",
+      ref: 'Staff',
       default: null,
       index: true,
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
       required: true,
     },
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 // Pre-save hook to generate slug
-projectSchema.pre("save", async function () {
-  if (this.isModified("title") || !this.slug) {
+projectSchema.pre('save', async function () {
+  if (this.isModified('title') || !this.slug) {
     let baseSlug = slugify(this.title);
     let slug = baseSlug;
     let counter = 1;
@@ -118,7 +118,7 @@ projectSchema.pre("save", async function () {
   }
 });
 
-projectSchema.set("toJSON", {
+projectSchema.set('toJSON', {
   virtuals: true,
   versionKey: false,
   transform: function (doc, ret) {
@@ -130,4 +130,4 @@ projectSchema.set("toJSON", {
 projectSchema.index({ createdAt: -1 });
 projectSchema.index({ members: 1 });
 
-module.exports = mongoose.model("Project", projectSchema);
+module.exports = mongoose.model('Project', projectSchema);

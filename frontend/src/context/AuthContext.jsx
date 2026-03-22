@@ -4,11 +4,11 @@ import {
   useEffect,
   useCallback,
   useMemo,
-} from "react";
-import toast from "react-hot-toast";
+} from 'react';
+import toast from 'react-hot-toast';
 
-import { LOCAL_STORAGE_KEYS } from "../utils/constants";
-import authService from "../services/authService";
+import { LOCAL_STORAGE_KEYS } from '../utils/constants';
+import authService from '../services/authService';
 
 /**
  * Authentication Context for managing user sessions and permissions
@@ -24,7 +24,7 @@ const STORAGE_KEYS = Object.freeze({
   USER: LOCAL_STORAGE_KEYS.USER,
   USER_ROLE: LOCAL_STORAGE_KEYS.USER_ROLE,
   REFRESH_TOKEN: LOCAL_STORAGE_KEYS.REFRESH_TOKEN,
-  TIMESTAMP: "token_timestamp",
+  TIMESTAMP: 'token_timestamp',
 });
 
 /**
@@ -81,12 +81,12 @@ export const AuthProvider = ({ children }) => {
           });
           return true;
         } catch (error) {
-          console.error("Error clearing localStorage:", error);
+          console.error('Error clearing localStorage:', error);
           return false;
         }
       },
     }),
-    [],
+    []
   );
 
   /**
@@ -120,17 +120,17 @@ export const AuthProvider = ({ children }) => {
         const storedUser = safeLocalStorage.getItem(STORAGE_KEYS.USER);
         const tokenTimestamp = safeLocalStorage.getItem(STORAGE_KEYS.TIMESTAMP);
 
-        const isAuthPage = ["/login", "/register"].includes(
-          window.location.pathname,
+        const isAuthPage = ['/login', '/register'].includes(
+          window.location.pathname
         );
 
         if (token && storedUser && tokenTimestamp) {
           const timestamp = parseInt(tokenTimestamp, 10);
           if (isTokenExpired(timestamp)) {
             if (!isAuthPage) {
-              console.warn("Token expired, clearing auth data");
+              console.warn('Token expired, clearing auth data');
               clearAuthData();
-              toast.error("Your session has expired. Please login again.");
+              toast.error('Your session has expired. Please login again.');
             }
           } else {
             const parsedUser = JSON.parse(storedUser);
@@ -145,7 +145,7 @@ export const AuthProvider = ({ children }) => {
           clearAuthData();
         }
       } catch (error) {
-        console.error("Auth initialization error:", error);
+        console.error('Auth initialization error:', error);
         clearAuthData();
       } finally {
         setIsLoading(false);
@@ -165,7 +165,7 @@ export const AuthProvider = ({ children }) => {
       try {
         setIsLoading(true);
         if (!email || !password) {
-          return { success: false, message: "Email and password are required" };
+          return { success: false, message: 'Email and password are required' };
         }
         const res = await authService.login(email, password);
         if (res.success) {
@@ -174,22 +174,22 @@ export const AuthProvider = ({ children }) => {
           setIsAuthenticated(true);
           safeLocalStorage.setItem(
             STORAGE_KEYS.TIMESTAMP,
-            Date.now().toString(),
+            Date.now().toString()
           );
           return { success: true, user, token };
         } else {
-          return { success: false, message: res.message || "Login failed" };
+          return { success: false, message: res.message || 'Login failed' };
         }
       } catch (error) {
         return {
           success: false,
-          message: error.message || "Login failed. Please try again.",
+          message: error.message || 'Login failed. Please try again.',
         };
       } finally {
         setIsLoading(false);
       }
     },
-    [safeLocalStorage],
+    [safeLocalStorage]
   );
 
   /**
@@ -200,10 +200,10 @@ export const AuthProvider = ({ children }) => {
     (showMessage = true) => {
       clearAuthData();
       if (showMessage) {
-        toast.success("Logged out successfully");
+        toast.success('Logged out successfully');
       }
     },
-    [clearAuthData],
+    [clearAuthData]
   );
 
   /**
@@ -216,18 +216,18 @@ export const AuthProvider = ({ children }) => {
       setIsLoading(true);
       const res = await authService.register(formData);
       if (res.success) {
-        toast.success("Registration successful! Please login.");
+        toast.success('Registration successful! Please login.');
         return { success: true, data: res.data };
       } else {
         return {
           success: false,
-          message: res.message || "Registration failed",
+          message: res.message || 'Registration failed',
         };
       }
     } catch (error) {
       return {
         success: false,
-        message: error.message || "Registration failed. Please try again.",
+        message: error.message || 'Registration failed. Please try again.',
       };
     } finally {
       setIsLoading(false);
@@ -247,21 +247,21 @@ export const AuthProvider = ({ children }) => {
         if (res.success) {
           setUser(res.data);
           safeLocalStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(res.data));
-          toast.success("Profile updated successfully");
+          toast.success('Profile updated successfully');
           return { success: true, user: res.data };
         } else {
-          toast.error(res.message || "Failed to update profile");
+          toast.error(res.message || 'Failed to update profile');
           return { success: false, message: res.message };
         }
       } catch (error) {
-        console.error("Update profile error:", error);
-        toast.error("An error occurred while updating profile");
+        console.error('Update profile error:', error);
+        toast.error('An error occurred while updating profile');
         return { success: false, message: error.message };
       } finally {
         setIsLoading(false);
       }
     },
-    [safeLocalStorage],
+    [safeLocalStorage]
   );
 
   /**
@@ -275,18 +275,18 @@ export const AuthProvider = ({ children }) => {
       setIsLoading(true);
       const res = await authService.changePassword(
         currentPassword,
-        newPassword,
+        newPassword
       );
       if (res.success) {
-        toast.success("Password changed successfully");
+        toast.success('Password changed successfully');
         return { success: true };
       } else {
-        toast.error(res.message || "Failed to change password");
+        toast.error(res.message || 'Failed to change password');
         return { success: false, message: res.message };
       }
     } catch (error) {
-      console.error("Change password error:", error);
-      toast.error("An error occurred while changing password");
+      console.error('Change password error:', error);
+      toast.error('An error occurred while changing password');
       return { success: false, message: error.message };
     } finally {
       setIsLoading(false);
@@ -302,7 +302,7 @@ export const AuthProvider = ({ children }) => {
     (updates) => {
       try {
         if (!user) {
-          return { success: false, message: "No user logged in" };
+          return { success: false, message: 'No user logged in' };
         }
 
         const updatedUser = {
@@ -312,17 +312,17 @@ export const AuthProvider = ({ children }) => {
         };
         safeLocalStorage.setItem(
           STORAGE_KEYS.USER,
-          JSON.stringify(updatedUser),
+          JSON.stringify(updatedUser)
         );
         setUser(updatedUser);
 
         return { success: true, user: updatedUser };
       } catch (error) {
-        console.error("Update user error:", error);
-        return { success: false, message: "Failed to update user profile" };
+        console.error('Update user error:', error);
+        return { success: false, message: 'Failed to update user profile' };
       }
     },
-    [user, safeLocalStorage],
+    [user, safeLocalStorage]
   );
 
   /**
@@ -342,7 +342,7 @@ export const AuthProvider = ({ children }) => {
       if (!user?.role || !Array.isArray(roles)) return false;
       return roles.includes(user.role);
     },
-    [user],
+    [user]
   );
 
   /**
@@ -352,18 +352,18 @@ export const AuthProvider = ({ children }) => {
   const refreshSession = useCallback(() => {
     try {
       if (!user || !isAuthenticated) {
-        return { success: false, message: "No active session to refresh" };
+        return { success: false, message: 'No active session to refresh' };
       }
 
       const newTimestamp = Date.now();
       safeLocalStorage.setItem(STORAGE_KEYS.TIMESTAMP, newTimestamp.toString());
       setSessionExpiringSoon(false);
 
-      toast.success("Session refreshed successfully");
+      toast.success('Session refreshed successfully');
       return { success: true };
     } catch (error) {
-      console.error("Session refresh error:", error);
-      return { success: false, message: "Failed to refresh session" };
+      console.error('Session refresh error:', error);
+      return { success: false, message: 'Failed to refresh session' };
     }
   }, [user, isAuthenticated, safeLocalStorage]);
 
@@ -382,7 +382,7 @@ export const AuthProvider = ({ children }) => {
 
       return Math.max(0, remaining);
     } catch (error) {
-      console.error("Error getting session time:", error);
+      console.error('Error getting session time:', error);
       return 0;
     }
   }, [safeLocalStorage]);
@@ -419,7 +419,7 @@ export const AuthProvider = ({ children }) => {
       hasAnyRole,
       refreshSession,
       getSessionTimeRemaining,
-    ],
+    ]
   );
 
   return (

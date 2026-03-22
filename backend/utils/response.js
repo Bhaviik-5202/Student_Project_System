@@ -18,8 +18,8 @@
 
 module.exports = function sendResponse(
   res,
-  { success = true, data = null, message = "", meta } = {},
-  status = 200,
+  { success = true, data = null, message = '', meta } = {},
+  status = 200
 ) {
   const response = {
     success,

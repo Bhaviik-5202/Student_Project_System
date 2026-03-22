@@ -1,8 +1,8 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
-import { ThemeContext, THEMES, THEME_MODES } from "./themeContextUtils";
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { ThemeContext, THEMES, THEME_MODES } from './themeContextUtils';
 
-const THEME_STORAGE_KEY = "app_theme_mode";
-const DARK_MODE_QUERY = "(prefers-color-scheme: dark)";
+const THEME_STORAGE_KEY = 'app_theme_mode';
+const DARK_MODE_QUERY = '(prefers-color-scheme: dark)';
 
 /**
  * Provider component for theme management logic
@@ -37,20 +37,20 @@ export const ThemeProvider = ({ children }) => {
         }
       },
     }),
-    [],
+    []
   );
 
   /**
    * Detect current system color scheme preference
    */
   const getSystemTheme = useCallback(() => {
-    if (typeof window === "undefined") return THEMES.LIGHT;
+    if (typeof window === 'undefined') return THEMES.LIGHT;
     try {
       return window.matchMedia(DARK_MODE_QUERY).matches
         ? THEMES.DARK
         : THEMES.LIGHT;
     } catch (error) {
-      console.error("Error detecting system theme:", error);
+      console.error('Error detecting system theme:', error);
       return THEMES.LIGHT;
     }
   }, []);
@@ -81,25 +81,25 @@ export const ThemeProvider = ({ children }) => {
       const root = document.documentElement;
 
       if (appliedTheme === THEMES.DARK) {
-        root.classList.add("dark");
-        root.classList.remove("light");
+        root.classList.add('dark');
+        root.classList.remove('light');
       } else {
-        root.classList.add("light");
-        root.classList.remove("dark");
+        root.classList.add('light');
+        root.classList.remove('dark');
       }
 
-      root.setAttribute("data-theme", appliedTheme);
-      root.setAttribute("data-theme-mode", themeMode);
+      root.setAttribute('data-theme', appliedTheme);
+      root.setAttribute('data-theme-mode', themeMode);
 
       const metaThemeColor = document.querySelector('meta[name="theme-color"]');
       if (metaThemeColor) {
         metaThemeColor.setAttribute(
-          "content",
-          appliedTheme === THEMES.DARK ? "#0f172a" : "#ffffff",
+          'content',
+          appliedTheme === THEMES.DARK ? '#0f172a' : '#ffffff'
         );
       }
     } catch (error) {
-      console.error("Error applying theme:", error);
+      console.error('Error applying theme:', error);
     }
   }, [appliedTheme, themeMode, safeLocalStorage]);
 
@@ -114,14 +114,14 @@ export const ThemeProvider = ({ children }) => {
       };
 
       if (mediaQuery.addEventListener) {
-        mediaQuery.addEventListener("change", handleChange);
-        return () => mediaQuery.removeEventListener("change", handleChange);
+        mediaQuery.addEventListener('change', handleChange);
+        return () => mediaQuery.removeEventListener('change', handleChange);
       } else if (mediaQuery.addListener) {
         mediaQuery.addListener(handleChange);
         return () => mediaQuery.removeListener(handleChange);
       }
     } catch (error) {
-      console.error("Error setting up system theme listener:", error);
+      console.error('Error setting up system theme listener:', error);
     }
   }, []);
 
@@ -166,7 +166,7 @@ export const ThemeProvider = ({ children }) => {
   const isAutoMode = useMemo(() => themeMode === THEME_MODES.AUTO, [themeMode]);
   const isDarkMode = useMemo(
     () => appliedTheme === THEMES.DARK,
-    [appliedTheme],
+    [appliedTheme]
   );
 
   const contextValue = useMemo(
@@ -193,7 +193,7 @@ export const ThemeProvider = ({ children }) => {
       setThemeModeValue,
       setAutoMode,
       resetTheme,
-    ],
+    ]
   );
 
   return (

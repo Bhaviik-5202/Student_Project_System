@@ -4,35 +4,39 @@
  * Handles CRUD operations for support tickets.
  */
 
-const express = require("express");
-const { body } = require("express-validator");
+const express = require('express');
+const { body } = require('express-validator');
 const router = express.Router();
 
 // Controllers and Middlewares
-const supportTicketController = require("../controllers/supportticket.controller");
-const authMiddleware = require("../middleware/auth.middleware");
-const validateRequest = require("../middleware/validateRequest");
+const supportTicketController = require('../controllers/supportticket.controller');
+const authMiddleware = require('../middleware/auth.middleware');
+const validateRequest = require('../middleware/validateRequest');
 
 /**
  * @route   POST /api/v1/supporttickets
  * @desc    Create a new support ticket
  * @access  Private (Authenticated Users)
  */
-router.post("/", authMiddleware, supportTicketController.createSupportTicket);
+router.post('/', authMiddleware, supportTicketController.createSupportTicket);
 
 /**
  * @route   GET /api/v1/supporttickets
  * @desc    Retrieve all support tickets
  * @access  Private (Authenticated Users)
  */
-router.get("/", authMiddleware, supportTicketController.getAllSupportTickets);
+router.get('/', authMiddleware, supportTicketController.getAllSupportTickets);
 
 /**
  * @route   GET /api/v1/supporttickets/:id
  * @desc    Retrieve a specific support ticket by ID
  * @access  Private (Authenticated Users)
  */
-router.get("/:id", authMiddleware, supportTicketController.getSupportTicketById);
+router.get(
+  '/:id',
+  authMiddleware,
+  supportTicketController.getSupportTicketById
+);
 
 /**
  * @route   PUT /api/v1/supporttickets/:id
@@ -40,11 +44,14 @@ router.get("/:id", authMiddleware, supportTicketController.getSupportTicketById)
  * @access  Private (Authenticated Users)
  */
 router.put(
-  "/:id",
+  '/:id',
   authMiddleware,
   [
-    body("title").optional().notEmpty().withMessage("Title cannot be empty"),
-    body("description").optional().notEmpty().withMessage("Description cannot be empty"),
+    body('title').optional().notEmpty().withMessage('Title cannot be empty'),
+    body('description')
+      .optional()
+      .notEmpty()
+      .withMessage('Description cannot be empty'),
   ],
   validateRequest,
   supportTicketController.updateSupportTicket
@@ -55,6 +62,10 @@ router.put(
  * @desc    Delete a support ticket
  * @access  Private (Authenticated Users)
  */
-router.delete("/:id", authMiddleware, supportTicketController.deleteSupportTicket);
+router.delete(
+  '/:id',
+  authMiddleware,
+  supportTicketController.deleteSupportTicket
+);
 
 module.exports = router;

@@ -1,4 +1,4 @@
-const attendanceRepository = require("../repositories/attendance.repository");
+const attendanceRepository = require('../repositories/attendance.repository');
 
 /**
  * Standardized response helper for services
@@ -17,9 +17,9 @@ const response = (error, data, message) => ({ error, data, message });
 exports.markAttendance = async (data) => {
   try {
     const attendance = await attendanceRepository.create(data);
-    return response(false, attendance, "Attendance marked successfully");
+    return response(false, attendance, 'Attendance marked successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to mark attendance");
+    return response(true, null, err.message || 'Failed to mark attendance');
   }
 };
 
@@ -33,13 +33,13 @@ exports.getAllAttendance = async () => {
     return response(
       false,
       attendance,
-      "Attendance records fetched successfully",
+      'Attendance records fetched successfully'
     );
   } catch (err) {
     return response(
       true,
       null,
-      err.message || "Failed to fetch attendance records",
+      err.message || 'Failed to fetch attendance records'
     );
   }
 };
@@ -53,18 +53,18 @@ exports.getAttendanceByStudent = async (studentId) => {
   try {
     const attendance = await attendanceRepository.findAll(
       { student: studentId },
-      { populate: "meeting" }
+      { populate: 'meeting' }
     );
     return response(
       false,
       attendance,
-      "Student attendance records fetched successfully",
+      'Student attendance records fetched successfully'
     );
   } catch (err) {
     return response(
       true,
       null,
-      err.message || "Failed to fetch student attendance records",
+      err.message || 'Failed to fetch student attendance records'
     );
   }
 };
@@ -87,13 +87,13 @@ exports.getAttendanceByDate = async (date) => {
     return response(
       false,
       attendance,
-      "Daily attendance records fetched successfully",
+      'Daily attendance records fetched successfully'
     );
   } catch (err) {
     return response(
       true,
       null,
-      err.message || "Failed to fetch daily attendance records",
+      err.message || 'Failed to fetch daily attendance records'
     );
   }
 };
@@ -106,17 +106,17 @@ exports.getAttendanceByDate = async (date) => {
 exports.getAttendanceById = async (id) => {
   try {
     const attendance = await attendanceRepository.findById(id);
-    if (!attendance) return response(true, null, "Attendance record not found");
+    if (!attendance) return response(true, null, 'Attendance record not found');
     return response(
       false,
       attendance,
-      "Attendance record fetched successfully",
+      'Attendance record fetched successfully'
     );
   } catch (err) {
     return response(
       true,
       null,
-      err.message || "Failed to fetch attendance record",
+      err.message || 'Failed to fetch attendance record'
     );
   }
 };
@@ -130,10 +130,10 @@ exports.getAttendanceById = async (id) => {
 exports.updateAttendance = async (id, data) => {
   try {
     const attendance = await attendanceRepository.update(id, data);
-    if (!attendance) return response(true, null, "Attendance record not found");
-    return response(false, attendance, "Attendance updated successfully");
+    if (!attendance) return response(true, null, 'Attendance record not found');
+    return response(false, attendance, 'Attendance updated successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to update attendance");
+    return response(true, null, err.message || 'Failed to update attendance');
   }
 };
 
@@ -145,9 +145,9 @@ exports.updateAttendance = async (id, data) => {
 exports.deleteAttendance = async (id) => {
   try {
     const attendance = await attendanceRepository.remove(id);
-    if (!attendance) return response(true, null, "Attendance record not found");
-    return response(false, null, "Attendance deleted successfully");
+    if (!attendance) return response(true, null, 'Attendance record not found');
+    return response(false, null, 'Attendance deleted successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to delete attendance");
+    return response(true, null, err.message || 'Failed to delete attendance');
   }
 };

@@ -1,13 +1,13 @@
-import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
-import nProgress from "nprogress";
-import "nprogress/nprogress.css";
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import nProgress from 'nprogress';
+import 'nprogress/nprogress.css';
 
 // Configure NProgress
-nProgress.configure({ 
-  showSpinner: false, 
-  speed: 400, 
-  minimum: 0.1 
+nProgress.configure({
+  showSpinner: false,
+  speed: 400,
+  minimum: 0.1,
 });
 
 /**
@@ -19,7 +19,7 @@ const RouteProgressBar = () => {
 
   useEffect(() => {
     nProgress.start();
-    
+
     // Slight delay to handle fast transitions gracefully
     const timer = setTimeout(() => {
       nProgress.done();

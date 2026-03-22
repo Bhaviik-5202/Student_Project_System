@@ -4,14 +4,14 @@
  * Handles individual chat messages.
  */
 
-const express = require("express");
-const { body, param } = require("express-validator");
+const express = require('express');
+const { body, param } = require('express-validator');
 const router = express.Router();
 
 // Controllers and Middlewares
-const messageController = require("../controllers/message.controller");
-const authMiddleware = require("../middleware/auth.middleware");
-const validateRequest = require("../middleware/validateRequest");
+const messageController = require('../controllers/message.controller');
+const authMiddleware = require('../middleware/auth.middleware');
+const validateRequest = require('../middleware/validateRequest');
 
 /**
  * @route   POST /api/v1/messages
@@ -19,14 +19,14 @@ const validateRequest = require("../middleware/validateRequest");
  * @access  Private (Authenticated Users)
  */
 router.post(
-  "/",
+  '/',
   authMiddleware,
   [
-    body("chatId").isMongoId().withMessage("Valid chat ID is required"),
-    body("content").notEmpty().withMessage("Message content is required"),
+    body('chatId').isMongoId().withMessage('Valid chat ID is required'),
+    body('content').notEmpty().withMessage('Message content is required'),
   ],
   validateRequest,
-  messageController.sendMessage,
+  messageController.sendMessage
 );
 
 /**
@@ -35,11 +35,11 @@ router.post(
  * @access  Private (Authenticated Users)
  */
 router.get(
-  "/:chatId",
+  '/:chatId',
   authMiddleware,
-  [param("chatId").isMongoId().withMessage("Invalid Chat ID")],
+  [param('chatId').isMongoId().withMessage('Invalid Chat ID')],
   validateRequest,
-  messageController.getMessagesByChat,
+  messageController.getMessagesByChat
 );
 
 /**
@@ -48,11 +48,11 @@ router.get(
  * @access  Private (Authenticated Users)
  */
 router.delete(
-  "/:messageId",
+  '/:messageId',
   authMiddleware,
-  [param("messageId").isMongoId().withMessage("Invalid Message ID")],
+  [param('messageId').isMongoId().withMessage('Invalid Message ID')],
   validateRequest,
-  messageController.deleteMessage,
+  messageController.deleteMessage
 );
 
 module.exports = router;

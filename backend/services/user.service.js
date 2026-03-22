@@ -1,9 +1,10 @@
-const userRepository = require("../repositories/user.repository");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+const userRepository = require('../repositories/user.repository');
+const studentRepository = require('../repositories/student.repository');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const JWT_SECRET = process.env.JWT_SECRET;
 const TOKEN_EXPIRES_IN = process.env.TOKEN_EXPIRES_IN;
-const crypto = require("crypto");
+const crypto = require('crypto');
 
 /**
  * Standardized response helper for services
@@ -26,26 +27,25 @@ const response = (error, data, message) => ({ error, data, message });
 exports.register = async ({ name, email, password, role }) => {
   try {
     const existing = await userRepository.findByEmail(email);
-    if (existing) return response(true, null, "Email already registered");
+    if (existing) return response(true, null, 'Email already registered');
 
     const user = await userRepository.create({ name, email, password, role });
 
     // If registered as a student, create a student profile
-    if (role === "student") {
-      const studentRepository = require("../repositories/student.repository");
+    if (role === 'student') {
       await studentRepository.create({
         name,
         email,
         rollNumber: `TEMP-${Date.now()}`, // Temporary roll number until updated
-        department: "TBA",
-        year: 1
+        department: 'TBA',
+        year: 1,
       });
     }
 
-    return response(false, user, "User registered successfully");
+    return response(false, user, 'User registered successfully');
   } catch (err) {
-    console.error("Registration error:", err);
-    return response(true, null, err.message || "Registration failed");
+    console.error('Registration error:', err);
+    return response(true, null, err.message || 'Registration failed');
   }
 };
 
@@ -59,15 +59,15 @@ exports.register = async ({ name, email, password, role }) => {
 exports.login = async ({ email, password }) => {
   try {
     const user = await userRepository.findByEmail(email, {
-      select: "+password",
+      select: '+password',
     });
     if (!user || !user.password)
-      return response(true, null, "Invalid credentials");
+      return response(true, null, 'Invalid credentials');
 
     const match = await user.comparePassword(password);
-    if (!match) return response(true, null, "Invalid credentials");
+    if (!match) return response(true, null, 'Invalid credentials');
 
-    let expiresIn = TOKEN_EXPIRES_IN || "1d";
+    let expiresIn = TOKEN_EXPIRES_IN || '1d';
     const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, {
       expiresIn,
     });
@@ -83,11 +83,11 @@ exports.login = async ({ email, password }) => {
           role: user.role,
         },
       },
-      "Login successful",
+      'Login successful'
     );
   } catch (err) {
-    console.error("Login error:", err);
-    return response(true, null, err.message || "Login failed");
+    console.error('Login error:', err);
+    return response(true, null, err.message || 'Login failed');
   }
 };
 
@@ -98,9 +98,9 @@ exports.login = async ({ email, password }) => {
 exports.getAll = async () => {
   try {
     const users = await userRepository.findAll();
-    return response(false, users, "Users fetched successfully");
+    return response(false, users, 'Users fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch users");
+    return response(true, null, err.message || 'Failed to fetch users');
   }
 };
 
@@ -112,10 +112,10 @@ exports.getAll = async () => {
 exports.getById = async (id) => {
   try {
     const user = await userRepository.findById(id);
-    if (!user) return response(true, null, "User not found");
-    return response(false, user, "User fetched successfully");
+    if (!user) return response(true, null, 'User not found');
+    return response(false, user, 'User fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch user");
+    return response(true, null, err.message || 'Failed to fetch user');
   }
 };
 
@@ -127,12 +127,12 @@ exports.getById = async (id) => {
 exports.create = async (data) => {
   try {
     const existing = await userRepository.findByEmail(data.email);
-    if (existing) return response(true, null, "Email already exists");
+    if (existing) return response(true, null, 'Email already exists');
 
     const user = await userRepository.create(data);
-    return response(false, user, "User created successfully");
+    return response(false, user, 'User created successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to create user");
+    return response(true, null, err.message || 'Failed to create user');
   }
 };
 
@@ -145,10 +145,10 @@ exports.create = async (data) => {
 exports.update = async (id, data) => {
   try {
     const user = await userRepository.update(id, data);
-    if (!user) return response(true, null, "User not found");
-    return response(false, user, "User updated successfully");
+    if (!user) return response(true, null, 'User not found');
+    return response(false, user, 'User updated successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to update user");
+    return response(true, null, err.message || 'Failed to update user');
   }
 };
 
@@ -160,10 +160,10 @@ exports.update = async (id, data) => {
 exports.remove = async (id) => {
   try {
     const user = await userRepository.remove(id);
-    if (!user) return response(true, null, "User not found");
-    return response(false, null, "User deleted successfully");
+    if (!user) return response(true, null, 'User not found');
+    return response(false, null, 'User deleted successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to delete user");
+    return response(true, null, err.message || 'Failed to delete user');
   }
 };
 
@@ -177,14 +177,18 @@ exports.forgotPassword = async (email) => {
     const user = await userRepository.findByEmail(email);
     if (!user) {
       // Return success to avoid email enumeration
-      return response(true, null, "If the account exists, a reset link has been sent.");
+      return response(
+        true,
+        null,
+        'If the account exists, a reset link has been sent.'
+      );
     }
 
-    const resetToken = crypto.randomBytes(20).toString("hex");
+    const resetToken = crypto.randomBytes(20).toString('hex');
     const resetTokenHash = crypto
-      .createHash("sha256")
+      .createHash('sha256')
       .update(resetToken)
-      .digest("hex");
+      .digest('hex');
 
     await userRepository.update(user._id, {
       resetPasswordToken: resetTokenHash,
@@ -194,10 +198,14 @@ exports.forgotPassword = async (email) => {
     // In a real app, send email here. For now, we'll log it or return it for testing.
     console.log(`Password reset token for ${email}: ${resetToken}`);
 
-    return response(false, null, "Password reset link sent to email");
+    return response(false, null, 'Password reset link sent to email');
   } catch (err) {
-    console.error("Forgot password error:", err);
-    return response(true, null, err.message || "Failed to process forgot password");
+    console.error('Forgot password error:', err);
+    return response(
+      true,
+      null,
+      err.message || 'Failed to process forgot password'
+    );
   }
 };
 
@@ -210,9 +218,9 @@ exports.forgotPassword = async (email) => {
 exports.resetPassword = async (token, newPassword) => {
   try {
     const resetTokenHash = crypto
-      .createHash("sha256")
+      .createHash('sha256')
       .update(token)
-      .digest("hex");
+      .digest('hex');
 
     const user = await userRepository.findAll({
       resetPasswordToken: resetTokenHash,
@@ -220,7 +228,7 @@ exports.resetPassword = async (token, newPassword) => {
     });
 
     if (!user || user.length === 0) {
-      return response(true, null, "Invalid or expired reset token");
+      return response(true, null, 'Invalid or expired reset token');
     }
 
     const targetUser = user[0];
@@ -229,10 +237,10 @@ exports.resetPassword = async (token, newPassword) => {
     targetUser.resetPasswordExpires = undefined;
     await targetUser.save();
 
-    return response(false, null, "Password has been reset successfully");
+    return response(false, null, 'Password has been reset successfully');
   } catch (err) {
-    console.error("Reset password error:", err);
-    return response(true, null, err.message || "Failed to reset password");
+    console.error('Reset password error:', err);
+    return response(true, null, err.message || 'Failed to reset password');
   }
 };
 
@@ -245,19 +253,18 @@ exports.resetPassword = async (token, newPassword) => {
  */
 exports.changePassword = async (id, currentPassword, newPassword) => {
   try {
-    const user = await userRepository.findById(id, { select: "+password" });
-    if (!user) return response(true, null, "User not found");
+    const user = await userRepository.findById(id, { select: '+password' });
+    if (!user) return response(true, null, 'User not found');
 
     const isMatch = await user.comparePassword(currentPassword);
-    if (!isMatch) return response(true, null, "Incorrect current password");
+    if (!isMatch) return response(true, null, 'Incorrect current password');
 
     user.password = newPassword;
     await user.save();
 
-    return response(false, null, "Password changed successfully");
+    return response(false, null, 'Password changed successfully');
   } catch (err) {
-    console.error("Change password error:", err);
-    return response(true, null, err.message || "Failed to change password");
+    console.error('Change password error:', err);
+    return response(true, null, err.message || 'Failed to change password');
   }
 };
-

@@ -1,5 +1,5 @@
-const discussionRepository = require("../repositories/discussion.repository");
-const sharedFileRepository = require("../repositories/sharedFile.repository");
+const discussionRepository = require('../repositories/discussion.repository');
+const sharedFileRepository = require('../repositories/sharedFile.repository');
 
 /**
  * Standardized response helper for services
@@ -8,7 +8,12 @@ const sharedFileRepository = require("../repositories/sharedFile.repository");
  * @param {string} message - Descriptive status message
  * @returns {Object} { error, data, message }
  */
-const response = (error, data, message) => ({ error, data, message, success: !error });
+const response = (error, data, message) => ({
+  error,
+  data,
+  message,
+  success: !error,
+});
 
 /**
  * Fetch all discussions with optional filtering
@@ -18,11 +23,11 @@ const response = (error, data, message) => ({ error, data, message, success: !er
 exports.getDiscussions = async (filter = {}) => {
   try {
     const discussions = await discussionRepository.findAll(filter, {
-      populate: { path: "author", select: "name avatar" },
+      populate: { path: 'author', select: 'name avatar' },
     });
-    return response(false, discussions, "Discussions fetched successfully");
+    return response(false, discussions, 'Discussions fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch discussions");
+    return response(true, null, err.message || 'Failed to fetch discussions');
   }
 };
 
@@ -35,14 +40,14 @@ exports.getDiscussionById = async (id) => {
   try {
     const discussion = await discussionRepository.findById(id, {
       populate: [
-        { path: "author", select: "name avatar" },
-        { path: "replies.author", select: "name avatar" },
+        { path: 'author', select: 'name avatar' },
+        { path: 'replies.author', select: 'name avatar' },
       ],
     });
-    if (!discussion) return response(true, null, "Discussion not found");
-    return response(false, discussion, "Discussion fetched successfully");
+    if (!discussion) return response(true, null, 'Discussion not found');
+    return response(false, discussion, 'Discussion fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch discussion");
+    return response(true, null, err.message || 'Failed to fetch discussion');
   }
 };
 
@@ -54,9 +59,9 @@ exports.getDiscussionById = async (id) => {
 exports.createDiscussion = async (data) => {
   try {
     const discussion = await discussionRepository.create(data);
-    return response(false, discussion, "Discussion created successfully");
+    return response(false, discussion, 'Discussion created successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to create discussion");
+    return response(true, null, err.message || 'Failed to create discussion');
   }
 };
 
@@ -71,10 +76,10 @@ exports.addReply = async (discussionId, replyData) => {
     const discussion = await discussionRepository.update(discussionId, {
       $push: { replies: replyData },
     });
-    if (!discussion) return response(true, null, "Discussion not found");
-    return response(false, discussion, "Reply added successfully");
+    if (!discussion) return response(true, null, 'Discussion not found');
+    return response(false, discussion, 'Reply added successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to add reply");
+    return response(true, null, err.message || 'Failed to add reply');
   }
 };
 
@@ -87,11 +92,11 @@ exports.getSharedFiles = async (projectId) => {
   try {
     const files = await sharedFileRepository.findAll(
       { project: projectId },
-      { populate: { path: "sharedBy", select: "name avatar" } }
+      { populate: { path: 'sharedBy', select: 'name avatar' } }
     );
-    return response(false, files, "Shared files fetched successfully");
+    return response(false, files, 'Shared files fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch shared files");
+    return response(true, null, err.message || 'Failed to fetch shared files');
   }
 };
 
@@ -103,9 +108,9 @@ exports.getSharedFiles = async (projectId) => {
 exports.shareFile = async (data) => {
   try {
     const file = await sharedFileRepository.create(data);
-    return response(false, file, "File shared successfully");
+    return response(false, file, 'File shared successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to share file");
+    return response(true, null, err.message || 'Failed to share file');
   }
 };
 
@@ -117,9 +122,9 @@ exports.shareFile = async (data) => {
 exports.deleteSharedFile = async (id) => {
   try {
     const file = await sharedFileRepository.remove(id);
-    if (!file) return response(true, null, "File not found");
-    return response(false, null, "File deleted successfully");
+    if (!file) return response(true, null, 'File not found');
+    return response(false, null, 'File deleted successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to delete file");
+    return response(true, null, err.message || 'Failed to delete file');
   }
 };

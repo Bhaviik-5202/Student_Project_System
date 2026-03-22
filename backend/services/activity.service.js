@@ -1,4 +1,4 @@
-const activityRepository = require("../repositories/activity.repository");
+const activityRepository = require('../repositories/activity.repository');
 
 /**
  * Standardized response helper for services
@@ -17,9 +17,9 @@ const response = (error, data, message) => ({ error, data, message });
 exports.create = async (data) => {
   try {
     const activity = await activityRepository.create(data);
-    return response(false, activity, "Activity created successfully");
+    return response(false, activity, 'Activity created successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to create activity");
+    return response(true, null, err.message || 'Failed to create activity');
   }
 };
 
@@ -30,9 +30,9 @@ exports.create = async (data) => {
 exports.getAll = async () => {
   try {
     const activities = await activityRepository.findAll();
-    return response(false, activities, "Activities fetched successfully");
+    return response(false, activities, 'Activities fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch activities");
+    return response(true, null, err.message || 'Failed to fetch activities');
   }
 };
 
@@ -44,10 +44,10 @@ exports.getAll = async () => {
 exports.getById = async (id) => {
   try {
     const activity = await activityRepository.findById(id);
-    if (!activity) return response(true, null, "Activity not found");
-    return response(false, activity, "Activity fetched successfully");
+    if (!activity) return response(true, null, 'Activity not found');
+    return response(false, activity, 'Activity fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch activity");
+    return response(true, null, err.message || 'Failed to fetch activity');
   }
 };
 
@@ -60,10 +60,10 @@ exports.getById = async (id) => {
 exports.update = async (id, data) => {
   try {
     const activity = await activityRepository.update(id, data);
-    if (!activity) return response(true, null, "Activity not found");
-    return response(false, activity, "Activity updated successfully");
+    if (!activity) return response(true, null, 'Activity not found');
+    return response(false, activity, 'Activity updated successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to update activity");
+    return response(true, null, err.message || 'Failed to update activity');
   }
 };
 
@@ -75,9 +75,9 @@ exports.update = async (id, data) => {
 exports.remove = async (id) => {
   try {
     const activity = await activityRepository.remove(id);
-    if (!activity) return response(true, null, "Activity not found");
-    return response(false, null, "Activity deleted successfully");
+    if (!activity) return response(true, null, 'Activity not found');
+    return response(false, null, 'Activity deleted successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to delete activity");
+    return response(true, null, err.message || 'Failed to delete activity');
   }
 };

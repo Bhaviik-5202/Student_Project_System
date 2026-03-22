@@ -1,5 +1,5 @@
-const ProjectType = require("../models/projectType.model");
-const sendResponse = require("../utils/response");
+const ProjectType = require('../models/projectType.model');
+const sendResponse = require('../utils/response');
 
 /**
  * ProjectType COntroller
@@ -13,19 +13,25 @@ const sendResponse = require("../utils/response");
  */
 exports.getAllProjectTypes = async (req, res) => {
   try {
-    const types = await ProjectType.find({ status: "Active" }).sort({ createdAt: -1 });
-    
+    const types = await ProjectType.find({ status: 'Active' }).sort({
+      createdAt: -1,
+    });
+
     sendResponse(res, {
       success: true,
-      message: "Project types fetched successfully",
-      data: types
+      message: 'Project types fetched successfully',
+      data: types,
     });
   } catch (error) {
-    sendResponse(res, {
-      success: false,
-      message: "Failed to fetch project types",
-      error: error.message
-    }, 500);
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: 'Failed to fetch project types',
+        error: error.message,
+      },
+      500
+    );
   }
 };
 
@@ -37,25 +43,33 @@ exports.getAllProjectTypes = async (req, res) => {
 exports.getProjectTypeById = async (req, res) => {
   try {
     const type = await ProjectType.findById(req.params.id);
-    
+
     if (!type) {
-      return sendResponse(res, {
-        success: false,
-        message: "Project type not found"
-      }, 404);
+      return sendResponse(
+        res,
+        {
+          success: false,
+          message: 'Project type not found',
+        },
+        404
+      );
     }
-    
+
     sendResponse(res, {
       success: true,
-      message: "Project type fetched successfully",
-      data: type
+      message: 'Project type fetched successfully',
+      data: type,
     });
   } catch (error) {
-    sendResponse(res, {
-      success: false,
-      message: "Failed to fetch project type",
-      error: error.message
-    }, 500);
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: 'Failed to fetch project type',
+        error: error.message,
+      },
+      500
+    );
   }
 };
 
@@ -68,18 +82,29 @@ exports.createProjectType = async (req, res) => {
   try {
     const projectType = new ProjectType(req.body);
     await projectType.save();
-    
-    sendResponse(res, {
-      success: true,
-      message: "Project type created successfully",
-      data: projectType
-    }, 201);
+
+    sendResponse(
+      res,
+      {
+        success: true,
+        message: 'Project type created successfully',
+        data: projectType,
+      },
+      201
+    );
   } catch (error) {
-    sendResponse(res, {
-      success: false,
-      message: error.code === 11000 ? "Project type already exists" : "Failed to create project type",
-      error: error.message
-    }, 400);
+    sendResponse(
+      res,
+      {
+        success: false,
+        message:
+          error.code === 11000
+            ? 'Project type already exists'
+            : 'Failed to create project type',
+        error: error.message,
+      },
+      400
+    );
   }
 };
 
@@ -95,25 +120,36 @@ exports.updateProjectType = async (req, res) => {
       req.body,
       { new: true, runValidators: true }
     );
-    
+
     if (!projectType) {
-      return sendResponse(res, {
-        success: false,
-        message: "Project type not found"
-      }, 404);
+      return sendResponse(
+        res,
+        {
+          success: false,
+          message: 'Project type not found',
+        },
+        404
+      );
     }
-    
+
     sendResponse(res, {
       success: true,
-      message: "Project type updated successfully",
-      data: projectType
+      message: 'Project type updated successfully',
+      data: projectType,
     });
   } catch (error) {
-    sendResponse(res, {
-      success: false,
-      message: error.code === 11000 ? "Project type already exists" : "Failed to update project type",
-      error: error.message
-    }, 400);
+    sendResponse(
+      res,
+      {
+        success: false,
+        message:
+          error.code === 11000
+            ? 'Project type already exists'
+            : 'Failed to update project type',
+        error: error.message,
+      },
+      400
+    );
   }
 };
 
@@ -125,23 +161,31 @@ exports.updateProjectType = async (req, res) => {
 exports.deleteProjectType = async (req, res) => {
   try {
     const projectType = await ProjectType.findByIdAndDelete(req.params.id);
-    
+
     if (!projectType) {
-      return sendResponse(res, {
-        success: false,
-        message: "Project type not found"
-      }, 404);
+      return sendResponse(
+        res,
+        {
+          success: false,
+          message: 'Project type not found',
+        },
+        404
+      );
     }
-    
+
     sendResponse(res, {
       success: true,
-      message: "Project type deleted successfully"
+      message: 'Project type deleted successfully',
     });
   } catch (error) {
-    sendResponse(res, {
-      success: false,
-      message: "Failed to delete project type",
-      error: error.message
-    }, 500);
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: 'Failed to delete project type',
+        error: error.message,
+      },
+      500
+    );
   }
 };

@@ -1,5 +1,5 @@
-const messageService = require("../services/message.service");
-const sendResponse = require("../utils/response");
+const messageService = require('../services/message.service');
+const sendResponse = require('../utils/response');
 
 /**
  * Message Controller
@@ -20,22 +20,22 @@ exports.sendMessage = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? result.message : "Message sent successfully",
+        message: result.error ? result.message : 'Message sent successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 201,
+      result.error ? 400 : 201
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to send message",
+        message: 'Failed to send message',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -49,7 +49,7 @@ exports.getMessagesByChat = async (req, res) => {
   try {
     const result = await messageService.getMessagesByChat(
       req.params.chatId,
-      req.user.id,
+      req.user.id
     );
 
     sendResponse(
@@ -57,23 +57,23 @@ exports.getMessagesByChat = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to fetch messages"
-          : "Messages fetched successfully",
+          ? 'Failed to fetch messages'
+          : 'Messages fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 200,
+      result.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -91,22 +91,22 @@ exports.markAsRead = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Message not found" : "Message marked as read",
+        message: result.error ? 'Message not found' : 'Message marked as read',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -119,29 +119,29 @@ exports.deleteMessage = async (req, res) => {
   try {
     const result = await messageService.deleteMessage(
       req.params.messageId,
-      req.user.id,
+      req.user.id
     );
 
     sendResponse(
       res,
       {
         success: !result.error,
-        message: result.error ? result.message : "Message deleted successfully",
+        message: result.error ? result.message : 'Message deleted successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };

@@ -1,4 +1,4 @@
-const KnowledgeBase = require("../models/knowledgebase.model");
+const KnowledgeBase = require('../models/knowledgebase.model');
 
 /**
  * Find all knowledge base articles matching a specific filter
@@ -11,8 +11,8 @@ exports.findAll = (filter = {}, options = {}) =>
     .sort(options.sort || { createdAt: -1 })
     .skip(options.skip || 0)
     .limit(options.limit || 0)
-    .populate(options.populate || "")
-    .select(options.select || "");
+    .populate(options.populate || '')
+    .select(options.select || '');
 
 /**
  * Locate a single knowledge base article by its unique identifier
@@ -22,8 +22,8 @@ exports.findAll = (filter = {}, options = {}) =>
  */
 exports.findById = (id, options = {}) =>
   KnowledgeBase.findById(id)
-    .populate(options.populate || "")
-    .select(options.select || "");
+    .populate(options.populate || '')
+    .select(options.select || '');
 
 /**
  * Persist a new knowledge base article record to the database

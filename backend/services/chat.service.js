@@ -1,4 +1,4 @@
-const chatRepository = require("../repositories/chat.repository");
+const chatRepository = require('../repositories/chat.repository');
 
 /**
  * Standardized response helper for services
@@ -17,9 +17,9 @@ const response = (error, data, message) => ({ error, data, message });
 exports.create = async (data) => {
   try {
     const chat = await chatRepository.create(data);
-    return response(false, chat, "Chat created successfully");
+    return response(false, chat, 'Chat created successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to create chat");
+    return response(true, null, err.message || 'Failed to create chat');
   }
 };
 
@@ -30,9 +30,9 @@ exports.create = async (data) => {
 exports.getAll = async () => {
   try {
     const chats = await chatRepository.findAll();
-    return response(false, chats, "Chats fetched successfully");
+    return response(false, chats, 'Chats fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch chats");
+    return response(true, null, err.message || 'Failed to fetch chats');
   }
 };
 
@@ -44,9 +44,9 @@ exports.getAll = async () => {
 exports.getByUserId = async (userId) => {
   try {
     const chats = await chatRepository.findAll({ members: userId });
-    return response(false, chats, "User chats fetched successfully");
+    return response(false, chats, 'User chats fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch user chats");
+    return response(true, null, err.message || 'Failed to fetch user chats');
   }
 };
 
@@ -58,10 +58,10 @@ exports.getByUserId = async (userId) => {
 exports.getById = async (id) => {
   try {
     const chat = await chatRepository.findById(id);
-    if (!chat) return response(true, null, "Chat not found");
-    return response(false, chat, "Chat fetched successfully");
+    if (!chat) return response(true, null, 'Chat not found');
+    return response(false, chat, 'Chat fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch chat");
+    return response(true, null, err.message || 'Failed to fetch chat');
   }
 };
 
@@ -74,10 +74,10 @@ exports.getById = async (id) => {
 exports.update = async (id, data) => {
   try {
     const chat = await chatRepository.update(id, data);
-    if (!chat) return response(true, null, "Chat not found");
-    return response(false, chat, "Chat updated successfully");
+    if (!chat) return response(true, null, 'Chat not found');
+    return response(false, chat, 'Chat updated successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to update chat");
+    return response(true, null, err.message || 'Failed to update chat');
   }
 };
 
@@ -89,9 +89,9 @@ exports.update = async (id, data) => {
 exports.remove = async (id) => {
   try {
     const chat = await chatRepository.remove(id);
-    if (!chat) return response(true, null, "Chat not found");
-    return response(false, null, "Chat deleted successfully");
+    if (!chat) return response(true, null, 'Chat not found');
+    return response(false, null, 'Chat deleted successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to delete chat");
+    return response(true, null, err.message || 'Failed to delete chat');
   }
 };

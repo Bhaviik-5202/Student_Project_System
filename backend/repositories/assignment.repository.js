@@ -1,4 +1,4 @@
-const Assignment = require("../models/assignment.model");
+const Assignment = require('../models/assignment.model');
 
 /**
  * Find all assignments matching a specific filter
@@ -11,8 +11,8 @@ exports.findAll = (filter = {}, options = {}) =>
     .sort(options.sort || { createdAt: -1 })
     .skip(options.skip || 0)
     .limit(options.limit || 0)
-    .populate(options.populate || "")
-    .select(options.select || "");
+    .populate(options.populate || '')
+    .select(options.select || '');
 
 /**
  * Locate a single assignment by its unique identifier
@@ -22,8 +22,8 @@ exports.findAll = (filter = {}, options = {}) =>
  */
 exports.findById = (id, options = {}) =>
   Assignment.findById(id)
-    .populate(options.populate || "")
-    .select(options.select || "");
+    .populate(options.populate || '')
+    .select(options.select || '');
 
 /**
  * Persist a new assignment record to the database

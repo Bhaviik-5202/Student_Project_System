@@ -1,7 +1,7 @@
-const userService = require("../services/user.service");
-const auditLogService = require("../services/auditlog.service");
-const sendResponse = require("../utils/response");
-const { validationResult } = require("express-validator");
+const userService = require('../services/user.service');
+const auditLogService = require('../services/auditlog.service');
+const sendResponse = require('../utils/response');
+const { validationResult } = require('express-validator');
 
 /**
  * User Controller
@@ -26,11 +26,11 @@ exports.createUser = async (req, res) => {
           message: errors
             .array()
             .map((e) => e.msg)
-            .join(", "),
+            .join(', '),
           data: null,
-          error: "Validation error",
+          error: 'Validation error',
         },
-        400,
+        400
       );
     }
 
@@ -38,11 +38,11 @@ exports.createUser = async (req, res) => {
 
     if (!result.error && result.data) {
       await auditLogService.create({
-        action: "User Creation",
+        action: 'User Creation',
         user: req.user.id,
         details: `Admin created new user: ${result.data.email} (${result.data.role})`,
-        status: "Success",
-        ip: req.ip || "127.0.0.1",
+        status: 'Success',
+        ip: req.ip || '127.0.0.1',
       });
     }
 
@@ -51,23 +51,23 @@ exports.createUser = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to create user"
-          : "User created successfully",
+          ? 'Failed to create user'
+          : 'User created successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 201,
+      result.error ? 400 : 201
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -86,23 +86,23 @@ exports.getAllUsers = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to fetch users"
-          : "Users fetched successfully",
+          ? 'Failed to fetch users'
+          : 'Users fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 200,
+      result.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -120,22 +120,22 @@ exports.getUserById = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "User not found" : "User fetched successfully",
+        message: result.error ? 'User not found' : 'User fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -157,11 +157,11 @@ exports.updateUser = async (req, res) => {
           message: errors
             .array()
             .map((e) => e.msg)
-            .join(", "),
+            .join(', '),
           data: null,
-          error: "Validation error",
+          error: 'Validation error',
         },
-        400,
+        400
       );
     }
 
@@ -169,11 +169,11 @@ exports.updateUser = async (req, res) => {
 
     if (!result.error && result.data) {
       await auditLogService.create({
-        action: "User Management",
+        action: 'User Management',
         user: req.user.id,
         details: `Admin updated user: ${result.data.email} (${req.params.id})`,
-        status: "Success",
-        ip: req.ip || "127.0.0.1",
+        status: 'Success',
+        ip: req.ip || '127.0.0.1',
       });
     }
 
@@ -181,22 +181,22 @@ exports.updateUser = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "User not found" : "User updated successfully",
+        message: result.error ? 'User not found' : 'User updated successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -212,11 +212,11 @@ exports.deleteUser = async (req, res) => {
 
     if (!result.error) {
       await auditLogService.create({
-        action: "User Management",
+        action: 'User Management',
         user: req.user.id,
         details: `Admin deleted user with ID: ${req.params.id}`,
-        status: "Success",
-        ip: req.ip || "127.0.0.1",
+        status: 'Success',
+        ip: req.ip || '127.0.0.1',
       });
     }
 
@@ -224,22 +224,22 @@ exports.deleteUser = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "User not found" : "User deleted successfully",
+        message: result.error ? 'User not found' : 'User deleted successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };

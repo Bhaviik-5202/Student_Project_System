@@ -1,5 +1,5 @@
-const auditLogService = require("../services/auditlog.service");
-const sendResponse = require("../utils/response");
+const auditLogService = require('../services/auditlog.service');
+const sendResponse = require('../utils/response');
 
 /**
  * Audit Log Controller
@@ -21,23 +21,23 @@ exports.getAllAuditLogs = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to fetch audit logs"
-          : "Audit logs fetched successfully",
+          ? 'Failed to fetch audit logs'
+          : 'Audit logs fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 200,
+      result.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -56,23 +56,23 @@ exports.getAuditLogById = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Audit log not found"
-          : "Audit log fetched successfully",
+          ? 'Audit log not found'
+          : 'Audit log fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -90,7 +90,7 @@ exports.getAuditLogsByResourceId = async (req, res) => {
       {
         page,
         limit,
-      },
+      }
     );
 
     sendResponse(
@@ -98,23 +98,23 @@ exports.getAuditLogsByResourceId = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to fetch resource audit logs"
-          : "Resource audit logs fetched successfully",
+          ? 'Failed to fetch resource audit logs'
+          : 'Resource audit logs fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -131,22 +131,22 @@ exports.createAuditLog = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? result.message : "Audit log entry created",
+        message: result.error ? result.message : 'Audit log entry created',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 201,
+      result.error ? 400 : 201
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to create audit log",
+        message: 'Failed to create audit log',
         data: null,
         error: error.message,
       },
-      400,
+      400
     );
   }
 };
@@ -165,23 +165,23 @@ exports.updateAuditLog = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Audit log not found"
-          : "Audit log updated successfully",
+          ? 'Audit log not found'
+          : 'Audit log updated successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -200,23 +200,23 @@ exports.deleteAuditLog = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Audit log not found"
-          : "Audit log deleted successfully",
+          ? 'Audit log not found'
+          : 'Audit log deleted successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };

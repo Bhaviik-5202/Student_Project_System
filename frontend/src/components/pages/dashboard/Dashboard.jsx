@@ -1,22 +1,22 @@
 /**
  * Dashboard Component
- * 
+ *
  * The main landing page for authenticated users (Admin, Faculty, Student).
- * Displays role-specific statistics, recent activity, upcoming meetings, 
- * and performance visualizations. Uses animated counters and premium 
+ * Displays role-specific statistics, recent activity, upcoming meetings,
+ * and performance visualizations. Uses animated counters and premium
  * tailwind styling for a high-quality user experience.
  */
-import { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../../hooks/useAuth";
-import { toast } from "react-hot-toast";
-import { Fragment } from "react";
-import RecentActivity from "./RecentActivity";
-import UpcomingMeetings from "./UpcomingMeetings";
-import ProgressVisualization from "./ProgressVisualization";
-import SystemMetrics from "./SystemMetrics";
-import analyticsService from "../../../services/analyticsService";
-import { exportDashboardToCSV } from "../../../utils/exportUtils";
+import { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../hooks/useAuth';
+import { toast } from 'react-hot-toast';
+import { Fragment } from 'react';
+import RecentActivity from './RecentActivity';
+import UpcomingMeetings from './UpcomingMeetings';
+import ProgressVisualization from './ProgressVisualization';
+import SystemMetrics from './SystemMetrics';
+import analyticsService from '../../../services/analyticsService';
+import { exportDashboardToCSV } from '../../../utils/exportUtils';
 
 // Import icons from lucide-react
 import {
@@ -56,9 +56,9 @@ import {
   TrendingUp as ChartLineIcon,
   SlidersHorizontal as AdjustmentsIcon,
   BarChart2 as ChartBarSquareIcon,
-} from "lucide-react";
+} from 'lucide-react';
 
-import { Menu, Transition } from "@headlessui/react";
+import { Menu, Transition } from '@headlessui/react';
 
 // --- Custom Hooks ---
 // Animated Counter Hook for stat values (same as AdminDashboard)
@@ -92,7 +92,7 @@ const useAnimatedCounter = (endValue, duration = 1000) => {
 const AnimatedStatCard = ({ stat, index, onClick }) => {
   const [isVisible, setIsVisible] = useState(false);
   const numericPart = parseInt(stat.value) || 0;
-  const suffix = stat.value ? stat.value.toString().replace(/[0-9]/g, "") : "";
+  const suffix = stat.value ? stat.value.toString().replace(/[0-9]/g, '') : '';
   const animatedValue = useAnimatedCounter(isVisible ? numericPart : 0, 1200);
   const Icon = stat.icon;
 
@@ -102,91 +102,91 @@ const AnimatedStatCard = ({ stat, index, onClick }) => {
   }, [index]);
 
   const bgColor =
-    stat.color === "blue"
-      ? "bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/30 dark:to-blue-800/20"
-      : stat.color === "green"
-        ? "bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-900/30 dark:to-green-800/20"
-        : stat.color === "yellow"
-          ? "bg-gradient-to-br from-yellow-50 to-yellow-100/50 dark:from-yellow-900/30 dark:to-yellow-800/20"
-          : "bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-900/30 dark:to-purple-800/20";
+    stat.color === 'blue'
+      ? 'bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/30 dark:to-blue-800/20'
+      : stat.color === 'green'
+        ? 'bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-900/30 dark:to-green-800/20'
+        : stat.color === 'yellow'
+          ? 'bg-gradient-to-br from-yellow-50 to-yellow-100/50 dark:from-yellow-900/30 dark:to-yellow-800/20'
+          : 'bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-900/30 dark:to-purple-800/20';
   const iconColor =
-    stat.color === "blue"
-      ? "text-blue-600 dark:text-blue-400"
-      : stat.color === "green"
-        ? "text-green-600 dark:text-green-400"
-        : stat.color === "yellow"
-          ? "text-yellow-600 dark:text-yellow-400"
-          : "text-purple-600 dark:text-purple-400";
+    stat.color === 'blue'
+      ? 'text-blue-600 dark:text-blue-400'
+      : stat.color === 'green'
+        ? 'text-green-600 dark:text-green-400'
+        : stat.color === 'yellow'
+          ? 'text-yellow-600 dark:text-yellow-400'
+          : 'text-purple-600 dark:text-purple-400';
   const borderColor =
-    stat.color === "blue"
-      ? "border-blue-100 dark:border-blue-800"
-      : stat.color === "green"
-        ? "border-green-100 dark:border-green-800"
-        : stat.color === "yellow"
-          ? "border-yellow-100 dark:border-yellow-800"
-          : "border-purple-100 dark:border-purple-800";
+    stat.color === 'blue'
+      ? 'border-blue-100 dark:border-blue-800'
+      : stat.color === 'green'
+        ? 'border-green-100 dark:border-green-800'
+        : stat.color === 'yellow'
+          ? 'border-yellow-100 dark:border-yellow-800'
+          : 'border-purple-100 dark:border-purple-800';
   const progressColor =
-    stat.color === "blue"
-      ? "bg-blue-500 dark:bg-blue-400"
-      : stat.color === "green"
-        ? "bg-green-500 dark:bg-green-400"
-        : stat.color === "yellow"
-          ? "bg-yellow-500 dark:bg-yellow-400"
-          : "bg-purple-500 dark:bg-purple-400";
+    stat.color === 'blue'
+      ? 'bg-blue-500 dark:bg-blue-400'
+      : stat.color === 'green'
+        ? 'bg-green-500 dark:bg-green-400'
+        : stat.color === 'yellow'
+          ? 'bg-yellow-500 dark:bg-yellow-400'
+          : 'bg-purple-500 dark:bg-purple-400';
 
   return (
     <div
-      className={`group relative bg-white dark:bg-slate-800 rounded-2xl border ${borderColor} p-6 transition-all duration-300 cursor-pointer overflow-hidden ${
+      className={`group relative rounded-2xl border bg-white dark:bg-slate-800 ${borderColor} cursor-pointer overflow-hidden p-6 transition-all duration-300 ${
         isVisible
-          ? "translate-y-0 opacity-100 hover:border-transparent hover:shadow-lg dark:hover:shadow-slate-700/30"
-          : "translate-y-4 opacity-0"
+          ? 'translate-y-0 opacity-100 hover:border-transparent hover:shadow-lg dark:hover:shadow-slate-700/30'
+          : 'translate-y-4 opacity-0'
       }`}
       onClick={onClick}
     >
       {/* Background overlay - same as Quick Access */}
       <div
-        className={`absolute inset-0 ${bgColor} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
+        className={`absolute inset-0 ${bgColor} opacity-0 transition-opacity duration-300 group-hover:opacity-100`}
       />
 
-      <div className="relative z-10">
-        <div className="flex items-center justify-between mb-6">
+      <div className='relative z-10'>
+        <div className='mb-6 flex items-center justify-between'>
           <div
-            className={`w-14 h-14 ${bgColor} rounded-xl flex items-center justify-center border ${borderColor}`}
+            className={`h-14 w-14 ${bgColor} flex items-center justify-center rounded-xl border ${borderColor}`}
           >
             <Icon
-              className={`w-7 h-7 ${iconColor} transform transition-transform duration-300 group-hover:scale-125 group-hover:-translate-y-1`}
+              className={`h-7 w-7 ${iconColor} transform transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-125`}
             />
           </div>
           <span
-            className={`text-xs font-semibold px-3 py-1.5 rounded-full ${
-              stat.trend === "up"
-                ? "bg-gradient-to-r from-green-100 to-green-50 dark:from-green-900/40 dark:to-green-800/30 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800"
-                : stat.trend === "attention"
-                  ? "bg-gradient-to-r from-yellow-100 to-yellow-50 dark:from-yellow-900/40 dark:to-yellow-800/30 text-yellow-700 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800"
-                  : "bg-gradient-to-r from-blue-100 to-blue-50 dark:from-blue-900/40 dark:to-blue-800/30 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800"
+            className={`rounded-full px-3 py-1.5 text-xs font-semibold ${
+              stat.trend === 'up'
+                ? 'border border-green-200 bg-gradient-to-r from-green-100 to-green-50 text-green-700 dark:border-green-800 dark:from-green-900/40 dark:to-green-800/30 dark:text-green-400'
+                : stat.trend === 'attention'
+                  ? 'border border-yellow-200 bg-gradient-to-r from-yellow-100 to-yellow-50 text-yellow-700 dark:border-yellow-800 dark:from-yellow-900/40 dark:to-yellow-800/30 dark:text-yellow-400'
+                  : 'border border-blue-200 bg-gradient-to-r from-blue-100 to-blue-50 text-blue-700 dark:border-blue-800 dark:from-blue-900/40 dark:to-blue-800/30 dark:text-blue-400'
             }`}
           >
             {stat.change}
           </span>
         </div>
-        <div className="text-3xl font-bold text-gray-900 dark:text-white mb-2 tabular-nums">
-          {numericPart > 0 ? animatedValue : ""}
+        <div className='mb-2 text-3xl font-bold tabular-nums text-gray-900 dark:text-white'>
+          {numericPart > 0 ? animatedValue : ''}
           {suffix}
         </div>
-        <div className="text-lg text-gray-600 dark:text-gray-400 font-medium">
+        <div className='text-lg font-medium text-gray-600 dark:text-gray-400'>
           {stat.title}
         </div>
         {/* Progress bar animation */}
-        <div className={`h-1 mt-4 rounded-full ${bgColor} overflow-hidden`}>
+        <div className={`mt-4 h-1 rounded-full ${bgColor} overflow-hidden`}>
           <div
             className={`h-full ${progressColor} rounded-full transition-all duration-1000 ease-out`}
-            style={{ width: isVisible ? "100%" : "0%" }}
+            style={{ width: isVisible ? '100%' : '0%' }}
           />
         </div>
-        <div className="mt-4 pt-4 border-t border-gray-100 dark:border-slate-700">
-          <span className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors duration-300 font-medium flex items-center">
+        <div className='mt-4 border-t border-gray-100 pt-4 dark:border-slate-700'>
+          <span className='flex items-center text-sm font-medium text-blue-600 transition-colors duration-300 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300'>
             View details
-            <ChevronRightIcon className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform duration-300" />
+            <ChevronRightIcon className='ml-2 h-4 w-4 transform transition-transform duration-300 group-hover:translate-x-1' />
           </span>
         </div>
       </div>
@@ -200,8 +200,8 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [dashboardData, setDashboardData] = useState({
-    title: "Dashboard",
-    subtitle: "Welcome back!",
+    title: 'Dashboard',
+    subtitle: 'Welcome back!',
     stats: [],
   });
 
@@ -210,10 +210,10 @@ const Dashboard = () => {
   const [upcomingDeadlines, setUpcomingDeadlines] = useState([]);
   const [todayMeetings, setTodayMeetings] = useState([]);
   const [performanceData, setPerformanceData] = useState([]);
-  const [timeOfDay, setTimeOfDay] = useState("");
-  const [greeting, setGreeting] = useState("");
+  const [timeOfDay, setTimeOfDay] = useState('');
+  const [greeting, setGreeting] = useState('');
   const [userActivity, setUserActivity] = useState({
-    lastActive: "Just now",
+    lastActive: 'Just now',
     streak: 0,
     achievements: 0,
   });
@@ -228,8 +228,8 @@ const Dashboard = () => {
       setIsLoading(true);
       if (!user) {
         setDashboardData({
-          title: "Dashboard",
-          subtitle: "Welcome back!",
+          title: 'Dashboard',
+          subtitle: 'Welcome back!',
           stats: [],
         });
         return;
@@ -237,46 +237,46 @@ const Dashboard = () => {
 
       // Set time-based greeting
       const hour = new Date().getHours();
-      let timeGreeting = "";
-      if (hour < 12) timeGreeting = "Good Morning";
-      else if (hour < 18) timeGreeting = "Good Afternoon";
-      else timeGreeting = "Good Evening";
+      let timeGreeting = '';
+      if (hour < 12) timeGreeting = 'Good Morning';
+      else if (hour < 18) timeGreeting = 'Good Afternoon';
+      else timeGreeting = 'Good Evening';
 
       setTimeOfDay(timeGreeting);
 
       // Personalized greeting based on time and role
       const greetings =
-        user?.role === "student"
+        user?.role === 'student'
           ? [
-              "Welcome back! Ready to track your progress?",
-              "Great to see you! How are your projects coming along?",
-              "Ready to achieve your milestones today?"
+              'Welcome back! Ready to track your progress?',
+              'Great to see you! How are your projects coming along?',
+              'Ready to achieve your milestones today?',
             ]
-          : user?.role === "faculty"
+          : user?.role === 'faculty'
             ? [
-                "Welcome back! Your students value your guidance.",
+                'Welcome back! Your students value your guidance.',
                 "Ready to review today's project milestones?",
-                "Great to have you back in the workspace."
+                'Great to have you back in the workspace.',
               ]
             : [
-                "Welcome to the management console.",
-                "System oversight is ready for your review.",
-                "Ready to optimize organizational performance?"
+                'Welcome to the management console.',
+                'System oversight is ready for your review.',
+                'Ready to optimize organizational performance?',
               ];
       setGreeting(greetings[Math.floor(Math.random() * greetings.length)]);
 
       // Fetch dashboard data from API
       let apiData;
       try {
-        if (user.role === "admin") {
+        if (user.role === 'admin') {
           apiData = await analyticsService.getDashboardStats();
-        } else if (user.role === "faculty") {
+        } else if (user.role === 'faculty') {
           apiData = await analyticsService.getFacultyDashboardStats();
-        } else if (user.role === "student") {
+        } else if (user.role === 'student') {
           apiData = await analyticsService.getStudentDashboardStats();
         }
       } catch (error) {
-        console.error("Failed to fetch dashboard data:", error);
+        console.error('Failed to fetch dashboard data:', error);
         // Fallback to empty data
         apiData = { data: {} };
       }
@@ -287,154 +287,156 @@ const Dashboard = () => {
       let data = null;
 
       switch (user.role) {
-        case "admin":
+        case 'admin':
           data = {
-            title: "Administrator Dashboard",
-            subtitle: "Manage system operations and monitor performance",
+            title: 'Administrator Dashboard',
+            subtitle: 'Manage system operations and monitor performance',
             stats: [
               {
-                title: "Total Projects",
+                title: 'Total Projects',
                 value: statsData.totalProjects || 0,
                 icon: ChartBarIcon,
-                color: "blue",
-                change: statsData.projectGrowth || "+0%",
-                trend: "up",
-                onClick: () => navigate("/projects"),
+                color: 'blue',
+                change: statsData.projectGrowth || '+0%',
+                trend: 'up',
+                onClick: () => navigate('/projects'),
               },
               {
-                title: "Active Students",
+                title: 'Active Students',
                 value: statsData.totalUsers || 0,
                 icon: UserGroupIcon,
-                color: "green",
-                change: statsData.userGrowth || "+0%",
-                trend: "up",
-                onClick: () => navigate("/students"),
+                color: 'green',
+                change: statsData.userGrowth || '+0%',
+                trend: 'up',
+                onClick: () => navigate('/students'),
               },
               {
-                title: "Pending Approvals",
+                title: 'Pending Approvals',
                 value: statsData.pendingApprovals || 0,
                 icon: ClockIcon,
-                color: "yellow",
-                change: "Requires attention",
-                trend: "attention",
-                onClick: () => navigate("/projects"),
+                color: 'yellow',
+                change: 'Requires attention',
+                trend: 'attention',
+                onClick: () => navigate('/projects'),
               },
               {
-                title: "Upcoming Meetings",
+                title: 'Upcoming Meetings',
                 value: todayMeetings.length || 0,
                 icon: CalendarIcon,
-                color: "purple",
-                change: todayMeetings.length > 0 ? `Next: ${todayMeetings[0].time}` : "No meetings today",
-                trend: "info",
-                onClick: () => navigate("/meetings"),
+                color: 'purple',
+                change:
+                  todayMeetings.length > 0
+                    ? `Next: ${todayMeetings[0].time}`
+                    : 'No meetings today',
+                trend: 'info',
+                onClick: () => navigate('/meetings'),
               },
             ],
           };
 
-
-
           break;
 
-        case "faculty":
+        case 'faculty':
           data = {
-            title: "Faculty Dashboard",
-            subtitle: "Guide and evaluate student projects",
+            title: 'Faculty Dashboard',
+            subtitle: 'Guide and evaluate student projects',
             stats: [
               {
-                title: "Total Projects",
+                title: 'Total Projects',
                 value: statsData.totalProjects || 0,
                 icon: ChartBarIcon,
-                color: "blue",
+                color: 'blue',
                 change: `Your projects: ${statsData.myProjects || 0}`,
-                trend: "info",
-                onClick: () => navigate("/projects"),
+                trend: 'info',
+                onClick: () => navigate('/projects'),
               },
               {
-                title: "Students Assigned",
+                title: 'Students Assigned',
                 value: statsData.activeStudents || 0,
                 icon: UserGroupIcon,
-                color: "green",
-                change: "All active",
-                trend: "info",
-                onClick: () => navigate("/students"),
+                color: 'green',
+                change: 'All active',
+                trend: 'info',
+                onClick: () => navigate('/students'),
               },
               {
-                title: "Pending Reviews",
+                title: 'Pending Reviews',
                 value: statsData.pendingReviews || 0,
                 icon: ClipboardIcon,
-                color: "yellow",
-                change: "Due this week",
-                trend: "attention",
-                onClick: () => navigate("/projects"),
+                color: 'yellow',
+                change: 'Due this week',
+                trend: 'attention',
+                onClick: () => navigate('/projects'),
               },
               {
-                title: "Meetings Today",
+                title: 'Meetings Today',
                 value: statsData.todayMeetings || 0,
                 icon: CalendarIcon,
-                color: "purple",
-                change: "10:00 AM & 2:00 PM",
-                trend: "info",
-                onClick: () => navigate("/meetings"),
+                color: 'purple',
+                change: '10:00 AM & 2:00 PM',
+                trend: 'info',
+                onClick: () => navigate('/meetings'),
               },
             ],
           };
-
-
 
           break;
 
-        case "student":
+        case 'student':
           data = {
-            title: "Student Dashboard",
-            subtitle: "Track your projects and progress",
+            title: 'Student Dashboard',
+            subtitle: 'Track your projects and progress',
             stats: [
               {
-                title: "Total Projects",
+                title: 'Total Projects',
                 value: statsData.totalProjects || 0,
                 icon: ChartBarIcon,
-                color: "blue",
+                color: 'blue',
                 change: `Your projects: ${statsData.myProjects || 0}`,
-                trend: "info",
-                onClick: () => navigate("/projects"),
+                trend: 'info',
+                onClick: () => navigate('/projects'),
               },
               {
-                title: "Assignments Due",
+                title: 'Assignments Due',
                 value: statsData.upcomingDeadlines || 0,
                 icon: ClipboardListIcon,
-                color: "yellow",
-                change: statsData.urgentTasks ? `${statsData.urgentTasks} urgent` : "None urgent",
-                trend: "attention",
-                onClick: () => navigate("/projects"),
+                color: 'yellow',
+                change: statsData.urgentTasks
+                  ? `${statsData.urgentTasks} urgent`
+                  : 'None urgent',
+                trend: 'attention',
+                onClick: () => navigate('/projects'),
               },
               {
-                title: "Meetings",
+                title: 'Meetings',
                 value: todayMeetings.length || 0,
                 icon: CalendarIcon,
-                color: "purple",
-                change: todayMeetings.length > 0 ? `Next: ${todayMeetings[0].time}` : "None today",
-                trend: "info",
-                onClick: () => navigate("/meetings"),
+                color: 'purple',
+                change:
+                  todayMeetings.length > 0
+                    ? `Next: ${todayMeetings[0].time}`
+                    : 'None today',
+                trend: 'info',
+                onClick: () => navigate('/meetings'),
               },
               {
-                title: "Grades",
-                value: statsData.currentGrade || "N/A",
+                title: 'Grades',
+                value: statsData.currentGrade || 'N/A',
                 icon: AcademicCapIcon,
-                color: "green",
-                change: "Current average",
-                trend: "info",
-                onClick: () => navigate("/profile"),
+                color: 'green',
+                change: 'Current average',
+                trend: 'info',
+                onClick: () => navigate('/profile'),
               },
             ],
           };
-
-
 
           break;
 
         default:
           data = {
-            title: "Dashboard",
-            subtitle: "Welcome back!",
+            title: 'Dashboard',
+            subtitle: 'Welcome back!',
             stats: [],
           };
       }
@@ -450,11 +452,11 @@ const Dashboard = () => {
         setStatsData(statsData);
       }
     } catch (err) {
-      console.error("Error loading dashboard:", err);
-      toast.error("Failed to load dashboard data");
+      console.error('Error loading dashboard:', err);
+      toast.error('Failed to load dashboard data');
       setDashboardData({
-        title: "Dashboard",
-        subtitle: "Welcome back!",
+        title: 'Dashboard',
+        subtitle: 'Welcome back!',
         stats: [],
       });
     }
@@ -475,13 +477,13 @@ const Dashboard = () => {
 
   const handleRefresh = async () => {
     setIsLoading(true);
-    const loadingToast = toast.loading("Refreshing dashboard...");
+    const loadingToast = toast.loading('Refreshing dashboard...');
     try {
       await loadDashboardData();
-      toast.success("Dashboard refreshed!", { id: loadingToast });
+      toast.success('Dashboard refreshed!', { id: loadingToast });
     } catch (error) {
-      console.error("Refresh failed:", error);
-      toast.error("Failed to refresh dashboard", { id: loadingToast });
+      console.error('Refresh failed:', error);
+      toast.error('Failed to refresh dashboard', { id: loadingToast });
     } finally {
       setIsLoading(false);
     }
@@ -491,26 +493,26 @@ const Dashboard = () => {
   const handleNotificationClick = (notificationId) => {
     setNotifications(
       notifications.map((notif) =>
-        notif.id === notificationId ? { ...notif, read: true } : notif,
-      ),
+        notif.id === notificationId ? { ...notif, read: true } : notif
+      )
     );
   };
 
   const markAllNotificationsAsRead = () => {
     setNotifications(notifications.map((notif) => ({ ...notif, read: true })));
-    toast.success("All notifications marked as read");
+    toast.success('All notifications marked as read');
   };
 
   // Loading state
   if (authLoading || isLoading) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
+      <div className='flex min-h-[60vh] items-center justify-center'>
+        <div className='text-center'>
+          <div className='mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-blue-600'></div>
+          <h2 className='mb-2 text-xl font-semibold text-gray-900 dark:text-gray-100'>
             Loading Dashboard
           </h2>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className='text-gray-600 dark:text-gray-400'>
             Preparing your personalized dashboard...
           </p>
         </div>
@@ -520,183 +522,82 @@ const Dashboard = () => {
 
   // --- Render ---
   return (
-    <div className="min-h-screen p-4 md:p-6 space-y-6 animate-fade-in">
+    <div className='min-h-screen animate-fade-in space-y-6 p-4 md:p-6'>
       {/* Dashboard Header with Welcome - Enhanced with animations */}
-      <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-lg p-6 md:p-8">
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-          <div className="flex-1">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md">
-                  <HomeIcon className="w-7 h-7 text-white" />
+      <div className='rounded-2xl border border-gray-200 bg-white p-6 shadow-lg dark:border-slate-700 dark:bg-slate-800 md:p-8'>
+        <div className='flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-center'>
+          <div className='flex-1'>
+            <div className='flex flex-col justify-between gap-4 md:flex-row md:items-center'>
+              <div className='flex items-center gap-4'>
+                <div className='flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 shadow-md'>
+                  <HomeIcon className='h-7 w-7 text-white' />
                 </div>
                 <div>
-                  <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">
-                    {timeOfDay},{" "}
-                    <span className="text-blue-600 dark:text-blue-400">
-                      {user?.name || "Student"}
+                  <h1 className='text-2xl font-bold text-gray-900 dark:text-gray-100 md:text-3xl'>
+                    {timeOfDay},{' '}
+                    <span className='text-blue-600 dark:text-blue-400'>
+                      {user?.name || 'Student'}
                     </span>
                   </h1>
-                  <p className="text-gray-600 dark:text-gray-400 mt-1 text-lg">
+                  <p className='mt-1 text-lg text-gray-600 dark:text-gray-400'>
                     {greeting}
                   </p>
-                  <div className="flex items-center gap-3 mt-3">
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gradient-to-r from-blue-100 to-blue-50 dark:from-blue-900/40 dark:to-blue-800/30 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700">
-                      {user?.role === "admin"
-                        ? "Administrator"
-                        : user?.role === "faculty"
-                          ? "Faculty"
-                          : "Student"}
+                  <div className='mt-3 flex items-center gap-3'>
+                    <span className='inline-flex items-center rounded-full border border-blue-200 bg-gradient-to-r from-blue-100 to-blue-50 px-3 py-1 text-sm font-medium text-blue-700 dark:border-blue-700 dark:from-blue-900/40 dark:to-blue-800/30 dark:text-blue-300'>
+                      {user?.role === 'admin'
+                        ? 'Administrator'
+                        : user?.role === 'faculty'
+                          ? 'Faculty'
+                          : 'Student'}
                     </span>
-                    <span className="text-sm text-gray-500 dark:text-gray-400 flex items-center">
-                      <CalendarDaysIcon className="w-4 h-4 mr-1" />
-                      {new Date().toLocaleDateString("en-US", {
-                        weekday: "long",
-                        month: "long",
-                        day: "numeric",
+                    <span className='flex items-center text-sm text-gray-500 dark:text-gray-400'>
+                      <CalendarDaysIcon className='mr-1 h-4 w-4' />
+                      {new Date().toLocaleDateString('en-US', {
+                        weekday: 'long',
+                        month: 'long',
+                        day: 'numeric',
                       })}
                     </span>
                   </div>
                 </div>
               </div>
 
-              {/* User Stats Dropdown Menu */}
-              {/* <Menu as="div" className="relative inline-block text-left">
-                <div>
-                  <Menu.Button className="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-gray-50 to-white dark:from-slate-700 dark:to-slate-800 text-gray-700 dark:text-gray-200 rounded-xl hover:shadow-md transition-all duration-300 border border-gray-200 dark:border-slate-600 hover:border-gray-300 dark:hover:border-slate-500 font-medium">
-                    <UserIcon className="w-5 h-5 mr-2 text-gray-500 dark:text-gray-400" />
-                    <span className="font-semibold">
-                      {user?.name || "User"}
-                    </span>
-                    <ChevronRightIcon className="w-4 h-4 ml-2 text-gray-400 transform rotate-90" />
-                  </Menu.Button>
-                </div>
-                <Transition
-                  as={Fragment}
-                  enter="transition ease-out duration-100"
-                  enterFrom="transform opacity-0 scale-95"
-                  enterTo="transform opacity-100 scale-100"
-                  leave="transition ease-in duration-75"
-                  leaveFrom="transform opacity-100 scale-100"
-                  leaveTo="transform opacity-0 scale-95"
-                >
-                  <Menu.Items className="absolute right-0 mt-2 w-72 origin-top-right bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-gray-200 dark:border-slate-700 z-50">
-                    <div className="px-4 py-3 border-b border-gray-200 dark:border-slate-700 bg-gradient-to-r from-gray-50 to-white dark:from-slate-700 dark:to-slate-800 rounded-t-xl">
-                      <p className="text-sm font-semibold text-gray-900 dark:text-white">
-                        {user?.name}
-                      </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                        {user?.email}
-                      </p>
-                    </div>
-                    <div className="py-3">
-                      <div className="px-4 py-3 space-y-4">
-                        <div className="flex items-center justify-between p-2 bg-gradient-to-r from-orange-50 to-orange-100/50 dark:from-orange-900/30 dark:to-orange-800/20 rounded-lg">
-                          <div className="flex items-center">
-                            <FireIcon className="w-4 h-4 text-orange-500 mr-2" />
-                            <span className="text-sm text-gray-700 dark:text-gray-300 font-medium">
-                              Login Streak
-                            </span>
-                          </div>
-                          <span className="text-sm font-bold text-gray-900 dark:text-white bg-white dark:bg-slate-700 px-2 py-1 rounded-full">
-                            {userActivity.streak} days
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between p-2 bg-gradient-to-r from-yellow-50 to-yellow-100/50 dark:from-yellow-900/30 dark:to-yellow-800/20 rounded-lg">
-                          <div className="flex items-center">
-                            <TrophyIcon className="w-4 h-4 text-yellow-500 mr-2" />
-                            <span className="text-sm text-gray-700 dark:text-gray-300 font-medium">
-                              Achievements
-                            </span>
-                          </div>
-                          <span className="text-sm font-bold text-gray-900 dark:text-white bg-white dark:bg-slate-700 px-2 py-1 rounded-full">
-                            {userActivity.achievements}
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between p-2 bg-gradient-to-r from-blue-50 to-blue-100/50 dark:from-blue-900/30 dark:to-blue-800/20 rounded-lg">
-                          <div className="flex items-center">
-                            <ClockIcon className="w-4 h-4 text-blue-500 mr-2" />
-                            <span className="text-sm text-gray-700 dark:text-gray-300 font-medium">
-                              Last Active
-                            </span>
-                          </div>
-                          <span className="text-sm font-bold text-gray-900 dark:text-white bg-white dark:bg-slate-700 px-2 py-1 rounded-full">
-                            {userActivity.lastActive}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="border-t border-gray-200 dark:border-slate-700 py-2">
-                      <Menu.Item>
-                        {({ active }) => (
-                          <button
-                            className={`${
-                              active
-                                ? "bg-gradient-to-r from-blue-50 to-blue-100/50 dark:from-blue-900/30 dark:to-blue-800/20"
-                                : ""
-                            } flex items-center w-full px-4 py-3 text-sm text-gray-700 dark:text-gray-300 font-medium`}
-                            onClick={() => navigate("/profile")}
-                          >
-                            <UserIcon className="w-4 h-4 mr-3 text-gray-500 dark:text-gray-400" />
-                            View Profile
-                          </button>
-                        )}
-                      </Menu.Item>
-                      <Menu.Item>
-                        {({ active }) => (
-                          <button
-                            className={`${
-                              active
-                                ? "bg-gradient-to-r from-blue-50 to-blue-100/50 dark:from-blue-900/30 dark:to-blue-800/20"
-                                : ""
-                            } flex items-center w-full px-4 py-3 text-sm text-gray-700 dark:text-gray-300 font-medium`}
-                            onClick={() => navigate("/settings")}
-                          >
-                            <CogIcon className="w-4 h-4 mr-3 text-gray-500 dark:text-gray-400" />
-                            Settings
-                          </button>
-                        )}
-                      </Menu.Item>
-                    </div>
-                  </Menu.Items>
-                </Transition>
-              </Menu> */}
             </div>
 
             {/* Action Buttons with enhanced animations */}
-            <div className="flex flex-wrap gap-4 mt-8">
+            <div className='mt-8 flex flex-wrap gap-4'>
               <button
                 onClick={handleRefresh}
                 disabled={isLoading}
-                className="group relative inline-flex items-center px-5 py-2.5 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 rounded-xl hover:border-transparent hover:shadow-lg transition-all duration-300 font-medium disabled:opacity-50 overflow-hidden"
+                className='group relative inline-flex items-center overflow-hidden rounded-xl border border-gray-300 px-5 py-2.5 font-medium text-gray-700 transition-all duration-300 hover:border-transparent hover:shadow-lg disabled:opacity-50 dark:border-slate-600 dark:text-gray-300'
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-gray-100 to-gray-50 dark:from-slate-700 dark:to-slate-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="relative z-10 flex items-center">
+                <div className='absolute inset-0 bg-gradient-to-r from-gray-100 to-gray-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-slate-700 dark:to-slate-600' />
+                <div className='relative z-10 flex items-center'>
                   {isLoading ? (
-                    <RefreshIcon className="w-4 h-4 mr-2 animate-spin" />
+                    <RefreshIcon className='mr-2 h-4 w-4 animate-spin' />
                   ) : (
-                    <RefreshIcon className="w-4 h-4 mr-2 transition-transform duration-300 group-hover:rotate-180" />
+                    <RefreshIcon className='mr-2 h-4 w-4 transition-transform duration-300 group-hover:rotate-180' />
                   )}
                   <span>
-                    {isLoading ? "Refreshing..." : "Refresh Dashboard"}
+                    {isLoading ? 'Refreshing...' : 'Refresh Dashboard'}
                   </span>
                 </div>
               </button>
 
               <button
                 onClick={() => {
-                  if (user?.role === "admin") navigate("/project-types");
-                  else navigate("/projects/new");
+                  if (user?.role === 'admin') navigate('/project-types');
+                  else navigate('/projects/new');
                 }}
-                className="group relative inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-xl hover:shadow-xl transition-all duration-300 font-medium shadow-md overflow-hidden"
+                className='group relative inline-flex items-center overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 px-5 py-2.5 font-medium text-white shadow-md transition-all duration-300 hover:shadow-xl'
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-700 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="relative z-10 flex items-center">
-                  <PlusIcon className="w-4 h-4 mr-2 transition-transform duration-300 group-hover:scale-125 group-hover:rotate-90" />
+                <div className='absolute inset-0 bg-gradient-to-r from-blue-700 to-blue-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
+                <div className='relative z-10 flex items-center'>
+                  <PlusIcon className='mr-2 h-4 w-4 transition-transform duration-300 group-hover:rotate-90 group-hover:scale-125' />
                   <span>
-                    {user?.role === "admin" && "New Project Type"}
-                    {user?.role === "faculty" && "New Project"}
-                    {user?.role === "student" && "Submit Proposal"}
+                    {user?.role === 'admin' && 'New Project Type'}
+                    {user?.role === 'faculty' && 'New Project'}
+                    {user?.role === 'student' && 'Submit Proposal'}
                   </span>
                 </div>
               </button>
@@ -704,18 +605,18 @@ const Dashboard = () => {
               <button
                 onClick={() => {
                   try {
-                    exportDashboardToCSV(dashboardData, user?.role || "user");
-                    toast.success("Report generated successfully!");
+                    exportDashboardToCSV(dashboardData, user?.role || 'user');
+                    toast.success('Report generated successfully!');
                   } catch (error) {
-                    console.error("Export failed:", error);
-                    toast.error("Failed to generate report");
+                    console.error('Export failed:', error);
+                    toast.error('Failed to generate report');
                   }
                 }}
-                className="group relative inline-flex items-center px-5 py-2.5 border border-gray-300 dark:border-slate-600 text-gray-700 dark:text-gray-300 rounded-xl hover:border-transparent hover:shadow-lg transition-all duration-300 font-medium overflow-hidden"
+                className='group relative inline-flex items-center overflow-hidden rounded-xl border border-gray-300 px-5 py-2.5 font-medium text-gray-700 transition-all duration-300 hover:border-transparent hover:shadow-lg dark:border-slate-600 dark:text-gray-300'
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-gray-100 to-gray-50 dark:from-slate-700 dark:to-slate-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="relative z-10 flex items-center">
-                  <DownloadIcon className="w-4 h-4 mr-2 transition-transform duration-300 group-hover:scale-110 group-hover:translate-y-0.5" />
+                <div className='absolute inset-0 bg-gradient-to-r from-gray-100 to-gray-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-slate-700 dark:to-slate-600' />
+                <div className='relative z-10 flex items-center'>
+                  <DownloadIcon className='mr-2 h-4 w-4 transition-transform duration-300 group-hover:translate-y-0.5 group-hover:scale-110' />
                   <span>Export Report</span>
                 </div>
               </button>
@@ -725,55 +626,55 @@ const Dashboard = () => {
       </div>
 
       {/* Urgent Alert Section */}
-      {upcomingDeadlines.filter((d) => d.priority === "high").length > 0 && (
-        <div className="bg-gradient-to-r from-red-50 to-red-100/50 dark:from-red-900/30 dark:to-red-800/20 border border-red-200 dark:border-red-800 rounded-2xl p-6 shadow-sm">
-          <div className="flex flex-col md:flex-row md:items-center">
-            <div className="flex items-start md:items-center">
-              <div className="flex-shrink-0">
-                <ExclamationTriangleIcon className="w-6 h-6 text-red-600 dark:text-red-400" />
+      {upcomingDeadlines.filter((d) => d.priority === 'high').length > 0 && (
+        <div className='rounded-2xl border border-red-200 bg-gradient-to-r from-red-50 to-red-100/50 p-6 shadow-sm dark:border-red-800 dark:from-red-900/30 dark:to-red-800/20'>
+          <div className='flex flex-col md:flex-row md:items-center'>
+            <div className='flex items-start md:items-center'>
+              <div className='flex-shrink-0'>
+                <ExclamationTriangleIcon className='h-6 w-6 text-red-600 dark:text-red-400' />
               </div>
-              <div className="ml-4 flex-1">
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">
+              <div className='ml-4 flex-1'>
+                <h3 className='mb-1 text-lg font-bold text-gray-900 dark:text-white'>
                   ⚠️ Urgent Action Required
                 </h3>
-                <p className="text-gray-700 dark:text-gray-300">
+                <p className='text-gray-700 dark:text-gray-300'>
                   {
-                    upcomingDeadlines.filter((d) => d.priority === "high")[0]
+                    upcomingDeadlines.filter((d) => d.priority === 'high')[0]
                       .title
-                  }{" "}
-                  due{" "}
-                  <span className="font-semibold">
+                  }{' '}
+                  due{' '}
+                  <span className='font-semibold'>
                     {
-                      upcomingDeadlines.filter((d) => d.priority === "high")[0]
+                      upcomingDeadlines.filter((d) => d.priority === 'high')[0]
                         .due
                     }
-                  </span>{" "}
-                  at{" "}
-                  <span className="font-semibold">
+                  </span>{' '}
+                  at{' '}
+                  <span className='font-semibold'>
                     {
-                      upcomingDeadlines.filter((d) => d.priority === "high")[0]
+                      upcomingDeadlines.filter((d) => d.priority === 'high')[0]
                         .time
                     }
                   </span>
                 </p>
               </div>
             </div>
-            <div className="mt-4 md:mt-0 md:ml-6 flex gap-3">
+            <div className='mt-4 flex gap-3 md:ml-6 md:mt-0'>
               <button
-                onClick={() => navigate("/assignments")}
-                className="group relative px-5 py-2.5 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-xl hover:shadow-xl transition-all duration-300 font-medium shadow-md overflow-hidden"
+                onClick={() => navigate('/assignments')}
+                className='group relative overflow-hidden rounded-xl bg-gradient-to-r from-red-600 to-red-500 px-5 py-2.5 font-medium text-white shadow-md transition-all duration-300 hover:shadow-xl'
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-red-700 to-red-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <span className="relative z-10 group-hover:scale-105 inline-block transition-transform duration-300">
+                <div className='absolute inset-0 bg-gradient-to-r from-red-700 to-red-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
+                <span className='relative z-10 inline-block transition-transform duration-300 group-hover:scale-105'>
                   Start Now
                 </span>
               </button>
               <button
-                onClick={() => toast.info("Extension requested")}
-                className="group relative px-5 py-2.5 border border-red-300 dark:border-red-700 text-red-700 dark:text-red-400 rounded-xl hover:border-transparent hover:shadow-lg transition-all duration-300 font-medium overflow-hidden"
+                onClick={() => toast.info('Extension requested')}
+                className='group relative overflow-hidden rounded-xl border border-red-300 px-5 py-2.5 font-medium text-red-700 transition-all duration-300 hover:border-transparent hover:shadow-lg dark:border-red-700 dark:text-red-400'
               >
-                <div className="absolute inset-0 bg-red-50 dark:bg-red-900/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <span className="relative z-10">Request Extension</span>
+                <div className='absolute inset-0 bg-red-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:bg-red-900/30' />
+                <span className='relative z-10'>Request Extension</span>
               </button>
             </div>
           </div>
@@ -782,7 +683,7 @@ const Dashboard = () => {
 
       {/* Stats Grid - Role Specific with Animations */}
       {dashboardData.stats.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4'>
           {dashboardData.stats.map((stat, index) => (
             <AnimatedStatCard
               key={index}
@@ -795,74 +696,77 @@ const Dashboard = () => {
       )}
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className='grid grid-cols-1 gap-8 lg:grid-cols-3'>
         {/* Left Column - 2/3 width */}
-        <div className="lg:col-span-2 space-y-8">
-          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 p-6 shadow-sm hover:shadow-md transition-all">
-            <RecentActivity activities={recentActivities} userRole={user?.role} />
+        <div className='space-y-8 lg:col-span-2'>
+          <div className='rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800'>
+            <RecentActivity
+              activities={recentActivities}
+              userRole={user?.role}
+            />
           </div>
 
           {/* Upcoming Deadlines */}
-          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 p-6 shadow-sm hover:shadow-md transition-all">
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-gradient-to-br from-orange-50 to-orange-100/50 dark:from-orange-900/30 dark:to-orange-800/20 rounded-lg flex items-center justify-center mr-3">
-                  <CalendarDaysIcon className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+          <div className='rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800'>
+            <div className='mb-8 flex items-center justify-between'>
+              <div className='flex items-center'>
+                <div className='mr-3 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-orange-50 to-orange-100/50 dark:from-orange-900/30 dark:to-orange-800/20'>
+                  <CalendarDaysIcon className='h-5 w-5 text-orange-600 dark:text-orange-400' />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                  <h3 className='text-xl font-bold text-gray-900 dark:text-white'>
                     Upcoming Deadlines
                   </h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  <p className='mt-1 text-sm text-gray-600 dark:text-gray-400'>
                     Stay on track with your tasks
                   </p>
                 </div>
               </div>
               <button
-                onClick={() => navigate("/meetings")}
-                className="group text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium flex items-center bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 px-4 py-2 rounded-xl transition-all duration-300 hover:shadow-md"
+                onClick={() => navigate('/meetings')}
+                className='group flex items-center rounded-xl bg-blue-50 px-4 py-2 text-sm font-medium text-blue-600 transition-all duration-300 hover:bg-blue-100 hover:text-blue-700 hover:shadow-md dark:bg-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-900/50 dark:hover:text-blue-300'
               >
                 View calendar
-                <ChevronRightIcon className="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
+                <ChevronRightIcon className='ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1' />
               </button>
             </div>
 
-            <div className="space-y-4">
+            <div className='space-y-4'>
               {upcomingDeadlines.map((deadline) => (
                 <div
                   key={deadline.id}
-                  className={`flex items-center justify-between p-5 border rounded-xl hover:shadow-md transition-all duration-300 ${
-                    deadline.priority === "high"
-                      ? "border-red-200 dark:border-red-800 bg-gradient-to-r from-red-50 to-red-100/50 dark:from-red-900/30 dark:to-red-800/20"
-                      : "border-yellow-200 dark:border-yellow-800 bg-gradient-to-r from-yellow-50 to-yellow-100/50 dark:from-yellow-900/30 dark:to-yellow-800/20"
+                  className={`flex items-center justify-between rounded-xl border p-5 transition-all duration-300 hover:shadow-md ${
+                    deadline.priority === 'high'
+                      ? 'border-red-200 bg-gradient-to-r from-red-50 to-red-100/50 dark:border-red-800 dark:from-red-900/30 dark:to-red-800/20'
+                      : 'border-yellow-200 bg-gradient-to-r from-yellow-50 to-yellow-100/50 dark:border-yellow-800 dark:from-yellow-900/30 dark:to-yellow-800/20'
                   }`}
                 >
-                  <div className="flex items-center">
+                  <div className='flex items-center'>
                     <div
-                      className={`w-3 h-3 rounded-full mr-4 ${
-                        deadline.priority === "high"
-                          ? "bg-red-500"
-                          : "bg-yellow-500"
+                      className={`mr-4 h-3 w-3 rounded-full ${
+                        deadline.priority === 'high'
+                          ? 'bg-red-500'
+                          : 'bg-yellow-500'
                       }`}
                     ></div>
                     <div>
-                      <div className="font-bold text-gray-900 dark:text-white">
+                      <div className='font-bold text-gray-900 dark:text-white'>
                         {deadline.title}
                       </div>
-                      <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                        <ClockIcon className="w-3 h-3 inline mr-1" />
+                      <div className='mt-1 text-sm text-gray-600 dark:text-gray-400'>
+                        <ClockIcon className='mr-1 inline h-3 w-3' />
                         Due {deadline.due} • {deadline.time}
                       </div>
                     </div>
                   </div>
                   <span
-                    className={`px-4 py-1.5 rounded-full text-xs font-bold ${
-                      deadline.priority === "high"
-                        ? "bg-gradient-to-r from-red-100 to-red-50 dark:from-red-900/40 dark:to-red-800/30 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800"
-                        : "bg-gradient-to-r from-yellow-100 to-yellow-50 dark:from-yellow-900/40 dark:to-yellow-800/30 text-yellow-700 dark:text-yellow-400 border border-yellow-200 dark:border-yellow-800"
+                    className={`rounded-full px-4 py-1.5 text-xs font-bold ${
+                      deadline.priority === 'high'
+                        ? 'border border-red-200 bg-gradient-to-r from-red-100 to-red-50 text-red-700 dark:border-red-800 dark:from-red-900/40 dark:to-red-800/30 dark:text-red-400'
+                        : 'border border-yellow-200 bg-gradient-to-r from-yellow-100 to-yellow-50 text-yellow-700 dark:border-yellow-800 dark:from-yellow-900/40 dark:to-yellow-800/30 dark:text-yellow-400'
                     }`}
                   >
-                    {deadline.priority === "high" ? "URGENT" : "UPCOMING"}
+                    {deadline.priority === 'high' ? 'URGENT' : 'UPCOMING'}
                   </span>
                 </div>
               ))}
@@ -871,64 +775,64 @@ const Dashboard = () => {
         </div>
 
         {/* Right Column - 1/3 width */}
-        <div className="space-y-8">
+        <div className='space-y-8'>
           {/* Notification Center */}
-          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 p-6 shadow-sm hover:shadow-md transition-all">
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/30 dark:to-blue-800/20 rounded-lg flex items-center justify-center mr-3">
-                  <BellIcon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+          <div className='rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800'>
+            <div className='mb-8 flex items-center justify-between'>
+              <div className='flex items-center'>
+                <div className='mr-3 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/30 dark:to-blue-800/20'>
+                  <BellIcon className='h-5 w-5 text-blue-600 dark:text-blue-400' />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                  <h3 className='text-xl font-bold text-gray-900 dark:text-white'>
                     Notifications
                   </h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  <p className='mt-1 text-sm text-gray-600 dark:text-gray-400'>
                     {notifications.filter((n) => !n.read).length} unread
                   </p>
                 </div>
               </div>
               <button
                 onClick={markAllNotificationsAsRead}
-                className="group text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 px-4 py-2 rounded-xl transition-all duration-300 hover:shadow-md hover:scale-105"
+                className='group rounded-xl bg-blue-50 px-4 py-2 text-sm font-medium text-blue-600 transition-all duration-300 hover:scale-105 hover:bg-blue-100 hover:text-blue-700 hover:shadow-md dark:bg-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-900/50 dark:hover:text-blue-300'
               >
                 Mark all read
               </button>
             </div>
 
-            <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
+            <div className='max-h-96 space-y-4 overflow-y-auto pr-2'>
               {notifications.map((notification) => (
                 <div
                   key={notification.id}
-                  className={`p-4 border rounded-xl transition-all duration-300 cursor-pointer hover:shadow-sm ${
+                  className={`cursor-pointer rounded-xl border p-4 transition-all duration-300 hover:shadow-sm ${
                     notification.read
-                      ? "border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800"
-                      : "border-blue-200 dark:border-blue-800 bg-gradient-to-r from-blue-50 to-blue-100/50 dark:from-blue-900/30 dark:to-blue-800/20"
+                      ? 'border-gray-200 bg-white dark:border-slate-700 dark:bg-slate-800'
+                      : 'border-blue-200 bg-gradient-to-r from-blue-50 to-blue-100/50 dark:border-blue-800 dark:from-blue-900/30 dark:to-blue-800/20'
                   }`}
                   onClick={() => handleNotificationClick(notification.id)}
                 >
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <div className="flex items-center mb-2">
+                  <div className='flex items-start justify-between'>
+                    <div className='flex-1'>
+                      <div className='mb-2 flex items-center'>
                         <span
-                          className={`w-2 h-2 rounded-full mr-2 ${
+                          className={`mr-2 h-2 w-2 rounded-full ${
                             notification.read
-                              ? "bg-gray-300 dark:bg-gray-600"
-                              : "bg-blue-500"
+                              ? 'bg-gray-300 dark:bg-gray-600'
+                              : 'bg-blue-500'
                           }`}
                         ></span>
-                        <span className="text-xs font-semibold px-2 py-1 rounded bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300">
+                        <span className='rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-700 dark:bg-slate-700 dark:text-gray-300'>
                           {notification.type.toUpperCase()}
                         </span>
-                        <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">
+                        <span className='ml-2 text-xs text-gray-500 dark:text-gray-400'>
                           {notification.time}
                         </span>
                       </div>
                       <p
                         className={`font-medium ${
                           notification.read
-                            ? "text-gray-700 dark:text-gray-300"
-                            : "text-gray-900 dark:text-white"
+                            ? 'text-gray-700 dark:text-gray-300'
+                            : 'text-gray-900 dark:text-white'
                         }`}
                       >
                         {notification.message}
@@ -942,91 +846,94 @@ const Dashboard = () => {
 
           {/* Today's Meetings */}
           {todayMeetings.length > 0 && (
-            <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-200 dark:border-slate-700 shadow-sm p-6">
-              <UpcomingMeetings meetings={todayMeetings} userRole={user?.role} />
+            <div className='rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
+              <UpcomingMeetings
+                meetings={todayMeetings}
+                userRole={user?.role}
+              />
             </div>
           )}
 
           {/* Quick Resources */}
-          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 p-6 shadow-sm hover:shadow-md transition-all">
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-900/30 dark:to-green-800/20 rounded-lg flex items-center justify-center mr-3">
-                  <BookOpenIcon className="w-5 h-5 text-green-600 dark:text-green-400" />
+          <div className='rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800'>
+            <div className='mb-8 flex items-center justify-between'>
+              <div className='flex items-center'>
+                <div className='mr-3 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-900/30 dark:to-green-800/20'>
+                  <BookOpenIcon className='h-5 w-5 text-green-600 dark:text-green-400' />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                  <h3 className='text-xl font-bold text-gray-900 dark:text-white'>
                     Quick Access
                   </h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  <p className='mt-1 text-sm text-gray-600 dark:text-gray-400'>
                     Frequently used resources
                   </p>
                 </div>
               </div>
-              <CheckCircleIcon className="w-5 h-5 text-green-500 dark:text-green-400" />
+              <CheckCircleIcon className='h-5 w-5 text-green-500 dark:text-green-400' />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className='grid grid-cols-2 gap-4'>
               {[
                 {
                   icon: DocumentTextIcon,
-                  label: "Materials",
-                  color: "blue",
-                  path: "/resources",
+                  label: 'Materials',
+                  color: 'blue',
+                  path: '/resources',
                 },
                 {
                   icon: CalendarDaysIcon,
-                  label: "Calendar",
-                  color: "purple",
-                  path: "/meetings",
+                  label: 'Calendar',
+                  color: 'purple',
+                  path: '/meetings',
                 },
                 {
                   icon: ChartBarSquareIcon,
-                  label: "Grades",
-                  color: "green",
-                  path: "/analytics/grades",
+                  label: 'Grades',
+                  color: 'green',
+                  path: '/analytics/grades',
                 },
                 {
                   icon: AdjustmentsIcon,
-                  label: "Settings",
-                  color: "gray",
-                  path: "/settings",
+                  label: 'Settings',
+                  color: 'gray',
+                  path: '/settings',
                 },
               ].map((resource, index) => {
                 const bgColorClass =
-                  resource.color === "blue"
-                    ? "bg-blue-50 dark:bg-blue-900/20"
-                    : resource.color === "purple"
-                      ? "bg-purple-50 dark:bg-purple-900/20"
-                      : resource.color === "green"
-                        ? "bg-green-50 dark:bg-green-900/20"
-                        : "bg-gray-50 dark:bg-slate-700/30";
+                  resource.color === 'blue'
+                    ? 'bg-blue-50 dark:bg-blue-900/20'
+                    : resource.color === 'purple'
+                      ? 'bg-purple-50 dark:bg-purple-900/20'
+                      : resource.color === 'green'
+                        ? 'bg-green-50 dark:bg-green-900/20'
+                        : 'bg-gray-50 dark:bg-slate-700/30';
                 const iconColorClass =
-                  resource.color === "blue"
-                    ? "text-blue-600 dark:text-blue-400"
-                    : resource.color === "purple"
-                      ? "text-purple-600 dark:text-purple-400"
-                      : resource.color === "green"
-                        ? "text-green-600 dark:text-green-400"
-                        : "text-gray-600 dark:text-gray-400";
+                  resource.color === 'blue'
+                    ? 'text-blue-600 dark:text-blue-400'
+                    : resource.color === 'purple'
+                      ? 'text-purple-600 dark:text-purple-400'
+                      : resource.color === 'green'
+                        ? 'text-green-600 dark:text-green-400'
+                        : 'text-gray-600 dark:text-gray-400';
 
                 return (
                   <button
                     key={index}
                     onClick={() => navigate(resource.path)}
-                    className="group relative p-5 border border-gray-200 dark:border-slate-700 rounded-xl hover:border-transparent text-center transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-slate-800 overflow-hidden hover:shadow-lg dark:hover:shadow-slate-700/30"
+                    className='group relative overflow-hidden rounded-xl border border-gray-200 p-5 text-center transition-all duration-300 hover:border-transparent hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:border-slate-700 dark:hover:shadow-slate-700/30 dark:focus:ring-offset-slate-800'
                     aria-label={resource.label}
                   >
                     <div
-                      className={`absolute inset-0 ${bgColorClass} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
+                      className={`absolute inset-0 ${bgColorClass} opacity-0 transition-opacity duration-300 group-hover:opacity-100`}
                     />
-                    <div className="relative z-10">
+                    <div className='relative z-10'>
                       <div
-                        className={`${iconColorClass} flex justify-center mb-3 transform transition-transform duration-300 group-hover:scale-125 group-hover:-translate-y-1`}
+                        className={`${iconColorClass} mb-3 flex transform justify-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-125`}
                       >
-                        <resource.icon className="w-7 h-7" aria-hidden="true" />
+                        <resource.icon className='h-7 w-7' aria-hidden='true' />
                       </div>
-                      <div className="font-semibold text-gray-900 dark:text-white transition-colors">
+                      <div className='font-semibold text-gray-900 transition-colors dark:text-white'>
                         {resource.label}
                       </div>
                     </div>
@@ -1039,62 +946,65 @@ const Dashboard = () => {
       </div>
 
       {/* Bottom Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Project Progress */}
-          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-gray-100 dark:border-slate-700 p-6 shadow-sm hover:shadow-md transition-all">
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-gradient-to-br from-indigo-50 to-indigo-100/50 dark:from-indigo-900/30 dark:to-indigo-800/20 rounded-lg flex items-center justify-center mr-3">
-                  <ChartBarIcon className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                    Project Progress
-                  </h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                    Track project completion
-                  </p>
-                </div>
+      <div className='grid grid-cols-1 gap-8 lg:grid-cols-2'>
+        {/* Project Progress */}
+        <div className='rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800'>
+          <div className='mb-8 flex items-center justify-between'>
+            <div className='flex items-center'>
+              <div className='mr-3 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-50 to-indigo-100/50 dark:from-indigo-900/30 dark:to-indigo-800/20'>
+                <ChartBarIcon className='h-5 w-5 text-indigo-600 dark:text-indigo-400' />
               </div>
-              <button
-                onClick={() => navigate("/projects")}
-                className="group text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium flex items-center bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 px-4 py-2 rounded-xl transition-all duration-300 hover:shadow-md"
-              >
-                View all
-                <ChevronRightIcon className="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
-              </button>
+              <div>
+                <h3 className='text-xl font-bold text-gray-900 dark:text-white'>
+                  Project Progress
+                </h3>
+                <p className='mt-1 text-sm text-gray-600 dark:text-gray-400'>
+                  Track project completion
+                </p>
+              </div>
             </div>
-
-            <ProgressVisualization projects={projectProgressData} userRole={user?.role} />
+            <button
+              onClick={() => navigate('/projects')}
+              className='group flex items-center rounded-xl bg-blue-50 px-4 py-2 text-sm font-medium text-blue-600 transition-all duration-300 hover:bg-blue-100 hover:text-blue-700 hover:shadow-md dark:bg-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-900/50 dark:hover:text-blue-300'
+            >
+              View all
+              <ChevronRightIcon className='ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1' />
+            </button>
           </div>
 
-          {/* System Metrics */}
-          <SystemMetrics stats={statsData} />
+          <ProgressVisualization
+            projects={projectProgressData}
+            userRole={user?.role}
+          />
+        </div>
+
+        {/* System Metrics */}
+        <SystemMetrics stats={statsData} />
       </div>
 
       {/* Role-specific Content */}
-      {user?.role === "admin" && (
-        <div className="bg-gradient-to-r from-yellow-50 to-yellow-100/50 dark:from-yellow-900/30 dark:to-yellow-800/20 border border-yellow-200 dark:border-yellow-800 rounded-2xl p-6 shadow-sm">
-          <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
-            <div className="flex items-start">
-              <div className="flex-shrink-0">
-                <InformationCircleIcon className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
+      {user?.role === 'admin' && (
+        <div className='rounded-2xl border border-yellow-200 bg-gradient-to-r from-yellow-50 to-yellow-100/50 p-6 shadow-sm dark:border-yellow-800 dark:from-yellow-900/30 dark:to-yellow-800/20'>
+          <div className='flex flex-col justify-between gap-6 md:flex-row md:items-start'>
+            <div className='flex items-start'>
+              <div className='flex-shrink-0'>
+                <InformationCircleIcon className='h-6 w-6 text-yellow-600 dark:text-yellow-400' />
               </div>
-              <div className="ml-4">
-                <h4 className="text-lg font-bold text-yellow-800 dark:text-yellow-200 mb-3">
+              <div className='ml-4'>
+                <h4 className='mb-3 text-lg font-bold text-yellow-800 dark:text-yellow-200'>
                   Administrator Alerts
                 </h4>
-                <div className="text-sm text-yellow-700 dark:text-yellow-300 space-y-2">
+                <div className='space-y-2 text-sm text-yellow-700 dark:text-yellow-300'>
                   {notifications.length > 0 ? (
                     notifications.slice(0, 3).map((notif, idx) => (
-                      <p key={idx} className="flex items-center">
-                        <span className="w-1.5 h-1.5 bg-yellow-500 rounded-full mr-2"></span>
+                      <p key={idx} className='flex items-center'>
+                        <span className='mr-2 h-1.5 w-1.5 rounded-full bg-yellow-500'></span>
                         {notif.message}
                       </p>
                     ))
                   ) : (
-                    <p className="flex items-center">
-                      <span className="w-1.5 h-1.5 bg-yellow-500 rounded-full mr-2"></span>
+                    <p className='flex items-center'>
+                      <span className='mr-2 h-1.5 w-1.5 rounded-full bg-yellow-500'></span>
                       No urgent alerts at this time.
                     </p>
                   )}
@@ -1102,8 +1012,8 @@ const Dashboard = () => {
               </div>
             </div>
             <button
-              onClick={() => navigate("/admin-dashboard")}
-              className="px-5 py-2.5 bg-gradient-to-r from-yellow-600 to-yellow-500 text-white rounded-xl hover:shadow-lg hover:from-yellow-700 hover:to-yellow-600 transition-all duration-300 font-medium shadow-md whitespace-nowrap"
+              onClick={() => navigate('/admin-dashboard')}
+              className='whitespace-nowrap rounded-xl bg-gradient-to-r from-yellow-600 to-yellow-500 px-5 py-2.5 font-medium text-white shadow-md transition-all duration-300 hover:from-yellow-700 hover:to-yellow-600 hover:shadow-lg'
             >
               Manage Alerts
             </button>
@@ -1111,18 +1021,18 @@ const Dashboard = () => {
         </div>
       )}
 
-      {user?.role === "student" && (
-        <div className="bg-gradient-to-r from-blue-50 to-blue-100/50 dark:from-blue-900/30 dark:to-blue-800/20 border border-blue-200 dark:border-blue-800 rounded-2xl p-6 shadow-sm">
-          <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
-            <div className="flex items-start">
-              <div className="flex-shrink-0">
-                <LightBulbIcon className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+      {user?.role === 'student' && (
+        <div className='rounded-2xl border border-blue-200 bg-gradient-to-r from-blue-50 to-blue-100/50 p-6 shadow-sm dark:border-blue-800 dark:from-blue-900/30 dark:to-blue-800/20'>
+          <div className='flex flex-col justify-between gap-6 md:flex-row md:items-start'>
+            <div className='flex items-start'>
+              <div className='flex-shrink-0'>
+                <LightBulbIcon className='h-6 w-6 text-blue-600 dark:text-blue-400' />
               </div>
-              <div className="ml-4">
-                <h4 className="text-lg font-bold text-blue-800 dark:text-blue-200 mb-3">
+              <div className='ml-4'>
+                <h4 className='mb-3 text-lg font-bold text-blue-800 dark:text-blue-200'>
                   Study Tip of the Day
                 </h4>
-                <p className="text-blue-700 dark:text-blue-300">
+                <p className='text-blue-700 dark:text-blue-300'>
                   Break your study sessions into 25-minute focused intervals
                   with 5-minute breaks (Pomodoro Technique). This improves
                   retention and prevents burnout.
@@ -1130,8 +1040,8 @@ const Dashboard = () => {
               </div>
             </div>
             <button
-              onClick={() => navigate("/resources")}
-              className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-xl hover:shadow-lg hover:from-blue-700 hover:to-blue-600 transition-all duration-300 font-medium shadow-md whitespace-nowrap"
+              onClick={() => navigate('/resources')}
+              className='whitespace-nowrap rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 px-5 py-2.5 font-medium text-white shadow-md transition-all duration-300 hover:from-blue-700 hover:to-blue-600 hover:shadow-lg'
             >
               More Tips
             </button>

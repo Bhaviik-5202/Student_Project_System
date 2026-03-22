@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const reportSchema = new mongoose.Schema(
   {
@@ -7,34 +7,34 @@ const reportSchema = new mongoose.Schema(
     type: {
       type: String,
       enum: [
-        "project-status",
-        "student-performance",
-        "attendance",
-        "resource-utilization",
-        "timeline",
-        "guide-performance",
+        'project-status',
+        'student-performance',
+        'attendance',
+        'resource-utilization',
+        'timeline',
+        'guide-performance',
       ],
       required: true,
     },
     format: {
       type: String,
-      enum: ["pdf", "excel", "csv", "word"],
+      enum: ['pdf', 'excel', 'csv', 'word'],
       required: true,
     },
-    size: { type: String, default: "0 KB" },
+    size: { type: String, default: '0 KB' },
     status: {
       type: String,
-      enum: ["generating", "ready", "failed"],
-      default: "ready",
+      enum: ['generating', 'ready', 'failed'],
+      default: 'ready',
     },
     generatedBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
       required: true,
     },
     parameters: { type: Object, default: {} },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
-module.exports = mongoose.model("Report", reportSchema);
+module.exports = mongoose.model('Report', reportSchema);

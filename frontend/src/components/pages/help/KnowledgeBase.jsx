@@ -1,6 +1,6 @@
-import React, { memo, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import api from "../../../utils/api";
+import React, { memo, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import api from '../../../utils/api';
 
 const KnowledgeBase = memo(() => {
   const navigate = useNavigate();
@@ -11,13 +11,14 @@ const KnowledgeBase = memo(() => {
   useEffect(() => {
     const fetchKbData = async () => {
       try {
-        const response = await api.get("/help/kb");
+        const response = await api.get('/help/kb');
         if (response.success && response.data) {
           if (response.data.categories) setCategories(response.data.categories);
-          if (response.data.popularArticles) setPopularArticles(response.data.popularArticles);
+          if (response.data.popularArticles)
+            setPopularArticles(response.data.popularArticles);
         }
       } catch (error) {
-        console.error("Failed to fetch knowledge base data", error);
+        console.error('Failed to fetch knowledge base data', error);
       } finally {
         setLoading(false);
       }
@@ -25,23 +26,23 @@ const KnowledgeBase = memo(() => {
     fetchKbData();
   }, []);
 
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-6">
+    <div className='min-h-screen bg-slate-50 dark:bg-slate-900'>
+      <div className='container mx-auto px-4 py-8'>
+        <div className='mb-6'>
           <button
-            onClick={() => navigate("/help")}
-            className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 flex items-center mb-4"
+            onClick={() => navigate('/help')}
+            className='mb-4 flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300'
           >
             ← Back to Help Center
           </button>
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
+          <div className='mb-8 text-center'>
+            <h1 className='mb-4 text-3xl font-bold text-slate-900 dark:text-white'>
               Knowledge Base
             </h1>
-            <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+            <p className='mx-auto max-w-2xl text-slate-600 dark:text-slate-400'>
               Find detailed guides, tutorials, and documentation for all system
               features
             </p>
@@ -49,46 +50,50 @@ const KnowledgeBase = memo(() => {
         </div>
 
         {/* Search */}
-        <div className="max-w-3xl mx-auto mb-8">
-          <div className="relative">
+        <div className='mx-auto mb-8 max-w-3xl'>
+          <div className='relative'>
             <input
-              type="text"
-              placeholder="Search knowledge base..."
-              className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
+              type='text'
+              placeholder='Search knowledge base...'
+              className='w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-800 dark:text-white dark:focus:ring-blue-400'
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <button className="absolute right-3 top-3 text-slate-400 dark:text-slate-500">
+            <button className='absolute right-3 top-3 text-slate-400 dark:text-slate-500'>
               🔍
             </button>
           </div>
         </div>
 
         {loading ? (
-          <div className="text-center py-12 text-slate-500">Loading knowledge base...</div>
+          <div className='py-12 text-center text-slate-500'>
+            Loading knowledge base...
+          </div>
         ) : (
           <>
             {/* Categories */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <div className='mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
               {categories.map((category) => (
                 <div
                   key={category.id || category._id}
-                  className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6"
+                  className='rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800'
                 >
-                  <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
+                  <h3 className='mb-4 text-lg font-semibold text-slate-900 dark:text-white'>
                     {category.name}
                   </h3>
-                  <div className="space-y-3">
+                  <div className='space-y-3'>
                     {category.articles?.map((article) => (
                       <button
                         key={article.id || article._id}
-                        onClick={() => navigate(`/help?article=${article.id || article._id}`)}
-                        className="block w-full text-left p-3 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors cursor-pointer"
+                        onClick={() =>
+                          navigate(`/help?article=${article.id || article._id}`)
+                        }
+                        className='block w-full cursor-pointer rounded-lg border border-slate-200 p-3 text-left transition-colors hover:bg-slate-50 dark:border-slate-600 dark:hover:bg-slate-700'
                       >
-                        <div className="font-medium text-slate-900 dark:text-white">
+                        <div className='font-medium text-slate-900 dark:text-white'>
                           {article.title}
                         </div>
-                        <div className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                        <div className='mt-1 text-sm text-slate-500 dark:text-slate-400'>
                           {article.views || 0} views
                         </div>
                       </button>
@@ -99,25 +104,25 @@ const KnowledgeBase = memo(() => {
             </div>
 
             {/* Popular Articles */}
-            <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
+            <div className='rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800'>
+              <h3 className='mb-4 text-lg font-semibold text-slate-900 dark:text-white'>
                 Popular Articles
               </h3>
-              <div className="space-y-4">
+              <div className='space-y-4'>
                 {popularArticles.map((article, index) => (
                   <div
                     key={article.id || article._id || index}
-                    className="flex items-center justify-between p-4 border border-slate-200 dark:border-slate-600 rounded-lg"
+                    className='flex items-center justify-between rounded-lg border border-slate-200 p-4 dark:border-slate-600'
                   >
                     <div>
-                      <div className="font-medium text-slate-900 dark:text-white">
+                      <div className='font-medium text-slate-900 dark:text-white'>
                         {article.title}
                       </div>
-                      <div className="text-sm text-slate-600 dark:text-slate-400">
+                      <div className='text-sm text-slate-600 dark:text-slate-400'>
                         {article.category} • {article.views || 0} views
                       </div>
                     </div>
-                    <button className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
+                    <button className='text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300'>
                       Read →
                     </button>
                   </div>
@@ -131,6 +136,6 @@ const KnowledgeBase = memo(() => {
   );
 });
 
-KnowledgeBase.displayName = "KnowledgeBase";
+KnowledgeBase.displayName = 'KnowledgeBase';
 
 export default KnowledgeBase;

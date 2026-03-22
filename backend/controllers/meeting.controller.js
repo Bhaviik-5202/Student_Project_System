@@ -1,5 +1,5 @@
-const meetingService = require("../services/meeting.service");
-const sendResponse = require("../utils/response");
+const meetingService = require('../services/meeting.service');
+const sendResponse = require('../utils/response');
 
 /**
  * Meeting Controller
@@ -21,22 +21,22 @@ exports.createMeeting = async (req, res) => {
         success: !result.error,
         message: result.error
           ? result.message
-          : "Meeting scheduled successfully",
+          : 'Meeting scheduled successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 201,
+      result.error ? 400 : 201
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to schedule meeting",
+        message: 'Failed to schedule meeting',
         data: null,
         error: error.message,
       },
-      400,
+      400
     );
   }
 };
@@ -56,23 +56,23 @@ exports.getAllMeetings = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to fetch meetings"
-          : "Meetings fetched successfully",
+          ? 'Failed to fetch meetings'
+          : 'Meetings fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 200,
+      result.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -91,23 +91,23 @@ exports.getMeetingById = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Meeting not found"
-          : "Meeting fetched successfully",
+          ? 'Meeting not found'
+          : 'Meeting fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -126,23 +126,23 @@ exports.updateMeeting = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Meeting not found"
-          : "Meeting updated successfully",
+          ? 'Meeting not found'
+          : 'Meeting updated successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -161,23 +161,23 @@ exports.deleteMeeting = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Meeting not found"
-          : "Meeting deleted successfully",
+          ? 'Meeting not found'
+          : 'Meeting deleted successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -194,22 +194,22 @@ exports.joinMeeting = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? result.message : "Joined meeting successfully",
+        message: result.error ? result.message : 'Joined meeting successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 200,
+      result.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };

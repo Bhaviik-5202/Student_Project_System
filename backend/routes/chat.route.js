@@ -4,14 +4,14 @@
  * Handles interpersonal and group chat communications.
  */
 
-const express = require("express");
-const { body, param } = require("express-validator");
+const express = require('express');
+const { body, param } = require('express-validator');
 const router = express.Router();
 
 // Controllers and Middlewares
-const chatController = require("../controllers/chat.controller");
-const authMiddleware = require("../middleware/auth.middleware");
-const validateRequest = require("../middleware/validateRequest");
+const chatController = require('../controllers/chat.controller');
+const authMiddleware = require('../middleware/auth.middleware');
+const validateRequest = require('../middleware/validateRequest');
 
 /**
  * @route   POST /api/v1/chats
@@ -19,26 +19,26 @@ const validateRequest = require("../middleware/validateRequest");
  * @access  Private (Authenticated Users)
  */
 router.post(
-  "/",
+  '/',
   authMiddleware,
   [
-    body("members")
+    body('members')
       .isArray({ min: 1 })
-      .withMessage("Members must be a non-empty array"),
+      .withMessage('Members must be a non-empty array'),
 
-    body("members.*")
+    body('members.*')
       .isMongoId()
-      .withMessage("Each member must be a valid user ID"),
+      .withMessage('Each member must be a valid user ID'),
 
-    body("isGroup").optional().isBoolean(),
+    body('isGroup').optional().isBoolean(),
 
-    body("groupName")
-      .if(body("isGroup").equals("true"))
+    body('groupName')
+      .if(body('isGroup').equals('true'))
       .notEmpty()
-      .withMessage("Group name is required for group chats"),
+      .withMessage('Group name is required for group chats'),
   ],
   validateRequest,
-  chatController.createChat,
+  chatController.createChat
 );
 
 /**
@@ -46,7 +46,7 @@ router.post(
  * @desc    Get all chats of logged-in user
  * @access  Private (Authenticated Users)
  */
-router.get("/", authMiddleware, chatController.getUserChats);
+router.get('/', authMiddleware, chatController.getUserChats);
 
 /**
  * @route   GET /api/v1/chats/:chatId
@@ -54,11 +54,11 @@ router.get("/", authMiddleware, chatController.getUserChats);
  * @access  Private (Authenticated Users)
  */
 router.get(
-  "/:chatId",
+  '/:chatId',
   authMiddleware,
-  [param("chatId").isMongoId().withMessage("Invalid Chat ID")],
+  [param('chatId').isMongoId().withMessage('Invalid Chat ID')],
   validateRequest,
-  chatController.getChatById,
+  chatController.getChatById
 );
 
 /**
@@ -67,11 +67,11 @@ router.get(
  * @access  Private (Authenticated Users)
  */
 router.put(
-  "/:chatId",
+  '/:chatId',
   authMiddleware,
-  [param("chatId").isMongoId().withMessage("Invalid Chat ID")],
+  [param('chatId').isMongoId().withMessage('Invalid Chat ID')],
   validateRequest,
-  chatController.updateChat,
+  chatController.updateChat
 );
 
 /**
@@ -80,11 +80,11 @@ router.put(
  * @access  Private (Authenticated Users)
  */
 router.delete(
-  "/:chatId",
+  '/:chatId',
   authMiddleware,
-  [param("chatId").isMongoId().withMessage("Invalid Chat ID")],
+  [param('chatId').isMongoId().withMessage('Invalid Chat ID')],
   validateRequest,
-  chatController.deleteChat,
+  chatController.deleteChat
 );
 
 module.exports = router;

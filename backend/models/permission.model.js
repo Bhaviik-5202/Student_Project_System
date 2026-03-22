@@ -1,18 +1,18 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const permissionSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: [true, "User is required"],
+      ref: 'User',
+      required: [true, 'User is required'],
       index: true,
     },
     module: {
       type: String,
-      required: [true, "Module name is required"],
+      required: [true, 'Module name is required'],
       trim: true,
-      maxlength: [100, "Module name cannot exceed 100 characters"],
+      maxlength: [100, 'Module name cannot exceed 100 characters'],
     },
     canRead: {
       type: Boolean,
@@ -29,9 +29,9 @@ const permissionSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 permissionSchema.index({ user: 1, module: 1 }, { unique: true });
 
-module.exports = mongoose.model("Permission", permissionSchema);
+module.exports = mongoose.model('Permission', permissionSchema);

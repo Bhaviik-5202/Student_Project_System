@@ -1,19 +1,19 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const courseSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "Course name is required"],
+      required: [true, 'Course name is required'],
       trim: true,
-      maxlength: [150, "Course name cannot exceed 150 characters"],
+      maxlength: [150, 'Course name cannot exceed 150 characters'],
     },
     code: {
       type: String,
-      required: [true, "Course code is required"],
+      required: [true, 'Course code is required'],
       trim: true,
       uppercase: true,
-      maxlength: [20, "Course code cannot exceed 20 characters"],
+      maxlength: [20, 'Course code cannot exceed 20 characters'],
     },
     description: {
       type: String,
@@ -22,13 +22,13 @@ const courseSchema = new mongoose.Schema(
     },
     faculty: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Staff",
-      required: [true, "Faculty is required"],
+      ref: 'Staff',
+      required: [true, 'Faculty is required'],
     },
     semester: {
       type: String,
       trim: true,
-      default: "Fall 2024",
+      default: 'Fall 2024',
     },
     credits: {
       type: Number,
@@ -37,12 +37,12 @@ const courseSchema = new mongoose.Schema(
     schedule: {
       type: String,
       trim: true,
-      default: "TBA",
+      default: 'TBA',
     },
     room: {
       type: String,
       trim: true,
-      default: "TBA",
+      default: 'TBA',
     },
     syllabus: [
       {
@@ -55,16 +55,16 @@ const courseSchema = new mongoose.Schema(
       {
         title: String,
         url: String,
-        type: { type: String, default: "PDF" },
+        type: { type: String, default: 'PDF' },
       },
     ],
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 courseSchema.index({ code: 1 }, { unique: true });
 courseSchema.index({ faculty: 1 });
 
-module.exports = mongoose.model("Course", courseSchema);
+module.exports = mongoose.model('Course', courseSchema);

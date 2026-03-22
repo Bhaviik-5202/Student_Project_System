@@ -1,5 +1,5 @@
 // src/components/pages/dashboard/PerformanceTrendChart.jsx
-import { memo, useState } from "react";
+import { memo, useState } from 'react';
 
 const PerformanceTrendChart = memo(({ data }) => {
   const [activePoint, setActivePoint] = useState(null);
@@ -47,48 +47,48 @@ const PerformanceTrendChart = memo(({ data }) => {
   };
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
+    <div className='rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
+      <div className='mb-6 flex items-center justify-between'>
+        <h3 className='text-lg font-semibold text-slate-900 dark:text-white'>
           📈 Performance Trend
         </h3>
-        <span className="text-sm text-slate-600 dark:text-slate-400">
+        <span className='text-sm text-slate-600 dark:text-slate-400'>
           Last 5 months
         </span>
       </div>
 
-      <div className="relative h-48">
+      <div className='relative h-48'>
         {/* Chart container */}
         <svg
-          viewBox="0 0 100 100"
-          className="w-full h-full"
-          preserveAspectRatio="none"
+          viewBox='0 0 100 100'
+          className='h-full w-full'
+          preserveAspectRatio='none'
         >
           {/* Grid lines */}
           {[0, 25, 50, 75, 100].map((line) => (
             <line
               key={`h-line-${line}`}
-              x1="0"
+              x1='0'
               y1={line}
-              x2="100"
+              x2='100'
               y2={line}
-              stroke="#cbd5e1"
-              strokeWidth="0.5"
-              className="dark:stroke-slate-600"
+              stroke='#cbd5e1'
+              strokeWidth='0.5'
+              className='dark:stroke-slate-600'
             />
           ))}
 
           {/* Area under line */}
-          <path d={getAreaPath()} fill="url(#gradient)" fillOpacity="0.2" />
+          <path d={getAreaPath()} fill='url(#gradient)' fillOpacity='0.2' />
 
           {/* Line path */}
           <path
             d={getPathData()}
-            fill="none"
-            stroke="#3B82F6"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+            fill='none'
+            stroke='#3B82F6'
+            strokeWidth='2'
+            strokeLinecap='round'
+            strokeLinejoin='round'
           />
 
           {/* Data points */}
@@ -101,11 +101,11 @@ const PerformanceTrendChart = memo(({ data }) => {
                 <circle
                   cx={x}
                   cy={y}
-                  r="2"
-                  fill="#3B82F6"
+                  r='2'
+                  fill='#3B82F6'
                   onMouseEnter={() => setActivePoint({ ...point, x, y })}
                   onMouseLeave={() => setActivePoint(null)}
-                  className="cursor-pointer hover:r-3 transition-all"
+                  className='hover:r-3 cursor-pointer transition-all'
                 />
 
                 {/* Tooltip on hover */}
@@ -114,28 +114,28 @@ const PerformanceTrendChart = memo(({ data }) => {
                     <rect
                       x={x - 20}
                       y={y - 35}
-                      width="40"
-                      height="25"
-                      rx="4"
-                      fill="#1F2937"
-                      className="shadow-lg"
+                      width='40'
+                      height='25'
+                      rx='4'
+                      fill='#1F2937'
+                      className='shadow-lg'
                     />
                     <text
                       x={x}
                       y={y - 20}
-                      textAnchor="middle"
-                      fill="white"
-                      fontSize="3"
-                      fontWeight="bold"
+                      textAnchor='middle'
+                      fill='white'
+                      fontSize='3'
+                      fontWeight='bold'
                     >
                       GPA: {point.gpa}
                     </text>
                     <text
                       x={x}
                       y={y - 12}
-                      textAnchor="middle"
-                      fill="#9CA3AF"
-                      fontSize="2.5"
+                      textAnchor='middle'
+                      fill='#9CA3AF'
+                      fontSize='2.5'
                     >
                       {point.month}
                     </text>
@@ -146,15 +146,15 @@ const PerformanceTrendChart = memo(({ data }) => {
           })}
 
           <defs>
-            <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.4" />
-              <stop offset="100%" stopColor="#3B82F6" stopOpacity="0" />
+            <linearGradient id='gradient' x1='0%' y1='0%' x2='0%' y2='100%'>
+              <stop offset='0%' stopColor='#3B82F6' stopOpacity='0.4' />
+              <stop offset='100%' stopColor='#3B82F6' stopOpacity='0' />
             </linearGradient>
           </defs>
         </svg>
 
         {/* Y-axis labels */}
-        <div className="absolute left-0 top-0 h-full flex flex-col justify-between text-xs text-gray-500">
+        <div className='absolute left-0 top-0 flex h-full flex-col justify-between text-xs text-gray-500'>
           <span>{maxGPA.toFixed(1)}</span>
           <span>{((maxGPA + minGPA) / 2).toFixed(1)}</span>
           <span>{minGPA.toFixed(1)}</span>
@@ -162,46 +162,46 @@ const PerformanceTrendChart = memo(({ data }) => {
       </div>
 
       {/* X-axis labels */}
-      <div className="flex justify-between mt-2 text-xs text-gray-500">
+      <div className='mt-2 flex justify-between text-xs text-gray-500'>
         {data.map((point, index) => (
           <span key={index}>{point.month}</span>
         ))}
       </div>
 
       {/* Current performance summary */}
-      <div className="mt-6 pt-6 border-t border-gray-200">
-        <div className="flex justify-between items-center">
+      <div className='mt-6 border-t border-gray-200 pt-6'>
+        <div className='flex items-center justify-between'>
           <div>
-            <div className="text-sm text-gray-600">Current GPA</div>
-            <div className="text-2xl font-bold text-gray-900">
+            <div className='text-sm text-gray-600'>Current GPA</div>
+            <div className='text-2xl font-bold text-gray-900'>
               {data[data.length - 1].gpa}
             </div>
           </div>
-          <div className="text-right">
-            <div className="text-sm text-gray-600">Trend</div>
+          <div className='text-right'>
+            <div className='text-sm text-gray-600'>Trend</div>
             <div
               className={`flex items-center ${
                 data[data.length - 1].gpa > data[0].gpa
-                  ? "text-green-600"
+                  ? 'text-green-600'
                   : data[data.length - 1].gpa < data[0].gpa
-                    ? "text-red-600"
-                    : "text-gray-600"
+                    ? 'text-red-600'
+                    : 'text-gray-600'
               }`}
             >
               {data[data.length - 1].gpa > data[0].gpa ? (
                 <>
-                  <i className="fas fa-arrow-up mr-1"></i>
-                  <span className="font-medium">Improving</span>
+                  <i className='fas fa-arrow-up mr-1'></i>
+                  <span className='font-medium'>Improving</span>
                 </>
               ) : data[data.length - 1].gpa < data[0].gpa ? (
                 <>
-                  <i className="fas fa-arrow-down mr-1"></i>
-                  <span className="font-medium">Declining</span>
+                  <i className='fas fa-arrow-down mr-1'></i>
+                  <span className='font-medium'>Declining</span>
                 </>
               ) : (
                 <>
-                  <i className="fas fa-minus mr-1"></i>
-                  <span className="font-medium">Stable</span>
+                  <i className='fas fa-minus mr-1'></i>
+                  <span className='font-medium'>Stable</span>
                 </>
               )}
             </div>

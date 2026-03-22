@@ -1,4 +1,4 @@
-const FAQ = require("../models/faq.model");
+const FAQ = require('../models/faq.model');
 
 /**
  * Find all FAQs matching a specific filter
@@ -11,8 +11,8 @@ exports.findAll = (filter = {}, options = {}) =>
     .sort(options.sort || { createdAt: -1 })
     .skip(options.skip || 0)
     .limit(options.limit || 0)
-    .populate(options.populate || "")
-    .select(options.select || "");
+    .populate(options.populate || '')
+    .select(options.select || '');
 
 /**
  * Locate a single FAQ by its unique identifier
@@ -22,8 +22,8 @@ exports.findAll = (filter = {}, options = {}) =>
  */
 exports.findById = (id, options = {}) =>
   FAQ.findById(id)
-    .populate(options.populate || "")
-    .select(options.select || "");
+    .populate(options.populate || '')
+    .select(options.select || '');
 
 /**
  * Persist a new FAQ record to the database

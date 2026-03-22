@@ -1,5 +1,5 @@
-const coursesService = require("../services/courses.service");
-const sendResponse = require("../utils/response");
+const coursesService = require('../services/courses.service');
+const sendResponse = require('../utils/response');
 
 /**
  * Courses Controller
@@ -18,22 +18,22 @@ exports.createCourse = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? result.message : "Course created successfully",
+        message: result.error ? result.message : 'Course created successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 201,
+      result.error ? 400 : 201
     );
   } catch (err) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to create course",
+        message: 'Failed to create course',
         data: null,
         error: err.message,
       },
-      500,
+      500
     );
   }
 };
@@ -50,22 +50,22 @@ exports.getAllCourses = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? result.message : "Courses fetched successfully",
+        message: result.error ? result.message : 'Courses fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 200,
+      result.error ? 400 : 200
     );
   } catch (err) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to fetch courses",
+        message: 'Failed to fetch courses',
         data: null,
         error: err.message,
       },
-      500,
+      500
     );
   }
 };
@@ -82,22 +82,22 @@ exports.getCourseById = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? result.message : "Course fetched successfully",
+        message: result.error ? result.message : 'Course fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (err) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to fetch course",
+        message: 'Failed to fetch course',
         data: null,
         error: err.message,
       },
-      500,
+      500
     );
   }
 };
@@ -114,22 +114,22 @@ exports.updateCourse = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? result.message : "Course updated successfully",
+        message: result.error ? result.message : 'Course updated successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (err) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to update course",
+        message: 'Failed to update course',
         data: null,
         error: err.message,
       },
-      500,
+      500
     );
   }
 };
@@ -146,22 +146,22 @@ exports.deleteCourse = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? result.message : "Course deleted successfully",
+        message: result.error ? result.message : 'Course deleted successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (err) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to delete course",
+        message: 'Failed to delete course',
         data: null,
         error: err.message,
       },
-      500,
+      500
     );
   }
 };
@@ -180,22 +180,24 @@ exports.enrollCourse = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? result.message : "Enrolled in course successfully",
+        message: result.error
+          ? result.message
+          : 'Enrolled in course successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 200,
+      result.error ? 400 : 200
     );
   } catch (err) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to enroll in course",
+        message: 'Failed to enroll in course',
         data: null,
         error: err.message,
       },
-      500,
+      500
     );
   }
 };
@@ -213,22 +215,24 @@ exports.getMyCourses = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? result.message : "My courses fetched successfully",
+        message: result.error
+          ? result.message
+          : 'My courses fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 200,
+      result.error ? 400 : 200
     );
   } catch (err) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to fetch my courses",
+        message: 'Failed to fetch my courses',
         data: null,
         error: err.message,
       },
-      500,
+      500
     );
   }
 };

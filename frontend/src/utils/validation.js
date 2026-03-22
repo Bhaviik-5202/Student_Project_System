@@ -1,63 +1,63 @@
 export const validateEmail = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!email) return "Email is required";
-  if (!emailRegex.test(email)) return "Please enter a valid email address";
-  return "";
+  if (!email) return 'Email is required';
+  if (!emailRegex.test(email)) return 'Please enter a valid email address';
+  return '';
 };
 
 export const validatePassword = (password) => {
-  if (!password) return "Password is required";
-  if (password.length < 8) return "Password must be at least 8 characters";
+  if (!password) return 'Password is required';
+  if (password.length < 8) return 'Password must be at least 8 characters';
   if (!/[A-Z]/.test(password))
-    return "Password must contain at least one uppercase letter";
+    return 'Password must contain at least one uppercase letter';
   if (!/[a-z]/.test(password))
-    return "Password must contain at least one lowercase letter";
-  if (!/\d/.test(password)) return "Password must contain at least one number";
-  return "";
+    return 'Password must contain at least one lowercase letter';
+  if (!/\d/.test(password)) return 'Password must contain at least one number';
+  return '';
 };
 
 export const validateRequired = (value, fieldName) => {
-  if (!value || value.toString().trim() === "") {
+  if (!value || value.toString().trim() === '') {
     return `${fieldName} is required`;
   }
-  return "";
+  return '';
 };
 
 export const validateMinLength = (value, minLength, fieldName) => {
   if (value.length < minLength) {
     return `${fieldName} must be at least ${minLength} characters`;
   }
-  return "";
+  return '';
 };
 
 export const validateMaxLength = (value, maxLength, fieldName) => {
   if (value.length > maxLength) {
     return `${fieldName} must be less than ${maxLength} characters`;
   }
-  return "";
+  return '';
 };
 
 export const validateNumber = (value, fieldName) => {
   if (isNaN(value)) {
     return `${fieldName} must be a number`;
   }
-  return "";
+  return '';
 };
 
 export const validatePhone = (phone) => {
   const phoneRegex = /^[+]?[1-9][\d]{1,14}$/;
-  if (!phone) return "Phone number is required";
-  if (!phoneRegex.test(phone.replace(/[^\d+]/g, ""))) {
-    return "Please enter a valid phone number";
+  if (!phone) return 'Phone number is required';
+  if (!phoneRegex.test(phone.replace(/[^\d+]/g, ''))) {
+    return 'Please enter a valid phone number';
   }
-  return "";
+  return '';
 };
 
 export const validateDate = (date, fieldName) => {
   if (!date) return `${fieldName} is required`;
   const dateObj = new Date(date);
-  if (isNaN(dateObj.getTime())) return "Please enter a valid date";
-  return "";
+  if (isNaN(dateObj.getTime())) return 'Please enter a valid date';
+  return '';
 };
 
 export const validateForm = (formData, validationRules) => {
@@ -85,16 +85,16 @@ export const validateForm = (formData, validationRules) => {
 // Common validation rule definitions
 export const VALIDATION_RULES_TEMPLATE = {
   email: [
-    { validator: validateRequired, params: "Email" },
+    { validator: validateRequired, params: 'Email' },
     { validator: validateEmail },
   ],
   password: [
-    { validator: validateRequired, params: "Password" },
+    { validator: validateRequired, params: 'Password' },
     { validator: validatePassword },
   ],
   name: [
-    { validator: validateRequired, params: "Name" },
-    { validator: validateMinLength, params: [2, "Name"] },
-    { validator: validateMaxLength, params: [50, "Name"] },
+    { validator: validateRequired, params: 'Name' },
+    { validator: validateMinLength, params: [2, 'Name'] },
+    { validator: validateMaxLength, params: [50, 'Name'] },
   ],
 };

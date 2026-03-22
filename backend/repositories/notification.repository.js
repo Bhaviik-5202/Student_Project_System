@@ -1,4 +1,4 @@
-const Notification = require("../models/notification.model");
+const Notification = require('../models/notification.model');
 
 /**
  * Find all notifications matching a specific filter
@@ -11,8 +11,8 @@ exports.findAll = (filter = {}, options = {}) =>
     .sort(options.sort || { createdAt: -1 })
     .skip(options.skip || 0)
     .limit(options.limit || 0)
-    .populate(options.populate || "")
-    .select(options.select || "");
+    .populate(options.populate || '')
+    .select(options.select || '');
 
 /**
  * Locate a single notification by its unique identifier
@@ -22,8 +22,8 @@ exports.findAll = (filter = {}, options = {}) =>
  */
 exports.findById = (id, options = {}) =>
   Notification.findById(id)
-    .populate(options.populate || "")
-    .select(options.select || "");
+    .populate(options.populate || '')
+    .select(options.select || '');
 
 /**
  * Persist a new notification record to the database
@@ -57,8 +57,7 @@ exports.remove = (id) => Notification.findByIdAndDelete(id);
  * @param {Object} data - Attributes to update
  * @returns {Promise<Object>} Update operation status
  */
-exports.updateMany = (filter, data) =>
-  Notification.updateMany(filter, data);
+exports.updateMany = (filter, data) => Notification.updateMany(filter, data);
 
 /**
  * Count all notifications matching a specific filter

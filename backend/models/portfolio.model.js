@@ -1,16 +1,16 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const portfolioSchema = new mongoose.Schema(
   {
     student: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Student",
-      required: [true, "Student is required"],
+      ref: 'Student',
+      required: [true, 'Student is required'],
     },
     projects: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Project",
+        ref: 'Project',
       },
     ],
     skills: [
@@ -33,9 +33,9 @@ const portfolioSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 portfolioSchema.index({ student: 1 }, { unique: true });
 
-module.exports = mongoose.model("Portfolio", portfolioSchema);
+module.exports = mongoose.model('Portfolio', portfolioSchema);

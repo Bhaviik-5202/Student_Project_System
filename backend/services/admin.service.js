@@ -1,5 +1,5 @@
-const userRepository = require("../repositories/user.repository");
-const auditLogService = require("./auditlog.service");
+const userRepository = require('../repositories/user.repository');
+const auditLogService = require('./auditlog.service');
 
 /**
  * Admin Service
@@ -12,9 +12,24 @@ const adminService = {
   getRoles: async () => {
     try {
       const roles = [
-        { id: "1", name: "Admin", description: "Full system access", users: await userRepository.count({ role: "admin" }) },
-        { id: "2", name: "Faculty", description: "Project and student management", users: await userRepository.count({ role: "faculty" }) },
-        { id: "3", name: "Student", description: "Project participation and submissions", users: await userRepository.count({ role: "student" }) }
+        {
+          id: '1',
+          name: 'Admin',
+          description: 'Full system access',
+          users: await userRepository.count({ role: 'admin' }),
+        },
+        {
+          id: '2',
+          name: 'Faculty',
+          description: 'Project and student management',
+          users: await userRepository.count({ role: 'faculty' }),
+        },
+        {
+          id: '3',
+          name: 'Student',
+          description: 'Project participation and submissions',
+          users: await userRepository.count({ role: 'student' }),
+        },
       ];
       return { success: true, data: roles };
     } catch (error) {
@@ -35,7 +50,7 @@ const adminService = {
           courseManagement: true,
           systemSettings: true,
           reporting: true,
-          backupRestore: true
+          backupRestore: true,
         },
         faculty: {
           userManagement: false,
@@ -43,7 +58,7 @@ const adminService = {
           courseManagement: true,
           systemSettings: false,
           reporting: true,
-          backupRestore: false
+          backupRestore: false,
         },
         student: {
           userManagement: false,
@@ -51,8 +66,8 @@ const adminService = {
           courseManagement: false,
           systemSettings: false,
           reporting: false,
-          backupRestore: false
-        }
+          backupRestore: false,
+        },
       };
       return { success: true, data: permissions[roleName.toLowerCase()] || {} };
     } catch (error) {
@@ -67,8 +82,20 @@ const adminService = {
     try {
       // Simulated backups list
       const backups = [
-        { id: "b1", name: "Full_Backup_20260320", type: "Full", size: "156MB", date: "2026-03-20 02:00 AM" },
-        { id: "b2", name: "Incremental_Backup_20260321", type: "Incremental", size: "12MB", date: "2026-03-21 02:00 AM" }
+        {
+          id: 'b1',
+          name: 'Full_Backup_20260320',
+          type: 'Full',
+          size: '156MB',
+          date: '2026-03-20 02:00 AM',
+        },
+        {
+          id: 'b2',
+          name: 'Incremental_Backup_20260321',
+          type: 'Incremental',
+          size: '12MB',
+          date: '2026-03-21 02:00 AM',
+        },
       ];
       return { success: true, data: backups };
     } catch (error) {
@@ -87,15 +114,18 @@ const adminService = {
       await auditLogService.create({
         action: `Batch ${operation}`,
         description: `${operation} sent to ${selectedUsers.length} users`,
-        status: "Success",
-        userId: operationData.adminId // Need to pass this from controller
+        status: 'Success',
+        userId: operationData.adminId, // Need to pass this from controller
       });
 
-      return { success: true, message: `${operation} operation completed for ${selectedUsers.length} users` };
+      return {
+        success: true,
+        message: `${operation} operation completed for ${selectedUsers.length} users`,
+      };
     } catch (error) {
       return { success: false, message: error.message };
     }
-  }
+  },
 };
 
 module.exports = adminService;

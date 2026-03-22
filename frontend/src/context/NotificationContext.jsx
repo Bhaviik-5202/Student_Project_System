@@ -1,11 +1,11 @@
-import { createContext, useState, useCallback, useRef, useMemo } from "react";
+import { createContext, useState, useCallback, useRef, useMemo } from 'react';
 
 /**
  * Context for managing global application notifications (toasts)
  */
 const NotificationContext = createContext(null);
 
-import { NOTIFICATION_TYPES } from "./notificationUtils";
+import { NOTIFICATION_TYPES } from './notificationUtils';
 
 const DEFAULT_DURATION = 5000;
 const MAX_NOTIFICATIONS = 5;
@@ -32,7 +32,7 @@ export const NotificationProvider = ({ children }) => {
     const newNotification = {
       id,
       type,
-      message: notification.message || "Notification",
+      message: notification.message || 'Notification',
       title: notification.title,
       duration,
       timestamp: new Date().toISOString(),
@@ -66,7 +66,7 @@ export const NotificationProvider = ({ children }) => {
     }
 
     setNotifications((prevNotifications) =>
-      prevNotifications.filter((notification) => notification.id !== id),
+      prevNotifications.filter((notification) => notification.id !== id)
     );
   }, []);
 
@@ -90,7 +90,7 @@ export const NotificationProvider = ({ children }) => {
         ...options,
       });
     },
-    [addNotification],
+    [addNotification]
   );
 
   /**
@@ -105,7 +105,7 @@ export const NotificationProvider = ({ children }) => {
         ...options,
       });
     },
-    [addNotification],
+    [addNotification]
   );
 
   /**
@@ -119,7 +119,7 @@ export const NotificationProvider = ({ children }) => {
         ...options,
       });
     },
-    [addNotification],
+    [addNotification]
   );
 
   /**
@@ -133,7 +133,7 @@ export const NotificationProvider = ({ children }) => {
         ...options,
       });
     },
-    [addNotification],
+    [addNotification]
   );
 
   const contextValue = useMemo(
@@ -157,7 +157,7 @@ export const NotificationProvider = ({ children }) => {
       error,
       warning,
       info,
-    ],
+    ]
   );
 
   return (

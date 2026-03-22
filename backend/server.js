@@ -12,26 +12,25 @@
  *  - Graceful shutdown
  */
 
+require('dotenv').config();
+require('./config/validateEnv');
 
-require("dotenv").config();
-require("./config/validateEnv");
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const compression = require('compression');
 
-const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
-const helmet = require("helmet");
-const rateLimit = require("express-rate-limit");
-const compression = require("compression");
-
-const connectDB = require("./config/db");
-const morganLogger = require("./middleware/logger");
-const errorHandler = require("./middleware/errorHandler");
-const sendResponse = require("./utils/response");
+const connectDB = require('./config/db');
+const morganLogger = require('./middleware/logger');
+const errorHandler = require('./middleware/errorHandler');
+const sendResponse = require('./utils/response');
 
 const app = express();
 
 // Trust proxy (important for deployment behind reverse proxy)
-app.set("trust proxy", 1);
+app.set('trust proxy', 1);
 
 // Enable gzip compression
 app.use(compression());
@@ -40,18 +39,16 @@ app.use(compression());
 app.use(
   helmet({
     contentSecurityPolicy:
-      process.env.NODE_ENV === "production" ? undefined : false,
-  }),
+      process.env.NODE_ENV === 'production' ? undefined : false,
+  })
 );
 
 // CORS configuration
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN
-      ? process.env.CORS_ORIGIN.split(",")
-      : "*",
+    origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : '*',
     credentials: true,
-  }),
+  })
 );
 
 // Rate limiting
@@ -61,7 +58,7 @@ app.use(
     max: Number(process.env.RATE_LIMIT_MAX) || 100,
     standardHeaders: true,
     legacyHeaders: false,
-  }),
+  })
 );
 
 // Parse JSON requests
@@ -71,11 +68,11 @@ app.use(express.json());
 app.use(morganLogger);
 
 //  Swagger Documentation
-require("./config/swagger")(app);
+require('./config/swagger')(app);
 
 //  API Routes
-const apiRoutes = require("./routes");
-app.use("/api/v1", apiRoutes);
+const apiRoutes = require('./routes');
+app.use('/api/v1', apiRoutes);
 
 //  404 Handler
 app.use((req, res) => {
@@ -83,15 +80,14 @@ app.use((req, res) => {
     res,
     {
       success: false,
-      message: "API endpoint not found",
+      message: 'API endpoint not found',
     },
-    404,
+    404
   );
 });
 
 //  Global Error Handler
 app.use(errorHandler);
-
 
 const startServer = async () => {
   try {
@@ -106,20 +102,20 @@ const startServer = async () => {
 
       /* Graceful Shutdown */
       const shutdown = async () => {
-        console.log("🔻 Shutting down server...");
+        console.log('🔻 Shutting down server...');
         await mongoose.disconnect();
         server.close(() => {
-          console.log("Server closed cleanly");
+          console.log('Server closed cleanly');
           process.exit(0);
         });
       };
 
-      process.on("SIGINT", shutdown);
-      process.on("SIGTERM", shutdown);
+      process.on('SIGINT', shutdown);
+      process.on('SIGTERM', shutdown);
     }
   } catch (error) {
-    console.error("Failed to start server:", error);
-    if (process.env.NODE_ENV !== "test") {
+    console.error('Failed to start server:', error);
+    if (process.env.NODE_ENV !== 'test') {
       process.exit(1);
     }
     throw error; // Re-throw for tests
@@ -128,15 +124,14 @@ const startServer = async () => {
 
 startServer();
 
-process.on("unhandledRejection", (err) => {
-  console.error("Unhandled Rejection:", err);
+process.on('unhandledRejection', (err) => {
+  console.error('Unhandled Rejection:', err);
   process.exit(1);
 });
 
-process.on("uncaughtException", (err) => {
-  console.error("Uncaught Exception:", err);
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
   process.exit(1);
 });
-
 
 module.exports = app;

@@ -1,13 +1,13 @@
-import api from "../utils/api";
+import api from '../utils/api';
 
 const projectService = {
   getAllProjects: async (params = {}) => {
     try {
-      return await api.get("/projects", { params });
+      return await api.get('/projects', { params });
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to fetch projects",
+        message: error.response?.data?.message || 'Failed to fetch projects',
       };
     }
   },
@@ -18,18 +18,18 @@ const projectService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to fetch project",
+        message: error.response?.data?.message || 'Failed to fetch project',
       };
     }
   },
 
   createProject: async (projectData) => {
     try {
-      return await api.post("/projects", projectData);
+      return await api.post('/projects', projectData);
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to create project",
+        message: error.response?.data?.message || 'Failed to create project',
       };
     }
   },
@@ -40,7 +40,7 @@ const projectService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to update project",
+        message: error.response?.data?.message || 'Failed to update project',
       };
     }
   },
@@ -51,7 +51,7 @@ const projectService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to delete project",
+        message: error.response?.data?.message || 'Failed to delete project',
       };
     }
   },
@@ -63,7 +63,7 @@ const projectService = {
       return {
         success: false,
         message:
-          error.response?.data?.message || "Failed to fetch project members",
+          error.response?.data?.message || 'Failed to fetch project members',
       };
     }
   },
@@ -77,18 +77,19 @@ const projectService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to add member",
+        message: error.response?.data?.message || 'Failed to add member',
       };
     }
   },
-  
+
   getProjectTypes: async () => {
     try {
-      return await api.get("/projects/types");
+      return await api.get('/projects/types');
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to fetch project types",
+        message:
+          error.response?.data?.message || 'Failed to fetch project types',
       };
     }
   },

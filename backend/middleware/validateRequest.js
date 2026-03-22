@@ -1,5 +1,5 @@
-const { validationResult } = require("express-validator");
-const sendResponse = require("../utils/response");
+const { validationResult } = require('express-validator');
+const sendResponse = require('../utils/response');
 
 /**
  * Middleware to handle express-validator errors.
@@ -13,12 +13,12 @@ module.exports = (req, res, next) => {
       res,
       {
         success: false,
-        message: "Validation failed",
+        message: 'Validation failed',
         data: null,
-        error: "Input validation error",
+        error: 'Input validation error',
         details: errors.array().map((e) => e.msg),
       },
-      422,
+      422
     );
   }
 

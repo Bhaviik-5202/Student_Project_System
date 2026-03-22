@@ -1,13 +1,13 @@
-import api from "../utils/api";
+import api from '../utils/api';
 
 const staffService = {
   getAllStaff: async (params = {}) => {
     try {
-      return await api.get("/staff", { params });
+      return await api.get('/staff', { params });
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to fetch staff",
+        message: error.response?.data?.message || 'Failed to fetch staff',
       };
     }
   },
@@ -19,19 +19,19 @@ const staffService = {
       return {
         success: false,
         message:
-          error.response?.data?.message || "Failed to fetch staff member",
+          error.response?.data?.message || 'Failed to fetch staff member',
       };
     }
   },
 
   createStaff: async (staffData) => {
     try {
-      return await api.post("/staff", staffData);
+      return await api.post('/staff', staffData);
     } catch (error) {
       return {
         success: false,
         message:
-          error.response?.data?.message || "Failed to create staff member",
+          error.response?.data?.message || 'Failed to create staff member',
       };
     }
   },
@@ -43,7 +43,7 @@ const staffService = {
       return {
         success: false,
         message:
-          error.response?.data?.message || "Failed to update staff member",
+          error.response?.data?.message || 'Failed to update staff member',
       };
     }
   },
@@ -55,7 +55,7 @@ const staffService = {
       return {
         success: false,
         message:
-          error.response?.data?.message || "Failed to delete staff member",
+          error.response?.data?.message || 'Failed to delete staff member',
       };
     }
   },

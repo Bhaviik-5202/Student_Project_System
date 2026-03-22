@@ -1,5 +1,5 @@
-const collaborationService = require("../services/collaboration.service");
-const sendResponse = require("../utils/response");
+const collaborationService = require('../services/collaboration.service');
+const sendResponse = require('../utils/response');
 
 /**
  * Collaboration Controller
@@ -50,7 +50,10 @@ exports.addReply = async (req, res) => {
       content: req.body.content,
       author: req.user.id,
     };
-    const result = await collaborationService.addReply(req.params.id, replyData);
+    const result = await collaborationService.addReply(
+      req.params.id,
+      replyData
+    );
     sendResponse(res, result, result.success ? 201 : 400);
   } catch (error) {
     sendResponse(res, { success: false, message: error.message }, 500);
@@ -72,15 +75,19 @@ exports.getSharedFiles = async (req, res) => {
 exports.shareFile = async (req, res) => {
   try {
     if (!req.file) {
-      return sendResponse(res, { success: false, message: "No file uploaded" }, 400);
+      return sendResponse(
+        res,
+        { success: false, message: 'No file uploaded' },
+        400
+      );
     }
 
     const { projectId } = req.params;
     const data = {
       name: req.file.originalname,
-      url: req.file.path.replace(/\\/g, "/"),
-      size: (req.file.size / 1024).toFixed(2) + " KB",
-      type: req.file.mimetype.split("/")[1] || "other",
+      url: req.file.path.replace(/\\/g, '/'),
+      size: (req.file.size / 1024).toFixed(2) + ' KB',
+      type: req.file.mimetype.split('/')[1] || 'other',
       sharedBy: req.user.id,
       project: projectId,
     };

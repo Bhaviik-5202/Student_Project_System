@@ -1,36 +1,36 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
 const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "Name is required"],
+      required: [true, 'Name is required'],
       trim: true,
-      maxlength: [150, "Name cannot exceed 150 characters"],
+      maxlength: [150, 'Name cannot exceed 150 characters'],
     },
 
     email: {
       type: String,
-      required: [true, "Email is required"],
+      required: [true, 'Email is required'],
       unique: true,
       lowercase: true,
       trim: true,
-      maxlength: [200, "Email cannot exceed 200 characters"],
-      match: [/^\S+@\S+\.\S+$/, "Please provide a valid email address"],
+      maxlength: [200, 'Email cannot exceed 200 characters'],
+      match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email address'],
     },
 
     password: {
       type: String,
-      required: [true, "Password is required"],
-      minlength: [6, "Password must be at least 6 characters long"],
+      required: [true, 'Password is required'],
+      minlength: [6, 'Password must be at least 6 characters long'],
       select: false,
     },
 
     role: {
       type: String,
-      enum: ["admin", "faculty", "student"],
-      default: "student",
+      enum: ['admin', 'faculty', 'student'],
+      default: 'student',
       lowercase: true,
       trim: true,
       index: true,
@@ -54,11 +54,11 @@ const userSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
-userSchema.pre("save", async function () {
-  if (!this.isModified("password")) return;
+userSchema.pre('save', async function () {
+  if (!this.isModified('password')) return;
   const saltRounds = Number(process.env.BCRYPT_SALT_ROUNDS) || 12;
   this.password = await bcrypt.hash(this.password, saltRounds);
 });
@@ -67,7 +67,7 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
 };
 
-userSchema.set("toJSON", {
+userSchema.set('toJSON', {
   versionKey: false,
   transform: function (doc, ret) {
     delete ret.password;
@@ -75,4 +75,4 @@ userSchema.set("toJSON", {
   },
 });
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model('User', userSchema);

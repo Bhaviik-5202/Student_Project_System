@@ -1,7 +1,7 @@
 /**
  * Query Parameter Parser Utility
  * ------------------------------------------------------------------
- * Extract and sanitize pagination and filter parameters from 
+ * Extract and sanitize pagination and filter parameters from
  * request query strings for database queries.
  */
 
@@ -42,9 +42,9 @@ function parseQueryParams(query, options = {}) {
 
   let sort = {};
   if (query.sort) {
-    const fields = query.sort.split(",");
+    const fields = query.sort.split(',');
     fields.forEach((field) => {
-      if (field.startsWith("-")) {
+      if (field.startsWith('-')) {
         sort[field.substring(1)] = -1;
       } else {
         sort[field] = 1;

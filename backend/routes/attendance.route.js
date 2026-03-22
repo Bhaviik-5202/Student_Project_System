@@ -4,30 +4,30 @@
  * Handles attendance management APIs.
  */
 
-const express = require("express");
-const { body } = require("express-validator");
+const express = require('express');
+const { body } = require('express-validator');
 const router = express.Router();
 
 // Controllers and Middlewares
-const attendanceController = require("../controllers/attendance.controller");
-const authMiddleware = require("../middleware/auth.middleware");
-const validateRequest = require("../middleware/validateRequest");
+const attendanceController = require('../controllers/attendance.controller');
+const authMiddleware = require('../middleware/auth.middleware');
+const validateRequest = require('../middleware/validateRequest');
 
 /**
  * Validation rules for marking attendance
  */
 const markAttendanceValidation = [
-  body("student").notEmpty().withMessage("Student is required"),
+  body('student').notEmpty().withMessage('Student is required'),
 
-  body("date")
+  body('date')
     .notEmpty()
     .isISO8601()
-    .withMessage("Date must be a valid ISO8601 date"),
+    .withMessage('Date must be a valid ISO8601 date'),
 
-  body("status")
+  body('status')
     .notEmpty()
-    .isIn(["present", "absent", "late", "excused"])
-    .withMessage("Status must be present, absent, late, or excused"),
+    .isIn(['present', 'absent', 'late', 'excused'])
+    .withMessage('Status must be present, absent, late, or excused'),
 ];
 
 /**
@@ -36,11 +36,11 @@ const markAttendanceValidation = [
  * @access  Private (Authenticated Users)
  */
 router.post(
-  "/",
+  '/',
   authMiddleware,
   markAttendanceValidation,
   validateRequest,
-  attendanceController.markAttendance,
+  attendanceController.markAttendance
 );
 
 /**
@@ -48,7 +48,7 @@ router.post(
  * @desc    Retrieve all attendance records
  * @access  Private (Authenticated Users)
  */
-router.get("/", authMiddleware, attendanceController.getAllAttendance);
+router.get('/', authMiddleware, attendanceController.getAllAttendance);
 
 /**
  * @route   GET /api/v1/attendance/student/:studentId
@@ -56,9 +56,9 @@ router.get("/", authMiddleware, attendanceController.getAllAttendance);
  * @access  Private (Authenticated Users)
  */
 router.get(
-  "/student/:studentId",
+  '/student/:studentId',
   authMiddleware,
-  attendanceController.getAttendanceByStudent,
+  attendanceController.getAttendanceByStudent
 );
 
 module.exports = router;

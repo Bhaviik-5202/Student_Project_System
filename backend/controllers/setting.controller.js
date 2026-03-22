@@ -1,5 +1,5 @@
-const Setting = require("../models/setting.model");
-const sendResponse = require("../utils/response");
+const Setting = require('../models/setting.model');
+const sendResponse = require('../utils/response');
 
 /**
  * Setting Controller
@@ -18,22 +18,22 @@ exports.getAllSettings = async (req, res) => {
       res,
       {
         success: true,
-        message: "Settings fetched successfully",
+        message: 'Settings fetched successfully',
         data: settings,
         error: null,
       },
-      200,
+      200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to fetch settings",
+        message: 'Failed to fetch settings',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -50,22 +50,22 @@ exports.getSettingById = async (req, res) => {
       res,
       {
         success: !!setting,
-        message: setting ? "Setting found" : "Setting not found",
+        message: setting ? 'Setting found' : 'Setting not found',
         data: setting,
-        error: setting ? null : "Invalid ID",
+        error: setting ? null : 'Invalid ID',
       },
-      setting ? 200 : 404,
+      setting ? 200 : 404
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to fetch setting",
+        message: 'Failed to fetch setting',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -82,22 +82,22 @@ exports.createSetting = async (req, res) => {
       res,
       {
         success: true,
-        message: "Setting created successfully",
+        message: 'Setting created successfully',
         data: setting,
         error: null,
       },
-      201,
+      201
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to create setting",
+        message: 'Failed to create setting',
         data: null,
         error: error.message,
       },
-      400,
+      400
     );
   }
 };
@@ -114,22 +114,22 @@ exports.getSettingByKey = async (req, res) => {
       res,
       {
         success: !!setting,
-        message: setting ? "Setting found" : "Setting not found",
+        message: setting ? 'Setting found' : 'Setting not found',
         data: setting,
-        error: setting ? null : "Invalid key",
+        error: setting ? null : 'Invalid key',
       },
-      setting ? 200 : 404,
+      setting ? 200 : 404
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to fetch setting",
+        message: 'Failed to fetch setting',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -145,29 +145,29 @@ exports.updateSetting = async (req, res) => {
     const setting = await Setting.findByIdAndUpdate(
       req.params.id,
       { key, value, description, category },
-      { new: true, runValidators: true },
+      { new: true, runValidators: true }
     );
 
     sendResponse(
       res,
       {
         success: !!setting,
-        message: setting ? "Setting updated successfully" : "Setting not found",
+        message: setting ? 'Setting updated successfully' : 'Setting not found',
         data: setting,
-        error: setting ? null : "Invalid ID",
+        error: setting ? null : 'Invalid ID',
       },
-      setting ? 200 : 404,
+      setting ? 200 : 404
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to update setting",
+        message: 'Failed to update setting',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -194,22 +194,22 @@ exports.bulkUpdateSettings = async (req, res) => {
       res,
       {
         success: true,
-        message: "All settings updated successfully",
+        message: 'All settings updated successfully',
         data: settings,
         error: null,
       },
-      200,
+      200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to update settings",
+        message: 'Failed to update settings',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -227,22 +227,22 @@ exports.resetSettings = async (req, res) => {
       res,
       {
         success: true,
-        message: "Settings reset to defaults",
+        message: 'Settings reset to defaults',
         data: null,
         error: null,
       },
-      200,
+      200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to reset settings",
+        message: 'Failed to reset settings',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -258,22 +258,22 @@ exports.deleteSetting = async (req, res) => {
       res,
       {
         success: !!setting,
-        message: setting ? "Setting deleted" : "Setting not found",
+        message: setting ? 'Setting deleted' : 'Setting not found',
         data: null,
-        error: setting ? null : "Invalid ID",
+        error: setting ? null : 'Invalid ID',
       },
-      setting ? 200 : 404,
+      setting ? 200 : 404
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to delete setting",
+        message: 'Failed to delete setting',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };

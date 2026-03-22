@@ -1,13 +1,13 @@
-import api from "../utils/api";
+import api from '../utils/api';
 
 const assignmentService = {
   getAll: async (params = {}) => {
     try {
-      return await api.get("/assignments", { params });
+      return await api.get('/assignments', { params });
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to fetch assignments",
+        message: error.response?.data?.message || 'Failed to fetch assignments',
       };
     }
   },
@@ -18,18 +18,18 @@ const assignmentService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to fetch assignment",
+        message: error.response?.data?.message || 'Failed to fetch assignment',
       };
     }
   },
 
   create: async (data) => {
     try {
-      return await api.post("/assignments", data);
+      return await api.post('/assignments', data);
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to create assignment",
+        message: error.response?.data?.message || 'Failed to create assignment',
       };
     }
   },
@@ -40,7 +40,7 @@ const assignmentService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to update assignment",
+        message: error.response?.data?.message || 'Failed to update assignment',
       };
     }
   },
@@ -51,7 +51,7 @@ const assignmentService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to delete assignment",
+        message: error.response?.data?.message || 'Failed to delete assignment',
       };
     }
   },

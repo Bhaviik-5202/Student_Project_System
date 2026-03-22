@@ -1,4 +1,4 @@
-import HeaderIcon from "./HeaderIcon";
+import HeaderIcon from './HeaderIcon';
 
 /**
  * QuickAddMenu Component
@@ -10,29 +10,29 @@ import HeaderIcon from "./HeaderIcon";
 const QuickAddMenu = ({ actions, onActionClick }) => {
   return (
     <>
-      <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
-        <h3 className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-          <HeaderIcon name="bolt" className="text-yellow-500" size="text-sm" />
+      <div className='border-b border-gray-100 px-4 py-3 dark:border-gray-700'>
+        <h3 className='flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-white'>
+          <HeaderIcon name='bolt' className='text-yellow-500' size='text-sm' />
           Quick Actions
         </h3>
       </div>
-      <div className="py-1">
+      <div className='py-1'>
         {actions.map((action, index) => (
           <button
             key={index}
             onClick={() => onActionClick(action.path)}
-            className="w-full flex items-center px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors group"
+            className='group flex w-full items-center px-4 py-2.5 text-sm text-gray-700 transition-colors hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700/50'
           >
             <div
-              className={`flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center ${action.bgColor} mr-3 group-hover:scale-105 transition-transform`}
+              className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl ${action.bgColor} mr-3 transition-transform group-hover:scale-105`}
             >
               <HeaderIcon
                 name={action.icon}
                 className={action.color}
-                size="text-sm"
+                size='text-sm'
               />
             </div>
-            <span className="font-medium">{action.label}</span>
+            <span className='font-medium'>{action.label}</span>
           </button>
         ))}
       </div>

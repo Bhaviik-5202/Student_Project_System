@@ -1,4 +1,4 @@
-const resourceRepository = require("../repositories/resource.repository");
+const resourceRepository = require('../repositories/resource.repository');
 
 /**
  * Standardized response helper for services
@@ -17,9 +17,9 @@ const response = (error, data, message) => ({ error, data, message });
 exports.create = async (data) => {
   try {
     const resource = await resourceRepository.create(data);
-    return response(false, resource, "Resource created successfully");
+    return response(false, resource, 'Resource created successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to create resource");
+    return response(true, null, err.message || 'Failed to create resource');
   }
 };
 
@@ -51,10 +51,10 @@ exports.getAll = async ({ page = 1, limit = 10, filters = {} } = {}) => {
         limit,
         totalPages: Math.ceil(total / limit),
       },
-      "Resources fetched successfully",
+      'Resources fetched successfully'
     );
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch resources");
+    return response(true, null, err.message || 'Failed to fetch resources');
   }
 };
 
@@ -66,10 +66,10 @@ exports.getAll = async ({ page = 1, limit = 10, filters = {} } = {}) => {
 exports.getById = async (id) => {
   try {
     const resource = await resourceRepository.findById(id);
-    if (!resource) return response(true, null, "Resource not found");
-    return response(false, resource, "Resource fetched successfully");
+    if (!resource) return response(true, null, 'Resource not found');
+    return response(false, resource, 'Resource fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch resource");
+    return response(true, null, err.message || 'Failed to fetch resource');
   }
 };
 
@@ -81,9 +81,9 @@ exports.getById = async (id) => {
 exports.remove = async (id) => {
   try {
     const resource = await resourceRepository.remove(id);
-    if (!resource) return response(true, null, "Resource not found");
-    return response(false, null, "Resource deleted successfully");
+    if (!resource) return response(true, null, 'Resource not found');
+    return response(false, null, 'Resource deleted successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to delete resource");
+    return response(true, null, err.message || 'Failed to delete resource');
   }
 };

@@ -1,5 +1,5 @@
-const projectService = require("../services/project.service");
-const sendResponse = require("../utils/response");
+const projectService = require('../services/project.service');
+const sendResponse = require('../utils/response');
 
 /**
  * Project Controller
@@ -21,22 +21,22 @@ exports.getProjectMembers = async (req, res) => {
         success: !result.error,
         message: result.error
           ? result.message
-          : "Project members fetched successfully",
+          : 'Project members fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -55,11 +55,11 @@ exports.addProjectMember = async (req, res) => {
         res,
         {
           success: false,
-          message: "userId is required",
+          message: 'userId is required',
           data: null,
-          error: "Validation error",
+          error: 'Validation error',
         },
-        400,
+        400
       );
     }
 
@@ -69,22 +69,22 @@ exports.addProjectMember = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? result.message : "Member added successfully",
+        message: result.error ? result.message : 'Member added successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 201,
+      result.error ? 400 : 201
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -103,9 +103,9 @@ exports.createProject = async (req, res) => {
     };
 
     // Sanitize guide and members to prevent Cast to ObjectId failed for empty strings
-    if (projectData.guide === "") projectData.guide = null;
+    if (projectData.guide === '') projectData.guide = null;
     if (Array.isArray(projectData.members)) {
-      projectData.members = projectData.members.filter(m => m !== "");
+      projectData.members = projectData.members.filter((m) => m !== '');
     }
 
     const result = await projectService.create(projectData);
@@ -114,22 +114,22 @@ exports.createProject = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? result.message : "Project created successfully",
+        message: result.error ? result.message : 'Project created successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 201,
+      result.error ? 400 : 201
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -155,7 +155,7 @@ exports.getAllProjects = async (req, res) => {
         success: !result.error,
         message: result.error
           ? result.message
-          : "Projects fetched successfully",
+          : 'Projects fetched successfully',
         data: result.data ? result.data.projects : null,
         error: result.error || null,
         pagination: result.data
@@ -167,18 +167,18 @@ exports.getAllProjects = async (req, res) => {
             }
           : null,
       },
-      result.error ? 400 : 200,
+      result.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -190,10 +190,10 @@ exports.getAllProjects = async (req, res) => {
  */
 exports.getProjectGroups = async (req, res) => {
   try {
-    const result = await projectService.getAll({ 
-      page: 1, 
+    const result = await projectService.getAll({
+      page: 1,
       limit: 100, // Fetch more for groups view
-      filters: {} 
+      filters: {},
     });
 
     if (result.error) {
@@ -205,46 +205,54 @@ exports.getProjectGroups = async (req, res) => {
           data: null,
           error: result.error,
         },
-        400,
+        400
       );
     }
 
     // Format data for the frontend ProjectGroups view if needed
     // However, the service already returns populated projects.
     // We just need to ensure the structure matches what ProjectGroups.jsx expects.
-    const formattedGroups = result.data.projects.map(project => ({
+    const formattedGroups = result.data.projects.map((project) => ({
       id: project.id || project._id,
       slug: project.slug,
       name: project.title,
       project: project.title,
-      guide: project.guide ? project.guide.name : "Not Assigned",
-      members: project.members ? project.members.map(m => m.name || "Unknown") : [],
-      status: project.status.charAt(0).toUpperCase() + project.status.slice(1).replace('_', ' '),
-      progress: project.progress || 0
+      guide: project.guide ? project.guide.name : 'Not Assigned',
+      members: project.members
+        ? project.members.map((m) => m.name || 'Unknown')
+        : [],
+      status:
+        project.status.charAt(0).toUpperCase() +
+        project.status.slice(1).replace('_', ' '),
+      progress: project.progress || 0,
     }));
 
-    console.log(`Sending ${formattedGroups.length} formatted groups to frontend.`);
-    formattedGroups.forEach(g => console.log(`- Project: ${g.name}, Guide: ${g.guide}`));
+    console.log(
+      `Sending ${formattedGroups.length} formatted groups to frontend.`
+    );
+    formattedGroups.forEach((g) =>
+      console.log(`- Project: ${g.name}, Guide: ${g.guide}`)
+    );
 
     sendResponse(
       res,
       {
         success: true,
-        message: "Project groups fetched successfully",
+        message: 'Project groups fetched successfully',
         data: formattedGroups,
       },
-      200,
+      200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -262,22 +270,22 @@ exports.getProjectById = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? result.message : "Project fetched successfully",
+        message: result.error ? result.message : 'Project fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -295,9 +303,9 @@ exports.updateProject = async (req, res) => {
     }
 
     // Sanitize guide and members to prevent Cast to ObjectId failed for empty strings
-    if (updateData.guide === "") updateData.guide = null;
+    if (updateData.guide === '') updateData.guide = null;
     if (Array.isArray(updateData.members)) {
-      updateData.members = updateData.members.filter(m => m !== "");
+      updateData.members = updateData.members.filter((m) => m !== '');
     }
     const result = await projectService.update(req.params.id, updateData);
 
@@ -305,22 +313,22 @@ exports.updateProject = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? result.message : "Project updated successfully",
+        message: result.error ? result.message : 'Project updated successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -338,22 +346,22 @@ exports.deleteProject = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? result.message : "Project deleted successfully",
+        message: result.error ? result.message : 'Project deleted successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };

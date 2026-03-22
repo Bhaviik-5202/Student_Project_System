@@ -1,11 +1,11 @@
 /**
  * JWT Utility
  * ------------------------------------------------------------------
- * Handles JSON Web Token generation and verification using 
+ * Handles JSON Web Token generation and verification using
  * environment-based secrets and configuration.
  */
 
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 
 /**
  * Generate a signed JWT token.
@@ -15,15 +15,15 @@ const jwt = require("jsonwebtoken");
  */
 const generateToken = (payload, expiresIn) => {
   if (!process.env.JWT_SECRET) {
-    throw new Error("JWT_SECRET is not defined in environment variables");
+    throw new Error('JWT_SECRET is not defined in environment variables');
   }
 
-  if (!payload || typeof payload !== "object") {
-    throw new Error("Payload must be a valid object");
+  if (!payload || typeof payload !== 'object') {
+    throw new Error('Payload must be a valid object');
   }
 
   return jwt.sign(payload, process.env.JWT_SECRET, {
-    expiresIn: expiresIn || process.env.JWT_EXPIRES_IN || "1d",
+    expiresIn: expiresIn || process.env.JWT_EXPIRES_IN || '1d',
   });
 };
 
@@ -35,11 +35,11 @@ const generateToken = (payload, expiresIn) => {
  */
 const verifyToken = (token) => {
   if (!process.env.JWT_SECRET) {
-    throw new Error("JWT_SECRET is not defined in environment variables");
+    throw new Error('JWT_SECRET is not defined in environment variables');
   }
 
   if (!token) {
-    throw new Error("Token is required");
+    throw new Error('Token is required');
   }
 
   return jwt.verify(token, process.env.JWT_SECRET);

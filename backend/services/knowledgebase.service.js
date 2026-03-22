@@ -1,4 +1,4 @@
-const knowledgebaseRepository = require("../repositories/knowledgebase.repository");
+const knowledgebaseRepository = require('../repositories/knowledgebase.repository');
 
 /**
  * Standardized response helper for services
@@ -17,9 +17,9 @@ const response = (error, data, message) => ({ error, data, message });
 exports.create = async (data) => {
   try {
     const kb = await knowledgebaseRepository.create(data);
-    return response(false, kb, "Knowledgebase entry created successfully");
+    return response(false, kb, 'Knowledgebase entry created successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to create kb entry");
+    return response(true, null, err.message || 'Failed to create kb entry');
   }
 };
 
@@ -33,10 +33,10 @@ exports.getAll = async () => {
     return response(
       false,
       entries,
-      "Knowledgebase entries fetched successfully",
+      'Knowledgebase entries fetched successfully'
     );
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch kb entries");
+    return response(true, null, err.message || 'Failed to fetch kb entries');
   }
 };
 
@@ -48,10 +48,10 @@ exports.getAll = async () => {
 exports.getById = async (id) => {
   try {
     const kb = await knowledgebaseRepository.findById(id);
-    if (!kb) return response(true, null, "Knowledgebase entry not found");
-    return response(false, kb, "Knowledgebase entry fetched successfully");
+    if (!kb) return response(true, null, 'Knowledgebase entry not found');
+    return response(false, kb, 'Knowledgebase entry fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch kb entry");
+    return response(true, null, err.message || 'Failed to fetch kb entry');
   }
 };
 
@@ -64,10 +64,10 @@ exports.getById = async (id) => {
 exports.update = async (id, data) => {
   try {
     const kb = await knowledgebaseRepository.update(id, data);
-    if (!kb) return response(true, null, "Knowledgebase entry not found");
-    return response(false, kb, "Knowledgebase entry updated successfully");
+    if (!kb) return response(true, null, 'Knowledgebase entry not found');
+    return response(false, kb, 'Knowledgebase entry updated successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to update kb entry");
+    return response(true, null, err.message || 'Failed to update kb entry');
   }
 };
 
@@ -79,9 +79,9 @@ exports.update = async (id, data) => {
 exports.remove = async (id) => {
   try {
     const kb = await knowledgebaseRepository.remove(id);
-    if (!kb) return response(true, null, "Knowledgebase entry not found");
-    return response(false, null, "Knowledgebase entry deleted successfully");
+    if (!kb) return response(true, null, 'Knowledgebase entry not found');
+    return response(false, null, 'Knowledgebase entry deleted successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to delete kb entry");
+    return response(true, null, err.message || 'Failed to delete kb entry');
   }
 };

@@ -1,5 +1,5 @@
-const studentService = require("../services/student.service");
-const sendResponse = require("../utils/response");
+const studentService = require('../services/student.service');
+const sendResponse = require('../utils/response');
 
 /**
  * Student Controller
@@ -19,22 +19,22 @@ exports.createStudent = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? result.message : "Student created successfully",
+        message: result.error ? result.message : 'Student created successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 201,
+      result.error ? 400 : 201
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -53,23 +53,23 @@ exports.getAllStudents = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to fetch students"
-          : "Students fetched successfully",
+          ? 'Failed to fetch students'
+          : 'Students fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 200,
+      result.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -88,23 +88,23 @@ exports.getStudentById = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Student not found"
-          : "Student fetched successfully",
+          ? 'Student not found'
+          : 'Student fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -123,23 +123,23 @@ exports.updateStudent = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Student not found"
-          : "Student updated successfully",
+          ? 'Student not found'
+          : 'Student updated successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -158,23 +158,23 @@ exports.deleteStudent = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Student not found"
-          : "Student deleted successfully",
+          ? 'Student not found'
+          : 'Student deleted successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -191,22 +191,22 @@ exports.verifyStudentId = async (req, res) => {
       res,
       {
         success: !!result.data,
-        message: result.data ? "Student ID verified" : "Student ID not found",
+        message: result.data ? 'Student ID verified' : 'Student ID not found',
         data: { exists: !!result.data },
         error: null,
       },
-      result.data ? 200 : 404,
+      result.data ? 200 : 404
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Verification failed",
+        message: 'Verification failed',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };

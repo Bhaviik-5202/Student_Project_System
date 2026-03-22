@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback, useMemo, memo } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { toast } from "react-hot-toast";
-import api from "../../../utils/api";
+import React, { useState, useEffect, useCallback, useMemo, memo } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
+import api from '../../../utils/api';
 
 const ProjectDetails = memo(() => {
   const { id } = useParams();
@@ -18,12 +18,14 @@ const ProjectDetails = memo(() => {
       if (response.success && response.data) {
         setProject(response.data);
       } else {
-        setError(response.message || "Project specifications not found in registry.");
-        toast.error(response.message || "Failed to load project details");
+        setError(
+          response.message || 'Project specifications not found in registry.'
+        );
+        toast.error(response.message || 'Failed to load project details');
       }
     } catch (error) {
-      setError("Critical system error while retrieving project data.");
-      toast.error("Failed to load project details");
+      setError('Critical system error while retrieving project data.');
+      toast.error('Failed to load project details');
     } finally {
       setLoading(false);
     }
@@ -38,40 +40,55 @@ const ProjectDetails = memo(() => {
       document.title = `${project.title} | Student Project System`;
     }
     return () => {
-      document.title = "Student Project System";
+      document.title = 'Student Project System';
     };
   }, [project]);
 
   const statusStyles = useMemo(
     () => ({
-      Completed: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-      "In Progress": "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-      Pending: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
-      planning: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
-      in_progress: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-      completed: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+      Completed:
+        'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+      'In Progress':
+        'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+      Pending:
+        'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
+      planning:
+        'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
+      in_progress:
+        'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+      completed:
+        'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
     }),
-    [],
+    []
   );
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-        <div className="w-12 h-12 border-4 border-indigo-100 border-t-indigo-500 rounded-full animate-spin" />
-        <p className="text-gray-400 text-sm font-medium animate-pulse">Synchronizing project directives...</p>
+      <div className='flex min-h-[60vh] flex-col items-center justify-center gap-4'>
+        <div className='h-12 w-12 animate-spin rounded-full border-4 border-indigo-100 border-t-indigo-500' />
+        <p className='animate-pulse text-sm font-medium text-gray-400'>
+          Synchronizing project directives...
+        </p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="p-8 text-center max-w-md mx-auto">
-        <div className="w-16 h-16 bg-red-50 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
-          <i className="fas fa-exclamation-triangle text-red-500 text-2xl" />
+      <div className='mx-auto max-w-md p-8 text-center'>
+        <div className='mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-50 dark:bg-red-900/20'>
+          <i className='fas fa-exclamation-triangle text-2xl text-red-500' />
         </div>
-        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Registry Error</h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">{error}</p>
-        <button onClick={() => navigate("/projects")} className="project-btn project-btn-primary px-8">Return to Catalog</button>
+        <h3 className='mb-2 text-lg font-bold text-gray-900 dark:text-white'>
+          Registry Error
+        </h3>
+        <p className='mb-6 text-sm text-gray-500 dark:text-gray-400'>{error}</p>
+        <button
+          onClick={() => navigate('/projects')}
+          className='project-btn project-btn-primary px-8'
+        >
+          Return to Catalog
+        </button>
       </div>
     );
   }
@@ -79,76 +96,100 @@ const ProjectDetails = memo(() => {
   if (!project) return null;
 
   return (
-    <div className="project-page animate-fade-in">
-      <div className="project-container">
-        <div className="flex justify-between items-center mb-8">
+    <div className='project-page animate-fade-in'>
+      <div className='project-container'>
+        <div className='mb-8 flex items-center justify-between'>
           <div>
             <button
-              onClick={() => navigate("/projects")}
-              className="text-indigo-600 dark:text-indigo-400 font-bold text-sm mb-2 flex items-center gap-2 hover:underline"
+              onClick={() => navigate('/projects')}
+              className='mb-2 flex items-center gap-2 text-sm font-bold text-indigo-600 hover:underline dark:text-indigo-400'
             >
-              <i className="fas fa-arrow-left" /> Back to Projects
+              <i className='fas fa-arrow-left' /> Back to Projects
             </button>
-            <h1 className="text-3xl font-black text-gray-900 dark:text-white">
+            <h1 className='text-3xl font-black text-gray-900 dark:text-white'>
               {project.title}
             </h1>
-            <div className="flex items-center gap-3 mt-2">
-              <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${statusStyles[project.status] || statusStyles.Pending}`}>
+            <div className='mt-2 flex items-center gap-3'>
+              <span
+                className={`rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-wider ${statusStyles[project.status] || statusStyles.Pending}`}
+              >
                 {project.status?.replace('_', ' ')}
               </span>
-              <span className="text-xs font-bold text-gray-400">
+              <span className='text-xs font-bold text-gray-400'>
                 {project.type}
               </span>
             </div>
           </div>
-          <button 
-            onClick={() => navigate(`/projects/${project.slug || project.id || project._id}/edit`)}
-            className="project-btn project-btn-primary"
+          <button
+            onClick={() =>
+              navigate(
+                `/projects/${project.slug || project.id || project._id}/edit`
+              )
+            }
+            className='project-btn project-btn-primary'
           >
             Edit Project
           </button>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-6">
-            <div className="project-card-simple pb-8">
-              <h2 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">Description</h2>
-              <div className="text-gray-600 dark:text-gray-400 leading-relaxed">
+        <div className='grid grid-cols-1 gap-6 lg:grid-cols-3'>
+          <div className='space-y-6 lg:col-span-2'>
+            <div className='project-card-simple pb-8'>
+              <h2 className='mb-4 text-xs font-black uppercase tracking-widest text-gray-400'>
+                Description
+              </h2>
+              <div className='leading-relaxed text-gray-600 dark:text-gray-400'>
                 {project.abstract || project.description}
               </div>
-              
+
               {project.objectives && (
-                <div className="mt-6 pt-6 border-t border-gray-50 dark:border-slate-700">
-                  <h2 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">Objectives</h2>
-                  <p className="text-sm italic">{project.objectives}</p>
+                <div className='mt-6 border-t border-gray-50 pt-6 dark:border-slate-700'>
+                  <h2 className='mb-4 text-xs font-black uppercase tracking-widest text-gray-400'>
+                    Objectives
+                  </h2>
+                  <p className='text-sm italic'>{project.objectives}</p>
                 </div>
               )}
             </div>
 
-            <div className="project-card-simple">
-              <h2 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-6">Execution Status</h2>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center mb-1">
-                  <span className="text-[10px] font-black text-gray-400">PROGRESS</span>
-                  <span className="text-sm font-black text-indigo-600">{project.progress}%</span>
+            <div className='project-card-simple'>
+              <h2 className='mb-6 text-xs font-black uppercase tracking-widest text-gray-400'>
+                Execution Status
+              </h2>
+              <div className='space-y-4'>
+                <div className='mb-1 flex items-center justify-between'>
+                  <span className='text-[10px] font-black text-gray-400'>
+                    PROGRESS
+                  </span>
+                  <span className='text-sm font-black text-indigo-600'>
+                    {project.progress}%
+                  </span>
                 </div>
-                <div className="w-full bg-gray-100 dark:bg-slate-900 rounded-full h-2">
+                <div className='h-2 w-full rounded-full bg-gray-100 dark:bg-slate-900'>
                   <div
-                    className="h-full bg-indigo-500 rounded-full transition-all duration-1000"
+                    className='h-full rounded-full bg-indigo-500 transition-all duration-1000'
                     style={{ width: `${project.progress}%` }}
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4 mt-6">
+                <div className='mt-6 grid grid-cols-2 gap-4'>
                   <div>
-                    <span className="text-[10px] font-black text-gray-400 block mb-1">START DATE</span>
-                    <p className="text-sm font-bold text-gray-900 dark:text-white">
-                      {project.startDate ? new Date(project.startDate).toLocaleDateString() : "N/A"}
+                    <span className='mb-1 block text-[10px] font-black text-gray-400'>
+                      START DATE
+                    </span>
+                    <p className='text-sm font-bold text-gray-900 dark:text-white'>
+                      {project.startDate
+                        ? new Date(project.startDate).toLocaleDateString()
+                        : 'N/A'}
                     </p>
                   </div>
                   <div>
-                    <span className="text-[10px] font-black text-gray-400 block mb-1">END DATE</span>
-                    <p className="text-sm font-bold text-gray-900 dark:text-white">
-                      {project.endDate ? new Date(project.endDate).toLocaleDateString() : "N/A"}
+                    <span className='mb-1 block text-[10px] font-black text-gray-400'>
+                      END DATE
+                    </span>
+                    <p className='text-sm font-bold text-gray-900 dark:text-white'>
+                      {project.endDate
+                        ? new Date(project.endDate).toLocaleDateString()
+                        : 'N/A'}
                     </p>
                   </div>
                 </div>
@@ -156,41 +197,54 @@ const ProjectDetails = memo(() => {
             </div>
           </div>
 
-          <div className="space-y-6">
-            <div className="project-card-simple">
-              <h2 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">Project Guide</h2>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-slate-900 flex items-center justify-center text-indigo-500 border border-indigo-100 dark:border-slate-700">
-                  <i className="fas fa-user-tie" />
+          <div className='space-y-6'>
+            <div className='project-card-simple'>
+              <h2 className='mb-4 text-xs font-black uppercase tracking-widest text-gray-400'>
+                Project Guide
+              </h2>
+              <div className='flex items-center gap-3'>
+                <div className='flex h-10 w-10 items-center justify-center rounded-xl border border-indigo-100 bg-indigo-50 text-indigo-500 dark:border-slate-700 dark:bg-slate-900'>
+                  <i className='fas fa-user-tie' />
                 </div>
                 <div>
-                  <p className="text-sm font-black text-gray-900 dark:text-white">
-                    {project.guide?.name || project.guide || "Not Assigned"}
+                  <p className='text-sm font-black text-gray-900 dark:text-white'>
+                    {project.guide?.name || project.guide || 'Not Assigned'}
                   </p>
-                  <p className="text-[10px] text-gray-400 font-bold uppercase">Faculty Mentor</p>
+                  <p className='text-[10px] font-bold uppercase text-gray-400'>
+                    Faculty Mentor
+                  </p>
                 </div>
               </div>
             </div>
 
-            <div className="project-card-simple">
-              <h2 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">Members</h2>
-              <div className="space-y-3">
-                {Array.isArray(project.members) && project.members.length > 0 ? (
+            <div className='project-card-simple'>
+              <h2 className='mb-4 text-xs font-black uppercase tracking-widest text-gray-400'>
+                Members
+              </h2>
+              <div className='space-y-3'>
+                {Array.isArray(project.members) &&
+                project.members.length > 0 ? (
                   project.members.map((member, index) => (
-                    <div key={member._id || index} className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-gray-100 dark:bg-slate-900 flex items-center justify-center text-xs font-bold text-gray-500">
-                        {member.name?.charAt(0) || "M"}
+                    <div
+                      key={member._id || index}
+                      className='flex items-center gap-3'
+                    >
+                      <div className='flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 text-xs font-bold text-gray-500 dark:bg-slate-900'>
+                        {member.name?.charAt(0) || 'M'}
                       </div>
-                      <span className="text-sm font-bold text-gray-900 dark:text-white">
-                        {member.name || (typeof member === 'string' ? member : "Unknown")}
+                      <span className='text-sm font-bold text-gray-900 dark:text-white'>
+                        {member.name ||
+                          (typeof member === 'string' ? member : 'Unknown')}
                       </span>
                     </div>
                   ))
                 ) : (
-                  <p className="text-xs italic text-gray-400">No members assigned</p>
+                  <p className='text-xs italic text-gray-400'>
+                    No members assigned
+                  </p>
                 )}
                 {project.teamMembers && (
-                  <div className="mt-2 pt-2 border-t border-gray-50 dark:border-slate-700 text-xs text-gray-500">
+                  <div className='mt-2 border-t border-gray-50 pt-2 text-xs text-gray-500 dark:border-slate-700'>
                     <strong>Other:</strong> {project.teamMembers}
                   </div>
                 )}
@@ -203,5 +257,5 @@ const ProjectDetails = memo(() => {
   );
 });
 
-ProjectDetails.displayName = "ProjectDetails";
+ProjectDetails.displayName = 'ProjectDetails';
 export default ProjectDetails;

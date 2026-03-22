@@ -1,4 +1,4 @@
-const assignmentRepository = require("../repositories/assignment.repository");
+const assignmentRepository = require('../repositories/assignment.repository');
 
 /**
  * Standardized response helper for services
@@ -17,9 +17,9 @@ const response = (error, data, message) => ({ error, data, message });
 exports.create = async (data) => {
   try {
     const assignment = await assignmentRepository.create(data);
-    return response(false, assignment, "Assignment created successfully");
+    return response(false, assignment, 'Assignment created successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to create assignment");
+    return response(true, null, err.message || 'Failed to create assignment');
   }
 };
 
@@ -34,11 +34,11 @@ exports.getAll = async (options = {}) => {
     const assignments = await assignmentRepository.findAll(filters, {
       skip: (page - 1) * limit,
       limit: parseInt(limit),
-      populate: "course",
+      populate: 'course',
     });
-    return response(false, assignments, "Assignments fetched successfully");
+    return response(false, assignments, 'Assignments fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch assignments");
+    return response(true, null, err.message || 'Failed to fetch assignments');
   }
 };
 
@@ -49,11 +49,13 @@ exports.getAll = async (options = {}) => {
  */
 exports.getById = async (id) => {
   try {
-    const assignment = await assignmentRepository.findById(id, { populate: "course" });
-    if (!assignment) return response(true, null, "Assignment not found");
-    return response(false, assignment, "Assignment fetched successfully");
+    const assignment = await assignmentRepository.findById(id, {
+      populate: 'course',
+    });
+    if (!assignment) return response(true, null, 'Assignment not found');
+    return response(false, assignment, 'Assignment fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch assignment");
+    return response(true, null, err.message || 'Failed to fetch assignment');
   }
 };
 
@@ -66,10 +68,10 @@ exports.getById = async (id) => {
 exports.update = async (id, data) => {
   try {
     const assignment = await assignmentRepository.update(id, data);
-    if (!assignment) return response(true, null, "Assignment not found");
-    return response(false, assignment, "Assignment updated successfully");
+    if (!assignment) return response(true, null, 'Assignment not found');
+    return response(false, assignment, 'Assignment updated successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to update assignment");
+    return response(true, null, err.message || 'Failed to update assignment');
   }
 };
 
@@ -81,10 +83,10 @@ exports.update = async (id, data) => {
 exports.remove = async (id) => {
   try {
     const assignment = await assignmentRepository.remove(id);
-    if (!assignment) return response(true, null, "Assignment not found");
-    return response(false, null, "Assignment deleted successfully");
+    if (!assignment) return response(true, null, 'Assignment not found');
+    return response(false, null, 'Assignment deleted successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to delete assignment");
+    return response(true, null, err.message || 'Failed to delete assignment');
   }
 };
 
@@ -101,13 +103,13 @@ exports.getByStudentId = async (studentId) => {
     return response(
       false,
       assignments,
-      "Student assignments fetched successfully",
+      'Student assignments fetched successfully'
     );
   } catch (err) {
     return response(
       true,
       null,
-      err.message || "Failed to fetch student assignments",
+      err.message || 'Failed to fetch student assignments'
     );
   }
 };
@@ -122,18 +124,18 @@ exports.getByActivityId = async (activityId, options = {}) => {
   try {
     const assignments = await assignmentRepository.findAll(
       { activity: activityId },
-      options,
+      options
     );
     return response(
       false,
       assignments,
-      "Activity assignments fetched successfully",
+      'Activity assignments fetched successfully'
     );
   } catch (err) {
     return response(
       true,
       null,
-      err.message || "Failed to fetch activity assignments",
+      err.message || 'Failed to fetch activity assignments'
     );
   }
 };
@@ -148,18 +150,18 @@ exports.getByFacultyId = async (facultyId, options = {}) => {
   try {
     const assignments = await assignmentRepository.findAll(
       { faculty: facultyId },
-      options,
+      options
     );
     return response(
       false,
       assignments,
-      "Faculty assignments fetched successfully",
+      'Faculty assignments fetched successfully'
     );
   } catch (err) {
     return response(
       true,
       null,
-      err.message || "Failed to fetch faculty assignments",
+      err.message || 'Failed to fetch faculty assignments'
     );
   }
 };
@@ -174,18 +176,18 @@ exports.getByCourseId = async (courseId, options = {}) => {
   try {
     const assignments = await assignmentRepository.findAll(
       { course: courseId },
-      options,
+      options
     );
     return response(
       false,
       assignments,
-      "Course assignments fetched successfully",
+      'Course assignments fetched successfully'
     );
   } catch (err) {
     return response(
       true,
       null,
-      err.message || "Failed to fetch course assignments",
+      err.message || 'Failed to fetch course assignments'
     );
   }
 };
@@ -200,18 +202,18 @@ exports.getByBatchId = async (batchId, options = {}) => {
   try {
     const assignments = await assignmentRepository.findAll(
       { batch: batchId },
-      options,
+      options
     );
     return response(
       false,
       assignments,
-      "Batch assignments fetched successfully",
+      'Batch assignments fetched successfully'
     );
   } catch (err) {
     return response(
       true,
       null,
-      err.message || "Failed to fetch batch assignments",
+      err.message || 'Failed to fetch batch assignments'
     );
   }
 };

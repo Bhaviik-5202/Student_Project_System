@@ -1,10 +1,10 @@
-import api from "../utils/api";
+import api from '../utils/api';
 
 const chatService = {
   // --- Chats ---
   getUserChats: async () => {
     try {
-      const response = await api.get("/chats");
+      const response = await api.get('/chats');
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -22,7 +22,7 @@ const chatService = {
 
   createChat: async (data) => {
     try {
-      const response = await api.post("/chats", data);
+      const response = await api.post('/chats', data);
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -41,7 +41,7 @@ const chatService = {
 
   sendMessage: async (chatId, content) => {
     try {
-      const response = await api.post("/messages", { chatId, content });
+      const response = await api.post('/messages', { chatId, content });
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;

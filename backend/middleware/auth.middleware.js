@@ -1,5 +1,5 @@
-const jwt = require("jsonwebtoken");
-const sendResponse = require("../utils/response");
+const jwt = require('jsonwebtoken');
+const sendResponse = require('../utils/response');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -10,25 +10,25 @@ const JWT_SECRET = process.env.JWT_SECRET;
 module.exports = function (req, res, next) {
   try {
     if (!JWT_SECRET) {
-      throw new Error("JWT_SECRET is not defined");
+      throw new Error('JWT_SECRET is not defined');
     }
 
     const authHeader = req.headers.authorization;
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return sendResponse(
         res,
         {
           success: false,
-          message: "No token provided",
+          message: 'No token provided',
           data: null,
-          error: "Authorization header missing",
+          error: 'Authorization header missing',
         },
-        401,
+        401
       );
     }
 
-    const token = authHeader.split(" ")[1];
+    const token = authHeader.split(' ')[1];
 
     const decoded = jwt.verify(token, JWT_SECRET);
 
@@ -40,11 +40,11 @@ module.exports = function (req, res, next) {
       res,
       {
         success: false,
-        message: "Invalid or expired token",
+        message: 'Invalid or expired token',
         data: null,
         error: error.message,
       },
-      401,
+      401
     );
   }
 };

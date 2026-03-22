@@ -4,7 +4,7 @@
  * Handles secure password hashing and comparison using bcrypt.
  */
 
-const bcrypt = require("bcrypt");
+const bcrypt = require('bcrypt');
 
 const SALT_ROUNDS = Number(process.env.BCRYPT_SALT_ROUNDS) || 10;
 
@@ -14,12 +14,12 @@ const SALT_ROUNDS = Number(process.env.BCRYPT_SALT_ROUNDS) || 10;
  * @returns {Promise<string>} Hashed password
  */
 const hashPassword = async (password) => {
-  if (!password || typeof password !== "string") {
-    throw new Error("Password must be a valid string");
+  if (!password || typeof password !== 'string') {
+    throw new Error('Password must be a valid string');
   }
 
   if (password.length < 6) {
-    throw new Error("Password must be at least 6 characters long");
+    throw new Error('Password must be at least 6 characters long');
   }
 
   return bcrypt.hash(password, SALT_ROUNDS);
@@ -33,7 +33,7 @@ const hashPassword = async (password) => {
  */
 const comparePassword = async (password, hash) => {
   if (!password || !hash) {
-    throw new Error("Password and hash are required");
+    throw new Error('Password and hash are required');
   }
 
   return bcrypt.compare(password, hash);

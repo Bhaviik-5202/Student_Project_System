@@ -1,4 +1,4 @@
-const auditLogRepository = require("../repositories/auditlog.repository");
+const auditLogRepository = require('../repositories/auditlog.repository');
 
 /**
  * Standardized response helper for services
@@ -17,9 +17,9 @@ const response = (error, data, message) => ({ error, data, message });
 exports.create = async (data) => {
   try {
     const auditLog = await auditLogRepository.create(data);
-    return response(false, auditLog, "Audit log created successfully");
+    return response(false, auditLog, 'Audit log created successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to create audit log");
+    return response(true, null, err.message || 'Failed to create audit log');
   }
 };
 
@@ -31,11 +31,11 @@ exports.create = async (data) => {
 exports.getAll = async ({ page = 1, limit = 20, filters = {} }) => {
   try {
     const skip = (page - 1) * limit;
-    
+
     // Transform filters for Mongoose
     const query = {};
     if (filters.action) {
-      query.action = { $regex: filters.action, $options: "i" };
+      query.action = { $regex: filters.action, $options: 'i' };
     }
     if (filters.status) {
       query.status = filters.status;
@@ -52,10 +52,10 @@ exports.getAll = async ({ page = 1, limit = 20, filters = {} }) => {
     }
 
     const [auditLogs, total] = await Promise.all([
-      auditLogRepository.findAll(query, { 
-        skip, 
+      auditLogRepository.findAll(query, {
+        skip,
         limit: Number(limit),
-        populate: "user"
+        populate: 'user',
       }),
       auditLogRepository.count(query),
     ]);
@@ -71,10 +71,10 @@ exports.getAll = async ({ page = 1, limit = 20, filters = {} }) => {
           pages: Math.ceil(total / limit),
         },
       },
-      "Audit logs fetched successfully"
+      'Audit logs fetched successfully'
     );
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch audit logs");
+    return response(true, null, err.message || 'Failed to fetch audit logs');
   }
 };
 
@@ -86,10 +86,10 @@ exports.getAll = async ({ page = 1, limit = 20, filters = {} }) => {
 exports.getById = async (id) => {
   try {
     const auditLog = await auditLogRepository.findById(id);
-    if (!auditLog) return response(true, null, "Audit log not found");
-    return response(false, auditLog, "Audit log fetched successfully");
+    if (!auditLog) return response(true, null, 'Audit log not found');
+    return response(false, auditLog, 'Audit log fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch audit log");
+    return response(true, null, err.message || 'Failed to fetch audit log');
   }
 };
 
@@ -102,10 +102,10 @@ exports.getById = async (id) => {
 exports.update = async (id, data) => {
   try {
     const auditLog = await auditLogRepository.update(id, data);
-    if (!auditLog) return response(true, null, "Audit log not found");
-    return response(false, auditLog, "Audit log updated successfully");
+    if (!auditLog) return response(true, null, 'Audit log not found');
+    return response(false, auditLog, 'Audit log updated successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to update audit log");
+    return response(true, null, err.message || 'Failed to update audit log');
   }
 };
 
@@ -117,9 +117,9 @@ exports.update = async (id, data) => {
 exports.remove = async (id) => {
   try {
     const auditLog = await auditLogRepository.remove(id);
-    if (!auditLog) return response(true, null, "Audit log not found");
-    return response(false, null, "Audit log deleted successfully");
+    if (!auditLog) return response(true, null, 'Audit log not found');
+    return response(false, null, 'Audit log deleted successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to delete audit log");
+    return response(true, null, err.message || 'Failed to delete audit log');
   }
 };

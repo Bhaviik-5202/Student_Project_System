@@ -1,5 +1,5 @@
-const activityService = require("../services/activity.service");
-const sendResponse = require("../utils/response");
+const activityService = require('../services/activity.service');
+const sendResponse = require('../utils/response');
 
 /**
  * Activity Controller
@@ -19,22 +19,22 @@ exports.createActivity = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? result.message : "Activity logged successfully",
+        message: result.error ? result.message : 'Activity logged successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 201,
+      result.error ? 400 : 201
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to log activity",
+        message: 'Failed to log activity',
         data: null,
         error: error.message,
       },
-      400,
+      400
     );
   }
 };
@@ -54,23 +54,23 @@ exports.getAllActivities = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to fetch activities"
-          : "Activities fetched successfully",
+          ? 'Failed to fetch activities'
+          : 'Activities fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 200,
+      result.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -89,23 +89,23 @@ exports.getActivityById = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Activity not found"
-          : "Activity fetched successfully",
+          ? 'Activity not found'
+          : 'Activity fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -128,23 +128,23 @@ exports.getActivitiesByUserId = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to fetch user activities"
-          : "User activities fetched successfully",
+          ? 'Failed to fetch user activities'
+          : 'User activities fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -162,23 +162,23 @@ exports.updateActivity = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Activity not found"
-          : "Activity updated successfully",
+          ? 'Activity not found'
+          : 'Activity updated successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -197,23 +197,23 @@ exports.deleteActivity = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Activity not found"
-          : "Activity deleted successfully",
+          ? 'Activity not found'
+          : 'Activity deleted successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };

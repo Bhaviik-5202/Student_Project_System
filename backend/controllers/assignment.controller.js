@@ -1,6 +1,6 @@
-const assignmentService = require("../services/assignment.service");
-const sendResponse = require("../utils/response");
-const { validationResult } = require("express-validator");
+const assignmentService = require('../services/assignment.service');
+const sendResponse = require('../utils/response');
+const { validationResult } = require('express-validator');
 
 /**
  * Assignment Controller
@@ -23,11 +23,11 @@ exports.createAssignment = async (req, res) => {
         res,
         {
           success: false,
-          message: "Validation failed",
+          message: 'Validation failed',
           data: null,
           error: errors.array(),
         },
-        400,
+        400
       );
     }
 
@@ -35,12 +35,18 @@ exports.createAssignment = async (req, res) => {
 
     // Sanitize attachments if they are not in the expected format (array of strings)
     // This prevents errors like "Cast to [string] failed for value '[ {} ]'"
-    if (assignmentData.attachments && !Array.isArray(assignmentData.attachments)) {
+    if (
+      assignmentData.attachments &&
+      !Array.isArray(assignmentData.attachments)
+    ) {
       delete assignmentData.attachments;
     } else if (Array.isArray(assignmentData.attachments)) {
       // Filter out non-string/invalid elements
-      assignmentData.attachments = assignmentData.attachments.filter(item => typeof item === 'string');
-      if (assignmentData.attachments.length === 0) delete assignmentData.attachments;
+      assignmentData.attachments = assignmentData.attachments.filter(
+        (item) => typeof item === 'string'
+      );
+      if (assignmentData.attachments.length === 0)
+        delete assignmentData.attachments;
     }
 
     // Handle multiple file uploads via Multer
@@ -56,22 +62,22 @@ exports.createAssignment = async (req, res) => {
         success: !result.error,
         message: result.error
           ? result.message
-          : "Assignment created successfully",
+          : 'Assignment created successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 201,
+      result.error ? 400 : 201
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to create assignment",
+        message: 'Failed to create assignment',
         data: null,
         error: error.message,
       },
-      400,
+      400
     );
   }
 };
@@ -94,23 +100,23 @@ exports.getAllAssignments = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to fetch assignments"
-          : "Assignments fetched successfully",
+          ? 'Failed to fetch assignments'
+          : 'Assignments fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 200,
+      result.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -129,23 +135,23 @@ exports.getAssignmentById = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to fetch assignment"
-          : "Assignment fetched successfully",
+          ? 'Failed to fetch assignment'
+          : 'Assignment fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -164,23 +170,23 @@ exports.updateAssignment = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to update assignment"
-          : "Assignment updated successfully",
+          ? 'Failed to update assignment'
+          : 'Assignment updated successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 200,
+      result.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -198,11 +204,11 @@ exports.validateAssignment = (req, res) => {
       res,
       {
         success: false,
-        message: "Validation failed",
+        message: 'Validation failed',
         data: null,
         error: errors.array(),
       },
-      400,
+      400
     );
   }
 
@@ -210,11 +216,11 @@ exports.validateAssignment = (req, res) => {
     res,
     {
       success: true,
-      message: "Validation successful",
+      message: 'Validation successful',
       data: null,
       error: null,
     },
-    200,
+    200
   );
 };
 
@@ -232,23 +238,23 @@ exports.deleteAssignment = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to delete assignment"
-          : "Assignment deleted successfully",
+          ? 'Failed to delete assignment'
+          : 'Assignment deleted successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 200,
+      result.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -267,23 +273,23 @@ exports.getAssignmentsByStudentId = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to fetch assignments for student"
-          : "Assignments fetched successfully",
+          ? 'Failed to fetch assignments for student'
+          : 'Assignments fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -299,7 +305,7 @@ exports.getAssignmentsByActivityId = async (req, res) => {
 
     const result = await assignmentService.getByActivityId(
       req.params.activityId,
-      { page, limit },
+      { page, limit }
     );
 
     sendResponse(
@@ -307,23 +313,23 @@ exports.getAssignmentsByActivityId = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to fetch assignments for activity"
-          : "Assignments fetched successfully",
+          ? 'Failed to fetch assignments for activity'
+          : 'Assignments fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -338,30 +344,30 @@ exports.getAssignmentsByFacultyId = async (req, res) => {
     const { page = 1, limit = 10 } = req.query;
     const result = await assignmentService.getByFacultyId(
       req.params.facultyId,
-      { page, limit },
+      { page, limit }
     );
     sendResponse(
       res,
       {
         success: !result.error,
         message: result.error
-          ? "Failed to fetch assignments for faculty"
-          : "Assignments fetched successfully",
+          ? 'Failed to fetch assignments for faculty'
+          : 'Assignments fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -383,23 +389,23 @@ exports.getAssignmentsByCourseId = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to fetch assignments for course"
-          : "Assignments fetched successfully",
+          ? 'Failed to fetch assignments for course'
+          : 'Assignments fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -421,23 +427,23 @@ exports.getAssignmentsByBatchId = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to fetch assignments for batch"
-          : "Assignments fetched successfully",
+          ? 'Failed to fetch assignments for batch'
+          : 'Assignments fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -458,22 +464,22 @@ exports.getRubric = async (req, res) => {
       res,
       {
         success: true,
-        message: "Rubric fetched successfully",
-        data: result.data.rubric || { name: "", criteria: [] },
+        message: 'Rubric fetched successfully',
+        data: result.data.rubric || { name: '', criteria: [] },
         error: null,
       },
-      200,
+      200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -493,22 +499,24 @@ exports.saveRubric = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Failed to save rubric" : "Rubric saved successfully",
+        message: result.error
+          ? 'Failed to save rubric'
+          : 'Rubric saved successfully',
         data: result.data?.rubric || null,
         error: result.error || null,
       },
-      result.error ? 400 : 200,
+      result.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };

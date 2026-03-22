@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
 const useScreenSize = () => {
   const [screenSize, setScreenSize] = useState({
@@ -14,10 +14,10 @@ const useScreenSize = () => {
       });
     };
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
 
     // Cleanup
-    return () => window.removeEventListener("resize", handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   // Responsive breakpoints

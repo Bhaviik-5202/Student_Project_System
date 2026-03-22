@@ -1,9 +1,7 @@
-
 # Student Project System – Backend
 
 ![Node.js CI](https://img.shields.io/github/actions/workflow/status/Bhaviik-5202/Student_Project_System/node.js.yml?style=flat-square)
 ![License](https://img.shields.io/github/license/Bhaviik-5202/Student_Project_System?style=flat-square)
-
 
 Backend API for managing student projects, users, assignments, and more. Built with Node.js, Express, and MongoDB.
 
@@ -87,6 +85,7 @@ Key folders:
 All endpoints are prefixed with `/api/v1` (see `server.js`).
 
 ### Example: Create Project (admin/faculty only)
+
 ```http
 POST /api/v1/projects
 Authorization: Bearer <token>
@@ -100,6 +99,7 @@ Content-Type: application/json
 ```
 
 ### Example: Paginated List
+
 ```http
 GET /api/v1/projects?page=2&limit=5&status=completed
 Authorization: Bearer <token>

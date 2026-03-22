@@ -1,10 +1,10 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const activitySchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
       required: true,
       index: true,
     },
@@ -21,9 +21,9 @@ const activitySchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 activitySchema.index({ user: 1, createdAt: -1 });
 
-module.exports = mongoose.model("Activety", activitySchema);
+module.exports = mongoose.model('Activety', activitySchema);

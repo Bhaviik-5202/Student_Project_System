@@ -1,0 +1,12 @@
+node_modules
+dist
+build
+.env
+package-lock.json
+*.json
+*.md
+uploads
+frontend/dist
+backend/uploads
+backend/final_results.json
+backend/final_test_results.txt

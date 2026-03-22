@@ -1,5 +1,5 @@
-const staffService = require("../services/staff.service");
-const sendResponse = require("../utils/response");
+const staffService = require('../services/staff.service');
+const sendResponse = require('../utils/response');
 
 /**
  * Staff Controller
@@ -19,22 +19,22 @@ exports.createStaff = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? result.message : "Staff created successfully",
+        message: result.error ? result.message : 'Staff created successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 201,
+      result.error ? 400 : 201
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -53,23 +53,23 @@ exports.getAllStaff = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to fetch staff"
-          : "Staff fetched successfully",
+          ? 'Failed to fetch staff'
+          : 'Staff fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 200,
+      result.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -88,23 +88,23 @@ exports.getStaffById = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Staff member not found"
-          : "Staff member fetched successfully",
+          ? 'Staff member not found'
+          : 'Staff member fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -123,23 +123,23 @@ exports.updateStaff = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Staff member not found"
-          : "Staff member updated successfully",
+          ? 'Staff member not found'
+          : 'Staff member updated successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -158,23 +158,23 @@ exports.deleteStaff = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Staff member not found"
-          : "Staff member deleted successfully",
+          ? 'Staff member not found'
+          : 'Staff member deleted successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };

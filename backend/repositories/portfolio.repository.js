@@ -1,4 +1,4 @@
-const Portfolio = require("../models/portfolio.model");
+const Portfolio = require('../models/portfolio.model');
 
 /**
  * Find all portfolios matching a specific filter
@@ -11,8 +11,8 @@ exports.findAll = (filter = {}, options = {}) =>
     .sort(options.sort || { createdAt: -1 })
     .skip(options.skip || 0)
     .limit(options.limit || 0)
-    .populate(options.populate || "")
-    .select(options.select || "");
+    .populate(options.populate || '')
+    .select(options.select || '');
 
 /**
  * Find a single portfolio matching a specific filter
@@ -22,8 +22,8 @@ exports.findAll = (filter = {}, options = {}) =>
  */
 exports.findOne = (filter = {}, options = {}) =>
   Portfolio.findOne(filter)
-    .populate(options.populate || "")
-    .select(options.select || "");
+    .populate(options.populate || '')
+    .select(options.select || '');
 
 /**
  * Locate a single portfolio by its unique identifier
@@ -33,8 +33,8 @@ exports.findOne = (filter = {}, options = {}) =>
  */
 exports.findById = (id, options = {}) =>
   Portfolio.findById(id)
-    .populate(options.populate || "")
-    .select(options.select || "");
+    .populate(options.populate || '')
+    .select(options.select || '');
 
 /**
  * Persist a new portfolio record to the database

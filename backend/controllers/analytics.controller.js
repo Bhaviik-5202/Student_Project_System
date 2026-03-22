@@ -1,5 +1,5 @@
-const analyticsService = require("../services/analytics.service");
-const sendResponse = require("../utils/response");
+const analyticsService = require('../services/analytics.service');
+const sendResponse = require('../utils/response');
 
 /**
  * Analytics Controller
@@ -15,27 +15,27 @@ exports.getDashboardStats = async (req, res) => {
   try {
     const { error, data, message } = await analyticsService.getGlobalStats();
     if (error) throw new Error(message);
-    
+
     sendResponse(
       res,
       {
         success: true,
-        message: message || "Dashboard statistics fetched successfully",
+        message: message || 'Dashboard statistics fetched successfully',
         data: data,
         error: null,
       },
-      200,
+      200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: error.message || "Failed to fetch dashboard statistics",
+        message: error.message || 'Failed to fetch dashboard statistics',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -54,22 +54,22 @@ exports.getProjectAnalytics = async (req, res) => {
       res,
       {
         success: true,
-        message: message || "Project analytics fetched successfully",
+        message: message || 'Project analytics fetched successfully',
         data: data,
         error: null,
       },
-      200,
+      200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: error.message || "Failed to fetch project analytics",
+        message: error.message || 'Failed to fetch project analytics',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -88,22 +88,22 @@ exports.getUserAnalytics = async (req, res) => {
       res,
       {
         success: true,
-        message: message || "User analytics fetched successfully",
+        message: message || 'User analytics fetched successfully',
         data: data,
         error: null,
       },
-      200,
+      200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: error.message || "Failed to fetch user analytics",
+        message: error.message || 'Failed to fetch user analytics',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -114,29 +114,30 @@ exports.getUserAnalytics = async (req, res) => {
  */
 exports.getFacultyDashboardStats = async (req, res) => {
   try {
-    const { error, data, message } = await analyticsService.getFacultyDashboardStats(req.user.id);
+    const { error, data, message } =
+      await analyticsService.getFacultyDashboardStats(req.user.id);
     if (error) throw new Error(message);
 
     sendResponse(
       res,
       {
         success: true,
-        message: message || "Faculty dashboard statistics fetched successfully",
+        message: message || 'Faculty dashboard statistics fetched successfully',
         data: data,
         error: null,
       },
-      200,
+      200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: error.message || "Failed to fetch faculty statistics",
+        message: error.message || 'Failed to fetch faculty statistics',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -148,36 +149,38 @@ exports.getFacultyDashboardStats = async (req, res) => {
  */
 exports.getStudentDashboardStats = async (req, res) => {
   try {
-    const { error, data, message } = await analyticsService.getStudentDashboardStats(req.user.id);
+    const { error, data, message } =
+      await analyticsService.getStudentDashboardStats(req.user.id);
     if (error) throw new Error(message);
 
     sendResponse(
       res,
       {
         success: true,
-        message: message || "Student dashboard statistics fetched successfully",
+        message: message || 'Student dashboard statistics fetched successfully',
         data: data,
         error: null,
       },
-      200,
+      200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: error.message || "Failed to fetch student statistics",
+        message: error.message || 'Failed to fetch student statistics',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
 
 exports.getGradeDistribution = async (req, res) => {
   try {
-    const { error, data, message } = await analyticsService.getGradeDistribution();
+    const { error, data, message } =
+      await analyticsService.getGradeDistribution();
     if (error) throw new Error(message);
     sendResponse(res, { success: true, data }, 200);
   } catch (error) {
@@ -187,7 +190,8 @@ exports.getGradeDistribution = async (req, res) => {
 
 exports.getPerformanceMetrics = async (req, res) => {
   try {
-    const { error, data, message } = await analyticsService.getPerformanceMetrics();
+    const { error, data, message } =
+      await analyticsService.getPerformanceMetrics();
     if (error) throw new Error(message);
     sendResponse(res, { success: true, data }, 200);
   } catch (error) {
@@ -197,7 +201,8 @@ exports.getPerformanceMetrics = async (req, res) => {
 
 exports.getProgressAnalytics = async (req, res) => {
   try {
-    const { error, data, message } = await analyticsService.getProgressAnalytics();
+    const { error, data, message } =
+      await analyticsService.getProgressAnalytics();
     if (error) throw new Error(message);
     sendResponse(res, { success: true, data }, 200);
   } catch (error) {
@@ -207,7 +212,8 @@ exports.getProgressAnalytics = async (req, res) => {
 
 exports.getUsageStatistics = async (req, res) => {
   try {
-    const { error, data, message } = await analyticsService.getUsageStatistics();
+    const { error, data, message } =
+      await analyticsService.getUsageStatistics();
     if (error) throw new Error(message);
     sendResponse(res, { success: true, data }, 200);
   } catch (error) {

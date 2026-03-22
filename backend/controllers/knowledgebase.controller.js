@@ -1,5 +1,5 @@
-const knowledgeBaseService = require("../services/knowledgebase.service");
-const sendResponse = require("../utils/response");
+const knowledgeBaseService = require('../services/knowledgebase.service');
+const sendResponse = require('../utils/response');
 
 /**
  * KnowledgeBase Controller
@@ -19,22 +19,22 @@ exports.createKnowledgeBase = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? result.message : "Article created successfully",
+        message: result.error ? result.message : 'Article created successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 201,
+      result.error ? 400 : 201
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to create article",
+        message: 'Failed to create article',
         data: null,
         error: error.message,
       },
-      400,
+      400
     );
   }
 };
@@ -53,23 +53,23 @@ exports.getAllKnowledgeBases = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to fetch articles"
-          : "Articles fetched successfully",
+          ? 'Failed to fetch articles'
+          : 'Articles fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 200,
+      result.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -88,23 +88,23 @@ exports.getKnowledgeBaseById = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Article not found"
-          : "Article fetched successfully",
+          ? 'Article not found'
+          : 'Article fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -123,23 +123,23 @@ exports.updateKnowledgeBase = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Article not found"
-          : "Article updated successfully",
+          ? 'Article not found'
+          : 'Article updated successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -158,23 +158,23 @@ exports.deleteKnowledgeBase = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Article not found"
-          : "Article deleted successfully",
+          ? 'Article not found'
+          : 'Article deleted successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };

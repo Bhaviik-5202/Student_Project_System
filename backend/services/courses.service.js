@@ -1,4 +1,4 @@
-const coursesRepository = require("../repositories/courses.repository");
+const coursesRepository = require('../repositories/courses.repository');
 
 /**
  * Standardized response helper for services
@@ -17,9 +17,9 @@ const response = (error, data, message) => ({ error, data, message });
 exports.create = async (data) => {
   try {
     const course = await coursesRepository.create(data);
-    return response(false, course, "Course created successfully");
+    return response(false, course, 'Course created successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to create course");
+    return response(true, null, err.message || 'Failed to create course');
   }
 };
 
@@ -30,9 +30,9 @@ exports.create = async (data) => {
 exports.getAll = async () => {
   try {
     const courses = await coursesRepository.findAll();
-    return response(false, courses, "Courses fetched successfully");
+    return response(false, courses, 'Courses fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch courses");
+    return response(true, null, err.message || 'Failed to fetch courses');
   }
 };
 
@@ -44,10 +44,10 @@ exports.getAll = async () => {
 exports.getById = async (id) => {
   try {
     const course = await coursesRepository.findById(id);
-    if (!course) return response(true, null, "Course not found");
-    return response(false, course, "Course fetched successfully");
+    if (!course) return response(true, null, 'Course not found');
+    return response(false, course, 'Course fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch course");
+    return response(true, null, err.message || 'Failed to fetch course');
   }
 };
 
@@ -60,10 +60,10 @@ exports.getById = async (id) => {
 exports.update = async (id, data) => {
   try {
     const course = await coursesRepository.update(id, data);
-    if (!course) return response(true, null, "Course not found");
-    return response(false, course, "Course updated successfully");
+    if (!course) return response(true, null, 'Course not found');
+    return response(false, course, 'Course updated successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to update course");
+    return response(true, null, err.message || 'Failed to update course');
   }
 };
 
@@ -75,10 +75,10 @@ exports.update = async (id, data) => {
 exports.remove = async (id) => {
   try {
     const course = await coursesRepository.remove(id);
-    if (!course) return response(true, null, "Course not found");
-    return response(false, null, "Course deleted successfully");
+    if (!course) return response(true, null, 'Course not found');
+    return response(false, null, 'Course deleted successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to delete course");
+    return response(true, null, err.message || 'Failed to delete course');
   }
 };
 
@@ -90,37 +90,37 @@ exports.remove = async (id) => {
  */
 exports.enroll = async (userId, courseId) => {
   try {
-    const studentRepository = require("../repositories/student.repository");
-    const userRepository = require("../repositories/user.repository");
-    
+    const studentRepository = require('../repositories/student.repository');
+    const userRepository = require('../repositories/user.repository');
+
     // 1. Resolve User to get email
     const user = await userRepository.findById(userId);
-    if (!user) return response(true, null, "User account not found");
+    if (!user) return response(true, null, 'User account not found');
 
     // 2. Resolve Student by email
     let student = await studentRepository.findByEmail(user.email);
-    
+
     // 3. If student profile doesn't exist, create it on-the-fly (for legacy users)
     if (!student) {
       student = await studentRepository.create({
         name: user.name,
         email: user.email,
         rollNumber: `STUDENT-${Date.now()}`,
-        department: "General",
-        year: 1
+        department: 'General',
+        year: 1,
       });
     }
 
     const course = await coursesRepository.findById(courseId);
-    if (!course) return response(true, null, "Course not found");
+    if (!course) return response(true, null, 'Course not found');
 
     const updatedStudent = await studentRepository.update(student._id, {
-      $addToSet: { enrolledCourses: courseId }
+      $addToSet: { enrolledCourses: courseId },
     });
 
-    return response(false, updatedStudent, "Enrolled in course successfully");
+    return response(false, updatedStudent, 'Enrolled in course successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to enroll in course");
+    return response(true, null, err.message || 'Failed to enroll in course');
   }
 };
 
@@ -131,32 +131,40 @@ exports.enroll = async (userId, courseId) => {
  */
 exports.getEnrolled = async (userId) => {
   try {
-    const studentRepository = require("../repositories/student.repository");
-    const userRepository = require("../repositories/user.repository");
+    const studentRepository = require('../repositories/student.repository');
+    const userRepository = require('../repositories/user.repository');
 
     // 1. Resolve User to get email
     const user = await userRepository.findById(userId);
-    if (!user) return response(true, null, "User account not found");
+    if (!user) return response(true, null, 'User account not found');
 
     // 2. Resolve Student by email
     let student = await studentRepository.findByEmail(user.email);
-    
+
     // 3. Fallback for legacy users
     if (!student) {
       student = await studentRepository.create({
         name: user.name,
         email: user.email,
         rollNumber: `STUDENT-${Date.now()}`,
-        department: "General",
-        year: 1
+        department: 'General',
+        year: 1,
       });
     }
 
     const fullStudent = await studentRepository.findById(student._id, {
-      populate: "enrolledCourses"
+      populate: 'enrolledCourses',
     });
-    return response(false, fullStudent.enrolledCourses, "Enrolled courses fetched successfully");
+    return response(
+      false,
+      fullStudent.enrolledCourses,
+      'Enrolled courses fetched successfully'
+    );
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch enrolled courses");
+    return response(
+      true,
+      null,
+      err.message || 'Failed to fetch enrolled courses'
+    );
   }
 };

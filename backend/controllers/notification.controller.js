@@ -1,5 +1,5 @@
-const notificationService = require("../services/notification.service");
-const sendResponse = require("../utils/response");
+const notificationService = require('../services/notification.service');
+const sendResponse = require('../utils/response');
 
 /**
  * Notification Controller
@@ -21,22 +21,22 @@ exports.createNotification = async (req, res) => {
         success: !result.error,
         message: result.error
           ? result.message
-          : "Notification created successfully",
+          : 'Notification created successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 201,
+      result.error ? 400 : 201
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to create notification",
+        message: 'Failed to create notification',
         data: null,
         error: error.message,
       },
-      400,
+      400
     );
   }
 };
@@ -52,7 +52,7 @@ exports.getNotifications = async (req, res) => {
     const result = await notificationService.getByUserId(
       req.user.id,
       parseInt(page),
-      parseInt(limit),
+      parseInt(limit)
     );
 
     sendResponse(
@@ -60,8 +60,8 @@ exports.getNotifications = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to fetch notifications"
-          : "Notifications fetched successfully",
+          ? 'Failed to fetch notifications'
+          : 'Notifications fetched successfully',
         data: result.data ? result.data.notifications : null,
         error: result.error || null,
         pagination: result.data
@@ -73,18 +73,18 @@ exports.getNotifications = async (req, res) => {
             }
           : null,
       },
-      result.error ? 400 : 200,
+      result.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -98,7 +98,7 @@ exports.markAsRead = async (req, res) => {
   try {
     const result = await notificationService.markAsRead(
       req.params.id,
-      req.user.id,
+      req.user.id
     );
 
     sendResponse(
@@ -106,23 +106,23 @@ exports.markAsRead = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Notification not found"
-          : "Notification marked as read",
+          ? 'Notification not found'
+          : 'Notification marked as read',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -142,22 +142,22 @@ exports.markAllAsRead = async (req, res) => {
         success: !result.error,
         message: result.error
           ? result.message
-          : "All notifications marked as read",
+          : 'All notifications marked as read',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 200,
+      result.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -176,23 +176,23 @@ exports.deleteNotification = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Notification not found"
-          : "Notification deleted successfully",
+          ? 'Notification not found'
+          : 'Notification deleted successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -210,23 +210,23 @@ exports.getUnreadNotifications = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to fetch unread notifications"
-          : "Unread notifications fetched successfully",
+          ? 'Failed to fetch unread notifications'
+          : 'Unread notifications fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 200,
+      result.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -240,7 +240,7 @@ exports.getNotificationById = async (req, res) => {
   try {
     const result = await notificationService.getById(
       req.params.id,
-      req.user.id,
+      req.user.id
     );
 
     sendResponse(
@@ -248,23 +248,23 @@ exports.getNotificationById = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Notification not found"
-          : "Notification fetched successfully",
+          ? 'Notification not found'
+          : 'Notification fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };

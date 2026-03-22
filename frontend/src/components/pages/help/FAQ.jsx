@@ -1,6 +1,6 @@
-import React, { memo, useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
-import api from "../../../utils/api";
+import React, { memo, useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import api from '../../../utils/api';
 
 const FAQ = memo(() => {
   const navigate = useNavigate();
@@ -12,13 +12,13 @@ const FAQ = memo(() => {
   useEffect(() => {
     const fetchFaqs = async () => {
       try {
-        const response = await api.get("/help/overview");
+        const response = await api.get('/help/overview');
         if (response.success && response.data) {
           const faqsData = response.data.groupedFaqs || [];
           setFaqs(faqsData);
         }
       } catch (error) {
-        console.error("Failed to fetch FAQs", error);
+        console.error('Failed to fetch FAQs', error);
       } finally {
         setLoading(false);
       }
@@ -31,56 +31,60 @@ const FAQ = memo(() => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-6">
+    <div className='min-h-screen bg-slate-50 dark:bg-slate-900'>
+      <div className='container mx-auto px-4 py-8'>
+        <div className='mb-6'>
           <button
-            onClick={() => navigate("/help")}
-            className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 flex items-center mb-4"
+            onClick={() => navigate('/help')}
+            className='mb-4 flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300'
           >
             ← Back to Help Center
           </button>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+          <h1 className='text-2xl font-bold text-slate-900 dark:text-white'>
             Frequently Asked Questions
           </h1>
-          <p className="text-slate-600 dark:text-slate-400">
+          <p className='text-slate-600 dark:text-slate-400'>
             Find answers to common questions about the system
           </p>
         </div>
 
-        <div className="max-w-4xl mx-auto">
+        <div className='mx-auto max-w-4xl'>
           {loading ? (
-            <div className="text-center py-12 text-slate-500">Loading FAQs...</div>
+            <div className='py-12 text-center text-slate-500'>
+              Loading FAQs...
+            </div>
           ) : faqs.length === 0 ? (
-            <div className="text-center py-12 text-slate-500">No FAQs available.</div>
+            <div className='py-12 text-center text-slate-500'>
+              No FAQs available.
+            </div>
           ) : (
             faqs.map((section, sectionIndex) => (
-              <div key={sectionIndex} className="mb-8">
-                <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
+              <div key={sectionIndex} className='mb-8'>
+                <h2 className='mb-4 text-xl font-semibold text-slate-900 dark:text-white'>
                   {section.category}
                 </h2>
-                <div className="space-y-3">
+                <div className='space-y-3'>
                   {section.questions?.map((faq, faqIndex) => {
                     const index = sectionIndex * 10 + faqIndex;
                     return (
                       <div
                         key={index}
-                        className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg"
+                        className='rounded-lg border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800'
                       >
                         <button
                           onClick={() => toggleFAQ(index)}
-                          className="w-full px-4 py-3 text-left flex justify-between items-center hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg"
+                          className='flex w-full items-center justify-between rounded-lg px-4 py-3 text-left hover:bg-slate-50 dark:hover:bg-slate-700'
                         >
-                          <span className="font-medium text-slate-900 dark:text-white">
+                          <span className='font-medium text-slate-900 dark:text-white'>
                             {faq.q || faq.question}
                           </span>
-                          <span className="text-slate-500 dark:text-slate-400">
-                            {activeIndex === index ? "−" : "+"}
+                          <span className='text-slate-500 dark:text-slate-400'>
+                            {activeIndex === index ? '−' : '+'}
                           </span>
                         </button>
                         {activeIndex === index && (
-                          <div className="px-4 py-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/50">
-                            <p className="text-slate-600 dark:text-slate-400">
+                          <div className='border-t border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-700 dark:bg-slate-700/50'>
+                            <p className='text-slate-600 dark:text-slate-400'>
                               {faq.a || faq.answer}
                             </p>
                           </div>
@@ -98,6 +102,6 @@ const FAQ = memo(() => {
   );
 });
 
-FAQ.displayName = "FAQ";
+FAQ.displayName = 'FAQ';
 
 export default FAQ;

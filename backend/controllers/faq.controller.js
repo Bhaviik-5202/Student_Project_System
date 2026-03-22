@@ -1,5 +1,5 @@
-const faqService = require("../services/faq.service");
-const sendResponse = require("../utils/response");
+const faqService = require('../services/faq.service');
+const sendResponse = require('../utils/response');
 
 /**
  * FAQ Controller
@@ -19,22 +19,22 @@ exports.createFAQ = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? result.message : "FAQ created successfully",
+        message: result.error ? result.message : 'FAQ created successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 201,
+      result.error ? 400 : 201
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to create FAQ",
+        message: 'Failed to create FAQ',
         data: null,
         error: error.message,
       },
-      400,
+      400
     );
   }
 };
@@ -53,23 +53,23 @@ exports.getAllFAQs = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to fetch FAQs"
-          : "FAQs fetched successfully",
+          ? 'Failed to fetch FAQs'
+          : 'FAQs fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 200,
+      result.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -87,22 +87,22 @@ exports.getFAQById = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "FAQ not found" : "FAQ fetched successfully",
+        message: result.error ? 'FAQ not found' : 'FAQ fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -120,22 +120,22 @@ exports.updateFAQ = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "FAQ not found" : "FAQ updated successfully",
+        message: result.error ? 'FAQ not found' : 'FAQ updated successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -153,22 +153,22 @@ exports.deleteFAQ = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "FAQ not found" : "FAQ deleted successfully",
+        message: result.error ? 'FAQ not found' : 'FAQ deleted successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };

@@ -4,35 +4,35 @@
  * Handles CRUD operations for FAQs.
  */
 
-const express = require("express");
-const { body } = require("express-validator");
+const express = require('express');
+const { body } = require('express-validator');
 const router = express.Router();
 
 // Controllers and Middlewares
-const faqController = require("../controllers/faq.controller");
-const authMiddleware = require("../middleware/auth.middleware");
-const validateRequest = require("../middleware/validateRequest");
+const faqController = require('../controllers/faq.controller');
+const authMiddleware = require('../middleware/auth.middleware');
+const validateRequest = require('../middleware/validateRequest');
 
 /**
  * @route   POST /api/v1/faqs
  * @desc    Create a new FAQ
  * @access  Private (Authenticated Users)
  */
-router.post("/", authMiddleware, faqController.createFAQ);
+router.post('/', authMiddleware, faqController.createFAQ);
 
 /**
  * @route   GET /api/v1/faqs
  * @desc    Retrieve all FAQs
  * @access  Private (Authenticated Users)
  */
-router.get("/", authMiddleware, faqController.getAllFAQs);
+router.get('/', authMiddleware, faqController.getAllFAQs);
 
 /**
  * @route   GET /api/v1/faqs/:id
  * @desc    Retrieve a specific FAQ by ID
  * @access  Private (Authenticated Users)
  */
-router.get("/:id", authMiddleware, faqController.getFAQById);
+router.get('/:id', authMiddleware, faqController.getFAQById);
 
 /**
  * @route   PUT /api/v1/faqs/:id
@@ -40,11 +40,14 @@ router.get("/:id", authMiddleware, faqController.getFAQById);
  * @access  Private (Authenticated Users)
  */
 router.put(
-  "/:id",
+  '/:id',
   authMiddleware,
   [
-    body("question").optional().notEmpty().withMessage("Question cannot be empty"),
-    body("answer").optional().notEmpty().withMessage("Answer cannot be empty"),
+    body('question')
+      .optional()
+      .notEmpty()
+      .withMessage('Question cannot be empty'),
+    body('answer').optional().notEmpty().withMessage('Answer cannot be empty'),
   ],
   validateRequest,
   faqController.updateFAQ
@@ -55,6 +58,6 @@ router.put(
  * @desc    Delete a FAQ
  * @access  Private (Authenticated Users)
  */
-router.delete("/:id", authMiddleware, faqController.deleteFAQ);
+router.delete('/:id', authMiddleware, faqController.deleteFAQ);
 
 module.exports = router;

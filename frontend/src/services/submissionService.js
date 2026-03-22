@@ -1,13 +1,13 @@
-import api from "../utils/api";
+import api from '../utils/api';
 
 const submissionService = {
   getSubmissions: async (params = {}) => {
     try {
-      return await api.get("/submissions", { params });
+      return await api.get('/submissions', { params });
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to fetch submissions",
+        message: error.response?.data?.message || 'Failed to fetch submissions',
       };
     }
   },
@@ -18,18 +18,18 @@ const submissionService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to fetch submission",
+        message: error.response?.data?.message || 'Failed to fetch submission',
       };
     }
   },
 
   createSubmission: async (submissionData) => {
     try {
-      return await api.post("/submissions", submissionData);
+      return await api.post('/submissions', submissionData);
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to create submission",
+        message: error.response?.data?.message || 'Failed to create submission',
       };
     }
   },
@@ -40,7 +40,7 @@ const submissionService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to update submission",
+        message: error.response?.data?.message || 'Failed to update submission',
       };
     }
   },
@@ -51,19 +51,19 @@ const submissionService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to delete submission",
+        message: error.response?.data?.message || 'Failed to delete submission',
       };
     }
   },
 
   getHistory: async () => {
     try {
-      return await api.get("/submissions/history");
+      return await api.get('/submissions/history');
     } catch (error) {
       return {
         success: false,
         message:
-          error.response?.data?.message || "Failed to fetch submission history",
+          error.response?.data?.message || 'Failed to fetch submission history',
       };
     }
   },

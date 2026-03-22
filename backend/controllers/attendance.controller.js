@@ -1,5 +1,5 @@
-const attendanceService = require("../services/attendance.service");
-const sendResponse = require("../utils/response");
+const attendanceService = require('../services/attendance.service');
+const sendResponse = require('../utils/response');
 
 /**
  * Attendance Controller
@@ -21,22 +21,22 @@ exports.markAttendance = async (req, res) => {
         success: !attendance.error,
         message: attendance.error
           ? attendance.message
-          : "Attendance marked successfully",
+          : 'Attendance marked successfully',
         data: attendance.data || null,
         error: attendance.error || null,
       },
-      attendance.error ? 400 : 201,
+      attendance.error ? 400 : 201
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to mark attendance",
+        message: 'Failed to mark attendance',
         data: null,
         error: error.message,
       },
-      400,
+      400
     );
   }
 };
@@ -56,22 +56,22 @@ exports.getAllAttendance = async (req, res) => {
         success: !records.error,
         message: records.error
           ? records.message
-          : "Attendance records fetched successfully",
+          : 'Attendance records fetched successfully',
         data: records.data || null,
         error: records.error || null,
       },
-      records.error ? 400 : 200,
+      records.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to fetch attendance records",
+        message: 'Failed to fetch attendance records',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -84,7 +84,7 @@ exports.getAllAttendance = async (req, res) => {
 exports.getAttendanceByStudent = async (req, res) => {
   try {
     const records = await attendanceService.getAttendanceByStudent(
-      req.params.studentId,
+      req.params.studentId
     );
 
     sendResponse(
@@ -93,22 +93,22 @@ exports.getAttendanceByStudent = async (req, res) => {
         success: !records.error,
         message: records.error
           ? records.message
-          : "Attendance by student fetched successfully",
+          : 'Attendance by student fetched successfully',
         data: records.data || null,
         error: records.error || null,
       },
-      records.error ? 400 : 200,
+      records.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to fetch attendance by student",
+        message: 'Failed to fetch attendance by student',
         data: null,
         error: error.message,
       },
-      400,
+      400
     );
   }
 };
@@ -121,7 +121,7 @@ exports.getAttendanceByStudent = async (req, res) => {
 exports.getAttendanceByDate = async (req, res) => {
   try {
     const records = await attendanceService.getAttendanceByDate(
-      req.params.date,
+      req.params.date
     );
 
     sendResponse(
@@ -130,22 +130,22 @@ exports.getAttendanceByDate = async (req, res) => {
         success: !records.error,
         message: records.error
           ? records.message
-          : "Attendance by date fetched successfully",
+          : 'Attendance by date fetched successfully',
         data: records.data || null,
         error: records.error || null,
       },
-      records.error ? 400 : 200,
+      records.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to fetch attendance by date",
+        message: 'Failed to fetch attendance by date',
         data: null,
         error: error.message,
       },
-      400,
+      400
     );
   }
 };
@@ -164,11 +164,11 @@ exports.getAttendanceById = async (req, res) => {
         res,
         {
           success: false,
-          message: "Attendance record not found",
+          message: 'Attendance record not found',
           data: null,
-          error: "Invalid attendance ID",
+          error: 'Invalid attendance ID',
         },
-        404,
+        404
       );
     }
 
@@ -178,22 +178,22 @@ exports.getAttendanceById = async (req, res) => {
         success: !record.error,
         message: record.error
           ? record.message
-          : "Attendance record fetched successfully",
+          : 'Attendance record fetched successfully',
         data: record.data || null,
         error: record.error || null,
       },
-      record.error ? 400 : 200,
+      record.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to fetch attendance record",
+        message: 'Failed to fetch attendance record',
         data: null,
         error: error.message,
       },
-      400,
+      400
     );
   }
 };
@@ -207,7 +207,7 @@ exports.updateAttendance = async (req, res) => {
   try {
     const updatedRecord = await attendanceService.updateAttendance(
       req.params.id,
-      req.body,
+      req.body
     );
 
     if (!updatedRecord) {
@@ -215,11 +215,11 @@ exports.updateAttendance = async (req, res) => {
         res,
         {
           success: false,
-          message: "Attendance record not found",
+          message: 'Attendance record not found',
           data: null,
-          error: "Invalid attendance ID",
+          error: 'Invalid attendance ID',
         },
-        404,
+        404
       );
     }
 
@@ -229,22 +229,22 @@ exports.updateAttendance = async (req, res) => {
         success: !updatedRecord.error,
         message: updatedRecord.error
           ? updatedRecord.message
-          : "Attendance updated successfully",
+          : 'Attendance updated successfully',
         data: updatedRecord.data || null,
         error: updatedRecord.error || null,
       },
-      updatedRecord.error ? 400 : 200,
+      updatedRecord.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to update attendance",
+        message: 'Failed to update attendance',
         data: null,
         error: error.message,
       },
-      400,
+      400
     );
   }
 };
@@ -263,11 +263,11 @@ exports.deleteAttendance = async (req, res) => {
         res,
         {
           success: false,
-          message: "Attendance record not found",
+          message: 'Attendance record not found',
           data: null,
-          error: "Invalid attendance ID",
+          error: 'Invalid attendance ID',
         },
-        404,
+        404
       );
     }
 
@@ -275,22 +275,22 @@ exports.deleteAttendance = async (req, res) => {
       res,
       {
         success: true,
-        message: "Attendance record deleted successfully",
+        message: 'Attendance record deleted successfully',
         data: null,
         error: null,
       },
-      200,
+      200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to delete attendance",
+        message: 'Failed to delete attendance',
         data: null,
         error: error.message,
       },
-      400,
+      400
     );
   }
 };

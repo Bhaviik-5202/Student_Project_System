@@ -1,12 +1,12 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const assignmentSchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      required: [true, "Assignment title is required"],
+      required: [true, 'Assignment title is required'],
       trim: true,
-      maxlength: [200, "Title cannot exceed 200 characters"],
+      maxlength: [200, 'Title cannot exceed 200 characters'],
     },
 
     description: {
@@ -27,7 +27,7 @@ const assignmentSchema = new mongoose.Schema(
 
     course: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Course",
+      ref: 'Course',
       required: true,
       index: true,
     },
@@ -41,12 +41,12 @@ const assignmentSchema = new mongoose.Schema(
     submissions: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Submission",
+        ref: 'Submission',
       },
     ],
 
     rubric: {
-      name: { type: String, default: "Evaluation Rubric" },
+      name: { type: String, default: 'Evaluation Rubric' },
       criteria: [
         {
           id: { type: Number },
@@ -59,9 +59,9 @@ const assignmentSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 assignmentSchema.index({ course: 1, dueDate: 1 });
 
-module.exports = mongoose.model("Assignment", assignmentSchema);
+module.exports = mongoose.model('Assignment', assignmentSchema);

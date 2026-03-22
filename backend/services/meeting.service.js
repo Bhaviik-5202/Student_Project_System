@@ -1,4 +1,4 @@
-const meetingRepository = require("../repositories/meeting.repository");
+const meetingRepository = require('../repositories/meeting.repository');
 
 /**
  * Standardized response helper for services
@@ -17,9 +17,9 @@ const response = (error, data, message) => ({ error, data, message });
 exports.create = async (data) => {
   try {
     const meeting = await meetingRepository.create(data);
-    return response(false, meeting, "Meeting created successfully");
+    return response(false, meeting, 'Meeting created successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to create meeting");
+    return response(true, null, err.message || 'Failed to create meeting');
   }
 };
 
@@ -30,9 +30,9 @@ exports.create = async (data) => {
 exports.getAll = async () => {
   try {
     const meetings = await meetingRepository.findAll();
-    return response(false, meetings, "Meetings fetched successfully");
+    return response(false, meetings, 'Meetings fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch meetings");
+    return response(true, null, err.message || 'Failed to fetch meetings');
   }
 };
 
@@ -44,10 +44,10 @@ exports.getAll = async () => {
 exports.getById = async (id) => {
   try {
     const meeting = await meetingRepository.findById(id);
-    if (!meeting) return response(true, null, "Meeting not found");
-    return response(false, meeting, "Meeting fetched successfully");
+    if (!meeting) return response(true, null, 'Meeting not found');
+    return response(false, meeting, 'Meeting fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch meeting");
+    return response(true, null, err.message || 'Failed to fetch meeting');
   }
 };
 
@@ -60,10 +60,10 @@ exports.getById = async (id) => {
 exports.update = async (id, data) => {
   try {
     const meeting = await meetingRepository.update(id, data);
-    if (!meeting) return response(true, null, "Meeting not found");
-    return response(false, meeting, "Meeting updated successfully");
+    if (!meeting) return response(true, null, 'Meeting not found');
+    return response(false, meeting, 'Meeting updated successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to update meeting");
+    return response(true, null, err.message || 'Failed to update meeting');
   }
 };
 
@@ -75,10 +75,10 @@ exports.update = async (id, data) => {
 exports.remove = async (id) => {
   try {
     const meeting = await meetingRepository.remove(id);
-    if (!meeting) return response(true, null, "Meeting not found");
-    return response(false, null, "Meeting deleted successfully");
+    if (!meeting) return response(true, null, 'Meeting not found');
+    return response(false, null, 'Meeting deleted successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to delete meeting");
+    return response(true, null, err.message || 'Failed to delete meeting');
   }
 };
 
@@ -91,19 +91,15 @@ exports.remove = async (id) => {
 exports.join = async (id, user) => {
   try {
     const meeting = await meetingRepository.findById(id);
-    if (!meeting) return response(true, null, "Meeting not found");
+    if (!meeting) return response(true, null, 'Meeting not found');
 
     // Add user to participants if not already present
     const updatedMeeting = await meetingRepository.update(id, {
-      $addToSet: { participants: user.id || user._id }
+      $addToSet: { participants: user.id || user._id },
     });
 
-    return response(
-      false,
-      updatedMeeting,
-      "Joined meeting successfully",
-    );
+    return response(false, updatedMeeting, 'Joined meeting successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to join meeting");
+    return response(true, null, err.message || 'Failed to join meeting');
   }
 };

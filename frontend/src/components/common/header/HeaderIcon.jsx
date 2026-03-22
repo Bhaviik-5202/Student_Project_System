@@ -1,4 +1,4 @@
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
 /**
  * HeaderIcon Component
@@ -7,10 +7,10 @@ import PropTypes from "prop-types";
  * application header. Ensures consistent sizing, weight, and
  * accessibility attributes across global navigation elements.
  */
-const HeaderIcon = ({ name, className = "", size = "text-base" }) => (
+const HeaderIcon = ({ name, className = '', size = 'text-base' }) => (
   <i
     className={`fas fa-${name} ${size} ${className}`}
-    aria-hidden="true"
+    aria-hidden='true'
     style={{ fontFamily: "'Font Awesome 6 Free'", fontWeight: 900 }}
   ></i>
 );

@@ -4,7 +4,7 @@
  * Used for system health monitoring and verification.
  */
 
-const express = require("express");
+const express = require('express');
 const router = express.Router();
 
 /**
@@ -12,11 +12,11 @@ const router = express.Router();
  * @desc    Verify server health status
  * @access  Public
  */
-router.get("/", (req, res) => {
+router.get('/', (req, res) => {
   res.status(200).json({
     success: true,
     data: null,
-    message: "Health OK",
+    message: 'Health OK',
   });
 });
 

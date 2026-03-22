@@ -1,4 +1,4 @@
-const staffRepository = require("../repositories/staff.repository");
+const staffRepository = require('../repositories/staff.repository');
 
 /**
  * Standardized response helper for services
@@ -17,9 +17,9 @@ const response = (error, data, message) => ({ error, data, message });
 exports.create = async (data) => {
   try {
     const staff = await staffRepository.create(data);
-    return response(false, staff, "Staff created successfully");
+    return response(false, staff, 'Staff created successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to create staff");
+    return response(true, null, err.message || 'Failed to create staff');
   }
 };
 
@@ -30,9 +30,9 @@ exports.create = async (data) => {
 exports.getAll = async () => {
   try {
     const staff = await staffRepository.findAll();
-    return response(false, staff, "Staff fetched successfully");
+    return response(false, staff, 'Staff fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch staff");
+    return response(true, null, err.message || 'Failed to fetch staff');
   }
 };
 
@@ -44,10 +44,10 @@ exports.getAll = async () => {
 exports.getById = async (id) => {
   try {
     const staff = await staffRepository.findById(id);
-    if (!staff) return response(true, null, "Staff not found");
-    return response(false, staff, "Staff fetched successfully");
+    if (!staff) return response(true, null, 'Staff not found');
+    return response(false, staff, 'Staff fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch staff");
+    return response(true, null, err.message || 'Failed to fetch staff');
   }
 };
 
@@ -60,10 +60,10 @@ exports.getById = async (id) => {
 exports.update = async (id, data) => {
   try {
     const staff = await staffRepository.update(id, data);
-    if (!staff) return response(true, null, "Staff not found");
-    return response(false, staff, "Staff updated successfully");
+    if (!staff) return response(true, null, 'Staff not found');
+    return response(false, staff, 'Staff updated successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to update staff");
+    return response(true, null, err.message || 'Failed to update staff');
   }
 };
 
@@ -75,9 +75,9 @@ exports.update = async (id, data) => {
 exports.remove = async (id) => {
   try {
     const staff = await staffRepository.remove(id);
-    if (!staff) return response(true, null, "Staff not found");
-    return response(false, null, "Staff deleted successfully");
+    if (!staff) return response(true, null, 'Staff not found');
+    return response(false, null, 'Staff deleted successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to delete staff");
+    return response(true, null, err.message || 'Failed to delete staff');
   }
 };

@@ -1,92 +1,92 @@
-import React, { memo, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-hot-toast";
+import React, { memo, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 
 const EvaluationCriteria = memo(() => {
   const navigate = useNavigate();
 
   const criteriaSets = useMemo(
     () => [
-      { id: 1, name: "Project Evaluation", criteria: 6, used: 12 },
-      { id: 2, name: "Assignment Rubric", criteria: 5, used: 24 },
-      { id: 3, name: "Presentation Scoring", criteria: 4, used: 8 },
+      { id: 1, name: 'Project Evaluation', criteria: 6, used: 12 },
+      { id: 2, name: 'Assignment Rubric', criteria: 5, used: 24 },
+      { id: 3, name: 'Presentation Scoring', criteria: 4, used: 8 },
     ],
-    [],
+    []
   );
 
   const currentSet = useMemo(
     () => ({
-      name: "Project Evaluation",
+      name: 'Project Evaluation',
       criteria: [
         {
           id: 1,
-          name: "Technical Implementation",
+          name: 'Technical Implementation',
           weight: 30,
-          description: "Quality of code and technical execution",
+          description: 'Quality of code and technical execution',
         },
         {
           id: 2,
-          name: "Documentation",
+          name: 'Documentation',
           weight: 20,
-          description: "Completeness and clarity of documentation",
+          description: 'Completeness and clarity of documentation',
         },
         {
           id: 3,
-          name: "Presentation",
+          name: 'Presentation',
           weight: 15,
-          description: "Quality of presentation and delivery",
+          description: 'Quality of presentation and delivery',
         },
         {
           id: 4,
-          name: "Teamwork",
+          name: 'Teamwork',
           weight: 15,
-          description: "Collaboration and team contribution",
+          description: 'Collaboration and team contribution',
         },
         {
           id: 5,
-          name: "Innovation",
+          name: 'Innovation',
           weight: 20,
-          description: "Creativity and innovation in solution",
+          description: 'Creativity and innovation in solution',
         },
       ],
     }),
-    [],
+    []
   );
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-6">
+    <div className='min-h-screen bg-slate-50 dark:bg-slate-900'>
+      <div className='container mx-auto px-4 py-8'>
+        <div className='mb-6 flex items-center justify-between'>
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+            <h1 className='text-2xl font-bold text-slate-900 dark:text-white'>
               Evaluation Criteria
             </h1>
-            <p className="text-slate-600 dark:text-slate-400">
+            <p className='text-slate-600 dark:text-slate-400'>
               Manage evaluation criteria and rubrics
             </p>
           </div>
-          <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
+          <button className='rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600'>
             New Criteria Set
           </button>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className='grid grid-cols-1 gap-6 lg:grid-cols-3'>
           {/* Criteria Sets */}
-          <div className="lg:col-span-1">
-            <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
+          <div className='lg:col-span-1'>
+            <div className='rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800'>
+              <h3 className='mb-4 text-lg font-semibold text-slate-900 dark:text-white'>
                 Criteria Sets
               </h3>
-              <div className="space-y-4">
+              <div className='space-y-4'>
                 {criteriaSets.map((set) => (
                   <div
                     key={set.id}
-                    className="border border-slate-200 dark:border-slate-700 rounded-lg p-4 hover:shadow-sm dark:hover:shadow-md transition-shadow"
+                    className='rounded-lg border border-slate-200 p-4 transition-shadow hover:shadow-sm dark:border-slate-700 dark:hover:shadow-md'
                   >
-                    <div className="font-medium text-slate-900 dark:text-white mb-2">
+                    <div className='mb-2 font-medium text-slate-900 dark:text-white'>
                       {set.name}
                     </div>
-                    <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400">
+                    <div className='flex justify-between text-sm text-slate-600 dark:text-slate-400'>
                       <span>{set.criteria} criteria</span>
                       <span>Used {set.used} times</span>
                     </div>
@@ -97,42 +97,42 @@ const EvaluationCriteria = memo(() => {
           </div>
 
           {/* Criteria Details */}
-          <div className="lg:col-span-2">
-            <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
+          <div className='lg:col-span-2'>
+            <div className='rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800'>
+              <div className='mb-6 flex items-center justify-between'>
+                <h3 className='text-lg font-semibold text-slate-900 dark:text-white'>
                   {currentSet.name}
                 </h3>
-                <button className="px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
+                <button className='rounded-lg bg-blue-600 px-3 py-1 text-sm text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600'>
                   Edit Criteria
                 </button>
               </div>
 
-              <div className="space-y-4">
+              <div className='space-y-4'>
                 {currentSet.criteria.map((criterion) => (
                   <div
                     key={criterion.id}
-                    className="border border-slate-200 dark:border-slate-700 rounded-lg p-4"
+                    className='rounded-lg border border-slate-200 p-4 dark:border-slate-700'
                   >
-                    <div className="flex justify-between items-start mb-3">
+                    <div className='mb-3 flex items-start justify-between'>
                       <div>
-                        <div className="font-medium text-slate-900 dark:text-white">
+                        <div className='font-medium text-slate-900 dark:text-white'>
                           {criterion.name}
                         </div>
-                        <div className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                        <div className='mt-1 text-sm text-slate-600 dark:text-slate-400'>
                           {criterion.description}
                         </div>
                       </div>
-                      <div className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm font-medium">
+                      <div className='rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-200'>
                         {criterion.weight}%
                       </div>
                     </div>
 
-                    <div className="flex items-center text-sm text-slate-600 dark:text-slate-400">
-                      <span className="mr-4">Weight: {criterion.weight}%</span>
-                      <div className="w-32 bg-slate-200 dark:bg-slate-700 rounded-full h-2">
+                    <div className='flex items-center text-sm text-slate-600 dark:text-slate-400'>
+                      <span className='mr-4'>Weight: {criterion.weight}%</span>
+                      <div className='h-2 w-32 rounded-full bg-slate-200 dark:bg-slate-700'>
                         <div
-                          className="bg-blue-500 dark:bg-blue-400 h-2 rounded-full"
+                          className='h-2 rounded-full bg-blue-500 dark:bg-blue-400'
                           style={{ width: `${criterion.weight}%` }}
                         ></div>
                       </div>
@@ -140,20 +140,20 @@ const EvaluationCriteria = memo(() => {
                   </div>
                 ))}
 
-                <div className="bg-blue-50 dark:bg-blue-900/30 p-4 rounded-lg">
-                  <div className="flex justify-between items-center">
+                <div className='rounded-lg bg-blue-50 p-4 dark:bg-blue-900/30'>
+                  <div className='flex items-center justify-between'>
                     <div>
-                      <div className="text-lg font-semibold text-slate-900 dark:text-white">
+                      <div className='text-lg font-semibold text-slate-900 dark:text-white'>
                         Total Weight
                       </div>
-                      <div className="text-slate-600 dark:text-slate-400">
+                      <div className='text-slate-600 dark:text-slate-400'>
                         Sum of all criteria weights
                       </div>
                     </div>
-                    <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                    <div className='text-2xl font-bold text-blue-600 dark:text-blue-400'>
                       {currentSet.criteria.reduce(
                         (sum, c) => sum + c.weight,
-                        0,
+                        0
                       )}
                       %
                     </div>
@@ -168,6 +168,6 @@ const EvaluationCriteria = memo(() => {
   );
 });
 
-EvaluationCriteria.displayName = "EvaluationCriteria";
+EvaluationCriteria.displayName = 'EvaluationCriteria';
 
 export default EvaluationCriteria;

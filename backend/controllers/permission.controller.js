@@ -1,5 +1,5 @@
-const permissionService = require("../services/permission.service");
-const sendResponse = require("../utils/response");
+const permissionService = require('../services/permission.service');
+const sendResponse = require('../utils/response');
 
 /**
  * Permission Controller
@@ -21,22 +21,22 @@ exports.createPermission = async (req, res) => {
         success: !result.error,
         message: result.error
           ? result.message
-          : "Permission created successfully",
+          : 'Permission created successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 201,
+      result.error ? 400 : 201
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to create permission",
+        message: 'Failed to create permission',
         data: null,
         error: error.message,
       },
-      400,
+      400
     );
   }
 };
@@ -55,23 +55,23 @@ exports.getAllPermissions = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to fetch permissions"
-          : "Permissions fetched successfully",
+          ? 'Failed to fetch permissions'
+          : 'Permissions fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 200,
+      result.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -90,23 +90,23 @@ exports.getPermissionById = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Permission not found"
-          : "Permission fetched successfully",
+          ? 'Permission not found'
+          : 'Permission fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -125,23 +125,23 @@ exports.updatePermission = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Permission not found"
-          : "Permission updated successfully",
+          ? 'Permission not found'
+          : 'Permission updated successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -160,23 +160,23 @@ exports.deletePermission = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Permission not found"
-          : "Permission deleted successfully",
+          ? 'Permission not found'
+          : 'Permission deleted successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };

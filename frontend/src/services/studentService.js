@@ -1,13 +1,13 @@
-import api from "../utils/api";
+import api from '../utils/api';
 
 const studentService = {
   getAllStudents: async (params = {}) => {
     try {
-      return await api.get("/students", { params });
+      return await api.get('/students', { params });
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to fetch students",
+        message: error.response?.data?.message || 'Failed to fetch students',
       };
     }
   },
@@ -18,18 +18,18 @@ const studentService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to fetch student",
+        message: error.response?.data?.message || 'Failed to fetch student',
       };
     }
   },
 
   createStudent: async (studentData) => {
     try {
-      return await api.post("/students", studentData);
+      return await api.post('/students', studentData);
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to create student",
+        message: error.response?.data?.message || 'Failed to create student',
       };
     }
   },
@@ -40,7 +40,7 @@ const studentService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to update student",
+        message: error.response?.data?.message || 'Failed to update student',
       };
     }
   },
@@ -51,7 +51,7 @@ const studentService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to delete student",
+        message: error.response?.data?.message || 'Failed to delete student',
       };
     }
   },
@@ -63,7 +63,7 @@ const studentService = {
       return {
         success: false,
         message:
-          error.response?.data?.message || "Failed to fetch student projects",
+          error.response?.data?.message || 'Failed to fetch student projects',
       };
     }
   },
@@ -75,7 +75,7 @@ const studentService = {
       return {
         success: false,
         message:
-          error.response?.data?.message || "Failed to fetch student grades",
+          error.response?.data?.message || 'Failed to fetch student grades',
       };
     }
   },

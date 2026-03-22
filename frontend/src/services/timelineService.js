@@ -1,13 +1,13 @@
-import api from "../utils/api";
+import api from '../utils/api';
 
 const timelineService = {
   getAll: async () => {
     try {
-      return await api.get("/timelines");
+      return await api.get('/timelines');
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to fetch timelines",
+        message: error.response?.data?.message || 'Failed to fetch timelines',
       };
     }
   },
@@ -18,7 +18,7 @@ const timelineService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to fetch timeline",
+        message: error.response?.data?.message || 'Failed to fetch timeline',
       };
     }
   },
@@ -29,18 +29,19 @@ const timelineService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to fetch project timeline",
+        message:
+          error.response?.data?.message || 'Failed to fetch project timeline',
       };
     }
   },
 
   create: async (data) => {
     try {
-      return await api.post("/timelines", data);
+      return await api.post('/timelines', data);
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to create timeline",
+        message: error.response?.data?.message || 'Failed to create timeline',
       };
     }
   },
@@ -51,7 +52,7 @@ const timelineService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to update timeline",
+        message: error.response?.data?.message || 'Failed to update timeline',
       };
     }
   },
@@ -62,7 +63,7 @@ const timelineService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to delete timeline",
+        message: error.response?.data?.message || 'Failed to delete timeline',
       };
     }
   },

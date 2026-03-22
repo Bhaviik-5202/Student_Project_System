@@ -4,14 +4,14 @@
  * Handles student portfolio management.
  */
 
-const express = require("express");
-const { body } = require("express-validator");
+const express = require('express');
+const { body } = require('express-validator');
 const router = express.Router();
 
 // Controllers and Middlewares
-const portfolioController = require("../controllers/portfolio.controller");
-const authMiddleware = require("../middleware/auth.middleware");
-const validateRequest = require("../middleware/validateRequest");
+const portfolioController = require('../controllers/portfolio.controller');
+const authMiddleware = require('../middleware/auth.middleware');
+const validateRequest = require('../middleware/validateRequest');
 
 /**
  * @route   POST /api/v1/portfolios
@@ -19,27 +19,27 @@ const validateRequest = require("../middleware/validateRequest");
  * @access  Private (Authenticated Users)
  */
 router.post(
-  "/",
+  '/',
   authMiddleware,
   [
-    body("student").notEmpty().withMessage("Student is required"),
+    body('student').notEmpty().withMessage('Student is required'),
 
-    body("projects")
+    body('projects')
       .optional()
       .isArray()
-      .withMessage("Projects must be an array"),
+      .withMessage('Projects must be an array'),
 
-    body("skills").optional().isArray().withMessage("Skills must be an array"),
+    body('skills').optional().isArray().withMessage('Skills must be an array'),
 
-    body("badges").optional().isArray().withMessage("Badges must be an array"),
+    body('badges').optional().isArray().withMessage('Badges must be an array'),
 
-    body("transcriptUrl")
+    body('transcriptUrl')
       .optional()
       .isString()
-      .withMessage("Transcript URL must be a string"),
+      .withMessage('Transcript URL must be a string'),
   ],
   validateRequest,
-  portfolioController.createPortfolio,
+  portfolioController.createPortfolio
 );
 
 /**
@@ -48,9 +48,9 @@ router.post(
  * @access  Private (Authenticated Users)
  */
 router.get(
-  "/student/:studentId",
+  '/student/:studentId',
   authMiddleware,
-  portfolioController.getPortfolioByStudent,
+  portfolioController.getPortfolioByStudent
 );
 
 /**
@@ -59,25 +59,25 @@ router.get(
  * @access  Private (Authenticated Users)
  */
 router.put(
-  "/:id",
+  '/:id',
   authMiddleware,
   [
-    body("projects")
+    body('projects')
       .optional()
       .isArray()
-      .withMessage("Projects must be an array"),
+      .withMessage('Projects must be an array'),
 
-    body("skills").optional().isArray().withMessage("Skills must be an array"),
+    body('skills').optional().isArray().withMessage('Skills must be an array'),
 
-    body("badges").optional().isArray().withMessage("Badges must be an array"),
+    body('badges').optional().isArray().withMessage('Badges must be an array'),
 
-    body("transcriptUrl")
+    body('transcriptUrl')
       .optional()
       .isString()
-      .withMessage("Transcript URL must be a string"),
+      .withMessage('Transcript URL must be a string'),
   ],
   validateRequest,
-  portfolioController.updatePortfolio,
+  portfolioController.updatePortfolio
 );
 
 module.exports = router;

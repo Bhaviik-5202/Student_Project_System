@@ -1,5 +1,5 @@
-const submissionService = require("../services/submission.service");
-const sendResponse = require("../utils/response");
+const submissionService = require('../services/submission.service');
+const sendResponse = require('../utils/response');
 
 /**
  * Submission Controller
@@ -32,23 +32,23 @@ exports.createSubmission = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to create submission"
-          : "Submission created successfully",
+          ? 'Failed to create submission'
+          : 'Submission created successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 201,
+      result.error ? 400 : 201
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -67,23 +67,23 @@ exports.getAllSubmissions = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to fetch submissions"
-          : "Submissions fetched successfully",
+          ? 'Failed to fetch submissions'
+          : 'Submissions fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 200,
+      result.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -102,23 +102,23 @@ exports.getSubmissionById = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Submission not found"
-          : "Submission fetched successfully",
+          ? 'Submission not found'
+          : 'Submission fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -137,23 +137,23 @@ exports.updateSubmission = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to update submission"
-          : "Submission updated successfully",
+          ? 'Failed to update submission'
+          : 'Submission updated successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -167,23 +167,23 @@ exports.deleteSubmission = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to delete submission"
-          : "Submission deleted successfully",
+          ? 'Failed to delete submission'
+          : 'Submission deleted successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -204,23 +204,23 @@ exports.getSubmissionHistory = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to fetch submission history"
-          : "Submission history retrieved successfully",
+          ? 'Failed to fetch submission history'
+          : 'Submission history retrieved successfully',
         data: result.data || [],
         error: result.error || null,
       },
-      result.error ? 400 : 200,
+      result.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };

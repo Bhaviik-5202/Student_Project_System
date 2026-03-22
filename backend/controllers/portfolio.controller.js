@@ -1,5 +1,5 @@
-const portfolioService = require("../services/portfolio.service");
-const sendResponse = require("../utils/response");
+const portfolioService = require('../services/portfolio.service');
+const sendResponse = require('../utils/response');
 
 /**
  * Portfolio Controller
@@ -25,22 +25,22 @@ exports.createPortfolio = async (req, res) => {
         success: !result.error,
         message: result.error
           ? result.message
-          : "Portfolio created successfully",
+          : 'Portfolio created successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 201,
+      result.error ? 400 : 201
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -53,7 +53,7 @@ exports.createPortfolio = async (req, res) => {
 exports.getPortfolioByStudent = async (req, res) => {
   try {
     const result = await portfolioService.getPortfolioByStudent(
-      req.params.studentId,
+      req.params.studentId
     );
 
     sendResponse(
@@ -61,23 +61,23 @@ exports.getPortfolioByStudent = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Portfolio not found"
-          : "Portfolio fetched successfully",
+          ? 'Portfolio not found'
+          : 'Portfolio fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -90,7 +90,7 @@ exports.updatePortfolio = async (req, res) => {
   try {
     const result = await portfolioService.updatePortfolio(
       req.params.id,
-      req.body,
+      req.body
     );
 
     sendResponse(
@@ -98,23 +98,23 @@ exports.updatePortfolio = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Portfolio not found"
-          : "Portfolio updated successfully",
+          ? 'Portfolio not found'
+          : 'Portfolio updated successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };

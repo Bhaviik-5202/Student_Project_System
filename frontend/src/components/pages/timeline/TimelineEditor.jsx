@@ -1,25 +1,25 @@
-import { useCallback, useState, useEffect, memo, useMemo } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-hot-toast";
-import timelineService from "../../../services/timelineService";
-import projectService from "../../../services/projectService";
+import { useCallback, useState, useEffect, memo, useMemo } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
+import timelineService from '../../../services/timelineService';
+import projectService from '../../../services/projectService';
 
 const TimelineEditor = memo(() => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
-  const [selectedProjectId, setSelectedProjectId] = useState("");
+  const [selectedProjectId, setSelectedProjectId] = useState('');
   const [timeline, setTimeline] = useState({
-    project: "",
+    project: '',
     milestones: [],
   });
   const [fetching, setFetching] = useState(true);
   const [loading, setLoading] = useState(false);
-  
+
   const [newMilestone, setNewMilestone] = useState({
-    title: "",
-    dueDate: "",
-    description: "",
+    title: '',
+    dueDate: '',
+    description: '',
   });
 
   // Fetch all projects for selection
@@ -29,10 +29,12 @@ const TimelineEditor = memo(() => {
         const response = await projectService.getAllProjects();
         if (response.success) {
           setProjects(response.data);
-          
+
           // If we have an ID or slug from URL, find the matching project
           if (id) {
-            const foundProject = response.data.find(p => p._id === id || p.slug === id);
+            const foundProject = response.data.find(
+              (p) => p._id === id || p.slug === id
+            );
             if (foundProject) {
               setSelectedProjectId(foundProject._id);
             } else if (response.data.length > 0) {
@@ -44,7 +46,7 @@ const TimelineEditor = memo(() => {
           }
         }
       } catch (error) {
-        console.error("Failed to fetch projects", error);
+        console.error('Failed to fetch projects', error);
       }
     };
     fetchProjects();
@@ -53,7 +55,7 @@ const TimelineEditor = memo(() => {
   // Fetch timeline for the selected project
   useEffect(() => {
     if (!selectedProjectId) return;
-    
+
     const fetchTimeline = async () => {
       setFetching(true);
       try {
@@ -68,7 +70,7 @@ const TimelineEditor = memo(() => {
           });
         }
       } catch (error) {
-        console.error("Failed to fetch timeline data", error);
+        console.error('Failed to fetch timeline data', error);
       } finally {
         setFetching(false);
       }
@@ -78,7 +80,7 @@ const TimelineEditor = memo(() => {
 
   const handleProjectChange = (e) => {
     const newId = e.target.value;
-    const project = projects.find(p => p._id === newId);
+    const project = projects.find((p) => p._id === newId);
     if (project) {
       navigate(`/timeline-editor/${project.slug || newId}`);
     } else {
@@ -93,17 +95,20 @@ const TimelineEditor = memo(() => {
 
   const addMilestone = useCallback(() => {
     if (!newMilestone.title || !newMilestone.dueDate) {
-      toast.error("Title and Date are required for a milestone");
+      toast.error('Title and Date are required for a milestone');
       return;
     }
 
     const tempId = Date.now().toString();
     setTimeline((prev) => ({
       ...prev,
-      milestones: [...prev.milestones, { ...newMilestone, _id: tempId, completed: false }],
+      milestones: [
+        ...prev.milestones,
+        { ...newMilestone, _id: tempId, completed: false },
+      ],
     }));
-    setNewMilestone({ title: "", dueDate: "", description: "" });
-    toast.success("Milestone staged");
+    setNewMilestone({ title: '', dueDate: '', description: '' });
+    toast.success('Milestone staged');
   }, [newMilestone]);
 
   const removeMilestone = useCallback((mid) => {
@@ -111,13 +116,13 @@ const TimelineEditor = memo(() => {
       ...prev,
       milestones: prev.milestones.filter((m) => (m._id || m.id) !== mid),
     }));
-    toast.success("Milestone removed");
+    toast.success('Milestone removed');
   }, []);
 
   const toggleMilestoneStatus = useCallback((mid) => {
     setTimeline((prev) => ({
       ...prev,
-      milestones: prev.milestones.map((m) => 
+      milestones: prev.milestones.map((m) =>
         (m._id || m.id) === mid ? { ...m, completed: !m.completed } : m
       ),
     }));
@@ -125,14 +130,14 @@ const TimelineEditor = memo(() => {
 
   const saveTimeline = useCallback(async () => {
     if (!selectedProjectId) {
-      toast.error("Please select a project first");
+      toast.error('Please select a project first');
       return;
     }
-    
+
     setLoading(true);
     try {
       // Prepare milestones by removing temporary IDs
-      const cleanedMilestones = timeline.milestones.map(m => {
+      const cleanedMilestones = timeline.milestones.map((m) => {
         const { _id, ...rest } = m;
         // Only keep _id if it's a valid MongoDB ObjectId (24 chars hex)
         if (_id && /^[0-9a-fA-F]{24}$/.test(_id)) {
@@ -145,211 +150,255 @@ const TimelineEditor = memo(() => {
       if (timeline._id) {
         response = await timelineService.update(timeline._id, {
           ...timeline,
-          milestones: cleanedMilestones
+          milestones: cleanedMilestones,
         });
       } else {
         response = await timelineService.create({
           project: selectedProjectId,
-          milestones: cleanedMilestones
+          milestones: cleanedMilestones,
         });
       }
-      
+
       if (response && response.success) {
-        toast.success("Timeline successfully synchronized");
-        navigate("/timeline");
+        toast.success('Timeline successfully synchronized');
+        navigate('/timeline');
       } else {
-        toast.error(response?.message || "Failed to preserve timeline");
+        toast.error(response?.message || 'Failed to preserve timeline');
       }
     } catch (error) {
-      toast.error("Critical synchronization failure");
+      toast.error('Critical synchronization failure');
       console.error(error);
     } finally {
       setLoading(false);
     }
   }, [timeline, selectedProjectId, navigate]);
 
-  const handleNavigate = useCallback((path) => {
-    navigate(path);
-  }, [navigate]);
+  const handleNavigate = useCallback(
+    (path) => {
+      navigate(path);
+    },
+    [navigate]
+  );
 
-  const inputClass = "w-full px-4 py-3 bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-700 rounded-2xl text-sm font-bold text-slate-900 dark:text-white placeholder:text-slate-300 dark:placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all";
+  const inputClass =
+    'w-full px-4 py-3 bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-700 rounded-2xl text-sm font-bold text-slate-900 dark:text-white placeholder:text-slate-300 dark:placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all';
 
   return (
-    <div className="p-4 md:p-6 space-y-6">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <div className='space-y-6 p-4 md:p-6'>
+      <div className='flex flex-col justify-between gap-4 md:flex-row md:items-end'>
         <div>
           <button
-            onClick={() => handleNavigate("/timeline")}
-            className="text-indigo-600 dark:text-indigo-400 text-xs font-bold tracking-wider mb-2 flex items-center gap-1"
+            onClick={() => handleNavigate('/timeline')}
+            className='mb-2 flex items-center gap-1 text-xs font-bold tracking-wider text-indigo-600 dark:text-indigo-400'
           >
-            <i className="fas fa-arrow-left" /> Back to Timelines
+            <i className='fas fa-arrow-left' /> Back to Timelines
           </button>
-          
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+
+          <h1 className='text-2xl font-bold text-gray-900 dark:text-white'>
             Timeline Editor
           </h1>
-          <div className="flex items-center gap-3 mt-2">
-            <div className="px-2 py-0.5 bg-indigo-50 dark:bg-indigo-900/40 rounded-full flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-indigo-600"></span>
-              <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 tracking-widest">Editor</span>
+          <div className='mt-2 flex items-center gap-3'>
+            <div className='flex items-center gap-2 rounded-full bg-indigo-50 px-2 py-0.5 dark:bg-indigo-900/40'>
+              <span className='h-1.5 w-1.5 rounded-full bg-indigo-600'></span>
+              <span className='text-[10px] font-bold tracking-widest text-indigo-600 dark:text-indigo-400'>
+                Editor
+              </span>
             </div>
-            <select 
+            <select
               value={selectedProjectId}
               onChange={handleProjectChange}
-              className="bg-transparent border-none text-xs font-bold text-gray-500 dark:text-gray-400 focus:ring-0 p-0 cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+              className='cursor-pointer border-none bg-transparent p-0 text-xs font-bold text-gray-500 transition-colors hover:text-indigo-600 focus:ring-0 dark:text-gray-400 dark:hover:text-indigo-400'
             >
-              <option value="" disabled>Select Project</option>
-              {projects.map(p => (
-                <option key={p._id} value={p._id} className="text-gray-900 dark:text-white bg-white dark:bg-slate-800 text-sm">{p.title}</option>
+              <option value='' disabled>
+                Select Project
+              </option>
+              {projects.map((p) => (
+                <option
+                  key={p._id}
+                  value={p._id}
+                  className='bg-white text-sm text-gray-900 dark:bg-slate-800 dark:text-white'
+                >
+                  {p.title}
+                </option>
               ))}
             </select>
           </div>
         </div>
-        
-        <div className="flex gap-2">
-          <button 
+
+        <div className='flex gap-2'>
+          <button
             onClick={saveTimeline}
             disabled={loading}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2 px-6 rounded-lg shadow-sm transition-colors disabled:opacity-50"
+            className='rounded-lg bg-indigo-600 px-6 py-2 text-xs font-bold text-white shadow-sm transition-colors hover:bg-indigo-700 disabled:opacity-50'
           >
-            <i className="fas fa-save mr-2" /> {loading ? "Saving..." : "Save Timeline"}
+            <i className='fas fa-save mr-2' />{' '}
+            {loading ? 'Saving...' : 'Save Timeline'}
           </button>
         </div>
       </div>
 
       {fetching ? (
-        <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-20 text-center shadow-sm">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-          <p className="text-sm text-gray-400 italic">Accessing timeline archives...</p>
+        <div className='rounded-xl border border-gray-200 bg-white p-20 text-center shadow-sm dark:border-slate-700 dark:bg-slate-800'>
+          <div className='mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-b-2 border-indigo-600'></div>
+          <p className='text-sm italic text-gray-400'>
+            Accessing timeline archives...
+          </p>
         </div>
       ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-             {/* Configuration Panel */}
-             <div className="lg:col-span-1 space-y-6">
-                <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6 shadow-sm">
-                   <h3 className="text-sm font-bold text-gray-900 dark:text-white mb-6 tracking-widest border-b border-gray-50 dark:border-slate-700 pb-2">
-                      New Milestone
-                   </h3>
-                   <div className="space-y-4">
-                      <div>
-                        <label className="text-[10px] font-bold text-gray-400 tracking-widest mb-1 shadow-sm block">Objective Title</label>
-                        <input
-                          type="text"
-                          name="title"
-                          placeholder="e.g. Beta Launch"
-                          className="w-full px-3 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg text-sm font-medium focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all placeholder:text-gray-400"
-                          value={newMilestone.title}
-                          onChange={handleNewMilestoneChange}
-                        />
-                      </div>
-                      <div>
-                        <label className="text-[10px] font-bold text-gray-400 tracking-widest mb-1 block">Target Delivery</label>
-                        <input
-                          type="date"
-                          name="dueDate"
-                          className="w-full px-3 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg text-sm font-medium focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
-                          value={newMilestone.dueDate}
-                          onChange={handleNewMilestoneChange}
-                        />
-                      </div>
-                      <div>
-                        <label className="text-[10px] font-bold text-gray-400 tracking-widest mb-1 block">Scope Description</label>
-                        <textarea
-                          name="description"
-                          rows="3"
-                          placeholder="What must be achieved?"
-                          className="w-full px-3 py-2 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-lg text-sm font-medium focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all resize-none placeholder:text-gray-400"
-                          value={newMilestone.description}
-                          onChange={handleNewMilestoneChange}
-                        ></textarea>
-                      </div>
-                      <button
-                        onClick={addMilestone}
-                        className="w-full py-2 bg-gray-900 dark:bg-indigo-600 text-white rounded-lg text-xs font-bold tracking-wider hover:opacity-90 transition-all active:scale-95"
-                      >
-                        <i className="fas fa-plus mr-2" /> Stage Objective
-                      </button>
-                   </div>
+        <div className='grid grid-cols-1 gap-6 lg:grid-cols-3'>
+          {/* Configuration Panel */}
+          <div className='space-y-6 lg:col-span-1'>
+            <div className='rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
+              <h3 className='mb-6 border-b border-gray-50 pb-2 text-sm font-bold tracking-widest text-gray-900 dark:border-slate-700 dark:text-white'>
+                New Milestone
+              </h3>
+              <div className='space-y-4'>
+                <div>
+                  <label className='mb-1 block text-[10px] font-bold tracking-widest text-gray-400 shadow-sm'>
+                    Objective Title
+                  </label>
+                  <input
+                    type='text'
+                    name='title'
+                    placeholder='e.g. Beta Launch'
+                    className='w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm font-medium outline-none transition-all placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-800 dark:bg-slate-900'
+                    value={newMilestone.title}
+                    onChange={handleNewMilestoneChange}
+                  />
                 </div>
-                
-                <div className="bg-indigo-50/50 dark:bg-indigo-900/10 p-6 rounded-xl border border-indigo-100 dark:border-slate-700 shadow-sm">
-                    <h4 className="text-[10px] font-bold text-indigo-700 dark:text-indigo-400 tracking-widest mb-2 flex items-center gap-2">
-                        <i className="fas fa-info-circle text-[8px]" /> Editor's Note
-                    </h4>
-                    <p className="text-[10px] text-gray-500 dark:text-gray-400 leading-relaxed font-medium">Staged objectives are only preserved once you save the timeline. Ensure your trajectory is logically consistent.</p>
+                <div>
+                  <label className='mb-1 block text-[10px] font-bold tracking-widest text-gray-400'>
+                    Target Delivery
+                  </label>
+                  <input
+                    type='date'
+                    name='dueDate'
+                    className='w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm font-medium outline-none transition-all focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-800 dark:bg-slate-900'
+                    value={newMilestone.dueDate}
+                    onChange={handleNewMilestoneChange}
+                  />
                 </div>
-             </div>
+                <div>
+                  <label className='mb-1 block text-[10px] font-bold tracking-widest text-gray-400'>
+                    Scope Description
+                  </label>
+                  <textarea
+                    name='description'
+                    rows='3'
+                    placeholder='What must be achieved?'
+                    className='w-full resize-none rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm font-medium outline-none transition-all placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-800 dark:bg-slate-900'
+                    value={newMilestone.description}
+                    onChange={handleNewMilestoneChange}
+                  ></textarea>
+                </div>
+                <button
+                  onClick={addMilestone}
+                  className='w-full rounded-lg bg-gray-900 py-2 text-xs font-bold tracking-wider text-white transition-all hover:opacity-90 active:scale-95 dark:bg-indigo-600'
+                >
+                  <i className='fas fa-plus mr-2' /> Stage Objective
+                </button>
+              </div>
+            </div>
 
-             {/* Trajectory Manifest */}
-             <div className="lg:col-span-2 space-y-6">
-                <div className="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-slate-700 p-6 shadow-sm min-h-[500px]">
-                   <div className="flex justify-between items-center mb-6">
-                      <h3 className="text-sm font-bold text-gray-900 dark:text-white tracking-widest">Phase Manifest ({timeline.milestones.length})</h3>
-                      <div className="h-px flex-1 mx-6 bg-gray-50 dark:bg-slate-700/50"></div>
-                   </div>
-                   
-                   {timeline.milestones.length === 0 ? (
-                     <div className="flex flex-col items-center justify-center py-20 text-center">
-                        <i className="fas fa-history text-gray-200 text-4xl mb-4" />
-                        <h4 className="text-sm font-bold text-gray-900 dark:text-white tracking-widest mb-2">Timeline Uninitialized</h4>
-                        <p className="text-xs text-gray-400 max-w-xs leading-relaxed">Stage your first objective to begin planning your project timeline archives.</p>
-                     </div>
-                   ) : (
-                     <div className="space-y-4">
-                        {timeline.milestones.map((m, i) => (
-                           <div key={m._id || m.id} className="bg-gray-50/50 dark:bg-slate-900/40 border border-gray-100 dark:border-slate-700/50 rounded-xl p-6 hover:border-indigo-500/30 transition-all">
-                              <div className="flex items-start justify-between gap-4">
-                                 <div className="flex items-center gap-4 flex-1">
-                                    <button 
-                                      onClick={() => toggleMilestoneStatus(m._id || m.id)}
-                                      className={`w-8 h-8 rounded-lg flex items-center justify-center border transition-all ${
-                                        m.completed 
-                                          ? 'bg-emerald-500 border-emerald-500 text-white' 
-                                          : 'border-gray-200 dark:border-slate-700 text-transparent hover:border-indigo-500'
-                                      }`}
-                                    >
-                                       <i className="fas fa-check text-xs" />
-                                    </button>
-                                    <div className="flex-1">
-                                       <div className="flex items-center gap-2 mb-1">
-                                          <h4 className={`text-base font-bold transition-all ${m.completed ? 'text-gray-400 line-through' : 'text-gray-900 dark:text-white'}`}>
-                                            {m.title}
-                                          </h4>
-                                          <span className="text-[10px] font-bold text-indigo-500/50">#{i + 1}</span>
-                                       </div>
-                                       <div className="flex items-center gap-3">
-                                          <span className="text-[10px] font-bold text-gray-400 tracking-widest tabular-nums">Due: {new Date(m.dueDate).toLocaleDateString()}</span>
-                                          <span className={`text-[10px] font-bold tracking-widest ${m.completed ? 'text-emerald-500' : 'text-indigo-500'}`}>
-                                            {m.completed ? 'Validated' : 'Scheduled'}
-                                          </span>
-                                       </div>
-                                       {m.description && (
-                                         <p className="mt-3 text-xs text-gray-500 leading-relaxed italic border-l-2 border-gray-100 dark:border-slate-800 pl-4">
-                                           {m.description}
-                                         </p>
-                                       )}
-                                    </div>
-                                 </div>
-                                 
-                                 <button
-                                   onClick={() => removeMilestone(m._id || m.id)}
-                                   className="w-8 h-8 rounded-lg border border-gray-100 dark:border-slate-700 flex items-center justify-center text-gray-300 hover:text-red-500 hover:border-red-500/30 transition-all"
-                                 >
-                                    <i className="fas fa-trash-alt text-xs" />
-                                 </button>
-                              </div>
-                           </div>
-                        ))}
-                     </div>
-                   )}
-                </div>
-             </div>
+            <div className='rounded-xl border border-indigo-100 bg-indigo-50/50 p-6 shadow-sm dark:border-slate-700 dark:bg-indigo-900/10'>
+              <h4 className='mb-2 flex items-center gap-2 text-[10px] font-bold tracking-widest text-indigo-700 dark:text-indigo-400'>
+                <i className='fas fa-info-circle text-[8px]' /> Editor's Note
+              </h4>
+              <p className='text-[10px] font-medium leading-relaxed text-gray-500 dark:text-gray-400'>
+                Staged objectives are only preserved once you save the timeline.
+                Ensure your trajectory is logically consistent.
+              </p>
+            </div>
           </div>
-        )}
+
+          {/* Trajectory Manifest */}
+          <div className='space-y-6 lg:col-span-2'>
+            <div className='min-h-[500px] rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
+              <div className='mb-6 flex items-center justify-between'>
+                <h3 className='text-sm font-bold tracking-widest text-gray-900 dark:text-white'>
+                  Phase Manifest ({timeline.milestones.length})
+                </h3>
+                <div className='mx-6 h-px flex-1 bg-gray-50 dark:bg-slate-700/50'></div>
+              </div>
+
+              {timeline.milestones.length === 0 ? (
+                <div className='flex flex-col items-center justify-center py-20 text-center'>
+                  <i className='fas fa-history mb-4 text-4xl text-gray-200' />
+                  <h4 className='mb-2 text-sm font-bold tracking-widest text-gray-900 dark:text-white'>
+                    Timeline Uninitialized
+                  </h4>
+                  <p className='max-w-xs text-xs leading-relaxed text-gray-400'>
+                    Stage your first objective to begin planning your project
+                    timeline archives.
+                  </p>
+                </div>
+              ) : (
+                <div className='space-y-4'>
+                  {timeline.milestones.map((m, i) => (
+                    <div
+                      key={m._id || m.id}
+                      className='rounded-xl border border-gray-100 bg-gray-50/50 p-6 transition-all hover:border-indigo-500/30 dark:border-slate-700/50 dark:bg-slate-900/40'
+                    >
+                      <div className='flex items-start justify-between gap-4'>
+                        <div className='flex flex-1 items-center gap-4'>
+                          <button
+                            onClick={() => toggleMilestoneStatus(m._id || m.id)}
+                            className={`flex h-8 w-8 items-center justify-center rounded-lg border transition-all ${
+                              m.completed
+                                ? 'border-emerald-500 bg-emerald-500 text-white'
+                                : 'border-gray-200 text-transparent hover:border-indigo-500 dark:border-slate-700'
+                            }`}
+                          >
+                            <i className='fas fa-check text-xs' />
+                          </button>
+                          <div className='flex-1'>
+                            <div className='mb-1 flex items-center gap-2'>
+                              <h4
+                                className={`text-base font-bold transition-all ${m.completed ? 'text-gray-400 line-through' : 'text-gray-900 dark:text-white'}`}
+                              >
+                                {m.title}
+                              </h4>
+                              <span className='text-[10px] font-bold text-indigo-500/50'>
+                                #{i + 1}
+                              </span>
+                            </div>
+                            <div className='flex items-center gap-3'>
+                              <span className='text-[10px] font-bold tabular-nums tracking-widest text-gray-400'>
+                                Due: {new Date(m.dueDate).toLocaleDateString()}
+                              </span>
+                              <span
+                                className={`text-[10px] font-bold tracking-widest ${m.completed ? 'text-emerald-500' : 'text-indigo-500'}`}
+                              >
+                                {m.completed ? 'Validated' : 'Scheduled'}
+                              </span>
+                            </div>
+                            {m.description && (
+                              <p className='mt-3 border-l-2 border-gray-100 pl-4 text-xs italic leading-relaxed text-gray-500 dark:border-slate-800'>
+                                {m.description}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        <button
+                          onClick={() => removeMilestone(m._id || m.id)}
+                          className='flex h-8 w-8 items-center justify-center rounded-lg border border-gray-100 text-gray-300 transition-all hover:border-red-500/30 hover:text-red-500 dark:border-slate-700'
+                        >
+                          <i className='fas fa-trash-alt text-xs' />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 });
 
-TimelineEditor.displayName = "TimelineEditor";
+TimelineEditor.displayName = 'TimelineEditor';
 
 export default TimelineEditor;

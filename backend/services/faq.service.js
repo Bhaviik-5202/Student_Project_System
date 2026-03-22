@@ -1,4 +1,4 @@
-const faqRepository = require("../repositories/faq.repository");
+const faqRepository = require('../repositories/faq.repository');
 
 /**
  * Standardized response helper for services
@@ -17,9 +17,9 @@ const response = (error, data, message) => ({ error, data, message });
 exports.create = async (data) => {
   try {
     const faq = await faqRepository.create(data);
-    return response(false, faq, "FAQ created successfully");
+    return response(false, faq, 'FAQ created successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to create FAQ");
+    return response(true, null, err.message || 'Failed to create FAQ');
   }
 };
 
@@ -30,9 +30,9 @@ exports.create = async (data) => {
 exports.getAll = async () => {
   try {
     const faqs = await faqRepository.findAll();
-    return response(false, faqs, "FAQs fetched successfully");
+    return response(false, faqs, 'FAQs fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch FAQs");
+    return response(true, null, err.message || 'Failed to fetch FAQs');
   }
 };
 
@@ -44,10 +44,10 @@ exports.getAll = async () => {
 exports.getById = async (id) => {
   try {
     const faq = await faqRepository.findById(id);
-    if (!faq) return response(true, null, "FAQ not found");
-    return response(false, faq, "FAQ fetched successfully");
+    if (!faq) return response(true, null, 'FAQ not found');
+    return response(false, faq, 'FAQ fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch FAQ");
+    return response(true, null, err.message || 'Failed to fetch FAQ');
   }
 };
 
@@ -60,10 +60,10 @@ exports.getById = async (id) => {
 exports.update = async (id, data) => {
   try {
     const faq = await faqRepository.update(id, data);
-    if (!faq) return response(true, null, "FAQ not found");
-    return response(false, faq, "FAQ updated successfully");
+    if (!faq) return response(true, null, 'FAQ not found');
+    return response(false, faq, 'FAQ updated successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to update FAQ");
+    return response(true, null, err.message || 'Failed to update FAQ');
   }
 };
 
@@ -75,9 +75,9 @@ exports.update = async (id, data) => {
 exports.remove = async (id) => {
   try {
     const faq = await faqRepository.remove(id);
-    if (!faq) return response(true, null, "FAQ not found");
-    return response(false, null, "FAQ deleted successfully");
+    if (!faq) return response(true, null, 'FAQ not found');
+    return response(false, null, 'FAQ deleted successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to delete FAQ");
+    return response(true, null, err.message || 'Failed to delete FAQ');
   }
 };

@@ -1,5 +1,5 @@
-const resourceService = require("../services/resource.service");
-const sendResponse = require("../utils/response");
+const resourceService = require('../services/resource.service');
+const sendResponse = require('../utils/response');
 
 /**
  * Resource Controller
@@ -21,15 +21,18 @@ exports.createResource = async (req, res) => {
     if (req.files && req.files.length > 0) {
       for (const file of req.files) {
         const resourceData = {
-          title: req.files.length === 1 ? (title || file.originalname.split('.')[0]) : file.originalname.split('.')[0],
+          title:
+            req.files.length === 1
+              ? title || file.originalname.split('.')[0]
+              : file.originalname.split('.')[0],
           type: type || 'document',
           description,
           uploadedBy,
-          url: file.path.replace(/\\/g, "/"),
+          url: file.path.replace(/\\/g, '/'),
         };
         const result = await resourceService.create(resourceData);
         if (result && !result.error && result.data) {
-           createdResources.push(result.data);
+          createdResources.push(result.data);
         }
       }
     } else {
@@ -45,7 +48,7 @@ exports.createResource = async (req, res) => {
       if (result && !result.error && result.data) {
         createdResources.push(result.data);
       } else if (result && result.error) {
-        throw new Error(result.message || "Failed to create resource");
+        throw new Error(result.message || 'Failed to create resource');
       }
     }
 
@@ -54,20 +57,23 @@ exports.createResource = async (req, res) => {
       {
         success: true,
         message: `${createdResources.length} resource(s) created successfully`,
-        data: createdResources.length === 1 ? createdResources[0] : createdResources,
+        data:
+          createdResources.length === 1
+            ? createdResources[0]
+            : createdResources,
       },
-      201,
+      201
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to create resource",
+        message: 'Failed to create resource',
         data: null,
         error: error.message,
       },
-      400,
+      400
     );
   }
 };
@@ -91,8 +97,8 @@ exports.getAllResources = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to fetch resources"
-          : "Resources fetched successfully",
+          ? 'Failed to fetch resources'
+          : 'Resources fetched successfully',
         data: result.data ? result.data.resources : null,
         error: result.error || null,
         pagination: result.data
@@ -104,18 +110,18 @@ exports.getAllResources = async (req, res) => {
             }
           : null,
       },
-      result.error ? 400 : 200,
+      result.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -134,23 +140,23 @@ exports.getResourceById = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Resource not found"
-          : "Resource fetched successfully",
+          ? 'Resource not found'
+          : 'Resource fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -169,23 +175,23 @@ exports.updateResource = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Resource not found"
-          : "Resource updated successfully",
+          ? 'Resource not found'
+          : 'Resource updated successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -204,23 +210,23 @@ exports.deleteResource = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Resource not found"
-          : "Resource deleted successfully",
+          ? 'Resource not found'
+          : 'Resource deleted successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };

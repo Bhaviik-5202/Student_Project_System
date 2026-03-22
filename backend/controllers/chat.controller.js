@@ -1,5 +1,5 @@
-const chatService = require("../services/chat.service");
-const sendResponse = require("../utils/response");
+const chatService = require('../services/chat.service');
+const sendResponse = require('../utils/response');
 
 /**
  * Chat Controller
@@ -19,22 +19,22 @@ exports.createChat = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? result.message : "Chat created successfully",
+        message: result.error ? result.message : 'Chat created successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 201,
+      result.error ? 400 : 201
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to create chat",
+        message: 'Failed to create chat',
         data: null,
         error: error.message,
       },
-      400,
+      400
     );
   }
 };
@@ -53,23 +53,23 @@ exports.getUserChats = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to fetch user chats"
-          : "User chats fetched successfully",
+          ? 'Failed to fetch user chats'
+          : 'User chats fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 200,
+      result.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -87,22 +87,22 @@ exports.getChatById = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Chat not found" : "Chat fetched successfully",
+        message: result.error ? 'Chat not found' : 'Chat fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -120,22 +120,22 @@ exports.updateChat = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Chat not found" : "Chat updated successfully",
+        message: result.error ? 'Chat not found' : 'Chat updated successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -152,22 +152,22 @@ exports.deleteChat = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Chat not found" : "Chat deleted successfully",
+        message: result.error ? 'Chat not found' : 'Chat deleted successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };

@@ -1,5 +1,5 @@
-const timelineService = require("../services/timeline.service");
-const sendResponse = require("../utils/response");
+const timelineService = require('../services/timeline.service');
+const sendResponse = require('../utils/response');
 
 /**
  * Timeline Controller
@@ -21,22 +21,22 @@ exports.createTimeline = async (req, res) => {
         success: !result.error,
         message: result.error
           ? result.message
-          : "Timeline event created successfully",
+          : 'Timeline event created successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 201,
+      result.error ? 400 : 201
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to create timeline event",
+        message: 'Failed to create timeline event',
         data: null,
         error: error.message,
       },
-      400,
+      400
     );
   }
 };
@@ -55,23 +55,23 @@ exports.getAllTimelines = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to fetch timeline events"
-          : "Timeline events fetched successfully",
+          ? 'Failed to fetch timeline events'
+          : 'Timeline events fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 200,
+      result.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -90,23 +90,23 @@ exports.getTimelineById = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Timeline event not found"
-          : "Timeline event fetched successfully",
+          ? 'Timeline event not found'
+          : 'Timeline event fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -125,23 +125,23 @@ exports.getTimelineEventsByProject = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Timeline events not found for project"
-          : "Timeline events fetched successfully",
+          ? 'Timeline events not found for project'
+          : 'Timeline events fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -160,23 +160,23 @@ exports.updateTimeline = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Timeline event not found"
-          : "Timeline event updated successfully",
+          ? 'Timeline event not found'
+          : 'Timeline event updated successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -195,23 +195,23 @@ exports.deleteTimeline = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Timeline event not found"
-          : "Timeline event deleted successfully",
+          ? 'Timeline event not found'
+          : 'Timeline event deleted successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };

@@ -1,5 +1,5 @@
-import { Link } from "react-router-dom";
-import HeaderIcon from "./HeaderIcon";
+import { Link } from 'react-router-dom';
+import HeaderIcon from './HeaderIcon';
 
 /**
  * NotificationMenu Component
@@ -16,25 +16,25 @@ const NotificationMenu = ({
 }) => {
   return (
     <>
-      <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
-        <div className="flex justify-between items-center">
-          <h3 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-            <HeaderIcon name="bell" className="text-blue-500" size="text-sm" />
+      <div className='border-b border-gray-100 px-4 py-3 dark:border-gray-700'>
+        <div className='flex items-center justify-between'>
+          <h3 className='flex items-center gap-2 font-semibold text-gray-900 dark:text-white'>
+            <HeaderIcon name='bell' className='text-blue-500' size='text-sm' />
             Notifications
           </h3>
-          <div className="flex items-center gap-3">
+          <div className='flex items-center gap-3'>
             {unreadCount > 0 && (
               <button
                 onClick={onMarkAllAsRead}
-                className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
+                className='text-xs font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300'
               >
                 Mark all read
               </button>
             )}
             <Link
-              to="/notifications"
+              to='/notifications'
               onClick={onClose}
-              className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+              className='text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
             >
               View all
             </Link>
@@ -42,67 +42,67 @@ const NotificationMenu = ({
         </div>
       </div>
 
-      <div className="max-h-80 overflow-y-auto">
+      <div className='max-h-80 overflow-y-auto'>
         {notifications.length > 0 ? (
           notifications.slice(0, 5).map((notification) => (
             <div
               key={notification.id}
-              className={`px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 border-l-4 transition-colors cursor-pointer ${
+              className={`cursor-pointer border-l-4 px-4 py-3 transition-colors hover:bg-gray-50 dark:hover:bg-gray-700/50 ${
                 notification.read
-                  ? "border-transparent"
-                  : "border-blue-500 bg-blue-50/50 dark:bg-blue-900/10"
+                  ? 'border-transparent'
+                  : 'border-blue-500 bg-blue-50/50 dark:bg-blue-900/10'
               }`}
             >
-              <div className="flex items-start gap-3">
+              <div className='flex items-start gap-3'>
                 <div
-                  className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center ${notification.bgColor}`}
+                  className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl ${notification.bgColor}`}
                 >
                   <HeaderIcon
                     name={notification.icon}
                     className={notification.color}
-                    size="text-sm"
+                    size='text-sm'
                   />
                 </div>
-                <div className="flex-1 min-w-0">
+                <div className='min-w-0 flex-1'>
                   <p
-                    className={`text-sm font-medium ${notification.read ? "text-gray-700 dark:text-gray-300" : "text-gray-900 dark:text-white"}`}
+                    className={`text-sm font-medium ${notification.read ? 'text-gray-700 dark:text-gray-300' : 'text-gray-900 dark:text-white'}`}
                   >
                     {notification.title}
                   </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                  <p className='mt-0.5 text-xs text-gray-500 dark:text-gray-400'>
                     {notification.time}
                   </p>
                 </div>
                 {!notification.read && (
-                  <div className="flex-shrink-0 mt-1">
-                    <div className="w-2.5 h-2.5 bg-blue-500 rounded-full animate-pulse"></div>
+                  <div className='mt-1 flex-shrink-0'>
+                    <div className='h-2.5 w-2.5 animate-pulse rounded-full bg-blue-500'></div>
                   </div>
                 )}
               </div>
             </div>
           ))
         ) : (
-          <div className="px-4 py-8 text-center">
+          <div className='px-4 py-8 text-center'>
             <HeaderIcon
-              name="bell-slash"
-              className="text-gray-300 dark:text-gray-600 mb-2"
-              size="text-3xl"
+              name='bell-slash'
+              className='mb-2 text-gray-300 dark:text-gray-600'
+              size='text-3xl'
             />
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className='text-sm text-gray-500 dark:text-gray-400'>
               No new notifications
             </p>
           </div>
         )}
       </div>
 
-      <div className="border-t border-gray-100 dark:border-gray-700 px-4 py-3">
+      <div className='border-t border-gray-100 px-4 py-3 dark:border-gray-700'>
         <Link
-          to="/notifications"
+          to='/notifications'
           onClick={onClose}
-          className="flex items-center justify-center gap-2 text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
+          className='flex items-center justify-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300'
         >
           View all notifications
-          <HeaderIcon name="arrow-right" size="text-xs" />
+          <HeaderIcon name='arrow-right' size='text-xs' />
         </Link>
       </div>
     </>

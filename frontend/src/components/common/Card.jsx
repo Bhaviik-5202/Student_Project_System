@@ -1,5 +1,5 @@
-import { memo } from "react";
-import PropTypes from "prop-types";
+import { memo } from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * Card Component
@@ -8,13 +8,13 @@ import PropTypes from "prop-types";
  * Supports theme-adaptive shadows, dark-mode specific elevation,
  * and optional hover-state transformations for interactive tiles.
  */
-const Card = memo(({ children, className = "", hoverable = false }) => {
+const Card = memo(({ children, className = '', hoverable = false }) => {
   return (
     <div
-      className={`bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-lg dark:shadow-gray-950 p-4 ${
+      className={`rounded-lg bg-white p-4 shadow-md dark:bg-gray-800 dark:shadow-lg dark:shadow-gray-950 ${
         hoverable
-          ? "hover:shadow-lg dark:hover:shadow-xl transition-shadow duration-300 cursor-pointer"
-          : ""
+          ? 'cursor-pointer transition-shadow duration-300 hover:shadow-lg dark:hover:shadow-xl'
+          : ''
       } ${className}`}
     >
       {children}
@@ -22,7 +22,7 @@ const Card = memo(({ children, className = "", hoverable = false }) => {
   );
 });
 
-Card.displayName = "Card";
+Card.displayName = 'Card';
 
 Card.propTypes = {
   children: PropTypes.node,
@@ -31,7 +31,7 @@ Card.propTypes = {
 };
 
 Card.defaultProps = {
-  className: "",
+  className: '',
   hoverable: false,
 };
 

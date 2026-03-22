@@ -1,4 +1,4 @@
-const settingRepository = require("../repositories/setting.repository");
+const settingRepository = require('../repositories/setting.repository');
 
 /**
  * Standardized response helper for services
@@ -17,9 +17,9 @@ const response = (error, data, message) => ({ error, data, message });
 exports.create = async (data) => {
   try {
     const setting = await settingRepository.create(data);
-    return response(false, setting, "Setting created successfully");
+    return response(false, setting, 'Setting created successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to create setting");
+    return response(true, null, err.message || 'Failed to create setting');
   }
 };
 
@@ -30,9 +30,9 @@ exports.create = async (data) => {
 exports.getAll = async () => {
   try {
     const settings = await settingRepository.findAll();
-    return response(false, settings, "Settings fetched successfully");
+    return response(false, settings, 'Settings fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch settings");
+    return response(true, null, err.message || 'Failed to fetch settings');
   }
 };
 
@@ -44,10 +44,10 @@ exports.getAll = async () => {
 exports.getById = async (id) => {
   try {
     const setting = await settingRepository.findById(id);
-    if (!setting) return response(true, null, "Setting not found");
-    return response(false, setting, "Setting fetched successfully");
+    if (!setting) return response(true, null, 'Setting not found');
+    return response(false, setting, 'Setting fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch setting");
+    return response(true, null, err.message || 'Failed to fetch setting');
   }
 };
 
@@ -60,10 +60,10 @@ exports.getById = async (id) => {
 exports.update = async (id, data) => {
   try {
     const setting = await settingRepository.update(id, data);
-    if (!setting) return response(true, null, "Setting not found");
-    return response(false, setting, "Setting updated successfully");
+    if (!setting) return response(true, null, 'Setting not found');
+    return response(false, setting, 'Setting updated successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to update setting");
+    return response(true, null, err.message || 'Failed to update setting');
   }
 };
 
@@ -75,9 +75,9 @@ exports.update = async (id, data) => {
 exports.remove = async (id) => {
   try {
     const setting = await settingRepository.remove(id);
-    if (!setting) return response(true, null, "Setting not found");
-    return response(false, null, "Setting deleted successfully");
+    if (!setting) return response(true, null, 'Setting not found');
+    return response(false, null, 'Setting deleted successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to delete setting");
+    return response(true, null, err.message || 'Failed to delete setting');
   }
 };

@@ -1,5 +1,6 @@
-const studentRepository = require("../repositories/student.repository");
-const projectRepository = require("../repositories/project.repository");
+const studentRepository = require('../repositories/student.repository');
+const projectRepository = require('../repositories/project.repository');
+const evaluationRepository = require('../repositories/evaluation.repository');
 
 /**
  * Standardized response helper for services
@@ -18,12 +19,12 @@ const response = (error, data, message) => ({ error, data, message });
 exports.getProjects = async (studentId) => {
   try {
     const projects = await projectRepository.findAll({ owner: studentId });
-    return response(false, projects, "Student projects fetched successfully");
+    return response(false, projects, 'Student projects fetched successfully');
   } catch (err) {
     return response(
       true,
       null,
-      err.message || "Failed to fetch student projects",
+      err.message || 'Failed to fetch student projects'
     );
   }
 };
@@ -35,14 +36,13 @@ exports.getProjects = async (studentId) => {
  */
 exports.getGrades = async (studentId) => {
   try {
-    const evaluationRepository = require("../repositories/evaluation.repository");
     const grades = await evaluationRepository.findAll({ student: studentId });
-    return response(false, grades, "Student grades fetched successfully");
+    return response(false, grades, 'Student grades fetched successfully');
   } catch (err) {
     return response(
       true,
       null,
-      err.message || "Failed to fetch student grades",
+      err.message || 'Failed to fetch student grades'
     );
   }
 };
@@ -55,9 +55,9 @@ exports.getGrades = async (studentId) => {
 exports.create = async (data) => {
   try {
     const student = await studentRepository.create(data);
-    return response(false, student, "Student created successfully");
+    return response(false, student, 'Student created successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to create student");
+    return response(true, null, err.message || 'Failed to create student');
   }
 };
 
@@ -68,9 +68,9 @@ exports.create = async (data) => {
 exports.getAll = async () => {
   try {
     const students = await studentRepository.findAll();
-    return response(false, students, "Students fetched successfully");
+    return response(false, students, 'Students fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch students");
+    return response(true, null, err.message || 'Failed to fetch students');
   }
 };
 
@@ -82,10 +82,10 @@ exports.getAll = async () => {
 exports.getById = async (id) => {
   try {
     const student = await studentRepository.findById(id);
-    if (!student) return response(true, null, "Student not found");
-    return response(false, student, "Student fetched successfully");
+    if (!student) return response(true, null, 'Student not found');
+    return response(false, student, 'Student fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch student");
+    return response(true, null, err.message || 'Failed to fetch student');
   }
 };
 
@@ -98,10 +98,10 @@ exports.getById = async (id) => {
 exports.update = async (id, data) => {
   try {
     const student = await studentRepository.update(id, data);
-    if (!student) return response(true, null, "Student not found");
-    return response(false, student, "Student updated successfully");
+    if (!student) return response(true, null, 'Student not found');
+    return response(false, student, 'Student updated successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to update student");
+    return response(true, null, err.message || 'Failed to update student');
   }
 };
 
@@ -113,9 +113,9 @@ exports.update = async (id, data) => {
 exports.remove = async (id) => {
   try {
     const student = await studentRepository.remove(id);
-    if (!student) return response(true, null, "Student not found");
-    return response(false, null, "Student deleted successfully");
+    if (!student) return response(true, null, 'Student not found');
+    return response(false, null, 'Student deleted successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to delete student");
+    return response(true, null, err.message || 'Failed to delete student');
   }
 };

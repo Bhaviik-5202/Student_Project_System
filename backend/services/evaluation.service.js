@@ -1,4 +1,4 @@
-const evaluationRepository = require("../repositories/evaluation.repository");
+const evaluationRepository = require('../repositories/evaluation.repository');
 
 /**
  * Standardized response helper for services
@@ -17,9 +17,9 @@ const response = (error, data, message) => ({ error, data, message });
 exports.create = async (data) => {
   try {
     const evaluation = await evaluationRepository.create(data);
-    return response(false, evaluation, "Evaluation created successfully");
+    return response(false, evaluation, 'Evaluation created successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to create evaluation");
+    return response(true, null, err.message || 'Failed to create evaluation');
   }
 };
 
@@ -30,9 +30,9 @@ exports.create = async (data) => {
 exports.getAll = async () => {
   try {
     const evaluations = await evaluationRepository.findAll();
-    return response(false, evaluations, "Evaluations fetched successfully");
+    return response(false, evaluations, 'Evaluations fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch evaluations");
+    return response(true, null, err.message || 'Failed to fetch evaluations');
   }
 };
 
@@ -44,10 +44,10 @@ exports.getAll = async () => {
 exports.getById = async (id) => {
   try {
     const evaluation = await evaluationRepository.findById(id);
-    if (!evaluation) return response(true, null, "Evaluation not found");
-    return response(false, evaluation, "Evaluation fetched successfully");
+    if (!evaluation) return response(true, null, 'Evaluation not found');
+    return response(false, evaluation, 'Evaluation fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch evaluation");
+    return response(true, null, err.message || 'Failed to fetch evaluation');
   }
 };
 
@@ -60,10 +60,10 @@ exports.getById = async (id) => {
 exports.update = async (id, data) => {
   try {
     const evaluation = await evaluationRepository.update(id, data);
-    if (!evaluation) return response(true, null, "Evaluation not found");
-    return response(false, evaluation, "Evaluation updated successfully");
+    if (!evaluation) return response(true, null, 'Evaluation not found');
+    return response(false, evaluation, 'Evaluation updated successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to update evaluation");
+    return response(true, null, err.message || 'Failed to update evaluation');
   }
 };
 
@@ -75,9 +75,9 @@ exports.update = async (id, data) => {
 exports.remove = async (id) => {
   try {
     const evaluation = await evaluationRepository.remove(id);
-    if (!evaluation) return response(true, null, "Evaluation not found");
-    return response(false, null, "Evaluation deleted successfully");
+    if (!evaluation) return response(true, null, 'Evaluation not found');
+    return response(false, null, 'Evaluation deleted successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to delete evaluation");
+    return response(true, null, err.message || 'Failed to delete evaluation');
   }
 };

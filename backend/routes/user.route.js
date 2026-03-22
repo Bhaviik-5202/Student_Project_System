@@ -4,35 +4,35 @@
  * Handles CRUD operations for users.
  */
 
-const express = require("express");
-const { body } = require("express-validator");
+const express = require('express');
+const { body } = require('express-validator');
 const router = express.Router();
 
 // Controllers and Middlewares
-const userController = require("../controllers/user.controller");
-const authMiddleware = require("../middleware/auth.middleware");
-const validateRequest = require("../middleware/validateRequest");
+const userController = require('../controllers/user.controller');
+const authMiddleware = require('../middleware/auth.middleware');
+const validateRequest = require('../middleware/validateRequest');
 
 /**
  * @route   POST /api/v1/users
  * @desc    Create a new user
  * @access  Private (Authenticated Users)
  */
-router.post("/", authMiddleware, userController.createUser);
+router.post('/', authMiddleware, userController.createUser);
 
 /**
  * @route   GET /api/v1/users
  * @desc    Retrieve all users
  * @access  Private (Authenticated Users)
  */
-router.get("/", authMiddleware, userController.getAllUsers);
+router.get('/', authMiddleware, userController.getAllUsers);
 
 /**
  * @route   GET /api/v1/users/:id
  * @desc    Retrieve a specific user by ID
  * @access  Private (Authenticated Users)
  */
-router.get("/:id", authMiddleware, userController.getUserById);
+router.get('/:id', authMiddleware, userController.getUserById);
 
 /**
  * @route   PUT /api/v1/users/:id
@@ -40,25 +40,25 @@ router.get("/:id", authMiddleware, userController.getUserById);
  * @access  Private (Authenticated Users)
  */
 router.put(
-  "/:id",
+  '/:id',
   authMiddleware,
   [
-    body("name").optional().notEmpty().withMessage("Name cannot be empty"),
+    body('name').optional().notEmpty().withMessage('Name cannot be empty'),
 
-    body("email").optional().isEmail().withMessage("Valid email is required"),
+    body('email').optional().isEmail().withMessage('Valid email is required'),
 
-    body("password")
+    body('password')
       .optional()
       .isLength({ min: 6 })
-      .withMessage("Password must be at least 6 characters"),
+      .withMessage('Password must be at least 6 characters'),
 
-    body("role")
+    body('role')
       .optional()
-      .isIn(["admin", "faculty", "student"])
-      .withMessage("Invalid role"),
+      .isIn(['admin', 'faculty', 'student'])
+      .withMessage('Invalid role'),
   ],
   validateRequest,
-  userController.updateUser,
+  userController.updateUser
 );
 
 /**
@@ -66,6 +66,6 @@ router.put(
  * @desc    Delete a user
  * @access  Private (Authenticated Users)
  */
-router.delete("/:id", authMiddleware, userController.deleteUser);
+router.delete('/:id', authMiddleware, userController.deleteUser);
 
 module.exports = router;

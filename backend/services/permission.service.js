@@ -1,4 +1,4 @@
-const permissionRepository = require("../repositories/permission.repository");
+const permissionRepository = require('../repositories/permission.repository');
 
 /**
  * Standardized response helper for services
@@ -17,9 +17,9 @@ const response = (error, data, message) => ({ error, data, message });
 exports.create = async (data) => {
   try {
     const permission = await permissionRepository.create(data);
-    return response(false, permission, "Permission created successfully");
+    return response(false, permission, 'Permission created successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to create permission");
+    return response(true, null, err.message || 'Failed to create permission');
   }
 };
 
@@ -30,9 +30,9 @@ exports.create = async (data) => {
 exports.getAll = async () => {
   try {
     const permissions = await permissionRepository.findAll();
-    return response(false, permissions, "Permissions fetched successfully");
+    return response(false, permissions, 'Permissions fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch permissions");
+    return response(true, null, err.message || 'Failed to fetch permissions');
   }
 };
 
@@ -44,10 +44,10 @@ exports.getAll = async () => {
 exports.getById = async (id) => {
   try {
     const permission = await permissionRepository.findById(id);
-    if (!permission) return response(true, null, "Permission not found");
-    return response(false, permission, "Permission fetched successfully");
+    if (!permission) return response(true, null, 'Permission not found');
+    return response(false, permission, 'Permission fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch permission");
+    return response(true, null, err.message || 'Failed to fetch permission');
   }
 };
 
@@ -60,10 +60,10 @@ exports.getById = async (id) => {
 exports.update = async (id, data) => {
   try {
     const permission = await permissionRepository.update(id, data);
-    if (!permission) return response(true, null, "Permission not found");
-    return response(false, permission, "Permission updated successfully");
+    if (!permission) return response(true, null, 'Permission not found');
+    return response(false, permission, 'Permission updated successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to update permission");
+    return response(true, null, err.message || 'Failed to update permission');
   }
 };
 
@@ -75,9 +75,9 @@ exports.update = async (id, data) => {
 exports.remove = async (id) => {
   try {
     const permission = await permissionRepository.remove(id);
-    if (!permission) return response(true, null, "Permission not found");
-    return response(false, null, "Permission deleted successfully");
+    if (!permission) return response(true, null, 'Permission not found');
+    return response(false, null, 'Permission deleted successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to delete permission");
+    return response(true, null, err.message || 'Failed to delete permission');
   }
 };

@@ -4,33 +4,33 @@
  * Handles CRUD operations for projects.
  */
 
-const express = require("express");
-const { body } = require("express-validator");
+const express = require('express');
+const { body } = require('express-validator');
 const router = express.Router();
 
 // Controllers and Middlewares
-const projectController = require("../controllers/project.controller");
-const projectTypeController = require("../controllers/projectType.controller");
-const authMiddleware = require("../middleware/auth.middleware");
-const roleMiddleware = require("../middleware/roleMiddleware");
-const validateRequest = require("../middleware/validateRequest");
-const upload = require("../utils/upload");
+const projectController = require('../controllers/project.controller');
+const projectTypeController = require('../controllers/projectType.controller');
+const authMiddleware = require('../middleware/auth.middleware');
+const roleMiddleware = require('../middleware/roleMiddleware');
+const validateRequest = require('../middleware/validateRequest');
+const upload = require('../utils/upload');
 
 /**
  * Validation rules for creating/updating a project
  */
 const projectValidation = [
-  body("title").optional().notEmpty().withMessage("Title cannot be empty"),
+  body('title').optional().notEmpty().withMessage('Title cannot be empty'),
 
-  body("description")
+  body('description')
     .optional()
     .isString()
-    .withMessage("Description must be a string"),
+    .withMessage('Description must be a string'),
 
-  body("status")
+  body('status')
     .optional()
-    .isIn(["planning", "in_progress", "completed", "on_hold", "cancelled"])
-    .withMessage("Invalid status"),
+    .isIn(['planning', 'in_progress', 'completed', 'on_hold', 'cancelled'])
+    .withMessage('Invalid status'),
 ];
 
 /**
@@ -39,16 +39,16 @@ const projectValidation = [
  * @access  Private (Admin/Faculty)
  */
 router.post(
-  "/",
+  '/',
   authMiddleware,
-  roleMiddleware(["admin", "faculty", "student"]),
-  upload.single("document"),
+  roleMiddleware(['admin', 'faculty', 'student']),
+  upload.single('document'),
   [
-    body("title").notEmpty().withMessage("Title is required"),
+    body('title').notEmpty().withMessage('Title is required'),
     ...projectValidation.slice(1),
   ],
   validateRequest,
-  projectController.createProject,
+  projectController.createProject
 );
 
 /**
@@ -56,21 +56,25 @@ router.post(
  * @desc    Retrieve all projects
  * @access  Private (Authenticated Users)
  */
-router.get("/", authMiddleware, projectController.getAllProjects);
+router.get('/', authMiddleware, projectController.getAllProjects);
 
 /**
  * @route   GET /api/v1/projects/types
  * @desc    Retrieve all project types
  * @access  Private (Authenticated Users)
  */
-router.get("/types", authMiddleware, projectTypeController.getAllProjectTypes);
+router.get('/types', authMiddleware, projectTypeController.getAllProjectTypes);
 
 /**
  * @route   GET /api/v1/projects/types/:id
  * @desc    Retrieve a single project type
  * @access  Private (Authenticated Users)
  */
-router.get("/types/:id", authMiddleware, projectTypeController.getProjectTypeById);
+router.get(
+  '/types/:id',
+  authMiddleware,
+  projectTypeController.getProjectTypeById
+);
 
 /**
  * @route   POST /api/v1/projects/types
@@ -78,10 +82,10 @@ router.get("/types/:id", authMiddleware, projectTypeController.getProjectTypeByI
  * @access  Private (Admin/Faculty)
  */
 router.post(
-  "/types",
+  '/types',
   authMiddleware,
-  roleMiddleware(["admin", "faculty"]),
-  projectTypeController.createProjectType,
+  roleMiddleware(['admin', 'faculty']),
+  projectTypeController.createProjectType
 );
 
 /**
@@ -90,10 +94,10 @@ router.post(
  * @access  Private (Admin/Faculty)
  */
 router.put(
-  "/types/:id",
+  '/types/:id',
   authMiddleware,
-  roleMiddleware(["admin", "faculty"]),
-  projectTypeController.updateProjectType,
+  roleMiddleware(['admin', 'faculty']),
+  projectTypeController.updateProjectType
 );
 
 /**
@@ -102,10 +106,10 @@ router.put(
  * @access  Private (Admin/Faculty)
  */
 router.delete(
-  "/types/:id",
+  '/types/:id',
   authMiddleware,
-  roleMiddleware(["admin", "faculty"]),
-  projectTypeController.deleteProjectType,
+  roleMiddleware(['admin', 'faculty']),
+  projectTypeController.deleteProjectType
 );
 
 /**
@@ -113,14 +117,14 @@ router.delete(
  * @desc    Retrieve all projects formatted as groups
  * @access  Private (Authenticated Users)
  */
-router.get("/groups", authMiddleware, projectController.getProjectGroups);
+router.get('/groups', authMiddleware, projectController.getProjectGroups);
 
 /**
  * @route   GET /api/v1/projects/:id
  * @desc    Retrieve a single project by ID
  * @access  Private (Authenticated Users)
  */
-router.get("/:id", authMiddleware, projectController.getProjectById);
+router.get('/:id', authMiddleware, projectController.getProjectById);
 
 /**
  * @route   PUT /api/v1/projects/:id
@@ -128,13 +132,13 @@ router.get("/:id", authMiddleware, projectController.getProjectById);
  * @access  Private (Admin/Faculty)
  */
 router.put(
-  "/:id",
+  '/:id',
   authMiddleware,
-  roleMiddleware(["admin", "faculty", "student"]),
-  upload.single("document"),
+  roleMiddleware(['admin', 'faculty', 'student']),
+  upload.single('document'),
   projectValidation,
   validateRequest,
-  projectController.updateProject,
+  projectController.updateProject
 );
 
 /**
@@ -143,10 +147,10 @@ router.put(
  * @access  Private (Admin/Faculty)
  */
 router.delete(
-  "/:id",
+  '/:id',
   authMiddleware,
-  roleMiddleware(["admin", "faculty", "student"]),
-  projectController.deleteProject,
+  roleMiddleware(['admin', 'faculty', 'student']),
+  projectController.deleteProject
 );
 
 module.exports = router;

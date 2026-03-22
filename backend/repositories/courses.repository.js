@@ -1,4 +1,4 @@
-const Course = require("../models/courses.model");
+const Course = require('../models/courses.model');
 
 /**
  * Find all courses matching a specific filter
@@ -11,8 +11,8 @@ exports.findAll = (filter = {}, options = {}) =>
     .sort(options.sort || { createdAt: -1 })
     .skip(options.skip || 0)
     .limit(options.limit || 0)
-    .populate(options.populate || "faculty", "name email")
-    .select(options.select || "");
+    .populate(options.populate || 'faculty', 'name email')
+    .select(options.select || '');
 
 /**
  * Locate a single course by its unique identifier
@@ -22,8 +22,8 @@ exports.findAll = (filter = {}, options = {}) =>
  */
 exports.findById = (id, options = {}) =>
   Course.findById(id)
-    .populate(options.populate || "faculty", "name email")
-    .select(options.select || "");
+    .populate(options.populate || 'faculty', 'name email')
+    .select(options.select || '');
 
 /**
  * Persist a new course record to the database

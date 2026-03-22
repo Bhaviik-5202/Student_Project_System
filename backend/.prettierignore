@@ -1,0 +1,8 @@
+node_modules
+dist
+build
+.env
+package-lock.json
+final_results.json
+final_test_results.txt
+uploads

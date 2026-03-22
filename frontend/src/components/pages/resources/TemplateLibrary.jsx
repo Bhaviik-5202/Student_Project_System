@@ -1,61 +1,61 @@
-import React, { useState, useMemo, useCallback, memo, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { FileText, Calendar, Download, Eye, Plus, Search } from "lucide-react";
-import resourceService from "../../../services/resourceService";
-import useNotification from "../../../hooks/useNotification";
+import React, { useState, useMemo, useCallback, memo, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { FileText, Calendar, Download, Eye, Plus, Search } from 'lucide-react';
+import resourceService from '../../../services/resourceService';
+import useNotification from '../../../hooks/useNotification';
 
 const CategoryTab = memo(({ category, isActive, onSelect }) => (
   <button
     onClick={() => onSelect(category.id)}
-    className={`px-4 py-2 rounded-lg whitespace-nowrap ${
+    className={`whitespace-nowrap rounded-lg px-4 py-2 ${
       isActive
-        ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-medium"
-        : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+        ? 'bg-blue-100 font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
+        : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
     }`}
   >
     {category.name} ({category.count})
   </button>
 ));
 
-CategoryTab.displayName = "CategoryTab";
+CategoryTab.displayName = 'CategoryTab';
 
 const TemplateCard = memo(({ template, onDownload, onPreview }) => (
-  <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-5 hover:shadow-md transition-shadow bg-white dark:bg-gray-800">
-    <div className="flex items-start justify-between mb-4">
-      <div className="w-12 h-12 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
-        <FileText className="text-blue-500" size={24} />
+  <div className='rounded-lg border border-gray-200 bg-white p-5 transition-shadow hover:shadow-md dark:border-gray-700 dark:bg-gray-800'>
+    <div className='mb-4 flex items-start justify-between'>
+      <div className='flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-700'>
+        <FileText className='text-blue-500' size={24} />
       </div>
-      <span className="text-[10px] font-bold px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 rounded">
+      <span className='rounded bg-gray-100 px-2 py-1 text-[10px] font-bold text-gray-500 dark:bg-gray-700 dark:text-gray-400'>
         {template.type}
       </span>
     </div>
 
-    <h3 className="font-bold text-gray-800 dark:text-white mb-2">
+    <h3 className='mb-2 font-bold text-gray-800 dark:text-white'>
       {template.title}
     </h3>
-    <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
+    <p className='mb-4 line-clamp-2 text-sm text-gray-600 dark:text-gray-400'>
       {template.description}
     </p>
 
-    <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mb-4">
-      <span className="flex items-center">
-        <Calendar size={14} className="mr-1" />
+    <div className='mb-4 flex items-center justify-between text-sm text-gray-500 dark:text-gray-400'>
+      <span className='flex items-center'>
+        <Calendar size={14} className='mr-1' />
         {new Date(template.createdAt).toLocaleDateString()}
       </span>
-      <span>{template.size || "MB"}</span>
+      <span>{template.size || 'MB'}</span>
     </div>
 
-    <div className="flex space-x-2">
+    <div className='flex space-x-2'>
       <button
         onClick={() => onDownload(template)}
-        className="flex-1 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg flex items-center justify-center transition-colors"
+        className='flex flex-1 items-center justify-center rounded-lg bg-indigo-600 py-2 text-white transition-colors hover:bg-indigo-700'
       >
-        <Download size={18} className="mr-2" />
+        <Download size={18} className='mr-2' />
         Download
       </button>
       <button
         onClick={() => onPreview(template)}
-        className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+        className='rounded-lg border border-gray-300 px-4 py-2 text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700'
       >
         <Eye size={18} />
       </button>
@@ -63,11 +63,11 @@ const TemplateCard = memo(({ template, onDownload, onPreview }) => (
   </div>
 ));
 
-TemplateCard.displayName = "TemplateCard";
+TemplateCard.displayName = 'TemplateCard';
 
 const TemplateLibrary = memo(() => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const { showSuccess } = useNotification();
   const navigate = useNavigate();
 
@@ -80,14 +80,14 @@ const TemplateLibrary = memo(() => {
       setLoading(true);
       setError(null);
       try {
-        const res = await resourceService.getAll({ type: "template" });
+        const res = await resourceService.getAll({ type: 'template' });
         if (res.success) {
           setTemplates(res.data || []);
         } else {
-          setError(res.message || "Failed to load templates.");
+          setError(res.message || 'Failed to load templates.');
         }
       } catch (err) {
-        setError("Failed to load templates.");
+        setError('Failed to load templates.');
       } finally {
         setLoading(false);
       }
@@ -97,14 +97,19 @@ const TemplateLibrary = memo(() => {
 
   const categories = useMemo(() => {
     const cats = templates.reduce((acc, t) => {
-      const cat = t.type || "template";
-      if (!acc[cat]) acc[cat] = { id: cat, name: cat.charAt(0).toUpperCase() + cat.slice(1) + 's', count: 0 };
+      const cat = t.type || 'template';
+      if (!acc[cat])
+        acc[cat] = {
+          id: cat,
+          name: cat.charAt(0).toUpperCase() + cat.slice(1) + 's',
+          count: 0,
+        };
       acc[cat].count++;
       return acc;
     }, {});
     return [
-      { id: "all", name: "All Templates", count: templates.length },
-      ...Object.values(cats)
+      { id: 'all', name: 'All Templates', count: templates.length },
+      ...Object.values(cats),
     ];
   }, [templates]);
 
@@ -113,27 +118,28 @@ const TemplateLibrary = memo(() => {
     return templates.filter((template) => {
       const matchesSearch =
         template.title.toLowerCase().includes(lowered) ||
-        (template.description && template.description.toLowerCase().includes(lowered));
+        (template.description &&
+          template.description.toLowerCase().includes(lowered));
       const matchesCategory =
-        selectedCategory === "all" || template.type === selectedCategory;
+        selectedCategory === 'all' || template.type === selectedCategory;
       return matchesSearch && matchesCategory;
     });
   }, [templates, searchTerm, selectedCategory]);
 
   const handleDownload = useCallback(
     (template) => {
-      if (template.url) window.open(template.url, "_blank");
+      if (template.url) window.open(template.url, '_blank');
       showSuccess(`Downloading ${template.title}`);
     },
-    [showSuccess],
+    [showSuccess]
   );
 
   const handlePreview = useCallback(
     (template) => {
-      if (template.url) window.open(template.url, "_blank");
+      if (template.url) window.open(template.url, '_blank');
       showSuccess(`Previewing ${template.title}`);
     },
-    [showSuccess],
+    [showSuccess]
   );
 
   const handleCategorySelect = useCallback((id) => {
@@ -141,50 +147,56 @@ const TemplateLibrary = memo(() => {
   }, []);
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow dark:shadow-md p-6">
-      <div className="flex flex-col md:flex-row md:items-center justify-between mb-8">
+    <div className='rounded-lg bg-white p-6 shadow dark:bg-gray-800 dark:shadow-md'>
+      <div className='mb-8 flex flex-col justify-between md:flex-row md:items-center'>
         <div>
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
+          <h2 className='text-2xl font-bold text-gray-800 dark:text-white'>
             Template Library
           </h2>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">
+          <p className='mt-1 text-gray-600 dark:text-gray-400'>
             Browse and download project templates
           </p>
         </div>
-        <button 
-          onClick={() => navigate("/resource-upload")}
-          className="mt-4 md:mt-0 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg flex items-center transition-colors">
-          <Plus size={18} className="mr-2" />
+        <button
+          onClick={() => navigate('/resource-upload')}
+          className='mt-4 flex items-center rounded-lg bg-indigo-600 px-4 py-2 text-white transition-colors hover:bg-indigo-700 md:mt-0'
+        >
+          <Plus size={18} className='mr-2' />
           Upload Template
         </button>
       </div>
 
       {loading ? (
-        <div className="text-center py-12 text-gray-500 dark:text-gray-400">Loading templates...</div>
+        <div className='py-12 text-center text-gray-500 dark:text-gray-400'>
+          Loading templates...
+        </div>
       ) : error ? (
-        <div className="text-center py-12 text-red-500">{error}</div>
+        <div className='py-12 text-center text-red-500'>{error}</div>
       ) : (
         <>
           {/* Search and Filter */}
-          <div className="mb-6">
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="flex-1">
-                <div className="relative">
-                  <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" />
+          <div className='mb-6'>
+            <div className='flex flex-col gap-4 md:flex-row'>
+              <div className='flex-1'>
+                <div className='relative'>
+                  <Search
+                    size={18}
+                    className='absolute left-3 top-1/2 -translate-y-1/2 transform text-gray-400 dark:text-gray-500'
+                  />
                   <input
-                    type="text"
-                    placeholder="Search templates..."
+                    type='text'
+                    placeholder='Search templates...'
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400"
+                    className='w-full rounded-lg border border-gray-300 bg-white py-2 pl-10 pr-4 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400'
                   />
                 </div>
               </div>
-              <div className="w-full md:w-64">
+              <div className='w-full md:w-64'>
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 dark:focus:border-blue-400"
+                  className='w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-blue-400 dark:focus:ring-blue-400'
                 >
                   {categories.map((category) => (
                     <option key={category.id} value={category.id}>
@@ -197,7 +209,7 @@ const TemplateLibrary = memo(() => {
           </div>
 
           {/* Category Tabs */}
-          <div className="flex space-x-2 mb-6 overflow-x-auto pb-2">
+          <div className='mb-6 flex space-x-2 overflow-x-auto pb-2'>
             {categories.map((category) => (
               <CategoryTab
                 key={category.id}
@@ -209,7 +221,7 @@ const TemplateLibrary = memo(() => {
           </div>
 
           {/* Template Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
             {filteredTemplates.map((template) => (
               <TemplateCard
                 key={template._id || template.id}
@@ -222,45 +234,56 @@ const TemplateLibrary = memo(() => {
 
           {/* Empty State */}
           {filteredTemplates.length === 0 && (
-            <div className="text-center py-12">
-              <Search className="mx-auto text-gray-300 dark:text-gray-600 mb-3" size={48} />
-              <h3 className="text-lg font-medium text-gray-700 dark:text-gray-200 mb-2">
+            <div className='py-12 text-center'>
+              <Search
+                className='mx-auto mb-3 text-gray-300 dark:text-gray-600'
+                size={48}
+              />
+              <h3 className='mb-2 text-lg font-medium text-gray-700 dark:text-gray-200'>
                 No templates found
               </h3>
-              <p className="text-gray-500 dark:text-gray-400">
+              <p className='text-gray-500 dark:text-gray-400'>
                 Try adjusting your search or filter criteria
               </p>
             </div>
           )}
 
           {/* Stats */}
-          <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="text-center p-4">
-                <div className="text-2xl font-bold text-blue-600">{templates.length}</div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
+          <div className='mt-8 border-t border-gray-200 pt-6 dark:border-gray-700'>
+            <div className='grid grid-cols-2 gap-4 md:grid-cols-4'>
+              <div className='p-4 text-center'>
+                <div className='text-2xl font-bold text-blue-600'>
+                  {templates.length}
+                </div>
+                <div className='text-sm text-gray-600 dark:text-gray-400'>
                   Total Templates
                 </div>
               </div>
-              <div className="text-center p-4">
-                <div className="text-2xl font-bold text-green-600">
-                  {templates.filter(t => t.type === 'template').length}
+              <div className='p-4 text-center'>
+                <div className='text-2xl font-bold text-green-600'>
+                  {templates.filter((t) => t.type === 'template').length}
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
+                <div className='text-sm text-gray-600 dark:text-gray-400'>
                   Design Templates
                 </div>
               </div>
-              <div className="text-center p-4">
-                <div className="text-2xl font-bold text-purple-600">
-                   {templates.filter(t => new Date(t.createdAt).getMonth() === new Date().getMonth()).length}
+              <div className='p-4 text-center'>
+                <div className='text-2xl font-bold text-purple-600'>
+                  {
+                    templates.filter(
+                      (t) =>
+                        new Date(t.createdAt).getMonth() ===
+                        new Date().getMonth()
+                    ).length
+                  }
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
+                <div className='text-sm text-gray-600 dark:text-gray-400'>
                   New This Month
                 </div>
               </div>
-              <div className="text-center p-4">
-                <div className="text-2xl font-bold text-yellow-600">24/7</div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">
+              <div className='p-4 text-center'>
+                <div className='text-2xl font-bold text-yellow-600'>24/7</div>
+                <div className='text-sm text-gray-600 dark:text-gray-400'>
                   Availability
                 </div>
               </div>
@@ -272,6 +295,6 @@ const TemplateLibrary = memo(() => {
   );
 });
 
-TemplateLibrary.displayName = "TemplateLibrary";
+TemplateLibrary.displayName = 'TemplateLibrary';
 
 export default TemplateLibrary;

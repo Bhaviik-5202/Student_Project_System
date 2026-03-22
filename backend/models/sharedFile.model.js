@@ -1,32 +1,32 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const sharedFileSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "File name is required"],
+      required: [true, 'File name is required'],
       trim: true,
     },
     url: {
       type: String,
-      required: [true, "File URL is required"],
+      required: [true, 'File URL is required'],
     },
     size: {
       type: String,
-      default: "0 KB",
+      default: '0 KB',
     },
     type: {
       type: String,
-      default: "other",
+      default: 'other',
     },
     sharedBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
       required: true,
     },
     project: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Project",
+      ref: 'Project',
       required: true,
       index: true,
     },
@@ -37,9 +37,9 @@ const sharedFileSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 sharedFileSchema.index({ createdAt: -1 });
 
-module.exports = mongoose.model("SharedFile", sharedFileSchema);
+module.exports = mongoose.model('SharedFile', sharedFileSchema);

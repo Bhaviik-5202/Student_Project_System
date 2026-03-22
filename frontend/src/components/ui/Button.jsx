@@ -1,29 +1,29 @@
-import { memo, useCallback, useMemo } from "react";
-import PropTypes from "prop-types";
+import { memo, useCallback, useMemo } from 'react';
+import PropTypes from 'prop-types';
 
 const Button = memo(
   ({
     children,
-    type = "button",
-    variant = "primary",
+    type = 'button',
+    variant = 'primary',
     onClick,
     disabled = false,
-    className = "",
+    className = '',
   }) => {
     const variants = useMemo(
       () => ({
         primary:
-          "bg-blue-600 dark:bg-blue-700 hover:bg-blue-700 dark:hover:bg-blue-800 text-white",
+          'bg-blue-600 dark:bg-blue-700 hover:bg-blue-700 dark:hover:bg-blue-800 text-white',
         secondary:
-          "bg-gray-600 dark:bg-gray-700 hover:bg-gray-700 dark:hover:bg-gray-800 text-white",
+          'bg-gray-600 dark:bg-gray-700 hover:bg-gray-700 dark:hover:bg-gray-800 text-white',
         danger:
-          "bg-red-600 dark:bg-red-700 hover:bg-red-700 dark:hover:bg-red-800 text-white",
+          'bg-red-600 dark:bg-red-700 hover:bg-red-700 dark:hover:bg-red-800 text-white',
         success:
-          "bg-green-600 dark:bg-green-700 hover:bg-green-700 dark:hover:bg-green-800 text-white",
+          'bg-green-600 dark:bg-green-700 hover:bg-green-700 dark:hover:bg-green-800 text-white',
         outline:
-          "bg-transparent border border-gray-600 dark:border-gray-400 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700",
+          'bg-transparent border border-gray-600 dark:border-gray-400 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700',
       }),
-      [],
+      []
     );
 
     const handleClick = useCallback(
@@ -32,7 +32,7 @@ const Button = memo(
           onClick(e);
         }
       },
-      [onClick, disabled],
+      [onClick, disabled]
     );
 
     return (
@@ -40,27 +40,27 @@ const Button = memo(
         type={type}
         onClick={handleClick}
         disabled={disabled}
-        className={`px-4 py-2 rounded font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-900 ${
+        className={`rounded px-4 py-2 font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-blue-400 dark:focus:ring-offset-gray-900 ${
           variants[variant]
-        } ${disabled ? "opacity-50 cursor-not-allowed" : ""} ${className}`}
+        } ${disabled ? 'cursor-not-allowed opacity-50' : ''} ${className}`}
       >
         {children}
       </button>
     );
-  },
+  }
 );
 
-Button.displayName = "Button";
+Button.displayName = 'Button';
 
 Button.propTypes = {
   children: PropTypes.node.isRequired,
-  type: PropTypes.oneOf(["button", "submit", "reset"]),
+  type: PropTypes.oneOf(['button', 'submit', 'reset']),
   variant: PropTypes.oneOf([
-    "primary",
-    "secondary",
-    "danger",
-    "success",
-    "outline",
+    'primary',
+    'secondary',
+    'danger',
+    'success',
+    'outline',
   ]),
   onClick: PropTypes.func,
   disabled: PropTypes.bool,
@@ -68,10 +68,10 @@ Button.propTypes = {
 };
 
 Button.defaultProps = {
-  type: "button",
-  variant: "primary",
+  type: 'button',
+  variant: 'primary',
   disabled: false,
-  className: "",
+  className: '',
 };
 
 export default Button;

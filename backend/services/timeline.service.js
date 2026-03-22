@@ -1,4 +1,4 @@
-const timelineRepository = require("../repositories/timeline.repository");
+const timelineRepository = require('../repositories/timeline.repository');
 
 /**
  * Standardized response helper for services
@@ -17,9 +17,9 @@ const response = (error, data, message) => ({ error, data, message });
 exports.create = async (data) => {
   try {
     const timeline = await timelineRepository.create(data);
-    return response(false, timeline, "Timeline created successfully");
+    return response(false, timeline, 'Timeline created successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to create timeline");
+    return response(true, null, err.message || 'Failed to create timeline');
   }
 };
 
@@ -30,9 +30,9 @@ exports.create = async (data) => {
 exports.getAll = async () => {
   try {
     const timelines = await timelineRepository.findAll();
-    return response(false, timelines, "Timelines fetched successfully");
+    return response(false, timelines, 'Timelines fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch timelines");
+    return response(true, null, err.message || 'Failed to fetch timelines');
   }
 };
 
@@ -44,10 +44,10 @@ exports.getAll = async () => {
 exports.getById = async (id) => {
   try {
     const timeline = await timelineRepository.findById(id);
-    if (!timeline) return response(true, null, "Timeline not found");
-    return response(false, timeline, "Timeline fetched successfully");
+    if (!timeline) return response(true, null, 'Timeline not found');
+    return response(false, timeline, 'Timeline fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch timeline");
+    return response(true, null, err.message || 'Failed to fetch timeline');
   }
 };
 
@@ -60,10 +60,10 @@ exports.getById = async (id) => {
 exports.update = async (id, data) => {
   try {
     const timeline = await timelineRepository.update(id, data);
-    if (!timeline) return response(true, null, "Timeline not found");
-    return response(false, timeline, "Timeline updated successfully");
+    if (!timeline) return response(true, null, 'Timeline not found');
+    return response(false, timeline, 'Timeline updated successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to update timeline");
+    return response(true, null, err.message || 'Failed to update timeline');
   }
 };
 
@@ -75,10 +75,10 @@ exports.update = async (id, data) => {
 exports.remove = async (id) => {
   try {
     const timeline = await timelineRepository.remove(id);
-    if (!timeline) return response(true, null, "Timeline not found");
-    return response(false, null, "Timeline deleted successfully");
+    if (!timeline) return response(true, null, 'Timeline not found');
+    return response(false, null, 'Timeline deleted successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to delete timeline");
+    return response(true, null, err.message || 'Failed to delete timeline');
   }
 };
 
@@ -90,8 +90,16 @@ exports.remove = async (id) => {
 exports.getByProjectId = async (projectId) => {
   try {
     const timelines = await timelineRepository.findByProjectId(projectId);
-    return response(false, timelines, "Project timeline events fetched successfully");
+    return response(
+      false,
+      timelines,
+      'Project timeline events fetched successfully'
+    );
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch project timeline events");
+    return response(
+      true,
+      null,
+      err.message || 'Failed to fetch project timeline events'
+    );
   }
 };

@@ -1,5 +1,5 @@
-const supportTicketService = require("../services/supportticket.service");
-const sendResponse = require("../utils/response");
+const supportTicketService = require('../services/supportticket.service');
+const sendResponse = require('../utils/response');
 
 /**
  * SupportTicket Controller
@@ -21,22 +21,22 @@ exports.createSupportTicket = async (req, res) => {
         success: !result.error,
         message: result.error
           ? result.message
-          : "Support ticket created successfully",
+          : 'Support ticket created successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 201,
+      result.error ? 400 : 201
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Failed to create support ticket",
+        message: 'Failed to create support ticket',
         data: null,
         error: error.message,
       },
-      400,
+      400
     );
   }
 };
@@ -56,23 +56,23 @@ exports.getAllSupportTickets = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Failed to fetch support tickets"
-          : "Support tickets fetched successfully",
+          ? 'Failed to fetch support tickets'
+          : 'Support tickets fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 200,
+      result.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -91,23 +91,23 @@ exports.getSupportTicketById = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Ticket not found"
-          : "Support ticket fetched successfully",
+          ? 'Ticket not found'
+          : 'Support ticket fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -126,23 +126,23 @@ exports.updateSupportTicket = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Ticket not found"
-          : "Support ticket updated successfully",
+          ? 'Ticket not found'
+          : 'Support ticket updated successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -161,23 +161,23 @@ exports.deleteSupportTicket = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Ticket not found"
-          : "Support ticket deleted successfully",
+          ? 'Ticket not found'
+          : 'Support ticket deleted successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };

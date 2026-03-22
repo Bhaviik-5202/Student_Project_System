@@ -1,4 +1,4 @@
-const sendResponse = require("../utils/response");
+const sendResponse = require('../utils/response');
 
 /**
  * Middleware to restrict access by user role.
@@ -18,11 +18,11 @@ module.exports = function roleMiddleware(roles) {
           res,
           {
             success: false,
-            message: "Unauthorized",
+            message: 'Unauthorized',
             data: null,
-            error: "User not authenticated",
+            error: 'User not authenticated',
           },
-          401,
+          401
         );
       }
 
@@ -31,11 +31,11 @@ module.exports = function roleMiddleware(roles) {
           res,
           {
             success: false,
-            message: "Forbidden: insufficient role",
+            message: 'Forbidden: insufficient role',
             data: null,
-            error: `Required role(s): ${roles.join(", ")}`,
+            error: `Required role(s): ${roles.join(', ')}`,
           },
-          403,
+          403
         );
       }
 
@@ -45,11 +45,11 @@ module.exports = function roleMiddleware(roles) {
         res,
         {
           success: false,
-          message: "Internal server error",
+          message: 'Internal server error',
           data: null,
           error: error.message,
         },
-        500,
+        500
       );
     }
   };

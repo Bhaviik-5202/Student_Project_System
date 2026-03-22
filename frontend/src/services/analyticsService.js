@@ -1,4 +1,4 @@
-import api from "../utils/api";
+import api from '../utils/api';
 
 /**
  * Analytics Service
@@ -10,12 +10,12 @@ const analyticsService = {
    */
   getDashboardStats: async () => {
     try {
-      return await api.get("/analytics/dashboard");
+      return await api.get('/analytics/dashboard');
     } catch (error) {
       return {
         success: false,
         message:
-          error.response?.data?.message || "Failed to fetch dashboard stats",
+          error.response?.data?.message || 'Failed to fetch dashboard stats',
       };
     }
   },
@@ -25,12 +25,12 @@ const analyticsService = {
    */
   getFacultyDashboardStats: async () => {
     try {
-      return await api.get("/analytics/faculty-dashboard");
+      return await api.get('/analytics/faculty-dashboard');
     } catch (error) {
       return {
         success: false,
         message:
-          error.response?.data?.message || "Failed to fetch faculty stats",
+          error.response?.data?.message || 'Failed to fetch faculty stats',
       };
     }
   },
@@ -40,12 +40,12 @@ const analyticsService = {
    */
   getStudentDashboardStats: async () => {
     try {
-      return await api.get("/analytics/student-dashboard");
+      return await api.get('/analytics/student-dashboard');
     } catch (error) {
       return {
         success: false,
         message:
-          error.response?.data?.message || "Failed to fetch student stats",
+          error.response?.data?.message || 'Failed to fetch student stats',
       };
     }
   },
@@ -55,12 +55,12 @@ const analyticsService = {
    */
   getProjectAnalytics: async () => {
     try {
-      return await api.get("/analytics/projects");
+      return await api.get('/analytics/projects');
     } catch (error) {
       return {
         success: false,
         message:
-          error.response?.data?.message || "Failed to fetch project analytics",
+          error.response?.data?.message || 'Failed to fetch project analytics',
       };
     }
   },
@@ -70,12 +70,12 @@ const analyticsService = {
    */
   getUserAnalytics: async () => {
     try {
-      return await api.get("/analytics/users");
+      return await api.get('/analytics/users');
     } catch (error) {
       return {
         success: false,
         message:
-          error.response?.data?.message || "Failed to fetch user analytics",
+          error.response?.data?.message || 'Failed to fetch user analytics',
       };
     }
   },

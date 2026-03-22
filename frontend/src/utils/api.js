@@ -1,11 +1,11 @@
-import axios from "axios";
-import { API_BASE_URL, LOCAL_STORAGE_KEYS } from "./constants";
+import axios from 'axios';
+import { API_BASE_URL, LOCAL_STORAGE_KEYS } from './constants';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
   timeout: 10000,
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
 });
 
@@ -20,14 +20,14 @@ api.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  },
+  }
 );
 
 // Response interceptor
 api.interceptors.response.use(
   (response) => {
     // If the response has the standardized structure, return the inner object
-    if (response.data && typeof response.data.success !== "undefined") {
+    if (response.data && typeof response.data.success !== 'undefined') {
       return response.data;
     }
     return response.data;
@@ -37,10 +37,10 @@ api.interceptors.response.use(
       localStorage.removeItem(LOCAL_STORAGE_KEYS.TOKEN);
       localStorage.removeItem(LOCAL_STORAGE_KEYS.USER);
       localStorage.removeItem(LOCAL_STORAGE_KEYS.USER_ROLE);
-      window.location.href = "/login";
+      window.location.href = '/login';
     }
     return Promise.reject(error);
-  },
+  }
 );
 
 export default api;

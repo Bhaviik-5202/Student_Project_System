@@ -1,4 +1,4 @@
-const portfolioRepository = require("../repositories/portfolio.repository");
+const portfolioRepository = require('../repositories/portfolio.repository');
 
 /**
  * Standardized response helper for services
@@ -17,9 +17,9 @@ const response = (error, data, message) => ({ error, data, message });
 exports.createPortfolio = async (data) => {
   try {
     const portfolio = await portfolioRepository.create(data);
-    return response(false, portfolio, "Portfolio created successfully");
+    return response(false, portfolio, 'Portfolio created successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to create portfolio");
+    return response(true, null, err.message || 'Failed to create portfolio');
   }
 };
 
@@ -33,10 +33,10 @@ exports.getPortfolioByStudent = async (studentId) => {
     const portfolio = await portfolioRepository.findOne({
       student: studentId,
     });
-    if (!portfolio) return response(true, null, "Portfolio not found");
-    return response(false, portfolio, "Portfolio fetched successfully");
+    if (!portfolio) return response(true, null, 'Portfolio not found');
+    return response(false, portfolio, 'Portfolio fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch portfolio");
+    return response(true, null, err.message || 'Failed to fetch portfolio');
   }
 };
 
@@ -49,9 +49,9 @@ exports.getPortfolioByStudent = async (studentId) => {
 exports.updatePortfolio = async (id, data) => {
   try {
     const portfolio = await portfolioRepository.update(id, data);
-    if (!portfolio) return response(true, null, "Portfolio not found");
-    return response(false, portfolio, "Portfolio updated successfully");
+    if (!portfolio) return response(true, null, 'Portfolio not found');
+    return response(false, portfolio, 'Portfolio updated successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to update portfolio");
+    return response(true, null, err.message || 'Failed to update portfolio');
   }
 };

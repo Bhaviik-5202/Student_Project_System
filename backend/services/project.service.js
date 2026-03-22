@@ -1,4 +1,4 @@
-const projectRepository = require("../repositories/project.repository");
+const projectRepository = require('../repositories/project.repository');
 
 /**
  * Standardized response helper for services
@@ -17,9 +17,9 @@ const response = (error, data, message) => ({ error, data, message });
 exports.create = async (data) => {
   try {
     const project = await projectRepository.create(data);
-    return response(false, project, "Project created successfully");
+    return response(false, project, 'Project created successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to create project");
+    return response(true, null, err.message || 'Failed to create project');
   }
 };
 
@@ -39,7 +39,7 @@ exports.getAll = async ({ page = 1, limit = 10, filters = {} } = {}) => {
         skip,
         limit,
         sort: { createdAt: -1 },
-        populate: "guide members",
+        populate: 'guide members',
       }),
       projectRepository.count(filters),
     ]);
@@ -52,10 +52,10 @@ exports.getAll = async ({ page = 1, limit = 10, filters = {} } = {}) => {
         limit,
         totalPages: Math.ceil(total / limit),
       },
-      "Projects fetched successfully",
+      'Projects fetched successfully'
     );
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch projects");
+    return response(true, null, err.message || 'Failed to fetch projects');
   }
 };
 
@@ -71,20 +71,23 @@ exports.getById = async (idOrSlug) => {
 
     if (isValidObjectId) {
       project = await projectRepository.findById(idOrSlug, {
-        populate: "guide members",
+        populate: 'guide members',
       });
     }
 
     if (!project) {
-      project = await projectRepository.findOne({ slug: idOrSlug }, {
-        populate: "guide members",
-      });
+      project = await projectRepository.findOne(
+        { slug: idOrSlug },
+        {
+          populate: 'guide members',
+        }
+      );
     }
 
-    if (!project) return response(true, null, "Project not found");
-    return response(false, project, "Project fetched successfully");
+    if (!project) return response(true, null, 'Project not found');
+    return response(false, project, 'Project fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch project");
+    return response(true, null, err.message || 'Failed to fetch project');
   }
 };
 
@@ -109,18 +112,18 @@ const resolveProject = async (idOrSlug) => {
 exports.update = async (idOrSlug, data) => {
   try {
     const project = await resolveProject(idOrSlug);
-    if (!project) return response(true, null, "Project not found");
+    if (!project) return response(true, null, 'Project not found');
 
     const updated = await projectRepository.update(project._id, data);
-    
+
     // Populate the updated project record
     const populated = await projectRepository.findById(project._id, {
-      populate: "guide members",
+      populate: 'guide members',
     });
-    
-    return response(false, populated, "Project updated successfully");
+
+    return response(false, populated, 'Project updated successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to update project");
+    return response(true, null, err.message || 'Failed to update project');
   }
 };
 
@@ -132,12 +135,12 @@ exports.update = async (idOrSlug, data) => {
 exports.remove = async (idOrSlug) => {
   try {
     const project = await resolveProject(idOrSlug);
-    if (!project) return response(true, null, "Project not found");
-    
+    if (!project) return response(true, null, 'Project not found');
+
     await projectRepository.remove(project._id);
-    return response(false, null, "Project deleted successfully");
+    return response(false, null, 'Project deleted successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to delete project");
+    return response(true, null, err.message || 'Failed to delete project');
   }
 };
 
@@ -149,12 +152,12 @@ exports.remove = async (idOrSlug) => {
 exports.getMembers = async (id) => {
   try {
     const project = await projectRepository.findById(id, {
-      populate: "members",
+      populate: 'members',
     });
-    if (!project) return response(true, null, "Project not found");
-    return response(false, project.members, "Members fetched successfully");
+    if (!project) return response(true, null, 'Project not found');
+    return response(false, project.members, 'Members fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch members");
+    return response(true, null, err.message || 'Failed to fetch members');
   }
 };
 
@@ -169,13 +172,13 @@ exports.addMember = async (id, userId) => {
     const project = await projectRepository.update(id, {
       $addToSet: { members: userId },
     });
-    if (!project) return response(true, null, "Project not found");
+    if (!project) return response(true, null, 'Project not found');
     // Re-populate members
     const updatedProject = await projectRepository.findById(id, {
-      populate: "members",
+      populate: 'members',
     });
-    return response(false, updatedProject, "Member added successfully");
+    return response(false, updatedProject, 'Member added successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to add member");
+    return response(true, null, err.message || 'Failed to add member');
   }
 };

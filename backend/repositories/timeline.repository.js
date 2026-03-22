@@ -1,4 +1,4 @@
-const Timeline = require("../models/timeline.model");
+const Timeline = require('../models/timeline.model');
 
 /**
  * Find all timeline events matching a specific filter
@@ -11,8 +11,8 @@ exports.findAll = (filter = {}, options = {}) =>
     .sort(options.sort || { createdAt: -1 })
     .skip(options.skip || 0)
     .limit(options.limit || 0)
-    .populate(options.populate || "project")
-    .select(options.select || "");
+    .populate(options.populate || 'project')
+    .select(options.select || '');
 
 /**
  * Locate a single timeline event by its unique identifier
@@ -22,8 +22,8 @@ exports.findAll = (filter = {}, options = {}) =>
  */
 exports.findById = (id, options = {}) =>
   Timeline.findById(id)
-    .populate(options.populate || "project")
-    .select(options.select || "");
+    .populate(options.populate || 'project')
+    .select(options.select || '');
 
 /**
  * Persist a new timeline event record to the database
@@ -65,5 +65,5 @@ exports.count = (filter = {}) => Timeline.countDocuments(filter);
  */
 exports.findByProjectId = (projectId) =>
   Timeline.find({ project: projectId })
-    .populate("project")
+    .populate('project')
     .sort({ dueDate: 1 });

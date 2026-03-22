@@ -1,5 +1,5 @@
-import { memo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { memo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 /**
  * PageTransition Component
@@ -12,18 +12,18 @@ const PageTransition = memo(({ children, pathname, shouldAnimate = true }) => {
   }
 
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence mode='wait'>
       <motion.div
         key={pathname}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -10 }}
-        transition={{ 
-          duration: 0.2, 
-          ease: "easeOut" 
+        transition={{
+          duration: 0.2,
+          ease: 'easeOut',
         }}
-        className="w-full flex-1 flex flex-col"
-        style={{ willChange: "opacity, transform" }}
+        className='flex w-full flex-1 flex-col'
+        style={{ willChange: 'opacity, transform' }}
       >
         {children}
       </motion.div>
@@ -31,6 +31,6 @@ const PageTransition = memo(({ children, pathname, shouldAnimate = true }) => {
   );
 });
 
-PageTransition.displayName = "PageTransition";
+PageTransition.displayName = 'PageTransition';
 
 export default PageTransition;

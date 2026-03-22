@@ -1,20 +1,20 @@
-import { createContext } from "react";
+import { createContext } from 'react';
 
 /**
  * Constants for available themes
  */
 export const THEMES = {
-  LIGHT: "light",
-  DARK: "dark",
+  LIGHT: 'light',
+  DARK: 'dark',
 };
 
 /**
  * Constants for theme modes
  */
 export const THEME_MODES = {
-  AUTO: "auto",
-  LIGHT: "light",
-  DARK: "dark",
+  AUTO: 'auto',
+  LIGHT: 'light',
+  DARK: 'dark',
 };
 
 /**

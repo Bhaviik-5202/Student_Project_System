@@ -1,6 +1,6 @@
-const userService = require("../services/user.service");
-const auditLogService = require("../services/auditlog.service");
-const sendResponse = require("../utils/response");
+const userService = require('../services/user.service');
+const auditLogService = require('../services/auditlog.service');
+const sendResponse = require('../utils/response');
 
 /**
  * Auth Controller
@@ -24,11 +24,11 @@ exports.register = async (req, res) => {
     if (!result.error && result.data) {
       // Log successful registration
       await auditLogService.create({
-        action: "User Registration",
+        action: 'User Registration',
         user: result.data.id || result.data._id,
         details: `New user registered: ${req.body.email}`,
-        status: "Success",
-        ip: req.ip || "127.0.0.1",
+        status: 'Success',
+        ip: req.ip || '127.0.0.1',
       });
     }
 
@@ -37,23 +37,23 @@ exports.register = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? "Registration failed"
-          : "User registered successfully",
+          ? 'Registration failed'
+          : 'User registered successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 201,
+      result.error ? 400 : 201
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -70,11 +70,11 @@ exports.login = async (req, res) => {
     if (!result.error && result.data && result.data.user) {
       // Log successful login
       await auditLogService.create({
-        action: "User Login",
+        action: 'User Login',
         user: result.data.user.id || result.data.user._id,
         details: `User logged in: ${req.body.email}`,
-        status: "Success",
-        ip: req.ip || "127.0.0.1",
+        status: 'Success',
+        ip: req.ip || '127.0.0.1',
       });
     }
 
@@ -82,22 +82,22 @@ exports.login = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Login failed" : "Login successful",
+        message: result.error ? 'Login failed' : 'Login successful',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 200,
+      result.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -120,18 +120,18 @@ exports.forgotPassword = async (req, res) => {
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 200,
+      result.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -154,18 +154,18 @@ exports.resetPassword = async (req, res) => {
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 200,
+      result.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -181,22 +181,24 @@ exports.getProfile = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "User not found" : "Profile fetched successfully",
+        message: result.error
+          ? 'User not found'
+          : 'Profile fetched successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200,
+      result.error ? 404 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -215,22 +217,24 @@ exports.updateProfile = async (req, res) => {
       res,
       {
         success: !result.error,
-        message: result.error ? "Update failed" : "Profile updated successfully",
+        message: result.error
+          ? 'Update failed'
+          : 'Profile updated successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 400 : 200,
+      result.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };
@@ -248,18 +252,18 @@ exports.changePassword = async (req, res) => {
         res,
         {
           success: false,
-          message: "Current and new passwords are required",
+          message: 'Current and new passwords are required',
           data: null,
-          error: "Validation error",
+          error: 'Validation error',
         },
-        400,
+        400
       );
     }
 
     const result = await userService.changePassword(
       req.user.id,
       currentPassword,
-      newPassword,
+      newPassword
     );
     sendResponse(
       res,
@@ -269,18 +273,18 @@ exports.changePassword = async (req, res) => {
         data: null,
         error: result.error || null,
       },
-      result.error ? 400 : 200,
+      result.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
       res,
       {
         success: false,
-        message: "Internal server error",
+        message: 'Internal server error',
         data: null,
         error: error.message,
       },
-      500,
+      500
     );
   }
 };

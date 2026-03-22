@@ -1,4 +1,4 @@
-const supportticketRepository = require("../repositories/supportticket.repository");
+const supportticketRepository = require('../repositories/supportticket.repository');
 
 /**
  * Standardized response helper for services
@@ -17,12 +17,12 @@ const response = (error, data, message) => ({ error, data, message });
 exports.create = async (data) => {
   try {
     const ticket = await supportticketRepository.create(data);
-    return response(false, ticket, "Support ticket created successfully");
+    return response(false, ticket, 'Support ticket created successfully');
   } catch (err) {
     return response(
       true,
       null,
-      err.message || "Failed to create support ticket",
+      err.message || 'Failed to create support ticket'
     );
   }
 };
@@ -34,12 +34,12 @@ exports.create = async (data) => {
 exports.getAll = async () => {
   try {
     const tickets = await supportticketRepository.findAll();
-    return response(false, tickets, "Support tickets fetched successfully");
+    return response(false, tickets, 'Support tickets fetched successfully');
   } catch (err) {
     return response(
       true,
       null,
-      err.message || "Failed to fetch support tickets",
+      err.message || 'Failed to fetch support tickets'
     );
   }
 };
@@ -52,13 +52,13 @@ exports.getAll = async () => {
 exports.getById = async (id) => {
   try {
     const ticket = await supportticketRepository.findById(id);
-    if (!ticket) return response(true, null, "Support ticket not found");
-    return response(false, ticket, "Support ticket fetched successfully");
+    if (!ticket) return response(true, null, 'Support ticket not found');
+    return response(false, ticket, 'Support ticket fetched successfully');
   } catch (err) {
     return response(
       true,
       null,
-      err.message || "Failed to fetch support ticket",
+      err.message || 'Failed to fetch support ticket'
     );
   }
 };
@@ -72,13 +72,13 @@ exports.getById = async (id) => {
 exports.update = async (id, data) => {
   try {
     const ticket = await supportticketRepository.update(id, data);
-    if (!ticket) return response(true, null, "Support ticket not found");
-    return response(false, ticket, "Support ticket updated successfully");
+    if (!ticket) return response(true, null, 'Support ticket not found');
+    return response(false, ticket, 'Support ticket updated successfully');
   } catch (err) {
     return response(
       true,
       null,
-      err.message || "Failed to update support ticket",
+      err.message || 'Failed to update support ticket'
     );
   }
 };
@@ -91,13 +91,13 @@ exports.update = async (id, data) => {
 exports.remove = async (id) => {
   try {
     const ticket = await supportticketRepository.remove(id);
-    if (!ticket) return response(true, null, "Support ticket not found");
-    return response(false, null, "Support ticket deleted successfully");
+    if (!ticket) return response(true, null, 'Support ticket not found');
+    return response(false, null, 'Support ticket deleted successfully');
   } catch (err) {
     return response(
       true,
       null,
-      err.message || "Failed to delete support ticket",
+      err.message || 'Failed to delete support ticket'
     );
   }
 };

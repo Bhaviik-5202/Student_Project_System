@@ -1,4 +1,4 @@
-const User = require("../models/user.model");
+const User = require('../models/user.model');
 
 /**
  * Find all users matching a specific filter
@@ -11,8 +11,8 @@ exports.findAll = (filter = {}, options = {}) =>
     .sort(options.sort || { createdAt: -1 })
     .skip(options.skip || 0)
     .limit(options.limit || 0)
-    .populate(options.populate || "")
-    .select(options.select || "");
+    .populate(options.populate || '')
+    .select(options.select || '');
 
 /**
  * Find a single user matching a specific filter
@@ -22,8 +22,8 @@ exports.findAll = (filter = {}, options = {}) =>
  */
 exports.findOne = (filter = {}, options = {}) =>
   User.findOne(filter)
-    .populate(options.populate || "")
-    .select(options.select || "");
+    .populate(options.populate || '')
+    .select(options.select || '');
 
 /**
  * Locate a single user by its unique identifier
@@ -33,8 +33,8 @@ exports.findOne = (filter = {}, options = {}) =>
  */
 exports.findById = (id, options = {}) =>
   User.findById(id)
-    .populate(options.populate || "")
-    .select(options.select || "");
+    .populate(options.populate || '')
+    .select(options.select || '');
 
 /**
  * Persist a new user record to the database
@@ -77,5 +77,5 @@ exports.count = (filter = {}) => User.countDocuments(filter);
  */
 exports.findByEmail = (email, options = {}) =>
   User.findOne({ email })
-    .populate(options.populate || "")
-    .select(options.select || "");
+    .populate(options.populate || '')
+    .select(options.select || '');

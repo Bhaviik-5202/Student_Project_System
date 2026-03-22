@@ -1,10 +1,10 @@
-import api from "../utils/api";
+import api from '../utils/api';
 
 const collaborationService = {
   // --- Discussions ---
   getDiscussions: async (params = {}) => {
     try {
-      const response = await api.get("/collaboration/discussions", { params });
+      const response = await api.get('/collaboration/discussions', { params });
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -22,7 +22,7 @@ const collaborationService = {
 
   createDiscussion: async (data) => {
     try {
-      const response = await api.post("/collaboration/discussions", data);
+      const response = await api.post('/collaboration/discussions', data);
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -31,7 +31,10 @@ const collaborationService = {
 
   addReply: async (discussionId, content) => {
     try {
-      const response = await api.post(`/collaboration/discussions/${discussionId}/replies`, { content });
+      const response = await api.post(
+        `/collaboration/discussions/${discussionId}/replies`,
+        { content }
+      );
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -41,7 +44,9 @@ const collaborationService = {
   // --- Shared Files ---
   getSharedFiles: async (projectId) => {
     try {
-      const response = await api.get(`/collaboration/projects/${projectId}/files`);
+      const response = await api.get(
+        `/collaboration/projects/${projectId}/files`
+      );
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
@@ -50,9 +55,13 @@ const collaborationService = {
 
   shareFile: async (projectId, formData) => {
     try {
-      const response = await api.post(`/collaboration/projects/${projectId}/files`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const response = await api.post(
+        `/collaboration/projects/${projectId}/files`,
+        formData,
+        {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        }
+      );
       return response.data;
     } catch (error) {
       throw error.response?.data || error.message;

@@ -1,4 +1,4 @@
-import api from "../utils/api";
+import api from '../utils/api';
 
 const attendanceService = {
   getAttendanceByStudent: async (studentId) => {
@@ -7,29 +7,32 @@ const attendanceService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to fetch attendance records",
+        message:
+          error.response?.data?.message || 'Failed to fetch attendance records',
       };
     }
   },
 
   getAllAttendance: async () => {
     try {
-      return await api.get("/attendance");
+      return await api.get('/attendance');
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to fetch all attendance records",
+        message:
+          error.response?.data?.message ||
+          'Failed to fetch all attendance records',
       };
     }
   },
 
   markAttendance: async (attendanceData) => {
     try {
-      return await api.post("/attendance", attendanceData);
+      return await api.post('/attendance', attendanceData);
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to mark attendance",
+        message: error.response?.data?.message || 'Failed to mark attendance',
       };
     }
   },

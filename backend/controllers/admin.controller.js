@@ -1,11 +1,16 @@
-const adminService = require("../services/admin.service");
-const sendResponse = require("../utils/response");
+const adminService = require('../services/admin.service');
+const sendResponse = require('../utils/response');
 
 /**
  * Admin Controller
  * Handles administrative operations like roles, permissions, and backups.
  */
 
+/**
+ * Get all roles
+ * @param {*} req
+ * @param {*} res
+ */
 exports.getRoles = async (req, res) => {
   try {
     const { success, data, message } = await adminService.getRoles();
@@ -43,8 +48,12 @@ exports.getBackups = async (req, res) => {
 exports.createBackup = async (req, res) => {
   try {
     // Simulated backup process
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    sendResponse(res, { success: true, message: "Backup created successfully" }, 201);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    sendResponse(
+      res,
+      { success: true, message: 'Backup created successfully' },
+      201
+    );
   } catch (error) {
     sendResponse(res, { success: false, message: error.message }, 500);
   }
@@ -55,12 +64,13 @@ exports.batchOperation = async (req, res) => {
     const { operation, selectedUsers, message } = req.body;
     const adminId = req.user.id;
 
-    const { success, message: opMessage } = await adminService.processBatchOperation({
-      operation,
-      selectedUsers,
-      message,
-      adminId
-    });
+    const { success, message: opMessage } =
+      await adminService.processBatchOperation({
+        operation,
+        selectedUsers,
+        message,
+        adminId,
+      });
 
     if (!success) throw new Error(opMessage);
 

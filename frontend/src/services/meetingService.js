@@ -1,13 +1,13 @@
-import api from "../utils/api";
+import api from '../utils/api';
 
 const meetingService = {
   getMeetings: async (params = {}) => {
     try {
-      return await api.get("/meetings", { params });
+      return await api.get('/meetings', { params });
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to fetch meetings",
+        message: error.response?.data?.message || 'Failed to fetch meetings',
       };
     }
   },
@@ -22,18 +22,18 @@ const meetingService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to fetch meeting",
+        message: error.response?.data?.message || 'Failed to fetch meeting',
       };
     }
   },
 
   createMeeting: async (meetingData) => {
     try {
-      return await api.post("/meetings", meetingData);
+      return await api.post('/meetings', meetingData);
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to create meeting",
+        message: error.response?.data?.message || 'Failed to create meeting',
       };
     }
   },
@@ -44,7 +44,7 @@ const meetingService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to update meeting",
+        message: error.response?.data?.message || 'Failed to update meeting',
       };
     }
   },
@@ -55,7 +55,7 @@ const meetingService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || "Failed to delete meeting",
+        message: error.response?.data?.message || 'Failed to delete meeting',
       };
     }
   },

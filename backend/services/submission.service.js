@@ -1,4 +1,4 @@
-const submissionRepository = require("../repositories/submission.repository");
+const submissionRepository = require('../repositories/submission.repository');
 
 /**
  * Standardized response helper for services
@@ -17,9 +17,9 @@ const response = (error, data, message) => ({ error, data, message });
 exports.create = async (data) => {
   try {
     const submission = await submissionRepository.create(data);
-    return response(false, submission, "Submission filed successfully");
+    return response(false, submission, 'Submission filed successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to create submission");
+    return response(true, null, err.message || 'Failed to create submission');
   }
 };
 
@@ -30,9 +30,9 @@ exports.create = async (data) => {
 exports.getAll = async () => {
   try {
     const submissions = await submissionRepository.findAll();
-    return response(false, submissions, "Submissions fetched successfully");
+    return response(false, submissions, 'Submissions fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch submissions");
+    return response(true, null, err.message || 'Failed to fetch submissions');
   }
 };
 
@@ -44,10 +44,10 @@ exports.getAll = async () => {
 exports.getById = async (id) => {
   try {
     const submission = await submissionRepository.findById(id);
-    if (!submission) return response(true, null, "Submission not found");
-    return response(false, submission, "Submission fetched successfully");
+    if (!submission) return response(true, null, 'Submission not found');
+    return response(false, submission, 'Submission fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch submission");
+    return response(true, null, err.message || 'Failed to fetch submission');
   }
 };
 
@@ -60,10 +60,10 @@ exports.getById = async (id) => {
 exports.update = async (id, data) => {
   try {
     const submission = await submissionRepository.update(id, data);
-    if (!submission) return response(true, null, "Submission not found");
-    return response(false, submission, "Submission updated successfully");
+    if (!submission) return response(true, null, 'Submission not found');
+    return response(false, submission, 'Submission updated successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to update submission");
+    return response(true, null, err.message || 'Failed to update submission');
   }
 };
 
@@ -75,10 +75,10 @@ exports.update = async (id, data) => {
 exports.remove = async (id) => {
   try {
     const submission = await submissionRepository.remove(id);
-    if (!submission) return response(true, null, "Submission not found");
-    return response(false, null, "Submission deleted successfully");
+    if (!submission) return response(true, null, 'Submission not found');
+    return response(false, null, 'Submission deleted successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to delete submission");
+    return response(true, null, err.message || 'Failed to delete submission');
   }
 };
 /**
@@ -90,10 +90,14 @@ exports.getByStudentId = async (studentId) => {
   try {
     const submissions = await submissionRepository.findAll(
       { student: studentId },
-      { populate: "assignment" }
+      { populate: 'assignment' }
     );
-    return response(false, submissions, "Student history fetched successfully");
+    return response(false, submissions, 'Student history fetched successfully');
   } catch (err) {
-    return response(true, null, err.message || "Failed to fetch student history");
+    return response(
+      true,
+      null,
+      err.message || 'Failed to fetch student history'
+    );
   }
 };
