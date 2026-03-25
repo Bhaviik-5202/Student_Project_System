@@ -1,3 +1,7 @@
+/**
+ * Chat Repository
+ * Data access layer for Chat-related database operations.
+ */
 const Chat = require('../models/chat.model');
 
 /**

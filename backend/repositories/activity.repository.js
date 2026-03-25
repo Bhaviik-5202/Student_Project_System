@@ -1,3 +1,7 @@
+/**
+ * Activity Repository
+ * Data access layer for Activity-related database operations.
+ */
 const Activity = require('../models/activity.model');
 
 /**

@@ -1,3 +1,7 @@
+/**
+ * Portfolio Repository
+ * Data access layer for Portfolio-related database operations.
+ */
 const Portfolio = require('../models/portfolio.model');
 
 /**

@@ -1,3 +1,7 @@
+/**
+ * Attendance Repository
+ * Data access layer for Attendance-related database operations.
+ */
 const Attendance = require('../models/attendance.model');
 
 /**

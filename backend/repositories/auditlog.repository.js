@@ -1,3 +1,7 @@
+/**
+ * AuditLog Repository
+ * Data access layer for AuditLog-related database operations.
+ */
 const AuditLog = require('../models/auditlog.model');
 
 /**

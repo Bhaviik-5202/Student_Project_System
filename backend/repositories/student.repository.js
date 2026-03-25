@@ -1,3 +1,7 @@
+/**
+ * Student Repository
+ * Data access layer for Student-related database operations.
+ */
 const Student = require('../models/student.model');
 
 /**

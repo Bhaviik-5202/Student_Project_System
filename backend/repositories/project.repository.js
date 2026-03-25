@@ -1,3 +1,7 @@
+/**
+ * Project Repository
+ * Data access layer for Project-related database operations.
+ */
 const Project = require('../models/project.model');
 
 /**

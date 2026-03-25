@@ -1,3 +1,7 @@
+/**
+ * Notification Repository
+ * Data access layer for Notification-related database operations.
+ */
 const Notification = require('../models/notification.model');
 
 /**

@@ -1,3 +1,7 @@
+/**
+ * User Repository
+ * Data access layer for User-related database operations.
+ */
 const User = require('../models/user.model');
 
 /**

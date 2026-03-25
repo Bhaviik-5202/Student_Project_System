@@ -1,3 +1,7 @@
+/**
+ * Resource Repository
+ * Data access layer for Resource-related database operations.
+ */
 const Resource = require('../models/resource.model');
 
 /**

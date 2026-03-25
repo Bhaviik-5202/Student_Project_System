@@ -1,3 +1,7 @@
+/**
+ * Staff Repository
+ * Data access layer for Staff-related database operations.
+ */
 const Staff = require('../models/staff.model');
 
 /**

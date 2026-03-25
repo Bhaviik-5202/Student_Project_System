@@ -1,3 +1,7 @@
+/**
+ * Timeline Repository
+ * Data access layer for Timeline-related database operations.
+ */
 const Timeline = require('../models/timeline.model');
 
 /**

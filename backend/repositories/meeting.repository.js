@@ -1,3 +1,7 @@
+/**
+ * Meeting Repository
+ * Data access layer for Meeting-related database operations.
+ */
 const Meeting = require('../models/meeting.model');
 
 /**

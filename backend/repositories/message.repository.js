@@ -1,3 +1,7 @@
+/**
+ * Message Repository
+ * Data access layer for Message-related database operations.
+ */
 const Message = require('../models/message.model');
 
 /**

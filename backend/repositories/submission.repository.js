@@ -1,3 +1,7 @@
+/**
+ * Submission Repository
+ * Data access layer for Submission-related database operations.
+ */
 const Submission = require('../models/submission.model');
 
 /**

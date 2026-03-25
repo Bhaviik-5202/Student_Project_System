@@ -1,3 +1,7 @@
+/**
+ * Course Repository
+ * Data access layer for Course-related database operations.
+ */
 const Course = require('../models/courses.model');
 
 /**
