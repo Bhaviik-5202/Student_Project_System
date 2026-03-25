@@ -103,11 +103,11 @@ exports.getAllResources = async (req, res) => {
         error: result.error || null,
         pagination: result.data
           ? {
-              total: result.data.total,
-              page: result.data.page,
-              limit: result.data.limit,
-              totalPages: result.data.totalPages,
-            }
+            total: result.data.total,
+            page: result.data.page,
+            limit: result.data.limit,
+            totalPages: result.data.totalPages,
+          }
           : null,
       },
       result.error ? 400 : 200

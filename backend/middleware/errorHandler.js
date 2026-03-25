@@ -2,6 +2,10 @@ const sendResponse = require('../utils/response');
 
 /**
  * Centralized error handler middleware for Express.
+ * @param {Object} err - Express error object
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
  */
 module.exports = (err, req, res, next) => {
   let status = err.status || 500;

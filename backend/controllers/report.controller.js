@@ -1,6 +1,13 @@
 const reportService = require('../services/report.service');
 const sendResponse = require('../utils/response');
 
+/**
+ * Create a new report
+ * @route POST /reports
+ * @access Authenticated
+ * @param {*} req
+ * @param {*} res
+ */
 exports.createReport = async (req, res) => {
   try {
     const reportData = { ...req.body, generatedBy: req.user.id };
@@ -13,6 +20,13 @@ exports.createReport = async (req, res) => {
   }
 };
 
+/**
+ * Get all reports
+ * @route GET /reports
+ * @access Admin, User (own reports)
+ * @param {*} req
+ * @param {*} res
+ */
 exports.getReports = async (req, res) => {
   try {
     const query = req.user.role === 'admin' ? {} : { generatedBy: req.user.id };
@@ -24,6 +38,18 @@ exports.getReports = async (req, res) => {
   }
 };
 
+/**
+ * Delete a report
+ * @route DELETE /reports/:id
+ * @param {*} req
+ * @param {*} res
+ */
+
+/**
+ * Delete a report by ID
+ * @route DELETE /reports/:id
+ * @access Admin, Owner
+ */
 exports.deleteReport = async (req, res) => {
   try {
     const { error, data, message } = await reportService.deleteReport(
@@ -36,6 +62,17 @@ exports.deleteReport = async (req, res) => {
   }
 };
 
+/**
+ * Update a report
+ * @route PUT /reports/:id
+ * @param {*} req
+ * @param {*} res
+ */
+/**
+ * Update a report by ID
+ * @route PUT /reports/:id
+ * @access Admin, Owner
+ */
 exports.updateReport = async (req, res) => {
   try {
     const { error, data, message } = await reportService.updateReport(

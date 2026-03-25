@@ -110,6 +110,7 @@ exports.markAsRead = async (req, res) => {
     );
   }
 };
+
 /**
  * Remove a specific message from history
  * @route DELETE /messages/:id

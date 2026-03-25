@@ -198,6 +198,11 @@ exports.updateSubmission = async (req, res) => {
   }
 };
 
+/**
+ * Permanently delete a submission record
+ * @route DELETE /submissions/:id
+ * @access Faculty, Admin
+ */
 exports.deleteSubmission = async (req, res) => {
   try {
     const submission = await submissionService.getById(req.params.id);

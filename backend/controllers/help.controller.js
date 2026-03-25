@@ -7,6 +7,11 @@ const sendResponse = require('../utils/response');
  * Aggregates FAQ and Support functionality for the Help Center.
  */
 
+/**
+ * Get help overview including FAQ list and categories
+ * @route GET /help/overview
+ * @access Authenticated
+ */
 exports.getHelpOverview = async (req, res) => {
   try {
     const faqs = [
@@ -115,6 +120,11 @@ exports.getHelpOverview = async (req, res) => {
   }
 };
 
+/**
+ * Get knowledge base data including categories and popular articles
+ * @route GET /help/kb
+ * @access Authenticated
+ */
 exports.getKbData = async (req, res) => {
   try {
     const kbData = {
@@ -159,6 +169,12 @@ exports.getKbData = async (req, res) => {
   }
 };
 
+/**
+ * Create a new support ticket
+ * @route POST /help/tickets
+ * @param {*} req
+ * @param {*} res
+ */
 exports.createTicket = async (req, res) => {
   try {
     const ticketData = { ...req.body, user: req.user.id };
@@ -172,6 +188,12 @@ exports.createTicket = async (req, res) => {
   }
 };
 
+/**
+ * Get user guide
+ * @route GET /help/guide
+ * @param {*} req
+ * @param {*} res
+ */
 exports.getGuide = async (req, res) => {
   try {
     const guideData = [
@@ -278,6 +300,12 @@ exports.getGuide = async (req, res) => {
   }
 };
 
+/**
+ * Get tutorials
+ * @route GET /help/tutorials
+ * @param {*} req
+ * @param {*} res
+ */
 exports.getTutorials = async (req, res) => {
   try {
     const tutorials = [

@@ -181,6 +181,7 @@ exports.deleteMeeting = async (req, res) => {
     );
   }
 };
+
 /**
  * Register current user participation for a scheduled meeting
  * @route POST /meetings/:id/join

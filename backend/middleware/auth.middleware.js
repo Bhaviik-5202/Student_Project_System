@@ -5,7 +5,10 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 /**
  * Middleware to authenticate JWT tokens.
- * Attaches decoded user to req.user if valid.
+ * Attaches decoded user data to req.user if valid.
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
  */
 module.exports = function (req, res, next) {
   try {

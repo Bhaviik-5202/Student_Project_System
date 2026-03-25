@@ -93,6 +93,7 @@ exports.getPortfolioByStudent = async (req, res) => {
     );
   }
 };
+
 /**
  * Update an existing portfolio
  * @route PUT /portfolios/:id

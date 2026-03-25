@@ -169,6 +169,7 @@ exports.resetPassword = async (req, res) => {
     );
   }
 };
+
 /**
  * Get current user profile
  * @route GET /auth/profile

@@ -20,7 +20,7 @@ const connectDB = async () => {
       connectTimeoutMS: process.env.NODE_ENV === 'test' ? 30000 : 10000,
     });
 
-    console.log('MongoDB connected successfully');
+    console.log('MongoDB Connected Successfully');
   } catch (error) {
     console.error('MongoDB connection error:', error.message);
     if (process.env.NODE_ENV !== 'test') {

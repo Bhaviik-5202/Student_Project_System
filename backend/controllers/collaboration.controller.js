@@ -6,7 +6,13 @@ const sendResponse = require('../utils/response');
  * Manages shared team resources, project-specific discussions, and collaborative file sharing.
  */
 
-// --- Discussions ---
+/**
+ * Get all discussions
+ * @route GET /discussions
+ * @access Authenticated
+ * @param {*} req
+ * @param {*} res
+ */
 
 exports.getDiscussions = async (req, res) => {
   try {
@@ -22,6 +28,13 @@ exports.getDiscussions = async (req, res) => {
   }
 };
 
+/**
+ * Get discussion by ID
+ * @route GET /discussions/:id
+ * @access Authenticated
+ * @param {*} req
+ * @param {*} res
+ */
 exports.getDiscussionById = async (req, res) => {
   try {
     const result = await collaborationService.getDiscussionById(req.params.id);
@@ -31,6 +44,13 @@ exports.getDiscussionById = async (req, res) => {
   }
 };
 
+/**
+ * Create a new discussion
+ * @route POST /discussions
+ * @access Authenticated
+ * @param {*} req
+ * @param {*} res
+ */
 exports.createDiscussion = async (req, res) => {
   try {
     const data = {
@@ -44,6 +64,13 @@ exports.createDiscussion = async (req, res) => {
   }
 };
 
+/**
+ * Add a reply to a discussion
+ * @route POST /discussions/:id/replies
+ * @access Authenticated
+ * @param {*} req
+ * @param {*} res
+ */
 exports.addReply = async (req, res) => {
   try {
     const replyData = {
@@ -60,8 +87,13 @@ exports.addReply = async (req, res) => {
   }
 };
 
-// --- Shared Files ---
-
+/**
+ * Get shared files
+ * @route GET /discussions/:id/files
+ * @access Authenticated
+ * @param {*} req
+ * @param {*} res
+ */
 exports.getSharedFiles = async (req, res) => {
   try {
     const { projectId } = req.params;
@@ -72,6 +104,13 @@ exports.getSharedFiles = async (req, res) => {
   }
 };
 
+/**
+ * Share a file
+ * @route POST /discussions/:id/files
+ * @access Authenticated
+ * @param {*} req
+ * @param {*} res
+ */
 exports.shareFile = async (req, res) => {
   try {
     if (!req.file) {
@@ -99,6 +138,13 @@ exports.shareFile = async (req, res) => {
   }
 };
 
+/**
+ * Delete a shared file
+ * @route DELETE /discussions/:id/files/:fileId
+ * @access Authenticated, Admin
+ * @param {*} req
+ * @param {*} res
+ */
 exports.deleteSharedFile = async (req, res) => {
   try {
     const result = await collaborationService.deleteSharedFile(req.params.id);

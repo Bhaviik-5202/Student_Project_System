@@ -107,6 +107,7 @@ exports.getUserAnalytics = async (req, res) => {
     );
   }
 };
+
 /**
  * Fetch faculty-specific dashboard metrics
  * @route GET /analytics/faculty-dashboard
@@ -177,6 +178,11 @@ exports.getStudentDashboardStats = async (req, res) => {
   }
 };
 
+/**
+ * Get grade distribution
+ * @route GET /analytics/grade-distribution
+ * @access Admin
+ */
 exports.getGradeDistribution = async (req, res) => {
   try {
     const { error, data, message } =
@@ -188,6 +194,11 @@ exports.getGradeDistribution = async (req, res) => {
   }
 };
 
+/**
+ * Get performance metrics
+ * @route GET /analytics/performance-metrics
+ * @access Admin
+ */
 exports.getPerformanceMetrics = async (req, res) => {
   try {
     const { error, data, message } =
@@ -199,6 +210,11 @@ exports.getPerformanceMetrics = async (req, res) => {
   }
 };
 
+/**
+ * Get progress analytics
+ * @route GET /analytics/progress-analytics
+ * @access Admin
+ */
 exports.getProgressAnalytics = async (req, res) => {
   try {
     const { error, data, message } =
@@ -210,6 +226,11 @@ exports.getProgressAnalytics = async (req, res) => {
   }
 };
 
+/**
+ * Get usage statistics
+ * @route GET /analytics/usage-statistics
+ * @access Admin
+ */
 exports.getUsageStatistics = async (req, res) => {
   try {
     const { error, data, message } =

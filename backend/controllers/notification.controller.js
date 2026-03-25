@@ -66,11 +66,11 @@ exports.getNotifications = async (req, res) => {
         error: result.error || null,
         pagination: result.data
           ? {
-              total: result.data.total,
-              page: result.data.page,
-              limit: result.data.limit,
-              totalPages: result.data.pages,
-            }
+            total: result.data.total,
+            page: result.data.page,
+            limit: result.data.limit,
+            totalPages: result.data.pages,
+          }
           : null,
       },
       result.error ? 400 : 200
@@ -196,6 +196,7 @@ exports.deleteNotification = async (req, res) => {
     );
   }
 };
+
 /**
  * Fetch only unread notifications for the user
  * @route GET /notifications/unread

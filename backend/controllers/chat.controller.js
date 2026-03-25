@@ -139,6 +139,7 @@ exports.updateChat = async (req, res) => {
     );
   }
 };
+
 /**
  * Permanently delete a chat record and message history
  * @route DELETE /chats/:id

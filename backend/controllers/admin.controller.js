@@ -8,7 +8,8 @@ const sendResponse = require('../utils/response');
 
 /**
  * Get all roles
- * @param {*} req
+ * @route GET /admin/roles
+ * @access Admin
  * @param {*} res
  */
 exports.getRoles = async (req, res) => {
@@ -22,6 +23,13 @@ exports.getRoles = async (req, res) => {
   }
 };
 
+/**
+ * Get permissions for a specific role
+ * @route GET /admin/permissions/:role
+ * @access Admin
+ * @param {*} req
+ * @param {*} res
+ */
 exports.getPermissions = async (req, res) => {
   try {
     const { role } = req.params;
@@ -34,6 +42,13 @@ exports.getPermissions = async (req, res) => {
   }
 };
 
+/**
+ * Get all backups
+ * @route GET /admin/backups
+ * @access Admin
+ * @param {*} req
+ * @param {*} res
+ */
 exports.getBackups = async (req, res) => {
   try {
     const { success, data, message } = await adminService.getBackups();
@@ -45,6 +60,13 @@ exports.getBackups = async (req, res) => {
   }
 };
 
+/**
+ * Create a new backup
+ * @route POST /admin/backups
+ * @access Admin
+ * @param {*} req
+ * @param {*} res
+ */
 exports.createBackup = async (req, res) => {
   try {
     // Simulated backup process
@@ -59,6 +81,13 @@ exports.createBackup = async (req, res) => {
   }
 };
 
+/**
+ * Process batch operations
+ * @route POST /admin/batch-operation
+ * @access Admin
+ * @param {*} req
+ * @param {*} res
+ */
 exports.batchOperation = async (req, res) => {
   try {
     const { operation, selectedUsers, message } = req.body;

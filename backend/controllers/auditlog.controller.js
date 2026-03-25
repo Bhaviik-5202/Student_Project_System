@@ -118,6 +118,7 @@ exports.getAuditLogsByResourceId = async (req, res) => {
     );
   }
 };
+
 /**
  * Record a new system-level audit entry
  * @route POST /audit-logs
