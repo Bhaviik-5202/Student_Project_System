@@ -1,6 +1,6 @@
 /**
  * KnowledgeBase Repository
- * Data access layer for KnowledgeBase-related database operations.
+ * Handles direct database access and documentation article management for the KnowledgeBase model.
  */
 const KnowledgeBase = require('../models/knowledgebase.model');
 

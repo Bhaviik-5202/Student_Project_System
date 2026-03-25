@@ -1,6 +1,6 @@
 /**
  * Student Repository
- * Data access layer for Student-related database operations.
+ * Handles direct database access and academic profile management for the Student model.
  */
 const Student = require('../models/student.model');
 

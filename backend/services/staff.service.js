@@ -1,3 +1,7 @@
+/**
+ * Staff Service
+ * Business logic layer for staff-related operations.
+ */
 const staffRepository = require('../repositories/staff.repository');
 
 /**
@@ -10,9 +14,9 @@ const staffRepository = require('../repositories/staff.repository');
 const response = (error, data, message) => ({ error, data, message });
 
 /**
- * Onboard a new staff member (Faculty/Admin)
+ * Onboard staff member
  * @param {Object} data - Staff profile data
- * @returns {Promise<Object>} Formatted service response with new staff data
+ * @returns {Promise<Object>} Formatted service response with onboarded staff data
  */
 exports.create = async (data) => {
   try {
@@ -37,9 +41,9 @@ exports.getAll = async () => {
 };
 
 /**
- * Retrieve a staff member's detailed profile by ID
+ * Get staff by ID
  * @param {string} id - Staff member ID
- * @returns {Promise<Object>} Formatted service response with staff data
+ * @returns {Promise<Object>} Formatted service response with specific staff profile
  */
 exports.getById = async (id) => {
   try {
@@ -52,10 +56,10 @@ exports.getById = async (id) => {
 };
 
 /**
- * Modify staff profile or permissions
+ * Update staff profile
  * @param {string} id - Staff member ID
  * @param {Object} data - Updates to apply
- * @returns {Promise<Object>} Formatted service response with updated staff data
+ * @returns {Promise<Object>} Formatted service response with modified staff data
  */
 exports.update = async (id, data) => {
   try {
@@ -68,9 +72,9 @@ exports.update = async (id, data) => {
 };
 
 /**
- * Offboard/Remove a staff member from the system
+ * Offboard staff member
  * @param {string} id - Staff member ID
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with deletion status
  */
 exports.remove = async (id) => {
   try {

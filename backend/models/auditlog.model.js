@@ -1,6 +1,6 @@
 /**
  * AuditLog Model
- * Records security-sensitive actions and system changes for auditing purposes.
+ * Defines the schema for recording security-sensitive actions and system state changes.
  */
 const mongoose = require('mongoose');
 

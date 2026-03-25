@@ -1,7 +1,6 @@
 /**
  * Attendance API Tests
- * ------------------------------------------------------------------
- * Tests for student and faculty attendance tracking.
+ * Validates student and faculty presence tracking and recording logic.
  */
 
 const request = require('supertest');

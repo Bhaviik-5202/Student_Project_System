@@ -1,7 +1,6 @@
 /**
  * Project API Tests
- * ------------------------------------------------------------------
- * Tests for academic project creation and management.
+ * Validates the core project life cycle, including creation, retrieval, and administrative updates.
  */
 
 const request = require('supertest');

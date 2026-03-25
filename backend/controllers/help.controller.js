@@ -8,9 +8,12 @@ const sendResponse = require('../utils/response');
  */
 
 /**
- * Get help overview including FAQ list and categories
- * @route GET /help/overview
- * @access Authenticated
+ * Get help overview
+ * @route   GET /api/help/overview
+ * @desc    Retrieve aggregated FAQ list and categories for the help center
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getHelpOverview = async (req, res) => {
   try {
@@ -121,9 +124,12 @@ exports.getHelpOverview = async (req, res) => {
 };
 
 /**
- * Get knowledge base data including categories and popular articles
- * @route GET /help/kb
- * @access Authenticated
+ * Get knowledge base data
+ * @route   GET /api/help/kb
+ * @desc    Retrieve article categories and popular documentation items
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getKbData = async (req, res) => {
   try {
@@ -170,10 +176,12 @@ exports.getKbData = async (req, res) => {
 };
 
 /**
- * Create a new support ticket
- * @route POST /help/tickets
- * @param {*} req
- * @param {*} res
+ * Create support ticket
+ * @route   POST /api/help/tickets
+ * @desc    Open a new support request from the help center
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.createTicket = async (req, res) => {
   try {
@@ -190,9 +198,11 @@ exports.createTicket = async (req, res) => {
 
 /**
  * Get user guide
- * @route GET /help/guide
- * @param {*} req
- * @param {*} res
+ * @route   GET /api/help/guide
+ * @desc    Retrieve the comprehensive system user guide and walkthroughs
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getGuide = async (req, res) => {
   try {
@@ -302,9 +312,11 @@ exports.getGuide = async (req, res) => {
 
 /**
  * Get tutorials
- * @route GET /help/tutorials
- * @param {*} req
- * @param {*} res
+ * @route   GET /api/help/tutorials
+ * @desc    Retrieve curated video and interactive tutorials for the system
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getTutorials = async (req, res) => {
   try {

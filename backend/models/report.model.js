@@ -1,6 +1,6 @@
 /**
  * Report Model
- * Tracks generated reports, their status, and metadata.
+ * Defines the schema for system-generated reports, tracking extraction status, file formats, and execution metadata.
  */
 const mongoose = require('mongoose');
 

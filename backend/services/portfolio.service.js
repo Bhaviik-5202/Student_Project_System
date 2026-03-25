@@ -1,3 +1,7 @@
+/**
+ * Portfolio Service
+ * Business logic layer for managing student project portfolios.
+ */
 const portfolioRepository = require('../repositories/portfolio.repository');
 
 /**
@@ -10,9 +14,9 @@ const portfolioRepository = require('../repositories/portfolio.repository');
 const response = (error, data, message) => ({ error, data, message });
 
 /**
- * Create a new student work portfolio
+ * Create student portfolio
  * @param {Object} data - Portfolio attribute data
- * @returns {Promise<Object>} Formatted service response with new portfolio data
+ * @returns {Promise<Object>} Formatted service response with new portfolio entry
  */
 exports.createPortfolio = async (data) => {
   try {
@@ -24,9 +28,9 @@ exports.createPortfolio = async (data) => {
 };
 
 /**
- * Fetch the portfolio associated with a specific student
+ * Get portfolio by student
  * @param {string} studentId - Student identifier
- * @returns {Promise<Object>} Formatted service response with portfolio data
+ * @returns {Promise<Object>} Formatted service response with student's project showcase
  */
 exports.getPortfolioByStudent = async (studentId) => {
   try {
@@ -41,10 +45,10 @@ exports.getPortfolioByStudent = async (studentId) => {
 };
 
 /**
- * Update portfolio content or metadata
+ * Update portfolio content
  * @param {string} id - Portfolio identifier
  * @param {Object} data - Attributes to update
- * @returns {Promise<Object>} Formatted service response with updated portfolio
+ * @returns {Promise<Object>} Formatted service response with modified portfolio data
  */
 exports.updatePortfolio = async (id, data) => {
   try {
@@ -57,9 +61,9 @@ exports.updatePortfolio = async (id, data) => {
 };
 
 /**
- * Fetch a portfolio by its ID
+ * Get portfolio by ID
  * @param {string} id - Portfolio identifier
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with detailed portfolio data
  */
 exports.getById = async (id) => {
   try {

@@ -7,9 +7,12 @@ const sendResponse = require('../utils/response');
  */
 
 /**
- * Record a new evaluation or grade
- * @route POST /evaluations
- * @access Faculty, Admin
+ * Record a new evaluation
+ * @route   POST /api/evaluations
+ * @desc    Persist a grade and feedback for a project or student
+ * @access  Faculty, Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.createEvaluation = async (req, res) => {
   try {
@@ -42,9 +45,12 @@ exports.createEvaluation = async (req, res) => {
 };
 
 /**
- * Fetch all evaluation records with optional filters
- * @route GET /evaluations
- * @access Authenticated
+ * Fetch all evaluations
+ * @route   GET /api/evaluations
+ * @desc    Retrieve a list of all grading and evaluation records
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getAllEvaluations = async (req, res) => {
   try {
@@ -77,9 +83,12 @@ exports.getAllEvaluations = async (req, res) => {
 };
 
 /**
- * Get detailed feedback and scores for a specific evaluation
- * @route GET /evaluations/:id
- * @access Authenticated
+ * Get detailed evaluation info
+ * @route   GET /api/evaluations/:id
+ * @desc    Retrieve specific scores and feedback for an evaluation entry
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getEvaluationById = async (req, res) => {
   try {
@@ -112,9 +121,12 @@ exports.getEvaluationById = async (req, res) => {
 };
 
 /**
- * Update scores or feedback for an existing evaluation
- * @route PUT /evaluations/:id
- * @access Faculty, Admin
+ * Update evaluation record
+ * @route   PUT /api/evaluations/:id
+ * @desc    Modify existing grades or feedback details
+ * @access  Faculty, Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.updateEvaluation = async (req, res) => {
   try {
@@ -147,9 +159,12 @@ exports.updateEvaluation = async (req, res) => {
 };
 
 /**
- * Permanently remove an evaluation record
- * @route DELETE /evaluations/:id
- * @access Faculty, Admin
+ * Remove an evaluation record
+ * @route   DELETE /api/evaluations/:id
+ * @desc    Permanently delete an evaluation entry from the system
+ * @access  Faculty, Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.deleteEvaluation = async (req, res) => {
   try {

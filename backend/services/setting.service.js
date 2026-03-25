@@ -1,3 +1,7 @@
+/**
+ * Setting Service
+ * Business logic layer for system configuration and global preferences.
+ */
 const settingRepository = require('../repositories/setting.repository');
 
 /**
@@ -10,9 +14,9 @@ const settingRepository = require('../repositories/setting.repository');
 const response = (error, data, message) => ({ error, data, message });
 
 /**
- * Persist a new system-wide preference or setting
+ * Create setting
  * @param {Object} data - Setting data payload
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with new configuration entry
  */
 exports.create = async (data) => {
   try {
@@ -24,8 +28,8 @@ exports.create = async (data) => {
 };
 
 /**
- * Fetch all registered system settings
- * @returns {Promise<Object>} Formatted service response with settings list
+ * Get all settings
+ * @returns {Promise<Object>} Formatted service response with global preference list
  */
 exports.getAll = async () => {
   try {
@@ -37,9 +41,9 @@ exports.getAll = async () => {
 };
 
 /**
- * Get detailed setting information by ID
+ * Get setting by ID
  * @param {string} id - Setting identifier
- * @returns {Promise<Object>} Formatted service response with setting data
+ * @returns {Promise<Object>} Formatted service response with detailed configuration data
  */
 exports.getById = async (id) => {
   try {
@@ -52,10 +56,10 @@ exports.getById = async (id) => {
 };
 
 /**
- * Update system preference or configuration
+ * Update setting
  * @param {string} id - Setting identifier
  * @param {Object} data - Attributes to update
- * @returns {Promise<Object>} Formatted service response with updated setting
+ * @returns {Promise<Object>} Formatted service response with modified configuration data
  */
 exports.update = async (id, data) => {
   try {
@@ -68,9 +72,9 @@ exports.update = async (id, data) => {
 };
 
 /**
- * Delete a setting from the system
+ * Delete setting
  * @param {string} id - Setting identifier
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with removal status
  */
 exports.remove = async (id) => {
   try {

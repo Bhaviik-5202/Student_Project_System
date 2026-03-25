@@ -1,6 +1,6 @@
 /**
  * Submission Model
- * Represents a student's work submission for a specific assignment.
+ * Defines the schema for student work submissions, tracking file uploads, grading outcomes, and faculty feedback.
  */
 const mongoose = require('mongoose');
 

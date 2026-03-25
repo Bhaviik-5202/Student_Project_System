@@ -1,3 +1,7 @@
+/**
+ * Audit Log Service
+ * Business logic layer for system-wide audit logging and security tracking.
+ */
 const auditLogRepository = require('../repositories/auditlog.repository');
 
 /**
@@ -10,9 +14,9 @@ const auditLogRepository = require('../repositories/auditlog.repository');
 const response = (error, data, message) => ({ error, data, message });
 
 /**
- * Persist a new audit log entry
+ * Create audit log
  * @param {Object} data - Audit log payload
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with new log record
  */
 exports.create = async (data) => {
   try {
@@ -24,9 +28,9 @@ exports.create = async (data) => {
 };
 
 /**
- * Fetch all audit log entries with pagination and filters
+ * Get all audit logs
  * @param {Object} options - Query and pagination options
- * @returns {Promise<Object>} Formatted service response with log list and pagination metadata
+ * @returns {Promise<Object>} Formatted service response with paginated log list
  */
 exports.getAll = async ({ page = 1, limit = 20, filters = {} }) => {
   try {
@@ -79,9 +83,9 @@ exports.getAll = async ({ page = 1, limit = 20, filters = {} }) => {
 };
 
 /**
- * Get detailed audit log by ID
- * @param {string} id - Audit log ID
- * @returns {Promise<Object>} Formatted service response with log data
+ * Get audit log by ID
+ * @param {string} id - Audit log identifier
+ * @returns {Promise<Object>} Formatted service response with detailed log data
  */
 exports.getById = async (id) => {
   try {
@@ -94,10 +98,10 @@ exports.getById = async (id) => {
 };
 
 /**
- * Update audit log attributes
- * @param {string} id - Audit log ID
+ * Update audit log
+ * @param {string} id - Audit log identifier
  * @param {Object} data - Attributes to update
- * @returns {Promise<Object>} Formatted service response with updated log
+ * @returns {Promise<Object>} Formatted service response with modified log data
  */
 exports.update = async (id, data) => {
   try {
@@ -110,9 +114,9 @@ exports.update = async (id, data) => {
 };
 
 /**
- * Delete an audit log entry
- * @param {string} id - Audit log ID
- * @returns {Promise<Object>} Formatted service response
+ * Delete audit log
+ * @param {string} id - Audit log identifier
+ * @returns {Promise<Object>} Formatted service response with removal status
  */
 exports.remove = async (id) => {
   try {

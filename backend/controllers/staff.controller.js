@@ -7,9 +7,12 @@ const sendResponse = require('../utils/response');
  */
 
 /**
- * Register a new staff member (Faculty or Admin)
- * @route POST /staff
- * @access Admin
+ * Register a new staff member
+ * @route   POST /api/staff
+ * @desc    Onboard a new faculty or admin profile with departmental info
+ * @access  Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.createStaff = async (req, res) => {
   try {
@@ -41,8 +44,11 @@ exports.createStaff = async (req, res) => {
 
 /**
  * Fetch all staff records
- * @route GET /staff
- * @access Admin
+ * @route   GET /api/staff
+ * @desc    Retrieve a list of all staff members (Faculty and Admins)
+ * @access  Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getAllStaff = async (req, res) => {
   try {
@@ -75,9 +81,12 @@ exports.getAllStaff = async (req, res) => {
 };
 
 /**
- * Get detailed information for a specific staff member
- * @route GET /staff/:id
- * @access Authenticated
+ * Get staff by account ID
+ * @route   GET /api/staff/:id
+ * @desc    Retrieve detailed profile data for a specific staff member
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getStaffById = async (req, res) => {
   try {
@@ -110,9 +119,12 @@ exports.getStaffById = async (req, res) => {
 };
 
 /**
- * Update staff profile or departmental role
- * @route PUT /staff/:id
- * @access Admin, Staff (own profile)
+ * Update staff profile or role
+ * @route   PUT /api/staff/:id
+ * @desc    Modify departmental assignment, role, or secondary profile details
+ * @access  Admin, Staff (own profile)
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.updateStaff = async (req, res) => {
   try {
@@ -145,9 +157,12 @@ exports.updateStaff = async (req, res) => {
 };
 
 /**
- * Permanently remove a staff record
- * @route DELETE /staff/:id
- * @access Admin
+ * Remove a staff record
+ * @route   DELETE /api/staff/:id
+ * @desc    Permanently delete a staff member's professional and profile record
+ * @access  Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.deleteStaff = async (req, res) => {
   try {

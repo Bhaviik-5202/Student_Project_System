@@ -1,6 +1,6 @@
 /**
  * Message Repository
- * Data access layer for Message-related database operations.
+ * Handles direct database access and individual chat entry management for the Message model.
  */
 const Message = require('../models/message.model');
 

@@ -1,6 +1,6 @@
 /**
  * Course Model
- * Represents an academic course with syllabus, materials, and faculty assignment.
+ * Defines the schema for academic courses, managing syllabus details, materials, and faculty assignments.
  */
 const mongoose = require('mongoose');
 

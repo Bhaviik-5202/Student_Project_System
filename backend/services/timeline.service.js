@@ -1,3 +1,7 @@
+/**
+ * Timeline Service
+ * Business logic layer for project timeline events and activities.
+ */
 const timelineRepository = require('../repositories/timeline.repository');
 
 /**
@@ -10,9 +14,9 @@ const timelineRepository = require('../repositories/timeline.repository');
 const response = (error, data, message) => ({ error, data, message });
 
 /**
- * Persist a new timeline event
+ * Create timeline event
  * @param {Object} data - Timeline event data payload
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with new event entry
  */
 exports.create = async (data) => {
   try {
@@ -24,8 +28,8 @@ exports.create = async (data) => {
 };
 
 /**
- * Fetch all timeline events
- * @returns {Promise<Object>} Formatted service response with events list
+ * Get all timeline events
+ * @returns {Promise<Object>} Formatted service response with global events list
  */
 exports.getAll = async () => {
   try {
@@ -37,9 +41,9 @@ exports.getAll = async () => {
 };
 
 /**
- * Get detailed timeline event by ID
+ * Get timeline event by ID
  * @param {string} id - Timeline identifier
- * @returns {Promise<Object>} Formatted service response with event data
+ * @returns {Promise<Object>} Formatted service response with detailed event data
  */
 exports.getById = async (id) => {
   try {
@@ -52,10 +56,10 @@ exports.getById = async (id) => {
 };
 
 /**
- * Update timeline event attributes or timing
+ * Update timeline event
  * @param {string} id - Timeline identifier
  * @param {Object} data - Attributes to update
- * @returns {Promise<Object>} Formatted service response with updated event
+ * @returns {Promise<Object>} Formatted service response with modified event data
  */
 exports.update = async (id, data) => {
   try {
@@ -68,9 +72,9 @@ exports.update = async (id, data) => {
 };
 
 /**
- * Delete a timeline event from the system
+ * Delete timeline event
  * @param {string} id - Timeline identifier
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with removal status
  */
 exports.remove = async (id) => {
   try {
@@ -83,9 +87,9 @@ exports.remove = async (id) => {
 };
 
 /**
- * Fetch all timeline events for a specific project
+ * Get timeline events by project
  * @param {string} projectId - Project identifier
- * @returns {Promise<Object>} Formatted service response with events list
+ * @returns {Promise<Object>} Formatted service response with project-specific events
  */
 exports.getByProjectId = async (projectId) => {
   try {

@@ -7,9 +7,12 @@ const sendResponse = require('../utils/response');
  */
 
 /**
- * Log a new activity or event
- * @route POST /activities
- * @access Authenticated
+ * Log a new activity
+ * @route   POST /api/activities
+ * @desc    Record a new user action or system event in the activity log
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.createActivity = async (req, res) => {
   try {
@@ -40,9 +43,12 @@ exports.createActivity = async (req, res) => {
 };
 
 /**
- * Fetch activity logs with pagination and filtering
- * @route GET /activities
- * @access Admin, Faculty
+ * Fetch all activities
+ * @route   GET /api/activities
+ * @desc    Retrieve a paginated list of all recorded system activities
+ * @access  Admin, Faculty
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getAllActivities = async (req, res) => {
   try {
@@ -76,9 +82,12 @@ exports.getAllActivities = async (req, res) => {
 };
 
 /**
- * Get detailed information for a specific activity record
- * @route GET /activities/:id
- * @access Admin, Faculty
+ * Get activity by ID
+ * @route   GET /api/activities/:id
+ * @desc    Retrieve detailed information for a specific activity record
+ * @access  Admin, Faculty
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getActivityById = async (req, res) => {
   try {
@@ -111,9 +120,12 @@ exports.getActivityById = async (req, res) => {
 };
 
 /**
- * Fetch activity history for a specific user
- * @route GET /activities/user/:userId
- * @access Authenticated
+ * Fetch user activities
+ * @route   GET /api/activities/user/:userId
+ * @desc    Retrieve chronological activity history for a specific user
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getActivitiesByUserId = async (req, res) => {
   try {
@@ -149,9 +161,12 @@ exports.getActivitiesByUserId = async (req, res) => {
   }
 };
 /**
- * Update project-wide activity settings or configurations
- * @route PUT /activities/:id
- * @access Admin
+ * Update activity record
+ * @route   PUT /api/activities/:id
+ * @desc    Modify metadata or description for an existing activity log
+ * @access  Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.updateActivity = async (req, res) => {
   try {
@@ -184,9 +199,12 @@ exports.updateActivity = async (req, res) => {
 };
 
 /**
- * Remove an activity log entry from the system
- * @route DELETE /activities/:id
- * @access Admin
+ * Delete an activity log
+ * @route   DELETE /api/activities/:id
+ * @desc    Permanently remove an activity entry from the system
+ * @access  Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.deleteActivity = async (req, res) => {
   try {

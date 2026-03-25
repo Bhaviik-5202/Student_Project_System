@@ -1,6 +1,6 @@
 /**
  * SupportTicket Model
- * Represents a user's request for technical support or assistance.
+ * Defines the schema for technical assistance requests, tracking ticket status and user interactions.
  */
 const mongoose = require('mongoose');
 

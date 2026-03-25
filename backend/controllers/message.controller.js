@@ -8,9 +8,12 @@ const sendResponse = require('../utils/response');
  */
 
 /**
- * Send a new direct or group message
- * @route POST /messages
- * @access Authenticated
+ * Send a new message
+ * @route   POST /api/messages
+ * @desc    Transmit a direct or group message to participants
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.sendMessage = async (req, res) => {
   try {
@@ -41,9 +44,12 @@ exports.sendMessage = async (req, res) => {
 };
 
 /**
- * Fetch chat history for an authenticated user
- * @route GET /messages/:chatId
- * @access Authenticated
+ * Fetch chat messages
+ * @route   GET /api/messages/:chatId
+ * @desc    Retrieve historical messages for a specific chat conversation
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getMessagesByChat = async (req, res) => {
   try {
@@ -79,9 +85,12 @@ exports.getMessagesByChat = async (req, res) => {
 };
 
 /**
- * Mark a specific message as read
- * @route PUT /messages/:id/read
- * @access Authenticated
+ * Mark message as read
+ * @route   PUT /api/messages/:id/read
+ * @desc    Update the read status of a specific message
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.markAsRead = async (req, res) => {
   try {
@@ -112,9 +121,12 @@ exports.markAsRead = async (req, res) => {
 };
 
 /**
- * Remove a specific message from history
- * @route DELETE /messages/:id
- * @access Authenticated (Sender)
+ * Delete a message
+ * @route   DELETE /api/messages/:id
+ * @desc    Permanently remove a message from the conversation history
+ * @access  Authenticated (Sender)
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.deleteMessage = async (req, res) => {
   try {

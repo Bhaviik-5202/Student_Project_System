@@ -1,6 +1,6 @@
 /**
  * Notification Model
- * Represents a system alert or user notification with optional metadata.
+ * Defines the schema for system alerts and user notifications, supporting rich metadata and read-state management.
  */
 const mongoose = require('mongoose');
 

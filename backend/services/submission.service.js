@@ -1,3 +1,7 @@
+/**
+ * Submission Service
+ * Business logic layer for project and assignment submissions.
+ */
 const submissionRepository = require('../repositories/submission.repository');
 
 /**
@@ -24,8 +28,8 @@ exports.create = async (data) => {
 };
 
 /**
- * Retrieve all submissions across the system
- * @returns {Promise<Object>} Formatted service response with submission list
+ * Fetch all submissions
+ * @returns {Promise<Object>} Formatted service response with system-wide submissions
  */
 exports.getAll = async () => {
   try {
@@ -37,9 +41,9 @@ exports.getAll = async () => {
 };
 
 /**
- * Get detailed submission information by ID
+ * Get submission by ID
  * @param {string} id - Submission identifier
- * @returns {Promise<Object>} Formatted service response with submission details
+ * @returns {Promise<Object>} Formatted service response with full submission record
  */
 exports.getById = async (id) => {
   try {
@@ -52,10 +56,10 @@ exports.getById = async (id) => {
 };
 
 /**
- * Update submission record (e.g., status, links, files)
+ * Update submission record
  * @param {string} id - Submission identifier
  * @param {Object} data - Attributes to update
- * @returns {Promise<Object>} Formatted service response with updated submission
+ * @returns {Promise<Object>} Formatted service response with modified submission
  */
 exports.update = async (id, data) => {
   try {
@@ -68,9 +72,9 @@ exports.update = async (id, data) => {
 };
 
 /**
- * Permanently remove a submission record
+ * Delete submission record
  * @param {string} id - Submission identifier
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with removal status
  */
 exports.remove = async (id) => {
   try {
@@ -82,9 +86,9 @@ exports.remove = async (id) => {
   }
 };
 /**
- * Fetch all submissions for a specific student
+ * Get submissions by student
  * @param {string} studentId - Student identifier
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with student submission history
  */
 exports.getByStudentId = async (studentId) => {
   try {

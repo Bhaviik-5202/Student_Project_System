@@ -1,3 +1,7 @@
+/**
+ * FAQ Service
+ * Business logic layer for managing frequently asked questions.
+ */
 const faqRepository = require('../repositories/faq.repository');
 
 /**
@@ -10,9 +14,9 @@ const faqRepository = require('../repositories/faq.repository');
 const response = (error, data, message) => ({ error, data, message });
 
 /**
- * Persist a new FAQ entry
+ * Create FAQ entry
  * @param {Object} data - FAQ data payload
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with new FAQ document
  */
 exports.create = async (data) => {
   try {
@@ -37,9 +41,9 @@ exports.getAll = async () => {
 };
 
 /**
- * Get detailed FAQ info by ID
+ * Get FAQ by ID
  * @param {string} id - FAQ identifier
- * @returns {Promise<Object>} Formatted service response with FAQ data
+ * @returns {Promise<Object>} Formatted service response with specific FAQ details
  */
 exports.getById = async (id) => {
   try {
@@ -52,10 +56,10 @@ exports.getById = async (id) => {
 };
 
 /**
- * Update FAQ attributes
+ * Update FAQ entry
  * @param {string} id - FAQ identifier
  * @param {Object} data - Attributes to update
- * @returns {Promise<Object>} Formatted service response with updated FAQ
+ * @returns {Promise<Object>} Formatted service response with modified FAQ data
  */
 exports.update = async (id, data) => {
   try {
@@ -68,9 +72,9 @@ exports.update = async (id, data) => {
 };
 
 /**
- * Delete an FAQ entry from the system
+ * Delete FAQ entry
  * @param {string} id - FAQ identifier
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with removal status
  */
 exports.remove = async (id) => {
   try {

@@ -1,3 +1,7 @@
+/**
+ * Courses Service
+ * Business logic layer for academic course management and enrollment.
+ */
 const coursesRepository = require('../repositories/courses.repository');
 
 /**
@@ -10,9 +14,9 @@ const coursesRepository = require('../repositories/courses.repository');
 const response = (error, data, message) => ({ error, data, message });
 
 /**
- * Register a new academic course
+ * Register academic course
  * @param {Object} data - Course creation data
- * @returns {Promise<Object>} Formatted service response with new course data
+ * @returns {Promise<Object>} Formatted service response with new course instance
  */
 exports.create = async (data) => {
   try {
@@ -24,8 +28,8 @@ exports.create = async (data) => {
 };
 
 /**
- * Fetch all registered courses
- * @returns {Promise<Object>} Formatted service response with course list
+ * Get all courses
+ * @returns {Promise<Object>} Formatted service response with global course catalog
  */
 exports.getAll = async () => {
   try {
@@ -37,9 +41,9 @@ exports.getAll = async () => {
 };
 
 /**
- * Get detailed information for a specific course by ID
+ * Get course by ID
  * @param {string} id - Course identifier
- * @returns {Promise<Object>} Formatted service response with course data
+ * @returns {Promise<Object>} Formatted service response with specific course metadata
  */
 exports.getById = async (id) => {
   try {
@@ -52,10 +56,10 @@ exports.getById = async (id) => {
 };
 
 /**
- * Update course details or faculty assignment
+ * Update course details
  * @param {string} id - Course identifier
  * @param {Object} data - Updated attributes
- * @returns {Promise<Object>} Formatted service response with updated course
+ * @returns {Promise<Object>} Formatted service response with modified course data
  */
 exports.update = async (id, data) => {
   try {
@@ -68,9 +72,9 @@ exports.update = async (id, data) => {
 };
 
 /**
- * Permanently remove a course from the system
+ * Remove course record
  * @param {string} id - Course identifier
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with removal status
  */
 exports.remove = async (id) => {
   try {
@@ -83,10 +87,10 @@ exports.remove = async (id) => {
 };
 
 /**
- * Enroll a student in a course
- * @param {string} studentId - Student identifier
+ * Enroll student in course
+ * @param {string} userId - User identifier
  * @param {string} courseId - Course identifier
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with updated student profile
  */
 exports.enroll = async (userId, courseId) => {
   try {
@@ -125,9 +129,9 @@ exports.enroll = async (userId, courseId) => {
 };
 
 /**
- * Get courses enrolled by a student
- * @param {string} studentId - Student identifier
- * @returns {Promise<Object>} Formatted service response with course list
+ * Get enrolled courses
+ * @param {string} userId - User identifier
+ * @returns {Promise<Object>} Formatted service response with student's course list
  */
 exports.getEnrolled = async (userId) => {
   try {

@@ -1,7 +1,6 @@
 /**
  * Portfolio API Tests
- * ------------------------------------------------------------------
- * Tests for student professional portfolio and skill showcase management.
+ * Validates the student professional profile, skill showcase, and academic credential management.
  */
 
 const request = require('supertest');

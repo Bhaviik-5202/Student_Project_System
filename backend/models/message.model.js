@@ -1,6 +1,6 @@
 /**
  * Message Model
- * Represents an individual message within a chat conversation.
+ * Defines the schema for individual chat messages, including sender data and read status tracking.
  */
 const mongoose = require('mongoose');
 

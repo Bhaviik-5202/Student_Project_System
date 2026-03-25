@@ -1,7 +1,6 @@
 /**
  * File Upload Utility
- * ------------------------------------------------------------------
- * Configures Multer for secure and standardized file upload handling.
+ * Configures Multer storage engines and security filters for standardized multifile uploads.
  */
 
 const multer = require('multer');

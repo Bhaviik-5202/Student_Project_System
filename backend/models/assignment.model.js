@@ -1,6 +1,6 @@
 /**
  * Assignment Model
- * Represents a course assignment with instructions, due date, and rubric.
+ * Defines the schema for academic assignments, including instructions, due dates, and rubrics.
  */
 const mongoose = require('mongoose');
 

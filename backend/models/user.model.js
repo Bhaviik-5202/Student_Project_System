@@ -1,6 +1,6 @@
 /**
  * User Model
- * Represents a registered user in the system with authentication and profile details.
+ * Defines the schema for system authentication and user profiles, including granular notification and visibility settings.
  */
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');

@@ -1,6 +1,6 @@
 /**
  * Staff Repository
- * Data access layer for Staff-related database operations.
+ * Handles direct database access and professional profile management for the Staff model.
  */
 const Staff = require('../models/staff.model');
 

@@ -1,7 +1,6 @@
 /**
  * Activity API Tests
- * ------------------------------------------------------------------
- * Tests for logging and retrieving academic and system activities.
+ * Validates the tracking and retrieval of user actions and system events.
  */
 
 const request = require('supertest');

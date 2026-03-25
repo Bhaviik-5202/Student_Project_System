@@ -7,9 +7,12 @@ const sendResponse = require('../utils/response');
  */
 
 /**
- * Disseminate a new notification alert
- * @route POST /notifications
- * @access admin, faculty
+ * Create a new notification
+ * @route   POST /api/notifications
+ * @desc    Disseminate a new system alert or broadcast message
+ * @access  Admin, Faculty
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.createNotification = async (req, res) => {
   try {
@@ -42,9 +45,12 @@ exports.createNotification = async (req, res) => {
 };
 
 /**
- * Fetch all notifications for the authenticated user
- * @route GET /notifications
- * @access Authenticated
+ * Fetch user notifications
+ * @route   GET /api/notifications
+ * @desc    Retrieve a paginated list of notifications for the authenticated user
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getNotifications = async (req, res) => {
   try {
@@ -90,9 +96,12 @@ exports.getNotifications = async (req, res) => {
 };
 
 /**
- * Mark a specific notification as read by the user
- * @route PUT /notifications/:id/read
- * @access Authenticated
+ * Mark notification as read
+ * @route   PUT /api/notifications/:id/read
+ * @desc    Update the read status of a specific notification
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.markAsRead = async (req, res) => {
   try {
@@ -128,9 +137,12 @@ exports.markAsRead = async (req, res) => {
 };
 
 /**
- * Bulk mark all unread notifications as read for current user
- * @route PUT /notifications/mark-all-read
- * @access Authenticated
+ * Mark all notifications as read
+ * @route   PUT /api/notifications/mark-all-read
+ * @desc    Bulk update all unread notifications for the current user
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.markAllAsRead = async (req, res) => {
   try {
@@ -163,9 +175,12 @@ exports.markAllAsRead = async (req, res) => {
 };
 
 /**
- * Terminate a notification entry
- * @route DELETE /notifications/:id
- * @access admin, user (own)
+ * Delete a notification
+ * @route   DELETE /api/notifications/:id
+ * @desc    Permanently remove a notification entry
+ * @access  Admin, Owner
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.deleteNotification = async (req, res) => {
   try {
@@ -198,9 +213,12 @@ exports.deleteNotification = async (req, res) => {
 };
 
 /**
- * Fetch only unread notifications for the user
- * @route GET /notifications/unread
- * @access Authenticated
+ * Fetch unread notifications
+ * @route   GET /api/notifications/unread
+ * @desc    Retrieve only the notifications that have not been read yet
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getUnreadNotifications = async (req, res) => {
   try {
@@ -233,9 +251,12 @@ exports.getUnreadNotifications = async (req, res) => {
 };
 
 /**
- * Fetch specific notification details by ID
- * @route GET /notifications/:id
- * @access Authenticated (Owner)
+ * Get notification by ID
+ * @route   GET /api/notifications/:id
+ * @desc    Retrieve detailed information for a specific notification
+ * @access  Authenticated (Owner)
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getNotificationById = async (req, res) => {
   try {

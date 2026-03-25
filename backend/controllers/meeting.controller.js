@@ -8,8 +8,11 @@ const sendResponse = require('../utils/response');
 
 /**
  * Schedule a new meeting
- * @route POST /meetings
- * @access Faculty, student (if permitted)
+ * @route   POST /api/meetings
+ * @desc    Register a new project synchronization meeting
+ * @access  Faculty, Student
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.createMeeting = async (req, res) => {
   try {
@@ -42,9 +45,12 @@ exports.createMeeting = async (req, res) => {
 };
 
 /**
- * Fetch all meetings with optional filters for role and date
- * @route GET /meetings
- * @access Authenticated
+ * Fetch all meetings
+ * @route   GET /api/meetings
+ * @desc    Retrieve a paginated list of all scheduled meetings
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getAllMeetings = async (req, res) => {
   try {
@@ -78,9 +84,12 @@ exports.getAllMeetings = async (req, res) => {
 };
 
 /**
- * Get detailed information for a specific meeting by ID
- * @route GET /meetings/:id
- * @access Authenticated
+ * Get meeting by ID
+ * @route   GET /api/meetings/:id
+ * @desc    Retrieve detailed info and participant list for a meeting
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getMeetingById = async (req, res) => {
   try {
@@ -113,9 +122,12 @@ exports.getMeetingById = async (req, res) => {
 };
 
 /**
- * Update meeting schedule or attendance list
- * @route PUT /meetings/:id
- * @access Faculty, organizer
+ * Update a meeting
+ * @route   PUT /api/meetings/:id
+ * @desc    Modify schedule, agenda, or participants for a meeting
+ * @access  Faculty, Organizer
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.updateMeeting = async (req, res) => {
   try {
@@ -148,9 +160,12 @@ exports.updateMeeting = async (req, res) => {
 };
 
 /**
- * Cancel and remove a scheduled meeting
- * @route DELETE /meetings/:id
- * @access Faculty, organizer, admin
+ * Cancel a meeting
+ * @route   DELETE /api/meetings/:id
+ * @desc    Permanently remove a scheduled meeting
+ * @access  Faculty, Organizer, Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.deleteMeeting = async (req, res) => {
   try {
@@ -183,9 +198,12 @@ exports.deleteMeeting = async (req, res) => {
 };
 
 /**
- * Register current user participation for a scheduled meeting
- * @route POST /meetings/:id/join
- * @access Authenticated
+ * Join a meeting
+ * @route   POST /api/meetings/:id/join
+ * @desc    Register participation for the currently authenticated user
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.joinMeeting = async (req, res) => {
   try {

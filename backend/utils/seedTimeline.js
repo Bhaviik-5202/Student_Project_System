@@ -1,3 +1,7 @@
+/**
+ * Timeline Seeding Utility
+ * Generates realistic project milestones, sprint schedules, and task tracking data.
+ */
 const mongoose = require('mongoose');
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '../.env') });

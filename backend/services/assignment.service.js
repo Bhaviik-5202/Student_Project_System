@@ -1,3 +1,7 @@
+/**
+ * Assignment Service
+ * Business logic layer for managing academic and project assignments.
+ */
 const assignmentRepository = require('../repositories/assignment.repository');
 
 /**
@@ -10,9 +14,9 @@ const assignmentRepository = require('../repositories/assignment.repository');
 const response = (error, data, message) => ({ error, data, message });
 
 /**
- * Create a new academic assignment
+ * Create assignment
  * @param {Object} data - Assignment creation payload
- * @returns {Promise<Object>} Formatted service response with new assignment data
+ * @returns {Promise<Object>} Formatted service response with new assignment instance
  */
 exports.create = async (data) => {
   try {
@@ -24,9 +28,9 @@ exports.create = async (data) => {
 };
 
 /**
- * Fetch all assignments with optional pagination and filtering
+ * Fetch all assignments
  * @param {Object} options - Query and pagination options
- * @returns {Promise<Object>} Formatted service response with assignment list
+ * @returns {Promise<Object>} Formatted service response with paginated assignment data
  */
 exports.getAll = async (options = {}) => {
   try {
@@ -43,9 +47,9 @@ exports.getAll = async (options = {}) => {
 };
 
 /**
- * Get detailed assignment information by ID
+ * Get assignment by ID
  * @param {string} id - Assignment identifier
- * @returns {Promise<Object>} Formatted service response with assignment data
+ * @returns {Promise<Object>} Formatted service response with populated assignment metadata
  */
 exports.getById = async (id) => {
   try {
@@ -60,10 +64,10 @@ exports.getById = async (id) => {
 };
 
 /**
- * Update an existing assignment's details
+ * Update assignment details
  * @param {string} id - Assignment identifier
  * @param {Object} data - Updated attribute data
- * @returns {Promise<Object>} Formatted service response with updated assignment
+ * @returns {Promise<Object>} Formatted service response with modified assignment data
  */
 exports.update = async (id, data) => {
   try {
@@ -76,9 +80,9 @@ exports.update = async (id, data) => {
 };
 
 /**
- * Permanently delete an assignment record
+ * Delete assignment record
  * @param {string} id - Assignment identifier
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with removal status
  */
 exports.remove = async (id) => {
   try {
@@ -91,9 +95,9 @@ exports.remove = async (id) => {
 };
 
 /**
- * Fetch all assignments assigned to a specific student
+ * Get student assignments
  * @param {string} studentId - Student identifier
- * @returns {Promise<Object>} Formatted service response with assignments
+ * @returns {Promise<Object>} Formatted service response with student task list
  */
 exports.getByStudentId = async (studentId) => {
   try {
@@ -115,10 +119,10 @@ exports.getByStudentId = async (studentId) => {
 };
 
 /**
- * Get all assignments associated with a specific project activity
+ * Get activity assignments
  * @param {string} activityId - Activity identifier
  * @param {Object} options - Query options
- * @returns {Promise<Object>} Formatted service response with assignments
+ * @returns {Promise<Object>} Formatted service response with activity-linked tasks
  */
 exports.getByActivityId = async (activityId, options = {}) => {
   try {
@@ -141,10 +145,10 @@ exports.getByActivityId = async (activityId, options = {}) => {
 };
 
 /**
- * Fetch all assignments created by a specific faculty member
+ * Get faculty assignments
  * @param {string} facultyId - Faculty identifier
  * @param {Object} options - Query options
- * @returns {Promise<Object>} Formatted service response with assignments
+ * @returns {Promise<Object>} Formatted service response with faculty-created tasks
  */
 exports.getByFacultyId = async (facultyId, options = {}) => {
   try {
@@ -167,10 +171,10 @@ exports.getByFacultyId = async (facultyId, options = {}) => {
 };
 
 /**
- * Get all assignments for a specific academic course
+ * Get course assignments
  * @param {string} courseId - Course identifier
  * @param {Object} options - Query options
- * @returns {Promise<Object>} Formatted service response with assignments
+ * @returns {Promise<Object>} Formatted service response with curriculum tasks
  */
 exports.getByCourseId = async (courseId, options = {}) => {
   try {
@@ -193,10 +197,10 @@ exports.getByCourseId = async (courseId, options = {}) => {
 };
 
 /**
- * Fetch all assignments for a specific student batch
+ * Get batch assignments
  * @param {string} batchId - Batch identifier
  * @param {Object} options - Query options
- * @returns {Promise<Object>} Formatted service response with assignments
+ * @returns {Promise<Object>} Formatted service response with batch-wide tasks
  */
 exports.getByBatchId = async (batchId, options = {}) => {
   try {

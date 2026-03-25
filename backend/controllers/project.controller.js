@@ -7,9 +7,12 @@ const sendResponse = require('../utils/response');
  */
 
 /**
- * Get all members of a project
- * @route GET /projects/:id/members
- * @access Authenticated
+ * Get project membership list
+ * @route   GET /api/projects/:id/members
+ * @desc    Retrieve all students and faculty assigned to a specific project
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getProjectMembers = async (req, res) => {
   try {
@@ -43,8 +46,11 @@ exports.getProjectMembers = async (req, res) => {
 
 /**
  * Add a member to a project
- * @route POST /projects/:id/members
- * @access Admin, Faculty
+ * @route   POST /api/projects/:id/members
+ * @desc    Assign a student or faculty member to an existing project team
+ * @access  Admin, Faculty
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.addProjectMember = async (req, res) => {
   try {
@@ -90,9 +96,12 @@ exports.addProjectMember = async (req, res) => {
 };
 
 /**
- * Create a new project
- * @route POST /projects
- * @access Admin, Faculty
+ * Create a new project instance
+ * @route   POST /api/projects
+ * @desc    Initialize a new project with basic details, guide, and members
+ * @access  Admin, Faculty
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.createProject = async (req, res) => {
   try {
@@ -135,9 +144,12 @@ exports.createProject = async (req, res) => {
 };
 
 /**
- * Get all projects with pagination and filtering
- * @route GET /projects
- * @access Authenticated
+ * Fetch all projects
+ * @route   GET /api/projects
+ * @desc    Retrieve a paginated list of projects with optional query filters
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getAllProjects = async (req, res) => {
   try {
@@ -184,9 +196,12 @@ exports.getAllProjects = async (req, res) => {
 };
 
 /**
- * Get all projects formatted as groups
- * @route GET /projects/groups
- * @access Authenticated
+ * Fetch formatted project groups
+ * @route   GET /api/projects/groups
+ * @desc    Retrieve projects optimized for group-wise dashboard visualization
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getProjectGroups = async (req, res) => {
   try {
@@ -258,9 +273,12 @@ exports.getProjectGroups = async (req, res) => {
 };
 
 /**
- * Get a project by its ID
- * @route GET /projects/:id
- * @access Authenticated
+ * Get detailed project information
+ * @route   GET /api/projects/:id
+ * @desc    Retrieve all attributes, members, and timeline data for a specific project
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getProjectById = async (req, res) => {
   try {
@@ -291,9 +309,12 @@ exports.getProjectById = async (req, res) => {
 };
 
 /**
- * Update a project by its ID
- * @route PUT /projects/:id
- * @access Admin, Faculty
+ * Update project details
+ * @route   PUT /api/projects/:id
+ * @desc    Modify project attributes, progress, or team composition
+ * @access  Admin, Faculty, Owner
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.updateProject = async (req, res) => {
   try {
@@ -374,9 +395,12 @@ exports.updateProject = async (req, res) => {
 };
 
 /**
- * Delete a project by its ID
- * @route DELETE /projects/:id
- * @access Admin, Faculty
+ * Delete a project record
+ * @route   DELETE /api/projects/:id
+ * @desc    Permanently remove a project and its associated data
+ * @access  Admin, Faculty, Owner
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.deleteProject = async (req, res) => {
   try {

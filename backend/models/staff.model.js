@@ -1,6 +1,6 @@
 /**
  * Staff Model
- * Represents faculty and administrative staff members.
+ * Defines the schema for faculty and administrative staff members, managing professional profiles and departmental roles.
  */
 const mongoose = require('mongoose');
 

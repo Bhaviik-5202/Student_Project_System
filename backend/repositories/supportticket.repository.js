@@ -1,6 +1,6 @@
 /**
  * SupportTicket Repository
- * Data access layer for SupportTicket-related database operations.
+ * Handles direct database access and technical assistance requests for the SupportTicket model.
  */
 const SupportTicket = require('../models/supportticket.model');
 

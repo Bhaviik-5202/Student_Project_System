@@ -1,6 +1,6 @@
 /**
  * User Repository
- * Data access layer for User-related database operations.
+ * Handles direct database access and account profile management for the User model.
  */
 const User = require('../models/user.model');
 

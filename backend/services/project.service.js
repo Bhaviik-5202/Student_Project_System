@@ -1,3 +1,7 @@
+/**
+ * Project Service
+ * Business logic layer for project-related operations.
+ */
 const projectRepository = require('../repositories/project.repository');
 
 /**
@@ -10,9 +14,9 @@ const projectRepository = require('../repositories/project.repository');
 const response = (error, data, message) => ({ error, data, message });
 
 /**
- * Create a new project record
+ * Create project
  * @param {Object} data - Project data payload
- * @returns {Promise<Object>} Formatted service response with new project data
+ * @returns {Promise<Object>} Formatted service response with new project instance
  */
 exports.create = async (data) => {
   try {
@@ -24,12 +28,12 @@ exports.create = async (data) => {
 };
 
 /**
- * Retrieve all projects with pagination and active filtering
+ * Fetch all projects
  * @param {Object} params - Query parameters
  * @param {number} params.page - Current page number
  * @param {number} params.limit - Records per page
  * @param {Object} params.filters - Mongoose filter object
- * @returns {Promise<Object>} Formatted service response with paginated results
+ * @returns {Promise<Object>} Formatted service response with paginated project data
  */
 exports.getAll = async ({ page = 1, limit = 10, filters = {} } = {}) => {
   try {
@@ -60,9 +64,9 @@ exports.getAll = async ({ page = 1, limit = 10, filters = {} } = {}) => {
 };
 
 /**
- * Fetch a single project by its unique ID
- * @param {string} id - Project ID
- * @returns {Promise<Object>} Formatted service response with project details
+ * Get project by ID or Slug
+ * @param {string} idOrSlug - Project identifier
+ * @returns {Promise<Object>} Formatted service response with populated project details
  */
 exports.getById = async (idOrSlug) => {
   try {
@@ -93,6 +97,8 @@ exports.getById = async (idOrSlug) => {
 
 /**
  * Helper to resolve an ID or Slug to a Project document
+ * @param {string} idOrSlug - Project ID or slug
+ * @returns {Promise<Object|null>} Resolved project document or null
  */
 const resolveProject = async (idOrSlug) => {
   const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(idOrSlug);
@@ -104,10 +110,10 @@ const resolveProject = async (idOrSlug) => {
 };
 
 /**
- * Update existing project metadata or state
- * @param {string} id - Project ID
+ * Update project details
+ * @param {string} idOrSlug - Project identifier
  * @param {Object} data - Updated attributes
- * @returns {Promise<Object>} Formatted service response with updated project
+ * @returns {Promise<Object>} Formatted service response with modified project data
  */
 exports.update = async (idOrSlug, data) => {
   try {
@@ -128,9 +134,9 @@ exports.update = async (idOrSlug, data) => {
 };
 
 /**
- * Permanently remove a project from the system
- * @param {string} id - Project ID
- * @returns {Promise<Object>} Formatted service response
+ * Delete project
+ * @param {string} idOrSlug - Project identifier
+ * @returns {Promise<Object>} Formatted service response with removal status
  */
 exports.remove = async (idOrSlug) => {
   try {
@@ -145,9 +151,9 @@ exports.remove = async (idOrSlug) => {
 };
 
 /**
- * Retrieve a list of all members associated with a project
- * @param {string} id - Project ID
- * @returns {Promise<Object>} Formatted service response with members list
+ * Get project members
+ * @param {string} id - Project identifier
+ * @returns {Promise<Object>} Formatted service response with member profiles
  */
 exports.getMembers = async (id) => {
   try {

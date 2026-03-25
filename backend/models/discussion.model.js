@@ -1,6 +1,6 @@
 /**
  * Discussion Model
- * Represents a forum thread or project-specific discussion with nested replies.
+ * Defines the schema for forum threads and project discussions, supporting nested reply structures.
  */
 const mongoose = require('mongoose');
 

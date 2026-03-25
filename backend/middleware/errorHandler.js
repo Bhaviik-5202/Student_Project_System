@@ -1,7 +1,8 @@
 const sendResponse = require('../utils/response');
 
 /**
- * Centralized error handler middleware for Express.
+ * Global Error Handler Middleware
+ * Intercepts all application errors and returns standardized JSON responses.
  * @param {Object} err - Express error object
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object

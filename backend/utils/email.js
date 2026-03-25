@@ -1,8 +1,6 @@
 /**
  * Email Utility
- * ------------------------------------------------------------------
- * Sends emails using Nodemailer. Falls back to console logging in
- * development if no SMTP configuration is present.
+ * Handles automated email dispatching via Nodemailer with development logging fallback.
  */
 
 const nodemailer = require('nodemailer');

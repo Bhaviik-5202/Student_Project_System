@@ -1,3 +1,7 @@
+/**
+ * Notification Service
+ * Business logic layer for system and user-targeted notifications.
+ */
 const notificationRepository = require('../repositories/notification.repository');
 
 /**
@@ -10,9 +14,9 @@ const notificationRepository = require('../repositories/notification.repository'
 const response = (error, data, message) => ({ error, data, message });
 
 /**
- * Dispatch a new system or user notification
+ * Dispatch notification
  * @param {Object} data - Notification content and recipient details
- * @returns {Promise<Object>} Formatted service response with new notification data
+ * @returns {Promise<Object>} Formatted service response with new notification entry
  */
 exports.create = async (data) => {
   try {
@@ -24,11 +28,11 @@ exports.create = async (data) => {
 };
 
 /**
- * Fetch notifications for a specific user with pagination
+ * Get user notifications
  * @param {string} userId - Target user identifier
  * @param {number} page - Current page number
  * @param {number} limit - Max records per page
- * @returns {Promise<Object>} Formatted service response with notifications and metadata
+ * @returns {Promise<Object>} Formatted service response with paginated notification data
  */
 exports.getByUserId = async (userId, page = 1, limit = 10) => {
   try {
@@ -53,9 +57,9 @@ exports.getByUserId = async (userId, page = 1, limit = 10) => {
 };
 
 /**
- * Retrieve only unread notifications for a specific user
+ * Get unread notifications
  * @param {string} userId - Target user identifier
- * @returns {Promise<Object>} Formatted service response with unread notifications
+ * @returns {Promise<Object>} Formatted service response with unread messages list
  */
 exports.getUnreadByUserId = async (userId) => {
   try {
@@ -78,10 +82,10 @@ exports.getUnreadByUserId = async (userId) => {
 };
 
 /**
- * Mark a single notification as read by the user
+ * Mark notification as read
  * @param {string} id - Notification identifier
- * @param {string} userId - Recipient user identifier (for authorization)
- * @returns {Promise<Object>} Formatted service response with updated notification
+ * @param {string} userId - Recipient user identifier
+ * @returns {Promise<Object>} Formatted service response with updated status
  */
 exports.markAsRead = async (id, userId) => {
   try {
@@ -131,10 +135,10 @@ exports.markAllAsRead = async (userId) => {
 };
 
 /**
- * Fetch a specific notification's details
+ * Get notification by ID
  * @param {string} id - Notification identifier
- * @param {string} userId - Recipient user identifier (for authorization)
- * @returns {Promise<Object>} Formatted service response with notification data
+ * @param {string} userId - Recipient user identifier
+ * @returns {Promise<Object>} Formatted service response with detailed notification metadata
  */
 exports.getById = async (id, userId) => {
   try {
@@ -149,10 +153,10 @@ exports.getById = async (id, userId) => {
 };
 
 /**
- * Permanently remove a notification from the recipient's list
+ * Remove notification
  * @param {string} id - Notification identifier
- * @param {string} userId - Recipient user identifier (for authorization)
- * @returns {Promise<Object>} Formatted service response
+ * @param {string} userId - Recipient user identifier
+ * @returns {Promise<Object>} Formatted service response with removal status
  */
 exports.remove = async (id, userId) => {
   try {

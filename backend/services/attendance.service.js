@@ -1,3 +1,7 @@
+/**
+ * Attendance Service
+ * Business logic layer for student attendance tracking.
+ */
 const attendanceRepository = require('../repositories/attendance.repository');
 
 /**
@@ -10,9 +14,9 @@ const attendanceRepository = require('../repositories/attendance.repository');
 const response = (error, data, message) => ({ error, data, message });
 
 /**
- * Mark attendance for a student
+ * Register student attendance
  * @param {Object} data - Attendance data payload
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with new attendance entry
  */
 exports.markAttendance = async (data) => {
   try {
@@ -24,8 +28,8 @@ exports.markAttendance = async (data) => {
 };
 
 /**
- * Fetch all attendance records
- * @returns {Promise<Object>} Formatted service response with attendance list
+ * Get all attendance records
+ * @returns {Promise<Object>} Formatted service response with system-wide logs
  */
 exports.getAllAttendance = async () => {
   try {
@@ -45,9 +49,9 @@ exports.getAllAttendance = async () => {
 };
 
 /**
- * Get attendance records by student ID
- * @param {string} studentId - Student ID
- * @returns {Promise<Object>} Formatted service response with student attendance
+ * Get attendance by student
+ * @param {string} studentId - Student identifier
+ * @returns {Promise<Object>} Formatted service response with student's log history
  */
 exports.getAttendanceByStudent = async (studentId) => {
   try {
@@ -70,9 +74,9 @@ exports.getAttendanceByStudent = async (studentId) => {
 };
 
 /**
- * Get attendance records by date
- * @param {string} date - Date string
- * @returns {Promise<Object>} Formatted service response with daily attendance
+ * Get attendance by date
+ * @param {string} date - ISO Date string
+ * @returns {Promise<Object>} Formatted service response with daily session logs
  */
 exports.getAttendanceByDate = async (date) => {
   try {
@@ -100,8 +104,8 @@ exports.getAttendanceByDate = async (date) => {
 
 /**
  * Get attendance record by ID
- * @param {string} id - Attendance ID
- * @returns {Promise<Object>} Formatted service response with attendance data
+ * @param {string} id - Attendance identifier
+ * @returns {Promise<Object>} Formatted service response with specific record data
  */
 exports.getAttendanceById = async (id) => {
   try {
@@ -122,10 +126,10 @@ exports.getAttendanceById = async (id) => {
 };
 
 /**
- * Update attendance record by ID
- * @param {string} id - Attendance ID
+ * Update attendance record
+ * @param {string} id - Attendance identifier
  * @param {Object} data - Attributes to update
- * @returns {Promise<Object>} Formatted service response with updated record
+ * @returns {Promise<Object>} Formatted service response with updated log entry
  */
 exports.updateAttendance = async (id, data) => {
   try {
@@ -138,9 +142,9 @@ exports.updateAttendance = async (id, data) => {
 };
 
 /**
- * Delete attendance record by ID
- * @param {string} id - Attendance ID
- * @returns {Promise<Object>} Formatted service response
+ * Remove attendance record
+ * @param {string} id - Attendance identifier
+ * @returns {Promise<Object>} Formatted service response with removal status
  */
 exports.deleteAttendance = async (id) => {
   try {

@@ -1,3 +1,7 @@
+/**
+ * Collaboration Seeding Utility
+ * Populates the database with sample project chats, messages, discussions, and shared files.
+ */
 const mongoose = require('mongoose');
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '../.env') });

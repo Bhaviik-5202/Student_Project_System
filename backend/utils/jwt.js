@@ -1,8 +1,6 @@
 /**
  * JWT Utility
- * ------------------------------------------------------------------
- * Handles JSON Web Token generation and verification using
- * environment-based secrets and configuration.
+ * Manages secure JSON Web Token generation and verification for user session authorization.
  */
 
 const jwt = require('jsonwebtoken');

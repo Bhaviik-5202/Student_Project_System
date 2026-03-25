@@ -7,9 +7,12 @@ const sendResponse = require('../utils/response');
  */
 
 /**
- * Mark or update attendance for a student
- * @route POST /attendance
- * @access Faculty
+ * Mark student attendance
+ * @route   POST /api/attendance
+ * @desc    Log presence or absence for a student in a specific session
+ * @access  Faculty
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.markAttendance = async (req, res) => {
   try {
@@ -42,9 +45,12 @@ exports.markAttendance = async (req, res) => {
 };
 
 /**
- * Fetch all attendance records in the system
- * @route GET /attendance
- * @access Authenticated
+ * Fetch all attendance records
+ * @route   GET /api/attendance
+ * @desc    Retrieve comprehensive list of all system-wide attendance entries
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getAllAttendance = async (req, res) => {
   try {
@@ -77,9 +83,12 @@ exports.getAllAttendance = async (req, res) => {
 };
 
 /**
- * Fetch attendance statistics for a specific student
- * @route GET /attendance/student/:studentId
- * @access Authenticated
+ * Get attendance by student
+ * @route   GET /api/attendance/student/:studentId
+ * @desc    Retrieve all historical attendance records for a specific student
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getAttendanceByStudent = async (req, res) => {
   try {
@@ -114,9 +123,12 @@ exports.getAttendanceByStudent = async (req, res) => {
 };
 
 /**
- * Fetch all attendance records for a specific date
- * @route GET /attendance/date/:date
- * @access Authenticated
+ * Get daily attendance records
+ * @route   GET /api/attendance/date/:date
+ * @desc    Retrieve all attendance marked on a specific calendar date
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getAttendanceByDate = async (req, res) => {
   try {
@@ -151,9 +163,12 @@ exports.getAttendanceByDate = async (req, res) => {
 };
 
 /**
- * Retrieve a specific attendance record by its ID
- * @route GET /attendance/:id
- * @access Authenticated
+ * Get attendance record by ID
+ * @route   GET /api/attendance/:id
+ * @desc    Retrieve detailed information for a single attendance entry
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getAttendanceById = async (req, res) => {
   try {
@@ -199,9 +214,12 @@ exports.getAttendanceById = async (req, res) => {
 };
 
 /**
- * Modify an existing attendance record
- * @route PUT /attendance/:id
- * @access Faculty, Admin
+ * Update attendance record
+ * @route   PUT /api/attendance/:id
+ * @desc    Modify state or notes for an existing attendance log
+ * @access  Faculty, Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.updateAttendance = async (req, res) => {
   try {
@@ -250,9 +268,12 @@ exports.updateAttendance = async (req, res) => {
 };
 
 /**
- * Delete an attendance record from the system
- * @route DELETE /attendance/:id
- * @access Admin
+ * Delete attendance record
+ * @route   DELETE /api/attendance/:id
+ * @desc    Permanently remove an attendance entry from the database
+ * @access  Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.deleteAttendance = async (req, res) => {
   try {

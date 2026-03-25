@@ -10,8 +10,9 @@ const { validationResult } = require('express-validator');
 
 /**
  * Create a new assignment
- * @route POST /assignments
- * @access Admin, Faculty
+ * @route   POST /api/assignments
+ * @desc    Initialize a new academic or project assignment
+ * @access  Admin, Faculty
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  */
@@ -83,12 +84,12 @@ exports.createAssignment = async (req, res) => {
 };
 
 /**
- * Get all assignments with pagination and filtering
- * @route GET /assignments
- * @access Authenticated
- * @query {number} page - Page number for pagination
- * @query {number} limit - Number of records per page
- * @query {Object} filters - Search criteria (title, courseId, etc.)
+ * Fetch all assignments
+ * @route   GET /api/assignments
+ * @desc    Retrieve a paginated list of all assignments with optional filters
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getAllAssignments = async (req, res) => {
   try {
@@ -122,9 +123,12 @@ exports.getAllAssignments = async (req, res) => {
 };
 
 /**
- * Get detailed information for a specific assignment
- * @route GET /assignments/:id
- * @access Authenticated
+ * Get detailed assignment information
+ * @route   GET /api/assignments/:id
+ * @desc    Retrieve all attributes and attachments for a specific assignment
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getAssignmentById = async (req, res) => {
   try {

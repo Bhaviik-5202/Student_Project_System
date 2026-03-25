@@ -1,6 +1,6 @@
 /**
  * Activity Model
- * Tracks user actions and system events for the activity feed.
+ * Defines the schema for tracking user actions and system events within the activity feed.
  */
 const mongoose = require('mongoose');
 

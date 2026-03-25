@@ -1,3 +1,7 @@
+/**
+ * Assignment Test Script
+ * Utility script for validating guide assignment persistence and Mongoose population logic.
+ */
 const mongoose = require('mongoose');
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '../.env') });
@@ -6,6 +10,9 @@ const Project = require('../models/project.model');
 const Staff = require('../models/staff.model');
 const db = require('../config/db');
 
+/**
+ * Executes a test case for guide assignment.
+ */
 async function testAssignment() {
   try {
     await db();

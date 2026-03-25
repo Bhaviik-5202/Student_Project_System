@@ -1,7 +1,6 @@
 /**
  * Password Utility
- * ------------------------------------------------------------------
- * Handles secure password hashing and comparison using bcrypt.
+ * Provides secure cryptographic hashing and comparison for sensitive user credentials using bcrypt.
  */
 
 const bcrypt = require('bcrypt');

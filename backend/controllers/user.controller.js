@@ -10,9 +10,12 @@ const { validationResult } = require('express-validator');
  */
 
 /**
- * Create a new user
- * @route POST /users
- * @access Admin
+ * Create a new user record
+ * @route   POST /api/users
+ * @desc    Onboard a new user with specified role and credentials
+ * @access  Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.createUser = async (req, res) => {
   try {
@@ -73,9 +76,12 @@ exports.createUser = async (req, res) => {
 };
 
 /**
- * Get all users
- * @route GET /users
- * @access Admin
+ * Fetch all registered users
+ * @route   GET /api/users
+ * @desc    Retrieve a list of all users in the system
+ * @access  Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getAllUsers = async (req, res) => {
   try {
@@ -108,9 +114,12 @@ exports.getAllUsers = async (req, res) => {
 };
 
 /**
- * Get a user by ID
- * @route GET /users/:id
- * @access Admin
+ * Get detailed user profile by ID
+ * @route   GET /api/users/:id
+ * @desc    Retrieve a specific user's attributes and role information
+ * @access  Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getUserById = async (req, res) => {
   try {
@@ -141,9 +150,12 @@ exports.getUserById = async (req, res) => {
 };
 
 /**
- * Update a user by ID
- * @route PUT /users/:id
- * @access Admin
+ * Update user attributes
+ * @route   PUT /api/users/:id
+ * @desc    Modify existing user details (excluding sensitive credentials)
+ * @access  Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.updateUser = async (req, res) => {
   try {
@@ -217,9 +229,12 @@ exports.updateUser = async (req, res) => {
 };
 
 /**
- * Delete a user by ID
- * @route DELETE /users/:id
- * @access Admin
+ * Delete a user from the system
+ * @route   DELETE /api/users/:id
+ * @desc    Permanently remove a user account
+ * @access  Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.deleteUser = async (req, res) => {
   try {

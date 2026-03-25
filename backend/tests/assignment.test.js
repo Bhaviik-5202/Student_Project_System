@@ -1,7 +1,6 @@
 /**
  * Assignment API Tests
- * ------------------------------------------------------------------
- * Tests for student assignment distribution and management.
+ * Validates the academic task distribution, submission tracking, and management life cycle.
  */
 
 const request = require('supertest');

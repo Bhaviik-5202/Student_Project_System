@@ -13,9 +13,12 @@ const sendResponse = require('../utils/response');
  */
 
 /**
- * Register a new user
- * @route POST /auth/register
- * @access Public
+ * Register a new user account
+ * @route   POST /api/auth/register
+ * @desc    Create a new student account in the system
+ * @access  Public
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.register = async (req, res) => {
   try {
@@ -59,9 +62,12 @@ exports.register = async (req, res) => {
 };
 
 /**
- * Login a user and return JWT
- * @route POST /auth/login
- * @access Public
+ * Authenticate user and return token
+ * @route   POST /api/auth/login
+ * @desc    Verify credentials and return access token
+ * @access  Public
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.login = async (req, res) => {
   try {
@@ -103,9 +109,12 @@ exports.login = async (req, res) => {
 };
 
 /**
- * Request password reset
- * @route POST /auth/forgot-password
- * @access Public
+ * Request password reset link
+ * @route   POST /api/auth/forgot-password
+ * @desc    Send a reset token to the user's email
+ * @access  Public
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.forgotPassword = async (req, res) => {
   try {
@@ -137,9 +146,12 @@ exports.forgotPassword = async (req, res) => {
 };
 
 /**
- * Reset password
- * @route POST /auth/reset-password
- * @access Public
+ * Reset account password
+ * @route   POST /api/auth/reset-password
+ * @desc    Verify reset token and update password
+ * @access  Public
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.resetPassword = async (req, res) => {
   try {
@@ -172,8 +184,11 @@ exports.resetPassword = async (req, res) => {
 
 /**
  * Get current user profile
- * @route GET /auth/profile
- * @access Private
+ * @route   GET /api/auth/profile
+ * @desc    Retrieve details of the currently authenticated user
+ * @access  Private
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getProfile = async (req, res) => {
   try {
@@ -206,8 +221,11 @@ exports.getProfile = async (req, res) => {
 
 /**
  * Update current user profile
- * @route PUT /auth/profile
- * @access Private
+ * @route   PUT /api/auth/profile
+ * @desc    Modify account attributes for the current user
+ * @access  Private
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.updateProfile = async (req, res) => {
   try {
@@ -246,9 +264,12 @@ exports.updateProfile = async (req, res) => {
 };
 
 /**
- * Change user password
- * @route POST /auth/change-password
- * @access Private
+ * Change account password
+ * @route   POST /api/auth/change-password
+ * @desc    Update password while authenticated
+ * @access  Private
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.changePassword = async (req, res) => {
   try {
@@ -296,9 +317,12 @@ exports.changePassword = async (req, res) => {
 };
 
 /**
- * Update current user settings
- * @route PATCH /auth/settings
- * @access Private
+ * Update user preferences
+ * @route   PATCH /api/auth/settings
+ * @desc    Modify system settings for the current user
+ * @access  Private
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.updateSettings = async (req, res) => {
   try {
@@ -332,9 +356,12 @@ exports.updateSettings = async (req, res) => {
 };
 
 /**
- * Delete current user account
- * @route DELETE /auth/account
- * @access Private
+ * Delete account record
+ * @route   DELETE /api/auth/account
+ * @desc    Remove the authenticated user's account from the system
+ * @access  Private
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.deleteAccount = async (req, res) => {
   try {

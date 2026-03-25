@@ -7,9 +7,12 @@ const sendResponse = require('../utils/response');
  */
 
 /**
- * Create a new article or document in the knowledge base
- * @route POST /knowledge-base
- * @access admin, faculty
+ * Create a new article
+ * @route   POST /api/knowledge-base
+ * @desc    Publish a new documentation article or guide
+ * @access  Admin, Faculty
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.createKnowledgeBase = async (req, res) => {
   try {
@@ -40,9 +43,12 @@ exports.createKnowledgeBase = async (req, res) => {
 };
 
 /**
- * Fetch all articles from the knowledge base
- * @route GET /knowledge-base
- * @access Authenticated
+ * Fetch all articles
+ * @route   GET /api/knowledge-base
+ * @desc    Retrieve all published documentation and knowledge resources
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getAllKnowledgeBases = async (req, res) => {
   try {
@@ -75,9 +81,12 @@ exports.getAllKnowledgeBases = async (req, res) => {
 };
 
 /**
- * Get detailed content for a specific knowledge base article
- * @route GET /knowledge-base/:id
- * @access Authenticated
+ * Get article by ID
+ * @route   GET /api/knowledge-base/:id
+ * @desc    Retrieve detailed content for a specific article
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getKnowledgeBaseById = async (req, res) => {
   try {
@@ -110,9 +119,12 @@ exports.getKnowledgeBaseById = async (req, res) => {
 };
 
 /**
- * Update article content or metadata
- * @route PUT /knowledge-base/:id
- * @access admin, faculty
+ * Update an article
+ * @route   PUT /api/knowledge-base/:id
+ * @desc    Modify the content or metadata of an existing article
+ * @access  Admin, Faculty
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.updateKnowledgeBase = async (req, res) => {
   try {
@@ -145,9 +157,12 @@ exports.updateKnowledgeBase = async (req, res) => {
 };
 
 /**
- * Permanently remove an article from the knowledge base
- * @route DELETE /knowledge-base/:id
- * @access admin
+ * Delete an article
+ * @route   DELETE /api/knowledge-base/:id
+ * @desc    Permanently remove an article from the knowledge base
+ * @access  Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.deleteKnowledgeBase = async (req, res) => {
   try {

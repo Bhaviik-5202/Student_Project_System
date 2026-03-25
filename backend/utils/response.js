@@ -1,7 +1,6 @@
 /**
  * API Response Utility
- * ------------------------------------------------------------------
- * Ensures consistent structure for all API responses across the platform.
+ * Ensures a uniform, professional JSON structure for all server-side responses across the platform.
  */
 
 /**

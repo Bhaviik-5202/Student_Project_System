@@ -1,6 +1,6 @@
 /**
  * Permission Repository
- * Data access layer for Permission-related database operations.
+ * Handles direct database access and access control management for the Permission model.
  */
 const Permission = require('../models/permission.model');
 

@@ -1,6 +1,6 @@
 /**
  * Timeline Model
- * Tracks milestones and sprints for a specific project.
+ * Defines the schema for project management timelines, tracking milestones, development sprints, and task completion.
  */
 const mongoose = require('mongoose');
 

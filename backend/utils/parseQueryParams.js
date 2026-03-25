@@ -1,8 +1,6 @@
 /**
  * Query Parameter Parser Utility
- * ------------------------------------------------------------------
- * Extract and sanitize pagination and filter parameters from
- * request query strings for database queries.
+ * Sanitizes and extracts pagination, sorting, and filter parameters for database queries.
  */
 
 /**

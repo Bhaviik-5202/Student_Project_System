@@ -1,3 +1,7 @@
+/**
+ * Diagnose Guides Script
+ * Utility script for auditing and reporting on project-to-staff guide assignments within the database.
+ */
 const mongoose = require('mongoose');
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '../.env') });
@@ -6,6 +10,9 @@ const Project = require('../models/project.model');
 const Staff = require('../models/staff.model');
 const db = require('../config/db');
 
+/**
+ * Executes the guide diagnosis logic.
+ */
 async function diagnose() {
   try {
     await db();

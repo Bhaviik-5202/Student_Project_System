@@ -1,8 +1,6 @@
 /**
  * ApiError Utility
- * ------------------------------------------------------------------
- * Centralized custom error class for handling operational API errors.
- * Extends the native Error object by adding HTTP status codes and details.
+ * Centralized custom error class for handling operational API errors with HTTP status codes.
  */
 
 class ApiError extends Error {

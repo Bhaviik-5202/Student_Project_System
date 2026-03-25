@@ -1,6 +1,6 @@
 /**
  * Chat Model
- * Represents a conversation thread between users, potentially linked to a project.
+ * Defines the schema for conversation threads, supporting both group chats and project-linked discussions.
  */
 const mongoose = require('mongoose');
 

@@ -1,6 +1,6 @@
 /**
  * Evaluation Model
- * Stores assessment scores and feedback for students, projects, or assignments.
+ * Defines the schema for assessment scores and feedback across students, projects, and academic assignments.
  */
 const mongoose = require('mongoose');
 

@@ -7,9 +7,12 @@ const sendResponse = require('../utils/response');
  */
 
 /**
- * Create a new academic course
- * @route POST /courses
- * @access Admin
+ * Create a new course
+ * @route   POST /api/courses
+ * @desc    Register a new academic course with title and description
+ * @access  Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.createCourse = async (req, res) => {
   try {
@@ -39,9 +42,12 @@ exports.createCourse = async (req, res) => {
 };
 
 /**
- * Fetch all registered courses
- * @route GET /courses
- * @access Authenticated
+ * Fetch all courses
+ * @route   GET /api/courses
+ * @desc    Retrieve a list of all registered academic courses
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getAllCourses = async (req, res) => {
   try {
@@ -71,9 +77,12 @@ exports.getAllCourses = async (req, res) => {
 };
 
 /**
- * Get detailed info for a specific course
- * @route GET /courses/:id
- * @access Authenticated
+ * Get detailed course info
+ * @route   GET /api/courses/:id
+ * @desc    Retrieve attributes and faculty details for a specific course
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getCourseById = async (req, res) => {
   try {
@@ -103,9 +112,12 @@ exports.getCourseById = async (req, res) => {
 };
 
 /**
- * Update course details or faculty assignment
- * @route PUT /courses/:id
- * @access Admin
+ * Update course details
+ * @route   PUT /api/courses/:id
+ * @desc    Modify course title, description, or faculty assignment
+ * @access  Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.updateCourse = async (req, res) => {
   try {
@@ -135,9 +147,12 @@ exports.updateCourse = async (req, res) => {
 };
 
 /**
- * Permanently remove a course from the system
- * @route DELETE /courses/:id
- * @access Admin
+ * Remove a course record
+ * @route   DELETE /api/courses/:id
+ * @desc    Permanently delete a course and its student associations
+ * @access  Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.deleteCourse = async (req, res) => {
   try {
@@ -167,9 +182,12 @@ exports.deleteCourse = async (req, res) => {
 };
 
 /**
- * Enroll the current user (student) in a course
- * @route POST /courses/:id/enroll
- * @access Student
+ * Enroll in a course
+ * @route   POST /api/courses/:id/enroll
+ * @desc    Register the authenticated student into a specific course
+ * @access  Student
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.enrollCourse = async (req, res) => {
   try {
@@ -203,9 +221,12 @@ exports.enrollCourse = async (req, res) => {
 };
 
 /**
- * Get courses enrolled by the current student
- * @route GET /courses/my
- * @access Student
+ * Fetch enrolled courses
+ * @route   GET /api/courses/my
+ * @desc    Retrieve all courses the current student is enrolled in
+ * @access  Student
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getMyCourses = async (req, res) => {
   try {

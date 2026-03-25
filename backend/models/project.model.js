@@ -1,6 +1,6 @@
 /**
  * Project Model
- * Represents a student project with its status, progress, and members.
+ * Defines the core schema for student projects, managing lifecycle status, development progress, and team membership.
  */
 const mongoose = require('mongoose');
 const slugify = require('../utils/slugify');

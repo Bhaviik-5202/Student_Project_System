@@ -7,9 +7,12 @@ const sendResponse = require('../utils/response');
  */
 
 /**
- * Fetch general system-wide dashboard statistics
- * @route GET /analytics/dashboard
- * @access Admin
+ * Get dashboard statistics
+ * @route   GET /api/analytics/dashboard
+ * @desc    Retrieve high-level system-wide metrics for the admin dashboard
+ * @access  Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getDashboardStats = async (req, res) => {
   try {
@@ -41,9 +44,12 @@ exports.getDashboardStats = async (req, res) => {
 };
 
 /**
- * Fetch project metrics and completion trends
- * @route GET /analytics/projects
- * @access Admin, Faculty
+ * Get project analytics
+ * @route   GET /api/analytics/projects
+ * @desc    Retrieve detailed metrics on project completion, health, and trends
+ * @access  Admin, Faculty
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getProjectAnalytics = async (req, res) => {
   try {
@@ -75,9 +81,12 @@ exports.getProjectAnalytics = async (req, res) => {
 };
 
 /**
- * Fetch user engagement and activity metrics
- * @route GET /analytics/users
- * @access Admin
+ * Get user analytics
+ * @route   GET /api/analytics/users
+ * @desc    Retrieve statistics on user registration, roles, and engagement
+ * @access  Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getUserAnalytics = async (req, res) => {
   try {
@@ -109,9 +118,12 @@ exports.getUserAnalytics = async (req, res) => {
 };
 
 /**
- * Fetch faculty-specific dashboard metrics
- * @route GET /analytics/faculty-dashboard
- * @access Faculty
+ * Get faculty stats
+ * @route   GET /api/analytics/faculty-dashboard
+ * @desc    Retrieve specialized metrics for the faculty-specific dashboard
+ * @access  Faculty
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getFacultyDashboardStats = async (req, res) => {
   try {
@@ -144,9 +156,12 @@ exports.getFacultyDashboardStats = async (req, res) => {
 };
 
 /**
- * Fetch student-specific performance and project metrics
- * @route GET /analytics/student-dashboard
- * @access Student
+ * Get student stats
+ * @route   GET /api/analytics/student-dashboard
+ * @desc    Retrieve personalized academic and project metrics for a student
+ * @access  Student
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getStudentDashboardStats = async (req, res) => {
   try {

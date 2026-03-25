@@ -1,7 +1,6 @@
 /**
  * Authentication API Tests
- * ------------------------------------------------------------------
- * Tests for user identity verification and sesión management.
+ * Validates user identity verification, registration flows, and secure session management.
  */
 
 const request = require('supertest');

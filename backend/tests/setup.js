@@ -1,8 +1,6 @@
 /**
  * Test Environment Setup
- * ------------------------------------------------------------------
- * Global configuration for the test suite, including database
- * connection management and timing settings.
+ * Configures the global test environment, including database connection pooling and timeout management.
  */
 
 const app = require('../server');

@@ -1,6 +1,6 @@
 /**
  * Portfolio Model
- * Represents a student's public-facing project showcase and skill set.
+ * Defines the schema for student project showcases, tracking skill sets, earned badges, and academic transcripts.
  */
 const mongoose = require('mongoose');
 

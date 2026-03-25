@@ -1,3 +1,7 @@
+/**
+ * Evaluation Service
+ * Business logic layer for project evaluations and feedback.
+ */
 const evaluationRepository = require('../repositories/evaluation.repository');
 
 /**
@@ -10,9 +14,9 @@ const evaluationRepository = require('../repositories/evaluation.repository');
 const response = (error, data, message) => ({ error, data, message });
 
 /**
- * Persist a new project evaluation
+ * Create project evaluation
  * @param {Object} data - Evaluation data payload
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with new assessment record
  */
 exports.create = async (data) => {
   try {
@@ -24,8 +28,8 @@ exports.create = async (data) => {
 };
 
 /**
- * Fetch all project evaluations
- * @returns {Promise<Object>} Formatted service response with evaluation list
+ * Get all evaluations
+ * @returns {Promise<Object>} Formatted service response with global assessment history
  */
 exports.getAll = async () => {
   try {
@@ -37,9 +41,9 @@ exports.getAll = async () => {
 };
 
 /**
- * Get detailed evaluation information by ID
+ * Get evaluation by ID
  * @param {string} id - Evaluation identifier
- * @returns {Promise<Object>} Formatted service response with evaluation data
+ * @returns {Promise<Object>} Formatted service response with full scoring metadata
  */
 exports.getById = async (id) => {
   try {
@@ -52,10 +56,10 @@ exports.getById = async (id) => {
 };
 
 /**
- * Update evaluation scores or feedback
+ * Update evaluation
  * @param {string} id - Evaluation identifier
  * @param {Object} data - Attributes to update
- * @returns {Promise<Object>} Formatted service response with updated evaluation
+ * @returns {Promise<Object>} Formatted service response with modified assessment data
  */
 exports.update = async (id, data) => {
   try {
@@ -68,9 +72,9 @@ exports.update = async (id, data) => {
 };
 
 /**
- * Delete an evaluation from the system
+ * Delete evaluation
  * @param {string} id - Evaluation identifier
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with removal status
  */
 exports.remove = async (id) => {
   try {

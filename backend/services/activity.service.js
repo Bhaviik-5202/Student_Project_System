@@ -1,4 +1,8 @@
 const activityRepository = require('../repositories/activity.repository');
+/**
+ * Activity Service
+ * Business logic layer for system and project activity logging.
+ */
 
 /**
  * Standardized response helper for services
@@ -10,9 +14,9 @@ const activityRepository = require('../repositories/activity.repository');
 const response = (error, data, message) => ({ error, data, message });
 
 /**
- * Persist a new activity record
+ * Create activity record
  * @param {Object} data - Activity data payload
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with new activity entry
  */
 exports.create = async (data) => {
   try {
@@ -24,8 +28,8 @@ exports.create = async (data) => {
 };
 
 /**
- * Fetch all activities
- * @returns {Promise<Object>} Formatted service response with activity list
+ * Get all activities
+ * @returns {Promise<Object>} Formatted service response with global activity logs
  */
 exports.getAll = async () => {
   try {
@@ -37,9 +41,9 @@ exports.getAll = async () => {
 };
 
 /**
- * Get detailed activity by ID
- * @param {string} id - Activity ID
- * @returns {Promise<Object>} Formatted service response with activity data
+ * Get activity by ID
+ * @param {string} id - Activity identifier
+ * @returns {Promise<Object>} Formatted service response with detailed activity data
  */
 exports.getById = async (id) => {
   try {
@@ -52,10 +56,10 @@ exports.getById = async (id) => {
 };
 
 /**
- * Update activity attributes
- * @param {string} id - Activity ID
+ * Update activity
+ * @param {string} id - Activity identifier
  * @param {Object} data - Attributes to update
- * @returns {Promise<Object>} Formatted service response with updated activity
+ * @returns {Promise<Object>} Formatted service response with modified activity data
  */
 exports.update = async (id, data) => {
   try {
@@ -68,9 +72,9 @@ exports.update = async (id, data) => {
 };
 
 /**
- * Delete an activity from the system
- * @param {string} id - Activity ID
- * @returns {Promise<Object>} Formatted service response
+ * Delete activity
+ * @param {string} id - Activity identifier
+ * @returns {Promise<Object>} Formatted service response with removal status
  */
 exports.remove = async (id) => {
   try {

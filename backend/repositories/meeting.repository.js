@@ -1,6 +1,6 @@
 /**
  * Meeting Repository
- * Data access layer for Meeting-related database operations.
+ * Handles direct database access and event scheduling management for the Meeting model.
  */
 const Meeting = require('../models/meeting.model');
 

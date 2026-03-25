@@ -1,3 +1,7 @@
+/**
+ * Collaboration Service
+ * Business logic layer for discussions and file sharing operations.
+ */
 const discussionRepository = require('../repositories/discussion.repository');
 const sharedFileRepository = require('../repositories/sharedFile.repository');
 
@@ -16,9 +20,9 @@ const response = (error, data, message) => ({
 });
 
 /**
- * Fetch all discussions with optional filtering
+ * Get all discussions
  * @param {Object} filter - Filtering criteria
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with discussion list
  */
 exports.getDiscussions = async (filter = {}) => {
   try {
@@ -32,9 +36,9 @@ exports.getDiscussions = async (filter = {}) => {
 };
 
 /**
- * Fetch a specific discussion with populated replies
+ * Get discussion by ID
  * @param {string} id - Discussion ID
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with original post and replies
  */
 exports.getDiscussionById = async (id) => {
   try {
@@ -52,9 +56,9 @@ exports.getDiscussionById = async (id) => {
 };
 
 /**
- * Create a new discussion thread
+ * Create discussion thread
  * @param {Object} data - Discussion data
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with new thread instance
  */
 exports.createDiscussion = async (data) => {
   try {
@@ -66,10 +70,10 @@ exports.createDiscussion = async (data) => {
 };
 
 /**
- * Add a reply to an existing discussion
+ * Add reply to discussion
  * @param {string} discussionId - Target discussion ID
  * @param {Object} replyData - Reply content and author
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with updated thread
  */
 exports.addReply = async (discussionId, replyData) => {
   try {
@@ -84,9 +88,9 @@ exports.addReply = async (discussionId, replyData) => {
 };
 
 /**
- * Fetch shared files for a specific project
+ * Get shared project files
  * @param {string} projectId - Project ID
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with repository documents
  */
 exports.getSharedFiles = async (projectId) => {
   try {
@@ -101,9 +105,9 @@ exports.getSharedFiles = async (projectId) => {
 };
 
 /**
- * Share a new file within a project
+ * Share project file
  * @param {Object} data - File metadata and link
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with shared file record
  */
 exports.shareFile = async (data) => {
   try {
@@ -115,9 +119,9 @@ exports.shareFile = async (data) => {
 };
 
 /**
- * Remove a shared file from the project
+ * Remove shared file
  * @param {string} id - File ID
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with deletion status
  */
 exports.deleteSharedFile = async (id) => {
   try {

@@ -7,9 +7,12 @@ const sendResponse = require('../utils/response');
  */
 
 /**
- * Fetch all audit logs with pagination and filters
- * @route GET /audit-logs
- * @access Admin
+ * Fetch all audit logs
+ * @route   GET /api/audit-logs
+ * @desc    Retrieve a paginated list of security and operational audit entries
+ * @access  Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getAllAuditLogs = async (req, res) => {
   try {
@@ -43,9 +46,12 @@ exports.getAllAuditLogs = async (req, res) => {
 };
 
 /**
- * Retrieve a specific audit log entry by its ID
- * @route GET /audit-logs/:id
- * @access Admin
+ * Get audit log by ID
+ * @route   GET /api/audit-logs/:id
+ * @desc    Retrieve detailed information for a specific immutable audit record
+ * @access  Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getAuditLogById = async (req, res) => {
   try {
@@ -120,9 +126,12 @@ exports.getAuditLogsByResourceId = async (req, res) => {
 };
 
 /**
- * Record a new system-level audit entry
- * @route POST /audit-logs
- * @access System, Admin
+ * Record an audit entry
+ * @route   POST /api/audit-logs
+ * @desc    Manually trigger the creation of a system-level audit record
+ * @access  System, Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.createAuditLog = async (req, res) => {
   try {
@@ -153,9 +162,12 @@ exports.createAuditLog = async (req, res) => {
 };
 
 /**
- * Modify an existing audit log (restricted use)
- * @route PUT /audit-logs/:id
- * @access Admin (Super)
+ * Update audit log
+ * @route   PUT /api/audit-logs/:id
+ * @desc    Limited modification of audit log metadata (Administrative use only)
+ * @access  Admin (Super)
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.updateAuditLog = async (req, res) => {
   try {
@@ -188,9 +200,12 @@ exports.updateAuditLog = async (req, res) => {
 };
 
 /**
- * Remove an audit log entry from the database
- * @route DELETE /audit-logs/:id
- * @access Admin (Super)
+ * Delete an audit log
+ * @route   DELETE /api/audit-logs/:id
+ * @desc    Permanently remove an audit record from the database
+ * @access  Admin (Super)
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.deleteAuditLog = async (req, res) => {
   try {

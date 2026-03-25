@@ -1,7 +1,6 @@
 /**
  * Health & Error Handling API Tests
- * ------------------------------------------------------------------
- * Tests for system connectivity and global exception handling.
+ * Validates system heartbeats, connectivity status, and global exception handling resilience.
  */
 
 const request = require('supertest');

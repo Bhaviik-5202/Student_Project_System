@@ -1,6 +1,6 @@
 /**
  * Resource Model
- * Represents shared materials like documents, templates, and videos.
+ * Defines the schema for shared academic materials, including documents, templates, and video resources.
  */
 const mongoose = require('mongoose');
 

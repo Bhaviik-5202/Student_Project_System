@@ -1,3 +1,7 @@
+/**
+ * Message Service
+ * Business logic layer for individual chat messages and history.
+ */
 const messageRepository = require('../repositories/message.repository');
 const chatRepository = require('../repositories/chat.repository');
 
@@ -11,11 +15,11 @@ const chatRepository = require('../repositories/chat.repository');
 const response = (error, data, message) => ({ error, data, message });
 
 /**
- * Send a message within a specific chat room
+ * Send chat message
  * @param {string} chatId - Target chat identifier
  * @param {string} senderId - User ID of the sender
  * @param {string} content - Message text content
- * @returns {Promise<Object>} Formatted service response with the new message
+ * @returns {Promise<Object>} Formatted service response with delivered message
  */
 exports.sendMessage = async (chatId, senderId, content) => {
   try {
@@ -47,10 +51,10 @@ exports.sendMessage = async (chatId, senderId, content) => {
 };
 
 /**
- * Fetch all message history for a specific chat
+ * Get message history
  * @param {string} chatId - Chat identifier
- * @param {string} userId - Requesting user identifier (for auth)
- * @returns {Promise<Object>} Formatted service response with message list
+ * @param {string} userId - Requesting user identifier
+ * @returns {Promise<Object>} Formatted service response with chronological message list
  */
 exports.getMessagesByChat = async (chatId, userId) => {
   try {
@@ -76,10 +80,10 @@ exports.getMessagesByChat = async (chatId, userId) => {
 };
 
 /**
- * Remove a specific message from history
+ * Delete message
  * @param {string} messageId - Message identifier
- * @param {string} userId - User identifier (must be the sender)
- * @returns {Promise<Object>} Formatted service response
+ * @param {string} userId - Requesting user identifier
+ * @returns {Promise<Object>} Formatted service response with status confirmation
  */
 exports.deleteMessage = async (messageId, userId) => {
   try {
@@ -125,9 +129,9 @@ exports.getAll = async () => {
 };
 
 /**
- * Fetch a specific message by ID
+ * Get message by ID
  * @param {string} id - Message identifier
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with specific message data
  */
 exports.getById = async (id) => {
   try {
@@ -140,10 +144,10 @@ exports.getById = async (id) => {
 };
 
 /**
- * Update message content or status
+ * Update message content
  * @param {string} id - Message identifier
  * @param {Object} data - Update payload
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with updated content
  */
 exports.update = async (id, data) => {
   try {

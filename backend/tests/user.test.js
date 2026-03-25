@@ -1,7 +1,6 @@
 /**
  * User API Tests
- * ------------------------------------------------------------------
- * Tests for user profile management and administrative actions.
+ * Validates user profile management, role-based access control, and administrative audit actions.
  */
 
 const request = require('supertest');

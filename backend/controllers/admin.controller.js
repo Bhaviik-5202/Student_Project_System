@@ -7,10 +7,12 @@ const sendResponse = require('../utils/response');
  */
 
 /**
- * Get all roles
- * @route GET /admin/roles
- * @access Admin
- * @param {*} res
+ * Fetch all system roles
+ * @route   GET /api/admin/roles
+ * @desc    Retrieve a list of all defined user roles
+ * @access  Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getRoles = async (req, res) => {
   try {
@@ -24,11 +26,12 @@ exports.getRoles = async (req, res) => {
 };
 
 /**
- * Get permissions for a specific role
- * @route GET /admin/permissions/:role
- * @access Admin
- * @param {*} req
- * @param {*} res
+ * Fetch permissions for a role
+ * @route   GET /api/admin/permissions/:role
+ * @desc    Retrieve detailed permissions associated with a specific role
+ * @access  Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getPermissions = async (req, res) => {
   try {
@@ -43,11 +46,12 @@ exports.getPermissions = async (req, res) => {
 };
 
 /**
- * Get all backups
- * @route GET /admin/backups
- * @access Admin
- * @param {*} req
- * @param {*} res
+ * Fetch system backup history
+ * @route   GET /api/admin/backups
+ * @desc    List all available database and system backups
+ * @access  Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getBackups = async (req, res) => {
   try {
@@ -61,11 +65,12 @@ exports.getBackups = async (req, res) => {
 };
 
 /**
- * Create a new backup
- * @route POST /admin/backups
- * @access Admin
- * @param {*} req
- * @param {*} res
+ * Create a new system backup
+ * @route   POST /api/admin/backups
+ * @desc    Trigger a manual system-wide backup process
+ * @access  Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.createBackup = async (req, res) => {
   try {
@@ -82,11 +87,12 @@ exports.createBackup = async (req, res) => {
 };
 
 /**
- * Process batch operations
- * @route POST /admin/batch-operation
- * @access Admin
- * @param {*} req
- * @param {*} res
+ * Execute batch operations
+ * @route   POST /api/admin/batch-operation
+ * @desc    Perform administrative actions on multiple entities simultaneously
+ * @access  Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.batchOperation = async (req, res) => {
   try {

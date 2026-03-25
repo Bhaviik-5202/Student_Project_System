@@ -1,3 +1,7 @@
+/**
+ * Meeting Service
+ * Business logic layer for scheduling and managing project consultations.
+ */
 const meetingRepository = require('../repositories/meeting.repository');
 
 /**
@@ -10,9 +14,9 @@ const meetingRepository = require('../repositories/meeting.repository');
 const response = (error, data, message) => ({ error, data, message });
 
 /**
- * Schedule a new project meeting or consultation
+ * Create meeting
  * @param {Object} data - Meeting details (title, time, participants)
- * @returns {Promise<Object>} Formatted service response with new meeting data
+ * @returns {Promise<Object>} Formatted service response with new meeting instance
  */
 exports.create = async (data) => {
   try {
@@ -24,8 +28,8 @@ exports.create = async (data) => {
 };
 
 /**
- * Fetch all scheduled meetings recorded in the system
- * @returns {Promise<Object>} Formatted service response with meeting list
+ * Get all meetings
+ * @returns {Promise<Object>} Formatted service response with global meeting schedule
  */
 exports.getAll = async () => {
   try {
@@ -37,9 +41,9 @@ exports.getAll = async () => {
 };
 
 /**
- * Get detailed information for a specific meeting
+ * Get meeting by ID
  * @param {string} id - Meeting identifier
- * @returns {Promise<Object>} Formatted service response with meeting data
+ * @returns {Promise<Object>} Formatted service response with detailed consultation data
  */
 exports.getById = async (id) => {
   try {
@@ -52,10 +56,10 @@ exports.getById = async (id) => {
 };
 
 /**
- * Update meeting details or reschedule
+ * Update meeting details
  * @param {string} id - Meeting identifier
  * @param {Object} data - Updated attributes
- * @returns {Promise<Object>} Formatted service response with updated meeting
+ * @returns {Promise<Object>} Formatted service response with modified meeting data
  */
 exports.update = async (id, data) => {
   try {
@@ -68,9 +72,9 @@ exports.update = async (id, data) => {
 };
 
 /**
- * Cancel and remove a meeting record
+ * Delete meeting record
  * @param {string} id - Meeting identifier
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with cancellation status
  */
 exports.remove = async (id) => {
   try {
@@ -83,10 +87,10 @@ exports.remove = async (id) => {
 };
 
 /**
- * Register a user's intent to partipate in a meeting
+ * Participant join meeting
  * @param {string} id - Meeting identifier
  * @param {Object} user - User profile data
- * @returns {Promise<Object>} Formatted service response with join confirmation
+ * @returns {Promise<Object>} Formatted service response with confirmation
  */
 exports.join = async (id, user) => {
   try {

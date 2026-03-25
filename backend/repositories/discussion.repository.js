@@ -1,6 +1,6 @@
 /**
  * Discussion Repository
- * Data access layer for Discussion-related database operations.
+ * Handles direct database access and forum thread management for the Discussion model.
  */
 const Discussion = require('../models/discussion.model');
 

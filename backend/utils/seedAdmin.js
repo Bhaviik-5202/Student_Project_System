@@ -1,8 +1,8 @@
 const User = require('../models/user.model');
 
 /**
- * Ensures the master administrator user exists in the database.
- * If not, it creates a new admin user with the specified credentials.
+ * Admin Seeding Utility
+ * Ensures the existence of a master administrator user in the database for system bootstrapping.
  */
 const seedAdmin = async () => {
   try {

@@ -1,3 +1,7 @@
+/**
+ * Resource Service
+ * Business logic layer for educational resource and file management.
+ */
 const resourceRepository = require('../repositories/resource.repository');
 
 /**
@@ -10,9 +14,9 @@ const resourceRepository = require('../repositories/resource.repository');
 const response = (error, data, message) => ({ error, data, message });
 
 /**
- * Register a new educational resource/file in the system
+ * Register educational resource
  * @param {Object} data - Resource metadata and links
- * @returns {Promise<Object>} Formatted service response with new resource data
+ * @returns {Promise<Object>} Formatted service response with new resource document
  */
 exports.create = async (data) => {
   try {
@@ -24,12 +28,12 @@ exports.create = async (data) => {
 };
 
 /**
- * Fetch all resources with pagination and filtering support
+ * Fetch all resources
  * @param {Object} params - Query and pagination parameters
  * @param {number} params.page - Target page number
  * @param {number} params.limit - Max records per page
  * @param {Object} params.filters - Filter conditions
- * @returns {Promise<Object>} Formatted service response with paginated resources
+ * @returns {Promise<Object>} Formatted service response with paginated resource data
  */
 exports.getAll = async ({ page = 1, limit = 10, filters = {} } = {}) => {
   try {
@@ -59,9 +63,9 @@ exports.getAll = async ({ page = 1, limit = 10, filters = {} } = {}) => {
 };
 
 /**
- * Get detailed metadata for a specific resource
+ * Get resource by ID
  * @param {string} id - Resource identifier
- * @returns {Promise<Object>} Formatted service response with resource data
+ * @returns {Promise<Object>} Formatted service response with specific resource metadata
  */
 exports.getById = async (id) => {
   try {
@@ -74,9 +78,9 @@ exports.getById = async (id) => {
 };
 
 /**
- * Permanently remove a resource record
+ * Delete resource record
  * @param {string} id - Resource identifier
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with removal status
  */
 exports.remove = async (id) => {
   try {

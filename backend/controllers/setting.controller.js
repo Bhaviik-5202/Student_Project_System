@@ -7,9 +7,12 @@ const sendResponse = require('../utils/response');
  */
 
 /**
- * Fetch all system settings
- * @route GET /settings
- * @access Admin
+ * Fetch all settings
+ * @route   GET /api/settings
+ * @desc    Retrieve all system-wide configuration parameters
+ * @access  Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getAllSettings = async (req, res) => {
   try {
@@ -39,9 +42,12 @@ exports.getAllSettings = async (req, res) => {
 };
 
 /**
- * Retrieve a specific setting by its ID
- * @route GET /settings/:id
- * @access Authenticated
+ * Get setting by ID
+ * @route   GET /api/settings/:id
+ * @desc    Retrieve detailed information for a specific setting instance
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getSettingById = async (req, res) => {
   try {
@@ -71,9 +77,12 @@ exports.getSettingById = async (req, res) => {
 };
 
 /**
- * Create a new system setting
- * @route POST /settings
- * @access Admin
+ * Create a new setting
+ * @route   POST /api/settings
+ * @desc    Define a new system configuration key and value
+ * @access  Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.createSetting = async (req, res) => {
   try {
@@ -135,9 +144,12 @@ exports.getSettingByKey = async (req, res) => {
 };
 
 /**
- * Update an existing system setting
- * @route PUT /settings/:id
- * @access Admin
+ * Update a setting
+ * @route   PUT /api/settings/:id
+ * @desc    Modify the value or category of an existing system setting
+ * @access  Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.updateSetting = async (req, res) => {
   try {
@@ -247,9 +259,12 @@ exports.resetSettings = async (req, res) => {
   }
 };
 /**
- * Permanently delete a setting record
- * @route DELETE /settings/:id
- * @access Admin
+ * Delete a setting
+ * @route   DELETE /api/settings/:id
+ * @desc    Permanently remove a system configuration record
+ * @access  Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.deleteSetting = async (req, res) => {
   try {

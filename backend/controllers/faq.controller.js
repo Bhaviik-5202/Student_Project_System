@@ -7,9 +7,12 @@ const sendResponse = require('../utils/response');
  */
 
 /**
- * Create a new FAQ entry
- * @route POST /faqs
- * @access admin
+ * Create a new FAQ
+ * @route   POST /api/faqs
+ * @desc    Register a new frequently asked question and its answer
+ * @access  Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.createFAQ = async (req, res) => {
   try {
@@ -40,9 +43,12 @@ exports.createFAQ = async (req, res) => {
 };
 
 /**
- * Fetch all FAQ entries
- * @route GET /faqs
- * @access Authenticated
+ * Fetch all FAQs
+ * @route   GET /api/faqs
+ * @desc    Retrieve a list of all frequently asked questions
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getAllFAQs = async (req, res) => {
   try {
@@ -75,9 +81,12 @@ exports.getAllFAQs = async (req, res) => {
 };
 
 /**
- * Get detailed information for a specific FAQ by ID
- * @route GET /faqs/:id
- * @access Authenticated
+ * Get FAQ by ID
+ * @route   GET /api/faqs/:id
+ * @desc    Retrieve detailed information for a specific FAQ entry
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getFAQById = async (req, res) => {
   try {
@@ -108,9 +117,12 @@ exports.getFAQById = async (req, res) => {
 };
 
 /**
- * Update an existing FAQ entry
- * @route PUT /faqs/:id
- * @access admin
+ * Update an FAQ
+ * @route   PUT /api/faqs/:id
+ * @desc    Modify the question or answer for an existing FAQ entry
+ * @access  Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.updateFAQ = async (req, res) => {
   try {
@@ -141,9 +153,12 @@ exports.updateFAQ = async (req, res) => {
 };
 
 /**
- * Permanently remove an FAQ entry
- * @route DELETE /faqs/:id
- * @access admin
+ * Delete an FAQ
+ * @route   DELETE /api/faqs/:id
+ * @desc    Permanently remove an FAQ entry from the system
+ * @access  Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.deleteFAQ = async (req, res) => {
   try {

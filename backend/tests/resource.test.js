@@ -1,7 +1,6 @@
 /**
  * Resource API Tests
- * ------------------------------------------------------------------
- * Tests for academic asset management (documents, templates, videos).
+ * Validates the management of academic assets, including documents, templates, and multimedia content.
  */
 
 const request = require('supertest');

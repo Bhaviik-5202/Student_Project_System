@@ -1,7 +1,6 @@
 /**
  * Chat API Tests
- * ------------------------------------------------------------------
- * Tests for real-time communication channels and messaging sessions.
+ * Validates real-time communication channels, private threads, and messaging functionality.
  */
 
 const request = require('supertest');

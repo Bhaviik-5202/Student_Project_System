@@ -1,3 +1,7 @@
+/**
+ * Resource Seeding Utility
+ * Populates the system with essential academic assets, templates, and multimedia tutorials.
+ */
 const mongoose = require('mongoose');
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '../.env') });

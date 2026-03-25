@@ -1,3 +1,7 @@
+/**
+ * User Service
+ * Business logic layer for user-related operations.
+ */
 const userRepository = require('../repositories/user.repository');
 const studentRepository = require('../repositories/student.repository');
 const bcrypt = require('bcrypt');
@@ -16,13 +20,13 @@ const crypto = require('crypto');
 const response = (error, data, message) => ({ error, data, message });
 
 /**
- * Register a new user with standard credentials
+ * Register a new user
  * @param {Object} userData - User registration payload
  * @param {string} userData.name - Full name of the user
  * @param {string} userData.email - Unique email address
  * @param {string} userData.password - Plain text password (hashed before save)
- * @param {string} userData.role - User role (student, faculty, admin)
- * @returns {Promise<Object>} Formatted service response
+ * @param {string} userData.role - User role (student, faculty)
+ * @returns {Promise<Object>} Formatted service response with new user data
  */
 exports.register = async ({ name, email, password, role = 'student' }) => {
   try {
@@ -67,11 +71,11 @@ exports.register = async ({ name, email, password, role = 'student' }) => {
 };
 
 /**
- * Authenticate user and generate JWT access token
+ * Authenticate user
  * @param {Object} credentials - Login credentials
  * @param {string} credentials.email - Account email
  * @param {string} credentials.password - Account password
- * @returns {Promise<Object>} Formatted service response with token and user profile
+ * @returns {Promise<Object>} Formatted service response with JWT token and profile
  */
 exports.login = async ({ email, password }) => {
   try {
@@ -122,9 +126,9 @@ exports.getAll = async () => {
 };
 
 /**
- * Get detailed user profile by ID
+ * Get user by ID
  * @param {string} id - User UUID/ObjectID
- * @returns {Promise<Object>} Formatted service response with user data
+ * @returns {Promise<Object>} Formatted service response with user profile
  */
 exports.getById = async (id) => {
   try {
@@ -185,9 +189,9 @@ exports.remove = async (id) => {
 };
 
 /**
- * Handle password reset request
+ * Process forgot password
  * @param {string} email - User email
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with status message
  */
 exports.forgotPassword = async (email) => {
   try {

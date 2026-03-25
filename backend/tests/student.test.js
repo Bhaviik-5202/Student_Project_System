@@ -1,7 +1,6 @@
 /**
  * Student API Tests
- * ------------------------------------------------------------------
- * Tests for student registration and record management.
+ * Validates student profile registration, enrollment status, and academic record management.
  */
 
 const request = require('supertest');

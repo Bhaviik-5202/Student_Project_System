@@ -1,3 +1,7 @@
+/**
+ * Support Ticket Service
+ * Business logic layer for managing system support requests and help tickets.
+ */
 const supportticketRepository = require('../repositories/supportticket.repository');
 
 /**
@@ -10,9 +14,9 @@ const supportticketRepository = require('../repositories/supportticket.repositor
 const response = (error, data, message) => ({ error, data, message });
 
 /**
- * Persist a new system support ticket
+ * Create support ticket
  * @param {Object} data - Support ticket data payload
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with new ticket record
  */
 exports.create = async (data) => {
   try {
@@ -45,9 +49,9 @@ exports.getAll = async () => {
 };
 
 /**
- * Get detailed support ticket information by ID
+ * Get support ticket by ID
  * @param {string} id - Ticket identifier
- * @returns {Promise<Object>} Formatted service response with ticket data
+ * @returns {Promise<Object>} Formatted service response with full request details
  */
 exports.getById = async (id) => {
   try {
@@ -64,10 +68,10 @@ exports.getById = async (id) => {
 };
 
 /**
- * Update support ticket status or details
+ * Update support ticket
  * @param {string} id - Ticket identifier
  * @param {Object} data - Attributes to update
- * @returns {Promise<Object>} Formatted service response with updated ticket
+ * @returns {Promise<Object>} Formatted service response with modified ticket data
  */
 exports.update = async (id, data) => {
   try {
@@ -84,9 +88,9 @@ exports.update = async (id, data) => {
 };
 
 /**
- * Delete a support ticket from the system
+ * Delete support ticket
  * @param {string} id - Ticket identifier
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with removal status
  */
 exports.remove = async (id) => {
   try {

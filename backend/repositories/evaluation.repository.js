@@ -1,6 +1,6 @@
 /**
  * Evaluation Repository
- * Data access layer for Evaluation-related database operations.
+ * Handles direct database access and assessment data management for the Evaluation model.
  */
 const Evaluation = require('../models/evaluation.model');
 

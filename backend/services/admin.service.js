@@ -1,13 +1,13 @@
-const userRepository = require('../repositories/user.repository');
-const auditLogService = require('./auditlog.service');
-
 /**
  * Admin Service
- * Handles administrative tasks like permissions, backups, and batch operations.
+ * Business logic layer for administrative tasks like permissions, backups, and batch operations.
  */
+const userRepository = require('../repositories/user.repository');
+const auditLogService = require('./auditlog.service');
 const adminService = {
   /**
-   * Get all available system roles
+   * Get system roles
+   * @returns {Promise<Object>} Formatted service response with active roles list
    */
   getRoles: async () => {
     try {
@@ -39,6 +39,8 @@ const adminService = {
 
   /**
    * Get permissions for a specific role
+   * @param {string} roleName - Name of the role to fetch permissions for
+   * @returns {Promise<Object>} Formatted service response with permissions mapping
    */
   getPermissions: async (roleName) => {
     try {
@@ -77,6 +79,7 @@ const adminService = {
 
   /**
    * Get system backups
+   * @returns {Promise<Object>} Formatted service response with historical backups list
    */
   getBackups: async () => {
     try {
@@ -104,7 +107,13 @@ const adminService = {
   },
 
   /**
-   * Process a batch operation
+   * Process batch operation
+   * @param {Object} operationData - Data for the batch operation
+   * @param {string} operationData.operation - Type of operation to perform
+   * @param {Array} operationData.selectedUsers - IDs of users to target
+   * @param {string} operationData.message - Message content if applicable
+   * @param {string} operationData.adminId - ID of the admin performing the operation
+   * @returns {Promise<Object>} Formatted service response with operation status
    */
   processBatchOperation: async (operationData) => {
     const { operation, selectedUsers, message } = operationData;

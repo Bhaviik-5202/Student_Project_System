@@ -1,6 +1,6 @@
 /**
  * Project Repository
- * Data access layer for Project-related database operations.
+ * Handles direct database access and core project lifecycle management for the Project model.
  */
 const Project = require('../models/project.model');
 

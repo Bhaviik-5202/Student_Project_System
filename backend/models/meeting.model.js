@@ -1,6 +1,6 @@
 /**
  * Meeting Model
- * Represents a scheduled meeting with participants, location, and project link.
+ * Defines the schema for scheduled meetings, tracking participants, locations, and project associations.
  */
 const mongoose = require('mongoose');
 

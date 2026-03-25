@@ -1,3 +1,7 @@
+/**
+ * Course Seeding Utility
+ * Initializes the academic catalog with a comprehensive set of foundational and advanced computer science courses.
+ */
 const mongoose = require('mongoose');
 require('dotenv').config();
 const Course = require('../models/courses.model');

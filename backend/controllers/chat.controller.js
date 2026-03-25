@@ -7,9 +7,12 @@ const sendResponse = require('../utils/response');
  */
 
 /**
- * Initialize a new chat session or group
- * @route POST /chats
- * @access Authenticated
+ * Create a new chat
+ * @route   POST /api/chats
+ * @desc    Initialize a new one-on-one or group chat session
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.createChat = async (req, res) => {
   try {
@@ -40,9 +43,12 @@ exports.createChat = async (req, res) => {
 };
 
 /**
- * Fetch all active chat sessions for the authenticated user
- * @route GET /chats
- * @access Authenticated
+ * Fetch user chats
+ * @route   GET /api/chats
+ * @desc    Retrieve all active chat conversations for the current user
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getUserChats = async (req, res) => {
   try {
@@ -75,9 +81,12 @@ exports.getUserChats = async (req, res) => {
 };
 
 /**
- * Retrieve messages and metadata for a specific chat session
- * @route GET /chats/:id
- * @access Authenticated
+ * Get chat by ID
+ * @route   GET /api/chats/:id
+ * @desc    Retrieve detailed information and participant list for a chat
+ * @access  Authenticated (Participant)
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getChatById = async (req, res) => {
   try {
@@ -108,9 +117,12 @@ exports.getChatById = async (req, res) => {
 };
 
 /**
- * Update chat settings or member list
- * @route PUT /chats/:id
- * @access Authenticated
+ * Update chat details
+ * @route   PUT /api/chats/:id
+ * @desc    Modify chat settings, title, or participant list
+ * @access  Authenticated (Participant)
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.updateChat = async (req, res) => {
   try {
@@ -141,9 +153,12 @@ exports.updateChat = async (req, res) => {
 };
 
 /**
- * Permanently delete a chat record and message history
- * @route DELETE /chats/:id
- * @access Admin, Participant (if authorized)
+ * Delete a chat
+ * @route   DELETE /api/chats/:id
+ * @desc    Permanently remove a chat session and its history
+ * @access  Admin, Participant
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.deleteChat = async (req, res) => {
   try {

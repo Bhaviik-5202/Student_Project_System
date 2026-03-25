@@ -1,3 +1,7 @@
+/**
+ * Permission Service
+ * Business logic layer for mapping and managing system permissions.
+ */
 const permissionRepository = require('../repositories/permission.repository');
 
 /**
@@ -10,9 +14,9 @@ const permissionRepository = require('../repositories/permission.repository');
 const response = (error, data, message) => ({ error, data, message });
 
 /**
- * Persist a new granular system permission
+ * Create permission
  * @param {Object} data - Permission data payload
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with new permission entry
  */
 exports.create = async (data) => {
   try {
@@ -37,9 +41,9 @@ exports.getAll = async () => {
 };
 
 /**
- * Get detailed permission information by ID
+ * Get permission by ID
  * @param {string} id - Permission identifier
- * @returns {Promise<Object>} Formatted service response with permission data
+ * @returns {Promise<Object>} Formatted service response with granular details
  */
 exports.getById = async (id) => {
   try {
@@ -68,9 +72,9 @@ exports.update = async (id, data) => {
 };
 
 /**
- * Permanently remove a permission from the system
+ * Delete permission
  * @param {string} id - Permission identifier
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with removal status
  */
 exports.remove = async (id) => {
   try {

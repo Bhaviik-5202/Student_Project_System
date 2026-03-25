@@ -1,6 +1,6 @@
 /**
  * SharedFile Model
- * Represents files uploaded and shared within a specific project context.
+ * Defines the schema for project-specific file storage, tracking uploads, downloads, and ownership within a project context.
  */
 const mongoose = require('mongoose');
 

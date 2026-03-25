@@ -1,6 +1,6 @@
 /**
  * Permission Model
- * Manages fine-grained access control for specific modules per user.
+ * Defines the schema for fine-grained module-level access control and user authorization overrides.
  */
 const mongoose = require('mongoose');
 

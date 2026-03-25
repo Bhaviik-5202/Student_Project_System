@@ -1,6 +1,6 @@
 /**
  * Setting Model
- * Manages global system-wide configuration parameters.
+ * Defines the schema for global system-wide configuration parameters and administrative preferences.
  */
 const mongoose = require('mongoose');
 

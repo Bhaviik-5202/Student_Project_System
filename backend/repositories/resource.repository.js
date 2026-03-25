@@ -1,6 +1,6 @@
 /**
  * Resource Repository
- * Data access layer for Resource-related database operations.
+ * Handles direct database access and shared material management for the Resource model.
  */
 const Resource = require('../models/resource.model');
 

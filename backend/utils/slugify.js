@@ -1,5 +1,6 @@
 /**
- * Generate a URL-friendly slug from a string
+ * Slugify Utility
+ * Generates URL-friendly slugs from strings for permanent resource identification.
  * @param {string} text - The string to slugify
  * @returns {string} The formatted slug
  */

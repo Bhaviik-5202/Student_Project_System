@@ -1,3 +1,7 @@
+/**
+ * Chat Service
+ * Business logic layer for real-time chat room management.
+ */
 const chatRepository = require('../repositories/chat.repository');
 
 /**
@@ -10,9 +14,9 @@ const chatRepository = require('../repositories/chat.repository');
 const response = (error, data, message) => ({ error, data, message });
 
 /**
- * Persist a new chat instance
+ * Create chat instance
  * @param {Object} data - Chat data payload
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with new chat room
  */
 exports.create = async (data) => {
   try {
@@ -37,9 +41,9 @@ exports.getAll = async () => {
 };
 
 /**
- * Retrieve all chats associated with a specific user
+ * Get chats by user
  * @param {string} userId - User identifier
- * @returns {Promise<Object>} Formatted service response with user's chats
+ * @returns {Promise<Object>} Formatted service response with user's active chat list
  */
 exports.getByUserId = async (userId) => {
   try {
@@ -51,9 +55,9 @@ exports.getByUserId = async (userId) => {
 };
 
 /**
- * Get detailed chat room information by ID
+ * Get chat by ID
  * @param {string} id - Chat identifier
- * @returns {Promise<Object>} Formatted service response with chat data
+ * @returns {Promise<Object>} Formatted service response with specific chat metadata
  */
 exports.getById = async (id) => {
   try {
@@ -66,10 +70,10 @@ exports.getById = async (id) => {
 };
 
 /**
- * Update chat attributes (e.g., participants, status)
+ * Update chat attributes
  * @param {string} id - Chat identifier
  * @param {Object} data - Attributes to update
- * @returns {Promise<Object>} Formatted service response with updated chat
+ * @returns {Promise<Object>} Formatted service response with modified chat data
  */
 exports.update = async (id, data) => {
   try {
@@ -82,9 +86,9 @@ exports.update = async (id, data) => {
 };
 
 /**
- * Delete a chat from the system
+ * Delete chat instance
  * @param {string} id - Chat identifier
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with removal status
  */
 exports.remove = async (id) => {
   try {

@@ -1,6 +1,6 @@
 /**
  * ProjectType Model
- * Defines different types of projects (e.g., Web, Mobile, AI) and their constraints.
+ * Defines the schema for project categories (e.g., Web, AI), specifying duration constraints and student capacity limits.
  */
 const mongoose = require('mongoose');
 

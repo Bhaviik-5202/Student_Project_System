@@ -1,6 +1,6 @@
 /**
  * KnowledgeBase Model
- * Stores informational articles and documentation for the knowledge base section.
+ * Defines the schema for informational articles, system documentation, and community resources.
  */
 const mongoose = require('mongoose');
 

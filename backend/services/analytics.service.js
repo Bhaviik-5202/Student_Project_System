@@ -1,3 +1,7 @@
+/**
+ * Analytics Service
+ * Business logic layer for system metrics, dashboard statistics, and performance tracking.
+ */
 const projectRepository = require('../repositories/project.repository');
 const userRepository = require('../repositories/user.repository');
 const assignmentRepository = require('../repositories/assignment.repository');
@@ -19,6 +23,9 @@ const response = (error, data, message) => ({ error, data, message });
 
 /**
  * Calculate growth percentage comparing current month to last month
+ * @param {Object} repository - Mongoose repository to query
+ * @param {Object} filter - Filtering criteria
+ * @returns {Promise<string>} Formatted growth string (e.g., "+10%")
  */
 const calculateGrowth = async (repository, filter = {}) => {
   const now = new Date();
@@ -51,6 +58,8 @@ const calculateGrowth = async (repository, filter = {}) => {
 
 /**
  * Get meetings for today
+ * @param {Object} filter - Filtering criteria
+ * @returns {Promise<Array>} List of today's meetings
  */
 const getTodayMeetings = async (filter = {}) => {
   const start = new Date();
@@ -65,8 +74,8 @@ const getTodayMeetings = async (filter = {}) => {
 };
 
 /**
- * Generate high-level system dashboard metrics
- * @returns {Promise<Object>} Formatted service response with system stats
+ * Get dashboard statistics
+ * @returns {Promise<Object>} Formatted service response with system-wide metrics
  */
 exports.getDashboardStats = async () => {
   try {
@@ -287,6 +296,10 @@ exports.getDashboardStats = async () => {
  */
 exports.getGlobalStats = exports.getDashboardStats;
 
+/**
+ * Get grade distribution
+ * @returns {Promise<Object>} Formatted service response with category-wise grade metrics
+ */
 exports.getGradeDistribution = async () => {
   try {
     // Simplified grade mapping for demonstration
@@ -322,6 +335,10 @@ exports.getGradeDistribution = async () => {
   }
 };
 
+/**
+ * Get performance metrics
+ * @returns {Promise<Object>} Formatted service response with high-level KPI data
+ */
 exports.getPerformanceMetrics = async () => {
   try {
     const totalProjects = await projectRepository.count();
@@ -447,6 +464,11 @@ exports.getPerformanceMetrics = async () => {
   }
 };
 
+/**
+ * Get progress analytics
+ * @param {Object} filter - Filtering criteria
+ * @returns {Promise<Object>} Formatted service response with project completion data
+ */
 exports.getProgressAnalytics = async (filter = {}) => {
   try {
     const projects = await projectRepository.findAll(filter, {
@@ -483,6 +505,8 @@ exports.getProgressAnalytics = async (filter = {}) => {
 
 /**
  * Internal helper to get formatted progress data
+ * @param {Object} filter - Filtering criteria
+ * @returns {Promise<Array>} Formatted progress data for projects
  */
 exports._getProjectProgressData = async (filter) => {
   try {
@@ -508,6 +532,10 @@ exports._getProjectProgressData = async (filter) => {
   }
 };
 
+/**
+ * Get usage statistics
+ * @returns {Promise<Object>} Formatted service response with user engagement data
+ */
 exports.getUsageStatistics = async () => {
   try {
     const userCount = await userRepository.count();
@@ -558,6 +586,10 @@ exports.getUsageStatistics = async () => {
   }
 };
 
+/**
+ * Get project statistics
+ * @returns {Promise<Object>} Formatted service response with global project counts
+ */
 exports.getProjectStats = async () => {
   try {
     const total = await projectRepository.count();
@@ -579,6 +611,10 @@ exports.getProjectStats = async () => {
   }
 };
 
+/**
+ * Get user statistics
+ * @returns {Promise<Object>} Formatted service response with role distribution data
+ */
 exports.getUserStats = async () => {
   try {
     const total = await userRepository.count();
@@ -604,9 +640,9 @@ exports.getUserStats = async () => {
 };
 
 /**
- * Generate dashboard metrics for a specific faculty member
- * @param {string} facultyId - Faculty identifier
- * @returns {Promise<Object>} Formatted service response with faculty stats
+ * Get faculty dashboard stats
+ * @param {string} userId - User identifier
+ * @returns {Promise<Object>} Formatted service response with faculty-specific metrics
  */
 exports.getFacultyDashboardStats = async (userId) => {
   try {
@@ -703,9 +739,9 @@ exports.getFacultyDashboardStats = async (userId) => {
 };
 
 /**
- * Generate dashboard metrics for a specific student
+ * Get student dashboard stats
  * @param {string} studentId - Student identifier
- * @returns {Promise<Object>} Formatted service response with student stats
+ * @returns {Promise<Object>} Formatted service response with personal academic metrics
  */
 exports.getStudentDashboardStats = async (studentId) => {
   try {

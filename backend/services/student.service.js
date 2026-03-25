@@ -1,3 +1,7 @@
+/**
+ * Student Service
+ * Business logic layer for student-related operations.
+ */
 const studentRepository = require('../repositories/student.repository');
 const projectRepository = require('../repositories/project.repository');
 const evaluationRepository = require('../repositories/evaluation.repository');
@@ -12,9 +16,9 @@ const evaluationRepository = require('../repositories/evaluation.repository');
 const response = (error, data, message) => ({ error, data, message });
 
 /**
- * Retrieve all projects owned by a specific student
+ * Get student projects
  * @param {string} studentId - Student identifier
- * @returns {Promise<Object>} Formatted service response with projects list
+ * @returns {Promise<Object>} Formatted service response with owned projects list
  */
 exports.getProjects = async (studentId) => {
   try {
@@ -48,9 +52,9 @@ exports.getGrades = async (studentId) => {
 };
 
 /**
- * Register a new student profile in the system
+ * Create student profile
  * @param {Object} data - Student attribute data
- * @returns {Promise<Object>} Formatted service response with new student data
+ * @returns {Promise<Object>} Formatted service response with newly created profile
  */
 exports.create = async (data) => {
   try {
@@ -62,8 +66,8 @@ exports.create = async (data) => {
 };
 
 /**
- * Fetch a list of all students currently in the system
- * @returns {Promise<Object>} Formatted service response with student list
+ * Fetch all students
+ * @returns {Promise<Object>} Formatted service response with global student list
  */
 exports.getAll = async () => {
   try {
@@ -106,9 +110,9 @@ exports.update = async (id, data) => {
 };
 
 /**
- * Remove a student profile from the system
+ * Remove student profile
  * @param {string} id - Student ID
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with deletion status
  */
 exports.remove = async (id) => {
   try {

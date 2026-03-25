@@ -1,3 +1,7 @@
+/**
+ * Knowledgebase Service
+ * Business logic layer for instructional guides and information articles.
+ */
 const knowledgebaseRepository = require('../repositories/knowledgebase.repository');
 
 /**
@@ -10,9 +14,9 @@ const knowledgebaseRepository = require('../repositories/knowledgebase.repositor
 const response = (error, data, message) => ({ error, data, message });
 
 /**
- * Persist a new knowledgebase entry
+ * Create article
  * @param {Object} data - Knowledgebase data payload
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with new article entry
  */
 exports.create = async (data) => {
   try {
@@ -24,8 +28,8 @@ exports.create = async (data) => {
 };
 
 /**
- * Fetch all registered knowledgebase entries
- * @returns {Promise<Object>} Formatted service response with entry list
+ * Get all articles
+ * @returns {Promise<Object>} Formatted service response with global article list
  */
 exports.getAll = async () => {
   try {
@@ -41,9 +45,9 @@ exports.getAll = async () => {
 };
 
 /**
- * Get detailed knowledgebase entry by ID
+ * Get article by ID
  * @param {string} id - Knowledgebase identifier
- * @returns {Promise<Object>} Formatted service response with entry data
+ * @returns {Promise<Object>} Formatted service response with specific article metadata
  */
 exports.getById = async (id) => {
   try {
@@ -56,10 +60,10 @@ exports.getById = async (id) => {
 };
 
 /**
- * Update knowledgebase attributes
+ * Update article attributes
  * @param {string} id - Knowledgebase identifier
  * @param {Object} data - Attributes to update
- * @returns {Promise<Object>} Formatted service response with updated entry
+ * @returns {Promise<Object>} Formatted service response with modified article data
  */
 exports.update = async (id, data) => {
   try {
@@ -72,9 +76,9 @@ exports.update = async (id, data) => {
 };
 
 /**
- * Delete a knowledgebase entry from the system
+ * Delete knowledgebase article
  * @param {string} id - Knowledgebase identifier
- * @returns {Promise<Object>} Formatted service response
+ * @returns {Promise<Object>} Formatted service response with removal status
  */
 exports.remove = async (id) => {
   try {

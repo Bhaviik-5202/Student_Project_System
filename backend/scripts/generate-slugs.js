@@ -1,6 +1,6 @@
 /**
- * Migration Script: Generate Slugs for Existing Projects
- * Run this script once to populate the slug field for all projects.
+ * Slug Generation Migration Script
+ * Utility script for generating and persisting URL-friendly slugs for legacy project records.
  */
 
 require('dotenv').config();
@@ -8,6 +8,9 @@ const mongoose = require('mongoose');
 const connectDB = require('../config/db');
 const Project = require('../models/project.model');
 
+/**
+ * Performs the slug generation migration.
+ */
 const migrate = async () => {
   try {
     await connectDB();

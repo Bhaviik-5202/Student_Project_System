@@ -2,8 +2,8 @@ const { validationResult } = require('express-validator');
 const sendResponse = require('../utils/response');
 
 /**
- * Middleware to handle express-validator errors.
- * Sends a 422 response if validation fails.
+ * Request Validation Middleware
+ * Processes express-validator results and returns 422 for validation failures.
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  * @param {Function} next - Express next middleware function

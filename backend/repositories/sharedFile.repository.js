@@ -1,6 +1,6 @@
 /**
  * SharedFile Repository
- * Data access layer for SharedFile-related database operations.
+ * Handles direct database access and project-specific file sharing for the SharedFile model.
  */
 const SharedFile = require('../models/sharedFile.model');
 

@@ -7,9 +7,12 @@ const sendResponse = require('../utils/response');
  */
 
 /**
- * Open a new support ticket
- * @route POST /support-tickets
- * @access Authenticated
+ * Create a support ticket
+ * @route   POST /api/support-tickets
+ * @desc    Open a new support request for technical or academic assistance
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.createSupportTicket = async (req, res) => {
   try {
@@ -42,9 +45,12 @@ exports.createSupportTicket = async (req, res) => {
 };
 
 /**
- * Fetch all support tickets with pagination and status filters
- * @route GET /support-tickets
- * @access Admin
+ * Fetch all support tickets
+ * @route   GET /api/support-tickets
+ * @desc    Retrieve a paginated list of all support requests with filters
+ * @access  Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getAllSupportTickets = async (req, res) => {
   try {
@@ -78,9 +84,12 @@ exports.getAllSupportTickets = async (req, res) => {
 };
 
 /**
- * Get detailed information for a specific support ticket
- * @route GET /support-tickets/:id
- * @access Authenticated
+ * Get ticket by ID
+ * @route   GET /api/support-tickets/:id
+ * @desc    Retrieve detailed information and history for a support ticket
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getSupportTicketById = async (req, res) => {
   try {
@@ -113,9 +122,12 @@ exports.getSupportTicketById = async (req, res) => {
 };
 
 /**
- * Update support ticket status, priority, or comments
- * @route PUT /support-tickets/:id
- * @access Admin, Authenticated (owner)
+ * Update support ticket
+ * @route   PUT /api/support-tickets/:id
+ * @desc    Modify ticket status, priority, or administrative notes
+ * @access  Admin, Owner
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.updateSupportTicket = async (req, res) => {
   try {
@@ -148,9 +160,12 @@ exports.updateSupportTicket = async (req, res) => {
 };
 
 /**
- * Permanently close or remove a support ticket record
- * @route DELETE /support-tickets/:id
- * @access Admin
+ * Delete a support ticket
+ * @route   DELETE /api/support-tickets/:id
+ * @desc    Permanently remove a support ticket record
+ * @access  Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.deleteSupportTicket = async (req, res) => {
   try {

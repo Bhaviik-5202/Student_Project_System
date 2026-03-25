@@ -1,7 +1,6 @@
 /**
  * Notification API Tests
- * ------------------------------------------------------------------
- * Tests for automated system alerts and user notification delivery.
+ * Validates automated system alerts, user delivery preferences, and read status management.
  */
 
 const request = require('supertest');

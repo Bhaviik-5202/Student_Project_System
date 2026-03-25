@@ -1,6 +1,6 @@
 /**
  * FAQ Repository
- * Data access layer for FAQ-related database operations.
+ * Handles direct database access and administrative Q&A management for the FAQ model.
  */
 const FAQ = require('../models/faq.model');
 

@@ -1,6 +1,6 @@
 /**
  * Assignment Repository
- * Data access layer for Assignment-related database operations.
+ * Handles direct database access and academic task management for the Assignment model.
  */
 const Assignment = require('../models/assignment.model');
 

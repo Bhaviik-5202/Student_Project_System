@@ -1,6 +1,6 @@
 /**
  * Course Repository
- * Data access layer for Course-related database operations.
+ * Handles direct database access and academic curriculum management for the Course model.
  */
 const Course = require('../models/courses.model');
 

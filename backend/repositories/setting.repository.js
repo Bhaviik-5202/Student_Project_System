@@ -1,6 +1,6 @@
 /**
  * Setting Repository
- * Data access layer for Setting-related database operations.
+ * Handles direct database access and system configuration management for the Setting model.
  */
 const Setting = require('../models/setting.model');
 

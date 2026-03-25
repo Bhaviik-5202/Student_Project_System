@@ -1,6 +1,6 @@
 /**
  * Student Model
- * Represents a student with their enrolled courses, projects, and grades.
+ * Defines the schema for students, tracking academic enrollment, project participation, and performance grades.
  */
 const mongoose = require('mongoose');
 

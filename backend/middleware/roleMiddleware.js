@@ -1,13 +1,10 @@
 const sendResponse = require('../utils/response');
 
 /**
- * Middleware factory to restrict access by user role.
- * @param {String|String[]} roles - Required role(s) for access
+ * Role-Based Access Control Middleware
+ * Restricts route access to specific user roles (admin, faculty, student, staff).
+ * @param {String|String[]} roles - Allowed role(s) for the route
  * @returns {Function} Express middleware function
- *
- * Usage:
- *   roleMiddleware("admin")
- *   roleMiddleware(["admin", "faculty"])
  */
 module.exports = function roleMiddleware(roles) {
   if (!Array.isArray(roles)) {

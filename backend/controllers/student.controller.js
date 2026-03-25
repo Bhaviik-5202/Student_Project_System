@@ -7,9 +7,12 @@ const sendResponse = require('../utils/response');
  */
 
 /**
- * Register a new student profile
- * @route POST /students
- * @access Admin
+ * Create a new student profile
+ * @route   POST /api/students
+ * @desc    Register a detailed student record and academic data
+ * @access  Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.createStudent = async (req, res) => {
   try {
@@ -40,9 +43,12 @@ exports.createStudent = async (req, res) => {
 };
 
 /**
- * Fetch all student profiles with pagination and filters
- * @route GET /students
- * @access Admin, Faculty
+ * Fetch all student profiles
+ * @route   GET /api/students
+ * @desc    Retrieve a list of all students with optional filters
+ * @access  Admin, Faculty
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getAllStudents = async (req, res) => {
   try {
@@ -75,9 +81,12 @@ exports.getAllStudents = async (req, res) => {
 };
 
 /**
- * Get detailed profile information for a specific student
- * @route GET /students/:id
- * @access Authenticated
+ * Get student by account ID
+ * @route   GET /api/students/:id
+ * @desc    Retrieve detailed profile data for a specific student instance
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.getStudentById = async (req, res) => {
   try {
@@ -110,9 +119,12 @@ exports.getStudentById = async (req, res) => {
 };
 
 /**
- * Update student academic or profile information
- * @route PUT /students/:id
- * @access Admin, Student (own profile)
+ * Update student academic profile
+ * @route   PUT /api/students/:id
+ * @desc    Modify academic records or contact info for a student
+ * @access  Admin, Student (own profile)
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.updateStudent = async (req, res) => {
   try {
@@ -145,9 +157,12 @@ exports.updateStudent = async (req, res) => {
 };
 
 /**
- * Deactivate or remove a student record
- * @route DELETE /students/:id
- * @access Admin
+ * Remove a student profile
+ * @route   DELETE /api/students/:id
+ * @desc    Permanently delete a student's academic and profile record
+ * @access  Admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.deleteStudent = async (req, res) => {
   try {
@@ -180,8 +195,12 @@ exports.deleteStudent = async (req, res) => {
 };
 
 /**
- * Verify if a student ID exists (Internal/Direct check)
- * @route GET /students/verify/:studentId
+ * Verify student existence
+ * @route   GET /api/students/verify/:studentId
+ * @desc    Lightweight check to confirm if a student ID is valid
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 exports.verifyStudentId = async (req, res) => {
   try {

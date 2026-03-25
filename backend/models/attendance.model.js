@@ -1,6 +1,6 @@
 /**
  * Attendance Model
- * Tracks student attendance for meetings or classes.
+ * Defines the schema for tracking student attendance records for meetings or academic sessions.
  */
 const mongoose = require('mongoose');
 

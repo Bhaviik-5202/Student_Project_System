@@ -1,6 +1,6 @@
 /**
  * FAQ Model
- * Stores frequently asked questions and their verified answers.
+ * Defines the schema for managing frequently asked questions and their verified administrative answers.
  */
 const mongoose = require('mongoose');
 

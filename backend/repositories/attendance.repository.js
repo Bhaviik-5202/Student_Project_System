@@ -1,6 +1,6 @@
 /**
  * Attendance Repository
- * Data access layer for Attendance-related database operations.
+ * Handles direct database access and student presence tracking for the Attendance model.
  */
 const Attendance = require('../models/attendance.model');
 
