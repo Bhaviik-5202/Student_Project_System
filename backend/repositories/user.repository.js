@@ -10,13 +10,17 @@ const User = require('../models/user.model');
  * @param {Object} options - Query options (sort, skip, limit, populate, select)
  * @returns {Promise<Array>} List of users
  */
-exports.findAll = (filter = {}, options = {}) =>
-  User.find(filter)
+exports.findAll = (filter = {}, options = {}) => {
+  let query = User.find(filter)
     .sort(options.sort || { createdAt: -1 })
     .skip(options.skip || 0)
     .limit(options.limit || 0)
     .populate(options.populate || '')
     .select(options.select || '');
+
+  if (options.lean) query = query.lean();
+  return query;
+};
 
 /**
  * Find a single user matching a specific filter
@@ -24,10 +28,14 @@ exports.findAll = (filter = {}, options = {}) =>
  * @param {Object} options - Query options (populate, select)
  * @returns {Promise<Object|null>} User document or null
  */
-exports.findOne = (filter = {}, options = {}) =>
-  User.findOne(filter)
+exports.findOne = (filter = {}, options = {}) => {
+  let query = User.findOne(filter)
     .populate(options.populate || '')
     .select(options.select || '');
+
+  if (options.lean) query = query.lean();
+  return query;
+};
 
 /**
  * Locate a single user by its unique identifier
@@ -35,10 +43,14 @@ exports.findOne = (filter = {}, options = {}) =>
  * @param {Object} options - Query options (populate, select)
  * @returns {Promise<Object|null>} User document or null
  */
-exports.findById = (id, options = {}) =>
-  User.findById(id)
+exports.findById = (id, options = {}) => {
+  let query = User.findById(id)
     .populate(options.populate || '')
     .select(options.select || '');
+
+  if (options.lean) query = query.lean();
+  return query;
+};
 
 /**
  * Persist a new user record to the database
@@ -79,7 +91,11 @@ exports.count = (filter = {}) => User.countDocuments(filter);
  * @param {Object} options - Query options (populate, select)
  * @returns {Promise<Object|null>} User document or null
  */
-exports.findByEmail = (email, options = {}) =>
-  User.findOne({ email })
+exports.findByEmail = (email, options = {}) => {
+  let query = User.findOne({ email })
     .populate(options.populate || '')
     .select(options.select || '');
+
+  if (options.lean) query = query.lean();
+  return query;
+};

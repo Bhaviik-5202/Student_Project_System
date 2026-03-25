@@ -10,13 +10,17 @@ const Project = require('../models/project.model');
  * @param {Object} options - Query options (sort, skip, limit, populate, select)
  * @returns {Promise<Array>} List of projects
  */
-exports.findAll = (filter = {}, options = {}) =>
-  Project.find(filter)
+exports.findAll = (filter = {}, options = {}) => {
+  let query = Project.find(filter)
     .sort(options.sort || { createdAt: -1 })
     .skip(options.skip || 0)
     .limit(options.limit || 0)
     .populate(options.populate || '')
     .select(options.select || '');
+
+  if (options.lean) query = query.lean();
+  return query;
+};
 
 /**
  * Locate a single project by its unique identifier
@@ -24,10 +28,14 @@ exports.findAll = (filter = {}, options = {}) =>
  * @param {Object} options - Query options (populate, select)
  * @returns {Promise<Object|null>} Project document or null
  */
-exports.findById = (id, options = {}) =>
-  Project.findById(id)
+exports.findById = (id, options = {}) => {
+  let query = Project.findById(id)
     .populate(options.populate || '')
     .select(options.select || '');
+
+  if (options.lean) query = query.lean();
+  return query;
+};
 
 /**
  * Locate a single project by arbitrary criteria
@@ -35,10 +43,14 @@ exports.findById = (id, options = {}) =>
  * @param {Object} options - Query options (populate, select)
  * @returns {Promise<Object|null>} Project document or null
  */
-exports.findOne = (filter, options = {}) =>
-  Project.findOne(filter)
+exports.findOne = (filter, options = {}) => {
+  let query = Project.findOne(filter)
     .populate(options.populate || '')
     .select(options.select || '');
+
+  if (options.lean) query = query.lean();
+  return query;
+};
 
 /**
  * Persist a new project record to the database

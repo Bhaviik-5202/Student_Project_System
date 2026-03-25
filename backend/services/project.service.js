@@ -44,6 +44,7 @@ exports.getAll = async ({ page = 1, limit = 10, filters = {} } = {}) => {
         limit,
         sort: { createdAt: -1 },
         populate: 'guide members',
+        lean: true,
       }),
       projectRepository.count(filters),
     ]);
@@ -70,23 +71,10 @@ exports.getAll = async ({ page = 1, limit = 10, filters = {} } = {}) => {
  */
 exports.getById = async (idOrSlug) => {
   try {
-    let project;
-    const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(idOrSlug);
-
-    if (isValidObjectId) {
-      project = await projectRepository.findById(idOrSlug, {
-        populate: 'guide members',
-      });
-    }
-
-    if (!project) {
-      project = await projectRepository.findOne(
-        { slug: idOrSlug },
-        {
-          populate: 'guide members',
-        }
-      );
-    }
+    const project = await resolveProject(idOrSlug, {
+      populate: 'guide members',
+      lean: true,
+    });
 
     if (!project) return response(true, null, 'Project not found');
     return response(false, project, 'Project fetched successfully');
@@ -100,13 +88,13 @@ exports.getById = async (idOrSlug) => {
  * @param {string} idOrSlug - Project ID or slug
  * @returns {Promise<Object|null>} Resolved project document or null
  */
-const resolveProject = async (idOrSlug) => {
+const resolveProject = async (idOrSlug, options = {}) => {
   const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(idOrSlug);
   if (isValidObjectId) {
-    const project = await projectRepository.findById(idOrSlug);
+    const project = await projectRepository.findById(idOrSlug, options);
     if (project) return project;
   }
-  return await projectRepository.findOne({ slug: idOrSlug });
+  return await projectRepository.findOne({ slug: idOrSlug }, options);
 };
 
 /**

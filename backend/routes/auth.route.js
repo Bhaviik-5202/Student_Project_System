@@ -59,14 +59,29 @@ router.post(
  * @desc    Handle forgot password request
  * @access  Public
  */
-router.post('/forgot-password', authController.forgotPassword);
+router.post(
+  '/forgot-password',
+  [body('email').isEmail().withMessage('Valid email is required')],
+  validateRequest,
+  authController.forgotPassword
+);
 
 /**
  * @route   POST /api/v1/auth/reset-password
  * @desc    Reset user password
  * @access  Public
  */
-router.post('/reset-password', authController.resetPassword);
+router.post(
+  '/reset-password',
+  [
+    body('token').notEmpty().withMessage('Reset token is required'),
+    body('password')
+      .isLength({ min: 6 })
+      .withMessage('Password must be at least 6 characters'),
+  ],
+  validateRequest,
+  authController.resetPassword
+);
 
 /**
  * @route   GET /api/v1/auth/profile

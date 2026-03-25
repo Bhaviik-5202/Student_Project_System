@@ -118,7 +118,7 @@ exports.login = async ({ email, password }) => {
  */
 exports.getAll = async () => {
   try {
-    const users = await userRepository.findAll();
+    const users = await userRepository.findAll({}, { lean: true });
     return response(false, users, 'Users fetched successfully');
   } catch (err) {
     return response(true, null, err.message || 'Failed to fetch users');
@@ -132,7 +132,7 @@ exports.getAll = async () => {
  */
 exports.getById = async (id) => {
   try {
-    const user = await userRepository.findById(id);
+    const user = await userRepository.findById(id, { lean: true });
     if (!user) return response(true, null, 'User not found');
     return response(false, user, 'User fetched successfully');
   } catch (err) {
@@ -199,7 +199,7 @@ exports.forgotPassword = async (email) => {
     if (!user) {
       // Return success to avoid email enumeration
       return response(
-        true,
+        false,
         null,
         'If the account exists, a reset link has been sent.'
       );
@@ -252,11 +252,10 @@ exports.resetPassword = async (token, newPassword) => {
       return response(true, null, 'Invalid or expired reset token');
     }
 
-    const targetUser = user[0];
-    targetUser.password = newPassword;
-    targetUser.resetPasswordToken = undefined;
-    targetUser.resetPasswordExpires = undefined;
-    await targetUser.save();
+    user.password = newPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
 
     return response(false, null, 'Password has been reset successfully');
   } catch (err) {
