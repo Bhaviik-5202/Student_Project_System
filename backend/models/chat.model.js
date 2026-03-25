@@ -1,3 +1,7 @@
+/**
+ * Chat Model
+ * Represents a conversation thread between users, potentially linked to a project.
+ */
 const mongoose = require('mongoose');
 
 const chatSchema = new mongoose.Schema(

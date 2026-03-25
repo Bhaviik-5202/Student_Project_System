@@ -1,3 +1,7 @@
+/**
+ * Meeting Model
+ * Represents a scheduled meeting with participants, location, and project link.
+ */
 const mongoose = require('mongoose');
 
 const meetingSchema = new mongoose.Schema(

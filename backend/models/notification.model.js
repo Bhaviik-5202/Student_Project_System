@@ -1,3 +1,7 @@
+/**
+ * Notification Model
+ * Represents a system alert or user notification with optional metadata.
+ */
 const mongoose = require('mongoose');
 
 const notificationSchema = new mongoose.Schema(

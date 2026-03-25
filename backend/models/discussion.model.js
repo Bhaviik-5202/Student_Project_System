@@ -1,3 +1,7 @@
+/**
+ * Discussion Model
+ * Represents a forum thread or project-specific discussion with nested replies.
+ */
 const mongoose = require('mongoose');
 
 const replySchema = new mongoose.Schema(

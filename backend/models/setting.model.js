@@ -1,3 +1,7 @@
+/**
+ * Setting Model
+ * Manages global system-wide configuration parameters.
+ */
 const mongoose = require('mongoose');
 
 const settingSchema = new mongoose.Schema(

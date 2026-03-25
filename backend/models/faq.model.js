@@ -1,3 +1,7 @@
+/**
+ * FAQ Model
+ * Stores frequently asked questions and their verified answers.
+ */
 const mongoose = require('mongoose');
 
 const faqSchema = new mongoose.Schema(

@@ -1,3 +1,7 @@
+/**
+ * Report Model
+ * Tracks generated reports, their status, and metadata.
+ */
 const mongoose = require('mongoose');
 
 const reportSchema = new mongoose.Schema(

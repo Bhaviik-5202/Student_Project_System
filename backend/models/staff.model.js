@@ -1,3 +1,7 @@
+/**
+ * Staff Model
+ * Represents faculty and administrative staff members.
+ */
 const mongoose = require('mongoose');
 
 const staffSchema = new mongoose.Schema(

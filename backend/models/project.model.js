@@ -1,3 +1,7 @@
+/**
+ * Project Model
+ * Represents a student project with its status, progress, and members.
+ */
 const mongoose = require('mongoose');
 const slugify = require('../utils/slugify');
 
@@ -98,7 +102,9 @@ const projectSchema = new mongoose.Schema(
   }
 );
 
-// Pre-save hook to generate slug
+/**
+ * Pre-save hook to generate a unique slug based on the project title.
+ */
 projectSchema.pre('save', async function () {
   if (this.isModified('title') || !this.slug) {
     let baseSlug = slugify(this.title);

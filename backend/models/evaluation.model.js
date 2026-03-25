@@ -1,3 +1,7 @@
+/**
+ * Evaluation Model
+ * Stores assessment scores and feedback for students, projects, or assignments.
+ */
 const mongoose = require('mongoose');
 
 const evaluationSchema = new mongoose.Schema(

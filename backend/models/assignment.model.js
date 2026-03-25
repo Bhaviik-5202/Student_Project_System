@@ -1,3 +1,7 @@
+/**
+ * Assignment Model
+ * Represents a course assignment with instructions, due date, and rubric.
+ */
 const mongoose = require('mongoose');
 
 const assignmentSchema = new mongoose.Schema(

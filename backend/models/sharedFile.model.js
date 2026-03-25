@@ -1,3 +1,7 @@
+/**
+ * SharedFile Model
+ * Represents files uploaded and shared within a specific project context.
+ */
 const mongoose = require('mongoose');
 
 const sharedFileSchema = new mongoose.Schema(

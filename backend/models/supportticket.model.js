@@ -1,3 +1,7 @@
+/**
+ * SupportTicket Model
+ * Represents a user's request for technical support or assistance.
+ */
 const mongoose = require('mongoose');
 
 const supportTicketSchema = new mongoose.Schema(

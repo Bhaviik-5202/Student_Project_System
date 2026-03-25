@@ -1,3 +1,7 @@
+/**
+ * Resource Model
+ * Represents shared materials like documents, templates, and videos.
+ */
 const mongoose = require('mongoose');
 
 const resourceSchema = new mongoose.Schema(

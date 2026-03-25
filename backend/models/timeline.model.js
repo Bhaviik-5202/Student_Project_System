@@ -1,3 +1,7 @@
+/**
+ * Timeline Model
+ * Tracks milestones and sprints for a specific project.
+ */
 const mongoose = require('mongoose');
 
 const timelineSchema = new mongoose.Schema(

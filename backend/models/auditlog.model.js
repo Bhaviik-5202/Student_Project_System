@@ -1,3 +1,7 @@
+/**
+ * AuditLog Model
+ * Records security-sensitive actions and system changes for auditing purposes.
+ */
 const mongoose = require('mongoose');
 
 const auditLogSchema = new mongoose.Schema(

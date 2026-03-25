@@ -1,3 +1,7 @@
+/**
+ * Portfolio Model
+ * Represents a student's public-facing project showcase and skill set.
+ */
 const mongoose = require('mongoose');
 
 const portfolioSchema = new mongoose.Schema(

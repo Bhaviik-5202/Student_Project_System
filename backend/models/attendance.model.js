@@ -1,3 +1,7 @@
+/**
+ * Attendance Model
+ * Tracks student attendance for meetings or classes.
+ */
 const mongoose = require('mongoose');
 
 const attendanceSchema = new mongoose.Schema(

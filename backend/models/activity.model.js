@@ -1,3 +1,7 @@
+/**
+ * Activity Model
+ * Tracks user actions and system events for the activity feed.
+ */
 const mongoose = require('mongoose');
 
 const activitySchema = new mongoose.Schema(

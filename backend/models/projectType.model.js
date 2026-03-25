@@ -1,3 +1,7 @@
+/**
+ * ProjectType Model
+ * Defines different types of projects (e.g., Web, Mobile, AI) and their constraints.
+ */
 const mongoose = require('mongoose');
 
 const projectTypeSchema = new mongoose.Schema(

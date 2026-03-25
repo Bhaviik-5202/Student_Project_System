@@ -1,3 +1,7 @@
+/**
+ * Permission Model
+ * Manages fine-grained access control for specific modules per user.
+ */
 const mongoose = require('mongoose');
 
 const permissionSchema = new mongoose.Schema(

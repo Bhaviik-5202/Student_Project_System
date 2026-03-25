@@ -1,3 +1,7 @@
+/**
+ * Submission Model
+ * Represents a student's work submission for a specific assignment.
+ */
 const mongoose = require('mongoose');
 
 const submissionSchema = new mongoose.Schema(

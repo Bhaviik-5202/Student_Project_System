@@ -1,3 +1,7 @@
+/**
+ * Student Model
+ * Represents a student with their enrolled courses, projects, and grades.
+ */
 const mongoose = require('mongoose');
 
 const studentSchema = new mongoose.Schema(

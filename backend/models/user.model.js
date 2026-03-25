@@ -1,3 +1,7 @@
+/**
+ * User Model
+ * Represents a registered user in the system with authentication and profile details.
+ */
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
@@ -97,12 +101,20 @@ const userSchema = new mongoose.Schema(
   }
 );
 
+/**
+ * Pre-save hook to hash the user password.
+ */
 userSchema.pre('save', async function () {
   if (!this.isModified('password')) return;
   const saltRounds = Number(process.env.BCRYPT_SALT_ROUNDS) || 12;
   this.password = await bcrypt.hash(this.password, saltRounds);
 });
 
+/**
+ * Compare candidate password with hashed password.
+ * @param {string} candidatePassword - Password to compare
+ * @returns {Promise<boolean>} - True if passwords match
+ */
 userSchema.methods.comparePassword = async function (candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
 };

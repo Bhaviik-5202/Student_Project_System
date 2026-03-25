@@ -1,3 +1,7 @@
+/**
+ * KnowledgeBase Model
+ * Stores informational articles and documentation for the knowledge base section.
+ */
 const mongoose = require('mongoose');
 
 const knowledgeBaseSchema = new mongoose.Schema(

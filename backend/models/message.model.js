@@ -1,3 +1,7 @@
+/**
+ * Message Model
+ * Represents an individual message within a chat conversation.
+ */
 const mongoose = require('mongoose');
 
 const messageSchema = new mongoose.Schema(
