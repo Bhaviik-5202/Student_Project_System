@@ -1,6 +1,5 @@
 /**
  * Assignment Routes
- * ------------------------------------------------------------------
  * Handles all assignment-related API endpoints.
  */
 
@@ -53,7 +52,7 @@ const updateAssignmentValidation = [
 /**
  * @route   POST /api/v1/assignments
  * @desc    Create a new assignment
- * @access  Private (Authenticated Users)
+ * @access  Private (Admin/Faculty)
  */
 router.post(
   '/',
@@ -81,7 +80,7 @@ router.get('/:id', authMiddleware, assignmentController.getAssignmentById);
 /**
  * @route   PUT /api/v1/assignments/:id
  * @desc    Update an existing assignment
- * @access  Private (Authenticated Users)
+ * @access  Private (Admin/Faculty)
  */
 router.put(
   '/:id',
@@ -108,7 +107,7 @@ router.post('/rubric/:id', authMiddleware, assignmentController.saveRubric);
 /**
  * @route   DELETE /api/v1/assignments/:id
  * @desc    Delete an assignment
- * @access  Private (Authenticated Users)
+ * @access  Private (Admin/Faculty)
  */
 router.delete(
   '/:id',

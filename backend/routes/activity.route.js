@@ -1,6 +1,5 @@
 /**
  * Activity Routes
- * ------------------------------------------------------------------
  * Handles CRUD operations for activities.
  */
 

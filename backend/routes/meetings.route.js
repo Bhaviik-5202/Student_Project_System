@@ -1,6 +1,5 @@
 /**
  * Meeting Routes
- * ------------------------------------------------------------------
  * Handles meeting-related API endpoints.
  */
 

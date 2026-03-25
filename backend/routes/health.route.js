@@ -1,6 +1,5 @@
 /**
  * Health Check Routes
- * ------------------------------------------------------------------
  * Used for system health monitoring and verification.
  */
 

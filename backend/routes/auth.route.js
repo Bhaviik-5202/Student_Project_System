@@ -1,6 +1,5 @@
 /**
  * Authentication Routes
- * ------------------------------------------------------------------
  * Handles user authentication and authorization processes.
  */
 

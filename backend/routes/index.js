@@ -1,7 +1,6 @@
 /**
  * Centralized Route Loader
- * ------------------------------------------------------------------
- * Mounts all API endpoints under /api/v1
+ * Mounts all API endpoints under /api/v1.
  */
 
 const express = require('express');
@@ -35,8 +34,8 @@ const settingRoutes = require('./setting.route');
 const faqRoutes = require('./faq.route');
 const knowledgeBaseRoutes = require('./knowledgebase.route');
 const collaborationRoutes = require('./collaboration.route');
-const reportRoutes = require('./report.route');
-const helpRoutes = require('./help.route');
+// const reportRoutes = require('./report.route');
+// const helpRoutes = require('./help.route');
 
 /**
  * Mount routes
@@ -49,8 +48,8 @@ router.use('/auth', authRoutes);
 router.use('/portfolios', portfolioRoutes);
 router.use('/courses', coursesRoutes);
 router.use('/projects', projectRoutes);
-router.use('/reports', reportRoutes); // Added
-router.use('/help', helpRoutes);
+// router.use('/reports', reportRoutes);
+// router.use('/help', helpRoutes);
 router.use('/resources', resourceRoutes);
 router.use('/staff', staffRoutes);
 router.use('/students', studentRoutes);

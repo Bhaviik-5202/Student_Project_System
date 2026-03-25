@@ -1,6 +1,5 @@
 /**
  * Project Routes
- * ------------------------------------------------------------------
  * Handles CRUD operations for projects.
  */
 

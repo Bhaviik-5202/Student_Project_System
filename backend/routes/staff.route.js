@@ -1,6 +1,5 @@
 /**
  * Staff Routes
- * ------------------------------------------------------------------
  * Handles CRUD operations for staff members.
  */
 

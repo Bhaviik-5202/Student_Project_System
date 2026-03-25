@@ -1,6 +1,5 @@
 /**
  * Timeline Routes
- * ------------------------------------------------------------------
  * Handles CRUD operations for timelines.
  */
 

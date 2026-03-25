@@ -1,6 +1,5 @@
 /**
  * Portfolio Routes
- * ------------------------------------------------------------------
  * Handles student portfolio management.
  */
 

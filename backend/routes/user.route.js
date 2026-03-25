@@ -1,6 +1,5 @@
 /**
  * User Routes
- * ------------------------------------------------------------------
  * Handles CRUD operations for users.
  */
 

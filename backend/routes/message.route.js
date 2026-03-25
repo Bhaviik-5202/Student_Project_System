@@ -1,6 +1,5 @@
 /**
  * Message Routes
- * ------------------------------------------------------------------
  * Handles individual chat messages.
  */
 

@@ -1,3 +1,7 @@
+/**
+ * Audit Log Routes
+ * Handles system audit logs and activity tracking.
+ */
 const express = require('express');
 const router = express.Router();
 

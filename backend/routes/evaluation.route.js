@@ -1,6 +1,5 @@
 /**
  * Evaluation Routes
- * ------------------------------------------------------------------
  * Handles CRUD operations for evaluations.
  */
 

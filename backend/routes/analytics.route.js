@@ -1,6 +1,5 @@
 /**
  * Analytics Routes
- * ------------------------------------------------------------------
  * Provides system analytics and dashboard statistics.
  */
 
@@ -48,24 +47,47 @@ router.get(
   analyticsController.getStudentDashboardStats
 );
 
+/**
+ * @route   GET /api/v1/analytics/grades
+ * @desc    Retrieve grade distribution analytics
+ * @access  Private (Admin/Faculty)
+ */
 router.get(
   '/grades',
   authMiddleware,
   roleMiddleware(['admin', 'faculty']),
   analyticsController.getGradeDistribution
 );
+
+/**
+ * @route   GET /api/v1/analytics/performance
+ * @desc    Retrieve performance metrics
+ * @access  Private (Admin/Faculty)
+ */
 router.get(
   '/performance',
   authMiddleware,
   roleMiddleware(['admin', 'faculty']),
   analyticsController.getPerformanceMetrics
 );
+
+/**
+ * @route   GET /api/v1/analytics/progress
+ * @desc    Retrieve progress analytics
+ * @access  Private (Admin/Faculty)
+ */
 router.get(
   '/progress',
   authMiddleware,
   roleMiddleware(['admin', 'faculty']),
   analyticsController.getProgressAnalytics
 );
+
+/**
+ * @route   GET /api/v1/analytics/usage
+ * @desc    Retrieve system usage statistics
+ * @access  Private (Admin/Faculty)
+ */
 router.get(
   '/usage',
   authMiddleware,
@@ -73,6 +95,11 @@ router.get(
   analyticsController.getUsageStatistics
 );
 
+/**
+ * @route   GET /api/v1/analytics/projects
+ * @desc    Retrieve project analytics
+ * @access  Private (Admin/Faculty)
+ */
 router.get(
   '/projects',
   authMiddleware,
@@ -80,6 +107,11 @@ router.get(
   analyticsController.getProjectAnalytics
 );
 
+/**
+ * @route   GET /api/v1/analytics/users
+ * @desc    Retrieve user analytics
+ * @access  Private (Admin Only)
+ */
 router.get(
   '/users',
   authMiddleware,

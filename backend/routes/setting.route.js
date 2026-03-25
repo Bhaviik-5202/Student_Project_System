@@ -1,6 +1,5 @@
 /**
  * Setting Routes
- * ------------------------------------------------------------------
  * Handles CRUD operations for settings.
  */
 

@@ -1,6 +1,5 @@
 /**
  * Student Routes
- * ------------------------------------------------------------------
  * Handles CRUD operations for students.
  */
 

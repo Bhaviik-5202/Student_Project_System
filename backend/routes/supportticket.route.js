@@ -1,6 +1,5 @@
 /**
  * Support Ticket Routes
- * ------------------------------------------------------------------
  * Handles CRUD operations for support tickets.
  */
 

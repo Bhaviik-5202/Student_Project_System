@@ -1,6 +1,5 @@
 /**
  * Chat Routes
- * ------------------------------------------------------------------
  * Handles interpersonal and group chat communications.
  */
 

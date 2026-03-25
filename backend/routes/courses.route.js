@@ -1,6 +1,5 @@
 /**
  * Course Routes
- * ------------------------------------------------------------------
  * Handles course-related API endpoints.
  */
 

@@ -1,6 +1,5 @@
 /**
  * Attendance Routes
- * ------------------------------------------------------------------
  * Handles attendance management APIs.
  */
 

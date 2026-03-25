@@ -1,6 +1,5 @@
 /**
  * Notification Routes
- * ------------------------------------------------------------------
  * Handles notification-related API endpoints.
  */
 

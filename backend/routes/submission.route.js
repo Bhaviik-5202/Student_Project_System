@@ -1,6 +1,5 @@
 /**
  * Submission Routes
- * ------------------------------------------------------------------
  * Handles CRUD operations for assignment submissions.
  */
 

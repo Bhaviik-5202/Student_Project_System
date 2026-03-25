@@ -1,6 +1,5 @@
 /**
  * Knowledge Base Routes
- * ------------------------------------------------------------------
  * Handles CRUD operations for knowledge base articles.
  */
 

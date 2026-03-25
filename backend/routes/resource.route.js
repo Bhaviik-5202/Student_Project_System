@@ -1,6 +1,5 @@
 /**
  * Resource Routes
- * ------------------------------------------------------------------
  * Handles resource management (documents, templates, videos).
  */
 
