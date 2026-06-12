@@ -144,10 +144,10 @@ const TeamDirectory = memo(() => {
                         </div>
                       </div>
                       <button
-                        onClick={() => navigate('/chat')}
+                        onClick={() => navigate(`/profile/${member.user?._id || member._id}`)}
                         className='rounded-lg border border-slate-300 px-3 py-1 text-sm text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700'
                       >
-                        Chat
+                        Profile
                       </button>
                     </div>
                   </div>

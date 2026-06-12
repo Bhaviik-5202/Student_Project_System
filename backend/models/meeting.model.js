@@ -23,7 +23,7 @@ const meetingSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ['team', 'project'],
+      enum: ['team', 'project', 'one_on_one', 'client'],
       default: 'team',
       lowercase: true,
     },

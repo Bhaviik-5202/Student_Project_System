@@ -53,6 +53,7 @@ exports.createActivity = async (req, res) => {
 exports.getAllActivities = async (req, res) => {
   try {
     const { page = 1, limit = 10, ...filters } = req.query;
+    delete filters._t;
     const result = await activityService.getAll({ page, limit, filters });
 
     sendResponse(

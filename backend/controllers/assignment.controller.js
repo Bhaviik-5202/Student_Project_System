@@ -94,6 +94,7 @@ exports.createAssignment = async (req, res) => {
 exports.getAllAssignments = async (req, res) => {
   try {
     const { page = 1, limit = 10, ...filters } = req.query;
+    delete filters._t;
     const result = await assignmentService.getAll({ page, limit, filters });
 
     sendResponse(

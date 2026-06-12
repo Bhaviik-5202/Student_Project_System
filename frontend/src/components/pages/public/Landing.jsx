@@ -5,11 +5,11 @@ import {
   ChevronRight,
   CheckCircle,
   LayoutDashboard,
-  MessageSquare,
   BarChart3,
   ShieldCheck,
   BookOpen,
   GraduationCap,
+  Rocket,
 } from 'lucide-react';
 
 const Landing = memo(() => {
@@ -33,10 +33,10 @@ const Landing = memo(() => {
         'Clear timelines and automated reminders for submission deadlines and project phases.',
     },
     {
-      icon: <MessageSquare className='h-6 w-6' />,
+      icon: <Users className='h-6 w-6' />,
       title: 'Collaboration Hub',
       description:
-        'Integrated tools for team meetings, task assignments, and real-time resource sharing.',
+        'Integrated tools for team discussion boards, task assignments, and resource sharing.',
     },
     {
       icon: <BarChart3 className='h-6 w-6' />,
@@ -176,7 +176,7 @@ const Landing = memo(() => {
                 {[
                   'Centralized repository for all project documentation',
                   'Automated milestone notifications and reminders',
-                  'Integrated chat and feedback loops',
+                  'Direct feedback loops and mentor reviews',
                   'Secure role-based file sharing and grading',
                 ].map((item, i) => (
                   <li

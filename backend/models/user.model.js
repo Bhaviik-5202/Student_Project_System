@@ -39,6 +39,14 @@ const userSchema = new mongoose.Schema(
       trim: true,
       index: true,
     },
+    status: {
+      type: String,
+      enum: ['active', 'inactive', 'pending'],
+      default: 'active',
+      lowercase: true,
+      trim: true,
+      index: true,
+    },
 
     avatar: {
       type: String,

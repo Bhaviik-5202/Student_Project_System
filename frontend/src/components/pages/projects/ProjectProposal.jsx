@@ -12,6 +12,7 @@ const ProjectProposal = memo(() => {
   const [formData, setFormData] = useState({
     title: '',
     type: '',
+    classification: 'Internal',
     teamMembers: '',
     guide: '',
     abstract: '',
@@ -64,6 +65,7 @@ const ProjectProposal = memo(() => {
             setFormData({
               title: data.title || '',
               type: data.type || '',
+              classification: data.classification || 'Internal',
               teamMembers: Array.isArray(data.teamMembers)
                 ? data.teamMembers.join(', ')
                 : data.teamMembers || '',
@@ -101,6 +103,7 @@ const ProjectProposal = memo(() => {
   const handleSubmit = useCallback(
     async (e) => {
       e.preventDefault();
+
       const toastId = toast.loading(
         isEditing ? 'Synchronizing changes...' : 'Dispatching proposal...'
       );
@@ -186,9 +189,7 @@ const ProjectProposal = memo(() => {
               </div>
               <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
                 <div>
-                  <label className='project-label mb-1.5'>
-                    Project Classification
-                  </label>
+                  <label className='project-label mb-1.5'>Project Type</label>
                   <select
                     name='type'
                     required
@@ -196,7 +197,12 @@ const ProjectProposal = memo(() => {
                     onChange={handleChange}
                     className='project-select'
                   >
-                    <option value=''>Select Classification</option>
+                    <option value=''>Select Type</option>
+                    <option value='Web Application'>Web Application</option>
+                    <option value='Mobile Application'>Mobile Application</option>
+                    <option value='AI/ML Project'>AI/ML Project</option>
+                    <option value='Cloud Computing'>Cloud Computing</option>
+                    <option value='Research Project'>Research Project</option>
                     {projectTypes.map((type) => (
                       <option key={type._id || type.id} value={type.name}>
                         {type.name}
@@ -205,10 +211,26 @@ const ProjectProposal = memo(() => {
                   </select>
                 </div>
                 <div>
+                  <label className='project-label mb-1.5'>
+                    Project Classification
+                  </label>
+                  <select
+                    name='classification'
+                    required
+                    value={formData.classification}
+                    onChange={handleChange}
+                    className='project-select'
+                  >
+                    <option value='Internal'>Internal</option>
+                    <option value='External'>External</option>
+                    <option value='UDP'>UDP</option>
+                    <option value='IDP'>IDP</option>
+                  </select>
+                </div>
+                <div>
                   <label className='project-label mb-1.5'>Primary Guide</label>
                   <select
                     name='guide'
-                    required
                     value={
                       typeof formData.guide === 'object'
                         ? formData.guide?._id || formData.guide?.id || ''
@@ -235,7 +257,6 @@ const ProjectProposal = memo(() => {
                   <input
                     type='text'
                     name='teamMembers'
-                    required
                     value={formData.teamMembers}
                     onChange={handleChange}
                     className='project-input'
@@ -257,7 +278,6 @@ const ProjectProposal = memo(() => {
                 </label>
                 <textarea
                   name='abstract'
-                  required
                   rows='4'
                   value={formData.abstract}
                   onChange={handleChange}
@@ -271,7 +291,6 @@ const ProjectProposal = memo(() => {
                 </label>
                 <textarea
                   name='objectives'
-                  required
                   rows='3'
                   value={formData.objectives}
                   onChange={handleChange}
@@ -359,7 +378,6 @@ const ProjectProposal = memo(() => {
                   onChange={handleFileChange}
                   className='absolute inset-0 h-full w-full cursor-pointer opacity-0'
                   accept='.pdf,.doc,.docx'
-                  required={!isEditing}
                 />
                 <p className='truncate text-[10px] font-bold text-gray-400'>
                   {formData.document

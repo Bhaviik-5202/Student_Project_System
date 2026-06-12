@@ -68,19 +68,30 @@ const StudentRow = memo(({ student, onEdit, onDelete, userRole }) => (
       {userRole !== 'faculty' && (
         <div className='flex justify-end gap-2 opacity-0 transition-opacity group-hover:opacity-100'>
           <button
-            onClick={() => onEdit(student.id)}
-            className='rounded-xl p-2 text-indigo-600 transition-all hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-900/30'
-            title='Update Profile'
+            onClick={() => navigate(`/attendance/${student.id}`)}
+            className='rounded-xl p-2 text-blue-600 transition-all hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/30'
+            title='View Attendance'
           >
-            <EditIcon size={16} />
+            <CalendarIcon size={16} />
           </button>
-          <button
-            onClick={() => onDelete(student.id)}
-            className='rounded-xl p-2 text-red-600 transition-all hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30'
-            title='Remove Record'
-          >
-            <TrashIcon size={16} />
-          </button>
+          {userRole !== 'faculty' && (
+            <>
+              <button
+                onClick={() => onEdit(student.id)}
+                className='rounded-xl p-2 text-indigo-600 transition-all hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-900/30'
+                title='Update Profile'
+              >
+                <EditIcon size={16} />
+              </button>
+              <button
+                onClick={() => onDelete(student.id)}
+                className='rounded-xl p-2 text-red-600 transition-all hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30'
+                title='Remove Record'
+              >
+                <TrashIcon size={16} />
+              </button>
+            </>
+          )}
         </div>
       )}
     </td>

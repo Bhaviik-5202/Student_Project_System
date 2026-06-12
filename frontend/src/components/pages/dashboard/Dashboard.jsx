@@ -7,7 +7,7 @@
  * tailwind styling for a high-quality user experience.
  */
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../../hooks/useAuth';
 import { toast } from 'react-hot-toast';
 import { Fragment } from 'react';
@@ -462,18 +462,28 @@ const Dashboard = () => {
     }
   }, [user, navigate]);
 
+  const location = useLocation();
+
   // Load dashboard data
   useEffect(() => {
     if (authLoading) return;
 
-    const loadData = async () => {
-      setIsLoading(true);
+    const loadData = async (isBackground = false) => {
+      if (!isBackground) setIsLoading(true);
       await loadDashboardData();
-      setIsLoading(false);
+      if (!isBackground) setIsLoading(false);
     };
 
     loadData();
-  }, [authLoading, loadDashboardData]);
+
+    // Re-fetch when window gains focus (sync between tabs/windows)
+    const handleFocus = () => loadData(true);
+    window.addEventListener('focus', handleFocus);
+    
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, [authLoading, loadDashboardData, location.key]);
 
   const handleRefresh = async () => {
     setIsLoading(true);

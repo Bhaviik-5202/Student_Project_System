@@ -11,7 +11,7 @@ A comprehensive full-stack application for managing academic projects, facilitat
 
 - **Role-Based Access Control (RBAC)**: Distinct interfaces for Students, Faculty (Supervisors), and Admin.
 - **Project Tracking**: Manage project timelines, milestones, and deliverables.
-- **Collaboration Tools**: Integrated chat, meeting scheduling, and resource sharing.
+- **Collaboration Tools**: Integrated meeting scheduling, discussion boards, and resource sharing.
 - **Real-time Notifications**: Stay updated with project progress and deadlines.
 - **Analytics Dashboard**: Visual representation of project metrics and performance.
 
@@ -50,7 +50,7 @@ A comprehensive full-stack application for managing academic projects, facilitat
 ## Technologies Used
 
 - **Frontend**: React, Vite, Tailwind CSS, Framer Motion, React Query, Lucide React.
-- **Backend**: Node.js, Express, MongoDB, Mongoose, JWT, Socket.io.
+- **Backend**: Node.js, Express, MongoDB, Mongoose, JWT.
 - **Tools**: ESLint, PostCSS, Vite.
 
 ## License

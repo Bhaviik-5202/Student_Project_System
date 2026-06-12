@@ -1,5 +1,5 @@
 import { useState, useEffect, memo, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import analyticsService from '../../../services/analyticsService';
 import '../../../assets/styles/admin.css';
 
@@ -313,37 +313,51 @@ const AdminDashboard = memo(() => {
     { id: 'api', service: 'API Server', status: 'Online', uptime: '99.9%' },
   ]);
 
+  const location = useLocation();
+
   useEffect(() => {
     let mounted = true;
-    setLoading(true);
-    analyticsService
-      .getDashboardStats()
-      .then((res) => {
-        if (mounted && res && res.data) {
-          setStats({
-            totalUsers: res.data.totalUsers,
-            activeProjects: res.data.activeProjects,
-            pendingApprovals: res.data.pendingApprovals,
-            systemHealth: res.data.systemHealth || 98,
-          });
-          setRecentActivities(
-            (res.data.recentActivities || []).map((a, idx) => ({
-              id: idx + 1,
-              user: a.owner?.name || 'Unknown',
-              action: `${a.status === 'pending' ? 'Pending approval for' : a.status === 'active' ? 'Active project:' : 'Project updated:'} ${a.title}`,
-              time: new Date(a.updatedAt).toLocaleString(),
-            }))
-          );
-        }
-      })
-      .catch((err) => {
-        setError('Failed to load dashboard data');
-      })
-      .finally(() => setLoading(false));
+    
+    const loadData = (isBackground = false) => {
+      if (!isBackground) setLoading(true);
+      analyticsService
+        .getDashboardStats()
+        .then((res) => {
+          if (mounted && res && res.data) {
+            setStats({
+              totalUsers: res.data.totalUsers,
+              activeProjects: res.data.activeProjects,
+              pendingApprovals: res.data.pendingApprovals,
+              systemHealth: res.data.systemHealth || 98,
+            });
+            setRecentActivities(
+              (res.data.recentActivities || []).map((a, idx) => ({
+                id: idx + 1,
+                user: a.owner?.name || 'Unknown',
+                action: `${a.status === 'pending' ? 'Pending approval for' : a.status === 'active' ? 'Active project:' : 'Project updated:'} ${a.title}`,
+                time: new Date(a.updatedAt).toLocaleString(),
+              }))
+            );
+          }
+        })
+        .catch((err) => {
+          if (mounted) setError('Failed to load dashboard data');
+        })
+        .finally(() => {
+          if (mounted && !isBackground) setLoading(false);
+        });
+    };
+
+    loadData();
+
+    const handleFocus = () => loadData(true);
+    window.addEventListener('focus', handleFocus);
+
     return () => {
       mounted = false;
+      window.removeEventListener('focus', handleFocus);
     };
-  }, []);
+  }, [location.key]);
 
   if (loading) {
     return <div className='p-8 text-center text-lg'>Loading dashboard...</div>;

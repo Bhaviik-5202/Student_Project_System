@@ -256,3 +256,19 @@ exports.getUsageStatistics = async (req, res) => {
     sendResponse(res, { success: false, message: error.message }, 500);
   }
 };
+
+/**
+ * Get system health metrics
+ * @route GET /analytics/system-health
+ * @access Admin
+ */
+exports.getSystemHealth = async (req, res) => {
+  try {
+    const { error, data, message } =
+      await analyticsService.getSystemHealth();
+    if (error) throw new Error(message);
+    sendResponse(res, { success: true, data }, 200);
+  } catch (error) {
+    sendResponse(res, { success: false, message: error.message }, 500);
+  }
+};

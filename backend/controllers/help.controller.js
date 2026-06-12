@@ -50,7 +50,7 @@ exports.getHelpOverview = async (req, res) => {
         id: '5',
         question: 'How can I contact my faculty advisor?',
         answer:
-          "You can send a message through the 'Chat' module or schedule a meeting via the 'Meetings' tab.",
+          "You can use the 'Discussions' module or schedule a meeting via the 'Meetings' tab.",
         category: 'Communication',
       },
       {
@@ -340,7 +340,7 @@ exports.getTutorials = async (req, res) => {
       {
         id: 3,
         title: 'Effective Communication',
-        description: 'How to use the built-in chat and meeting tools.',
+        description: 'How to use the built-in discussion boards and meeting tools.',
         duration: '06:45',
         category: 'Basics',
         completed: false,

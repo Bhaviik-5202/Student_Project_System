@@ -190,9 +190,6 @@ const SubmissionHistory = lazy(
 );
 
 // Collaboration Pages
-const ChatWindow = lazy(
-  () => import('../components/pages/collaboration/ChatWindow')
-);
 const DiscussionBoard = lazy(
   () => import('../components/pages/collaboration/DiscussionBoard')
 );
@@ -201,9 +198,6 @@ const DiscussionThread = lazy(
 );
 const FileSharing = lazy(
   () => import('../components/pages/collaboration/FileSharing')
-);
-const TeamChat = lazy(
-  () => import('../components/pages/collaboration/TeamChat')
 );
 const TeamDirectory = lazy(
   () => import('../components/pages/collaboration/TeamDirectory')
@@ -792,23 +786,6 @@ const AppRoutes = () => {
           }
         />
 
-        {/* Collaboration Routes */}
-        <Route
-          path='chat'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
-              <TeamChat />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='chat/:id'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
-              <ChatWindow />
-            </ProtectedRoute>
-          }
-        />
         <Route
           path='discussions'
           element={
@@ -1004,7 +981,15 @@ const AppRoutes = () => {
         <Route
           path='attendance'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
+              <StudentAttendance />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='attendance/:studentId'
+          element={
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
               <StudentAttendance />
             </ProtectedRoute>
           }

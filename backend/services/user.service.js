@@ -243,12 +243,12 @@ exports.resetPassword = async (token, newPassword) => {
       .update(token)
       .digest('hex');
 
-    const user = await userRepository.findAll({
+    const user = await userRepository.findOne({
       resetPasswordToken: resetTokenHash,
       resetPasswordExpires: { $gt: Date.now() },
     });
 
-    if (!user || user.length === 0) {
+    if (!user) {
       return response(true, null, 'Invalid or expired reset token');
     }
 

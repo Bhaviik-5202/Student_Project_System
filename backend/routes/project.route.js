@@ -30,6 +30,8 @@ const projectValidation = [
     .optional()
     .isIn(['planning', 'in_progress', 'completed', 'on_hold', 'cancelled'])
     .withMessage('Invalid status'),
+
+  body('type').notEmpty().withMessage('Project type is required'),
 ];
 
 /**

@@ -43,8 +43,6 @@ const MainLayout = () => {
     []
   );
 
-  const shouldAnimate = !location.pathname.includes('/chat');
-
   return (
     <div className='flex min-h-screen flex-col bg-gray-50 font-sans transition-colors duration-200 dark:bg-slate-900'>
       <Header
@@ -102,7 +100,6 @@ const MainLayout = () => {
               >
                 <PageTransition
                   pathname={location.pathname}
-                  shouldAnimate={shouldAnimate}
                 >
                   <Outlet />
                 </PageTransition>

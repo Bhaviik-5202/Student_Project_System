@@ -51,6 +51,11 @@ const projectSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    classification: {
+      type: String,
+      enum: ['Internal', 'External', 'UDP', 'IDP'],
+      default: 'Internal',
+    },
     abstract: {
       type: String,
       trim: true,

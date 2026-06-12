@@ -36,7 +36,7 @@ const notificationSchema = new mongoose.Schema(
 
     /**
      * Optional metadata
-     * Example: { meetingId, chatId, link, etc. }
+     * Example: { meetingId, link, etc. }
      */
     metadata: {
       type: mongoose.Schema.Types.Mixed,

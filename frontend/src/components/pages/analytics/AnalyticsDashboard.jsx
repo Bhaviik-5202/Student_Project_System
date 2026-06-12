@@ -1,5 +1,5 @@
 import { useEffect, useState, memo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { GraduationCap, CheckSquare, TrendingUp, Percent } from 'lucide-react';
 import analyticsService from '../../../services/analyticsService';
 
@@ -13,6 +13,7 @@ import analyticsService from '../../../services/analyticsService';
  */
 const AnalyticsDashboard = memo(() => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [stats, setStats] = useState({});
   const [performanceData, setPerformanceData] = useState([]);
   const [activityData, setActivityData] = useState([]);
@@ -20,23 +21,35 @@ const AnalyticsDashboard = memo(() => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetchAnalytics = async () => {
-      setLoading(true);
+    let mounted = true;
+    const fetchAnalytics = async (isBackground = false) => {
+      if (!isBackground) setLoading(true);
       setError('');
       try {
         const response = await analyticsService.getDashboardStats();
-        const data = response?.data || {};
-        setStats(data.stats || {});
-        setPerformanceData(data.performanceData || []);
-        setActivityData(data.activityData || []);
+        if (mounted) {
+          const data = response?.data || {};
+          setStats(data.stats || {});
+          setPerformanceData(data.performanceData || []);
+          setActivityData(data.activityData || []);
+        }
       } catch (err) {
-        setError('Failed to load analytics data');
+        if (mounted) setError('Failed to load analytics data');
       } finally {
-        setLoading(false);
+        if (mounted && !isBackground) setLoading(false);
       }
     };
+    
     fetchAnalytics();
-  }, []);
+
+    const handleFocus = () => fetchAnalytics(true);
+    window.addEventListener('focus', handleFocus);
+
+    return () => {
+      mounted = false;
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, [location.key]);
 
   return (
     <div className='min-h-screen bg-slate-50 dark:bg-slate-900'>

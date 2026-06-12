@@ -108,7 +108,7 @@ const Workspace = memo(() => {
         <div className='mb-6'>
           <div className='border-b border-slate-200 dark:border-slate-700'>
             <nav className='-mb-px flex space-x-8'>
-              {['files', 'tasks', 'chat', 'calendar', 'settings'].map((tab) => (
+              {['files', 'tasks', 'calendar', 'settings'].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
@@ -230,23 +230,7 @@ const Workspace = memo(() => {
             </div>
           )}
 
-          {activeTab === 'chat' && (
-            <div>
-              <h3 className='mb-4 text-lg font-semibold text-slate-900 dark:text-white'>
-                Team Chat
-              </h3>
-              <div className='py-12 text-center text-slate-500 dark:text-slate-400'>
-                <div className='mb-4 text-4xl'>💬</div>
-                <p>Open team chat to start conversation</p>
-                <button
-                  onClick={() => navigate('/collaboration/chat')}
-                  className='mt-4 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800'
-                >
-                  Open Chat
-                </button>
-              </div>
-            </div>
-          )}
+
         </div>
       </div>
     </div>

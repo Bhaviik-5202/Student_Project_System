@@ -10,6 +10,7 @@ import {
   ChevronUp,
   Clock,
 } from 'lucide-react';
+import { useParams } from 'react-router-dom';
 import useAuth from '../../../hooks/useAuth';
 import attendanceService from '../../../services/attendanceService';
 
@@ -74,15 +75,16 @@ const StudentAttendance = memo(() => {
   const [loading, setLoading] = useState(true);
   const [showAll, setShowAll] = useState(false);
 
+  const { studentId: paramStudentId } = useParams();
+  const targetStudentId = paramStudentId || user?.id || user?._id;
+
   const fetchAttendance = useCallback(async () => {
-    if (!user?.id && !user?._id) return;
+    if (!targetStudentId) return;
     setLoading(true);
     try {
-      const res = await attendanceService.getAttendanceByStudent(
-        user.id || user._id
-      );
-      if (res.success || Array.isArray(res.data)) {
-        const data = res.data || res;
+      const res = await attendanceService.getAttendanceByStudent(targetStudentId);
+        if (res.success || Array.isArray(res.data) || Array.isArray(res)) {
+          const data = res.data || (Array.isArray(res) ? res : []);
         const mappedRecords = data.map((record) => ({
           date: record.date,
           day: new Date(record.date).toLocaleDateString('en-US', {
@@ -98,7 +100,7 @@ const StudentAttendance = memo(() => {
                 })
               : 'TBD'),
           status:
-            record.status.charAt(0).toUpperCase() + record.status.slice(1),
+            (record.status || 'unknown').charAt(0).toUpperCase() + (record.status || 'unknown').slice(1),
           statusColor:
             record.status === 'present'
               ? 'green'

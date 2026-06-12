@@ -61,13 +61,16 @@ const ProjectCard = memo(({ project, onNavigate, currentUser }) => {
         <div>
           <p className='mb-1 text-[10px] font-bold text-gray-400'>Guide</p>
           <p className='truncate text-sm font-semibold text-gray-900 dark:text-white'>
-            {project.guide?.name || project.guide || 'Not Assigned'}
+            {project.guide?.name || 
+             (typeof project.guide === 'string' ? project.guide : 'Not Assigned')}
           </p>
         </div>
         <div>
           <p className='mb-1 text-[10px] font-bold text-gray-400'>Start Date</p>
           <p className='text-sm font-semibold text-gray-900 dark:text-white'>
-            {new Date(project.startDate).toLocaleDateString()}
+            {project.startDate
+              ? new Date(project.startDate).toLocaleDateString()
+              : 'N/A'}
           </p>
         </div>
         <div>
@@ -87,7 +90,9 @@ const ProjectCard = memo(({ project, onNavigate, currentUser }) => {
         <div>
           <p className='mb-1 text-[10px] font-bold text-gray-400'>Deadline</p>
           <p className='text-sm font-semibold text-gray-900 dark:text-white'>
-            {new Date(project.endDate).toLocaleDateString()}
+            {project.endDate
+              ? new Date(project.endDate).toLocaleDateString()
+              : 'N/A'}
           </p>
         </div>
       </div>

@@ -1,6 +1,6 @@
 /**
  * Collaboration Seeding Utility
- * Populates the database with sample project chats, messages, discussions, and shared files.
+ * Populates the database with sample project discussions and shared files.
  */
 const mongoose = require('mongoose');
 const path = require('path');
@@ -9,8 +9,6 @@ require('dotenv').config({ path: path.join(__dirname, '../.env') });
 const connectDB = require('../config/db');
 const User = require('../models/user.model');
 const Project = require('../models/project.model');
-const Chat = require('../models/chat.model');
-const Message = require('../models/message.model');
 const Discussion = require('../models/discussion.model');
 const SharedFile = require('../models/sharedFile.model');
 
@@ -39,49 +37,8 @@ const seedCollaboration = async () => {
     console.log(`Seeding data for project: ${project.title}`);
 
     // --- Cleanup Existing Collaboration Data for this Project ---
-    await Chat.deleteMany({ name: `Team Chat: ${project.title}` });
     await Discussion.deleteMany({ project: project._id });
     await SharedFile.deleteMany({ project: project._id });
-
-    // 3. Create Team Chat
-    const teamChat = await Chat.create({
-      name: `Team Chat: ${project.title}`,
-      isGroup: true,
-      members: [faculty._id, ...students.map((s) => s._id)],
-      project: project._id,
-    });
-
-    // 4. Create Messages
-    const messageContents = [
-      {
-        sender: students[0]._id,
-        content: 'Hello team, has everyone started on their modules?',
-      },
-      {
-        sender: students[1]._id,
-        content: "I've started the frontend research.",
-      },
-      {
-        sender: faculty._id,
-        content:
-          "Great. Let's schedule a meeting for Friday to review progress.",
-      },
-      { sender: students[0]._id, content: 'Sure, Friday works for me.' },
-    ];
-
-    const createdMessages = [];
-    for (const msg of messageContents) {
-      const newMessage = await Message.create({
-        chat: teamChat._id,
-        sender: msg.sender,
-        content: msg.content,
-        readBy: [msg.sender],
-      });
-      createdMessages.push(newMessage._id);
-    }
-
-    teamChat.messages = createdMessages;
-    await teamChat.save();
 
     // 5. Create Discussions
     const discussions = [

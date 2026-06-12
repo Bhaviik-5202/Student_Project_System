@@ -68,7 +68,7 @@ export const navigationItems = [
       {
         title: 'Attendance',
         path: '/attendance',
-        roles: ROLE_COMBINATIONS.ADMIN_ONLY,
+        roles: ROLE_COMBINATIONS.ALL,
       },
     ],
   },
@@ -164,10 +164,9 @@ export const navigationItems = [
   {
     title: 'Collaboration',
     icon: 'users',
-    path: '/chat',
+    path: '/discussions',
     roles: ROLE_COMBINATIONS.ALL,
     submenu: [
-      { title: 'Team Chat', path: '/chat', roles: ROLE_COMBINATIONS.ALL },
       {
         title: 'Discussions',
         path: '/discussions',

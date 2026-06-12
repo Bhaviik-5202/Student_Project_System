@@ -118,7 +118,7 @@ const ProjectDetails = memo(() => {
                 {project.status?.replace('_', ' ')}
               </span>
               <span className='text-xs font-bold text-gray-400'>
-                {project.type}
+                {project.type} {project.classification ? `(${project.classification})` : ''}
               </span>
             </div>
           </div>
