@@ -16,7 +16,7 @@ import { useNavigate, Outlet } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import studentService from '../../../services/studentService';
 
-const StudentRow = memo(({ student, onEdit, onDelete, userRole }) => (
+const StudentRow = memo(({ student, onEdit, onDelete, onAttendance, userRole }) => (
   <tr className='group transition-colors hover:bg-gray-50 dark:hover:bg-slate-900/50'>
     <td className='whitespace-nowrap px-4 py-4'>
       <div className='font-mono text-[10px] font-bold text-gray-400 dark:text-slate-500'>
@@ -68,7 +68,7 @@ const StudentRow = memo(({ student, onEdit, onDelete, userRole }) => (
       {userRole !== 'faculty' && (
         <div className='flex justify-end gap-2 opacity-0 transition-opacity group-hover:opacity-100'>
           <button
-            onClick={() => navigate(`/attendance/${student.id}`)}
+            onClick={() => onAttendance(student.id)}
             className='rounded-xl p-2 text-blue-600 transition-all hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/30'
             title='View Attendance'
           >
@@ -161,6 +161,13 @@ const StudentsList = memo(() => {
   const handleEdit = useCallback(
     (id) => {
       navigate(`/students/${id}/edit`);
+    },
+    [navigate]
+  );
+
+  const handleAttendance = useCallback(
+    (id) => {
+      navigate(`/attendance/${id}`);
     },
     [navigate]
   );
@@ -310,6 +317,7 @@ const StudentsList = memo(() => {
                   student={student}
                   onEdit={handleEdit}
                   onDelete={handleDelete}
+                  onAttendance={handleAttendance}
                   userRole={user?.role}
                 />
               ))

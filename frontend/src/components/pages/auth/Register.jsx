@@ -22,7 +22,6 @@ const Register = memo(() => {
     email: '',
     password: '',
     confirmPassword: '',
-    role: 'student',
   });
 
   const { register, isLoading: loading } = useAuth();
@@ -42,7 +41,7 @@ const Register = memo(() => {
           name: formData.name,
           email: formData.email,
           password: formData.password,
-          role: formData.role,
+          role: 'student',
         });
         if (res.success) {
           navigate('/login');
@@ -114,39 +113,6 @@ const Register = memo(() => {
                 placeholder='jane@university.edu'
               />
             </div>
-          </div>
-
-          <div className='group'>
-            <label className='mb-1.5 block text-sm font-bold text-slate-700 dark:text-slate-300'>
-              Account Role
-            </label>
-            <div className='relative'>
-              <div className='absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400'>
-                <UserPlus className='h-5 w-5' />
-              </div>
-              <select
-                name='role'
-                required
-                value={formData.role}
-                onChange={handleChange}
-                className='w-full appearance-none rounded-xl border border-slate-200 bg-slate-50 py-3 pl-11 pr-4 text-sm focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-blue-500'
-              >
-                <option value='student'>Student</option>
-                <option value='faculty'>Faculty</option>
-                <option value='admin'>Admin</option>
-              </select>
-              <div className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400'>
-                <svg className='h-4 w-4 fill-current' viewBox='0 0 20 20'>
-                  <path d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' />
-                </svg>
-              </div>
-            </div>
-            {formData.role === 'admin' && (
-              <p className='mt-2 rounded-lg border border-amber-100 bg-amber-50 p-2 text-[11px] font-medium text-amber-600 dark:border-amber-900/30 dark:bg-amber-900/20 dark:text-amber-400'>
-                Note: The Administrator account is predefined. Personal "Admin"
-                accounts cannot be created.
-              </p>
-            )}
           </div>
 
           <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>

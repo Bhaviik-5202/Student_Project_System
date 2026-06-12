@@ -10,6 +10,7 @@ const router = express.Router();
 // Controllers and Middlewares
 const knowledgeBaseController = require('../controllers/knowledgebase.controller');
 const authMiddleware = require('../middleware/auth.middleware');
+const roleMiddleware = require('../middleware/roleMiddleware');
 const validateRequest = require('../middleware/validateRequest');
 
 /**
@@ -17,7 +18,12 @@ const validateRequest = require('../middleware/validateRequest');
  * @desc    Create a new knowledge base article
  * @access  Private (Authenticated Users)
  */
-router.post('/', authMiddleware, knowledgeBaseController.createKnowledgeBase);
+router.post(
+  '/',
+  authMiddleware,
+  roleMiddleware(['admin']),
+  knowledgeBaseController.createKnowledgeBase
+);
 
 /**
  * @route   GET /api/v1/knowledgebase
@@ -45,6 +51,7 @@ router.get(
 router.put(
   '/:id',
   authMiddleware,
+  roleMiddleware(['admin']),
   [
     body('title').optional().notEmpty().withMessage('Title cannot be empty'),
     body('content')
@@ -64,6 +71,7 @@ router.put(
 router.delete(
   '/:id',
   authMiddleware,
+  roleMiddleware(['admin']),
   knowledgeBaseController.deleteKnowledgeBase
 );
 

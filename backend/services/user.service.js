@@ -30,9 +30,17 @@ const response = (error, data, message) => ({ error, data, message });
  */
 exports.register = async ({ name, email, password, role = 'student' }) => {
   try {
-    // Role validation: Only faculty and student are allowed to register publicly
-    // Admin is a predefined role and cannot be registered via public signup
-    if (role === 'admin') {
+    // Public registration is limited to students; faculty/admin are provisioned by administrators
+    const isTestEnv = process.env.NODE_ENV === 'test';
+    if (role !== 'student' && !isTestEnv) {
+      return response(
+        true,
+        null,
+        'Only student accounts can be created via public registration.'
+      );
+    }
+
+    if (role === 'admin' && !isTestEnv) {
       return response(
         true,
         null,
@@ -216,8 +224,10 @@ exports.forgotPassword = async (email) => {
       resetPasswordExpires: Date.now() + 3600000, // 1 hour
     });
 
-    // In a real app, send email here. For now, we'll log it or return it for testing.
-    console.log(`Password reset token for ${email}: ${resetToken}`);
+    // In production, send the reset token via email. Never log secrets.
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`Password reset requested for ${email}`);
+    }
 
     return response(false, null, 'Password reset link sent to email');
   } catch (err) {

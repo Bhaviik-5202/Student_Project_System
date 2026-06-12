@@ -10,6 +10,7 @@ const router = express.Router();
 // Controllers and Middlewares
 const supportTicketController = require('../controllers/supportticket.controller');
 const authMiddleware = require('../middleware/auth.middleware');
+const roleMiddleware = require('../middleware/roleMiddleware');
 const validateRequest = require('../middleware/validateRequest');
 
 /**
@@ -24,7 +25,12 @@ router.post('/', authMiddleware, supportTicketController.createSupportTicket);
  * @desc    Retrieve all support tickets
  * @access  Private (Authenticated Users)
  */
-router.get('/', authMiddleware, supportTicketController.getAllSupportTickets);
+router.get(
+  '/',
+  authMiddleware,
+  roleMiddleware(['admin']),
+  supportTicketController.getAllSupportTickets
+);
 
 /**
  * @route   GET /api/v1/supporttickets/:id
@@ -64,6 +70,7 @@ router.put(
 router.delete(
   '/:id',
   authMiddleware,
+  roleMiddleware(['admin']),
   supportTicketController.deleteSupportTicket
 );
 

@@ -17,8 +17,6 @@ import {
 import assignmentService from '../../../services/assignmentService';
 import courseService from '../../../services/courseService';
 import toast from 'react-hot-toast';
-import '../../../assets/styles/assignments.css';
-
 const AssignmentUpload = memo(() => {
   const navigate = useNavigate();
   const [courses, setCourses] = useState([]);

@@ -16,7 +16,10 @@ const sendResponse = require('../utils/response');
  */
 exports.createSupportTicket = async (req, res) => {
   try {
-    const result = await supportTicketService.create(req.body);
+    const result = await supportTicketService.create({
+      ...req.body,
+      user: req.user.id,
+    });
 
     sendResponse(
       res,

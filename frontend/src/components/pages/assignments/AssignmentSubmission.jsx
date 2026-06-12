@@ -3,8 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import submissionService from '../../../services/submissionService';
 import assignmentService from '../../../services/assignmentService';
 import toast from 'react-hot-toast';
-import '../../../assets/styles/assignments.css';
-
 const AssignmentSubmission = memo(() => {
   const { id } = useParams();
   const navigate = useNavigate();

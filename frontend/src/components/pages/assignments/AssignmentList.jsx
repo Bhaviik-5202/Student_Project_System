@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import assignmentService from '../../../services/assignmentService';
 import { useAuth } from '../../../hooks/useAuth';
 import { ROLE_COMBINATIONS } from '../../../config/roles';
-import '../../../assets/styles/assignments.css';
-
 const AssignmentList = memo(() => {
   const navigate = useNavigate();
   const { hasAnyRole } = useAuth();

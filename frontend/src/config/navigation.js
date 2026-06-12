@@ -3,15 +3,9 @@
  * Centralized source of truth for all app navigation, breadcrumbs, and role permissions.
  */
 
-export const ROLE_COMBINATIONS = Object.freeze({
-  ALL: ['admin', 'faculty', 'student'],
-  ADMIN_ONLY: ['admin'],
-  FACULTY_ONLY: ['faculty'],
-  STUDENT_ONLY: ['student'],
-  ADMIN_FACULTY: ['admin', 'faculty'],
-  FACULTY_STUDENT: ['faculty', 'student'],
-  STAFF_ADMIN: ['admin', 'faculty'], // Legacy naming support
-});
+import { ROLE_COMBINATIONS } from './roles';
+
+export { ROLE_COMBINATIONS };
 
 export const navigationItems = [
   {

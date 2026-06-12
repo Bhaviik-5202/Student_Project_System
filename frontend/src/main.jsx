@@ -4,7 +4,6 @@ import ReactDOM from 'react-dom/client';
 import { Toaster } from 'react-hot-toast';
 import App from './App.jsx';
 import { AuthProvider } from './context/AuthContext';
-import { NotificationProvider } from './context/NotificationContext';
 import { ThemeProvider } from './context/ThemeContext';
 import './index.css';
 
@@ -98,7 +97,6 @@ ReactDOM.createRoot(rootElement).render(
     <ErrorBoundary>
       <ThemeProvider>
         <AuthProvider>
-          <NotificationProvider>
             <App />
             <Toaster
               position='top-right'
@@ -124,7 +122,6 @@ ReactDOM.createRoot(rootElement).render(
                 },
               }}
             />
-          </NotificationProvider>
         </AuthProvider>
       </ThemeProvider>
     </ErrorBoundary>

@@ -10,7 +10,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../../hooks/useAuth';
 import { toast } from 'react-hot-toast';
-import { Fragment } from 'react';
 import RecentActivity from './RecentActivity';
 import UpcomingMeetings from './UpcomingMeetings';
 import ProgressVisualization from './ProgressVisualization';
@@ -57,8 +56,6 @@ import {
   SlidersHorizontal as AdjustmentsIcon,
   BarChart2 as ChartBarSquareIcon,
 } from 'lucide-react';
-
-import { Menu, Transition } from '@headlessui/react';
 
 // --- Custom Hooks ---
 // Animated Counter Hook for stat values (same as AdminDashboard)

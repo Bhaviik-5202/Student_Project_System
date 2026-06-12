@@ -1,8 +1,6 @@
 import { useState, useEffect, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import submissionService from '../../../services/submissionService';
-import '../../../assets/styles/assignments.css';
-
 const SubmissionHistory = memo(() => {
   const navigate = useNavigate();
   const [submissions, setSubmissions] = useState([]);

@@ -9,7 +9,7 @@ const ResourceDetails = memo(() => {
   const [resource, setResource] = useState(null);
   const [relatedResources, setRelatedResources] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { showSuccess, showError } = useNotification(); // Keep useNotification
+  const { showSuccess, showError } = useNotification();
 
   useEffect(() => {
     const fetchResourceDetails = async () => {

@@ -9,6 +9,7 @@ const router = express.Router();
 // Controllers and Middlewares
 const notificationController = require('../controllers/notification.controller');
 const authMiddleware = require('../middleware/auth.middleware');
+const roleMiddleware = require('../middleware/roleMiddleware');
 
 // Protect all routes
 router.use(authMiddleware);
@@ -18,7 +19,7 @@ router.use(authMiddleware);
  * @desc    Create a new notification
  * @access  Private (Authenticated Users)
  */
-router.post('/', notificationController.createNotification);
+router.post('/', roleMiddleware(['admin', 'faculty']), notificationController.createNotification);
 
 /**
  * @route   GET /api/v1/notifications

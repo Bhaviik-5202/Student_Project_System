@@ -10,6 +10,7 @@ const router = express.Router();
 // Controllers and Middlewares
 const faqController = require('../controllers/faq.controller');
 const authMiddleware = require('../middleware/auth.middleware');
+const roleMiddleware = require('../middleware/roleMiddleware');
 const validateRequest = require('../middleware/validateRequest');
 
 /**
@@ -17,7 +18,7 @@ const validateRequest = require('../middleware/validateRequest');
  * @desc    Create a new FAQ
  * @access  Private (Authenticated Users)
  */
-router.post('/', authMiddleware, faqController.createFAQ);
+router.post('/', authMiddleware, roleMiddleware(['admin']), faqController.createFAQ);
 
 /**
  * @route   GET /api/v1/faqs
@@ -41,6 +42,7 @@ router.get('/:id', authMiddleware, faqController.getFAQById);
 router.put(
   '/:id',
   authMiddleware,
+  roleMiddleware(['admin']),
   [
     body('question')
       .optional()
@@ -57,6 +59,6 @@ router.put(
  * @desc    Delete a FAQ
  * @access  Private (Authenticated Users)
  */
-router.delete('/:id', authMiddleware, faqController.deleteFAQ);
+router.delete('/:id', authMiddleware, roleMiddleware(['admin']), faqController.deleteFAQ);
 
 module.exports = router;

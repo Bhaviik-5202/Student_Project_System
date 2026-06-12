@@ -31,7 +31,7 @@ router.post(
 
     body('role')
       .optional()
-      .isIn(['admin', 'faculty', 'student'])
+      .isIn(['student', 'faculty'])
       .withMessage('Invalid role'),
   ],
   validateRequest,

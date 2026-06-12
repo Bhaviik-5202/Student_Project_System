@@ -5,4 +5,5 @@ export const ROLE_COMBINATIONS = Object.freeze({
   STUDENT_ONLY: ['student'],
   ADMIN_FACULTY: ['admin', 'faculty'],
   FACULTY_STUDENT: ['faculty', 'student'],
+  STAFF_ADMIN: ['admin', 'faculty'],
 });

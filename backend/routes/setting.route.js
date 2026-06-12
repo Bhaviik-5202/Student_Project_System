@@ -10,6 +10,7 @@ const router = express.Router();
 // Controllers and Middlewares
 const settingController = require('../controllers/setting.controller');
 const authMiddleware = require('../middleware/auth.middleware');
+const roleMiddleware = require('../middleware/roleMiddleware');
 const validateRequest = require('../middleware/validateRequest');
 
 /**
@@ -17,7 +18,7 @@ const validateRequest = require('../middleware/validateRequest');
  * @desc    Create a new setting
  * @access  Private (Admin)
  */
-router.post('/', authMiddleware, settingController.createSetting);
+router.post('/', authMiddleware, roleMiddleware(['admin']), settingController.createSetting);
 
 /**
  * @route   GET /api/v1/settings
@@ -38,7 +39,7 @@ router.get('/:id', authMiddleware, settingController.getSettingById);
  * @desc    Bulk update system settings
  * @access  Private (Admin)
  */
-router.put('/', authMiddleware, settingController.bulkUpdateSettings);
+router.put('/', authMiddleware, roleMiddleware(['admin']), settingController.bulkUpdateSettings);
 
 /**
  * @route   PUT /api/v1/settings/:id
@@ -48,6 +49,7 @@ router.put('/', authMiddleware, settingController.bulkUpdateSettings);
 router.put(
   '/:id',
   authMiddleware,
+  roleMiddleware(['admin']),
   [
     body('key').optional().notEmpty().withMessage('Key cannot be empty'),
     body('value').optional().exists().withMessage('Value is required'),
@@ -61,6 +63,6 @@ router.put(
  * @desc    Delete a setting
  * @access  Private (Admin)
  */
-router.delete('/:id', authMiddleware, settingController.deleteSetting);
+router.delete('/:id', authMiddleware, roleMiddleware(['admin']), settingController.deleteSetting);
 
 module.exports = router;

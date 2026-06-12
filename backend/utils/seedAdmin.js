@@ -3,13 +3,21 @@ const User = require('../models/user.model');
 /**
  * Admin Seeding Utility
  * Ensures the existence of a master administrator user in the database for system bootstrapping.
+ * Credentials are read from environment variables — never hardcode secrets in source.
  */
 const seedAdmin = async () => {
-  try {
-    const adminEmail = 'er.bhavik5202@gmail.com';
-    const adminPassword = 'Bhaviik@5202';
-    const adminName = 'Bhavik Parmar';
+  const adminEmail = process.env.ADMIN_EMAIL;
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  const adminName = process.env.ADMIN_NAME || 'System Administrator';
 
+  if (!adminEmail || !adminPassword) {
+    console.log(
+      'ℹ️ Admin seed skipped: set ADMIN_EMAIL and ADMIN_PASSWORD in .env to bootstrap an admin account'
+    );
+    return;
+  }
+
+  try {
     const existingAdmin = await User.findOne({ email: adminEmail });
 
     if (!existingAdmin) {
@@ -24,7 +32,6 @@ const seedAdmin = async () => {
     } else {
       console.log('ℹ️ Master admin user already exists');
 
-      // Ensure the existing user has the correct role
       if (existingAdmin.role !== 'admin') {
         existingAdmin.role = 'admin';
         await existingAdmin.save();

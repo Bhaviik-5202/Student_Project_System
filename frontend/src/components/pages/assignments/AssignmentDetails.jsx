@@ -1,8 +1,6 @@
 import { useState, useEffect, memo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import assignmentService from '../../../services/assignmentService';
-import '../../../assets/styles/assignments.css';
-
 const AssignmentDetails = memo(() => {
   const { id } = useParams();
   const navigate = useNavigate();

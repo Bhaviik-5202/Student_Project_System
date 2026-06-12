@@ -26,7 +26,10 @@ const SupportTicket = memo(() => {
       setLoading(true);
 
       try {
-        await api.post('/help/tickets', ticket);
+        await api.post('/supporttickets', {
+          subject: ticket.subject,
+          description: ticket.description,
+        });
         toast.success('Support ticket submitted successfully');
         navigate('/help');
       } catch (error) {
