@@ -18,7 +18,7 @@ before(async function () {
     name: 'Test User',
     email: `testuser+portfolio+${Date.now()}@example.com`,
     password: 'testpass123',
-    role: 'faculty',
+    role: 'student',
   };
 
   // Register
@@ -32,21 +32,10 @@ before(async function () {
 
   token = loginRes.body.data.token;
 
-  // Create student for portfolio tests
-  const studentData = {
-    name: 'Portfolio Student',
-    email: `portfoliostudent+${Date.now()}@example.com`,
-    rollNumber: `P${Date.now()}`,
-    department: 'Computer Science',
-    year: 2,
-  };
-
-  const studentRes = await request(app)
-    .post('/api/v1/students')
-    .set('Authorization', `Bearer ${token}`)
-    .send(studentData);
-
-  studentId = studentRes.body.data._id;
+  // Fetch the automatically created student profile
+  const Student = require('../models/student.model');
+  const student = await Student.findOne({ email: user.email });
+  studentId = student._id;
 });
 
 describe('Portfolio API', function () {

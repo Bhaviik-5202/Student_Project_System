@@ -14,12 +14,17 @@ const FileSharing = memo(() => {
   const fetchProjects = useCallback(async () => {
     try {
       const response = await projectService.getAllProjects();
-      if (response.data?.success) {
-        const projectList = response.data.data;
+      const projectList = Array.isArray(response.data)
+        ? response.data
+        : Array.isArray(response)
+        ? response
+        : Array.isArray(response?.data?.projects)
+        ? response.data.projects
+        : [];
+
+      if (projectList.length > 0) {
         setProjects(projectList);
-        if (projectList.length > 0) {
-          setSelectedProjectId(projectList[0]._id || projectList[0].id);
-        }
+        setSelectedProjectId(projectList[0]._id || projectList[0].id);
       }
     } catch (error) {
       console.error('Failed to fetch projects', error);
@@ -78,8 +83,13 @@ const FileSharing = memo(() => {
   };
 
   const handleDownload = (file) => {
+    const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+    const downloadUrl = file.url.startsWith('http')
+      ? file.url
+      : `${apiBase.replace(/\/$/, '')}/${file.url.replace(/^\//, '')}`;
+
     const link = document.createElement('a');
-    link.href = `${process.env.REACT_APP_API_URL || ''}/${file.url}`;
+    link.href = downloadUrl;
     link.setAttribute('download', file.name);
     link.setAttribute('target', '_blank');
     document.body.appendChild(link);

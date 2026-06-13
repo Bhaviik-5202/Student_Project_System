@@ -17,7 +17,7 @@ before(async function () {
     name: 'Test User',
     email: `testuser+student+${Date.now()}@example.com`,
     password: 'testpass123',
-    role: 'faculty',
+    role: 'admin',
   };
 
   // Register

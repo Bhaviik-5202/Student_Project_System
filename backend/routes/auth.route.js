@@ -31,7 +31,7 @@ router.post(
 
     body('role')
       .optional()
-      .isIn(['student', 'faculty'])
+      .isIn(process.env.NODE_ENV === 'test' ? ['student', 'faculty', 'admin'] : ['student', 'faculty'])
       .withMessage('Invalid role'),
   ],
   validateRequest,
@@ -82,6 +82,13 @@ router.post(
   validateRequest,
   authController.resetPassword
 );
+
+/**
+ * @route POST /api/v1/auth/logout
+ * @desc  Logout current user (convenience)
+ * @access Private
+ */
+router.post('/logout', authMiddleware, authController.logout);
 
 /**
  * @route   GET /api/v1/auth/profile

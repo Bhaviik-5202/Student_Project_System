@@ -98,10 +98,12 @@ const PortfolioBuilder = () => {
   }, []);
 
   const handleSectionOrder = useCallback((fromIndex, toIndex) => {
-    const newSections = [...portfolio.sections];
-    const [movedSection] = newSections.splice(fromIndex, 1);
-    newSections.splice(toIndex, 0, movedSection);
-    setPortfolio((prev) => ({ ...prev, sections: newSections }));
+    setPortfolio((prev) => {
+      const newSections = [...prev.sections];
+      const [movedSection] = newSections.splice(fromIndex, 1);
+      newSections.splice(toIndex, 0, movedSection);
+      return { ...prev, sections: newSections };
+    });
   }, []);
 
   const handleSave = useCallback(() => {

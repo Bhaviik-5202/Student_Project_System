@@ -44,10 +44,7 @@ const collaborationService = {
   // --- Shared Files ---
   getSharedFiles: async (projectId) => {
     try {
-      const response = await api.get(
-        `/collaboration/projects/${projectId}/files`
-      );
-      return response.data;
+      return await api.get(`/collaboration/projects/${projectId}/files`);
     } catch (error) {
       throw error.response?.data || error.message;
     }
@@ -55,14 +52,10 @@ const collaborationService = {
 
   shareFile: async (projectId, formData) => {
     try {
-      const response = await api.post(
+      return await api.post(
         `/collaboration/projects/${projectId}/files`,
-        formData,
-        {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        }
+        formData
       );
-      return response.data;
     } catch (error) {
       throw error.response?.data || error.message;
     }
@@ -70,8 +63,7 @@ const collaborationService = {
 
   deleteFile: async (id) => {
     try {
-      const response = await api.delete(`/collaboration/files/${id}`);
-      return response.data;
+      return await api.delete(`/collaboration/files/${id}`);
     } catch (error) {
       throw error.response?.data || error.message;
     }

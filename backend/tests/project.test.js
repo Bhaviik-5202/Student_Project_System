@@ -17,7 +17,7 @@ before(async function () {
     name: 'Test User',
     email: `testuser+project+${Date.now()}@example.com`,
     password: 'testpass123',
-    role: 'faculty',
+    role: 'admin',
   };
 
   // Register
@@ -36,6 +36,7 @@ describe('Project API', function () {
   const projectData = {
     title: 'Test Project',
     description: 'A test project',
+    type: 'Software Development',
   };
 
   it('should create a new project', async function () {
@@ -75,7 +76,7 @@ describe('Project API', function () {
     const res = await request(app)
       .put(`/api/v1/projects/${projectId}`)
       .set('Authorization', `Bearer ${token}`)
-      .send({ title: 'Updated Project' });
+      .send({ title: 'Updated Project', type: 'Software Development' });
 
     expect(res.statusCode).to.equal(200);
     expect(res.body.success).to.be.true;

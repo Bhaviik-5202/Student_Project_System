@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo, memo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import api from '../../../utils/api';
+import projectService from '../../../services/projectService';
 import { useAuth } from '../../../hooks/useAuth';
 
 const ProjectDetails = memo(() => {
@@ -97,10 +98,33 @@ const ProjectDetails = memo(() => {
 
   if (!project) return null;
 
+  const canManageProject =
+    user?.role === 'admin' || user?.role === 'faculty';
+
+  const handleDeleteProject = async () => {
+    if (!window.confirm('Are you sure you want to delete this project?')) {
+      return;
+    }
+
+    try {
+      const res = await projectService.deleteProject(
+        project.slug || project.id || project._id
+      );
+      if (res.success) {
+        toast.success('Project deleted successfully');
+        navigate('/projects');
+      } else {
+        toast.error(res.message || 'Unable to delete project');
+      }
+    } catch (error) {
+      toast.error('Unable to delete project');
+    }
+  };
+
   return (
     <div className='project-page animate-fade-in'>
       <div className='project-container'>
-        <div className='mb-8 flex items-center justify-between'>
+        <div className='mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between'>
           <div>
             <button
               onClick={() => navigate('/projects')}
@@ -111,7 +135,7 @@ const ProjectDetails = memo(() => {
             <h1 className='text-3xl font-black text-gray-900 dark:text-white'>
               {project?.title}
             </h1>
-            <div className='mt-2 flex items-center gap-3'>
+            <div className='mt-2 flex flex-wrap items-center gap-3'>
               <span
                 className={`rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-wider ${statusStyles[project.status] || statusStyles.Pending}`}
               >
@@ -122,17 +146,25 @@ const ProjectDetails = memo(() => {
               </span>
             </div>
           </div>
-          {user?.role !== 'faculty' && (
-            <button
-              onClick={() =>
-                navigate(
-                  `/projects/${project.slug || project.id || project._id}/edit`
-                )
-              }
-              className='project-btn project-btn-primary'
-            >
-              Edit Project
-            </button>
+          {canManageProject && (
+            <div className='flex items-center gap-3'>
+              <button
+                onClick={() =>
+                  navigate(
+                    `/projects/${project.slug || project.id || project._id}/edit`
+                  )
+                }
+                className='project-btn project-btn-primary'
+              >
+                Edit Project
+              </button>
+              <button
+                onClick={handleDeleteProject}
+                className='project-btn project-btn-danger'
+              >
+                Delete Project
+              </button>
+            </div>
           )}
         </div>
 

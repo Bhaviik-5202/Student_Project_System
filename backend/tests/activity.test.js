@@ -16,7 +16,7 @@ before(async function () {
     name: 'Activity User',
     email: `activity+${Date.now()}@example.com`,
     password: 'testpass123',
-    role: 'admin',
+    role: 'faculty',
   };
 
   await request(app).post('/api/v1/auth/register').send(user);

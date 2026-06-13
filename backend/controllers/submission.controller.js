@@ -1,5 +1,6 @@
 const submissionService = require('../services/submission.service');
 const sendResponse = require('../utils/response');
+const Student = require('../models/student.model');
 
 /**
  * Submission Controller
@@ -17,7 +18,17 @@ exports.createSubmission = async (req, res) => {
 
     // Set student ID if not provided (should come from auth)
     if (!submissionData.student && req.user) {
-      submissionData.student = req.user.id || req.user._id;
+      // Prefer the Student._id associated with the authenticated user's email
+      if (req.user.email) {
+        const studentDoc = await Student.findOne({ email: req.user.email }).lean();
+        if (studentDoc && studentDoc._id) {
+          submissionData.student = studentDoc._id;
+        } else {
+          submissionData.student = req.user.id || req.user._id;
+        }
+      } else {
+        submissionData.student = req.user.id || req.user._id;
+      }
     }
 
     // Handle file uploads via Multer
@@ -107,15 +118,19 @@ exports.getSubmissionById = async (req, res) => {
     }
 
     // RBAC: Only owner, admin, or faculty can view
-    const isOwner = submission.data.student?.toString() === req.user.id;
-    const isAdminOrFaculty = ['admin', 'faculty'].includes(req.user.role);
+    const isAdminOrFaculty = ['admin', 'faculty'].includes(String(req.user && req.user.role));
+    let isOwner = false;
+    if (submission && submission.data && submission.data.student) {
+      const studentDoc = await Student.findById(submission.data.student).lean();
+      if (studentDoc && req.user && req.user.email) {
+        isOwner = String(studentDoc.email).toLowerCase() === String(req.user.email).toLowerCase();
+      } else if (String(submission.data.student) === String(req.user.id)) {
+        isOwner = true;
+      }
+    }
 
     if (!isOwner && !isAdminOrFaculty) {
-      return sendResponse(
-        res,
-        { success: false, message: 'Access denied' },
-        403
-      );
+      return sendResponse(res, { success: false, message: 'Access denied' }, 403);
     }
 
     sendResponse(
@@ -159,15 +174,19 @@ exports.updateSubmission = async (req, res) => {
     }
 
     // RBAC: Only owner, admin, or faculty can update
-    const isOwner = submission.data.student?.toString() === req.user.id;
-    const isAdminOrFaculty = ['admin', 'faculty'].includes(req.user.role);
+    const isAdminOrFacultyUp = ['admin', 'faculty'].includes(String(req.user && req.user.role));
+    let isOwnerUp = false;
+    if (submission && submission.data && submission.data.student) {
+      const studentDoc2 = await Student.findById(submission.data.student).lean();
+      if (studentDoc2 && req.user && req.user.email) {
+        isOwnerUp = String(studentDoc2.email).toLowerCase() === String(req.user.email).toLowerCase();
+      } else if (String(submission.data.student) === String(req.user.id)) {
+        isOwnerUp = true;
+      }
+    }
 
-    if (!isOwner && !isAdminOrFaculty) {
-      return sendResponse(
-        res,
-        { success: false, message: 'Access denied' },
-        403
-      );
+    if (!isOwnerUp && !isAdminOrFacultyUp) {
+      return sendResponse(res, { success: false, message: 'Access denied' }, 403);
     }
 
     const result = await submissionService.update(req.params.id, req.body);
@@ -215,15 +234,19 @@ exports.deleteSubmission = async (req, res) => {
     }
 
     // RBAC: Only owner, admin, or faculty can delete
-    const isOwner = submission.data.student?.toString() === req.user.id;
-    const isAdminOrFaculty = ['admin', 'faculty'].includes(req.user.role);
+    const isAdminOrFacultyDel = ['admin', 'faculty'].includes(String(req.user && req.user.role));
+    let isOwnerDel = false;
+    if (submission && submission.data && submission.data.student) {
+      const studentDoc3 = await Student.findById(submission.data.student).lean();
+      if (studentDoc3 && req.user && req.user.email) {
+        isOwnerDel = String(studentDoc3.email).toLowerCase() === String(req.user.email).toLowerCase();
+      } else if (String(submission.data.student) === String(req.user.id)) {
+        isOwnerDel = true;
+      }
+    }
 
-    if (!isOwner && !isAdminOrFaculty) {
-      return sendResponse(
-        res,
-        { success: false, message: 'Access denied' },
-        403
-      );
+    if (!isOwnerDel && !isAdminOrFacultyDel) {
+      return sendResponse(res, { success: false, message: 'Access denied' }, 403);
     }
 
     const result = await submissionService.remove(req.params.id);
@@ -261,7 +284,12 @@ exports.deleteSubmission = async (req, res) => {
  */
 exports.getSubmissionHistory = async (req, res) => {
   try {
-    const studentId = req.user.id || req.user._id;
+    // Resolve the Student._id from the authenticated user email when possible
+    let studentId = req.user.id || req.user._id;
+    if (req.user && req.user.email) {
+      const studentDoc = await Student.findOne({ email: req.user.email }).lean();
+      if (studentDoc && studentDoc._id) studentId = studentDoc._id;
+    }
     // We filter by student and populate the assignment details
     const result = await submissionService.getByStudentId(studentId);
 

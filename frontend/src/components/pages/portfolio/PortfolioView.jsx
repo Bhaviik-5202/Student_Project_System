@@ -28,7 +28,8 @@ const PortfolioView = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await api.get(`/portfolio/${id || 'me'}`);
+        const endpoint = id ? `/portfolios/student/${id}` : `/portfolios/me`;
+        const response = await api.get(endpoint);
         if (response.data) {
           setPortfolioData(response.data);
         }
@@ -39,7 +40,7 @@ const PortfolioView = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [id]);
 
   const tabs = useMemo(
     () => [

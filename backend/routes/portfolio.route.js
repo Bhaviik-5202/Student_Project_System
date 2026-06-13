@@ -23,7 +23,8 @@ router.post(
   authMiddleware,
   roleMiddleware(['student']),
   [
-    body('student').notEmpty().withMessage('Student is required'),
+    // Allow omitting `student` — controller will resolve from authenticated user
+    body('student').optional().isString().withMessage('Student must be a string'),
 
     body('projects')
       .optional()
@@ -56,6 +57,21 @@ router.get(
 );
 
 /**
+ * @route   GET /api/v1/portfolios/me
+ * @desc    Retrieve portfolio for authenticated student (convenience endpoint)
+ * @access  Private (Authenticated Users)
+ */
+router.get('/me', authMiddleware, portfolioController.getMyPortfolio);
+
+/**
+ * @route   PUT /api/v1/portfolios/:id
+ * @desc    Update an existing portfolio
+ * @access  Private (Authenticated Users)
+ */
+// List portfolios (admin/faculty)
+router.get('/', authMiddleware, roleMiddleware(['admin', 'faculty']), portfolioController.listPortfolios);
+
+/**
  * @route   PUT /api/v1/portfolios/:id
  * @desc    Update an existing portfolio
  * @access  Private (Authenticated Users)
@@ -82,5 +98,11 @@ router.put(
   validateRequest,
   portfolioController.updatePortfolio
 );
+
+// Get by ID
+router.get('/:id', authMiddleware, roleMiddleware(['admin', 'faculty', 'student']), portfolioController.getById);
+
+// Delete
+router.delete('/:id', authMiddleware, roleMiddleware(['admin', 'faculty', 'student']), portfolioController.deletePortfolio);
 
 module.exports = router;

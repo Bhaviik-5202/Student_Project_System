@@ -1,4 +1,29 @@
 const mongoose = require('mongoose');
+const dns = require('dns');
+
+// Configure DNS servers if custom servers are provided,
+// or if Node's resolver defaults to loopback (common Windows issue) which fails SRV queries.
+if (process.env.DNS_SERVERS) {
+  try {
+    const servers = process.env.DNS_SERVERS.split(',').map((s) => s.trim());
+    dns.setServers(servers);
+    console.log(`DNS servers configured from environment: ${servers.join(', ')}`);
+  } catch (err) {
+    console.warn('Failed to set custom DNS servers:', err.message);
+  }
+} else {
+  const currentServers = dns.getServers();
+  const isLoopbackOnly = currentServers.every((s) => s === '127.0.0.1' || s === '::1');
+  if (isLoopbackOnly) {
+    try {
+      dns.setServers(['8.8.8.8', '1.1.1.1']);
+      console.log('Loopback DNS detected. Fallback to public DNS (8.8.8.8, 1.1.1.1) for SRV resolution.');
+    } catch (err) {
+      console.warn('Failed to set fallback DNS servers:', err.message);
+    }
+  }
+}
+
 
 const connectDB = async () => {
   try {
