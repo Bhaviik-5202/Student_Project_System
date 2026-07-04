@@ -16,6 +16,8 @@ import ProgressVisualization from './ProgressVisualization';
 import SystemMetrics from './SystemMetrics';
 import analyticsService from '../../../services/analyticsService';
 import { exportDashboardToCSV } from '../../../utils/exportUtils';
+import api from '../../../utils/api';
+import { timeAgo } from '../../../utils/helpers';
 
 // Import icons from lucide-react
 import {
@@ -133,11 +135,10 @@ const AnimatedStatCard = ({ stat, index, onClick }) => {
 
   return (
     <div
-      className={`group relative rounded-2xl border bg-white dark:bg-slate-800 ${borderColor} cursor-pointer overflow-hidden p-6 transition-all duration-300 ${
-        isVisible
-          ? 'translate-y-0 opacity-100 hover:border-transparent hover:shadow-lg dark:hover:shadow-slate-700/30'
-          : 'translate-y-4 opacity-0'
-      }`}
+      className={`group relative rounded-2xl border bg-white dark:bg-slate-800 ${borderColor} cursor-pointer overflow-hidden p-6 transition-all duration-300 ${isVisible
+        ? 'translate-y-0 opacity-100 hover:border-transparent hover:shadow-lg dark:hover:shadow-slate-700/30'
+        : 'translate-y-4 opacity-0'
+        }`}
       onClick={onClick}
     >
       {/* Background overlay - same as Quick Access */}
@@ -155,13 +156,12 @@ const AnimatedStatCard = ({ stat, index, onClick }) => {
             />
           </div>
           <span
-            className={`rounded-full px-3 py-1.5 text-xs font-semibold ${
-              stat.trend === 'up'
-                ? 'border border-green-200 bg-gradient-to-r from-green-100 to-green-50 text-green-700 dark:border-green-800 dark:from-green-900/40 dark:to-green-800/30 dark:text-green-400'
-                : stat.trend === 'attention'
-                  ? 'border border-yellow-200 bg-gradient-to-r from-yellow-100 to-yellow-50 text-yellow-700 dark:border-yellow-800 dark:from-yellow-900/40 dark:to-yellow-800/30 dark:text-yellow-400'
-                  : 'border border-blue-200 bg-gradient-to-r from-blue-100 to-blue-50 text-blue-700 dark:border-blue-800 dark:from-blue-900/40 dark:to-blue-800/30 dark:text-blue-400'
-            }`}
+            className={`rounded-full px-3 py-1.5 text-xs font-semibold ${stat.trend === 'up'
+              ? 'border border-green-200 bg-gradient-to-r from-green-100 to-green-50 text-green-700 dark:border-green-800 dark:from-green-900/40 dark:to-green-800/30 dark:text-green-400'
+              : stat.trend === 'attention'
+                ? 'border border-yellow-200 bg-gradient-to-r from-yellow-100 to-yellow-50 text-yellow-700 dark:border-yellow-800 dark:from-yellow-900/40 dark:to-yellow-800/30 dark:text-yellow-400'
+                : 'border border-blue-200 bg-gradient-to-r from-blue-100 to-blue-50 text-blue-700 dark:border-blue-800 dark:from-blue-900/40 dark:to-blue-800/30 dark:text-blue-400'
+              }`}
           >
             {stat.change}
           </span>
@@ -245,21 +245,21 @@ const Dashboard = () => {
       const greetings =
         user?.role === 'student'
           ? [
-              'Welcome back! Ready to track your progress?',
-              'Great to see you! How are your projects coming along?',
-              'Ready to achieve your milestones today?',
-            ]
+            'Welcome back! Ready to track your progress?',
+            'Great to see you! How are your projects coming along?',
+            'Ready to achieve your milestones today?',
+          ]
           : user?.role === 'faculty'
             ? [
-                'Welcome back! Your students value your guidance.',
-                "Ready to review today's project milestones?",
-                'Great to have you back in the workspace.',
-              ]
+              'Welcome back! Your students value your guidance.',
+              "Ready to review today's project milestones?",
+              'Great to have you back in the workspace.',
+            ]
             : [
-                'Welcome to the management console.',
-                'System oversight is ready for your review.',
-                'Ready to optimize organizational performance?',
-              ];
+              'Welcome to the management console.',
+              'System oversight is ready for your review.',
+              'Ready to optimize organizational performance?',
+            ];
       setGreeting(greetings[Math.floor(Math.random() * greetings.length)]);
 
       // Fetch dashboard data from API
@@ -280,8 +280,28 @@ const Dashboard = () => {
 
       const statsData = apiData.data || {};
 
-      // Create role-specific dashboard data
+      // Fetch notifications dynamically from the live API
+      let apiNotifications = [];
+      try {
+        const notifRes = await api.get('/notifications');
+        apiNotifications = notifRes.data || notifRes || [];
+      } catch (error) {
+        console.error('Failed to fetch notifications:', error);
+      }
+
+      const mappedNotifications = (statsData.notifications || apiNotifications || [])
+        .map((n) => ({
+          id: n._id || n.id,
+          type: n.type || 'info',
+          read: n.read || false,
+          message: n.message || '',
+          time: n.createdAt ? timeAgo(n.createdAt) : (n.time || 'Just now'),
+        }));
+
+      // Create role-specific dashboard data using the fresh statsData
       let data = null;
+      const freshMeetings = statsData.todayMeetings || [];
+      const freshDeadlines = statsData.upcomingDeadlines || [];
 
       switch (user.role) {
         case 'admin':
@@ -318,12 +338,12 @@ const Dashboard = () => {
               },
               {
                 title: 'Upcoming Meetings',
-                value: todayMeetings.length || 0,
+                value: freshMeetings.length || 0,
                 icon: CalendarIcon,
                 color: 'purple',
                 change:
-                  todayMeetings.length > 0
-                    ? `Next: ${todayMeetings[0].time}`
+                  freshMeetings.length > 0
+                    ? `Next: ${freshMeetings[0].time}`
                     : 'No meetings today',
                 trend: 'info',
                 onClick: () => navigate('/meetings'),
@@ -367,10 +387,13 @@ const Dashboard = () => {
               },
               {
                 title: 'Meetings Today',
-                value: statsData.todayMeetings?.length || 0,
+                value: freshMeetings.length || 0,
                 icon: CalendarIcon,
                 color: 'purple',
-                change: '10:00 AM & 2:00 PM',
+                change:
+                  freshMeetings.length > 0
+                    ? `Next: ${freshMeetings[0].time}`
+                    : 'No meetings today',
                 trend: 'info',
                 onClick: () => navigate('/meetings'),
               },
@@ -395,7 +418,7 @@ const Dashboard = () => {
               },
               {
                 title: 'Assignments Due',
-                value: statsData.upcomingDeadlines || 0,
+                value: freshDeadlines.length || 0,
                 icon: ClipboardListIcon,
                 color: 'yellow',
                 change: statsData.urgentTasks
@@ -406,12 +429,12 @@ const Dashboard = () => {
               },
               {
                 title: 'Meetings',
-                value: todayMeetings.length || 0,
+                value: freshMeetings.length || 0,
                 icon: CalendarIcon,
                 color: 'purple',
                 change:
-                  todayMeetings.length > 0
-                    ? `Next: ${todayMeetings[0].time}`
+                  freshMeetings.length > 0
+                    ? `Next: ${freshMeetings[0].time}`
                     : 'None today',
                 trend: 'info',
                 onClick: () => navigate('/meetings'),
@@ -440,9 +463,9 @@ const Dashboard = () => {
 
       if (data && data.title) {
         setDashboardData(data);
-        setNotifications(statsData.notifications || []);
-        setUpcomingDeadlines(statsData.upcomingDeadlines || []);
-        setTodayMeetings(statsData.todayMeetings || []);
+        setNotifications(mappedNotifications);
+        setUpcomingDeadlines(freshDeadlines);
+        setTodayMeetings(freshMeetings);
         setPerformanceData(statsData.performanceData || []);
         setRecentActivities(statsData.recentActivities || []);
         setProjectProgressData(statsData.projectProgress || []);
@@ -476,7 +499,7 @@ const Dashboard = () => {
     // Re-fetch when window gains focus (sync between tabs/windows)
     const handleFocus = () => loadData(true);
     window.addEventListener('focus', handleFocus);
-    
+
     return () => {
       window.removeEventListener('focus', handleFocus);
     };
@@ -497,17 +520,28 @@ const Dashboard = () => {
   };
 
   // Handle notification actions
-  const handleNotificationClick = (notificationId) => {
-    setNotifications(
-      notifications.map((notif) =>
-        notif.id === notificationId ? { ...notif, read: true } : notif
-      )
-    );
+  const handleNotificationClick = async (notificationId) => {
+    try {
+      await api.patch(`/notifications/${notificationId}/read`);
+      setNotifications(
+        notifications.map((notif) =>
+          notif.id === notificationId ? { ...notif, read: true } : notif
+        )
+      );
+    } catch (error) {
+      console.error('Failed to mark notification as read:', error);
+    }
   };
 
-  const markAllNotificationsAsRead = () => {
-    setNotifications(notifications.map((notif) => ({ ...notif, read: true })));
-    toast.success('All notifications marked as read');
+  const markAllNotificationsAsRead = async () => {
+    try {
+      await api.patch('/notifications/mark-all-read');
+      setNotifications(notifications.map((notif) => ({ ...notif, read: true })));
+      toast.success('All notifications marked as read');
+    } catch (error) {
+      console.error('Failed to mark all notifications as read:', error);
+      toast.error('Failed to mark all as read');
+    }
   };
 
   // Loading state
@@ -634,59 +668,59 @@ const Dashboard = () => {
       {/* Urgent Alert Section */}
       {(upcomingDeadlines?.filter((d) => d.priority === 'high')?.length || 0) >
         0 && (
-        <div className='rounded-2xl border border-red-200 bg-gradient-to-r from-red-50 to-red-100/50 p-6 shadow-sm dark:border-red-800 dark:from-red-900/30 dark:to-red-800/20'>
-          <div className='flex flex-col md:flex-row md:items-center'>
-            <div className='flex items-start md:items-center'>
-              <div className='flex-shrink-0'>
-                <ExclamationTriangleIcon className='h-6 w-6 text-red-600 dark:text-red-400' />
+          <div className='rounded-2xl border border-red-200 bg-gradient-to-r from-red-50 to-red-100/50 p-6 shadow-sm dark:border-red-800 dark:from-red-900/30 dark:to-red-800/20'>
+            <div className='flex flex-col md:flex-row md:items-center'>
+              <div className='flex items-start md:items-center'>
+                <div className='flex-shrink-0'>
+                  <ExclamationTriangleIcon className='h-6 w-6 text-red-600 dark:text-red-400' />
+                </div>
+                <div className='ml-4 flex-1'>
+                  <h3 className='mb-1 text-lg font-bold text-gray-900 dark:text-white'>
+                    ⚠️ Urgent Action Required
+                  </h3>
+                  <p className='text-gray-700 dark:text-gray-300'>
+                    {
+                      upcomingDeadlines?.filter((d) => d.priority === 'high')[0]
+                        ?.title
+                    }{' '}
+                    due{' '}
+                    <span className='font-semibold'>
+                      {
+                        upcomingDeadlines?.filter((d) => d.priority === 'high')[0]
+                          ?.due
+                      }
+                    </span>{' '}
+                    at{' '}
+                    <span className='font-semibold'>
+                      {
+                        upcomingDeadlines?.filter((d) => d.priority === 'high')[0]
+                          ?.time
+                      }
+                    </span>
+                  </p>
+                </div>
               </div>
-              <div className='ml-4 flex-1'>
-                <h3 className='mb-1 text-lg font-bold text-gray-900 dark:text-white'>
-                  ⚠️ Urgent Action Required
-                </h3>
-                <p className='text-gray-700 dark:text-gray-300'>
-                  {
-                    upcomingDeadlines?.filter((d) => d.priority === 'high')[0]
-                      ?.title
-                  }{' '}
-                  due{' '}
-                  <span className='font-semibold'>
-                    {
-                      upcomingDeadlines?.filter((d) => d.priority === 'high')[0]
-                        ?.due
-                    }
-                  </span>{' '}
-                  at{' '}
-                  <span className='font-semibold'>
-                    {
-                      upcomingDeadlines?.filter((d) => d.priority === 'high')[0]
-                        ?.time
-                    }
+              <div className='mt-4 flex gap-3 md:ml-6 md:mt-0'>
+                <button
+                  onClick={() => navigate('/assignments')}
+                  className='group relative overflow-hidden rounded-xl bg-gradient-to-r from-red-600 to-red-500 px-5 py-2.5 font-medium text-white shadow-md transition-all duration-300 hover:shadow-xl'
+                >
+                  <div className='absolute inset-0 bg-gradient-to-r from-red-700 to-red-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
+                  <span className='relative z-10 inline-block transition-transform duration-300 group-hover:scale-105'>
+                    Start Now
                   </span>
-                </p>
+                </button>
+                <button
+                  onClick={() => toast.info('Extension requested')}
+                  className='group relative overflow-hidden rounded-xl border border-red-300 px-5 py-2.5 font-medium text-red-700 transition-all duration-300 hover:border-transparent hover:shadow-lg dark:border-red-700 dark:text-red-400'
+                >
+                  <div className='absolute inset-0 bg-red-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:bg-red-900/30' />
+                  <span className='relative z-10'>Request Extension</span>
+                </button>
               </div>
-            </div>
-            <div className='mt-4 flex gap-3 md:ml-6 md:mt-0'>
-              <button
-                onClick={() => navigate('/assignments')}
-                className='group relative overflow-hidden rounded-xl bg-gradient-to-r from-red-600 to-red-500 px-5 py-2.5 font-medium text-white shadow-md transition-all duration-300 hover:shadow-xl'
-              >
-                <div className='absolute inset-0 bg-gradient-to-r from-red-700 to-red-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
-                <span className='relative z-10 inline-block transition-transform duration-300 group-hover:scale-105'>
-                  Start Now
-                </span>
-              </button>
-              <button
-                onClick={() => toast.info('Extension requested')}
-                className='group relative overflow-hidden rounded-xl border border-red-300 px-5 py-2.5 font-medium text-red-700 transition-all duration-300 hover:border-transparent hover:shadow-lg dark:border-red-700 dark:text-red-400'
-              >
-                <div className='absolute inset-0 bg-red-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:bg-red-900/30' />
-                <span className='relative z-10'>Request Extension</span>
-              </button>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
       {/* Stats Grid - Role Specific with Animations */}
       {dashboardData.stats.length > 0 && (
@@ -739,44 +773,47 @@ const Dashboard = () => {
             </div>
 
             <div className='space-y-4'>
-              {upcomingDeadlines.map((deadline) => (
-                <div
-                  key={deadline.id}
-                  className={`flex items-center justify-between rounded-xl border p-5 transition-all duration-300 hover:shadow-md ${
-                    deadline.priority === 'high'
+              {upcomingDeadlines.length === 0 ? (
+                <div className='rounded-xl border border-dashed border-slate-200 py-8 text-center text-slate-500 dark:border-slate-700 dark:text-slate-400'>
+                  No upcoming deadlines found.
+                </div>
+              ) : (
+                upcomingDeadlines.map((deadline) => (
+                  <div
+                    key={deadline.id}
+                    className={`flex items-center justify-between rounded-xl border p-5 transition-all duration-300 hover:shadow-md ${deadline.priority === 'high'
                       ? 'border-red-200 bg-gradient-to-r from-red-50 to-red-100/50 dark:border-red-800 dark:from-red-900/30 dark:to-red-800/20'
                       : 'border-yellow-200 bg-gradient-to-r from-yellow-50 to-yellow-100/50 dark:border-yellow-800 dark:from-yellow-900/30 dark:to-yellow-800/20'
-                  }`}
-                >
-                  <div className='flex items-center'>
-                    <div
-                      className={`mr-4 h-3 w-3 rounded-full ${
-                        deadline.priority === 'high'
+                      }`}
+                  >
+                    <div className='flex items-center'>
+                      <div
+                        className={`mr-4 h-3 w-3 rounded-full ${deadline.priority === 'high'
                           ? 'bg-red-500'
                           : 'bg-yellow-500'
-                      }`}
-                    ></div>
-                    <div>
-                      <div className='font-bold text-gray-900 dark:text-white'>
-                        {deadline.title}
-                      </div>
-                      <div className='mt-1 text-sm text-gray-600 dark:text-gray-400'>
-                        <ClockIcon className='mr-1 inline h-3 w-3' />
-                        Due {deadline.due} • {deadline.time}
+                          }`}
+                      ></div>
+                      <div>
+                        <div className='font-bold text-gray-900 dark:text-white'>
+                          {deadline.title}
+                        </div>
+                        <div className='mt-1 text-sm text-gray-600 dark:text-gray-400'>
+                          <ClockIcon className='mr-1 inline h-3 w-3' />
+                          Due {deadline.due} • {deadline.time}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <span
-                    className={`rounded-full px-4 py-1.5 text-xs font-bold ${
-                      deadline.priority === 'high'
+                    <span
+                      className={`rounded-full px-4 py-1.5 text-xs font-bold ${deadline.priority === 'high'
                         ? 'border border-red-200 bg-gradient-to-r from-red-100 to-red-50 text-red-700 dark:border-red-800 dark:from-red-900/40 dark:to-red-800/30 dark:text-red-400'
                         : 'border border-yellow-200 bg-gradient-to-r from-yellow-100 to-yellow-50 text-yellow-700 dark:border-yellow-800 dark:from-yellow-900/40 dark:to-yellow-800/30 dark:text-yellow-400'
-                    }`}
-                  >
-                    {deadline.priority === 'high' ? 'URGENT' : 'UPCOMING'}
-                  </span>
-                </div>
-              ))}
+                        }`}
+                    >
+                      {deadline.priority === 'high' ? 'URGENT' : 'UPCOMING'}
+                    </span>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </div>
@@ -811,22 +848,20 @@ const Dashboard = () => {
               {notifications.map((notification) => (
                 <div
                   key={notification.id}
-                  className={`cursor-pointer rounded-xl border p-4 transition-all duration-300 hover:shadow-sm ${
-                    notification.read
-                      ? 'border-gray-200 bg-white dark:border-slate-700 dark:bg-slate-800'
-                      : 'border-blue-200 bg-gradient-to-r from-blue-50 to-blue-100/50 dark:border-blue-800 dark:from-blue-900/30 dark:to-blue-800/20'
-                  }`}
+                  className={`cursor-pointer rounded-xl border p-4 transition-all duration-300 hover:shadow-sm ${notification.read
+                    ? 'border-gray-200 bg-white dark:border-slate-700 dark:bg-slate-800'
+                    : 'border-blue-200 bg-gradient-to-r from-blue-50 to-blue-100/50 dark:border-blue-800 dark:from-blue-900/30 dark:to-blue-800/20'
+                    }`}
                   onClick={() => handleNotificationClick(notification.id)}
                 >
                   <div className='flex items-start justify-between'>
                     <div className='flex-1'>
                       <div className='mb-2 flex items-center'>
                         <span
-                          className={`mr-2 h-2 w-2 rounded-full ${
-                            notification.read
-                              ? 'bg-gray-300 dark:bg-gray-600'
-                              : 'bg-blue-500'
-                          }`}
+                          className={`mr-2 h-2 w-2 rounded-full ${notification.read
+                            ? 'bg-gray-300 dark:bg-gray-600'
+                            : 'bg-blue-500'
+                            }`}
                         ></span>
                         <span className='rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-700 dark:bg-slate-700 dark:text-gray-300'>
                           {notification.type.toUpperCase()}
@@ -836,11 +871,10 @@ const Dashboard = () => {
                         </span>
                       </div>
                       <p
-                        className={`font-medium ${
-                          notification.read
-                            ? 'text-gray-700 dark:text-gray-300'
-                            : 'text-gray-900 dark:text-white'
-                        }`}
+                        className={`font-medium ${notification.read
+                          ? 'text-gray-700 dark:text-gray-300'
+                          : 'text-gray-900 dark:text-white'
+                          }`}
                       >
                         {notification.message}
                       </p>

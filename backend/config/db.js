@@ -1,6 +1,5 @@
 const dns = require('dns');
 const mongoose = require('mongoose');
-const dns = require('dns');
 
 // Configure DNS servers if custom servers are provided,
 // or if Node's resolver defaults to loopback (common Windows issue) which fails SRV queries.

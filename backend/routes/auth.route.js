@@ -39,6 +39,50 @@ router.post(
 );
 
 /**
+ * @route   POST /api/v1/auth/validate-email
+ * @desc    Validate email availability and MX records
+ * @access  Public
+ */
+router.post(
+  '/validate-email',
+  [
+    body('email').isEmail().withMessage('Valid email is required'),
+  ],
+  validateRequest,
+  authController.validateEmail
+);
+
+/**
+ * @route   POST /api/v1/auth/verify-otp
+ * @desc    Verify OTP and create account
+ * @access  Public
+ */
+router.post(
+  '/verify-otp',
+  [
+    body('email').isEmail().withMessage('Valid email is required'),
+    body('otp').isLength({ min: 6, max: 6 }).withMessage('OTP must be exactly 6 digits'),
+  ],
+  validateRequest,
+  authController.verifyOtp
+);
+
+/**
+ * @route   POST /api/v1/auth/resend-otp
+ * @desc    Resend OTP with rate limits
+ * @access  Public
+ */
+router.post(
+  '/resend-otp',
+  [
+    body('email').isEmail().withMessage('Valid email is required'),
+  ],
+  validateRequest,
+  authController.resendOtp
+);
+
+
+/**
  * @route   POST /api/v1/auth/login
  * @desc    Authenticate user and return token
  * @access  Public

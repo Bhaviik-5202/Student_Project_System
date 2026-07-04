@@ -16,6 +16,7 @@ const ResetPassword = lazy(
   () => import('../components/pages/auth/ResetPassword')
 );
 const Landing = lazy(() => import('../components/pages/public/Landing'));
+const VerifyOTP = lazy(() => import('../components/pages/auth/VerifyOTP'));
 
 // Dashboard Pages
 const Dashboard = lazy(() => import('../components/pages/dashboard/Dashboard'));
@@ -189,22 +190,7 @@ const SubmissionHistory = lazy(
   () => import('../components/pages/assignments/SubmissionHistory')
 );
 
-// Collaboration Pages
-const DiscussionBoard = lazy(
-  () => import('../components/pages/collaboration/DiscussionBoard')
-);
-const DiscussionThread = lazy(
-  () => import('../components/pages/collaboration/DiscussionThread')
-);
-const FileSharing = lazy(
-  () => import('../components/pages/collaboration/FileSharing')
-);
-const TeamDirectory = lazy(
-  () => import('../components/pages/collaboration/TeamDirectory')
-);
-const Workspace = lazy(
-  () => import('../components/pages/collaboration/Workspace')
-);
+
 
 // Analytics Pages
 const AnalyticsDashboard = lazy(
@@ -285,11 +271,7 @@ const AppRoutes = () => {
     <Routes>
       <Route
         path='/'
-        element={
-          <PublicRoute>
-            <Landing />
-          </PublicRoute>
-        }
+        element={<Landing />}
       />
       <Route
         path='/login'
@@ -311,6 +293,17 @@ const AppRoutes = () => {
           </PublicRoute>
         }
       />
+      <Route
+        path='/verify-otp'
+        element={
+          <PublicRoute>
+            <AuthLayout>
+              <VerifyOTP />
+            </AuthLayout>
+          </PublicRoute>
+        }
+      />
+
       <Route
         path='/forgot-password'
         element={
@@ -786,46 +779,8 @@ const AppRoutes = () => {
           }
         />
 
-        <Route
-          path='discussions'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
-              <DiscussionBoard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='discussions/:id'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
-              <DiscussionThread />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='file-sharing'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
-              <FileSharing />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='team-directory'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
-              <TeamDirectory />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='workspace'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
-              <Workspace />
-            </ProtectedRoute>
-          }
-        />
+
+
 
         {/* Analytics Routes */}
         <Route

@@ -155,24 +155,7 @@ export const navigationItems = [
       { title: 'Templates', path: '/templates', roles: ROLE_COMBINATIONS.ALL },
     ],
   },
-  {
-    title: 'Collaboration',
-    icon: 'users',
-    path: '/discussions',
-    roles: ROLE_COMBINATIONS.ALL,
-    submenu: [
-      {
-        title: 'Discussions',
-        path: '/discussions',
-        roles: ROLE_COMBINATIONS.ALL,
-      },
-      {
-        title: 'File Sharing',
-        path: '/file-sharing',
-        roles: ROLE_COMBINATIONS.ALL,
-      },
-    ],
-  },
+
   {
     title: 'Admin',
     icon: 'cogs',

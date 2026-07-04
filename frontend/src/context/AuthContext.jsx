@@ -178,12 +178,13 @@ export const AuthProvider = ({ children }) => {
           );
           return { success: true, user, token };
         } else {
-          return { success: false, message: res.message || 'Login failed' };
+          return { success: false, message: res.message || 'Login failed', isUnverified: res.isUnverified };
         }
       } catch (error) {
         return {
           success: false,
           message: error.message || 'Login failed. Please try again.',
+          isUnverified: error.isUnverified,
         };
       } finally {
         setIsLoading(false);
@@ -216,7 +217,7 @@ export const AuthProvider = ({ children }) => {
       setIsLoading(true);
       const res = await authService.register(formData);
       if (res.success) {
-        toast.success('Registration successful! Please login.');
+        toast.success('Verification code sent to your email. Please verify.');
         return { success: true, data: res.data };
       } else {
         return {
@@ -233,6 +234,37 @@ export const AuthProvider = ({ children }) => {
       setIsLoading(false);
     }
   }, []);
+
+  const verifyOTP = useCallback(async (email, otp) => {
+    try {
+      setIsLoading(true);
+      const res = await authService.verifyOTP(email, otp);
+      if (res.success && res.data) {
+        const { user } = res.data;
+        setUser(user);
+        setIsAuthenticated(true);
+        safeLocalStorage.setItem(
+          STORAGE_KEYS.TIMESTAMP,
+          Date.now().toString()
+        );
+        toast.success('Account verified and logged in successfully!');
+        return { success: true, user };
+      } else {
+        return {
+          success: false,
+          message: res.message || 'OTP verification failed',
+        };
+      }
+    } catch (error) {
+      return {
+        success: false,
+        message: error.message || 'Verification failed. Please try again.',
+      };
+    } finally {
+      setIsLoading(false);
+    }
+  }, [safeLocalStorage]);
+
 
   /**
    * Update the current user's profile on the server and update local state
@@ -452,6 +484,7 @@ export const AuthProvider = ({ children }) => {
       login,
       logout,
       register,
+      verifyOTP,
       updateUser,
       updateProfile,
       changePassword,
@@ -470,6 +503,7 @@ export const AuthProvider = ({ children }) => {
       login,
       logout,
       register,
+      verifyOTP,
       updateUser,
       updateProfile,
       changePassword,

@@ -49,6 +49,47 @@ const authService = {
     }
   },
 
+  validateEmail: async (email) => {
+    try {
+      return await api.post('/auth/validate-email', { email });
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Email validation failed',
+      };
+    }
+  },
+
+  verifyOTP: async (email, otp) => {
+    try {
+      const response = await api.post('/auth/verify-otp', { email, otp });
+      if (response.success && response.data) {
+        const { token, user } = response.data;
+        localStorage.setItem(LOCAL_STORAGE_KEYS.TOKEN, token);
+        localStorage.setItem(LOCAL_STORAGE_KEYS.USER, JSON.stringify(user));
+        localStorage.setItem(LOCAL_STORAGE_KEYS.USER_ROLE, user.role);
+      }
+      return response;
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Verification failed',
+      };
+    }
+  },
+
+  resendOTP: async (email) => {
+    try {
+      return await api.post('/auth/resend-otp', { email });
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Failed to resend code',
+      };
+    }
+  },
+
+
   /**
    * Logout user
    */
