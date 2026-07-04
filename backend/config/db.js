@@ -1,4 +1,15 @@
+const dns = require('dns');
 const mongoose = require('mongoose');
+
+// Configure DNS resolution to bypass local/ISP DNS servers that fail to resolve MongoDB Atlas SRV records
+try {
+  dns.setServers(['8.8.8.8', '1.1.1.1']);
+  if (typeof dns.setDefaultResultOrder === 'function') {
+    dns.setDefaultResultOrder('ipv4first');
+  }
+} catch (dnsError) {
+  console.warn('Warning: Failed to set custom DNS options:', dnsError.message);
+}
 
 const connectDB = async () => {
   try {
