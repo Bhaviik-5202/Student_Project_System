@@ -1,5 +1,5 @@
 // src/components/pages/resources/ResourceDetails.jsx
-import React, { useState, useCallback, useMemo, memo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect, memo } from 'react';
 import { useParams } from 'react-router-dom';
 import useNotification from '../../../hooks/useNotification';
 import api from '../../../utils/api';

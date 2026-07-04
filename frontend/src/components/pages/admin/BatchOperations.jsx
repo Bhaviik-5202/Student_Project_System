@@ -74,7 +74,7 @@ const BatchOperations = memo(() => {
         setLoading(false);
       }
     },
-    [operation, selectedUsers]
+    [operation, selectedUsers, message]
   );
 
   return (

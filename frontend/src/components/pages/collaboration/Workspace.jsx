@@ -18,13 +18,17 @@ const Workspace = memo(() => {
   const fetchProjects = useCallback(async () => {
     try {
       const response = await projectService.getAllProjects();
-      if (response.data?.success) {
-        setProjects(response.data.data);
-        if (response.data.data.length > 0) {
-          setSelectedProjectId(
-            response.data.data[0]._id || response.data.data[0].id
-          );
-        }
+      const projectList = Array.isArray(response.data)
+        ? response.data
+        : Array.isArray(response)
+        ? response
+        : Array.isArray(response?.data?.projects)
+        ? response.data.projects
+        : [];
+
+      if (projectList.length > 0) {
+        setProjects(projectList);
+        setSelectedProjectId(projectList[0]._id || projectList[0].id);
       }
     } catch (error) {
       console.error('Failed to fetch projects', error);
@@ -47,9 +51,12 @@ const Workspace = memo(() => {
 
         // For tasks, we use assignments. Since they are linked to courses,
         // in a real app we'd filter by the course linked to the project.
-        if (tasksRes.data?.success) {
-          setTasks(tasksRes.data.data);
-        }
+        const taskList = Array.isArray(tasksRes.data)
+          ? tasksRes.data
+          : Array.isArray(tasksRes)
+          ? tasksRes
+          : tasksRes?.data?.data || [];
+        setTasks(taskList);
       } catch (error) {
         showError('Failed to fetch workspace data');
       } finally {

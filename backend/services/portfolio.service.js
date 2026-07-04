@@ -74,3 +74,31 @@ exports.getById = async (id) => {
     return response(true, null, err.message || 'Failed to fetch portfolio');
   }
 };
+
+/**
+ * List portfolios with optional filter and pagination
+ * @param {Object} filter
+ * @param {Object} options
+ */
+exports.getAll = async (filter = {}, options = {}) => {
+  try {
+    const portfolios = await portfolioRepository.findAll(filter, options);
+    return response(false, portfolios, 'Portfolios listed successfully');
+  } catch (err) {
+    return response(true, null, err.message || 'Failed to list portfolios');
+  }
+};
+
+/**
+ * Remove a portfolio by ID
+ * @param {string} id
+ */
+exports.remove = async (id) => {
+  try {
+    const removed = await require('../repositories/portfolio.repository').remove(id);
+    if (!removed) return response(true, null, 'Portfolio not found');
+    return response(false, removed, 'Portfolio removed successfully');
+  } catch (err) {
+    return response(true, null, err.message || 'Failed to remove portfolio');
+  }
+};

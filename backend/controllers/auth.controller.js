@@ -183,6 +183,19 @@ exports.resetPassword = async (req, res) => {
 };
 
 /**
+ * Logout current user (stateless JWT stub)
+ * @route POST /api/auth/logout
+ */
+exports.logout = async (req, res) => {
+  try {
+    // With stateless JWT there's nothing to revoke here; return success for client convenience
+    sendResponse(res, { success: true, message: 'Logout successful', data: null }, 200);
+  } catch (error) {
+    sendResponse(res, { success: false, message: 'Internal server error', data: null, error: error.message }, 500);
+  }
+};
+
+/**
  * Get current user profile
  * @route   GET /api/auth/profile
  * @desc    Retrieve details of the currently authenticated user
