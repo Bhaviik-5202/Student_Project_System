@@ -61,8 +61,10 @@ const ProjectCard = memo(({ project, onNavigate, currentUser }) => {
         <div>
           <p className='mb-1 text-[10px] font-bold text-gray-400'>Guide</p>
           <p className='truncate text-sm font-semibold text-gray-900 dark:text-white'>
-            {project.guide?.name || 
-             (typeof project.guide === 'string' ? project.guide : 'Not Assigned')}
+            {project.guide?.name ||
+              (typeof project.guide === 'string'
+                ? project.guide
+                : 'Not Assigned')}
           </p>
         </div>
         <div>

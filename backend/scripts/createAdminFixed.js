@@ -20,7 +20,12 @@ const ADMIN_NAME = 'Local Admin';
       await existing.save();
       console.log('Updated existing admin:', ADMIN_EMAIL);
     } else {
-      await User.create({ name: ADMIN_NAME, email: ADMIN_EMAIL, password: ADMIN_PASSWORD, role: 'admin' });
+      await User.create({
+        name: ADMIN_NAME,
+        email: ADMIN_EMAIL,
+        password: ADMIN_PASSWORD,
+        role: 'admin',
+      });
       console.log('Created admin:', ADMIN_EMAIL);
     }
     console.log('Admin credentials:');

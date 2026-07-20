@@ -49,9 +49,6 @@ const BatchOperations = lazy(
 );
 
 // Student Pages
-const StudentAttendance = lazy(
-  () => import('../components/pages/students/Attendance')
-);
 const StudentForm = lazy(
   () => import('../components/pages/students/StudentForm')
 );
@@ -126,78 +123,9 @@ const TutorialVideos = lazy(
   () => import('../components/pages/resources/TutorialVideos')
 );
 
-// Portfolio Pages
-const AchievementBadges = lazy(
-  () => import('../components/pages/portfolio/AchievementBadges')
-);
-const PortfolioBuilder = lazy(
-  () => import('../components/pages/portfolio/PortfolioBuilder')
-);
-const PortfolioView = lazy(
-  () => import('../components/pages/portfolio/PortfolioView')
-);
-const ProjectGallery = lazy(
-  () => import('../components/pages/portfolio/ProjectGallery')
-);
-const SkillMatrix = lazy(
-  () => import('../components/pages/portfolio/SkillMatrix')
-);
-const TranscriptViewer = lazy(
-  () => import('../components/pages/portfolio/TranscriptViewer')
-);
-
-// Course Pages
-const CourseCatalog = lazy(
-  () => import('../components/pages/courses/CourseCatalog')
-);
-const CourseDetails = lazy(
-  () => import('../components/pages/courses/CourseDetails')
-);
-const CourseMaterials = lazy(
-  () => import('../components/pages/courses/CourseMaterials')
-);
-const CourseRegistration = lazy(
-  () => import('../components/pages/courses/CourseRegistration')
-);
-const CourseSchedule = lazy(
-  () => import('../components/pages/courses/CourseSchedule')
-);
-const MyCourses = lazy(() => import('../components/pages/courses/MyCourses'));
-const SyllabusViewer = lazy(
-  () => import('../components/pages/courses/SyllabusViewer')
-);
-
-// Assignment Pages
-const AssignmentList = lazy(
-  () => import('../components/pages/assignments/AssignmentList')
-);
-const AssignmentDetails = lazy(
-  () => import('../components/pages/assignments/AssignmentDetails')
-);
-const AssignmentSubmission = lazy(
-  () => import('../components/pages/assignments/AssignmentSubmission')
-);
-const AssignmentUpload = lazy(
-  () => import('../components/pages/assignments/AssignmentUpload')
-);
-const GradingRubric = lazy(
-  () => import('../components/pages/assignments/GradingRubric')
-);
-const PeerReview = lazy(
-  () => import('../components/pages/assignments/PeerReview')
-);
-const SubmissionHistory = lazy(
-  () => import('../components/pages/assignments/SubmissionHistory')
-);
-
-
-
 // Analytics Pages
 const AnalyticsDashboard = lazy(
   () => import('../components/pages/analytics/AnalyticsDashboard')
-);
-const GradeDistribution = lazy(
-  () => import('../components/pages/analytics/GradeDistribution')
 );
 const PerformanceMetrics = lazy(
   () => import('../components/pages/analytics/PerformanceMetrics')
@@ -210,26 +138,6 @@ const UsageStatistics = lazy(
 );
 const Visualizations = lazy(
   () => import('../components/pages/analytics/Visualizations')
-);
-
-// Evaluation Pages
-const EvaluationCriteria = lazy(
-  () => import('../components/pages/evaluation/EvaluationCriteria')
-);
-const EvaluationForm = lazy(
-  () => import('../components/pages/evaluation/EvaluationForm')
-);
-const FeedbackDashboard = lazy(
-  () => import('../components/pages/evaluation/FeedbackDashboard')
-);
-const PeerEvaluation = lazy(
-  () => import('../components/pages/evaluation/PeerEvaluation')
-);
-const RubricBuilder = lazy(
-  () => import('../components/pages/evaluation/RubricBuilder')
-);
-const SelfEvaluation = lazy(
-  () => import('../components/pages/evaluation/SelfEvaluation')
 );
 
 // Timeline Pages
@@ -258,21 +166,13 @@ const HelpCenter = lazy(() => import('../components/pages/help/HelpCenter'));
 const KnowledgeBase = lazy(
   () => import('../components/pages/help/KnowledgeBase')
 );
-const SupportTicket = lazy(
-  () => import('../components/pages/help/SupportTicket')
-);
 const Tutorials = lazy(() => import('../components/pages/help/Tutorials'));
 const UserGuide = lazy(() => import('../components/pages/help/UserGuide'));
-
-const AddCourse = lazy(() => import('../components/pages/courses/AddCourse'));
 
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route
-        path='/'
-        element={<Landing />}
-      />
+      <Route path='/' element={<Landing />} />
       <Route
         path='/login'
         element={
@@ -327,14 +227,12 @@ const AppRoutes = () => {
 
       {/* Protected Routes with MainLayout */}
       <Route
-        path='/'
         element={
           <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
             <MainLayout />
           </ProtectedRoute>
         }
       >
-        <Route index element={<Dashboard />} />
         <Route path='dashboard' element={<Dashboard />} />
         <Route
           path='admin-dashboard'
@@ -555,130 +453,6 @@ const AppRoutes = () => {
           }
         />
 
-        {/* Course Routes */}
-        <Route
-          path='courses'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
-              <MyCourses />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='courses/new'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
-              <AddCourse />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='courses/catalog'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
-              <CourseCatalog />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='courses/register'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
-              <CourseRegistration />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='courses/schedule'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
-              <CourseSchedule />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='courses/:id'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
-              <CourseDetails />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='courses/:id/materials'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
-              <CourseMaterials />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='courses/:id/syllabus'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
-              <SyllabusViewer />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Assignment Routes */}
-        <Route
-          path='assignments'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
-              <AssignmentList />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='assignments/:id'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
-              <AssignmentDetails />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='assignments/submit/:id'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.STUDENT_ONLY}>
-              <AssignmentSubmission />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='assignments/upload'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
-              <AssignmentUpload />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='assignments/rubric/:id'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
-              <GradingRubric />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='assignments/peer-review'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.FACULTY_STUDENT}>
-              <PeerReview />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='submission-history'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
-              <SubmissionHistory />
-            </ProtectedRoute>
-          }
-        />
-
         {/* Resource Routes */}
         <Route
           path='resources'
@@ -729,59 +503,6 @@ const AppRoutes = () => {
           }
         />
 
-        {/* Portfolio Routes */}
-        <Route
-          path='portfolio'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
-              <PortfolioView />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='portfolio-builder'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.STUDENT_ONLY}>
-              <PortfolioBuilder />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='achievements'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
-              <AchievementBadges />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='project-gallery'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
-              <ProjectGallery />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='skills'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
-              <SkillMatrix />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='transcript'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
-              <TranscriptViewer />
-            </ProtectedRoute>
-          }
-        />
-
-
-
-
         {/* Analytics Routes */}
         <Route
           path='analytics'
@@ -791,14 +512,7 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
-        <Route
-          path='analytics/grades'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
-              <GradeDistribution />
-            </ProtectedRoute>
-          }
-        />
+
         <Route
           path='analytics/performance'
           element={
@@ -828,56 +542,6 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
               <Visualizations />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Evaluation Routes */}
-        <Route
-          path='evaluation'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
-              <EvaluationForm />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='evaluation-criteria'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
-              <EvaluationCriteria />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='feedback'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
-              <FeedbackDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='peer-evaluation'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
-              <PeerEvaluation />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='rubric-builder'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
-              <RubricBuilder />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='self-evaluation'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.STUDENT_ONLY}>
-              <SelfEvaluation />
             </ProtectedRoute>
           }
         />
@@ -928,24 +592,6 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
               <TimelineEditor />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Attendance Route */}
-        <Route
-          path='attendance'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
-              <StudentAttendance />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='attendance/:studentId'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
-              <StudentAttendance />
             </ProtectedRoute>
           }
         />
@@ -1023,14 +669,7 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
-        <Route
-          path='support'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
-              <SupportTicket />
-            </ProtectedRoute>
-          }
-        />
+
         <Route
           path='help/tutorials'
           element={

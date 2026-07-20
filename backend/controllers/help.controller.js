@@ -340,7 +340,8 @@ exports.getTutorials = async (req, res) => {
       {
         id: 3,
         title: 'Effective Communication',
-        description: 'How to use the built-in discussion boards and meeting tools.',
+        description:
+          'How to use the built-in discussion boards and meeting tools.',
         duration: '06:45',
         category: 'Basics',
         completed: false,

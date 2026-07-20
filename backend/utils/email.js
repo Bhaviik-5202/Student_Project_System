@@ -19,8 +19,8 @@ async function sendEmail({ to, subject, text, html }) {
     throw new Error("Email 'to' and 'subject' are required");
   }
 
-  if (!process.env.EMAIL_HOST) {
-    console.log('📧 [DEV EMAIL LOG]');
+  if (!process.env.EMAIL_HOST || process.env.NODE_ENV === 'test') {
+    console.log('📧 [DEV/TEST EMAIL LOG]');
     console.log('To:', to);
     console.log('Subject:', subject);
     console.log('Text:', text);
@@ -28,15 +28,26 @@ async function sendEmail({ to, subject, text, html }) {
     return;
   }
 
-  const transporter = nodemailer.createTransport({
+  const port = Number(process.env.EMAIL_PORT) || 587;
+  const secure = port === 465;
+
+  const transportConfig = {
     host: process.env.EMAIL_HOST,
-    port: Number(process.env.EMAIL_PORT) || 587,
-    secure: false,
-    auth: {
+    port,
+    secure,
+    tls: {
+      rejectUnauthorized: false, // Bypass certificate verification errors (useful for some SMTP relays / self-signed certs)
+    },
+  };
+
+  if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+    transportConfig.auth = {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
-    },
-  });
+    };
+  }
+
+  const transporter = nodemailer.createTransport(transportConfig);
 
   const mailOptions = {
     from: process.env.EMAIL_FROM || process.env.EMAIL_USER,

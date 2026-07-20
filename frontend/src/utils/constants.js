@@ -72,3 +72,14 @@ export const VALIDATION_RULES = {
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
   PHONE: /^[+]?[1-9][\d]{1,14}$/,
 };
+
+export const CONTACT_INFO = {
+  EMAIL: 'er.bhavik5202@gmail.com',
+  PHONE: '+91 63537120557',
+  ADDRESS: 'Dwarka, Gujarat, India',
+  SOCIALS: {
+    GITHUB: 'https://github.com/Bhaviik-5202',
+    LINKEDIN: 'https://www.linkedin.com/in/bhavik-parmar-51baa1303/',
+    TWITTER: 'https://twitter.com',
+  },
+};

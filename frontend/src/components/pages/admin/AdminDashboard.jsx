@@ -317,7 +317,7 @@ const AdminDashboard = memo(() => {
 
   useEffect(() => {
     let mounted = true;
-    
+
     const loadData = (isBackground = false) => {
       if (!isBackground) setLoading(true);
       analyticsService

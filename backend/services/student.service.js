@@ -4,7 +4,6 @@
  */
 const studentRepository = require('../repositories/student.repository');
 const projectRepository = require('../repositories/project.repository');
-const evaluationRepository = require('../repositories/evaluation.repository');
 
 /**
  * Standardized response helper for services
@@ -29,24 +28,6 @@ exports.getProjects = async (studentId) => {
       true,
       null,
       err.message || 'Failed to fetch student projects'
-    );
-  }
-};
-
-/**
- * Fetch all evaluation grades recorded for a student
- * @param {string} studentId - Student identifier
- * @returns {Promise<Object>} Formatted service response with grades list
- */
-exports.getGrades = async (studentId) => {
-  try {
-    const grades = await evaluationRepository.findAll({ student: studentId });
-    return response(false, grades, 'Student grades fetched successfully');
-  } catch (err) {
-    return response(
-      true,
-      null,
-      err.message || 'Failed to fetch student grades'
     );
   }
 };

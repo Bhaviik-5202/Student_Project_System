@@ -19,11 +19,7 @@ api.interceptors.request.use(
     const hasContentType =
       config.headers['Content-Type'] || config.headers['content-type'];
 
-    if (
-      config.data &&
-      !(config.data instanceof FormData) &&
-      !hasContentType
-    ) {
+    if (config.data && !(config.data instanceof FormData) && !hasContentType) {
       config.headers['Content-Type'] = 'application/json';
     }
 

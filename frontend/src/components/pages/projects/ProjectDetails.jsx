@@ -98,8 +98,7 @@ const ProjectDetails = memo(() => {
 
   if (!project) return null;
 
-  const canManageProject =
-    user?.role === 'admin' || user?.role === 'faculty';
+  const canManageProject = user?.role === 'admin' || user?.role === 'faculty';
 
   const handleDeleteProject = async () => {
     if (!window.confirm('Are you sure you want to delete this project?')) {
@@ -142,7 +141,8 @@ const ProjectDetails = memo(() => {
                 {project.status?.replace('_', ' ')}
               </span>
               <span className='text-xs font-bold text-gray-400'>
-                {project.type} {project.classification ? `(${project.classification})` : ''}
+                {project.type}{' '}
+                {project.classification ? `(${project.classification})` : ''}
               </span>
             </div>
           </div>

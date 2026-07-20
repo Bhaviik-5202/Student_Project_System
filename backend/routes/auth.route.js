@@ -31,7 +31,11 @@ router.post(
 
     body('role')
       .optional()
-      .isIn(process.env.NODE_ENV === 'test' ? ['student', 'faculty', 'admin'] : ['student', 'faculty'])
+      .isIn(
+        process.env.NODE_ENV === 'test'
+          ? ['student', 'faculty', 'admin']
+          : ['student', 'faculty']
+      )
       .withMessage('Invalid role'),
   ],
   validateRequest,
@@ -45,9 +49,7 @@ router.post(
  */
 router.post(
   '/validate-email',
-  [
-    body('email').isEmail().withMessage('Valid email is required'),
-  ],
+  [body('email').isEmail().withMessage('Valid email is required')],
   validateRequest,
   authController.validateEmail
 );
@@ -61,7 +63,9 @@ router.post(
   '/verify-otp',
   [
     body('email').isEmail().withMessage('Valid email is required'),
-    body('otp').isLength({ min: 6, max: 6 }).withMessage('OTP must be exactly 6 digits'),
+    body('otp')
+      .isLength({ min: 6, max: 6 })
+      .withMessage('OTP must be exactly 6 digits'),
   ],
   validateRequest,
   authController.verifyOtp
@@ -74,13 +78,10 @@ router.post(
  */
 router.post(
   '/resend-otp',
-  [
-    body('email').isEmail().withMessage('Valid email is required'),
-  ],
+  [body('email').isEmail().withMessage('Valid email is required')],
   validateRequest,
   authController.resendOtp
 );
-
 
 /**
  * @route   POST /api/v1/auth/login

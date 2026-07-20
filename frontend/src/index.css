@@ -1,6 +1,5 @@
 @import './assets/styles/global.css';
-@import './assets/styles/courses.css';
-@import './assets/styles/assignments.css';
+@import './assets/styles/theme.css';
 @import './assets/styles/projects.css';
 
 @tailwind base;
@@ -2043,5 +2042,14 @@ nav a::after,
   --skeleton-pulse: rgba(51, 65, 85, 0.6);
 }
 
-
 @tailwind utilities;
+
+/* ── Reset Password success redirect bar ───────────────────────────────── */
+@keyframes progressFill {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}

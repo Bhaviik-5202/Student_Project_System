@@ -4,7 +4,8 @@ require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 const connectDB = require('../config/db');
 const User = require('../models/user.model');
 
-const ADMIN_EMAIL = process.env.TEST_ADMIN_EMAIL || `admin.smoke+${Date.now()}@example.com`;
+const ADMIN_EMAIL =
+  process.env.TEST_ADMIN_EMAIL || `admin.smoke+${Date.now()}@example.com`;
 const ADMIN_PASSWORD = process.env.TEST_ADMIN_PASSWORD || 'AdminPass123!';
 const ADMIN_NAME = process.env.TEST_ADMIN_NAME || 'Smoke Admin';
 
@@ -20,7 +21,12 @@ const ADMIN_NAME = process.env.TEST_ADMIN_NAME || 'Smoke Admin';
       await existing.save();
       console.log('Updated existing admin:', ADMIN_EMAIL);
     } else {
-      await User.create({ name: ADMIN_NAME, email: ADMIN_EMAIL, password: ADMIN_PASSWORD, role: 'admin' });
+      await User.create({
+        name: ADMIN_NAME,
+        email: ADMIN_EMAIL,
+        password: ADMIN_PASSWORD,
+        role: 'admin',
+      });
       console.log('Created admin:', ADMIN_EMAIL);
     }
     console.log('Admin credentials:');

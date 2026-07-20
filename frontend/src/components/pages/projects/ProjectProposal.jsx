@@ -199,7 +199,9 @@ const ProjectProposal = memo(() => {
                   >
                     <option value=''>Select Type</option>
                     <option value='Web Application'>Web Application</option>
-                    <option value='Mobile Application'>Mobile Application</option>
+                    <option value='Mobile Application'>
+                      Mobile Application
+                    </option>
                     <option value='AI/ML Project'>AI/ML Project</option>
                     <option value='Cloud Computing'>Cloud Computing</option>
                     <option value='Research Project'>Research Project</option>

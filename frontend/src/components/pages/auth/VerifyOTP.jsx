@@ -45,26 +45,32 @@ const VerifyOTP = memo(() => {
   }, [email, navigate]);
 
   // Traversal: Handle input digit entry and auto-focus shifting
-  const handleChange = useCallback((index, value) => {
-    // Only accept numeric digit
-    if (value && !/^\d$/.test(value)) return;
+  const handleChange = useCallback(
+    (index, value) => {
+      // Only accept numeric digit
+      if (value && !/^\d$/.test(value)) return;
 
-    const newOtp = [...otp];
-    newOtp[index] = value;
-    setOtp(newOtp);
+      const newOtp = [...otp];
+      newOtp[index] = value;
+      setOtp(newOtp);
 
-    // Auto-focus next input if value entered
-    if (value && index < 5) {
-      inputRefs.current[index + 1].focus();
-    }
-  }, [otp]);
+      // Auto-focus next input if value entered
+      if (value && index < 5) {
+        inputRefs.current[index + 1].focus();
+      }
+    },
+    [otp]
+  );
 
   // Traversal: Handle backspace/delete focus shifting
-  const handleKeyDown = useCallback((index, e) => {
-    if (e.key === 'Backspace' && !otp[index] && index > 0) {
-      inputRefs.current[index - 1].focus();
-    }
-  }, [otp]);
+  const handleKeyDown = useCallback(
+    (index, e) => {
+      if (e.key === 'Backspace' && !otp[index] && index > 0) {
+        inputRefs.current[index - 1].focus();
+      }
+    },
+    [otp]
+  );
 
   // Paste handler for 6 digits
   const handlePaste = useCallback((e) => {
@@ -80,28 +86,31 @@ const VerifyOTP = memo(() => {
     inputRefs.current[5].focus();
   }, []);
 
-  const handleSubmit = useCallback(async (e) => {
-    e.preventDefault();
-    const otpString = otp.join('');
-    if (otpString.length !== 6) {
-      toast.error('Please enter all 6 digits of the code.');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const res = await verifyOTP(email, otpString);
-      if (res.success) {
-        navigate('/dashboard');
-      } else {
-        toast.error(res.message || 'OTP verification failed');
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+      const otpString = otp.join('');
+      if (otpString.length !== 6) {
+        toast.error('Please enter all 6 digits of the code.');
+        return;
       }
-    } catch (error) {
-      toast.error(error.message || 'An error occurred during verification');
-    } finally {
-      setLoading(false);
-    }
-  }, [otp, email, verifyOTP, navigate]);
+
+      setLoading(true);
+      try {
+        const res = await verifyOTP(email, otpString);
+        if (res.success) {
+          navigate('/dashboard');
+        } else {
+          toast.error(res.message || 'OTP verification failed');
+        }
+      } catch (error) {
+        toast.error(error.message || 'An error occurred during verification');
+      } finally {
+        setLoading(false);
+      }
+    },
+    [otp, email, verifyOTP, navigate]
+  );
 
   const handleResend = useCallback(async () => {
     if (!canResend) return;
@@ -136,8 +145,12 @@ const VerifyOTP = memo(() => {
         <h2 className='text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white'>
           Verify Email
         </h2>
-        <p className='mt-2.5 text-sm text-slate-600 dark:text-slate-400 max-w-sm mx-auto leading-relaxed'>
-          We've sent a 6-digit verification code to <span className='font-bold text-slate-900 dark:text-slate-200'>{email}</span>.
+        <p className='mx-auto mt-2.5 max-w-sm text-sm leading-relaxed text-slate-600 dark:text-slate-400'>
+          We've sent a 6-digit verification code to{' '}
+          <span className='font-bold text-slate-900 dark:text-slate-200'>
+            {email}
+          </span>
+          .
         </p>
       </div>
 
@@ -153,7 +166,7 @@ const VerifyOTP = memo(() => {
               value={digit}
               onChange={(e) => handleChange(index, e.target.value)}
               onKeyDown={(e) => handleKeyDown(index, e)}
-              className='w-12 h-14 text-center text-xl font-bold rounded-xl border border-slate-200 bg-slate-50 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-900 dark:text-white transition-all'
+              className='h-14 w-12 rounded-xl border border-slate-200 bg-slate-50 text-center text-xl font-bold transition-all focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-900 dark:text-white'
             />
           ))}
         </div>
@@ -161,7 +174,7 @@ const VerifyOTP = memo(() => {
         <button
           type='submit'
           disabled={loading}
-          className='w-full flex items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 py-3.5 font-bold text-white shadow-lg shadow-blue-500/15 hover:brightness-110 active:scale-[0.98] disabled:opacity-50 transition-all'
+          className='flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 py-3.5 font-bold text-white shadow-lg shadow-blue-500/15 transition-all hover:brightness-110 active:scale-[0.98] disabled:opacity-50'
         >
           {loading ? (
             <div className='flex items-center gap-2'>
@@ -180,7 +193,7 @@ const VerifyOTP = memo(() => {
               type='button'
               onClick={handleResend}
               disabled={resendLoading}
-              className='flex items-center gap-1.5 text-blue-600 hover:underline dark:text-blue-400 font-bold'
+              className='flex items-center gap-1.5 font-bold text-blue-600 hover:underline dark:text-blue-400'
             >
               {resendLoading ? (
                 <Loader2 className='h-4 w-4 animate-spin' />
@@ -191,12 +204,15 @@ const VerifyOTP = memo(() => {
             </button>
           ) : (
             <p className='text-slate-500 dark:text-slate-400'>
-              Resend code in <span className='font-bold text-slate-800 dark:text-slate-200'>{timer}s</span>
+              Resend code in{' '}
+              <span className='font-bold text-slate-800 dark:text-slate-200'>
+                {timer}s
+              </span>
             </p>
           )}
         </div>
 
-        <div className='text-center pt-2'>
+        <div className='pt-2 text-center'>
           <Link
             to='/register'
             className='inline-flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200'

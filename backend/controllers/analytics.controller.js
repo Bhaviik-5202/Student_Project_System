@@ -264,8 +264,7 @@ exports.getUsageStatistics = async (req, res) => {
  */
 exports.getSystemHealth = async (req, res) => {
   try {
-    const { error, data, message } =
-      await analyticsService.getSystemHealth();
+    const { error, data, message } = await analyticsService.getSystemHealth();
     if (error) throw new Error(message);
     sendResponse(res, { success: true, data }, 200);
   } catch (error) {

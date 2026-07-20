@@ -112,10 +112,14 @@ exports.createProject = async (req, res) => {
     };
 
     // Sanitize guide and members to prevent Cast to ObjectId failed for empty strings
-    if (projectData.guide === '' || projectData.guide === 'null') projectData.guide = null;
+    if (projectData.guide === '' || projectData.guide === 'null')
+      projectData.guide = null;
     if (projectData.members && Array.isArray(projectData.members)) {
       projectData.members = projectData.members.filter((m) => m && m !== '');
-    } else if (typeof projectData.members === 'string' && projectData.members !== '') {
+    } else if (
+      typeof projectData.members === 'string' &&
+      projectData.members !== ''
+    ) {
       projectData.members = [projectData.members];
     }
 
@@ -156,7 +160,7 @@ exports.createProject = async (req, res) => {
 exports.getAllProjects = async (req, res) => {
   try {
     const { page = 1, limit = 10, ...filters } = req.query;
-    
+
     // Sanitize filters: remove non-model parameters like cache-busting timestamp
     delete filters._t;
 
@@ -177,11 +181,11 @@ exports.getAllProjects = async (req, res) => {
         error: result.error || null,
         pagination: result.data
           ? {
-            total: result.data.total,
-            page: result.data.page,
-            limit: result.data.limit,
-            totalPages: result.data.totalPages,
-          }
+              total: result.data.total,
+              page: result.data.page,
+              limit: result.data.limit,
+              totalPages: result.data.totalPages,
+            }
           : null,
       },
       result.error ? 400 : 200
@@ -353,7 +357,8 @@ exports.updateProject = async (req, res) => {
     if (updateData.guide === '') updateData.guide = null;
 
     // RBAC: Faculty cannot select or assign a guide
-    const currentGuideId = project.data.guide?._id?.toString() || project.data.guide?.toString();
+    const currentGuideId =
+      project.data.guide?._id?.toString() || project.data.guide?.toString();
     const newGuideId = updateData.guide?.toString();
 
     if (

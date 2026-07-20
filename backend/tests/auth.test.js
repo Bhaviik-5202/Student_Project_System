@@ -60,7 +60,7 @@ describe('Authentication API', function () {
 
     expect(res.statusCode).to.equal(200);
     expect(res.body.success).to.be.true;
-    expect(res.body.message).to.equal('Password reset link sent to email');
+    expect(res.body.message).to.equal('If that email is registered, a password reset link has been sent.');
   });
 
   it('should fail password reset with invalid token', async function () {
@@ -70,6 +70,6 @@ describe('Authentication API', function () {
 
     expect(res.statusCode).to.equal(400);
     expect(res.body.success).to.be.false;
-    expect(res.body.message).to.equal('Invalid or expired reset token');
+    expect(res.body.message).to.equal('Reset link is invalid or has expired. Please request a new one.');
   });
 });

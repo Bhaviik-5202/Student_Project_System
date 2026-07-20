@@ -89,7 +89,6 @@ const authService = {
     }
   },
 
-
   /**
    * Logout user
    */

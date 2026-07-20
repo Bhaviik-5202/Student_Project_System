@@ -1,23 +1,15 @@
 import { useState, memo, useCallback, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
-import {
-  User,
-  Mail,
-  Lock,
-  ShieldCheck,
-  UserPlus,
-  ArrowRight,
-  Loader2,
-  CheckCircle2,
-  XCircle,
-} from 'lucide-react';
+import { ArrowRight, Loader2, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../../../hooks/useAuth';
 import { VALIDATION_RULES } from '../../../utils/constants';
 
 /**
  * Register Component - Account creation form
- * Enhanced with premium UI, validations, and interactive feedback.
+ * Redesigned with clean inputs, sliding Framer Motion tab indicators,
+ * and a sleek minimal inline password strength meter. Full Light and Dark theme support.
  */
 const Register = memo(() => {
   const [formData, setFormData] = useState({
@@ -25,11 +17,23 @@ const Register = memo(() => {
     email: '',
     password: '',
     confirmPassword: '',
+    role: 'student',
   });
-  const [showPasswordRequirements, setShowPasswordRequirements] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const { register, isLoading: loading } = useAuth();
   const navigate = useNavigate();
+
+  // Roles tab configuration
+  const roles = useMemo(
+    () => [
+      { id: 'student', label: 'Student' },
+      { id: 'faculty', label: 'Faculty' },
+      { id: 'admin', label: 'Admin' },
+    ],
+    []
+  );
 
   // Calculate password check states dynamically
   const passwordChecks = useMemo(() => {
@@ -47,8 +51,34 @@ const Register = memo(() => {
     return Object.values(passwordChecks).every(Boolean);
   }, [passwordChecks]);
 
+  const passwordStrength = useMemo(() => {
+    let score = 0;
+    if (passwordChecks.length) score++;
+    if (passwordChecks.uppercase && passwordChecks.lowercase) score++;
+    if (passwordChecks.number && passwordChecks.special) score++;
+    return score;
+  }, [passwordChecks]);
+
+  const strengthColor = useMemo(() => {
+    if (passwordStrength === 1) return 'bg-rose-500';
+    if (passwordStrength === 2) return 'bg-amber-500';
+    if (passwordStrength === 3) return 'bg-emerald-500';
+    return 'bg-slate-800';
+  }, [passwordStrength]);
+
+  const strengthText = useMemo(() => {
+    if (passwordStrength === 1) return 'Weak';
+    if (passwordStrength === 2) return 'Fair';
+    if (passwordStrength === 3) return 'Strong';
+    return 'Very Weak';
+  }, [passwordStrength]);
+
   const handleChange = useCallback((e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  }, []);
+
+  const selectRole = useCallback((roleId) => {
+    setFormData((prev) => ({ ...prev, role: roleId }));
   }, []);
 
   const handleSubmit = useCallback(
@@ -68,7 +98,6 @@ const Register = memo(() => {
 
       if (!isPasswordValid) {
         toast.error('Password does not meet all security requirements');
-        setShowPasswordRequirements(true);
         return;
       }
 
@@ -82,12 +111,16 @@ const Register = memo(() => {
           name: formData.name.trim(),
           email: formData.email.trim(),
           password: formData.password,
-          role: 'student',
+          role: formData.role,
         });
-        
+
         if (res && res.success) {
-          toast.success(res.message || 'Registration successful! Verification code sent.');
-          navigate(`/verify-otp?email=${encodeURIComponent(formData.email.trim())}`);
+          toast.success(
+            res.message || 'Registration successful! Verification code sent.'
+          );
+          navigate(
+            `/verify-otp?email=${encodeURIComponent(formData.email.trim())}`
+          );
         } else {
           toast.error(res?.message || 'Registration failed. Please try again.');
         }
@@ -99,203 +132,406 @@ const Register = memo(() => {
     [formData, register, navigate, isPasswordValid]
   );
 
+  // Entrance spring animations
+  const cardVariants = {
+    hidden: { opacity: 0, y: 30 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: 'spring',
+        stiffness: 150,
+        damping: 18,
+        staggerChildren: 0.07,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 15 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: { type: 'spring', stiffness: 220, damping: 20 },
+    },
+  };
+
   return (
-    <div className='space-y-6'>
-      <div className='text-center'>
-        <div className='mb-4 flex justify-center'>
-          <div className='flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/20'>
-            <UserPlus className='h-8 w-8 text-white' />
-          </div>
-        </div>
-        <h2 className='text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white'>
-          Create Account
-        </h2>
-        <p className='mt-2 text-sm text-slate-600 dark:text-slate-400'>
-          Join the student project management portal
-        </p>
-      </div>
+    <motion.div
+      variants={cardVariants}
+      initial='hidden'
+      animate='show'
+      className='auth-card relative mx-auto w-full max-w-xl space-y-8 p-10 sm:p-12'
+    >
+      {/* Local CSS Isolation Block supporting Light and Dark modes */}
+      <style>{`
+        .auth-card {
+          background: rgba(255, 255, 255, 0.8) !important;
+          backdrop-filter: blur(16px) !important;
+          border: 1px solid rgba(0, 0, 0, 0.08) !important;
+          box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.06) !important;
+          border-radius: 28px !important;
+        }
 
-      <form className='space-y-5' onSubmit={handleSubmit} noValidate>
-        <div className='space-y-4'>
-          {/* Full Name Input */}
-          <div className='group'>
-            <label className='mb-1.5 block text-sm font-bold text-slate-700 dark:text-slate-300'>
-              Full Name
-            </label>
-            <div className='relative'>
-              <div className='absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 group-focus-within:text-blue-500 transition-colors'>
-                <User className='h-5 w-5' />
-              </div>
-              <input
-                name='name'
-                type='text'
-                required
-                value={formData.name}
-                onChange={handleChange}
-                className='w-full rounded-xl border border-slate-200 bg-slate-50 py-3.5 pl-11 pr-4 text-sm focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-blue-500/30 transition-all'
-                placeholder='Jane Smith'
-              />
-            </div>
-          </div>
+        .dark .auth-card {
+          background: rgba(15, 23, 42, 0.45) !important;
+          border: 1px solid rgba(255, 255, 255, 0.08) !important;
+          box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.5) !important;
+        }
+        
+        .auth-input {
+          width: 100% !important;
+          background: rgba(255, 255, 255, 0.9) !important;
+          border: 1px solid rgba(0, 0, 0, 0.12) !important;
+          color: #1e293b !important;
+          font-size: 0.875rem !important;
+          font-weight: 500 !important;
+          border-radius: 16px !important;
+          padding-top: 1.125rem !important;
+          padding-bottom: 1.125rem !important;
+          padding-left: 1.25rem !important;
+          padding-right: 1.25rem !important;
+          outline: none !important;
+          transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
 
-          {/* Email Address Input */}
-          <div className='group'>
-            <label className='mb-1.5 block text-sm font-bold text-slate-700 dark:text-slate-300'>
-              Email Address
-            </label>
-            <div className='relative'>
-              <div className='absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 group-focus-within:text-blue-500 transition-colors'>
-                <Mail className='h-5 w-5' />
-              </div>
-              <input
-                name='email'
-                type='email'
-                required
-                value={formData.email}
-                onChange={handleChange}
-                className='w-full rounded-xl border border-slate-200 bg-slate-50 py-3.5 pl-11 pr-4 text-sm focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-blue-500/30 transition-all'
-                placeholder='jane@university.edu'
-              />
-            </div>
-          </div>
+        .dark .auth-input {
+          background: rgba(8, 10, 18, 0.6) !important;
+          border: 1px solid rgba(255, 255, 255, 0.08) !important;
+          color: #ffffff !important;
+        }
+        
+        .auth-input::placeholder {
+          color: #94a3b8 !important;
+        }
 
-          {/* Password Inputs */}
-          <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
-            <div className='group'>
-              <label className='mb-1.5 block text-sm font-bold text-slate-700 dark:text-slate-300'>
-                Password
-              </label>
-              <div className='relative'>
-                <div className='absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 group-focus-within:text-blue-500 transition-colors'>
-                  <Lock className='h-5 w-5' />
-                </div>
-                <input
-                  name='password'
-                  type='password'
-                  required
-                  value={formData.password}
-                  onChange={handleChange}
-                  onFocus={() => setShowPasswordRequirements(true)}
-                  className='w-full rounded-xl border border-slate-200 bg-slate-50 py-3.5 pl-11 pr-4 text-sm focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-blue-500/30 transition-all'
-                  placeholder='••••••••'
-                />
-              </div>
-            </div>
-            <div className='group'>
-              <label className='mb-1.5 block text-sm font-bold text-slate-700 dark:text-slate-300'>
-                Confirm Password
-              </label>
-              <div className='relative'>
-                <div className='absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 group-focus-within:text-blue-500 transition-colors'>
-                  <ShieldCheck className='h-5 w-5' />
-                </div>
-                <input
-                  name='confirmPassword'
-                  type='password'
-                  required
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  className='w-full rounded-xl border border-slate-200 bg-slate-50 py-3.5 pl-11 pr-4 text-sm focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-blue-500/30 transition-all'
-                  placeholder='••••••••'
-                />
-              </div>
-            </div>
-          </div>
+        .dark .auth-input::placeholder {
+          color: #4b5563 !important;
+        }
+        
+        .auth-input:hover {
+          border-color: rgba(0, 0, 0, 0.2) !important;
+          background: #ffffff !important;
+        }
 
-          {/* Interactive Password Requirements Panel */}
-          {showPasswordRequirements && (
-            <div className='rounded-xl border border-slate-100 bg-slate-50/50 p-4 space-y-2 dark:border-slate-800 dark:bg-slate-900/30 transition-all duration-300'>
-              <p className='text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1'>
-                Password Requirements
-              </p>
-              <div className='grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-medium'>
-                <div className='flex items-center space-x-2'>
-                  {passwordChecks.length ? (
-                    <CheckCircle2 className='h-4 w-4 text-emerald-500 flex-shrink-0' />
-                  ) : (
-                    <XCircle className='h-4 w-4 text-slate-300 dark:text-slate-700 flex-shrink-0' />
-                  )}
-                  <span className={passwordChecks.length ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'}>
-                    At least 8 characters
+        .dark .auth-input:hover {
+          border-color: rgba(255, 255, 255, 0.16) !important;
+          background: rgba(8, 10, 18, 0.8) !important;
+        }
+        
+        .auth-input:focus {
+          border-color: rgba(99, 102, 241, 0.8) !important;
+          box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.8), 0 0 12px rgba(99, 102, 241, 0.15) !important;
+          background: #ffffff !important;
+        }
+
+        .dark .auth-input:focus {
+          border-color: rgba(99, 102, 241, 0.8) !important;
+          box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.8), 0 0 12px rgba(99, 102, 241, 0.25) !important;
+          background: rgba(8, 10, 18, 0.9) !important;
+        }
+        
+        /* Autofill overrides */
+        .auth-input:-webkit-autofill,
+        .auth-input:-webkit-autofill:hover,
+        .auth-input:-webkit-autofill:focus {
+          -webkit-text-fill-color: #1e293b !important;
+          -webkit-box-shadow: 0 0 0px 1000px rgb(255, 255, 255) inset !important;
+          box-shadow: 0 0 0px 1000px rgb(255, 255, 255) inset !important;
+          transition: background-color 5000s ease-in-out 0s !important;
+        }
+
+        .dark .auth-input:-webkit-autofill,
+        .dark .auth-input:-webkit-autofill:hover,
+        .dark .auth-input:-webkit-autofill:focus {
+          -webkit-text-fill-color: #ffffff !important;
+          -webkit-box-shadow: 0 0 0px 1000px rgb(8, 10, 18) inset !important;
+          box-shadow: 0 0 0px 1000px rgb(8, 10, 18) inset !important;
+        }
+        
+        .auth-label {
+          display: block !important;
+          font-size: 0.75rem !important;
+          font-weight: 800 !important;
+          text-transform: uppercase !important;
+          letter-spacing: 0.075em !important;
+          color: #64748b !important;
+          margin-bottom: 0.5rem !important;
+        }
+
+        .dark .auth-label {
+          color: #94a3b8 !important;
+        }
+        
+        .auth-title {
+          font-family: 'Space Grotesk', sans-serif !important;
+          font-size: 1.875rem !important;
+          font-weight: 800 !important;
+          color: #0f172a !important;
+          letter-spacing: -0.02em !important;
+          line-height: 1.25 !important;
+        }
+
+        .dark .auth-title {
+          color: #ffffff !important;
+        }
+        
+        .auth-subtitle {
+          font-size: 0.875rem !important;
+          color: #64748b !important;
+          font-weight: 500 !important;
+          margin-top: 0.5rem !important;
+        }
+
+        .auth-btn-submit {
+          width: 100% !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          gap: 0.5rem !important;
+          background: #4f46e5 !important;
+          color: #ffffff !important;
+          font-size: 0.875rem !important;
+          font-weight: 800 !important;
+          text-transform: uppercase !important;
+          letter-spacing: 0.05em !important;
+          padding: 1.125rem !important;
+          border-radius: 16px !important;
+          border: none !important;
+          cursor: pointer !important;
+          box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25) !important;
+          transition: all 0.2s ease !important;
+        }
+
+        .auth-btn-submit:hover {
+          background: #4338ca !important;
+          transform: translateY(-1px) !important;
+          box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35) !important;
+        }
+
+        .auth-btn-submit:active {
+          transform: scale(0.98) !important;
+        }
+
+        .auth-btn-submit:disabled {
+          opacity: 0.55 !important;
+          cursor: not-allowed !important;
+          transform: none !important;
+        }
+      `}</style>
+
+      <motion.div variants={itemVariants} className='text-center'>
+        <h2 className='auth-title'>Create Account</h2>
+        <p className='auth-subtitle'>Join the student project portal</p>
+      </motion.div>
+
+      <form className='space-y-6' onSubmit={handleSubmit} noValidate>
+        {/* Full Name Input */}
+        <motion.div variants={itemVariants} className='group'>
+          <label className='auth-label'>Full Name</label>
+          <input
+            name='name'
+            type='text'
+            required
+            value={formData.name}
+            onChange={handleChange}
+            className='auth-input'
+            placeholder='Jane Smith'
+          />
+        </motion.div>
+
+        {/* Email Address Input */}
+        <motion.div variants={itemVariants} className='group'>
+          <label className='auth-label'>Email Address</label>
+          <input
+            name='email'
+            type='email'
+            required
+            value={formData.email}
+            onChange={handleChange}
+            className='auth-input'
+            placeholder='jane@university.edu'
+          />
+        </motion.div>
+
+        {/* Role Segmented tab control — FAQ pill-tab style */}
+        <motion.div variants={itemVariants} className='group'>
+          <label className='auth-label'>Register As</label>
+          <div className='flex flex-wrap gap-2 rounded-2xl border border-slate-800/80 bg-slate-900/60 p-1.5'>
+            {roles.map((role) => {
+              const isSelected = formData.role === role.id;
+              return (
+                <button
+                  key={role.id}
+                  type='button'
+                  onClick={() => selectRole(role.id)}
+                  className={`flex-1 rounded-xl px-4 py-2.5 text-xs font-bold transition-all duration-200 ${isSelected
+                    ? 'border border-indigo-500/35 bg-indigo-500/20 text-indigo-300 shadow-sm'
+                    : 'border border-transparent bg-transparent text-slate-400 hover:text-slate-200'
+                    }`}
+                >
+                  {role.label}
+                </button>
+              );
+            })}
+          </div>
+        </motion.div>
+
+        {/* Password Input - Separate line */}
+        <motion.div variants={itemVariants} className='group'>
+          <label className='auth-label'>Password</label>
+          <div className='relative'>
+            <input
+              name='password'
+              type={showPassword ? 'text' : 'password'}
+              required
+              value={formData.password}
+              onChange={handleChange}
+              className='auth-input'
+              style={{ paddingRight: '3.5rem' }}
+              placeholder='••••••••'
+            />
+            <button
+              type='button'
+              onClick={() => setShowPassword(!showPassword)}
+              className='dark:text-slate-505 dark:hover:text-slate-205 absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 transition-colors hover:text-slate-600'
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+            >
+              {showPassword ? (
+                <EyeOff className='h-5 w-5' />
+              ) : (
+                <Eye className='h-5 w-5' />
+              )}
+            </button>
+          </div>
+        </motion.div>
+
+        {/* Confirm Password Input - Separate line */}
+        <motion.div variants={itemVariants} className='group'>
+          <label className='auth-label'>Confirm Password</label>
+          <div className='relative'>
+            <input
+              name='confirmPassword'
+              type={showConfirmPassword ? 'text' : 'password'}
+              required
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              className='auth-input'
+              style={{ paddingRight: '3.5rem' }}
+              placeholder='••••••••'
+            />
+            <button
+              type='button'
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className='dark:text-slate-505 dark:hover:text-slate-205 absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 transition-colors hover:text-slate-600'
+              aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+            >
+              {showConfirmPassword ? (
+                <EyeOff className='h-5 w-5' />
+              ) : (
+                <Eye className='h-5 w-5' />
+              )}
+            </button>
+          </div>
+        </motion.div>
+
+        {/* Strength Checker - Sleek Minimal Inline Bar (Expands dynamically when password exists) */}
+        <AnimatePresence>
+          {formData.password && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.2 }}
+              className='overflow-hidden'
+            >
+              <div className='space-y-2 pt-1'>
+                <div className='flex items-center justify-between'>
+                  <span className='text-[10px] font-extrabold uppercase tracking-wider text-slate-500'>
+                    Password Strength:{' '}
+                    <span
+                      className={
+                        passwordStrength === 3
+                          ? 'text-emerald-600 dark:text-emerald-400'
+                          : passwordStrength === 2
+                            ? 'text-amber-600 dark:text-amber-400'
+                            : 'dark:text-rose-455 text-rose-600'
+                      }
+                    >
+                      {strengthText}
+                    </span>
                   </span>
                 </div>
-                <div className='flex items-center space-x-2'>
-                  {passwordChecks.uppercase ? (
-                    <CheckCircle2 className='h-4 w-4 text-emerald-500 flex-shrink-0' />
-                  ) : (
-                    <XCircle className='h-4 w-4 text-slate-300 dark:text-slate-700 flex-shrink-0' />
-                  )}
-                  <span className={passwordChecks.uppercase ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'}>
-                    One uppercase letter (A-Z)
-                  </span>
+
+                {/* 3-Segment strength bar */}
+                <div className='flex h-1 gap-1.5'>
+                  {[1, 2, 3].map((index) => (
+                    <div
+                      key={index}
+                      className={`h-full flex-1 rounded-full transition-colors duration-300 ${passwordStrength >= index
+                        ? strengthColor
+                        : 'bg-slate-200 dark:bg-slate-900/60'
+                        }`}
+                    />
+                  ))}
                 </div>
-                <div className='flex items-center space-x-2'>
-                  {passwordChecks.lowercase ? (
-                    <CheckCircle2 className='h-4 w-4 text-emerald-500 flex-shrink-0' />
-                  ) : (
-                    <XCircle className='h-4 w-4 text-slate-300 dark:text-slate-700 flex-shrink-0' />
-                  )}
-                  <span className={passwordChecks.lowercase ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'}>
-                    One lowercase letter (a-z)
+
+                {/* Checklist items in a single horizontal row */}
+                <div className='text-slate-450 flex flex-wrap gap-x-4 gap-y-1 pt-1 text-[11px] font-bold dark:text-slate-500'>
+                  <span
+                    className={`transition-colors ${passwordChecks.length ? 'text-emerald-600 dark:text-emerald-400' : ''}`}
+                  >
+                    • 8+ characters
                   </span>
-                </div>
-                <div className='flex items-center space-x-2'>
-                  {passwordChecks.number ? (
-                    <CheckCircle2 className='h-4 w-4 text-emerald-500 flex-shrink-0' />
-                  ) : (
-                    <XCircle className='h-4 w-4 text-slate-300 dark:text-slate-700 flex-shrink-0' />
-                  )}
-                  <span className={passwordChecks.number ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'}>
-                    One number (0-9)
+                  <span
+                    className={`transition-colors ${passwordChecks.uppercase && passwordChecks.lowercase ? 'text-emerald-600 dark:text-emerald-400' : ''}`}
+                  >
+                    • Mix case (aA)
                   </span>
-                </div>
-                <div className='flex items-center space-x-2 sm:col-span-2'>
-                  {passwordChecks.special ? (
-                    <CheckCircle2 className='h-4 w-4 text-emerald-500 flex-shrink-0' />
-                  ) : (
-                    <XCircle className='h-4 w-4 text-slate-300 dark:text-slate-700 flex-shrink-0' />
-                  )}
-                  <span className={passwordChecks.special ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'}>
-                    One special character (@$!%*?&)
+                  <span
+                    className={`transition-colors ${passwordChecks.number && passwordChecks.special ? 'text-emerald-600 dark:text-emerald-400' : ''}`}
+                  >
+                    • Number & Symbol
                   </span>
                 </div>
               </div>
-            </div>
+            </motion.div>
           )}
-        </div>
+        </AnimatePresence>
 
         {/* Submit Button */}
-        <button
+        <motion.button
+          variants={itemVariants}
           type='submit'
           disabled={loading}
-          className='mt-4 flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 py-3.5 font-bold text-white shadow-lg shadow-blue-500/15 hover:brightness-110 active:scale-[0.98] disabled:opacity-50 transition-all'
+          className='auth-btn-submit'
         >
           {loading ? (
             <div className='flex items-center gap-2'>
-              <Loader2 className='h-5 w-5 animate-spin' />
+              <Loader2 className='h-4 w-4 animate-spin' />
               <span>Creating Account...</span>
             </div>
           ) : (
             <div className='flex items-center gap-2'>
               <span>Create Account</span>
-              <ArrowRight className='h-5 w-5' />
+              <ArrowRight className='h-4 w-4' />
             </div>
           )}
-        </button>
+        </motion.button>
       </form>
 
-      <div className='pt-2 text-center'>
-        <p className='text-sm font-medium text-slate-600 dark:text-slate-400'>
+      <motion.div variants={itemVariants} className='pt-2 text-center'>
+        <p className='text-xs font-semibold text-slate-500 dark:text-slate-400'>
           Already have an account?{' '}
           <Link
             to='/login'
-            className='font-bold text-blue-600 hover:underline dark:text-blue-400'
+            className='text-indigo-650 font-bold hover:text-indigo-500 hover:underline dark:text-indigo-400 dark:hover:text-indigo-300'
           >
             Sign In
           </Link>
         </p>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 });
 

@@ -1,93 +1,203 @@
 /**
  * LoadingSpinner Component
  *
- * A configurable visual indicator for asynchronous operations.
- * Supports multiple sizes, optional status messages (aria-live),
- * and a full-page architectural overlay mode.
+ * Premium animated loading indicator with:
+ *  - Dual contra-rotating arcs with gradient glow
+ *  - Pulsing inner orb
+ *  - Size variants: small | medium | large | lg
+ *  - Optional status message with fade-in
+ *  - Full-page overlay mode with frosted-glass backdrop
  */
 import { memo } from 'react';
 import PropTypes from 'prop-types';
 
+/* ─── Inline keyframe styles (pure CSS, no Tailwind JIT dependency) ───────── */
+const STYLE = `
+  @keyframes sps-spin-cw  { to { transform: rotate(360deg);  } }
+  @keyframes sps-spin-ccw { to { transform: rotate(-360deg); } }
+  @keyframes sps-pulse-orb {
+    0%, 100% { transform: scale(1);    opacity: 0.7; }
+    50%       { transform: scale(1.18); opacity: 1;   }
+  }
+  @keyframes sps-fade-up {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0);   }
+  }
+  @keyframes sps-glow-pulse {
+    0%, 100% { opacity: 0.25; }
+    50%       { opacity: 0.55; }
+  }
+
+  .sps-cw  { animation: sps-spin-cw  1.1s linear infinite; }
+  .sps-ccw { animation: sps-spin-ccw 1.7s linear infinite; }
+  .sps-orb { animation: sps-pulse-orb 1.8s ease-in-out infinite; }
+  .sps-msg { animation: sps-fade-up  0.4s ease forwards; }
+  .sps-glow{ animation: sps-glow-pulse 2s ease-in-out infinite; }
+`;
+
+/* ─── Size tokens ──────────────────────────────────────────────────────────── */
+const SIZE = {
+  small:  { box: 32,  strokeOuter: 2.5, strokeInner: 2,   orb: 7  },
+  medium: { box: 52,  strokeOuter: 3,   strokeInner: 2.5, orb: 11 },
+  large:  { box: 72,  strokeOuter: 3.5, strokeInner: 3,   orb: 15 },
+  lg:     { box: 72,  strokeOuter: 3.5, strokeInner: 3,   orb: 15 },
+};
+
+/* ─── Core spinner SVG ─────────────────────────────────────────────────────── */
+function SpinnerSVG({ config }) {
+  const { box, strokeOuter, strokeInner, orb } = config;
+  const half    = box / 2;
+  const rOuter  = half - strokeOuter * 1.5;
+  const rInner  = half - strokeOuter * 1.5 - strokeInner * 3;
+  const circOuter = 2 * Math.PI * rOuter;
+  const circInner = 2 * Math.PI * rInner;
+
+  return (
+    <svg
+      width={box}
+      height={box}
+      viewBox={`0 0 ${box} ${box}`}
+      fill='none'
+      aria-hidden='true'
+      style={{ overflow: 'visible' }}
+    >
+      <defs>
+        {/* Blue → Indigo gradient for outer arc */}
+        <linearGradient id='sps-grad-outer' x1='0%' y1='0%' x2='100%' y2='100%'>
+          <stop offset='0%'   stopColor='#3b82f6' />
+          <stop offset='100%' stopColor='#6366f1' />
+        </linearGradient>
+        {/* Violet → Purple gradient for inner arc */}
+        <linearGradient id='sps-grad-inner' x1='100%' y1='0%' x2='0%' y2='100%'>
+          <stop offset='0%'   stopColor='#8b5cf6' />
+          <stop offset='100%' stopColor='#06b6d4' />
+        </linearGradient>
+        {/* Radial glow for orb */}
+        <radialGradient id='sps-grad-orb' cx='50%' cy='50%' r='50%'>
+          <stop offset='0%'   stopColor='#93c5fd' stopOpacity='0.9' />
+          <stop offset='100%' stopColor='#3b82f6' stopOpacity='0.3' />
+        </radialGradient>
+      </defs>
+
+      {/* ── Track ring (outer) ── */}
+      <circle
+        cx={half} cy={half} r={rOuter}
+        stroke='currentColor'
+        strokeWidth={strokeOuter}
+        className='text-slate-200 dark:text-slate-800'
+        opacity={0.5}
+      />
+
+      {/* ── Outer spinning arc (clockwise) ── */}
+      <g style={{ transformOrigin: `${half}px ${half}px` }} className='sps-cw'>
+        <circle
+          cx={half} cy={half} r={rOuter}
+          stroke='url(#sps-grad-outer)'
+          strokeWidth={strokeOuter}
+          strokeLinecap='round'
+          strokeDasharray={circOuter}
+          strokeDashoffset={circOuter * 0.72}
+          style={{
+            filter: 'drop-shadow(0 0 4px #3b82f680)',
+          }}
+        />
+      </g>
+
+      {/* ── Track ring (inner) ── */}
+      <circle
+        cx={half} cy={half} r={rInner}
+        stroke='currentColor'
+        strokeWidth={strokeInner}
+        className='text-slate-200 dark:text-slate-800'
+        opacity={0.35}
+      />
+
+      {/* ── Inner spinning arc (counter-clockwise) ── */}
+      <g style={{ transformOrigin: `${half}px ${half}px` }} className='sps-ccw'>
+        <circle
+          cx={half} cy={half} r={rInner}
+          stroke='url(#sps-grad-inner)'
+          strokeWidth={strokeInner}
+          strokeLinecap='round'
+          strokeDasharray={circInner}
+          strokeDashoffset={circInner * 0.55}
+          style={{
+            filter: 'drop-shadow(0 0 3px #8b5cf680)',
+          }}
+        />
+      </g>
+
+      {/* ── Pulsing centre orb ── */}
+      <circle
+        cx={half} cy={half} r={orb}
+        fill='url(#sps-grad-orb)'
+        className='sps-orb'
+        style={{ transformOrigin: `${half}px ${half}px` }}
+      />
+    </svg>
+  );
+}
+
+SpinnerSVG.propTypes = {
+  config: PropTypes.object.isRequired,
+};
+
+/* ─── Main component ───────────────────────────────────────────────────────── */
 const LoadingSpinner = ({
   fullPage = false,
   size = 'medium',
   message,
   className = '',
 }) => {
-  const sizeMap = {
-    small: { dimensions: 'w-8 h-8', stroke: 3, center: 12, radius: 9 },
-    medium: { dimensions: 'w-12 h-12', stroke: 4, center: 16, radius: 12 },
-    large: { dimensions: 'w-16 h-16', stroke: 4, center: 20, radius: 16 },
-    lg: { dimensions: 'w-16 h-16', stroke: 4, center: 20, radius: 16 },
-  };
-
-  const { dimensions, stroke, center, radius } =
-    sizeMap[size] || sizeMap.medium;
+  const config = SIZE[size] ?? SIZE.medium;
 
   const spinner = (
-    <div
-      className={`flex flex-col items-center justify-center ${className}`}
-      role='status'
-    >
-      <div className={`relative ${dimensions}`}>
-        {/* Transparent background track */}
-        <svg
-          className='absolute inset-0 h-full w-full text-gray-200 dark:text-slate-800'
-          viewBox={`0 0 ${center * 2} ${center * 2}`}
-          fill='none'
-          xmlns='http://www.w3.org/2000/svg'
-        >
-          <circle
-            cx={center}
-            cy={center}
-            r={radius}
-            stroke='currentColor'
-            strokeWidth={stroke}
-          />
-        </svg>
+    <>
+      {/* Inject keyframes once (idempotent — browsers de-dup identical <style> text) */}
+      <style>{STYLE}</style>
 
-        {/* Animated spinner foreground */}
-        <svg
-          className='absolute inset-0 h-full w-full animate-spin text-blue-600 dark:text-blue-400'
-          viewBox={`0 0 ${center * 2} ${center * 2}`}
-          fill='none'
-          xmlns='http://www.w3.org/2000/svg'
-          style={{ animationDuration: '0.8s' }}
-        >
-          <circle
-            cx={center}
-            cy={center}
-            r={radius}
-            stroke='currentColor'
-            strokeWidth={stroke}
-            strokeLinecap='round'
-            strokeDasharray={radius * 2 * Math.PI}
-            strokeDashoffset={radius * 2 * Math.PI * 0.7}
+      <div
+        className={`flex flex-col items-center justify-center gap-4 ${className}`}
+        role='status'
+        aria-live='polite'
+        aria-label={message ?? 'Loading'}
+      >
+        {/* Ambient glow behind spinner */}
+        <div className='relative flex items-center justify-center'>
+          <div
+            className='sps-glow absolute rounded-full bg-blue-500/20 blur-xl dark:bg-blue-400/15'
+            style={{
+              width:  config.box * 1.5,
+              height: config.box * 1.5,
+            }}
           />
-        </svg>
+          <SpinnerSVG config={config} />
+        </div>
+
+        {/* Optional message */}
+        {message && (
+          <p
+            className='sps-msg max-w-[180px] text-center text-sm font-semibold leading-snug text-slate-500 dark:text-slate-400'
+          >
+            {message}
+          </p>
+        )}
+
+        <span className='sr-only'>{message ?? 'Loading…'}</span>
       </div>
-
-      {message && (
-        <p
-          className='mt-4 max-w-xs animate-pulse text-center text-sm font-medium text-gray-600 dark:text-blue-400'
-          aria-live='polite'
-        >
-          {message}
-        </p>
-      )}
-      <span className='sr-only'>Loading...</span>
-    </div>
+    </>
   );
 
+  /* ── Full-page overlay ── */
   if (fullPage) {
     return (
       <div
-        className='fixed inset-0 z-[9999] flex items-center justify-center bg-white/80 backdrop-blur-sm dark:bg-slate-900/80'
+        className='fixed inset-0 z-[9999] flex items-center justify-center bg-white/70 backdrop-blur-md dark:bg-slate-950/75'
         role='dialog'
         aria-modal='true'
         aria-label='Loading'
       >
-        <div className='animate-in fade-in zoom-in rounded-2xl border border-gray-100 bg-white p-8 shadow-2xl duration-300 dark:border-slate-700 dark:bg-slate-800'>
+        <div className='flex flex-col items-center gap-5 rounded-2xl border border-slate-200/60 bg-white/90 px-10 py-8 shadow-2xl shadow-slate-300/30 dark:border-slate-700/60 dark:bg-slate-900/90 dark:shadow-black/40'>
           {spinner}
         </div>
       </div>
@@ -98,9 +208,9 @@ const LoadingSpinner = ({
 };
 
 LoadingSpinner.propTypes = {
-  fullPage: PropTypes.bool,
-  size: PropTypes.oneOf(['small', 'medium', 'large', 'lg']),
-  message: PropTypes.string,
+  fullPage:  PropTypes.bool,
+  size:      PropTypes.oneOf(['small', 'medium', 'large', 'lg']),
+  message:   PropTypes.string,
   className: PropTypes.string,
 };
 

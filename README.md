@@ -1,27 +1,28 @@
-# Student Project Management System
+# Student Project System
 
-A comprehensive full-stack application for managing academic projects, facilitating collaboration between students and faculty, and tracking project lifecycles.
+A comprehensive full-stack application for managing academic projects, facilitating collaboration between students and faculty, and tracking project lifecycles end-to-end.
 
 ## Project Structure
 
-- **[frontend](./frontend)**: React-based frontend application built with Vite, Tailwind CSS, and Framer Motion.
-- **[backend](./backend)**: Node.js/Express backend API with MongoDB/Mongoose.
+- **[frontend](./frontend)**: React 18 SPA built with Vite, Tailwind CSS, and Framer Motion — runs on **http://localhost:3000**
+- **[backend](./backend)**: Node.js/Express REST API with MongoDB/Mongoose — runs on **http://localhost:5000**
 
 ## Key Features
 
-- **Role-Based Access Control (RBAC)**: Distinct interfaces for Students, Faculty (Supervisors), and Admin.
-- **Project Tracking**: Manage project timelines, milestones, and deliverables.
-- **Collaboration Tools**: Integrated meeting scheduling, discussion boards, and resource sharing.
-- **Real-time Notifications**: Stay updated with project progress and deadlines.
-- **Analytics Dashboard**: Visual representation of project metrics and performance.
+- **Role-Based Access Control (RBAC)**: Distinct dashboards and permissions for Students, Faculty (Supervisors), and Admins.
+- **Project Lifecycle Management**: Proposals, timelines, milestones, and deliverables tracked in one place.
+- **Email OTP Verification**: Secure account registration with email verification.
+- **Password Reset**: Secure, token-based forgot-password flow with time-limited email links.
+- **Collaboration Tools**: Integrated meeting scheduling, resource sharing, and notifications.
+- **Analytics Dashboard**: Visual charts and metrics for project progress and performance.
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js (v16+)
-- MongoDB (Running locally or via Atlas)
-- npm or yarn
+- Node.js v16+
+- MongoDB (local or Atlas)
+- npm
 
 ### Installation
 
@@ -35,23 +36,23 @@ A comprehensive full-stack application for managing academic projects, facilitat
    ```bash
    cd backend
    npm install
-   # Create a .env file based on .env.example
-   npm run dev
+   cp .env.example .env   # fill in your values
+   npm run dev            # starts on http://localhost:5000
    ```
 
 3. **Frontend Setup**
    ```bash
    cd frontend
    npm install
-   # Create a .env file based on .env.example
-   npm run dev
+   cp .env.example .env   # set VITE_API_URL=http://localhost:5000/api/v1
+   npm run dev            # starts on http://localhost:3000
    ```
 
 ## Technologies Used
 
-- **Frontend**: React, Vite, Tailwind CSS, Framer Motion, React Query, Lucide React.
-- **Backend**: Node.js, Express, MongoDB, Mongoose, JWT.
-- **Tools**: ESLint, PostCSS, Vite.
+- **Frontend**: React 18, Vite, Tailwind CSS, Framer Motion, Lucide React, React Router v6
+- **Backend**: Node.js, Express, MongoDB, Mongoose, JWT, Nodemailer
+- **Tools**: ESLint, Prettier, PostCSS
 
 ## License
 

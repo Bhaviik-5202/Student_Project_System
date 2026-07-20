@@ -16,87 +16,89 @@ import { useNavigate, Outlet } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import studentService from '../../../services/studentService';
 
-const StudentRow = memo(({ student, onEdit, onDelete, onAttendance, userRole }) => (
-  <tr className='group transition-colors hover:bg-gray-50 dark:hover:bg-slate-900/50'>
-    <td className='whitespace-nowrap px-4 py-4'>
-      <div className='font-mono text-[10px] font-bold text-gray-400 dark:text-slate-500'>
-        #{(student.id || '').toString().slice(-6).toUpperCase()}
-      </div>
-    </td>
-    <td className='whitespace-nowrap px-4 py-4'>
-      <div className='flex items-center'>
-        <div className='flex h-9 w-9 items-center justify-center rounded-xl border border-indigo-100 bg-gradient-to-br from-indigo-50 to-indigo-100/50 text-indigo-600 dark:border-indigo-800 dark:from-indigo-900/30 dark:to-indigo-800/20 dark:text-indigo-400'>
-          <UserIcon size={18} />
+const StudentRow = memo(
+  ({ student, onEdit, onDelete, onAttendance, userRole }) => (
+    <tr className='group transition-colors hover:bg-gray-50 dark:hover:bg-slate-900/50'>
+      <td className='whitespace-nowrap px-4 py-4'>
+        <div className='font-mono text-[10px] font-bold text-gray-400 dark:text-slate-500'>
+          #{(student.id || '').toString().slice(-6).toUpperCase()}
         </div>
-        <div className='ml-3'>
-          <div className='text-sm font-bold text-gray-900 transition-colors group-hover:text-indigo-600 dark:text-white'>
-            {student.name}
+      </td>
+      <td className='whitespace-nowrap px-4 py-4'>
+        <div className='flex items-center'>
+          <div className='flex h-9 w-9 items-center justify-center rounded-xl border border-indigo-100 bg-gradient-to-br from-indigo-50 to-indigo-100/50 text-indigo-600 dark:border-indigo-800 dark:from-indigo-900/30 dark:to-indigo-800/20 dark:text-indigo-400'>
+            <UserIcon size={18} />
           </div>
-          <div className='flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400'>
-            <MailIcon size={10} className='text-gray-400' />
-            {student.email}
+          <div className='ml-3'>
+            <div className='text-sm font-bold text-gray-900 transition-colors group-hover:text-indigo-600 dark:text-white'>
+              {student.name}
+            </div>
+            <div className='flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400'>
+              <MailIcon size={10} className='text-gray-400' />
+              {student.email}
+            </div>
           </div>
         </div>
-      </div>
-    </td>
-    <td className='whitespace-nowrap px-4 py-4'>
-      <div className='flex flex-col'>
-        <span className='text-sm font-semibold text-gray-700 dark:text-gray-300'>
-          {student.department}
-        </span>
-        <span className='text-[10px] font-bold uppercase tracking-widest text-gray-400'>
-          {student.rollNumber}
-        </span>
-      </div>
-    </td>
-    <td className='whitespace-nowrap px-4 py-4'>
-      <div className='flex items-center gap-2'>
-        <CalendarIcon size={14} className='text-gray-400' />
-        <span className='text-sm font-medium text-gray-600 dark:text-gray-400'>
-          Year {student.year}
-        </span>
-      </div>
-    </td>
-    <td className='whitespace-nowrap px-4 py-4'>
-      <span
-        className={`table-status ${student.status === 'Active' ? 'status-active' : 'status-error'}`}
-      >
-        {student.status || 'Active'}
-      </span>
-    </td>
-    <td className='whitespace-nowrap px-4 py-4 text-right text-sm'>
-      {userRole !== 'faculty' && (
-        <div className='flex justify-end gap-2 opacity-0 transition-opacity group-hover:opacity-100'>
-          <button
-            onClick={() => onAttendance(student.id)}
-            className='rounded-xl p-2 text-blue-600 transition-all hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/30'
-            title='View Attendance'
-          >
-            <CalendarIcon size={16} />
-          </button>
-          {userRole !== 'faculty' && (
-            <>
-              <button
-                onClick={() => onEdit(student.id)}
-                className='rounded-xl p-2 text-indigo-600 transition-all hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-900/30'
-                title='Update Profile'
-              >
-                <EditIcon size={16} />
-              </button>
-              <button
-                onClick={() => onDelete(student.id)}
-                className='rounded-xl p-2 text-red-600 transition-all hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30'
-                title='Remove Record'
-              >
-                <TrashIcon size={16} />
-              </button>
-            </>
-          )}
+      </td>
+      <td className='whitespace-nowrap px-4 py-4'>
+        <div className='flex flex-col'>
+          <span className='text-sm font-semibold text-gray-700 dark:text-gray-300'>
+            {student.department}
+          </span>
+          <span className='text-[10px] font-bold uppercase tracking-widest text-gray-400'>
+            {student.rollNumber}
+          </span>
         </div>
-      )}
-    </td>
-  </tr>
-));
+      </td>
+      <td className='whitespace-nowrap px-4 py-4'>
+        <div className='flex items-center gap-2'>
+          <CalendarIcon size={14} className='text-gray-400' />
+          <span className='text-sm font-medium text-gray-600 dark:text-gray-400'>
+            Year {student.year}
+          </span>
+        </div>
+      </td>
+      <td className='whitespace-nowrap px-4 py-4'>
+        <span
+          className={`table-status ${student.status === 'Active' ? 'status-active' : 'status-error'}`}
+        >
+          {student.status || 'Active'}
+        </span>
+      </td>
+      <td className='whitespace-nowrap px-4 py-4 text-right text-sm'>
+        {userRole !== 'faculty' && (
+          <div className='flex justify-end gap-2 opacity-0 transition-opacity group-hover:opacity-100'>
+            <button
+              onClick={() => onAttendance(student.id)}
+              className='rounded-xl p-2 text-blue-600 transition-all hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/30'
+              title='View Attendance'
+            >
+              <CalendarIcon size={16} />
+            </button>
+            {userRole !== 'faculty' && (
+              <>
+                <button
+                  onClick={() => onEdit(student.id)}
+                  className='rounded-xl p-2 text-indigo-600 transition-all hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-900/30'
+                  title='Update Profile'
+                >
+                  <EditIcon size={16} />
+                </button>
+                <button
+                  onClick={() => onDelete(student.id)}
+                  className='rounded-xl p-2 text-red-600 transition-all hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30'
+                  title='Remove Record'
+                >
+                  <TrashIcon size={16} />
+                </button>
+              </>
+            )}
+          </div>
+        )}
+      </td>
+    </tr>
+  )
+);
 
 const StudentsList = memo(() => {
   const { user } = useAuth();

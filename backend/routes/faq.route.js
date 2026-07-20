@@ -18,7 +18,12 @@ const validateRequest = require('../middleware/validateRequest');
  * @desc    Create a new FAQ
  * @access  Private (Authenticated Users)
  */
-router.post('/', authMiddleware, roleMiddleware(['admin']), faqController.createFAQ);
+router.post(
+  '/',
+  authMiddleware,
+  roleMiddleware(['admin']),
+  faqController.createFAQ
+);
 
 /**
  * @route   GET /api/v1/faqs
@@ -59,6 +64,11 @@ router.put(
  * @desc    Delete a FAQ
  * @access  Private (Authenticated Users)
  */
-router.delete('/:id', authMiddleware, roleMiddleware(['admin']), faqController.deleteFAQ);
+router.delete(
+  '/:id',
+  authMiddleware,
+  roleMiddleware(['admin']),
+  faqController.deleteFAQ
+);
 
 module.exports = router;

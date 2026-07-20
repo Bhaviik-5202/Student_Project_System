@@ -98,9 +98,7 @@ const MainLayout = () => {
                   </div>
                 }
               >
-                <PageTransition
-                  pathname={location.pathname}
-                >
+                <PageTransition pathname={location.pathname}>
                   <Outlet />
                 </PageTransition>
               </Suspense>

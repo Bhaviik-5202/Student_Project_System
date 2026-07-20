@@ -39,7 +39,7 @@ const AnalyticsDashboard = memo(() => {
         if (mounted && !isBackground) setLoading(false);
       }
     };
-    
+
     fetchAnalytics();
 
     const handleFocus = () => fetchAnalytics(true);

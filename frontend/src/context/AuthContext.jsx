@@ -178,7 +178,11 @@ export const AuthProvider = ({ children }) => {
           );
           return { success: true, user, token };
         } else {
-          return { success: false, message: res.message || 'Login failed', isUnverified: res.isUnverified };
+          return {
+            success: false,
+            message: res.message || 'Login failed',
+            isUnverified: res.isUnverified,
+          };
         }
       } catch (error) {
         return {
@@ -235,36 +239,38 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const verifyOTP = useCallback(async (email, otp) => {
-    try {
-      setIsLoading(true);
-      const res = await authService.verifyOTP(email, otp);
-      if (res.success && res.data) {
-        const { user } = res.data;
-        setUser(user);
-        setIsAuthenticated(true);
-        safeLocalStorage.setItem(
-          STORAGE_KEYS.TIMESTAMP,
-          Date.now().toString()
-        );
-        toast.success('Account verified and logged in successfully!');
-        return { success: true, user };
-      } else {
+  const verifyOTP = useCallback(
+    async (email, otp) => {
+      try {
+        setIsLoading(true);
+        const res = await authService.verifyOTP(email, otp);
+        if (res.success && res.data) {
+          const { user } = res.data;
+          setUser(user);
+          setIsAuthenticated(true);
+          safeLocalStorage.setItem(
+            STORAGE_KEYS.TIMESTAMP,
+            Date.now().toString()
+          );
+          toast.success('Account verified and logged in successfully!');
+          return { success: true, user };
+        } else {
+          return {
+            success: false,
+            message: res.message || 'OTP verification failed',
+          };
+        }
+      } catch (error) {
         return {
           success: false,
-          message: res.message || 'OTP verification failed',
+          message: error.message || 'Verification failed. Please try again.',
         };
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      return {
-        success: false,
-        message: error.message || 'Verification failed. Please try again.',
-      };
-    } finally {
-      setIsLoading(false);
-    }
-  }, [safeLocalStorage]);
-
+    },
+    [safeLocalStorage]
+  );
 
   /**
    * Update the current user's profile on the server and update local state

@@ -59,11 +59,6 @@ export const navigationItems = [
         path: '/students',
         roles: ROLE_COMBINATIONS.ADMIN_FACULTY,
       },
-      {
-        title: 'Attendance',
-        path: '/attendance',
-        roles: ROLE_COMBINATIONS.ALL,
-      },
     ],
   },
   {
@@ -86,57 +81,6 @@ export const navigationItems = [
     ],
   },
   {
-    title: 'Courses',
-    icon: 'book',
-    path: '/courses',
-    roles: ROLE_COMBINATIONS.ADMIN_ONLY,
-    submenu: [
-      {
-        title: 'My Courses',
-        path: '/courses',
-        roles: ROLE_COMBINATIONS.ADMIN_ONLY,
-      },
-      {
-        title: 'Course Catalog',
-        path: '/courses/catalog',
-        roles: ROLE_COMBINATIONS.ADMIN_ONLY,
-      },
-      {
-        title: 'Module Registration',
-        path: '/courses/register',
-        roles: ROLE_COMBINATIONS.ADMIN_ONLY,
-      },
-      {
-        title: 'Course Schedule',
-        path: '/courses/schedule',
-        roles: ROLE_COMBINATIONS.ADMIN_ONLY,
-      },
-    ],
-  },
-  {
-    title: 'Assignments',
-    icon: 'tasks',
-    path: '/assignments',
-    roles: ROLE_COMBINATIONS.ALL,
-    submenu: [
-      {
-        title: 'All Assignments',
-        path: '/assignments',
-        roles: ROLE_COMBINATIONS.ALL,
-      },
-      {
-        title: 'Upload Assignment',
-        path: '/assignments/upload',
-        roles: ROLE_COMBINATIONS.ADMIN_FACULTY,
-      },
-      {
-        title: 'Submission History',
-        path: '/submission-history',
-        roles: ROLE_COMBINATIONS.ALL,
-      },
-    ],
-  },
-  {
     title: 'Resources',
     icon: 'folder-open',
     path: '/resources',
@@ -155,7 +99,6 @@ export const navigationItems = [
       { title: 'Templates', path: '/templates', roles: ROLE_COMBINATIONS.ALL },
     ],
   },
-
   {
     title: 'Admin',
     icon: 'cogs',
@@ -206,11 +149,6 @@ export const navigationItems = [
         roles: ROLE_COMBINATIONS.ADMIN_FACULTY,
       },
       {
-        title: 'Grades',
-        path: '/analytics/grades',
-        roles: ROLE_COMBINATIONS.ADMIN_FACULTY,
-      },
-      {
         title: 'Reports',
         path: '/reports',
         roles: ROLE_COMBINATIONS.ADMIN_FACULTY,
@@ -225,7 +163,6 @@ export const navigationItems = [
     submenu: [
       { title: 'Help Center', path: '/help', roles: ROLE_COMBINATIONS.ALL },
       { title: 'FAQ', path: '/faq', roles: ROLE_COMBINATIONS.ALL },
-      { title: 'Support', path: '/support', roles: ROLE_COMBINATIONS.ALL },
     ],
   },
 ];

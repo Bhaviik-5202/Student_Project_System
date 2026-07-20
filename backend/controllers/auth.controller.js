@@ -7,13 +7,19 @@ const jwt = require('jsonwebtoken');
 const OTP = require('../models/otp.model');
 const User = require('../models/user.model');
 const sendEmail = require('../utils/email');
+const { getVerificationEmail } = require('../utils/emailTemplates');
 
-const ENCRYPTION_KEY = process.env.JWT_SECRET || 'fallback-secret-key-32-chars-long';
+const ENCRYPTION_KEY =
+  process.env.JWT_SECRET || 'fallback-secret-key-32-chars-long';
 const IV_LENGTH = 16;
 
 function encryptPassword(text) {
   const iv = crypto.randomBytes(IV_LENGTH);
-  const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY.padEnd(32).slice(0, 32)), iv);
+  const cipher = crypto.createCipheriv(
+    'aes-256-cbc',
+    Buffer.from(ENCRYPTION_KEY.padEnd(32).slice(0, 32)),
+    iv
+  );
   let encrypted = cipher.update(text);
   encrypted = Buffer.concat([encrypted, cipher.final()]);
   return iv.toString('hex') + ':' + encrypted.toString('hex');
@@ -24,7 +30,11 @@ function decryptPassword(text) {
     const textParts = text.split(':');
     const iv = Buffer.from(textParts.shift(), 'hex');
     const encryptedText = Buffer.from(textParts.join(':'), 'hex');
-    const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY.padEnd(32).slice(0, 32)), iv);
+    const decipher = crypto.createDecipheriv(
+      'aes-256-cbc',
+      Buffer.from(ENCRYPTION_KEY.padEnd(32).slice(0, 32)),
+      iv
+    );
     let decrypted = decipher.update(encryptedText);
     decrypted = Buffer.concat([decrypted, decipher.final()]);
     return decrypted.toString();
@@ -77,22 +87,42 @@ exports.register = async (req, res) => {
     const { name, email, password, role = 'student' } = req.body;
 
     if (!name || !email || !password) {
-      return sendResponse(res, { success: false, message: 'All fields are required' }, 400);
+      return sendResponse(
+        res,
+        { success: false, message: 'All fields are required' },
+        400
+      );
     }
 
     const emailRegex = /^\S+@\S+\.\S+$/;
     if (!emailRegex.test(email)) {
-      return sendResponse(res, { success: false, message: 'Please provide a valid email address' }, 400);
+      return sendResponse(
+        res,
+        { success: false, message: 'Please provide a valid email address' },
+        400
+      );
     }
 
     const deliverable = await isEmailDeliverable(email);
     if (!deliverable) {
-      return sendResponse(res, { success: false, message: 'Email address domain has no valid mail servers (undeliverable)' }, 400);
+      return sendResponse(
+        res,
+        {
+          success: false,
+          message:
+            'Email address domain has no valid mail servers (undeliverable)',
+        },
+        400
+      );
     }
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return sendResponse(res, { success: false, message: 'Email already registered' }, 400);
+      return sendResponse(
+        res,
+        { success: false, message: 'Email already registered' },
+        400
+      );
     }
 
     const isTest = process.env.NODE_ENV === 'test' || req.body.bypassOTP;
@@ -111,7 +141,9 @@ exports.register = async (req, res) => {
         res,
         {
           success: !result.error,
-          message: result.error ? 'Registration failed' : 'User registered successfully',
+          message: result.error
+            ? 'Registration failed'
+            : 'User registered successfully',
           data: result.data || null,
           error: result.error || null,
         },
@@ -138,21 +170,9 @@ exports.register = async (req, res) => {
 
     await sendEmail({
       to: email,
-      subject: 'Your UniProject Verification Code',
+      subject: 'Your Student Project System Verification Code',
       text: `Hello ${name},\n\nYour 6-digit verification code is: ${otp}\n\nThis code will expire in 5 minutes.`,
-      html: `
-        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px;">
-          <h2 style="color: #2563eb;">Verify Your Account</h2>
-          <p>Hello <strong>${name}</strong>,</p>
-          <p>Thank you for registering with UniProject. Use the following verification code to complete your sign-up:</p>
-          <div style="background-color: #f8fafc; padding: 15px; border-radius: 8px; text-align: center; margin: 20px 0;">
-            <span style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #1e3a8a;">${otp}</span>
-          </div>
-          <p>This code will expire in <strong>5 minutes</strong>. If you did not request this code, please ignore this email.</p>
-          <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
-          <p style="font-size: 12px; color: #64748b;">This is an automated email, please do not reply.</p>
-        </div>
-      `,
+      html: getVerificationEmail(name, otp, false),
     });
 
     sendResponse(
@@ -166,7 +186,15 @@ exports.register = async (req, res) => {
     );
   } catch (error) {
     console.error('Registration error:', error);
-    sendResponse(res, { success: false, message: 'Internal server error', error: error.message }, 500);
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: 'Internal server error',
+        error: error.message,
+      },
+      500
+    );
   }
 };
 
@@ -181,7 +209,7 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email } = req.body;
-    
+
     // Check if the user is unverified and pending verification
     const pendingVerification = await OTP.findOne({ email });
     if (pendingVerification) {
@@ -314,9 +342,22 @@ exports.resetPassword = async (req, res) => {
 exports.logout = async (req, res) => {
   try {
     // With stateless JWT there's nothing to revoke here; return success for client convenience
-    sendResponse(res, { success: true, message: 'Logout successful', data: null }, 200);
+    sendResponse(
+      res,
+      { success: true, message: 'Logout successful', data: null },
+      200
+    );
   } catch (error) {
-    sendResponse(res, { success: false, message: 'Internal server error', data: null, error: error.message }, 500);
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: 'Internal server error',
+        data: null,
+        error: error.message,
+      },
+      500
+    );
   }
 };
 
@@ -565,27 +606,58 @@ exports.validateEmail = async (req, res) => {
   try {
     const { email } = req.body;
     if (!email) {
-      return sendResponse(res, { success: false, message: 'Email is required' }, 400);
+      return sendResponse(
+        res,
+        { success: false, message: 'Email is required' },
+        400
+      );
     }
 
     const emailRegex = /^\S+@\S+\.\S+$/;
     if (!emailRegex.test(email)) {
-      return sendResponse(res, { success: false, message: 'Invalid email address format' }, 400);
+      return sendResponse(
+        res,
+        { success: false, message: 'Invalid email address format' },
+        400
+      );
     }
 
     const deliverable = await isEmailDeliverable(email);
     if (!deliverable) {
-      return sendResponse(res, { success: false, message: 'Email domain has no valid mail servers (undeliverable)' }, 400);
+      return sendResponse(
+        res,
+        {
+          success: false,
+          message: 'Email domain has no valid mail servers (undeliverable)',
+        },
+        400
+      );
     }
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return sendResponse(res, { success: false, message: 'Email already registered' }, 400);
+      return sendResponse(
+        res,
+        { success: false, message: 'Email already registered' },
+        400
+      );
     }
 
-    sendResponse(res, { success: true, message: 'Email is valid and available' }, 200);
+    sendResponse(
+      res,
+      { success: true, message: 'Email is valid and available' },
+      200
+    );
   } catch (error) {
-    sendResponse(res, { success: false, message: 'Internal server error', error: error.message }, 500);
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: 'Internal server error',
+        error: error.message,
+      },
+      500
+    );
   }
 };
 
@@ -597,26 +669,52 @@ exports.verifyOtp = async (req, res) => {
   try {
     const { email, otp } = req.body;
     if (!email || !otp) {
-      return sendResponse(res, { success: false, message: 'Email and OTP are required' }, 400);
+      return sendResponse(
+        res,
+        { success: false, message: 'Email and OTP are required' },
+        400
+      );
     }
 
     const pending = await OTP.findOne({ email });
     if (!pending) {
-      return sendResponse(res, { success: false, message: 'No verification request found or verification expired' }, 400);
+      return sendResponse(
+        res,
+        {
+          success: false,
+          message: 'No verification request found or verification expired',
+        },
+        400
+      );
     }
 
     if (pending.otp !== otp) {
-      return sendResponse(res, { success: false, message: 'Invalid verification code' }, 400);
+      return sendResponse(
+        res,
+        { success: false, message: 'Invalid verification code' },
+        400
+      );
     }
 
     if (pending.expiresAt < new Date()) {
       await OTP.deleteOne({ email });
-      return sendResponse(res, { success: false, message: 'Verification code has expired. Please register again.' }, 400);
+      return sendResponse(
+        res,
+        {
+          success: false,
+          message: 'Verification code has expired. Please register again.',
+        },
+        400
+      );
     }
 
     const decryptedPassword = decryptPassword(pending.password);
     if (!decryptedPassword) {
-      return sendResponse(res, { success: false, message: 'Failed to decrypt secure credentials' }, 500);
+      return sendResponse(
+        res,
+        { success: false, message: 'Failed to decrypt secure credentials' },
+        500
+      );
     }
 
     const result = await userService.register({
@@ -627,7 +725,11 @@ exports.verifyOtp = async (req, res) => {
     });
 
     if (result.error) {
-      return sendResponse(res, { success: false, message: result.message || 'Failed to create user' }, 400);
+      return sendResponse(
+        res,
+        { success: false, message: result.message || 'Failed to create user' },
+        400
+      );
     }
 
     const newUser = result.data;
@@ -647,11 +749,9 @@ exports.verifyOtp = async (req, res) => {
       email: newUser.email,
       name: newUser.name,
     };
-    const token = jwt.sign(
-      tokenPayload,
-      process.env.JWT_SECRET || 'secret',
-      { expiresIn: process.env.TOKEN_EXPIRES_IN || '1d' }
-    );
+    const token = jwt.sign(tokenPayload, process.env.JWT_SECRET || 'secret', {
+      expiresIn: process.env.TOKEN_EXPIRES_IN || '1d',
+    });
 
     sendResponse(
       res,
@@ -672,7 +772,15 @@ exports.verifyOtp = async (req, res) => {
     );
   } catch (error) {
     console.error('OTP Verification error:', error);
-    sendResponse(res, { success: false, message: 'Internal server error', error: error.message }, 500);
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: 'Internal server error',
+        error: error.message,
+      },
+      500
+    );
   }
 };
 
@@ -684,15 +792,27 @@ exports.resendOtp = async (req, res) => {
   try {
     const { email } = req.body;
     if (!email) {
-      return sendResponse(res, { success: false, message: 'Email is required' }, 400);
+      return sendResponse(
+        res,
+        { success: false, message: 'Email is required' },
+        400
+      );
     }
 
     const pending = await OTP.findOne({ email });
     if (!pending) {
-      return sendResponse(res, { success: false, message: 'No registration session found. Please register again.' }, 400);
+      return sendResponse(
+        res,
+        {
+          success: false,
+          message: 'No registration session found. Please register again.',
+        },
+        400
+      );
     }
 
-    const timeSinceLastResend = (new Date() - new Date(pending.lastResent)) / 1000;
+    const timeSinceLastResend =
+      (new Date() - new Date(pending.lastResent)) / 1000;
     if (timeSinceLastResend < 60) {
       return sendResponse(
         res,
@@ -709,7 +829,8 @@ exports.resendOtp = async (req, res) => {
         res,
         {
           success: false,
-          message: 'Maximum verification attempts exceeded. Please restart registration.',
+          message:
+            'Maximum verification attempts exceeded. Please restart registration.',
         },
         429
       );
@@ -726,27 +847,29 @@ exports.resendOtp = async (req, res) => {
 
     await sendEmail({
       to: email,
-      subject: 'Your New UniProject Verification Code',
+      subject: 'Your New Student Project System Verification Code',
       text: `Hello ${pending.name},\n\nYour new 6-digit verification code is: ${newOtp}\n\nThis code will expire in 5 minutes.`,
-      html: `
-        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px;">
-          <h2 style="color: #2563eb;">New Verification Code</h2>
-          <p>Hello <strong>${pending.name}</strong>,</p>
-          <p>Use the following new verification code to complete your sign-up:</p>
-          <div style="background-color: #f8fafc; padding: 15px; border-radius: 8px; text-align: center; margin: 20px 0;">
-            <span style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #1e3a8a;">${newOtp}</span>
-          </div>
-          <p>This code will expire in <strong>5 minutes</strong>. Attempt ${pending.resendCount} of 3.</p>
-          <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
-          <p style="font-size: 12px; color: #64748b;">This is an automated email, please do not reply.</p>
-        </div>
-      `,
+      html: getVerificationEmail(pending.name, newOtp, true, pending.resendCount),
     });
 
-    sendResponse(res, { success: true, message: 'A new verification code has been sent to your email.' }, 200);
+    sendResponse(
+      res,
+      {
+        success: true,
+        message: 'A new verification code has been sent to your email.',
+      },
+      200
+    );
   } catch (error) {
     console.error('Resend OTP error:', error);
-    sendResponse(res, { success: false, message: 'Internal server error', error: error.message }, 500);
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: 'Internal server error',
+        error: error.message,
+      },
+      500
+    );
   }
 };
-

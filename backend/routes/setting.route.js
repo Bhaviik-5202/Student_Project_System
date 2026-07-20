@@ -18,7 +18,12 @@ const validateRequest = require('../middleware/validateRequest');
  * @desc    Create a new setting
  * @access  Private (Admin)
  */
-router.post('/', authMiddleware, roleMiddleware(['admin']), settingController.createSetting);
+router.post(
+  '/',
+  authMiddleware,
+  roleMiddleware(['admin']),
+  settingController.createSetting
+);
 
 /**
  * @route   GET /api/v1/settings
@@ -39,7 +44,12 @@ router.get('/:id', authMiddleware, settingController.getSettingById);
  * @desc    Bulk update system settings
  * @access  Private (Admin)
  */
-router.put('/', authMiddleware, roleMiddleware(['admin']), settingController.bulkUpdateSettings);
+router.put(
+  '/',
+  authMiddleware,
+  roleMiddleware(['admin']),
+  settingController.bulkUpdateSettings
+);
 
 /**
  * @route   PUT /api/v1/settings/:id
@@ -63,6 +73,11 @@ router.put(
  * @desc    Delete a setting
  * @access  Private (Admin)
  */
-router.delete('/:id', authMiddleware, roleMiddleware(['admin']), settingController.deleteSetting);
+router.delete(
+  '/:id',
+  authMiddleware,
+  roleMiddleware(['admin']),
+  settingController.deleteSetting
+);
 
 module.exports = router;

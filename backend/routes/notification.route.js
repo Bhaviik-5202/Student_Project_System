@@ -19,7 +19,11 @@ router.use(authMiddleware);
  * @desc    Create a new notification
  * @access  Private (Authenticated Users)
  */
-router.post('/', roleMiddleware(['admin', 'faculty']), notificationController.createNotification);
+router.post(
+  '/',
+  roleMiddleware(['admin', 'faculty']),
+  notificationController.createNotification
+);
 
 /**
  * @route   GET /api/v1/notifications
