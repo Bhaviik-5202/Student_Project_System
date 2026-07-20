@@ -1,5 +1,6 @@
 const projectService = require('../services/project.service');
 const sendResponse = require('../utils/response');
+const logger = require('../utils/logger');
 
 /**
  * Project Controller
@@ -124,6 +125,13 @@ exports.createProject = async (req, res) => {
     }
 
     const result = await projectService.create(projectData);
+
+    if (!result.error && result.data) {
+      logger.success('Project created', {
+        title: result.data.title,
+        createdBy: req.user?.id,
+      });
+    }
 
     sendResponse(
       res,
@@ -251,11 +259,8 @@ exports.getProjectGroups = async (req, res) => {
       progress: project.progress || 0,
     }));
 
-    console.log(
-      `Sending ${formattedGroups.length} formatted groups to frontend.`
-    );
-    formattedGroups.forEach((g) =>
-      console.log(`- Project: ${g.name}, Guide: ${g.guide}`)
+    logger.info(
+      `Sending ${formattedGroups.length} formatted groups to frontend`
     );
 
     sendResponse(

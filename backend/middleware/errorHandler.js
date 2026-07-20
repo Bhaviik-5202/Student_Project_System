@@ -1,8 +1,10 @@
 const sendResponse = require('../utils/response');
+const logger = require('../utils/logger');
 
 /**
  * Global Error Handler Middleware
  * Intercepts all application errors and returns standardized JSON responses.
+ * Also emits a professional structured error log via the Winston logger.
  * @param {Object} err - Express error object
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
@@ -45,7 +47,14 @@ module.exports = (err, req, res, next) => {
     message = 'Token expired';
   }
 
-  // Hide stack trace in production
+  // Log the error with the professional logger
+  logger.error(message, {
+    route: `${req.method} ${req.originalUrl}`,
+    status,
+    err: process.env.NODE_ENV !== 'production' ? err : undefined,
+  });
+
+  // Hide stack trace in production responses
   const errorMessage =
     process.env.NODE_ENV === 'production' ? message : err.stack || message;
 

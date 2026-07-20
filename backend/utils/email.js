@@ -4,6 +4,7 @@
  */
 
 const nodemailer = require('nodemailer');
+const logger = require('./logger');
 
 /**
  * Dispatch an email message
@@ -20,11 +21,7 @@ async function sendEmail({ to, subject, text, html }) {
   }
 
   if (!process.env.EMAIL_HOST || process.env.NODE_ENV === 'test') {
-    console.log('📧 [DEV/TEST EMAIL LOG]');
-    console.log('To:', to);
-    console.log('Subject:', subject);
-    console.log('Text:', text);
-    console.log('HTML:', html);
+    logger.info(`[DEV EMAIL] To: ${to} | Subject: ${subject}`);
     return;
   }
 

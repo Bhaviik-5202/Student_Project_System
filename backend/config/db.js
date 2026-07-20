@@ -1,5 +1,6 @@
 const dns = require('dns');
 const mongoose = require('mongoose');
+const logger = require('../utils/logger');
 
 // Configure DNS servers if custom servers are provided,
 // or if Node's resolver defaults to loopback (common Windows issue) which fails SRV queries.
@@ -7,11 +8,9 @@ if (process.env.DNS_SERVERS) {
   try {
     const servers = process.env.DNS_SERVERS.split(',').map((s) => s.trim());
     dns.setServers(servers);
-    console.log(
-      `DNS servers configured from environment: ${servers.join(', ')}`
-    );
+    logger.info(`DNS servers configured from environment: ${servers.join(', ')}`);
   } catch (err) {
-    console.warn('Failed to set custom DNS servers:', err.message);
+    logger.warn('Failed to set custom DNS servers', { error: err.message });
   }
 } else {
   const currentServers = dns.getServers();
@@ -21,11 +20,11 @@ if (process.env.DNS_SERVERS) {
   if (isLoopbackOnly) {
     try {
       dns.setServers(['8.8.8.8', '1.1.1.1']);
-      console.log(
+      logger.info(
         'Loopback DNS detected. Fallback to public DNS (8.8.8.8, 1.1.1.1) for SRV resolution.'
       );
     } catch (err) {
-      console.warn('Failed to set fallback DNS servers:', err.message);
+      logger.warn('Failed to set fallback DNS servers', { error: err.message });
     }
   }
 }
@@ -37,7 +36,7 @@ try {
     dns.setDefaultResultOrder('ipv4first');
   }
 } catch (dnsError) {
-  console.warn('Warning: Failed to set custom DNS options:', dnsError.message);
+  logger.warn('Failed to set custom DNS options', { error: dnsError.message });
 }
 
 const connectDB = async () => {
@@ -55,7 +54,7 @@ const connectDB = async () => {
     }
 
     const maskedUri = mongoUri.replace(/:([^@]+)@/, ':****@');
-    console.log(`Attempting to connect to MongoDB: ${maskedUri}`);
+    logger.info(`Connecting to MongoDB: ${maskedUri}`);
 
     await mongoose.connect(mongoUri, {
       autoIndex: true,
@@ -67,8 +66,6 @@ const connectDB = async () => {
     const collections = await mongoose.connection.db
       .listCollections()
       .toArray();
-    console.log(`MongoDB Connected Successfully to: ${dbName}`);
-    console.log(`Found ${collections.length} collections.`);
 
     // Check document counts for sanity
     const projectCount = await mongoose.connection.db
@@ -77,11 +74,17 @@ const connectDB = async () => {
     const userCount = await mongoose.connection.db
       .collection('users')
       .countDocuments();
-    console.log(
-      `Data stats: ${projectCount} projects, ${userCount} users found.`
-    );
+
+    // Log the professional DB status box
+    logger.db({
+      status: 'connected',
+      dbName,
+      collections: collections.length,
+      users: userCount,
+      projects: projectCount,
+    });
   } catch (error) {
-    console.error('MongoDB connection error:', error);
+    logger.error('MongoDB connection failed', { err: error });
     if (process.env.NODE_ENV !== 'test') {
       process.exit(1);
     }

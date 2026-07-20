@@ -1,6 +1,7 @@
 const userService = require('../services/user.service');
 const auditLogService = require('../services/auditlog.service');
 const sendResponse = require('../utils/response');
+const logger = require('../utils/logger');
 const dns = require('dns').promises;
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
@@ -39,7 +40,7 @@ function decryptPassword(text) {
     decrypted = Buffer.concat([decrypted, decipher.final()]);
     return decrypted.toString();
   } catch (err) {
-    console.error('Decryption failed:', err);
+    logger.error('Decryption failed', { err });
     return null;
   }
 }
@@ -59,7 +60,7 @@ async function isEmailDeliverable(email) {
     const mx = await dns.resolveMx(domain);
     return mx && mx.length > 0;
   } catch (err) {
-    console.error(`MX record check failed for domain ${domain}:`, err);
+    logger.warn(`MX record check failed for domain ${domain}`, { error: err.message });
     return false;
   }
 }
@@ -175,6 +176,8 @@ exports.register = async (req, res) => {
       html: getVerificationEmail(name, otp, false),
     });
 
+    logger.success('Verification OTP sent', { email });
+
     sendResponse(
       res,
       {
@@ -185,7 +188,7 @@ exports.register = async (req, res) => {
       200
     );
   } catch (error) {
-    console.error('Registration error:', error);
+    logger.error('Registration error', { err: error });
     sendResponse(
       res,
       {
@@ -227,13 +230,30 @@ exports.login = async (req, res) => {
     const result = await userService.login(req.body);
 
     if (!result.error && result.data && result.data.user) {
+      const u = result.data.user;
       // Log successful login
       await auditLogService.create({
         action: 'User Login',
-        user: result.data.user.id || result.data.user._id,
+        user: u.id || u._id,
         details: `User logged in: ${req.body.email}`,
         status: 'Success',
         ip: req.ip || '127.0.0.1',
+      });
+
+      logger.auth({
+        event: 'LOGIN SUCCESS',
+        name: u.name,
+        email: u.email,
+        role: u.role,
+        ip: req.ip || req.headers['x-forwarded-for'] || '-',
+        status: 'SUCCESS',
+      });
+    } else if (result.error) {
+      logger.auth({
+        event: 'LOGIN FAILED',
+        email: req.body.email,
+        ip: req.ip || req.headers['x-forwarded-for'] || '-',
+        status: 'FAILED',
       });
     }
 
@@ -741,6 +761,19 @@ exports.verifyOtp = async (req, res) => {
       ip: req.ip || '127.0.0.1',
     });
 
+    logger.auth({
+      event: 'REGISTER SUCCESS',
+      name: newUser.name,
+      email: newUser.email,
+      role: newUser.role,
+      ip: req.ip || req.headers['x-forwarded-for'] || '-',
+      status: 'SUCCESS',
+    });
+    logger.success('New user registered and verified via OTP', {
+      name: newUser.name,
+      email: newUser.email,
+    });
+
     await OTP.deleteOne({ email });
 
     const tokenPayload = {
@@ -771,7 +804,7 @@ exports.verifyOtp = async (req, res) => {
       201
     );
   } catch (error) {
-    console.error('OTP Verification error:', error);
+    logger.error('OTP Verification error', { err: error });
     sendResponse(
       res,
       {
@@ -861,7 +894,7 @@ exports.resendOtp = async (req, res) => {
       200
     );
   } catch (error) {
-    console.error('Resend OTP error:', error);
+    logger.error('Resend OTP error', { err: error });
     sendResponse(
       res,
       {

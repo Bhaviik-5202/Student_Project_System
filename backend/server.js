@@ -5,7 +5,7 @@
  *  - Security middleware
  *  - Rate limiting
  *  - Compression
- *  - Logging
+ *  - Professional logging (Winston)
  *  - Swagger docs
  *  - API routes
  *  - Error handling
@@ -24,15 +24,18 @@ const compression = require('compression');
 
 const path = require('path');
 const connectDB = require('./config/db');
+const logger = require('./utils/logger');
+
 const seedAdmin = async () => {
   try {
     const seed = require('./utils/seedAdmin');
     await seed();
   } catch (err) {
-    console.error('Failed to seed admin:', err.message);
+    logger.error('Failed to seed admin', { err });
   }
 };
-const morganLogger = require('./middleware/logger');
+
+const httpLogger = require('./middleware/logger');
 const errorHandler = require('./middleware/errorHandler');
 const sendResponse = require('./utils/response');
 
@@ -108,8 +111,8 @@ app.use(
 // Parse JSON requests
 app.use(express.json());
 
-// HTTP request logger
-app.use(morganLogger);
+// Professional HTTP request logger
+app.use(httpLogger);
 
 //  Swagger Documentation
 require('./config/swagger')(app);
@@ -143,26 +146,31 @@ const startServer = async () => {
 
     if (require.main === module) {
       const PORT = process.env.PORT || 5000;
+      const ENV = process.env.NODE_ENV || 'development';
 
       const server = app.listen(PORT, () => {
-        console.log(`Server running on port ${PORT}`);
+        logger.banner({
+          port: PORT,
+          env: ENV,
+          dbStatus: mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected',
+        });
       });
 
       /* Graceful Shutdown */
-      const shutdown = async () => {
-        console.log('🔻 Shutting down server...');
+      const shutdown = async (signal) => {
+        logger.warn(`${signal} received — shutting down gracefully...`);
         await mongoose.disconnect();
         server.close(() => {
-          console.log('Server closed cleanly');
+          logger.info('Server closed. All connections terminated cleanly.');
           process.exit(0);
         });
       };
 
-      process.on('SIGINT', shutdown);
-      process.on('SIGTERM', shutdown);
+      process.on('SIGINT', () => shutdown('SIGINT'));
+      process.on('SIGTERM', () => shutdown('SIGTERM'));
     }
   } catch (error) {
-    console.error('Failed to start server:', error);
+    logger.error('Failed to start server', { err: error });
     if (process.env.NODE_ENV !== 'test') {
       process.exit(1);
     }
@@ -173,12 +181,12 @@ const startServer = async () => {
 startServer();
 
 process.on('unhandledRejection', (err) => {
-  console.error('Unhandled Rejection:', err);
+  logger.error('Unhandled Promise Rejection', { err });
   process.exit(1);
 });
 
 process.on('uncaughtException', (err) => {
-  console.error('Uncaught Exception:', err);
+  logger.error('Uncaught Exception — process will exit', { err });
   process.exit(1);
 });
 

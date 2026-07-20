@@ -1,4 +1,5 @@
 const User = require('../models/user.model');
+const logger = require('./logger');
 
 /**
  * Admin Seeding Utility
@@ -11,8 +12,8 @@ const seedAdmin = async () => {
   const adminName = process.env.ADMIN_NAME || 'System Administrator';
 
   if (!adminEmail || !adminPassword) {
-    console.log(
-      'ℹ️ Admin seed skipped: set ADMIN_EMAIL and ADMIN_PASSWORD in .env to bootstrap an admin account'
+    logger.info(
+      'Admin seed skipped: set ADMIN_EMAIL and ADMIN_PASSWORD in .env to bootstrap an admin account'
     );
     return;
   }
@@ -21,25 +22,31 @@ const seedAdmin = async () => {
     const existingAdmin = await User.findOne({ email: adminEmail });
 
     if (!existingAdmin) {
-      console.log('🌱 Seeding master admin user...');
+      logger.info('Seeding master admin user...');
       await User.create({
         name: adminName,
         email: adminEmail,
         password: adminPassword,
         role: 'admin',
       });
-      console.log('✅ Master admin user created successfully');
+      logger.success('Master admin user created successfully', {
+        name: adminName,
+        email: adminEmail,
+        role: 'admin',
+      });
     } else {
-      console.log('ℹ️ Master admin user already exists');
+      logger.info('Master admin user already exists — skipping seed');
 
       if (existingAdmin.role !== 'admin') {
         existingAdmin.role = 'admin';
         await existingAdmin.save();
-        console.log('✅ Existing user promoted to admin role');
+        logger.success('Existing user promoted to admin role', {
+          email: adminEmail,
+        });
       }
     }
   } catch (error) {
-    console.error('❌ Error seeding master admin:', error.message);
+    logger.error('Error seeding master admin', { err: error });
   }
 };
 

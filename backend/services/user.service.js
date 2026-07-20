@@ -7,6 +7,7 @@ const studentRepository = require('../repositories/student.repository');
 const User = require('../models/user.model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const logger = require('../utils/logger');
 const JWT_SECRET = process.env.JWT_SECRET;
 const TOKEN_EXPIRES_IN = process.env.TOKEN_EXPIRES_IN;
 const crypto = require('crypto');
@@ -79,7 +80,7 @@ exports.register = async ({ name, email, password, role = 'student' }) => {
 
     return response(false, user, 'User registered successfully');
   } catch (err) {
-    console.error('Registration error:', err);
+    logger.error('Registration error', { err });
     return response(true, null, err.message || 'Registration failed');
   }
 };
@@ -128,7 +129,7 @@ exports.login = async ({ email, password }) => {
       'Login successful'
     );
   } catch (err) {
-    console.error('Login error:', err);
+    logger.error('Login error', { err });
     return response(true, null, err.message || 'Login failed');
   }
 };
@@ -274,7 +275,7 @@ exports.forgotPassword = async (email) => {
 
     return response(false, null, GENERIC_MSG);
   } catch (err) {
-    console.error('Forgot password error:', err);
+    logger.error('Forgot password error', { err });
     return response(
       true,
       null,
@@ -322,7 +323,7 @@ exports.resetPassword = async (token, newPassword) => {
 
     return response(false, null, 'Your password has been reset successfully. You can now log in.');
   } catch (err) {
-    console.error('Reset password error:', err);
+    logger.error('Reset password error', { err });
     return response(true, null, err.message || 'Failed to reset password');
   }
 };
@@ -347,7 +348,7 @@ exports.changePassword = async (id, currentPassword, newPassword) => {
 
     return response(false, null, 'Password changed successfully');
   } catch (err) {
-    console.error('Change password error:', err);
+    logger.error('Change password error', { err });
     return response(true, null, err.message || 'Failed to change password');
   }
 };
