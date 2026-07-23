@@ -1,5 +1,7 @@
 import { useState, useCallback, useMemo, useEffect, memo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { Compass, ArrowLeft } from 'lucide-react';
+import PageHeader from '../../common/PageHeader';
 import timelineService from '../../../services/timelineService';
 import projectService from '../../../services/projectService';
 
@@ -116,57 +118,42 @@ const RoadmapViewer = memo(() => {
   );
 
   return (
-    <div className='min-h-screen bg-slate-50 font-sans dark:bg-slate-900'>
-      <div className='container mx-auto max-w-6xl px-4 py-8'>
-        <div className='mb-8 flex flex-col items-start justify-between gap-6 md:flex-row md:items-end'>
-          <div className='flex-1'>
+    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+      <PageHeader
+        title={projectData ? projectData.title : 'Project Roadmap'}
+        subtitle={projectData ? projectData.description : 'Select a project to visualize its strategic trajectory and milestones'}
+        icon={Compass}
+        badge='Strategic Roadmap'
+        actions={
+          <div className='flex items-center gap-3'>
             <button
               onClick={() => handleNavigate('/timeline')}
-              className='mb-6 flex items-center text-xs font-black tracking-[0.2em] text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-200'
+              className='flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-xs font-bold text-gray-700 shadow-sm hover:bg-gray-50 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-200 transition-all'
             >
-              ← Back to Overview
+              <ArrowLeft size={16} />
+              Overview
             </button>
-            <div className='mb-2 flex items-center gap-4'>
-              <h1 className='text-4xl font-black italic tracking-tighter text-slate-900 dark:text-white'>
-                {projectData ? projectData.title : 'Roadmap'}
-              </h1>
-              <div className='h-fit rounded-lg bg-indigo-600 px-3 py-1 text-[10px] font-black tracking-widest text-white'>
-                Strategic
-              </div>
-            </div>
-            <p className='max-w-2xl text-sm font-bold text-slate-500 dark:text-slate-400'>
-              {projectData
-                ? projectData.description
-                : 'Select a project to visualize its strategic trajectory.'}
-            </p>
-          </div>
-
-          <div className='flex items-center gap-4 rounded-2xl border border-gray-100 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
-            <div className='flex flex-col'>
-              <span className='text-[10px] font-black tracking-widest text-gray-400'>
-                Active Focus
-              </span>
-              <select
-                value={selectedProjectId}
-                onChange={handleProjectChange}
-                className='cursor-pointer border-none bg-transparent p-0 text-xs font-black tracking-tighter text-indigo-600 focus:ring-0 dark:text-indigo-400'
-              >
-                <option value='' disabled>
-                  Select Venture
+            <select
+              value={selectedProjectId}
+              onChange={handleProjectChange}
+              className='rounded-xl border border-gray-200 bg-white px-3 py-2 text-xs font-bold text-indigo-600 shadow-sm transition-all focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-indigo-400'
+            >
+              <option value='' disabled>
+                Select Venture
+              </option>
+              {projects.map((p) => (
+                <option
+                  key={p._id || p.id}
+                  value={p._id || p.id}
+                  className='bg-white text-xs text-gray-900 dark:bg-slate-800 dark:text-white'
+                >
+                  {p.title}
                 </option>
-                {projects.map((p) => (
-                  <option
-                    key={p._id}
-                    value={p._id}
-                    className='bg-white text-slate-900 dark:bg-slate-800 dark:text-white'
-                  >
-                    {p.title}
-                  </option>
-                ))}
-              </select>
-            </div>
+              ))}
+            </select>
           </div>
-        </div>
+        }
+      />
 
         {loading ? (
           <div className='flex flex-col items-center p-20 text-center'>
@@ -299,9 +286,8 @@ const RoadmapViewer = memo(() => {
           </div>
         )}
       </div>
-    </div>
-  );
-});
+    );
+  });
 
 RoadmapViewer.displayName = 'RoadmapViewer';
 

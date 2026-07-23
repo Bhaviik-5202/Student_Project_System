@@ -1,5 +1,7 @@
 import React, { memo, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { BookOpen } from 'lucide-react';
+import PageHeader from '../../common/PageHeader';
 import api from '../../../utils/api';
 
 const KnowledgeBase = memo(() => {
@@ -29,25 +31,12 @@ const KnowledgeBase = memo(() => {
   const [searchTerm, setSearchTerm] = useState('');
 
   return (
-    <div className='min-h-screen bg-slate-50 dark:bg-slate-900'>
-      <div className='container mx-auto px-4 py-8'>
-        <div className='mb-6'>
-          <button
-            onClick={() => navigate('/help')}
-            className='mb-4 flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300'
-          >
-            ← Back to Help Center
-          </button>
-          <div className='mb-8 text-center'>
-            <h1 className='mb-4 text-3xl font-bold text-slate-900 dark:text-white'>
-              Knowledge Base
-            </h1>
-            <p className='mx-auto max-w-2xl text-slate-600 dark:text-slate-400'>
-              Find detailed guides, tutorials, and documentation for all system
-              features
-            </p>
-          </div>
-        </div>
+    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+      <PageHeader
+        title='Knowledge Base'
+        subtitle='Find detailed guides, tutorials, and documentation for all system features'
+        icon={BookOpen}
+      />
 
         {/* Search */}
         <div className='mx-auto mb-8 max-w-3xl'>
@@ -132,9 +121,8 @@ const KnowledgeBase = memo(() => {
           </>
         )}
       </div>
-    </div>
-  );
-});
+    );
+  });
 
 KnowledgeBase.displayName = 'KnowledgeBase';
 

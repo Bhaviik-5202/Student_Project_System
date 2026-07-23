@@ -16,6 +16,8 @@ import {
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import meetingService from '../../../services/meetingService';
+import projectService from '../../../services/projectService';
+import PageHeader from '../../common/PageHeader';
 import '../../../assets/styles/meetings.css';
 
 const MeetingForm = memo(() => {
@@ -50,10 +52,10 @@ const MeetingForm = memo(() => {
               m.time ||
               (m.date
                 ? new Date(m.date).toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: false,
-                  })
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: false,
+                })
                 : ''),
             location: m.location || '',
             description: m.description || '',
@@ -120,7 +122,7 @@ const MeetingForm = memo(() => {
         } else {
           toast.error(
             res.message ||
-              `Failed to ${isEditing ? 'update' : 'schedule'} meeting`
+            `Failed to ${isEditing ? 'update' : 'schedule'} meeting`
           );
         }
       } catch (error) {
@@ -133,152 +135,146 @@ const MeetingForm = memo(() => {
   );
 
   return (
-    <div className='meeting-page'>
-      <div className='meeting-container' style={{ maxWidth: '800px' }}>
-        <div className='meeting-card'>
-          {/* Header */}
-          <div className='meeting-card-header'>
-            <div>
-              <h1 className='meeting-title'>
-                {isViewing
-                  ? 'Meeting Details'
-                  : isEditing
-                    ? 'Edit Meeting'
-                    : 'Schedule Meeting'}
-              </h1>
-              <p className='meeting-subtitle mt-1'>Project Synchronization</p>
-            </div>
-            <button
-              onClick={handleClose}
-              className='rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-100 dark:hover:bg-slate-800'
-            >
-              <X className='h-5 w-5' />
-            </button>
-          </div>
+    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+      <PageHeader
+        title={isViewing ? 'Meeting Details' : isEditing ? 'Edit Meeting' : 'Schedule Meeting'}
+        subtitle='Project synchronization and academic review session'
+        icon={Calendar}
+        actions={
+          <button
+            onClick={handleClose}
+            className='flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-xs font-bold text-gray-700 shadow-sm hover:bg-gray-50 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-200 transition-all'
+          >
+            <ArrowLeft size={16} />
+            Back
+          </button>
+        }
+      />
 
-          {initialLoading ? (
-            <div className='p-20 text-center'>
-              <div className='mx-auto h-8 w-8 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent'></div>
-              <p className='meeting-subtitle mt-4'>Loading...</p>
-            </div>
-          ) : (
-            <div className='meeting-card-body'>
-              <form onSubmit={handleSubmit} className='space-y-6'>
-                <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
-                  <div className='meeting-form-group md:col-span-2'>
-                    <label className='meeting-label'>Meeting Title</label>
+      <div className='max-w-4xl mx-auto space-y-6'>
+
+        {initialLoading ? (
+          <div className='p-20 text-center'>
+            <div className='mx-auto h-8 w-8 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent'></div>
+            <p className='meeting-subtitle mt-4'>Loading...</p>
+          </div>
+        ) : (
+          <div className='meeting-card-body'>
+            <form onSubmit={handleSubmit} className='space-y-6'>
+              <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+                <div className='meeting-form-group md:col-span-2'>
+                  <label className='meeting-label'>Meeting Title</label>
+                  <input
+                    type='text'
+                    name='title'
+                    required
+                    value={formData.title}
+                    onChange={handleChange}
+                    readOnly={isViewing}
+                    placeholder='e.g. Design Review'
+                    className='meeting-input'
+                  />
+                </div>
+
+                <div className='meeting-form-group'>
+                  <label className='meeting-label'>Date</label>
+                  <input
+                    type='date'
+                    name='date'
+                    required
+                    min={new Date().toISOString().split('T')[0]}
+                    value={formData.date}
+                    onChange={handleChange}
+                    readOnly={isViewing}
+                    className='meeting-input'
+                  />
+                </div>
+
+                <div className='meeting-form-group'>
+                  <label className='meeting-label'>Time</label>
+                  <input
+                    type='time'
+                    name='time'
+                    required
+                    value={formData.time}
+                    onChange={handleChange}
+                    readOnly={isViewing}
+                    className='meeting-input'
+                  />
+                </div>
+
+                <div className='meeting-form-group md:col-span-2'>
+                  <label className='meeting-label'>Location / Link</label>
+                  <div className='relative'>
                     <input
                       type='text'
-                      name='title'
+                      name='location'
                       required
-                      value={formData.title}
+                      value={formData.location}
                       onChange={handleChange}
                       readOnly={isViewing}
-                      placeholder='e.g. Design Review'
-                      className='meeting-input'
+                      placeholder='e.g. Room 101 or https://meet.google.com/abc-defg-hij'
+                      className='meeting-input pl-10'
                     />
-                  </div>
-
-                  <div className='meeting-form-group'>
-                    <label className='meeting-label'>Date</label>
-                    <input
-                      type='date'
-                      name='date'
-                      required
-                      min={new Date().toISOString().split('T')[0]}
-                      value={formData.date}
-                      onChange={handleChange}
-                      readOnly={isViewing}
-                      className='meeting-input'
-                    />
-                  </div>
-
-                  <div className='meeting-form-group'>
-                    <label className='meeting-label'>Time</label>
-                    <input
-                      type='time'
-                      name='time'
-                      required
-                      value={formData.time}
-                      onChange={handleChange}
-                      readOnly={isViewing}
-                      className='meeting-input'
-                    />
-                  </div>
-
-                  <div className='meeting-form-group md:col-span-2'>
-                    <label className='meeting-label'>Location / Link</label>
-                    <div className='relative'>
-                      <input
-                        type='text'
-                        name='location'
-                        required
-                        value={formData.location}
-                        onChange={handleChange}
-                        readOnly={isViewing}
-                        placeholder='e.g. Room 101 or https://meet.google.com/abc-defg-hij'
-                        className='meeting-input pl-10'
-                      />
-                    </div>
-                  </div>
-
-                  <div className='meeting-form-group md:col-span-2'>
-                    <label className='meeting-label'>
-                      Agenda & Description
-                    </label>
-                    <textarea
-                      name='description'
-                      rows='4'
-                      value={formData.description}
-                      onChange={handleChange}
-                      readOnly={isViewing}
-                      placeholder='What will be discussed?'
-                      className='meeting-textarea'
-                    />
-                  </div>
-
-                  <div className='meeting-form-group md:col-span-2'>
-                    <label className='meeting-label'>Attendees (IDs)</label>
-                    <div className='relative'>
-                      <input
-                        type='text'
-                        name='attendees'
-                        value={formData.attendees}
-                        onChange={handleChange}
-                        readOnly={isViewing}
-                        placeholder='e.g. 507f1f1... (Comma-separated User IDs)'
-                        className='meeting-input pl-10'
-                      />
-                    </div>
                   </div>
                 </div>
 
-                {!isViewing && (
-                  <div className='flex gap-4 border-t border-gray-100 pt-8 dark:border-slate-800'>
-                    <button
-                      type='button'
-                      onClick={handleClose}
-                      className='meeting-btn meeting-btn-secondary'
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type='submit'
-                      disabled={loading}
-                      className='meeting-btn meeting-btn-primary flex-1'
-                    >
-                      {loading
-                        ? 'Saving...'
-                        : id
-                          ? 'Update Meeting'
-                          : 'Schedule Meeting'}
-                    </button>
+                <div className='meeting-form-group md:col-span-2'>
+                  <label className='meeting-label'>
+                    Agenda & Description
+                  </label>
+                  <textarea
+                    name='description'
+                    rows='4'
+                    value={formData.description}
+                    onChange={handleChange}
+                    readOnly={isViewing}
+                    placeholder='What will be discussed?'
+                    className='meeting-textarea'
+                  />
+                </div>
+
+                <div className='meeting-form-group md:col-span-2'>
+                  <label className='meeting-label'>Attendees (IDs)</label>
+                  <div className='relative'>
+                    <input
+                      type='text'
+                      name='attendees'
+                      value={formData.attendees}
+                      onChange={handleChange}
+                      readOnly={isViewing}
+                      placeholder='e.g. 507f1f1... (Comma-separated User IDs)'
+                      className='meeting-input pl-10'
+                    />
                   </div>
-                )}
-              </form>
-            </div>
-          )}
-        </div>
+                </div>
+              </div>
+
+              {!isViewing && (
+                <div className='flex gap-4 border-t border-gray-100 pt-8 dark:border-slate-800'>
+                  <button
+                    type='button'
+                    onClick={handleClose}
+                    className='meeting-btn meeting-btn-secondary'
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type='submit'
+                    disabled={loading}
+                    className='meeting-btn meeting-btn-primary'
+                  >
+                    {loading
+                      ? 'Saving...'
+                      : id
+                        ? 'Update Meeting'
+                        : 'Schedule Meeting'}
+                  </button>
+                </div>
+              )}
+            </form>
+          </div>
+        )}
       </div>
     </div>
   );

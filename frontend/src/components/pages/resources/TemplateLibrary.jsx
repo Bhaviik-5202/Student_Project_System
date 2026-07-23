@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useCallback, memo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FileText, Calendar, Download, Eye, Plus, Search } from 'lucide-react';
+import { FileText, Calendar, Download, Eye, Plus, Search, Layout } from 'lucide-react';
+import PageHeader from '../../common/PageHeader';
 import resourceService from '../../../services/resourceService';
 import useNotification from '../../../hooks/useNotification';
 
@@ -147,24 +148,22 @@ const TemplateLibrary = memo(() => {
   }, []);
 
   return (
-    <div className='rounded-lg bg-white p-6 shadow dark:bg-gray-800 dark:shadow-md'>
-      <div className='mb-8 flex flex-col justify-between md:flex-row md:items-center'>
-        <div>
-          <h2 className='text-2xl font-bold text-gray-800 dark:text-white'>
-            Template Library
-          </h2>
-          <p className='mt-1 text-gray-600 dark:text-gray-400'>
-            Browse and download project templates
-          </p>
-        </div>
-        <button
-          onClick={() => navigate('/resource-upload')}
-          className='mt-4 flex items-center rounded-lg bg-indigo-600 px-4 py-2 text-white transition-colors hover:bg-indigo-700 md:mt-0'
-        >
-          <Plus size={18} className='mr-2' />
-          Upload Template
-        </button>
-      </div>
+    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+      <PageHeader
+        title='Template Library'
+        subtitle='Browse and download standardized project report & presentation templates'
+        icon={Layout}
+        badge={`${filteredTemplates.length} Templates`}
+        actions={
+          <button
+            onClick={() => navigate('/resource-upload')}
+            className='flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-100 hover:bg-indigo-700 transition-all dark:shadow-none'
+          >
+            <Plus size={16} />
+            Upload Template
+          </button>
+        }
+      />
 
       {loading ? (
         <div className='py-12 text-center text-gray-500 dark:text-gray-400'>

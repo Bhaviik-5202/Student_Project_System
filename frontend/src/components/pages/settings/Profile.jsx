@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState, memo } from 'react';
 import { useAuth } from '../../../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
+import PageHeader from '../../common/PageHeader';
 import toast from 'react-hot-toast';
 import {
   Loader2,
@@ -202,25 +203,23 @@ const Profile = memo(() => {
   }
 
   return (
-    <div className='mx-auto max-w-6xl animate-fade-in px-4 py-8'>
-      <div className='mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-center'>
-        <div>
-          <h1 className='text-2xl font-bold text-slate-900 dark:text-white'>
-            Profile Settings
-          </h1>
-          <p className='text-slate-600 dark:text-slate-400'>
-            Manage your account information and preferences
-          </p>
-        </div>
-        {!isEditing && (
-          <button
-            onClick={() => setIsEditing(true)}
-            className='inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700'
-          >
-            Edit Profile
-          </button>
-        )}
-      </div>
+    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+      <PageHeader
+        title='Profile Settings'
+        subtitle='Manage your account information, security credentials, and preferences'
+        icon={User}
+        badge={user?.role?.toUpperCase()}
+        actions={
+          !isEditing && (
+            <button
+              onClick={() => setIsEditing(true)}
+              className='flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-100 hover:bg-indigo-700 transition-all dark:shadow-none'
+            >
+              Edit Profile
+            </button>
+          )
+        }
+      />
 
       <div className='grid grid-cols-1 gap-8 lg:grid-cols-3'>
         {/* Profile Card */}

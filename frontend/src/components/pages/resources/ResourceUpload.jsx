@@ -1,4 +1,6 @@
 import React, { useState, useCallback, useMemo, memo } from 'react';
+import { Upload } from 'lucide-react';
+import PageHeader from '../../common/PageHeader';
 import useNotification from '../../../hooks/useNotification';
 import resourceService from '../../../services/resourceService';
 
@@ -65,10 +67,12 @@ const ResourceUpload = memo(() => {
   }, []);
 
   return (
-    <div className='rounded-lg bg-white p-6 shadow dark:bg-gray-800 dark:shadow-md'>
-      <h2 className='mb-6 text-2xl font-bold text-gray-800 dark:text-white'>
-        Upload Resources
-      </h2>
+    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+      <PageHeader
+        title='Upload Resources'
+        subtitle='Upload new documents, templates, videos, and project assets'
+        icon={Upload}
+      />
 
       <div className='grid grid-cols-1 gap-8 lg:grid-cols-2'>
         {/* Left Column - Upload Form */}

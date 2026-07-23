@@ -106,7 +106,7 @@ const MainLayout = () => {
             {isScrolled && <BackToTop />}
           </main>
 
-          <Footer />
+          <Footer variant={location.pathname === '/dashboard' ? 'full' : 'minimal'} />
         </div>
       </div>
     </div>

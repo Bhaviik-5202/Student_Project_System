@@ -1,5 +1,7 @@
 import React, { useState, useCallback, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Download } from 'lucide-react';
+import PageHeader from '../../common/PageHeader';
 import { toast } from 'react-hot-toast';
 
 const ExportOptions = memo(() => {
@@ -35,22 +37,12 @@ const ExportOptions = memo(() => {
   }, [exportType]);
 
   return (
-    <div className='min-h-screen bg-slate-50 dark:bg-slate-900'>
-      <div className='container mx-auto px-4 py-8'>
-        <div className='mb-6'>
-          <button
-            onClick={() => navigate('/reports')}
-            className='mb-4 flex items-center font-medium text-blue-600 transition-colors hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300'
-          >
-            ← Back to Reports
-          </button>
-          <h1 className='text-2xl font-bold text-slate-900 dark:text-white'>
-            Export Reports
-          </h1>
-          <p className='text-slate-600 dark:text-slate-400'>
-            Generate and download system reports
-          </p>
-        </div>
+    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+      <PageHeader
+        title='Export Reports'
+        subtitle='Generate and download customized system data reports in PDF, Excel, or CSV formats'
+        icon={Download}
+      />
 
         <div className='max-w-3xl rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800'>
           <div className='space-y-8'>
@@ -179,9 +171,8 @@ const ExportOptions = memo(() => {
           </div>
         </div>
       </div>
-    </div>
-  );
-});
+    );
+  });
 
 ExportOptions.displayName = 'ExportOptions';
 

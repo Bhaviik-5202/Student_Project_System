@@ -1,5 +1,7 @@
 import { useCallback, useState, useEffect, useMemo, memo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { Kanban, Plus } from 'lucide-react';
+import PageHeader from '../../common/PageHeader';
 import timelineService from '../../../services/timelineService';
 import projectService from '../../../services/projectService';
 
@@ -121,55 +123,39 @@ const SprintPlanner = memo(() => {
   }, [projects, selectedProjectId]);
 
   return (
-    <div className='min-h-screen bg-slate-50 font-sans dark:bg-slate-900'>
-      <div className='container mx-auto max-w-6xl px-4 py-8'>
-        <div className='animate-in fade-in slide-in-from-top-4 mb-8 duration-700'>
-          <button
-            onClick={() => handleNavigate('/timeline')}
-            className='mb-6 flex items-center text-xs font-black uppercase tracking-[0.2em] text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-200'
-          >
-            ← Back to Overview
-          </button>
-          <div className='flex flex-col items-start justify-between gap-6 md:flex-row md:items-center'>
-            <div>
-              <div className='mb-1 flex items-center gap-3'>
-                <h1 className='text-3xl font-black italic tracking-tighter text-slate-900 dark:text-white'>
-                  Sprint Planner
-                </h1>
-                <div className='rounded bg-indigo-600 px-2 py-0.5 text-[9px] font-black leading-none tracking-widest text-white'>
-                  Agile
-                </div>
-              </div>
-              <div className='flex items-center gap-2'>
-                <span className='text-xs font-bold text-slate-500'>
-                  {activeProjectTitle}
-                </span>
-                <span className='text-slate-300 dark:text-slate-700'>•</span>
-                <select
-                  value={selectedProjectId}
-                  onChange={handleProjectChange}
-                  className='cursor-pointer border-none bg-transparent p-0 text-[10px] font-black uppercase tracking-widest text-indigo-600 focus:ring-0 dark:text-indigo-400'
+    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+      <PageHeader
+        title='Sprint Planner'
+        subtitle={`Agile iteration cycles and sprint backlog management (${activeProjectTitle})`}
+        icon={Kanban}
+        badge='Agile Sprints'
+        actions={
+          <div className='flex items-center gap-3'>
+            <select
+              value={selectedProjectId}
+              onChange={handleProjectChange}
+              className='rounded-xl border border-gray-200 bg-white px-3 py-2 text-xs font-bold text-indigo-600 shadow-sm transition-all focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-indigo-400'
+            >
+              <option value='' disabled>
+                Change Project
+              </option>
+              {projects.map((p) => (
+                <option
+                  key={p._id || p.id}
+                  value={p._id || p.id}
+                  className='bg-white text-xs text-gray-900 dark:bg-slate-800 dark:text-white'
                 >
-                  <option value='' disabled>
-                    Change Project
-                  </option>
-                  {projects.map((p) => (
-                    <option
-                      key={p._id}
-                      value={p._id}
-                      className='bg-white text-slate-900 dark:bg-slate-800 dark:text-white'
-                    >
-                      {p.title}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            <button className='rounded-xl bg-gray-900 px-6 py-3 text-[10px] font-black tracking-[0.2em] text-white shadow-lg transition-all hover:scale-105 hover:bg-black active:scale-95 dark:bg-indigo-600 dark:hover:bg-indigo-700'>
-              Launch New Sprint
+                  {p.title}
+                </option>
+              ))}
+            </select>
+            <button className='flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-100 hover:bg-indigo-700 transition-all dark:shadow-none'>
+              <Plus size={16} />
+              Launch Sprint
             </button>
           </div>
-        </div>
+        }
+      />
 
         {loading ? (
           <div className='flex flex-col items-center p-20 text-center'>
@@ -442,9 +428,8 @@ const SprintPlanner = memo(() => {
           </div>
         )}
       </div>
-    </div>
-  );
-});
+    );
+  });
 
 SprintPlanner.displayName = 'SprintPlanner';
 

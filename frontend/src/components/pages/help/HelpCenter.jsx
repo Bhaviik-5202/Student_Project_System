@@ -5,10 +5,10 @@ import {
   X,
   BookOpen,
   HelpCircle,
-  PlayCircle,
   Loader2,
 } from 'lucide-react';
 import api from '../../../utils/api';
+import PageHeader from '../../common/PageHeader';
 
 const HelpCenter = memo(() => {
   const navigate = useNavigate();
@@ -54,16 +54,12 @@ const HelpCenter = memo(() => {
   }, []);
 
   return (
-    <div className='min-h-screen bg-white dark:bg-slate-900'>
-      <div className='container mx-auto px-4 py-8'>
-        <div className='mb-10'>
-          <h1 className='mb-2 text-3xl font-bold text-slate-900 dark:text-white'>
-            Help Center
-          </h1>
-          <p className='text-slate-600 dark:text-slate-400'>
-            Search our knowledge base or contact support for assistance
-          </p>
-        </div>
+    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+      <PageHeader
+        title='Help Center'
+        subtitle='Search our knowledge base, read FAQs, or contact support for assistance'
+        icon={HelpCircle}
+      />
 
         {/* Search Bar */}
         <div className='mb-10 max-w-xl'>
@@ -90,7 +86,7 @@ const HelpCenter = memo(() => {
         </div>
 
         {/* Navigation Cards */}
-        <div className='mb-12 grid grid-cols-1 gap-6 md:grid-cols-3'>
+        <div className='mb-12 grid grid-cols-1 gap-6 md:grid-cols-2'>
           {[
             {
               title: 'User Guide',
@@ -115,18 +111,6 @@ const HelpCenter = memo(() => {
               desc: 'Common questions & answers',
               link: '/faq',
               color: 'indigo',
-            },
-            {
-              title: 'Tutorials',
-              icon: (
-                <PlayCircle
-                  className='text-emerald-600 dark:text-emerald-400'
-                  size={20}
-                />
-              ),
-              desc: 'Watch help videos',
-              link: '/help/tutorials',
-              color: 'emerald',
             },
           ].map((card) => (
             <button
@@ -225,9 +209,8 @@ const HelpCenter = memo(() => {
           </button>
         </div>
       </div>
-    </div>
-  );
-});
+    );
+  });
 
 HelpCenter.displayName = 'HelpCenter';
 

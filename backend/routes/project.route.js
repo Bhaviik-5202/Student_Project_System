@@ -1,157 +1,77 @@
 /**
  * Project Routes
- * Handles CRUD operations for projects.
+ * Defines API endpoints for Project Module operations and Project Types management.
  */
-
 const express = require('express');
-const { body } = require('express-validator');
 const router = express.Router();
-
-// Controllers and Middlewares
 const projectController = require('../controllers/project.controller');
 const projectTypeController = require('../controllers/projectType.controller');
 const authMiddleware = require('../middleware/auth.middleware');
 const roleMiddleware = require('../middleware/roleMiddleware');
-const validateRequest = require('../middleware/validateRequest');
-const upload = require('../utils/upload');
+
+// Apply authentication to all project routes
+router.use(authMiddleware);
 
 /**
- * Validation rules for creating/updating a project
+ * Project Types Management Routes
  */
-const projectValidation = [
-  body('title').optional().notEmpty().withMessage('Title cannot be empty'),
-
-  body('description')
-    .optional()
-    .isString()
-    .withMessage('Description must be a string'),
-
-  body('status')
-    .optional()
-    .isIn(['planning', 'in_progress', 'completed', 'on_hold', 'cancelled'])
-    .withMessage('Invalid status'),
-
-  body('type').notEmpty().withMessage('Project type is required'),
-];
+router.get('/types', (req, res, next) => projectTypeController.getAllProjectTypes(req, res, next));
+router.get('/types/:id', (req, res, next) => projectTypeController.getProjectTypeById(req, res, next));
+router.post('/types', roleMiddleware(['admin']), (req, res, next) => projectTypeController.createProjectType(req, res, next));
+router.put('/types/:id', roleMiddleware(['admin']), (req, res, next) => projectTypeController.updateProjectType(req, res, next));
+router.delete('/types/:id', roleMiddleware(['admin']), (req, res, next) => projectTypeController.deleteProjectType(req, res, next));
 
 /**
- * @route   POST /api/v1/projects
- * @desc    Create a new project
- * @access  Private (Admin/Faculty)
+ * Stats & Dropdown Selector Routes
  */
-router.post(
-  '/',
-  authMiddleware,
-  roleMiddleware(['admin', 'faculty']),
-  upload.single('document'),
-  [
-    body('title').notEmpty().withMessage('Title is required'),
-    ...projectValidation.slice(1),
-  ],
-  validateRequest,
-  projectController.createProject
-);
+router.get('/stats', (req, res, next) => projectController.getDashboardStats(req, res, next));
+router.get('/students/active', (req, res, next) => projectController.getActiveStudents(req, res, next));
+router.get('/faculty/active', (req, res, next) => projectController.getActiveFaculty(req, res, next));
+router.get('/groups', (req, res, next) => projectController.getProjectGroups(req, res, next));
 
 /**
- * @route   GET /api/v1/projects
- * @desc    Retrieve all projects
- * @access  Private (Authenticated Users)
+ * Main Project Collection Endpoints
  */
-router.get('/', authMiddleware, projectController.getAllProjects);
+router
+  .route('/')
+  .get((req, res, next) => projectController.getAllProjects(req, res, next))
+  .post((req, res, next) => projectController.createProject(req, res, next));
 
 /**
- * @route   GET /api/v1/projects/types
- * @desc    Retrieve all project types
- * @access  Private (Authenticated Users)
+ * Single Project Specific Operations
  */
-router.get('/types', authMiddleware, projectTypeController.getAllProjectTypes);
+router
+  .route('/:id')
+  .get((req, res, next) => projectController.getProjectById(req, res, next))
+  .put((req, res, next) => projectController.updateProject(req, res, next))
+  .delete((req, res, next) => projectController.deleteProject(req, res, next));
 
 /**
- * @route   GET /api/v1/projects/types/:id
- * @desc    Retrieve a single project type
- * @access  Private (Authenticated Users)
+ * Archival Controls
  */
-router.get(
-  '/types/:id',
-  authMiddleware,
-  projectTypeController.getProjectTypeById
-);
+router.patch('/:id/archive', (req, res, next) => projectController.archiveProject(req, res, next));
+router.patch('/:id/restore', (req, res, next) => projectController.restoreProject(req, res, next));
 
 /**
- * @route   POST /api/v1/projects/types
- * @desc    Create a new project type
- * @access  Private (Admin/Faculty)
+ * Assignments (Students / Guide)
  */
-router.post(
-  '/types',
-  authMiddleware,
-  roleMiddleware(['admin']),
-  projectTypeController.createProjectType
-);
+router.put('/:id/students', (req, res, next) => projectController.assignStudents(req, res, next));
+router.put('/:id/guide', (req, res, next) => projectController.assignGuide(req, res, next));
 
 /**
- * @route   PUT /api/v1/projects/types/:id
- * @desc    Update a project type
- * @access  Private (Admin/Faculty)
+ * Progress & Status Lifecycle
  */
-router.put(
-  '/types/:id',
-  authMiddleware,
-  roleMiddleware(['admin']),
-  projectTypeController.updateProjectType
-);
+router.patch('/:id/progress', (req, res, next) => projectController.updateProgress(req, res, next));
 
 /**
- * @route   DELETE /api/v1/projects/types/:id
- * @desc    Delete a project type
- * @access  Private (Admin/Faculty)
+ * Files & Resources
  */
-router.delete(
-  '/types/:id',
-  authMiddleware,
-  roleMiddleware(['admin']),
-  projectTypeController.deleteProjectType
-);
+router.post('/:id/files', (req, res, next) => projectController.addProjectFile(req, res, next));
+router.delete('/:id/files/:fileId', (req, res, next) => projectController.removeProjectFile(req, res, next));
 
 /**
- * @route   GET /api/v1/projects/groups
- * @desc    Retrieve all projects formatted as groups
- * @access  Private (Authenticated Users)
+ * Faculty Evaluation & Reviews
  */
-router.get('/groups', authMiddleware, projectController.getProjectGroups);
-
-/**
- * @route   GET /api/v1/projects/:id
- * @desc    Retrieve a single project by ID
- * @access  Private (Authenticated Users)
- */
-router.get('/:id', authMiddleware, projectController.getProjectById);
-
-/**
- * @route   PUT /api/v1/projects/:id
- * @desc    Update an existing project
- * @access  Private (Admin/Faculty)
- */
-router.put(
-  '/:id',
-  authMiddleware,
-  roleMiddleware(['admin', 'faculty']),
-  upload.single('document'),
-  projectValidation,
-  validateRequest,
-  projectController.updateProject
-);
-
-/**
- * @route   DELETE /api/v1/projects/:id
- * @desc    Delete a project
- * @access  Private (Admin/Faculty)
- */
-router.delete(
-  '/:id',
-  authMiddleware,
-  roleMiddleware(['admin']),
-  projectController.deleteProject
-);
+router.post('/:id/reviews', roleMiddleware(['faculty', 'admin']), (req, res, next) => projectController.addProjectReview(req, res, next));
 
 module.exports = router;

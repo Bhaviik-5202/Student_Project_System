@@ -1,5 +1,7 @@
 import { useState, useEffect, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { BarChart2 } from 'lucide-react';
+import PageHeader from '../../common/PageHeader';
 import api from '../../../utils/api';
 
 const Visualizations = memo(() => {
@@ -45,33 +47,29 @@ const Visualizations = memo(() => {
   }, []);
 
   return (
-    <div className='min-h-screen bg-slate-50 dark:bg-slate-900'>
-      <div className='container mx-auto px-4 py-8'>
-        <div className='mb-6 flex items-center justify-between'>
-          <div>
-            <h1 className='text-2xl font-bold text-slate-900 dark:text-white'>
-              Data Visualizations
-            </h1>
-            <p className='text-slate-600 dark:text-slate-400'>
-              Interactive charts and data visualizations
-            </p>
-          </div>
-          <div className='flex gap-2'>
+    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+      <PageHeader
+        title='Data Visualizations'
+        subtitle='Interactive graphical breakdowns and telemetry visualizations'
+        icon={BarChart2}
+        actions={
+          <div className='flex items-center gap-1.5 rounded-xl bg-gray-100 p-1 dark:bg-slate-800'>
             {['bar', 'line', 'pie', 'radar'].map((type) => (
               <button
                 key={type}
                 onClick={() => setChartType(type)}
-                className={`rounded-lg px-3 py-1 text-sm capitalize ${
+                className={`rounded-lg px-3 py-1.5 text-xs font-bold capitalize transition-all ${
                   chartType === type
-                    ? 'bg-blue-600 text-white dark:bg-blue-700'
-                    : 'bg-slate-200 text-slate-700 hover:bg-slate-300 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600'
+                    ? 'bg-white text-indigo-600 shadow dark:bg-slate-700 dark:text-indigo-400'
+                    : 'text-gray-500 hover:text-gray-700 dark:text-gray-400'
                 }`}
               >
                 {type}
               </button>
             ))}
           </div>
-        </div>
+        }
+      />
 
         {loading ? (
           <div className='p-8 text-center text-slate-500'>
@@ -194,12 +192,11 @@ const Visualizations = memo(() => {
                 Assignments
               </span>
             </div>
-          </div>
         </div>
       </div>
     </div>
   );
-});
+  });
 
 Visualizations.displayName = 'Visualizations';
 

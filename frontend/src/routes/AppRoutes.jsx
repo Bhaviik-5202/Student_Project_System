@@ -54,6 +54,9 @@ const StudentForm = lazy(
 );
 
 // Project Pages
+const ProjectDashboard = lazy(
+  () => import('../components/pages/projects/ProjectDashboard')
+);
 const ProjectList = lazy(
   () => import('../components/pages/projects/ProjectList')
 );
@@ -169,7 +172,6 @@ const HelpCenter = lazy(() => import('../components/pages/help/HelpCenter'));
 const KnowledgeBase = lazy(
   () => import('../components/pages/help/KnowledgeBase')
 );
-const Tutorials = lazy(() => import('../components/pages/help/Tutorials'));
 const UserGuide = lazy(() => import('../components/pages/help/UserGuide'));
 
 const AppRoutes = () => {
@@ -329,6 +331,14 @@ const AppRoutes = () => {
         />
 
         {/* Project Routes */}
+        <Route
+          path='projects/dashboard'
+          element={
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
+              <ProjectDashboard />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path='projects'
           element={
@@ -676,15 +686,6 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
               <KnowledgeBase />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path='help/tutorials'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
-              <Tutorials />
             </ProtectedRoute>
           }
         />

@@ -20,7 +20,7 @@ import QuickAddMenu from './header/QuickAddMenu';
 const Header = memo(
   ({
     isScrolled = false,
-    clearNotifications = () => {},
+    clearNotifications = () => { },
     onMobileMenuToggle,
     isMobileMenuOpen = false,
   }) => {
@@ -158,15 +158,6 @@ const Header = memo(
         },
       ];
 
-      if (user?.role === 'admin') {
-        baseActions.push({
-          icon: 'user-plus',
-          label: 'Add Student',
-          color: 'text-indigo-600',
-          bgColor: 'bg-indigo-100 dark:bg-indigo-900/40',
-          path: '/students/new',
-        });
-      }
 
       // Filter actions based on role requirements
       return baseActions.filter((action) => {
@@ -237,10 +228,6 @@ const Header = memo(
                 </Link>
               </div>
 
-              {/* Desktop Search */}
-              <div className='mx-4 hidden max-w-xl flex-1 lg:flex'>
-                <SearchBar onSearch={(q) => {}} />
-              </div>
 
               {/* Action Buttons */}
               <div className='flex items-center gap-1 sm:gap-2'>

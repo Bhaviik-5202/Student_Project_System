@@ -1,5 +1,7 @@
 import React, { memo, useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { HelpCircle } from 'lucide-react';
+import PageHeader from '../../common/PageHeader';
 import api from '../../../utils/api';
 
 const FAQ = memo(() => {
@@ -43,22 +45,12 @@ const FAQ = memo(() => {
   }, []);
 
   return (
-    <div className='min-h-screen bg-slate-50 dark:bg-slate-900'>
-      <div className='container mx-auto px-4 py-8'>
-        <div className='mb-6'>
-          <button
-            onClick={() => navigate('/help')}
-            className='mb-4 flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300'
-          >
-            ← Back to Help Center
-          </button>
-          <h1 className='text-2xl font-bold text-slate-900 dark:text-white'>
-            Frequently Asked Questions
-          </h1>
-          <p className='text-slate-600 dark:text-slate-400'>
-            Find answers to common questions about the system
-          </p>
-        </div>
+    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+      <PageHeader
+        title='Frequently Asked Questions'
+        subtitle='Find quick answers to common questions about project management workflows'
+        icon={HelpCircle}
+      />
 
         <div className='mx-auto max-w-4xl'>
           {loading ? (
@@ -110,9 +102,8 @@ const FAQ = memo(() => {
           )}
         </div>
       </div>
-    </div>
-  );
-});
+    );
+  });
 
 FAQ.displayName = 'FAQ';
 

@@ -30,20 +30,44 @@ const studentSchema = new mongoose.Schema(
       uppercase: true,
       maxlength: [50, 'Roll number cannot exceed 50 characters'],
     },
-
+    enrollmentNumber: {
+      type: String,
+      trim: true,
+      default: '',
+    },
     department: {
       type: String,
       required: [true, 'Department is required'],
       trim: true,
-      maxlength: [100, 'Department cannot exceed 100 characters'],
+      default: 'Computer Engineering',
     },
-
     year: {
       type: Number,
-      required: [true, 'Year is required'],
+      default: 1,
       min: [1, 'Year must be at least 1'],
       max: [5, 'Year cannot exceed 5'],
       index: true,
+    },
+    semester: {
+      type: String,
+      trim: true,
+      default: 'Sem 1',
+    },
+    phone: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    status: {
+      type: String,
+      enum: ['Active', 'Inactive', 'active', 'inactive'],
+      default: 'Active',
+      trim: true,
+    },
+    avatar: {
+      type: String,
+      trim: true,
+      default: null,
     },
 
     projects: [

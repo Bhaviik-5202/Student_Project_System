@@ -32,7 +32,13 @@ const response = (error, data, message) => ({ error, data, message });
  * @param {string} userData.role - User role (student, faculty)
  * @returns {Promise<Object>} Formatted service response with new user data
  */
-exports.register = async ({ name, email, password, role = 'student' }) => {
+const {
+  generateRollNumber,
+  generateFacultyId,
+  normalizeDepartment,
+} = require('../utils/idGenerator');
+
+exports.register = async ({ name, email, password, role = 'student', department, phone }) => {
   try {
     const validRoles = ['student', 'faculty', 'admin'];
     const finalRole = validRoles.includes(role) ? role : 'student';
@@ -40,21 +46,48 @@ exports.register = async ({ name, email, password, role = 'student' }) => {
     const existing = await userRepository.findByEmail(email);
     if (existing) return response(true, null, 'Email already registered');
 
-    const user = await userRepository.create({
+    const cleanDepartment = normalizeDepartment(department);
+    const userData = {
       name,
       email,
       password,
       role: finalRole,
-    });
+      department: cleanDepartment,
+      phone: phone || '',
+    };
 
-    // If registered as a student, create a student profile
+    if (finalRole === 'student') {
+      userData.rollNumber = await generateRollNumber();
+      userData.enrollmentNumber = `EN${new Date().getFullYear()}${Math.floor(100000 + Math.random() * 900000)}`;
+    } else if (finalRole === 'faculty' || finalRole === 'admin') {
+      userData.facultyId = await generateFacultyId();
+    }
+
+    const user = await userRepository.create(userData);
+
+    // Synchronize Profile in Student or Staff Collection
     if (finalRole === 'student') {
       await studentRepository.create({
         name,
         email,
-        rollNumber: `TEMP-${Date.now()}`, // Temporary roll number until updated
-        department: 'TBA',
+        rollNumber: userData.rollNumber,
+        enrollmentNumber: userData.enrollmentNumber,
+        department: cleanDepartment,
         year: 1,
+        phone: phone || '',
+        status: 'Active',
+      });
+    } else if (finalRole === 'faculty' || finalRole === 'admin') {
+      const staffRepository = require('../repositories/staff.repository');
+      await staffRepository.create({
+        name,
+        email,
+        facultyId: userData.facultyId,
+        department: cleanDepartment,
+        designation: 'Assistant Professor',
+        phone: phone || '',
+        status: 'Active',
+        role: finalRole,
       });
     }
 

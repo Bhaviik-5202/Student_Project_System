@@ -167,7 +167,7 @@ exports.register = async (req, res) => {
         resendCount: 0,
         lastResent: new Date(),
       },
-      { upsert: true, new: true }
+      { upsert: true, returnDocument: 'after' }
     );
 
     await sendEmail({

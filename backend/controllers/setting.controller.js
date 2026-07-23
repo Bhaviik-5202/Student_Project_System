@@ -157,7 +157,7 @@ exports.updateSetting = async (req, res) => {
     const setting = await Setting.findByIdAndUpdate(
       req.params.id,
       { key, value, description, category },
-      { new: true, runValidators: true }
+      { returnDocument: 'after', runValidators: true }
     );
 
     sendResponse(
@@ -196,7 +196,7 @@ exports.bulkUpdateSettings = async (req, res) => {
       Setting.findOneAndUpdate(
         { key },
         { value },
-        { upsert: true, new: true, runValidators: true }
+        { upsert: true, returnDocument: 'after', runValidators: true }
       )
     );
 

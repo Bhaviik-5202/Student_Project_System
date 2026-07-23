@@ -1,5 +1,7 @@
 import { useState, useEffect, useMemo, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Activity } from 'lucide-react';
+import PageHeader from '../../common/PageHeader';
 import api from '../../../utils/api';
 
 const ProgressAnalytics = memo(() => {
@@ -23,16 +25,12 @@ const ProgressAnalytics = memo(() => {
 
   return (
     <div className='animate-fade-in space-y-6 p-4 md:p-6'>
-      <div className='flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center'>
-        <div>
-          <h1 className='text-xl font-bold text-gray-900 dark:text-white'>
-            Progress Analytics
-          </h1>
-          <p className='mt-1 text-sm font-medium text-gray-500 dark:text-gray-400'>
-            Monitor project progress and completion rates
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        title='Progress Analytics'
+        subtitle='Monitor project completion trajectories and milestone fulfillment'
+        icon={Activity}
+        badge={`${projects.length} Projects Analyzed`}
+      />
 
       <div className='mb-8 grid grid-cols-1 gap-6 lg:grid-cols-3'>
         {/* Summary Stats */}
@@ -208,7 +206,7 @@ const ProgressAnalytics = memo(() => {
       </div>
     </div>
   );
-});
+  });
 
 ProgressAnalytics.displayName = 'ProgressAnalytics';
 

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast';
+import { Shield, RefreshCw, Download } from 'lucide-react';
+import PageHeader from '../../common/PageHeader';
 import api from '../../../utils/api';
 import '../../../assets/styles/admin.css';
 
@@ -122,41 +123,35 @@ const AuditLog = memo(() => {
   };
 
   return (
-    <div className='admin-page'>
-      <div className='admin-container'>
-        <header className='admin-header'>
-          <div>
-            <h1 className='admin-title flex items-center gap-3'>
-              <i className='fas fa-shield-alt text-blue-600'></i>
-              Security Audit Logs
-            </h1>
-            <p className='admin-subtitle'>
-              Record of administrative and security events
-            </p>
-          </div>
-          <div className='flex gap-2'>
+    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+      <PageHeader
+        title='Security Audit Logs'
+        subtitle='Immutable record of administrative and security events'
+        icon={Shield}
+        badge={`${logs.length} Log Events`}
+        actions={
+          <>
             <button
               onClick={() => fetchLogs(filters, true)}
               disabled={loading || refreshing}
-              className='admin-btn admin-btn-secondary'
+              className='flex items-center gap-2 rounded-xl border border-gray-200 bg-white p-2.5 text-xs font-bold text-gray-700 shadow-sm hover:bg-gray-50 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-200 transition-all disabled:opacity-50'
               title='Refresh logs'
             >
-              <i
-                className={`fas fa-sync-alt ${refreshing ? 'fa-spin' : ''}`}
-              ></i>
+              <RefreshCw size={16} className={refreshing ? 'animate-spin' : ''} />
             </button>
             <button
               onClick={handleExportLogs}
               disabled={logs.length === 0 || loading}
-              className='admin-btn admin-btn-primary'
+              className='flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-100 hover:bg-indigo-700 transition-all disabled:opacity-50 dark:shadow-none'
             >
-              <i className='fas fa-file-export'></i>
-              <span>Export CSV</span>
+              <Download size={16} />
+              Export CSV
             </button>
-          </div>
-        </header>
+          </>
+        }
+      />
 
-        <div className='admin-card mb-6'>
+      <div className='admin-card mb-6'>
           <div className='grid grid-cols-1 gap-4 md:grid-cols-4'>
             <div className='admin-form-group mb-0'>
               <label className='admin-label'>
@@ -321,8 +316,7 @@ const AuditLog = memo(() => {
           </table>
         </div>
       </div>
-    </div>
-  );
+    );
 });
 
 AuditLog.displayName = 'AuditLog';

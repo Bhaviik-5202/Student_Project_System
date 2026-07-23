@@ -1,6 +1,11 @@
 import { useState, useEffect, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { LineChart, Download } from 'lucide-react';
+import PageHeader from '../../common/PageHeader';
 import api from '../../../utils/api';
+
+const formatLabel = (str) =>
+  str ? str.replace(/([A-Z])/g, ' $1').replace(/^./, (s) => s.toUpperCase()) : '';
 
 const UsageStatistics = memo(() => {
   const navigate = useNavigate();
@@ -43,21 +48,18 @@ const UsageStatistics = memo(() => {
   ];
 
   return (
-    <div className='min-h-screen bg-slate-50 dark:bg-slate-900'>
-      <div className='container mx-auto px-4 py-8'>
-        <div className='mb-6 flex items-center justify-between'>
-          <div>
-            <h1 className='text-2xl font-bold text-slate-900 dark:text-white'>
-              Usage Statistics
-            </h1>
-            <p className='text-slate-600 dark:text-slate-400'>
-              System usage and engagement metrics
-            </p>
-          </div>
-          <button className='rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800'>
+    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+      <PageHeader
+        title='Usage Statistics'
+        subtitle='System usage, user activity peak hours, and engagement metrics'
+        icon={LineChart}
+        actions={
+          <button className='flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-100 hover:bg-indigo-700 transition-all dark:shadow-none'>
+            <Download size={16} />
             Download Report
           </button>
-        </div>
+        }
+      />
 
         {loading ? (
           <div className='p-8 text-center text-slate-500'>
@@ -75,9 +77,7 @@ const UsageStatistics = memo(() => {
                 className='rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800'
               >
                 <div className='mb-2 text-sm uppercase tracking-wider text-slate-500 dark:text-slate-300'>
-                  {key
-                    .replace(/([A-Z])/g, ' $1')
-                    .replace(/^./, (str) => str.toUpperCase())}
+                  {formatLabel(key)}
                 </div>
                 <div className='flex items-center justify-between'>
                   <div className='text-2xl font-bold text-slate-900 dark:text-white'>
@@ -185,9 +185,8 @@ const UsageStatistics = memo(() => {
           </div>
         </div>
       </div>
-    </div>
-  );
-});
+    );
+  });
 
 UsageStatistics.displayName = 'UsageStatistics';
 

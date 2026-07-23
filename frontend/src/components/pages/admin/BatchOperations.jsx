@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
+import { Layers } from 'lucide-react';
+import PageHeader from '../../common/PageHeader';
 import api from '../../../utils/api';
 
 const BatchOperations = memo(() => {
@@ -78,16 +80,12 @@ const BatchOperations = memo(() => {
   );
 
   return (
-    <div className='min-h-screen bg-slate-50 dark:bg-slate-900'>
-      <div className='container mx-auto px-4 py-8'>
-        <div className='mb-6'>
-          <h1 className='text-2xl font-bold text-slate-900 dark:text-white'>
-            Batch Operations
-          </h1>
-          <p className='text-slate-600 dark:text-slate-400'>
-            Perform operations on multiple users at once
-          </p>
-        </div>
+    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+      <PageHeader
+        title='Batch Operations'
+        subtitle='Perform bulk operations on multiple user accounts at once'
+        icon={Layers}
+      />
 
         <div className='grid grid-cols-1 gap-6 lg:grid-cols-3'>
           {/* Operation Settings */}
@@ -271,9 +269,8 @@ const BatchOperations = memo(() => {
           </div>
         </div>
       </div>
-    </div>
-  );
-});
+    );
+  });
 
 BatchOperations.displayName = 'BatchOperations';
 

@@ -118,7 +118,7 @@ exports.updateProjectType = async (req, res) => {
     const projectType = await ProjectType.findByIdAndUpdate(
       req.params.id,
       req.body,
-      { new: true, runValidators: true }
+      { returnDocument: 'after', runValidators: true }
     );
 
     if (!projectType) {

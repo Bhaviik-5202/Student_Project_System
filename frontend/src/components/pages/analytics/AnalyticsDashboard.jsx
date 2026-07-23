@@ -1,6 +1,7 @@
 import { useEffect, useState, memo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { GraduationCap, CheckSquare, TrendingUp, Percent } from 'lucide-react';
+import { GraduationCap, CheckSquare, TrendingUp, Percent, BarChart2 } from 'lucide-react';
+import PageHeader from '../../common/PageHeader';
 import analyticsService from '../../../services/analyticsService';
 
 /**
@@ -52,18 +53,12 @@ const AnalyticsDashboard = memo(() => {
   }, [location.key]);
 
   return (
-    <div className='min-h-screen bg-slate-50 dark:bg-slate-900'>
-      <div className='container mx-auto px-4 py-8'>
-        <div className='mb-8 flex items-center justify-between'>
-          <div>
-            <h1 className='text-2xl font-bold text-slate-900 dark:text-white'>
-              Analytics Dashboard
-            </h1>
-            <p className='mt-1 text-slate-600 dark:text-slate-400'>
-              System performance and analytics overview
-            </p>
-          </div>
-        </div>
+    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+      <PageHeader
+        title='Analytics Dashboard'
+        subtitle='Comprehensive performance intelligence and system analytics overview'
+        icon={BarChart2}
+      />
 
         {loading ? (
           <div className='p-8 text-center text-slate-500 dark:text-slate-400'>
@@ -222,9 +217,8 @@ const AnalyticsDashboard = memo(() => {
           </>
         )}
       </div>
-    </div>
-  );
-});
+    );
+  });
 
 AnalyticsDashboard.displayName = 'AnalyticsDashboard';
 

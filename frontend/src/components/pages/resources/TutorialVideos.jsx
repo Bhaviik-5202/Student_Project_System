@@ -1,4 +1,6 @@
 import React, { useState, useMemo, useCallback, memo, useEffect } from 'react';
+import { Video } from 'lucide-react';
+import PageHeader from '../../common/PageHeader';
 import resourceService from '../../../services/resourceService';
 
 const CategoryPill = memo(({ category, isActive, onSelect }) => (
@@ -90,7 +92,13 @@ const TutorialVideos = memo(() => {
   }, []);
 
   return (
-    <div className='rounded-lg bg-white p-6 shadow dark:bg-gray-800 dark:shadow-md'>
+    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+      <PageHeader
+        title='Tutorial Videos'
+        subtitle='Watch video tutorials and guidelines for student project system workflows'
+        icon={Video}
+        badge={`${videos.length} Videos`}
+      />
       <div className='flex flex-col gap-8 lg:flex-row'>
         {/* Left Column - Video Player */}
         <div className='lg:w-2/3'>

@@ -151,10 +151,13 @@ app.use((req, res) => {
 //  Global Error Handler
 app.use(errorHandler);
 
+const { backfillMissingIdentifiers } = require('./utils/idGenerator');
+
 const startServer = async () => {
   try {
     await connectDB();
     await seedAdmin();
+    await backfillMissingIdentifiers();
 
     if (require.main === module) {
       const PORT = process.env.PORT || 5000;

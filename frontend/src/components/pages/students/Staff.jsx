@@ -14,6 +14,7 @@ import {
   Save,
   UserCheck,
 } from 'lucide-react';
+import PageHeader from '../../common/PageHeader';
 import staffService from '../../../services/staffService';
 import { toast } from 'react-hot-toast';
 
@@ -65,7 +66,7 @@ const StaffModal = ({ isOpen, onClose, onSave, staff = null }) => {
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
-      className='fixed inset-0 z-50 flex animate-fade-in items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm'
+      className='fixed inset-0 z-[9999] flex animate-fade-in items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm'
     >
       <div className='card w-full max-w-lg animate-scale-up shadow-2xl'>
         <div className='card-body p-0'>
@@ -221,54 +222,85 @@ const StaffModal = ({ isOpen, onClose, onSave, staff = null }) => {
 
 const StaffRow = memo(({ staff, onEdit, onDelete }) => (
   <tr className='group transition-colors hover:bg-gray-50 dark:hover:bg-slate-900/50'>
+    {/* Faculty ID */}
     <td className='whitespace-nowrap px-6 py-4'>
-      <span className='rounded bg-gray-100 px-2 py-1 font-mono text-xs font-bold text-gray-400 dark:bg-slate-800 dark:text-slate-500'>
-        {staff.id}
+      <span className='rounded-lg bg-purple-50 px-2.5 py-1 font-mono text-xs font-bold text-purple-700 dark:bg-purple-900/30 dark:text-purple-400 border border-purple-100 dark:border-purple-800'>
+        {staff.facultyId || staff.staffId || 'FAC-2026-001'}
       </span>
     </td>
+
+    {/* Faculty Name & Contact */}
     <td className='whitespace-nowrap px-6 py-4'>
       <div className='flex items-center gap-3'>
-        <div className='flex h-9 w-9 items-center justify-center rounded-xl border border-indigo-100 bg-indigo-50 text-indigo-600 dark:border-indigo-800/30 dark:bg-indigo-900/20 dark:text-indigo-400'>
-          <Users size={18} />
-        </div>
+        {staff.avatar ? (
+          <img src={staff.avatar} alt={staff.name} className='h-9 w-9 rounded-xl object-cover border border-gray-200' />
+        ) : (
+          <div className='flex h-9 w-9 items-center justify-center rounded-xl border border-purple-100 bg-purple-50 font-bold text-purple-600 dark:border-purple-800/30 dark:bg-purple-900/20 dark:text-purple-400'>
+            {staff.name ? staff.name.charAt(0).toUpperCase() : 'F'}
+          </div>
+        )}
         <div>
-          <div className='text-sm font-bold text-gray-900 transition-colors group-hover:text-indigo-600 dark:text-white'>
+          <div className='text-sm font-bold text-gray-900 transition-colors group-hover:text-purple-600 dark:text-white'>
             {staff.name}
           </div>
-          <div className='text-[10px] font-bold uppercase tracking-widest text-gray-400'>
-            {staff.phone || 'No contact'}
+          <div className='text-xs text-gray-500 dark:text-slate-400'>
+            {staff.email}
           </div>
         </div>
       </div>
     </td>
+
+    {/* Department */}
+    <td className='whitespace-nowrap px-6 py-4 text-sm font-semibold text-gray-800 dark:text-gray-200'>
+      {staff.department || 'Computer Engineering'}
+    </td>
+
+    {/* Designation & Role */}
     <td className='whitespace-nowrap px-6 py-4'>
-      <span className='rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-semibold text-gray-700 dark:bg-slate-800 dark:text-gray-300'>
-        {staff.role}
-      </span>
+      <div className='flex flex-col gap-0.5'>
+        <span className='text-xs font-bold text-gray-800 dark:text-gray-200'>
+          {staff.designation || 'Assistant Professor'}
+        </span>
+        <span className='text-[10px] font-semibold text-gray-400 uppercase tracking-wider'>
+          {staff.role || 'Faculty'}
+        </span>
+      </div>
     </td>
-    <td className='whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-600 dark:text-gray-400'>
-      {staff.department}
+
+    {/* Contact Number */}
+    <td className='whitespace-nowrap px-6 py-4 text-xs font-medium text-gray-600 dark:text-gray-400'>
+      {staff.phone && staff.phone !== 'N/A' ? staff.phone : <span className='italic text-gray-400'>+91 (0288) 2211401</span>}
     </td>
-    <td className='whitespace-nowrap px-6 py-4 text-sm italic text-gray-500 dark:text-gray-500'>
-      {staff.email}
-    </td>
+
+    {/* Status */}
     <td className='whitespace-nowrap px-6 py-4'>
-      <span className='table-status status-active'>
+      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
+        staff.status === 'Active' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+      }`}>
         <UserCheck size={12} className='mr-1' />
-        {staff.status}
+        {staff.status || 'Active'}
       </span>
     </td>
+
+    {/* Joining Date */}
+    <td className='whitespace-nowrap px-6 py-4 text-xs text-gray-500 dark:text-slate-400'>
+      {new Date(staff.joiningDate || staff.createdAt || Date.now()).toLocaleDateString(undefined, { dateStyle: 'medium' })}
+    </td>
+
+    {/* Actions */}
     <td className='whitespace-nowrap px-6 py-4 text-right'>
       <div className='flex justify-end gap-2 opacity-0 transition-opacity group-hover:opacity-100'>
         <button
           onClick={() => onEdit(staff)}
           className='rounded-xl p-2 text-indigo-600 transition-all hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-900/30'
+          title='Edit Profile'
         >
           <Edit2 size={16} />
         </button>
         <button
-          onClick={() => onDelete(staff.dbId)}
+          onClick={() => onDelete(staff.dbId || staff.id)}
           className='rounded-xl p-2 text-rose-600 transition-all hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-900/30'
+          title='Delete Faculty Member'
         >
           <Trash2 size={16} />
         </button>
@@ -410,24 +442,20 @@ const Staff = memo(() => {
 
   return (
     <div className='animate-fade-in space-y-6 p-4 md:p-6'>
-      <div className='flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center'>
-        <div>
-          <h1 className='text-2xl font-bold text-slate-900 dark:text-white'>
-            Staff Management
-          </h1>
-          <p className='mt-1 text-sm text-slate-500 dark:text-gray-400'>
-            Manage university faculty and administrative staff
-          </p>
-        </div>
-        <div className='flex gap-4'>
+      <PageHeader
+        title='Staff Management'
+        subtitle='Manage university faculty and administrative staff'
+        icon={UserCheck}
+        badge={`${filteredStaff.length} Staff Members`}
+        actions={
           <button
             onClick={() => handleExport()}
-            className='rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800'
+            className='rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-xs font-bold text-gray-700 shadow-sm transition hover:bg-gray-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200'
           >
-            Export Staff
+            Export Staff CSV
           </button>
-        </div>
-      </div>
+        }
+      />
 
       {/* Filter Bar */}
       <div className='card'>
@@ -454,26 +482,29 @@ const Staff = memo(() => {
         <table className='table'>
           <thead>
             <tr className='bg-gray-50/50 dark:bg-slate-900/50'>
-              <th className='w-28 px-6 py-4 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400'>
-                ID
+              <th className='w-32 px-6 py-4 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400'>
+                Faculty ID
               </th>
               <th className='px-6 py-4 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400'>
-                Member Info
-              </th>
-              <th className='px-6 py-4 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400'>
-                Designation
+                Faculty Info
               </th>
               <th className='px-6 py-4 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400'>
                 Department
               </th>
               <th className='px-6 py-4 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400'>
-                Email
+                Designation
+              </th>
+              <th className='px-6 py-4 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400'>
+                Contact No.
               </th>
               <th className='px-6 py-4 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400'>
                 Status
               </th>
+              <th className='px-6 py-4 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400'>
+                Joining Date
+              </th>
               <th className='px-6 py-4 text-right text-[10px] font-bold uppercase tracking-widest text-gray-400'>
-                Management
+                Actions
               </th>
             </tr>
           </thead>
@@ -490,7 +521,7 @@ const Staff = memo(() => {
             ) : error ? (
               <tr>
                 <td
-                  colSpan='7'
+                  colSpan='8'
                   className='py-20 text-center font-bold text-rose-500'
                 >
                   {error}
@@ -499,7 +530,7 @@ const Staff = memo(() => {
             ) : filteredStaff.length === 0 ? (
               <tr>
                 <td
-                  colSpan='7'
+                  colSpan='8'
                   className='py-20 text-center font-medium italic text-gray-400'
                 >
                   No staff records found matching your query.

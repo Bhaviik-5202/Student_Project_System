@@ -1,507 +1,322 @@
-const projectService = require('../services/project.service');
-const sendResponse = require('../utils/response');
-const logger = require('../utils/logger');
-
 /**
  * Project Controller
- * Manages student projects, including creation, listing, updates, and member management.
+ * HTTP Request Handler delegating to ProjectService using standardized response helpers.
  */
+const projectService = require('../services/project.service');
+const sendResponse = require('../utils/response');
 
-/**
- * Get project membership list
- * @route   GET /api/projects/:id/members
- * @desc    Retrieve all students and faculty assigned to a specific project
- * @access  Authenticated
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- */
-exports.getProjectMembers = async (req, res) => {
-  try {
-    const result = await projectService.getMembers(req.params.id);
-
-    sendResponse(
-      res,
-      {
-        success: !result.error,
-        message: result.error
-          ? result.message
-          : 'Project members fetched successfully',
-        data: result.data || null,
-        error: result.error || null,
-      },
-      result.error ? 404 : 200
-    );
-  } catch (error) {
-    sendResponse(
-      res,
-      {
-        success: false,
-        message: 'Internal server error',
-        data: null,
-        error: error.message,
-      },
-      500
-    );
-  }
-};
-
-/**
- * Add a member to a project
- * @route   POST /api/projects/:id/members
- * @desc    Assign a student or faculty member to an existing project team
- * @access  Admin, Faculty
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- */
-exports.addProjectMember = async (req, res) => {
-  try {
-    const { userId } = req.body;
-
-    if (!userId) {
+class ProjectController {
+  /**
+   * Create new project
+   */
+  async createProject(req, res, next) {
+    try {
+      const project = await projectService.createProject(req.body, req.user);
       return sendResponse(
         res,
         {
-          success: false,
-          message: 'userId is required',
-          data: null,
-          error: 'Validation error',
+          success: true,
+          message: 'Project created successfully',
+          data: project,
         },
-        400
+        201
       );
+    } catch (error) {
+      next(error);
     }
-
-    const result = await projectService.addMember(req.params.id, userId);
-
-    sendResponse(
-      res,
-      {
-        success: !result.error,
-        message: result.error ? result.message : 'Member added successfully',
-        data: result.data || null,
-        error: result.error || null,
-      },
-      result.error ? 400 : 201
-    );
-  } catch (error) {
-    sendResponse(
-      res,
-      {
-        success: false,
-        message: 'Internal server error',
-        data: null,
-        error: error.message,
-      },
-      500
-    );
   }
-};
 
-/**
- * Create a new project instance
- * @route   POST /api/projects
- * @desc    Initialize a new project with basic details, guide, and members
- * @access  Admin, Faculty
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- */
-exports.createProject = async (req, res) => {
-  try {
-    const projectData = {
-      ...req.body,
-      createdBy: req.user.id,
-      document: req.file ? req.file.path : undefined,
-    };
-
-    // Sanitize guide and members to prevent Cast to ObjectId failed for empty strings
-    if (projectData.guide === '' || projectData.guide === 'null')
-      projectData.guide = null;
-    if (projectData.members && Array.isArray(projectData.members)) {
-      projectData.members = projectData.members.filter((m) => m && m !== '');
-    } else if (
-      typeof projectData.members === 'string' &&
-      projectData.members !== ''
-    ) {
-      projectData.members = [projectData.members];
-    }
-
-    // Server-side date validation: reject past dates
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    if (projectData.startDate && new Date(projectData.startDate) < today) {
-      return sendResponse(
-        res,
-        { success: false, message: 'Start date cannot be in the past' },
-        422
-      );
-    }
-    if (projectData.endDate && new Date(projectData.endDate) < today) {
-      return sendResponse(
-        res,
-        { success: false, message: 'Completion date cannot be in the past' },
-        422
-      );
-    }
-
-    const result = await projectService.create(projectData);
-
-    if (!result.error && result.data) {
-      logger.success('Project created', {
-        title: result.data.title,
-        createdBy: req.user?.id,
-      });
-    }
-
-    sendResponse(
-      res,
-      {
-        success: !result.error,
-        message: result.error ? result.message : 'Project created successfully',
-        data: result.data || null,
-        error: result.error || null,
-      },
-      result.error ? 400 : 201
-    );
-  } catch (error) {
-    sendResponse(
-      res,
-      {
-        success: false,
-        message: 'Internal server error',
-        data: null,
-        error: error.message,
-      },
-      500
-    );
-  }
-};
-
-/**
- * Fetch all projects
- * @route   GET /api/projects
- * @desc    Retrieve a paginated list of projects with optional query filters
- * @access  Authenticated
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- */
-exports.getAllProjects = async (req, res) => {
-  try {
-    const { page = 1, limit = 10, ...filters } = req.query;
-
-    // Sanitize filters: remove non-model parameters like cache-busting timestamp
-    delete filters._t;
-
-    const result = await projectService.getAll({
-      page: parseInt(page),
-      limit: parseInt(limit),
-      filters,
-    });
-
-    sendResponse(
-      res,
-      {
-        success: !result.error,
-        message: result.error
-          ? result.message
-          : 'Projects fetched successfully',
-        data: result.data ? result.data.projects : null,
-        error: result.error || null,
-        pagination: result.data
-          ? {
-              total: result.data.total,
-              page: result.data.page,
-              limit: result.data.limit,
-              totalPages: result.data.totalPages,
-            }
-          : null,
-      },
-      result.error ? 400 : 200
-    );
-  } catch (error) {
-    sendResponse(
-      res,
-      {
-        success: false,
-        message: 'Internal server error',
-        data: null,
-        error: error.message,
-      },
-      500
-    );
-  }
-};
-
-/**
- * Fetch formatted project groups
- * @route   GET /api/projects/groups
- * @desc    Retrieve projects optimized for group-wise dashboard visualization
- * @access  Authenticated
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- */
-exports.getProjectGroups = async (req, res) => {
-  try {
-    const result = await projectService.getAll({
-      page: 1,
-      limit: 100, // Fetch more for groups view
-      filters: {},
-    });
-
-    if (result.error) {
-      return sendResponse(
-        res,
-        {
-          success: false,
-          message: result.message,
-          data: null,
-          error: result.error,
-        },
-        400
-      );
-    }
-
-    // Format data for the frontend ProjectGroups view if needed
-    // However, the service already returns populated projects.
-    // We just need to ensure the structure matches what ProjectGroups.jsx expects.
-    const formattedGroups = result.data.projects.map((project) => ({
-      id: project.id || project._id,
-      slug: project.slug,
-      name: project.title,
-      project: project.title,
-      guide: project.guide ? project.guide.name : 'Not Assigned',
-      members: project.members
-        ? project.members.map((m) => m.name || 'Unknown')
-        : [],
-      status:
-        project.status.charAt(0).toUpperCase() +
-        project.status.slice(1).replace('_', ' '),
-      progress: project.progress || 0,
-    }));
-
-    logger.info(
-      `Sending ${formattedGroups.length} formatted groups to frontend`
-    );
-
-    sendResponse(
-      res,
-      {
+  /**
+   * Get list of projects with pagination, filters & search
+   */
+  async getAllProjects(req, res, next) {
+    try {
+      const result = await projectService.getAllProjects(req.query, req.user);
+      return sendResponse(res, {
         success: true,
-        message: 'Project groups fetched successfully',
-        data: formattedGroups,
-      },
-      200
-    );
-  } catch (error) {
-    sendResponse(
-      res,
-      {
-        success: false,
-        message: 'Internal server error',
-        data: null,
-        error: error.message,
-      },
-      500
-    );
+        message: 'Projects retrieved successfully',
+        data: result.projects,
+        pagination: result.pagination,
+      });
+    } catch (error) {
+      next(error);
+    }
   }
-};
 
-/**
- * Get detailed project information
- * @route   GET /api/projects/:id
- * @desc    Retrieve all attributes, members, and timeline data for a specific project
- * @access  Authenticated
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- */
-exports.getProjectById = async (req, res) => {
-  try {
-    const result = await projectService.getById(req.params.id);
-
-    sendResponse(
-      res,
-      {
-        success: !result.error,
-        message: result.error ? result.message : 'Project fetched successfully',
-        data: result.data || null,
-        error: result.error || null,
-      },
-      result.error ? 404 : 200
-    );
-  } catch (error) {
-    sendResponse(
-      res,
-      {
-        success: false,
-        message: 'Internal server error',
-        data: null,
-        error: error.message,
-      },
-      500
-    );
+  /**
+   * Get single project by ID or Slug
+   */
+  async getProjectById(req, res, next) {
+    try {
+      const project = await projectService.getProjectById(req.params.id, req.user);
+      return sendResponse(res, {
+        success: true,
+        message: 'Project details retrieved',
+        data: project,
+      });
+    } catch (error) {
+      next(error);
+    }
   }
-};
 
-/**
- * Update project details
- * @route   PUT /api/projects/:id
- * @desc    Modify project attributes, progress, or team composition
- * @access  Admin, Faculty, Owner
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- */
-exports.updateProject = async (req, res) => {
-  try {
-    const project = await projectService.getById(req.params.id);
-    if (!project || project.error) {
-      return sendResponse(
-        res,
-        { success: false, message: 'Project not found' },
-        404
+  /**
+   * Update project
+   */
+  async updateProject(req, res, next) {
+    try {
+      const updated = await projectService.updateProject(
+        req.params.id,
+        req.body,
+        req.user
       );
+      return sendResponse(res, {
+        success: true,
+        message: 'Project updated successfully',
+        data: updated,
+      });
+    } catch (error) {
+      next(error);
     }
-
-    // RBAC: Only owner, admin, or faculty can update
-    const isOwner = project.data.createdBy?.toString() === req.user.id;
-    const isAdminOrFaculty = ['admin', 'faculty'].includes(req.user.role);
-
-    if (!isOwner && !isAdminOrFaculty) {
-      return sendResponse(
-        res,
-        { success: false, message: 'Access denied' },
-        403
-      );
-    }
-
-    const updateData = { ...req.body };
-    if (req.file) {
-      updateData.document = req.file.path;
-    }
-
-    // Sanitize guide and members to prevent Cast to ObjectId failed for empty strings
-    if (updateData.guide === '') updateData.guide = null;
-
-    // RBAC: Faculty cannot select or assign a guide
-    const currentGuideId =
-      project.data.guide?._id?.toString() || project.data.guide?.toString();
-    const newGuideId = updateData.guide?.toString();
-
-    if (
-      req.user.role === 'faculty' &&
-      newGuideId !== undefined &&
-      newGuideId !== currentGuideId
-    ) {
-      return sendResponse(
-        res,
-        {
-          success: false,
-          message: 'Access denied: Faculty cannot select or assign a guide',
-          data: null,
-          error: 'Unauthorized field update',
-        },
-        403
-      );
-    }
-
-    if (Array.isArray(updateData.members)) {
-      updateData.members = updateData.members.filter((m) => m !== '');
-    }
-
-    // Server-side date validation: reject past dates
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    if (updateData.startDate && new Date(updateData.startDate) < today) {
-      return sendResponse(
-        res,
-        { success: false, message: 'Start date cannot be in the past' },
-        422
-      );
-    }
-    if (updateData.endDate && new Date(updateData.endDate) < today) {
-      return sendResponse(
-        res,
-        { success: false, message: 'Completion date cannot be in the past' },
-        422
-      );
-    }
-
-    const result = await projectService.update(req.params.id, updateData);
-
-    sendResponse(
-      res,
-      {
-        success: !result.error,
-        message: result.error ? result.message : 'Project updated successfully',
-        data: result.data || null,
-        error: result.error || null,
-      },
-      result.error ? 404 : 200
-    );
-  } catch (error) {
-    sendResponse(
-      res,
-      {
-        success: false,
-        message: 'Internal server error',
-        data: null,
-        error: error.message,
-      },
-      500
-    );
   }
-};
 
-/**
- * Delete a project record
- * @route   DELETE /api/projects/:id
- * @desc    Permanently remove a project and its associated data
- * @access  Admin, Faculty, Owner
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- */
-exports.deleteProject = async (req, res) => {
-  try {
-    const project = await projectService.getById(req.params.id);
-    if (!project || project.error) {
-      return sendResponse(
-        res,
-        { success: false, message: 'Project not found' },
-        404
-      );
+  /**
+   * Delete project
+   */
+  async deleteProject(req, res, next) {
+    try {
+      await projectService.deleteProject(req.params.id, req.user);
+      return sendResponse(res, {
+        success: true,
+        message: 'Project deleted successfully',
+      });
+    } catch (error) {
+      next(error);
     }
-
-    // RBAC: Only owner, admin, or faculty can delete
-    const isOwner = project.data.createdBy?.toString() === req.user.id;
-    const isAdminOrFaculty = ['admin', 'faculty'].includes(req.user.role);
-
-    if (!isOwner && !isAdminOrFaculty) {
-      return sendResponse(
-        res,
-        { success: false, message: 'Access denied' },
-        403
-      );
-    }
-
-    const result = await projectService.remove(req.params.id);
-
-    sendResponse(
-      res,
-      {
-        success: !result.error,
-        message: result.error ? result.message : 'Project deleted successfully',
-        data: result.data || null,
-        error: result.error || null,
-      },
-      result.error ? 404 : 200
-    );
-  } catch (error) {
-    sendResponse(
-      res,
-      {
-        success: false,
-        message: 'Internal server error',
-        data: null,
-        error: error.message,
-      },
-      500
-    );
   }
-};
+
+  /**
+   * Archive project
+   */
+  async archiveProject(req, res, next) {
+    try {
+      const archived = await projectService.archiveProject(
+        req.params.id,
+        req.user
+      );
+      return sendResponse(res, {
+        success: true,
+        message: 'Project archived successfully',
+        data: archived,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Restore archived project
+   */
+  async restoreProject(req, res, next) {
+    try {
+      const restored = await projectService.restoreProject(
+        req.params.id,
+        req.user
+      );
+      return sendResponse(res, {
+        success: true,
+        message: 'Project restored from archives',
+        data: restored,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Assign or update students
+   */
+  async assignStudents(req, res, next) {
+    try {
+      const { studentIds } = req.body;
+      const updated = await projectService.assignStudents(
+        req.params.id,
+        studentIds || [],
+        req.user
+      );
+      return sendResponse(res, {
+        success: true,
+        message: 'Student team updated successfully',
+        data: updated,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Assign or update faculty guide
+   */
+  async assignGuide(req, res, next) {
+    try {
+      const { guideId } = req.body;
+      const updated = await projectService.assignGuide(
+        req.params.id,
+        guideId,
+        req.user
+      );
+      return sendResponse(res, {
+        success: true,
+        message: 'Faculty guide updated successfully',
+        data: updated,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Update project progress & status
+   */
+  async updateProgress(req, res, next) {
+    try {
+      const updated = await projectService.updateProgress(
+        req.params.id,
+        req.body,
+        req.user
+      );
+      return sendResponse(res, {
+        success: true,
+        message: 'Project progress updated successfully',
+        data: updated,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Add project file
+   */
+  async addProjectFile(req, res, next) {
+    try {
+      const updated = await projectService.addProjectFile(
+        req.params.id,
+        req.body,
+        req.user
+      );
+      return sendResponse(res, {
+        success: true,
+        message: 'File uploaded successfully',
+        data: updated,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Remove project file
+   */
+  async removeProjectFile(req, res, next) {
+    try {
+      const updated = await projectService.removeProjectFile(
+        req.params.id,
+        req.params.fileId,
+        req.user
+      );
+      return sendResponse(res, {
+        success: true,
+        message: 'File removed successfully',
+        data: updated,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Add review / evaluation
+   */
+  async addProjectReview(req, res, next) {
+    try {
+      const updated = await projectService.addProjectReview(
+        req.params.id,
+        req.body,
+        req.user
+      );
+      return sendResponse(res, {
+        success: true,
+        message: 'Evaluation review recorded successfully',
+        data: updated,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Get dashboard metrics
+   */
+  async getDashboardStats(req, res, next) {
+    try {
+      const stats = await projectService.getDashboardStats(req.user);
+      return sendResponse(res, {
+        success: true,
+        message: 'Project dashboard metrics retrieved',
+        data: stats,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Active students list for dropdown assignment
+   */
+  async getActiveStudents(req, res, next) {
+    try {
+      const students = await projectService.getActiveStudents(req.query.search);
+      return sendResponse(res, {
+        success: true,
+        message: 'Active students retrieved',
+        data: students,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Active faculty list for guide dropdown
+   */
+  async getActiveFaculty(req, res, next) {
+    try {
+      const faculty = await projectService.getActiveFaculty(req.query.search);
+      return sendResponse(res, {
+        success: true,
+        message: 'Active faculty guides retrieved',
+        data: faculty,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /**
+   * Get projects formatted as groups
+   */
+  async getProjectGroups(req, res, next) {
+    try {
+      const result = await projectService.getAllProjects(req.query, req.user);
+      return sendResponse(res, {
+        success: true,
+        message: 'Project groups retrieved successfully',
+        data: result.projects || result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+}
+
+module.exports = new ProjectController();

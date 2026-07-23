@@ -18,16 +18,29 @@ const response = (error, data, message) => ({ error, data, message });
  * @param {Object} data - Staff profile data
  * @returns {Promise<Object>} Formatted service response with onboarded staff data
  */
+const userRepository = require('../repositories/user.repository');
+const { generateFacultyId, normalizeDepartment } = require('../utils/idGenerator');
+
 exports.create = async (data) => {
   try {
-    const staff = await staffRepository.create(data);
-    return response(false, staff, 'Staff created successfully');
+    const cleanDepartment = normalizeDepartment(data.department);
+    const facultyId = data.facultyId || (await generateFacultyId());
+
+    const staffData = {
+      ...data,
+      facultyId,
+      department: cleanDepartment,
+      designation: data.designation || 'Assistant Professor',
+      status: data.status || 'Active',
+      joiningDate: data.joiningDate || new Date(),
+    };
+
+    const staff = await staffRepository.create(staffData);
+    return response(false, staff, 'Staff member created successfully');
   } catch (err) {
     return response(true, null, err.message || 'Failed to create staff');
   }
 };
-
-const userRepository = require('../repositories/user.repository');
 
 /**
  * Fetch all registered faculty staff members
@@ -35,23 +48,71 @@ const userRepository = require('../repositories/user.repository');
  */
 exports.getAll = async () => {
   try {
-    const facultyUsers = await userRepository.findAll({ role: 'faculty' }, { select: '-password', lean: true });
-    const legacyStaff = await staffRepository.findAll();
+    const [facultyUsers, legacyStaff] = await Promise.all([
+      userRepository.findAll({ role: { $in: ['faculty', 'admin'] } }, { select: '-password', lean: true }),
+      staffRepository.findAll(),
+    ]);
 
-    const formattedFaculty = (facultyUsers || []).map((user) => ({
-      _id: user._id,
-      id: user._id,
-      staffId: user.staffId || user._id.toString().slice(-6).toUpperCase(),
-      name: user.name,
-      role: 'Faculty',
-      department: user.department || 'Computer Science',
-      email: user.email,
-      phone: user.phone || '',
-      status: user.status || 'Active',
-    }));
+    const staffMap = new Map();
 
-    const combinedStaff = [...formattedFaculty, ...(legacyStaff || [])];
-    return response(false, combinedStaff, 'Staff fetched successfully');
+    (facultyUsers || []).forEach((u) => {
+      const facId = u.facultyId || u.staffId || `FAC${new Date().getFullYear()}${u._id.toString().slice(-4).toUpperCase()}`;
+      staffMap.set(u.email.toLowerCase(), {
+        _id: u._id,
+        id: u._id,
+        dbId: u._id,
+        facultyId: facId,
+        staffId: facId,
+        name: u.name,
+        email: u.email,
+        role: u.role === 'admin' ? 'Administrator' : 'Faculty',
+        designation: u.designation || (u.role === 'admin' ? 'Head of Department' : 'Assistant Professor'),
+        department: normalizeDepartment(u.department),
+        phone: u.phone || '',
+        status: u.status === 'inactive' ? 'Inactive' : 'Active',
+        joiningDate: u.joiningDate || u.createdAt || new Date(),
+        avatar: u.avatar || null,
+      });
+    });
+
+    (legacyStaff || []).forEach((s) => {
+      const email = s.email?.toLowerCase();
+      const facId = s.facultyId || s.staffId || `FAC${new Date().getFullYear()}${s._id.toString().slice(-4).toUpperCase()}`;
+      if (email && staffMap.has(email)) {
+        const existing = staffMap.get(email);
+        staffMap.set(email, {
+          ...existing,
+          facultyId: s.facultyId || existing.facultyId,
+          staffId: s.facultyId || existing.staffId,
+          department: normalizeDepartment(s.department || existing.department),
+          designation: s.designation || existing.designation,
+          phone: s.phone || existing.phone,
+          status: s.status || existing.status,
+          joiningDate: s.joiningDate || existing.joiningDate,
+          avatar: s.avatar || existing.avatar,
+        });
+      } else if (email) {
+        staffMap.set(email, {
+          _id: s._id,
+          id: s._id,
+          dbId: s._id,
+          facultyId: facId,
+          staffId: facId,
+          name: s.name,
+          email: s.email,
+          role: s.role || 'Faculty',
+          designation: s.designation || 'Assistant Professor',
+          department: normalizeDepartment(s.department),
+          phone: s.phone || '',
+          status: s.status || 'Active',
+          joiningDate: s.joiningDate || s.createdAt || new Date(),
+          avatar: s.avatar || null,
+        });
+      }
+    });
+
+    const staffList = Array.from(staffMap.values());
+    return response(false, staffList, 'Staff fetched successfully');
   } catch (err) {
     return response(true, null, err.message || 'Failed to fetch staff');
   }

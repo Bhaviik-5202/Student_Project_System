@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useCallback, memo, useEffect } from 'react';
 import { useAuth } from '../../../hooks/useAuth';
 import reportService from '../../../services/reportService';
+import PageHeader from '../../common/PageHeader';
 import {
   PieChart,
   Users,
@@ -363,22 +364,17 @@ const Reports = memo(() => {
   );
 
   return (
-    <div className='animate-fade-in'>
-      <div className='mb-6 flex items-center justify-between'>
-        <div>
-          <h2 className='text-2xl font-bold text-gray-900 dark:text-white'>
-            Reports & Analytics
-          </h2>
-          <p className='text-gray-600 dark:text-gray-400'>
-            Generate detailed reports and analyze system data
-          </p>
-        </div>
-        <div className='flex items-center space-x-3'>
-          <div className='relative'>
+    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+      <PageHeader
+        title='Reports & Analytics'
+        subtitle='Generate detailed reports, export telemetry, and analyze system data'
+        icon={FileSpreadsheet}
+        actions={
+          <div className='flex items-center gap-3'>
             <select
               value={dateRange}
               onChange={(e) => setDateRange(e.target.value)}
-              className='appearance-none rounded-lg border border-gray-300 bg-white px-4 py-2 pr-8 leading-tight text-gray-700 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:focus:border-blue-400 dark:focus:ring-blue-400'
+              className='rounded-xl border border-gray-200 bg-white px-3 py-2 text-xs font-bold text-gray-700 shadow-sm transition-all focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-gray-200'
             >
               {dateRanges.map((range) => (
                 <option key={range.id} value={range.id}>
@@ -386,18 +382,16 @@ const Reports = memo(() => {
                 </option>
               ))}
             </select>
-            <div className='pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 dark:text-gray-300'>
-              <i className='fas fa-chevron-down' />
-            </div>
+            <button
+              onClick={handleExportAll}
+              className='flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-100 hover:bg-indigo-700 transition-all dark:shadow-none'
+            >
+              <Download size={16} />
+              Export All
+            </button>
           </div>
-          <button
-            onClick={handleExportAll}
-            className='flex items-center rounded-lg bg-indigo-600 px-4 py-2 text-white transition duration-150 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400'
-          >
-            <Download size={18} className='mr-2' /> Export All
-          </button>
-        </div>
-      </div>
+        }
+      />
 
       {/* Report Types Grid */}
       <div className='mb-8'>

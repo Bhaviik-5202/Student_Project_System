@@ -14,6 +14,7 @@ import {
   Briefcase,
 } from 'lucide-react';
 import meetingService from '../../../services/meetingService';
+import PageHeader from '../../common/PageHeader';
 import { useAuth } from '../../../hooks/useAuth';
 import { MEETING_TYPES } from '../../../utils/constants';
 import '../../../assets/styles/meetings.css';
@@ -205,57 +206,41 @@ const MeetingDetails = memo(() => {
   return (
     <div className='meeting-page animate-fade-in'>
       <div className='meeting-container'>
-        <div className='mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between'>
-          <div>
-            <button
-              onClick={() => navigate('/meetings')}
-              className='mb-2 flex items-center gap-2 text-sm font-bold text-indigo-600 hover:underline dark:text-indigo-400'
-            >
-              <ArrowLeft size={14} /> Back to Calendar
-            </button>
-            <h1 className='text-3xl font-black text-gray-900 dark:text-white'>
-              {meeting.title}
-            </h1>
-            <div className='mt-2 flex flex-wrap items-center gap-3'>
-              <span
-                className={`rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-wider ${STATUS_STYLES[status] || STATUS_STYLES.scheduled}`}
-              >
-                {status.replace('_', ' ')}
-              </span>
-              <span className='text-xs font-bold text-gray-400'>{typeLabel}</span>
-            </div>
-          </div>
-          <div className='flex flex-wrap items-center gap-3'>
-            {isReviewMeeting(meeting.type) && (
+        <PageHeader
+          title={meeting.title}
+          subtitle={`Type: ${typeLabel}`}
+          icon={Calendar}
+          badge={status.replace('_', ' ')}
+          actions={
+            <>
               <button
-                onClick={handleJoin}
-                disabled={joining}
-                className='meeting-btn meeting-btn-primary'
+                onClick={() => navigate('/meetings')}
+                className='flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-xs font-bold text-gray-700 shadow-sm hover:bg-gray-50 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-200 transition-all'
               >
-                <Video size={16} />
-                {joining ? 'Joining...' : 'Join Meeting'}
+                <ArrowLeft size={16} />
+                Back to Calendar
               </button>
-            )}
-            {canManage && (
-              <>
+              {isReviewMeeting(meeting.type) && (
+                <button
+                  onClick={handleJoin}
+                  disabled={joining}
+                  className='flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-md hover:bg-indigo-700 transition-all disabled:opacity-50'
+                >
+                  <Video size={16} />
+                  {joining ? 'Joining...' : 'Join Meeting'}
+                </button>
+              )}
+              {canManage && (
                 <button
                   onClick={() => navigate(`/meetings/${id}/edit`)}
-                  className='meeting-btn meeting-btn-secondary'
+                  className='rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-xs font-bold text-gray-700 shadow-sm hover:bg-gray-50 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-200 transition-all'
                 >
                   Edit
                 </button>
-                {user?.role === 'admin' && (
-                  <button
-                    onClick={handleDelete}
-                    className='meeting-btn meeting-btn-danger'
-                  >
-                    Cancel Meeting
-                  </button>
-                )}
-              </>
-            )}
-          </div>
-        </div>
+              )}
+            </>
+          }
+        />
 
         <div className='grid grid-cols-1 gap-6 lg:grid-cols-3'>
           <div className='space-y-6 lg:col-span-2'>
@@ -511,9 +496,9 @@ const MeetingDetails = memo(() => {
           </div>
         </div>
       </div>
-    </div>
-  );
-});
+      </div>
+    );
+  });
 
 MeetingDetails.displayName = 'MeetingDetails';
 export default MeetingDetails;

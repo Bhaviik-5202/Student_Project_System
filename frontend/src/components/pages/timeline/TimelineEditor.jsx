@@ -1,6 +1,8 @@
 import { useCallback, useState, useEffect, memo, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
+import { Edit, Save, ArrowLeft } from 'lucide-react';
+import PageHeader from '../../common/PageHeader';
 import timelineService from '../../../services/timelineService';
 import projectService from '../../../services/projectService';
 
@@ -184,58 +186,49 @@ const TimelineEditor = memo(() => {
     'w-full px-4 py-3 bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-700 rounded-2xl text-sm font-bold text-slate-900 dark:text-white placeholder:text-slate-300 dark:placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all';
 
   return (
-    <div className='space-y-6 p-4 md:p-6'>
-      <div className='flex flex-col justify-between gap-4 md:flex-row md:items-end'>
-        <div>
-          <button
-            onClick={() => handleNavigate('/timeline')}
-            className='mb-2 flex items-center gap-1 text-xs font-bold tracking-wider text-indigo-600 dark:text-indigo-400'
-          >
-            <i className='fas fa-arrow-left' /> Back to Timelines
-          </button>
-
-          <h1 className='text-2xl font-bold text-gray-900 dark:text-white'>
-            Timeline Editor
-          </h1>
-          <div className='mt-2 flex items-center gap-3'>
-            <div className='flex items-center gap-2 rounded-full bg-indigo-50 px-2 py-0.5 dark:bg-indigo-900/40'>
-              <span className='h-1.5 w-1.5 rounded-full bg-indigo-600'></span>
-              <span className='text-[10px] font-bold tracking-widest text-indigo-600 dark:text-indigo-400'>
-                Editor
-              </span>
-            </div>
+    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+      <PageHeader
+        title='Timeline Editor'
+        subtitle='Configure milestones, deadlines, and project phase trajectories'
+        icon={Edit}
+        actions={
+          <div className='flex items-center gap-3'>
+            <button
+              onClick={() => handleNavigate('/timeline')}
+              className='flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-xs font-bold text-gray-700 shadow-sm hover:bg-gray-50 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-200 transition-all'
+            >
+              <ArrowLeft size={16} />
+              Overview
+            </button>
             <select
               value={selectedProjectId}
               onChange={handleProjectChange}
-              className='cursor-pointer border-none bg-transparent p-0 text-xs font-bold text-gray-500 transition-colors hover:text-indigo-600 focus:ring-0 dark:text-gray-400 dark:hover:text-indigo-400'
+              className='rounded-xl border border-gray-200 bg-white px-3 py-2 text-xs font-bold text-indigo-600 shadow-sm transition-all focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-indigo-400'
             >
               <option value='' disabled>
                 Select Project
               </option>
               {projects.map((p) => (
                 <option
-                  key={p._id}
-                  value={p._id}
-                  className='bg-white text-sm text-gray-900 dark:bg-slate-800 dark:text-white'
+                  key={p._id || p.id}
+                  value={p._id || p.id}
+                  className='bg-white text-xs text-gray-900 dark:bg-slate-800 dark:text-white'
                 >
                   {p.title}
                 </option>
               ))}
             </select>
+            <button
+              onClick={saveTimeline}
+              disabled={loading}
+              className='flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-100 hover:bg-indigo-700 transition-all disabled:opacity-50 dark:shadow-none'
+            >
+              <Save size={16} />
+              {loading ? 'Saving...' : 'Save Timeline'}
+            </button>
           </div>
-        </div>
-
-        <div className='flex gap-2'>
-          <button
-            onClick={saveTimeline}
-            disabled={loading}
-            className='rounded-lg bg-indigo-600 px-6 py-2 text-xs font-bold text-white shadow-sm transition-colors hover:bg-indigo-700 disabled:opacity-50'
-          >
-            <i className='fas fa-save mr-2' />{' '}
-            {loading ? 'Saving...' : 'Save Timeline'}
-          </button>
-        </div>
-      </div>
+        }
+      />
 
       {fetching ? (
         <div className='rounded-xl border border-gray-200 bg-white p-20 text-center shadow-sm dark:border-slate-700 dark:bg-slate-800'>

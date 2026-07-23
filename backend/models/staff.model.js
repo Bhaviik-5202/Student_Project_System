@@ -23,12 +23,43 @@ const staffSchema = new mongoose.Schema(
       match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email address'],
     },
 
+    facultyId: {
+      type: String,
+      unique: true,
+      sparse: true,
+      trim: true,
+      uppercase: true,
+    },
     department: {
+      type: String,
+      trim: true,
+      default: 'Computer Engineering',
+    },
+    designation: {
+      type: String,
+      trim: true,
+      default: 'Assistant Professor',
+    },
+    phone: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    status: {
+      type: String,
+      enum: ['Active', 'Inactive', 'active', 'inactive'],
+      default: 'Active',
+      trim: true,
+    },
+    joiningDate: {
+      type: Date,
+      default: Date.now,
+    },
+    avatar: {
       type: String,
       trim: true,
       default: null,
     },
-
     role: {
       type: String,
       enum: ['faculty', 'admin', 'coordinator', 'hod'],

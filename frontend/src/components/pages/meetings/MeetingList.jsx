@@ -3,6 +3,8 @@ import { useNavigate, Outlet } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import meetingService from '../../../services/meetingService';
 import { useAuth } from '../../../hooks/useAuth';
+import { List, Plus } from 'lucide-react';
+import PageHeader from '../../common/PageHeader';
 import '../../../assets/styles/meetings.css';
 
 const MeetingRow = memo(
@@ -135,26 +137,26 @@ const MeetingList = () => {
   }, []);
 
   return (
-    <div className='meeting-page'>
-      <div className='meeting-container'>
-        <div className='mb-8 flex items-center justify-between'>
-          <div>
-            <h1 className='meeting-title'>Meeting Management</h1>
-            <p className='meeting-subtitle'>
-              Control and organize project sessions
-            </p>
-          </div>
-          {user?.role === 'admin' && (
+    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+      <PageHeader
+        title='Meeting Management'
+        subtitle='Control and organize project sessions'
+        icon={List}
+        badge={`${meetings.length} Meetings`}
+        actions={
+          user?.role === 'admin' && (
             <button
               onClick={() => navigate('/meetings/new')}
-              className='meeting-btn meeting-btn-primary'
+              className='flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-100 hover:bg-indigo-700 transition-all dark:shadow-none'
             >
+              <Plus size={16} />
               Schedule New Meeting
             </button>
-          )}
-        </div>
+          )
+        }
+      />
 
-        <div className='meeting-card'>
+      <div className='meeting-card'>
           <div className='meeting-card-header'>
             <div>
               <h2 className='text-lg font-bold text-gray-900 dark:text-white'>
@@ -208,7 +210,6 @@ const MeetingList = () => {
             )}
           </div>
         </div>
-      </div>
       <Outlet />
     </div>
   );

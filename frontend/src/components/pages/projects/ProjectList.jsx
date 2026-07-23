@@ -1,185 +1,499 @@
-import React, { memo, useState, useEffect } from 'react';
+/**
+ * ProjectList Component
+ * Professional Project Catalog with Grid & Table views, comprehensive search & filtering,
+ * pagination, active/archived tabs, and quick action modals.
+ */
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
+import {
+  FolderKanban,
+  Plus,
+  LayoutGrid,
+  List as ListIcon,
+  RotateCcw,
+  UserCheck,
+  Award,
+  TrendingUp,
+  Archive,
+  Trash2,
+  Edit,
+  ExternalLink,
+} from 'lucide-react';
+import useProjects from '../../../hooks/useProjects';
 import projectService from '../../../services/projectService';
-import { useAuth } from '../../../hooks/useAuth';
+import {
+  PageHeader,
+  Card,
+  SearchInput,
+  Select,
+  StatusBadge,
+  Badge,
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+  Pagination,
+  PrimaryButton,
+  SecondaryButton,
+  IconButton,
+  LoadingState,
+  EmptyState,
+  ConfirmationModal,
+} from './ui';
 
-const ProjectCard = memo(({ project, onNavigate, currentUser }) => {
-  const canEdit =
-    currentUser?.role === 'admin' || currentUser?.role === 'faculty';
-  const statusStyles = {
-    blue: 'bg-blue-50 text-blue-700',
-    green: 'bg-green-50 text-green-700',
-    yellow: 'bg-yellow-50 text-yellow-700',
-    purple: 'bg-purple-50 text-purple-700',
+// Import Modals
+import AssignStudentsModal from './modals/AssignStudentsModal';
+import AssignGuideModal from './modals/AssignGuideModal';
+import UpdateProgressModal from './modals/UpdateProgressModal';
+
+const ProjectList = () => {
+  const navigate = useNavigate();
+  const {
+    projects,
+    pagination,
+    loading,
+    filters,
+    setFilter,
+    resetFilters,
+    refetch,
+  } = useProjects();
+
+  const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'table'
+  const [selectedProjectForModal, setSelectedProjectForModal] = useState(null);
+  const [activeModal, setActiveModal] = useState(null); // 'students' | 'guide' | 'progress' | null
+  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, type: '', project: null });
+
+  const handleArchive = (project) => {
+    setConfirmDialog({
+      isOpen: true,
+      type: 'archive',
+      project,
+      title: 'Archive Project',
+      message: `Are you sure you want to archive '${project.title}'?`,
+      isDanger: false,
+    });
   };
 
-  const badgeClass = statusStyles[project.statusColor] || statusStyles.blue;
+  const handleRestore = async (project) => {
+    try {
+      const toastId = toast.loading('Restoring project...');
+      await projectService.restoreProject(project._id || project.id);
+      toast.success('Project restored from archives', { id: toastId });
+      refetch();
+    } catch (error) {
+      toast.error('Failed to restore project');
+    }
+  };
+
+  const handleDelete = (project) => {
+    setConfirmDialog({
+      isOpen: true,
+      type: 'delete',
+      project,
+      title: 'Delete Project',
+      message: `Permanently delete '${project.title}'? This action cannot be undone.`,
+      isDanger: true,
+    });
+  };
+
+  const executeConfirmAction = async () => {
+    const { type, project } = confirmDialog;
+    if (!project) return;
+
+    try {
+      if (type === 'archive') {
+        const toastId = toast.loading('Archiving project...');
+        await projectService.archiveProject(project._id || project.id);
+        toast.success('Project archived successfully', { id: toastId });
+      } else if (type === 'delete') {
+        const toastId = toast.loading('Deleting project...');
+        await projectService.deleteProject(project._id || project.id);
+        toast.success('Project deleted', { id: toastId });
+      }
+      refetch();
+    } catch (error) {
+      toast.error(`Failed to ${type} project`);
+    } finally {
+      setConfirmDialog({ isOpen: false, type: '', project: null });
+    }
+  };
 
   return (
-    <div className='project-card-simple'>
-      <div className='mb-4 flex items-start justify-between gap-4'>
-        <div className='flex-1'>
-          <div className='mb-1 flex items-center gap-2'>
-            <h3 className='text-lg font-bold leading-tight text-gray-900 dark:text-white'>
-              {project.title}
-            </h3>
-            <span className={`project-badge ${badgeClass}`}>
-              {project.status}
-            </span>
-          </div>
-          <p className='line-clamp-2 text-sm text-gray-500'>
-            {project.description}
-          </p>
-        </div>
-        <div className='flex gap-2'>
-          <button
-            onClick={() =>
-              onNavigate(
-                `/projects/${project.slug || project.id || project._id}`
-              )
-            }
-            className='project-btn project-btn-primary'
-          >
-            Details
-          </button>
-          {canEdit && (
-            <button
-              onClick={() =>
-                onNavigate(
-                  `/projects/${project.slug || project.id || project._id}/edit`
-                )
-              }
-              className='project-btn project-btn-secondary'
-            >
-              Edit
-            </button>
-          )}
-        </div>
-      </div>
+    <div className='space-y-6 p-4 md:p-6 animate-fade-in'>
+      {/* Top Bar Header */}
+      <PageHeader
+        title='Project Management Catalog'
+        subtitle={`Showing ${projects.length} of ${pagination.total || 0} registered projects`}
+        icon={FolderKanban}
+        actions={
+          <>
+            {/* Active / Archived Tab Toggle */}
+            <div className='flex rounded-xl bg-gray-100 p-1 dark:bg-slate-800'>
+              <button
+                onClick={() => setFilter('isArchived', false)}
+                className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-all ${!filters.isArchived
+                  ? 'bg-white text-indigo-600 shadow dark:bg-slate-700 dark:text-indigo-400'
+                  : 'text-gray-500 hover:text-gray-700 dark:text-gray-400'
+                  }`}
+              >
+                Active
+              </button>
+              <button
+                onClick={() => setFilter('isArchived', true)}
+                className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-all ${filters.isArchived
+                  ? 'bg-white text-indigo-600 shadow dark:bg-slate-700 dark:text-indigo-400'
+                  : 'text-gray-500 hover:text-gray-700 dark:text-gray-400'
+                  }`}
+              >
+                Archived
+              </button>
+            </div>
 
-      <div className='grid grid-cols-2 gap-4 border-t border-gray-50 pt-4 dark:border-slate-700 sm:grid-cols-4'>
-        <div>
-          <p className='mb-1 text-[10px] font-bold text-gray-400'>Guide</p>
-          <p className='truncate text-sm font-semibold text-gray-900 dark:text-white'>
-            {project.guide?.name ||
-              (typeof project.guide === 'string'
-                ? project.guide
-                : 'Not Assigned')}
-          </p>
-        </div>
-        <div>
-          <p className='mb-1 text-[10px] font-bold text-gray-400'>Start Date</p>
-          <p className='text-sm font-semibold text-gray-900 dark:text-white'>
-            {project.startDate
-              ? new Date(project.startDate).toLocaleDateString()
-              : 'N/A'}
-          </p>
-        </div>
-        <div>
-          <p className='mb-1 text-[10px] font-bold text-gray-400'>Progress</p>
-          <div className='flex items-center gap-2'>
-            <div className='h-1.5 flex-1 overflow-hidden rounded-full bg-gray-100 dark:bg-slate-900'>
-              <div
-                className='h-full rounded-full bg-indigo-500'
-                style={{ width: `${project.progress}%` }}
+            {/* Grid vs Table View Mode */}
+            <div className='flex rounded-xl border border-gray-200 bg-white p-1 dark:border-slate-700 dark:bg-slate-800'>
+              <IconButton
+                icon={LayoutGrid}
+                onClick={() => setViewMode('grid')}
+                title='Grid View'
+                variant={viewMode === 'grid' ? 'indigo' : 'default'}
+              />
+              <IconButton
+                icon={ListIcon}
+                onClick={() => setViewMode('table')}
+                title='Table View'
+                variant={viewMode === 'table' ? 'indigo' : 'default'}
               />
             </div>
-            <span className='text-xs font-bold text-gray-900 dark:text-white'>
-              {project.progress}%
-            </span>
-          </div>
-        </div>
-        <div>
-          <p className='mb-1 text-[10px] font-bold text-gray-400'>Deadline</p>
-          <p className='text-sm font-semibold text-gray-900 dark:text-white'>
-            {project.endDate
-              ? new Date(project.endDate).toLocaleDateString()
-              : 'N/A'}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-});
 
-ProjectCard.displayName = 'ProjectCard';
+            <PrimaryButton icon={Plus} onClick={() => navigate('/projects/new')}>
+              New Project
+            </PrimaryButton>
+          </>
+        }
+      />
 
-const ProjectList = memo(() => {
-  const navigate = useNavigate();
-  const { user } = useAuth();
-  const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+      {/* Filter and Search Bar Card */}
+      <Card className='space-y-4 !p-4'>
+        <div className='grid grid-cols-1 gap-3 md:grid-cols-4 lg:grid-cols-6'>
+          {/* Search */}
+          <SearchInput
+            value={filters.search}
+            onChange={(e) => setFilter('search', e.target.value)}
+            placeholder='Search by title, code, techs...'
+            className='md:col-span-2'
+          />
 
-  useEffect(() => {
-    const fetchProjects = async () => {
-      setLoading(true);
-      setError('');
-      const res = await projectService.getAllProjects();
-      if (res.success) {
-        setProjects(res.data || []);
-      } else {
-        setError(res.message || 'Failed to load projects');
-      }
-      setLoading(false);
-    };
-    fetchProjects();
-  }, []);
-
-  return (
-    <div className='project-page animate-fade-in text-gray-600 dark:text-gray-400'>
-      <div className='project-header'>
-        <div>
-          <h2 className='project-title text-gray-900 dark:text-white'>
-            Project Catalog
-          </h2>
-          <p className='project-subtitle'>Track milestones and deliverables</p>
-        </div>
-        {user?.role !== 'student' && (
-          <button
-            onClick={() => navigate('/projects/new')}
-            className='project-btn project-btn-primary'
+          {/* Department Filter */}
+          <Select
+            value={filters.department}
+            onChange={(e) => setFilter('department', e.target.value)}
           >
-            New Project
-          </button>
-        )}
-      </div>
+            <option value='All'>All Departments</option>
+            <option value='Computer Science'>Computer Science</option>
+            <option value='Information Technology'>Information Technology</option>
+            <option value='Electronics'>Electronics</option>
+            <option value='Mechanical'>Mechanical</option>
+            <option value='Civil'>Civil</option>
+            <option value='Electrical'>Electrical</option>
+            <option value='AI & DS'>AI & DS</option>
+          </Select>
 
-      {loading ? (
-        <div className='py-20 text-center text-sm italic text-gray-400'>
-          Accessing project archives...
+          {/* Status Filter */}
+          <Select
+            value={filters.status}
+            onChange={(e) => setFilter('status', e.target.value)}
+          >
+            <option value='All'>All Statuses</option>
+            <option value='assigned'>Assigned</option>
+            <option value='in_progress'>In Progress</option>
+            <option value='under_review'>Under Review</option>
+            <option value='completed'>Completed</option>
+            <option value='approved'>Approved</option>
+            <option value='rejected'>Rejected</option>
+          </Select>
+
+          {/* Type Filter */}
+          <Select
+            value={filters.projectType}
+            onChange={(e) => setFilter('projectType', e.target.value)}
+          >
+            <option value='All'>All Project Types</option>
+            <option value='Major Project'>Major Project</option>
+            <option value='Minor Project'>Minor Project</option>
+            <option value='Research Project'>Research Project</option>
+            <option value='UDP'>UDP</option>
+            <option value='IDP'>IDP</option>
+            <option value='Industry Project'>Industry Project</option>
+          </Select>
+
+          {/* Reset Filters */}
+          <SecondaryButton icon={RotateCcw} onClick={resetFilters}>
+            Reset
+          </SecondaryButton>
         </div>
-      ) : error ? (
-        <div className='rounded-xl border border-red-100 bg-red-50 p-4 text-center text-sm font-bold text-red-600'>
-          {error}
+      </Card>
+
+      {/* Projects List Content */}
+      {loading ? (
+        <LoadingState message='Loading project catalog...' />
+      ) : projects.length === 0 ? (
+        <EmptyState
+          title='No Projects Found'
+          description='No projects match the specified search query or filter criteria.'
+          icon={FolderKanban}
+          actionText='Create New Project'
+          onAction={() => navigate('/projects/new')}
+        />
+      ) : viewMode === 'grid' ? (
+        /* GRID VIEW */
+        <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
+          {projects.map((project) => (
+            <Card
+              key={project._id || project.id}
+              className='flex flex-col justify-between !p-5'
+            >
+              <div>
+                {/* Header Badge */}
+                <div className='flex items-start justify-between gap-2 mb-3'>
+                  <div className='flex items-center gap-1.5'>
+                    <Badge variant='indigo'>{project.code || 'PRJ-2026'}</Badge>
+                    <span className='text-[10px] font-bold text-gray-400 dark:text-gray-500'>
+                      {project.department}
+                    </span>
+                  </div>
+                  <StatusBadge status={project.status || 'assigned'} />
+                </div>
+
+                {/* Title */}
+                <h3
+                  onClick={() => navigate(`/projects/${project.slug || project._id || project.id}`)}
+                  className='text-base font-bold text-gray-900 hover:text-indigo-600 dark:text-white cursor-pointer line-clamp-2 transition-colors'
+                >
+                  {project.title}
+                </h3>
+
+                {/* Description abstract */}
+                <p className='mt-2 line-clamp-2 text-xs text-gray-500 dark:text-gray-400'>
+                  {project.description || 'No detailed abstract specified.'}
+                </p>
+
+                {/* Guide & Team info */}
+                <div className='mt-4 space-y-2 border-t border-gray-100 pt-3 dark:border-slate-700/60'>
+                  <div className='flex items-center justify-between text-xs'>
+                    <span className='text-gray-400 font-medium'>Guide:</span>
+                    <span className='font-bold text-gray-800 dark:text-gray-200'>
+                      {project.guide
+                        ? typeof project.guide === 'object'
+                          ? project.guide.name
+                          : 'Assigned'
+                        : 'Unassigned'}
+                    </span>
+                  </div>
+                  <div className='flex items-center justify-between text-xs'>
+                    <span className='text-gray-400 font-medium'>Team:</span>
+                    <span className='font-semibold text-gray-700 dark:text-gray-300'>
+                      {Array.isArray(project.members) ? `${project.members.length} Students` : '0 Members'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Progress bar */}
+                <div className='mt-3 space-y-1'>
+                  <div className='flex justify-between text-[10px] font-bold text-gray-400'>
+                    <span>PROGRESS</span>
+                    <span>{project.progress || 0}%</span>
+                  </div>
+                  <div className='h-1.5 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-slate-900'>
+                    <div
+                      className='h-full bg-indigo-600 transition-all duration-500 rounded-full'
+                      style={{ width: `${project.progress || 0}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Action buttons footer */}
+              <div className='mt-5 flex items-center justify-between border-t border-gray-100 pt-3 dark:border-slate-700'>
+                <div className='flex gap-1'>
+                  <IconButton
+                    icon={UserCheck}
+                    variant='indigo'
+                    title='Assign Students'
+                    onClick={() => {
+                      setSelectedProjectForModal(project);
+                      setActiveModal('students');
+                    }}
+                  />
+                  <IconButton
+                    icon={Award}
+                    variant='purple'
+                    title='Assign Guide'
+                    onClick={() => {
+                      setSelectedProjectForModal(project);
+                      setActiveModal('guide');
+                    }}
+                  />
+                  <IconButton
+                    icon={TrendingUp}
+                    variant='blue'
+                    title='Update Progress'
+                    onClick={() => {
+                      setSelectedProjectForModal(project);
+                      setActiveModal('progress');
+                    }}
+                  />
+                  {filters.isArchived ? (
+                    <IconButton
+                      icon={RotateCcw}
+                      variant='emerald'
+                      title='Restore Project'
+                      onClick={() => handleRestore(project)}
+                    />
+                  ) : (
+                    <IconButton
+                      icon={Archive}
+                      variant='amber'
+                      title='Archive Project'
+                      onClick={() => handleArchive(project)}
+                    />
+                  )}
+                  <IconButton
+                    icon={Trash2}
+                    variant='danger'
+                    title='Delete Project'
+                    onClick={() => handleDelete(project)}
+                  />
+                </div>
+
+                <SecondaryButton
+                  size='sm'
+                  icon={ExternalLink}
+                  onClick={() => navigate(`/projects/${project.slug || project._id || project.id}`)}
+                >
+                  Details
+                </SecondaryButton>
+              </div>
+            </Card>
+          ))}
         </div>
       ) : (
-        <div className='grid grid-cols-1 gap-4'>
-          {projects.length > 0 ? (
-            projects.map((project) => (
-              <ProjectCard
-                key={project.id || project._id}
-                project={project}
-                onNavigate={navigate}
-                currentUser={user}
-              />
-            ))
-          ) : (
-            <div className='rounded-2xl border border-dashed border-gray-200 bg-gray-50 p-12 text-center dark:border-slate-700 dark:bg-slate-800'>
-              <h3 className='font-bold text-gray-900 dark:text-white'>
-                No Projects Found
-              </h3>
-              <p className='mx-auto mt-1 max-w-[200px] text-xs leading-relaxed text-gray-500'>
-                No active projects found in your registry. Start by proposing a
-                new one.
-              </p>
-            </div>
-          )}
-        </div>
+        /* TABLE VIEW */
+        <Table>
+          <TableHeader>
+            <tr>
+              <TableHead>Code</TableHead>
+              <TableHead>Project Title</TableHead>
+              <TableHead>Department</TableHead>
+              <TableHead>Guide</TableHead>
+              <TableHead>Progress</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead align='right'>Actions</TableHead>
+            </tr>
+          </TableHeader>
+          <TableBody>
+            {projects.map((project) => (
+              <TableRow key={project._id || project.id}>
+                <TableCell className='font-extrabold text-indigo-600 dark:text-indigo-400'>
+                  {project.code || 'PRJ'}
+                </TableCell>
+                <TableCell className='font-bold text-gray-900 dark:text-white max-w-xs truncate'>
+                  <span
+                    onClick={() => navigate(`/projects/${project.slug || project._id || project.id}`)}
+                    className='cursor-pointer hover:underline hover:text-indigo-600 transition-colors'
+                  >
+                    {project.title}
+                  </span>
+                </TableCell>
+                <TableCell className='text-gray-600 dark:text-gray-300'>
+                  {project.department}
+                </TableCell>
+                <TableCell className='text-gray-700 dark:text-gray-300 font-semibold'>
+                  {project.guide
+                    ? typeof project.guide === 'object'
+                      ? project.guide.name
+                      : 'Assigned'
+                    : 'Unassigned'}
+                </TableCell>
+                <TableCell className='w-32'>
+                  <div className='flex items-center gap-2'>
+                    <div className='h-1.5 w-16 overflow-hidden rounded-full bg-gray-100 dark:bg-slate-900'>
+                      <div
+                        className='h-full bg-indigo-600 rounded-full'
+                        style={{ width: `${project.progress || 0}%` }}
+                      />
+                    </div>
+                    <span className='font-bold text-[10px] text-gray-500'>
+                      {project.progress || 0}%
+                    </span>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <StatusBadge status={project.status || 'assigned'} />
+                </TableCell>
+                <TableCell align='right'>
+                  <div className='flex justify-end gap-1'>
+                    <IconButton
+                      icon={ExternalLink}
+                      variant='indigo'
+                      title='View Details'
+                      onClick={() => navigate(`/projects/${project.slug || project._id || project.id}`)}
+                    />
+                    <IconButton
+                      icon={Edit}
+                      variant='indigo'
+                      title='Edit Project'
+                      onClick={() => navigate(`/projects/${project._id || project.id}/edit`)}
+                    />
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       )}
+
+      {/* Pagination Controls */}
+      <Pagination
+        page={pagination.page}
+        totalPages={pagination.totalPages}
+        onPageChange={(p) => setFilter('page', p)}
+      />
+
+      {/* Action Modals */}
+      <AssignStudentsModal
+        isOpen={activeModal === 'students'}
+        onClose={() => setActiveModal(null)}
+        project={selectedProjectForModal}
+        onSuccess={refetch}
+      />
+      <AssignGuideModal
+        isOpen={activeModal === 'guide'}
+        onClose={() => setActiveModal(null)}
+        project={selectedProjectForModal}
+        onSuccess={refetch}
+      />
+      <UpdateProgressModal
+        isOpen={activeModal === 'progress'}
+        onClose={() => setActiveModal(null)}
+        project={selectedProjectForModal}
+        onSuccess={refetch}
+      />
+
+      {/* Confirmation Modal for Delete/Archive */}
+      <ConfirmationModal
+        isOpen={confirmDialog.isOpen}
+        onClose={() => setConfirmDialog({ isOpen: false, type: '', project: null })}
+        onConfirm={executeConfirmAction}
+        title={confirmDialog.title}
+        message={confirmDialog.message}
+        isDanger={confirmDialog.isDanger}
+        confirmText={confirmDialog.type === 'delete' ? 'Delete' : 'Archive'}
+      />
     </div>
   );
-});
+};
 
-ProjectList.displayName = 'ProjectList';
 export default ProjectList;

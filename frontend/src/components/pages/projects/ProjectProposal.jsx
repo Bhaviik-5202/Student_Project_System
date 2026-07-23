@@ -1,528 +1,420 @@
-import React, { useState, useCallback, useEffect, useMemo, memo } from 'react';
+/**
+ * ProjectProposal Component
+ * Complete form for submitting new project proposals or editing existing projects.
+ */
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
-import { Search, X, UserCheck, ShieldCheck, ArrowLeft, Plus } from 'lucide-react';
+import {
+  FolderPlus,
+  ChevronLeft,
+  Save,
+  Users,
+} from 'lucide-react';
 import projectService from '../../../services/projectService';
-import api from '../../../utils/api';
+import { useAuth } from '../../../hooks/useAuth';
+import {
+  PageHeader,
+  Card,
+  FormGroup,
+  Input,
+  Select,
+  TextArea,
+  PrimaryButton,
+  SecondaryButton,
+  LoadingState,
+  SectionHeader,
+} from './ui';
 
-const PROJECT_TYPES = [
-  'Web Application',
-  'Mobile Application',
-  'Desktop Application',
-  'AI / Machine Learning',
-  'Data Science',
-  'IoT & Embedded Systems',
-  'Cyber Security',
-  'Cloud Computing',
-  'Blockchain',
-  'Full Stack',
-  'API Development',
-  'Research Project',
-];
-
-const CLASSIFICATIONS = [
-  'Major Project',
-  'Minor Project',
-  'Academic Project',
-  'Research Project',
-  'Industry Project',
-  'Individual',
-  'Group',
-  'Final Year Project',
-  'Internship Project',
-  'UDP',
-  'IDP',
-  'Internal',
-  'External',
-];
-
-const ProjectProposal = memo(() => {
+const ProjectProposal = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const isEditing = Boolean(id);
 
-  const [formData, setFormData] = useState({
-    title: '',
-    type: 'Web Application',
-    classification: 'Major Project',
-    members: [],
-    guide: '',
-    abstract: '',
-    objectives: '',
-    outcomes: '',
-    startDate: '',
-    endDate: '',
-    resources: '',
-    budget: '',
-    progress: 0,
-    document: null,
-  });
-
-  const [availableStudents, setAvailableStudents] = useState([]);
-  const [availableFaculty, setAvailableFaculty] = useState([]);
-  const [studentSearch, setStudentSearch] = useState('');
   const [loading, setLoading] = useState(isEditing);
   const [submitting, setSubmitting] = useState(false);
 
+  // Active student & faculty dropdown options
+  const [activeStudents, setActiveStudents] = useState([]);
+  const [activeFaculty, setActiveFaculty] = useState([]);
+
+  // Form State
+  const [formData, setFormData] = useState({
+    title: '',
+    code: '',
+    department: user?.department || 'Computer Science',
+    projectType: 'Major Project',
+    category: 'Web Development',
+    semester: 'Sem 7',
+    academicYear: '2025-2026',
+    description: '',
+    objectives: '',
+    outcomes: '',
+    technologiesText: '',
+    guide: '',
+    members: [],
+    startDate: '',
+    expectedCompletionDate: '',
+    progress: 0,
+    status: 'assigned',
+    githubUrl: '',
+    demoUrl: '',
+  });
+
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
+    const initData = async () => {
       try {
-        const [studentsRes, facultyRes] = await Promise.allSettled([
-          api.get('/users?role=student&status=active'),
-          api.get('/users?role=faculty&status=active'),
+        const [students, faculty] = await Promise.all([
+          projectService.getActiveStudents(),
+          projectService.getActiveFaculty(),
         ]);
-
-        if (studentsRes.status === 'fulfilled') {
-          const raw = studentsRes.value?.data || studentsRes.value || [];
-          setAvailableStudents(Array.isArray(raw) ? raw : raw.users || []);
-        }
-
-        if (facultyRes.status === 'fulfilled') {
-          const raw = facultyRes.value?.data || facultyRes.value || [];
-          setAvailableFaculty(Array.isArray(raw) ? raw : raw.users || []);
-        }
+        setActiveStudents(students || []);
+        setActiveFaculty(faculty || []);
 
         if (isEditing) {
-          const res = await projectService.getProjectById(id);
-          if (res.success && res.data) {
-            const data = res.data;
+          const project = await projectService.getProjectById(id);
+          if (project) {
             setFormData({
-              title: data.title || '',
-              type: data.type || 'Web Application',
-              classification: data.classification || 'Major Project',
-              members: Array.isArray(data.members)
-                ? data.members.map((m) => (typeof m === 'object' ? m._id || m.id : m))
+              title: project.title || '',
+              code: project.code || '',
+              department: project.department || 'Computer Science',
+              projectType: project.projectType || 'Major Project',
+              category: project.category || 'Web Development',
+              semester: project.semester || 'Sem 7',
+              academicYear: project.academicYear || '2025-2026',
+              description: project.description || '',
+              objectives: project.objectives || '',
+              outcomes: project.outcomes || '',
+              technologiesText: Array.isArray(project.technologies)
+                ? project.technologies.join(', ')
+                : '',
+              guide: project.guide
+                ? typeof project.guide === 'object'
+                  ? project.guide._id || project.guide.id
+                  : project.guide
+                : '',
+              members: Array.isArray(project.members)
+                ? project.members.map((m) => (typeof m === 'object' ? m._id || m.id : m))
                 : [],
-              guide: typeof data.guide === 'object' ? data.guide?._id || data.guide?.id || '' : data.guide || '',
-              abstract: data.abstract || '',
-              objectives: data.objectives || '',
-              outcomes: data.outcomes || '',
-              startDate: data.startDate ? data.startDate.split('T')[0] : '',
-              endDate: data.endDate ? data.endDate.split('T')[0] : '',
-              resources: data.resources || '',
-              budget: data.budget || '',
-              progress: data.progress || 0,
-              document: null,
+              startDate: project.startDate
+                ? new Date(project.startDate).toISOString().split('T')[0]
+                : '',
+              expectedCompletionDate: project.expectedCompletionDate
+                ? new Date(project.expectedCompletionDate).toISOString().split('T')[0]
+                : '',
+              progress: project.progress || 0,
+              status: project.status || 'assigned',
+              githubUrl: project.githubUrl || '',
+              demoUrl: project.demoUrl || '',
             });
           }
         }
-      } catch (error) {
-        console.error('Failed to fetch project data:', error);
+      } catch (err) {
+        console.error('Failed to load project form data', err);
+        toast.error('Error loading form data');
       } finally {
         setLoading(false);
       }
     };
-    fetchData();
+
+    initData();
   }, [id, isEditing]);
 
-  const handleChange = useCallback((e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-  }, []);
+  };
 
-  const handleFileChange = useCallback((e) => {
-    setFormData((prev) => ({ ...prev, document: e.target.files[0] }));
-  }, []);
+  const handleMemberToggle = (studentId) => {
+    setFormData((prev) => {
+      const exists = prev.members.includes(studentId);
+      return {
+        ...prev,
+        members: exists
+          ? prev.members.filter((id) => id !== studentId)
+          : [...prev.members, studentId],
+      };
+    });
+  };
 
-  // Filtered active students for multi-select
-  const filteredStudents = useMemo(() => {
-    const query = studentSearch.toLowerCase().trim();
-    return availableStudents.filter(
-      (s) =>
-        !formData.members.includes(s._id || s.id) &&
-        (s.name?.toLowerCase().includes(query) || s.email?.toLowerCase().includes(query))
-    );
-  }, [availableStudents, formData.members, studentSearch]);
-
-  const addStudentMember = (studentId) => {
-    if (formData.members.length >= 6) {
-      toast.error('Maximum team size is 6 students.');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.title.trim()) {
+      toast.error('Project title is required');
       return;
     }
-    setFormData((prev) => ({
-      ...prev,
-      members: [...prev.members, studentId],
-    }));
-    // Auto-clear search so user can immediately look for another student
-    setStudentSearch('');
-  };
 
-  const removeStudentMember = (studentId) => {
-    setFormData((prev) => ({
-      ...prev,
-      members: prev.members.filter((id) => id !== studentId),
-    }));
-  };
-
-  const today = new Date().toISOString().split('T')[0];
-
-  const handleSubmit = useCallback(
-    async (e) => {
-      e.preventDefault();
-      if (!formData.title.trim()) {
-        toast.error('Project Title is required');
-        return;
-      }
-      if (formData.startDate && formData.startDate < today) {
-        toast.error('Start date cannot be in the past');
-        return;
-      }
-      if (formData.endDate && formData.endDate < today) {
-        toast.error('Completion date cannot be in the past');
-        return;
-      }
-
+    try {
       setSubmitting(true);
-      try {
-        const payload = new FormData();
-        Object.keys(formData).forEach((key) => {
-          if (key === 'members') {
-            formData.members.forEach((mId) => payload.append('members', mId));
-          } else if (key === 'document') {
-            if (formData.document) payload.append('document', formData.document);
-          } else if (formData[key] !== null && formData[key] !== undefined) {
-            payload.append(key, formData[key]);
-          }
-        });
+      const toastId = toast.loading(
+        isEditing ? 'Updating project...' : 'Submitting proposal...'
+      );
 
-        let res;
-        if (isEditing) {
-          res = await projectService.updateProject(id, payload);
-        } else {
-          res = await projectService.createProject(payload);
-        }
+      const technologies = formData.technologiesText
+        .split(',')
+        .map((t) => t.trim())
+        .filter(Boolean);
 
-        if (res.success) {
-          toast.success(
-            isEditing
-              ? 'Project updated successfully!'
-              : 'Project proposal created successfully!'
-          );
-          navigate('/projects');
-        } else {
-          toast.error(res.message || 'Operation failed');
-        }
-      } catch (error) {
-        console.error('Submission error:', error);
-        toast.error('An unexpected error occurred');
-      } finally {
-        setSubmitting(false);
+      const payload = {
+        ...formData,
+        technologies,
+        guide: formData.guide || null,
+        progress: Number(formData.progress) || 0,
+      };
+
+      if (isEditing) {
+        await projectService.updateProject(id, payload);
+        toast.success('Project updated successfully!', { id: toastId });
+      } else {
+        await projectService.createProject(payload);
+        toast.success('Project proposal created successfully!', { id: toastId });
       }
-    },
-    [formData, isEditing, id, navigate]
-  );
+
+      navigate('/projects');
+    } catch (err) {
+      toast.error(err?.response?.data?.message || 'Failed to save project');
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   if (loading) {
-    return (
-      <div className='flex min-h-[50vh] items-center justify-center'>
-        <div className='h-10 w-10 animate-spin rounded-full border-4 border-blue-600 border-t-transparent' />
-      </div>
-    );
+    return <LoadingState message='Loading project form...' />;
   }
 
   return (
-    <div className='min-h-screen space-y-6 p-4 md:p-6 text-gray-700 dark:text-gray-300'>
-      {/* Header */}
-      <div className='flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 pb-5 dark:border-slate-800'>
-        <div className='flex items-center gap-3'>
-          <button
+    <div className='space-y-6 p-4 md:p-6 animate-fade-in'>
+      {/* Page Header */}
+      <PageHeader
+        title={isEditing ? 'Edit Project Specification' : 'Submit Project Proposal'}
+        subtitle={isEditing ? 'Update architecture and parameters' : 'Define initial proposal parameters for governance review'}
+        icon={FolderPlus}
+        actions={
+          <SecondaryButton
+            icon={ChevronLeft}
             onClick={() => navigate('/projects')}
-            className='rounded-xl border border-gray-200 bg-white p-2.5 text-gray-500 shadow-sm transition-all hover:bg-gray-50 dark:border-slate-800 dark:bg-slate-900 dark:text-gray-400 dark:hover:bg-slate-800'
           >
-            <ArrowLeft size={18} />
-          </button>
-          <div>
-            <h1 className='text-2xl font-extrabold text-gray-900 dark:text-white'>
-              {isEditing ? 'Edit Project Proposal' : 'Create Project Proposal'}
-            </h1>
-            <p className='text-xs text-gray-500 dark:text-gray-400'>
-              Formalize academic ventures with dynamic team and faculty assignment
-            </p>
-          </div>
-        </div>
-
-        <button
-          onClick={() => navigate('/projects')}
-          className='rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-600 shadow-sm hover:bg-gray-50 dark:border-slate-800 dark:bg-slate-900 dark:text-gray-300'
-        >
-          Cancel
-        </button>
-      </div>
+            Back to Catalog
+          </SecondaryButton>
+        }
+      />
 
       <form onSubmit={handleSubmit} className='grid grid-cols-1 gap-6 lg:grid-cols-3'>
-        {/* Main Details */}
+        {/* Left Column - Core Info */}
         <div className='space-y-6 lg:col-span-2'>
-          {/* Core Info */}
-          <div className='rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900'>
-            <h3 className='mb-4 text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400'>
-              1. Project Core Details
-            </h3>
-            <div className='space-y-4'>
-              <div>
-                <label className='mb-1.5 block text-xs font-bold text-gray-700 dark:text-gray-300'>
-                  Project Title *
-                </label>
-                <input
+          {/* General Information */}
+          <Card className='space-y-4'>
+            <SectionHeader title='Core Project Details' />
+
+            <FormGroup label='Project Title' required>
+              <Input
+                type='text'
+                name='title'
+                value={formData.title}
+                onChange={handleChange}
+                placeholder='e.g. AI-Powered Autonomous Student Performance Tracker'
+                required
+              />
+            </FormGroup>
+
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+              <FormGroup label='Project Code (Optional Auto-generated)'>
+                <Input
                   type='text'
-                  name='title'
-                  required
-                  value={formData.title}
+                  name='code'
+                  value={formData.code}
                   onChange={handleChange}
-                  placeholder='e.g., AI-Driven Autonomous Health Monitoring System'
-                  className='w-full rounded-xl border border-gray-200 bg-gray-50/50 p-3 text-sm font-medium text-gray-900 transition-colors focus:border-blue-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white'
+                  placeholder='e.g. PRJ-2026-001'
+                  className='uppercase font-semibold'
                 />
-              </div>
+              </FormGroup>
 
-              <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
-                <div>
-                  <label className='mb-1.5 block text-xs font-bold text-gray-700 dark:text-gray-300'>
-                    Project Type *
-                  </label>
-                  <select
-                    name='type'
-                    value={formData.type}
-                    onChange={handleChange}
-                    className='w-full rounded-xl border border-gray-200 bg-gray-50/50 p-3 text-sm font-medium text-gray-900 focus:border-blue-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white'
-                  >
-                    {PROJECT_TYPES.map((t) => (
-                      <option key={t} value={t}>
-                        {t}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className='mb-1.5 block text-xs font-bold text-gray-700 dark:text-gray-300'>
-                    Classification *
-                  </label>
-                  <select
-                    name='classification'
-                    value={formData.classification}
-                    onChange={handleChange}
-                    className='w-full rounded-xl border border-gray-200 bg-gray-50/50 p-3 text-sm font-medium text-gray-900 focus:border-blue-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white'
-                  >
-                    {CLASSIFICATIONS.map((c) => (
-                      <option key={c} value={c}>
-                        {c}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Student Assignment */}
-          <div className='rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900'>
-            <div className='mb-4 flex items-center justify-between'>
-              <h3 className='text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400'>
-                2. Student Team Assignment
-              </h3>
-              <span className='rounded-full bg-blue-50 px-2.5 py-1 text-[11px] font-bold text-blue-600 dark:bg-blue-900/40 dark:text-blue-400'>
-                {formData.members.length} / 6 Assigned
-              </span>
-            </div>
-
-            {/* Selected Students Pills */}
-            <div className='mb-4 flex flex-wrap gap-2'>
-              {formData.members.length === 0 ? (
-                <div className='w-full rounded-xl border border-dashed border-gray-200 bg-gray-50/50 p-4 text-center text-xs text-gray-400 dark:border-slate-800 dark:bg-slate-800/40'>
-                  No students assigned yet. Search and add active students below.
-                </div>
-              ) : (
-                formData.members.map((memId) => {
-                  const student = availableStudents.find((s) => (s._id || s.id) === memId);
-                  return (
-                    <div
-                      key={memId}
-                      className='flex items-center gap-2 rounded-xl border border-blue-200 bg-blue-50/80 py-1.5 pl-3 pr-2 text-xs font-semibold text-blue-700 dark:border-blue-800 dark:bg-blue-950/60 dark:text-blue-300'
-                    >
-                      <UserCheck size={14} />
-                      <span>{student ? student.name : 'Active Student'}</span>
-                      <button
-                        type='button'
-                        onClick={() => removeStudentMember(memId)}
-                        className='rounded-lg p-0.5 hover:bg-blue-200/60 dark:hover:bg-blue-800'
-                      >
-                        <X size={13} />
-                      </button>
-                    </div>
-                  );
-                })
-              )}
-            </div>
-
-            {/* Student Search & Add */}
-            <div className='space-y-2'>
-              <div className='relative'>
-                <Search size={16} className='absolute left-3 top-3 text-gray-400' />
-                <input
-                  type='text'
-                  value={studentSearch}
-                  onChange={(e) => setStudentSearch(e.target.value)}
-                  placeholder='Search active students by name or email...'
-                  className='w-full rounded-xl border border-gray-200 bg-gray-50/50 py-2.5 pl-9 pr-4 text-xs font-medium text-gray-900 focus:border-blue-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white'
-                />
-              </div>
-
-              {studentSearch.trim() && (
-                <div className='max-h-40 overflow-y-auto rounded-xl border border-gray-100 bg-white p-2 shadow-lg dark:border-slate-800 dark:bg-slate-800'>
-                  {filteredStudents.length === 0 ? (
-                    <div className='p-2 text-center text-xs text-gray-400'>
-                      No active students found matching search.
-                    </div>
-                  ) : (
-                    filteredStudents.map((student) => (
-                      <div
-                        key={student._id || student.id}
-                        onClick={() => addStudentMember(student._id || student.id)}
-                        className='flex cursor-pointer items-center justify-between rounded-lg p-2 text-xs transition-colors hover:bg-blue-50 dark:hover:bg-slate-700/50'
-                      >
-                        <div>
-                          <p className='font-bold text-gray-900 dark:text-white'>{student.name}</p>
-                          <p className='text-[10px] text-gray-400'>{student.email}</p>
-                        </div>
-                        <Plus size={14} className='text-blue-600 dark:text-blue-400' />
-                      </div>
-                    ))
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Abstract & Objectives */}
-          <div className='rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900'>
-            <h3 className='mb-4 text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400'>
-              3. Conceptual Abstract & Scope
-            </h3>
-            <div className='space-y-4'>
-              <div>
-                <label className='mb-1.5 block text-xs font-bold text-gray-700 dark:text-gray-300'>
-                  Executive Abstract
-                </label>
-                <textarea
-                  name='abstract'
-                  rows={4}
-                  value={formData.abstract}
+              <FormGroup label='Department'>
+                <Select
+                  name='department'
+                  value={formData.department}
                   onChange={handleChange}
-                  placeholder='Detailed technical summary and goal of the proposed project...'
-                  className='w-full rounded-xl border border-gray-200 bg-gray-50/50 p-3 text-sm font-medium text-gray-900 focus:border-blue-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white'
-                />
-              </div>
+                >
+                  <option value='Computer Science'>Computer Science</option>
+                  <option value='Information Technology'>Information Technology</option>
+                  <option value='Electronics'>Electronics</option>
+                  <option value='Mechanical'>Mechanical</option>
+                  <option value='Civil'>Civil</option>
+                  <option value='Electrical'>Electrical</option>
+                  <option value='AI & DS'>AI & DS</option>
+                </Select>
+              </FormGroup>
+            </div>
 
-              <div>
-                <label className='mb-1.5 block text-xs font-bold text-gray-700 dark:text-gray-300'>
-                  Strategic Objectives
-                </label>
-                <textarea
+            {/* Scope / Description */}
+            <FormGroup label='Abstract / Detailed Description'>
+              <TextArea
+                name='description'
+                value={formData.description}
+                onChange={handleChange}
+                rows={4}
+                placeholder='Describe the problem statement, background, scope, and implementation strategy...'
+              />
+            </FormGroup>
+
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+              <FormGroup label='Objectives'>
+                <TextArea
                   name='objectives'
-                  rows={3}
                   value={formData.objectives}
                   onChange={handleChange}
-                  placeholder='Key milestones and technical deliverables...'
-                  className='w-full rounded-xl border border-gray-200 bg-gray-50/50 p-3 text-sm font-medium text-gray-900 focus:border-blue-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white'
+                  rows={3}
+                  placeholder='Key objectives...'
                 />
-              </div>
+              </FormGroup>
+
+              <FormGroup label='Expected Outcomes'>
+                <TextArea
+                  name='outcomes'
+                  value={formData.outcomes}
+                  onChange={handleChange}
+                  rows={3}
+                  placeholder='Deliverables & results...'
+                />
+              </FormGroup>
             </div>
-          </div>
+
+            <FormGroup label='Technologies (Comma-separated)'>
+              <Input
+                type='text'
+                name='technologiesText'
+                value={formData.technologiesText}
+                onChange={handleChange}
+                placeholder='e.g. React, Node.js, Express, MongoDB, Tailwind, Python'
+              />
+            </FormGroup>
+          </Card>
+
+          {/* Student Team Selection */}
+          <Card className='space-y-4'>
+            <SectionHeader
+              title={`Student Team Members (${formData.members.length} Selected)`}
+              icon={Users}
+            />
+
+            <div className='max-h-48 overflow-y-auto space-y-2 pr-1'>
+              {activeStudents.map((s) => {
+                const sId = s._id || s.id;
+                const isSelected = formData.members.includes(sId);
+                return (
+                  <div
+                    key={sId}
+                    onClick={() => handleMemberToggle(sId)}
+                    className={`flex items-center justify-between p-2.5 rounded-xl border cursor-pointer transition-all ${
+                      isSelected
+                        ? 'border-indigo-500 bg-indigo-50/50 dark:border-indigo-500 dark:bg-indigo-900/20'
+                        : 'border-gray-100 hover:border-gray-200 dark:border-slate-700'
+                    }`}
+                  >
+                    <span className='text-xs font-bold text-gray-900 dark:text-white'>
+                      {s.name} ({s.department || 'Student'})
+                    </span>
+                    <input
+                      type='checkbox'
+                      checked={isSelected}
+                      readOnly
+                      className='accent-indigo-600 h-4 w-4 rounded'
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </Card>
         </div>
 
-        {/* Sidebar Settings */}
+        {/* Right Column - Configurations */}
         <div className='space-y-6'>
-          {/* Faculty Assignment */}
-          <div className='rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900'>
-            <h3 className='mb-4 text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400'>
-              Project Guide (Faculty)
-            </h3>
-            <select
-              name='guide'
-              value={formData.guide}
-              onChange={handleChange}
-              className='w-full rounded-xl border border-gray-200 bg-gray-50/50 p-3 text-sm font-medium text-gray-900 focus:border-blue-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white'
+          <Card className='space-y-4'>
+            <SectionHeader title='Classification & Faculty' />
+
+            <FormGroup label='Faculty Guide'>
+              <Select
+                name='guide'
+                value={formData.guide}
+                onChange={handleChange}
+              >
+                <option value=''>-- Select Faculty Guide --</option>
+                {activeFaculty.map((f) => (
+                  <option key={f._id || f.id} value={f._id || f.id}>
+                    {f.name} ({f.department || 'Faculty'})
+                  </option>
+                ))}
+              </Select>
+            </FormGroup>
+
+            <FormGroup label='Project Type'>
+              <Select
+                name='projectType'
+                value={formData.projectType}
+                onChange={handleChange}
+              >
+                <option value='Major Project'>Major Project</option>
+                <option value='Minor Project'>Minor Project</option>
+                <option value='Research Project'>Research Project</option>
+                <option value='UDP'>UDP</option>
+                <option value='IDP'>IDP</option>
+                <option value='Industry Project'>Industry Project</option>
+              </Select>
+            </FormGroup>
+
+            <FormGroup label='Domain Category'>
+              <Select
+                name='category'
+                value={formData.category}
+                onChange={handleChange}
+              >
+                <option value='Web Development'>Web Development</option>
+                <option value='AI / Machine Learning'>AI / Machine Learning</option>
+                <option value='Cloud Computing'>Cloud Computing</option>
+                <option value='IoT & Embedded Systems'>IoT & Embedded Systems</option>
+                <option value='Cyber Security'>Cyber Security</option>
+                <option value='Mobile Application'>Mobile Application</option>
+                <option value='Data Science'>Data Science</option>
+              </Select>
+            </FormGroup>
+
+            <FormGroup label='Semester & Academic Year'>
+              <div className='grid grid-cols-2 gap-2'>
+                <Select
+                  name='semester'
+                  value={formData.semester}
+                  onChange={handleChange}
+                >
+                  <option value='Sem 5'>Sem 5</option>
+                  <option value='Sem 6'>Sem 6</option>
+                  <option value='Sem 7'>Sem 7</option>
+                  <option value='Sem 8'>Sem 8</option>
+                </Select>
+                <Select
+                  name='academicYear'
+                  value={formData.academicYear}
+                  onChange={handleChange}
+                >
+                  <option value='2025-2026'>2025-2026</option>
+                  <option value='2026-2027'>2026-2027</option>
+                </Select>
+              </div>
+            </FormGroup>
+
+            <PrimaryButton
+              type='submit'
+              disabled={submitting}
+              icon={Save}
+              className='w-full !py-3.5 mt-2'
             >
-              <option value=''>Awaiting Guide Assignment</option>
-              {availableFaculty.map((faculty) => (
-                <option key={faculty._id || faculty.id} value={faculty._id || faculty.id}>
-                  {faculty.name} ({faculty.department || 'Faculty'})
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Timeline & Progress */}
-          <div className='rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900'>
-            <h3 className='mb-4 text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400'>
-              Timeline Schedule
-            </h3>
-            <div className='space-y-4'>
-              <div>
-                <label className='mb-1 block text-xs font-bold text-gray-700 dark:text-gray-300'>
-                  Start Date
-                </label>
-                <input
-                  type='date'
-                  name='startDate'
-                  min={today}
-                  value={formData.startDate}
-                  onChange={handleChange}
-                  className='w-full rounded-xl border border-gray-200 bg-gray-50/50 p-3 text-sm font-medium text-gray-900 focus:border-blue-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white'
-                />
-              </div>
-
-              <div>
-                <label className='mb-1 block text-xs font-bold text-gray-700 dark:text-gray-300'>
-                  Estimated Completion Date
-                </label>
-                <input
-                  type='date'
-                  name='endDate'
-                  min={formData.startDate || today}
-                  value={formData.endDate}
-                  onChange={handleChange}
-                  className='w-full rounded-xl border border-gray-200 bg-gray-50/50 p-3 text-sm font-medium text-gray-900 focus:border-blue-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-white'
-                />
-              </div>
-
-              <div>
-                <div className='mb-1 flex items-center justify-between text-xs font-bold'>
-                  <span>Execution Progress</span>
-                  <span className='text-blue-600 dark:text-blue-400'>{formData.progress}%</span>
-                </div>
-                <input
-                  type='range'
-                  name='progress'
-                  min='0'
-                  max='100'
-                  step='5'
-                  value={formData.progress}
-                  onChange={handleChange}
-                  className='w-full accent-blue-600'
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Submission Button */}
-          <button
-            type='submit'
-            disabled={submitting}
-            className='w-full rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 py-3.5 text-sm font-bold text-white shadow-lg shadow-blue-500/25 transition-all hover:from-blue-700 hover:to-indigo-700 disabled:opacity-50'
-          >
-            {submitting
-              ? 'Saving Proposal...'
-              : isEditing
-              ? 'Update Proposal'
-              : 'Submit Proposal'}
-          </button>
+              {submitting ? 'Saving...' : isEditing ? 'Update Project' : 'Submit Project Proposal'}
+            </PrimaryButton>
+          </Card>
         </div>
       </form>
     </div>
   );
-});
-
-ProjectProposal.displayName = 'ProjectProposal';
+};
 
 export default ProjectProposal;

@@ -66,12 +66,45 @@ const userSchema = new mongoose.Schema(
     department: {
       type: String,
       trim: true,
-      default: '',
+      default: 'Computer Engineering',
     },
     year: {
       type: String,
       trim: true,
+      default: '1',
+    },
+    semester: {
+      type: String,
+      trim: true,
+      default: 'Sem 1',
+    },
+    rollNumber: {
+      type: String,
+      unique: true,
+      sparse: true,
+      trim: true,
+      uppercase: true,
+    },
+    enrollmentNumber: {
+      type: String,
+      trim: true,
       default: '',
+    },
+    facultyId: {
+      type: String,
+      unique: true,
+      sparse: true,
+      trim: true,
+      uppercase: true,
+    },
+    designation: {
+      type: String,
+      trim: true,
+      default: 'Faculty',
+    },
+    joiningDate: {
+      type: Date,
+      default: Date.now,
     },
 
     resetPasswordToken: {

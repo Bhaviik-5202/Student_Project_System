@@ -1,4 +1,6 @@
 import { useCallback, useMemo, useState, memo, useEffect } from 'react';
+import { Sliders } from 'lucide-react';
+import PageHeader from '../../common/PageHeader';
 import { useTheme } from '../../../hooks/useTheme';
 import { useAuth } from '../../../hooks/useAuth';
 import { toast } from 'react-hot-toast';
@@ -505,15 +507,12 @@ const Settings = memo(() => {
   );
 
   return (
-    <div className='animate-fade-in'>
-      <div className='mb-6'>
-        <h2 className='text-2xl font-bold text-slate-900 dark:text-slate-100'>
-          Settings
-        </h2>
-        <p className='text-slate-600 dark:text-slate-300'>
-          Customize your application preferences
-        </p>
-      </div>
+    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+      <PageHeader
+        title='Application Settings'
+        subtitle='Customize your regional settings, notifications, privacy controls, and theme preferences'
+        icon={Sliders}
+      />
 
       <div className='overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900'>
         {/* Settings Tabs */}

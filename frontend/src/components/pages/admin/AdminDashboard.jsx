@@ -2,6 +2,8 @@ import { useState, useEffect, memo, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import analyticsService from '../../../services/analyticsService';
 import { subscribeDataChanged } from '../../../utils/eventBus';
+import PageHeader from '../../common/PageHeader';
+import { ShieldCheck } from 'lucide-react';
 import '../../../assets/styles/admin.css';
 
 // SVG Icon Components (no external dependencies)
@@ -381,30 +383,13 @@ const AdminDashboard = memo(() => {
   }
 
   return (
-    <div className='admin-page'>
-      <div className='admin-container'>
-        <header className='admin-header'>
-          <div>
-            <h1 className='admin-title'>Admin Dashboard</h1>
-            <p className='admin-subtitle'>
-              System overview and management console
-            </p>
-          </div>
-          <div style={{ display: 'flex', gap: '12px' }}>
-            <div
-              className='admin-card'
-              style={{
-                padding: '8px 16px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-              }}
-            >
-              <div className='h-2 w-2 rounded-full bg-emerald-500' />
-              <span className='text-xs font-semibold'>99.8% Uptime</span>
-            </div>
-          </div>
-        </header>
+    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+      <PageHeader
+        title='Admin Dashboard'
+        subtitle='System overview and management console'
+        icon={ShieldCheck}
+        badge='Admin Access'
+      />
 
         <section className='admin-stat-grid'>
           {STATS_CONFIG.map(({ key, icon, label, suffix }) => (
@@ -515,9 +500,8 @@ const AdminDashboard = memo(() => {
           </div>
         </section>
       </div>
-    </div>
-  );
-});
+    );
+  });
 
 AdminDashboard.displayName = 'AdminDashboard';
 

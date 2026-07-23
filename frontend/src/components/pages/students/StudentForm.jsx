@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import {
   User as UserIcon,
+  UserPlus as UserPlusIcon,
   Mail as MailIcon,
   Hash as HashIcon,
   Phone as PhoneIcon,
@@ -13,6 +14,7 @@ import {
   ArrowLeft as BackIcon,
 } from 'lucide-react';
 import studentService from '../../../services/studentService';
+import PageHeader from '../../common/PageHeader';
 
 const StudentForm = memo(() => {
   const { id } = useParams();
@@ -146,35 +148,24 @@ const StudentForm = memo(() => {
   return (
     <div className='mb-20 animate-fade-in space-y-6 p-4 md:p-6'>
       <div className='mx-auto w-full max-w-2xl space-y-6'>
-        {/* Header Card */}
-        <div className='overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900'>
-          <div className='flex flex-col items-start justify-between gap-6 p-6 sm:flex-row sm:items-center md:p-8'>
-            <div className='flex items-center gap-5'>
-              <div className='flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-600 shadow-lg shadow-indigo-100 dark:shadow-none'>
-                <i
-                  className={`fas fa-${isEditing ? 'user-edit' : 'user-plus'} text-2xl text-white`}
-                ></i>
-              </div>
-              <div>
-                <h1 className='text-xl font-bold uppercase tracking-tight text-gray-900 dark:text-white'>
-                  {isEditing ? 'Update Student Profile' : 'Student Directory'}
-                </h1>
-                <p className='mt-1 text-sm font-medium text-gray-500 dark:text-gray-400'>
-                  {isEditing
-                    ? `Modifying record for ${formData.name}`
-                    : 'Create a new student entry in the directory'}
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={() => navigate('/students')}
-              className='rounded-xl p-2.5 text-gray-400 transition-all hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/20'
-              title='Discard changes'
-            >
-              <XIcon size={20} />
-            </button>
-          </div>
-        </div>
+      <PageHeader
+        title={isEditing ? 'Update Student Profile' : 'Student Enrollment'}
+        subtitle={
+          isEditing
+            ? `Modifying record for ${formData.name}`
+            : 'Create a new student entry in the directory'
+        }
+        icon={UserPlusIcon}
+        actions={
+          <button
+            onClick={() => navigate('/students')}
+            className='flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-xs font-bold text-gray-700 shadow-sm hover:bg-gray-50 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-200 transition-all'
+          >
+            <BackIcon size={16} />
+            Back to Directory
+          </button>
+        }
+      />
 
         {/* Form Card */}
         <div className='overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900'>

@@ -1,91 +1,241 @@
 /**
  * Project Repository
- * Handles direct database access and core project lifecycle management for the Project model.
+ * Handles direct MongoDB interactions for Project entity using Mongoose.
  */
 const Project = require('../models/project.model');
 
-/**
- * Find all projects matching a specific filter
- * @param {Object} filter - Mongoose filter object
- * @param {Object} options - Query options (sort, skip, limit, populate, select)
- * @returns {Promise<Array>} List of projects
- */
-exports.findAll = (filter = {}, options = {}) => {
-  let query = Project.find(filter)
-    .sort(options.sort || { createdAt: -1 })
-    .skip(options.skip || 0)
-    .limit(options.limit || 0)
-    .populate(options.populate || '')
-    .select(options.select || '');
+class ProjectRepository {
+  /**
+   * Find project by ID or slug with custom populates
+   */
+  /**
+   * Find project by ID or slug with custom populates
+   */
+  async findByIdOrSlug(idOrSlug, options = {}) {
+    const { populate = true } = options;
+    const strId = String(idOrSlug?._id || idOrSlug?.id || idOrSlug || '').trim();
+    const isObjectId = Boolean(strId && strId.match(/^[0-9a-fA-F]{24}$/));
+    const query = isObjectId ? { _id: strId } : { slug: strId };
 
-  if (options.lean) query = query.lean();
-  return query;
-};
+    let req = Project.findOne(query);
 
-/**
- * Locate a single project by its unique identifier
- * @param {string} id - Project ID
- * @param {Object} options - Query options (populate, select)
- * @returns {Promise<Object|null>} Project document or null
- */
-exports.findById = (id, options = {}) => {
-  let query = Project.findById(id)
-    .populate(options.populate || '')
-    .select(options.select || '');
+    if (populate) {
+      req = req
+        .populate('leader', 'name email avatar studentId department rollNumber role status')
+        .populate('members', 'name email avatar studentId department rollNumber role status')
+        .populate('guide', 'name email avatar designation department role status')
+        .populate('createdBy', 'name email role')
+        .populate('reviews.reviewer', 'name email role designation avatar')
+        .populate('files.uploadedBy', 'name email role')
+        .populate('activityTimeline.performedBy', 'name email role');
+    }
 
-  if (options.lean) query = query.lean();
-  return query;
-};
+    return await req.exec();
+  }
 
-/**
- * Locate a single project by arbitrary criteria
- * @param {Object} filter - Mongoose filter object
- * @param {Object} options - Query options (populate, select)
- * @returns {Promise<Object|null>} Project document or null
- */
-exports.findOne = (filter, options = {}) => {
-  let query = Project.findOne(filter)
-    .populate(options.populate || '')
-    .select(options.select || '');
+  /**
+   * Find project by raw filter condition
+   */
+  async findOne(filter = {}, options = {}) {
+    const { populate = false } = options;
+    let req = Project.findOne(filter);
 
-  if (options.lean) query = query.lean();
-  return query;
-};
+    if (populate) {
+      req = req
+        .populate('leader', 'name email avatar studentId')
+        .populate('members', 'name email avatar studentId')
+        .populate('guide', 'name email avatar designation department');
+    }
 
-/**
- * Persist a new project record to the database
- * @param {Object} data - Project data object
- * @returns {Promise<Object>} Created project document
- */
-exports.create = (data) => Project.create(data);
+    return await req.exec();
+  }
 
-/**
- * Update an existing project record
- * @param {string} id - Project ID
- * @param {Object} data - Attributes to update
- * @returns {Promise<Object|null>} Updated project document
- */
-exports.update = (id, data) => {
-  // Wrap in $set so runValidators only validates provided fields,
-  // preventing spurious "field is required" errors on partial updates
-  // (e.g. assigning only a guide without sending type/title).
-  const updateOp = data.$set || data.$addToSet ? data : { $set: data };
-  return Project.findByIdAndUpdate(id, updateOp, {
-    returnDocument: 'after',
-    runValidators: true,
-  });
-};
+  /**
+   * Find all projects with search, filter, pagination & sorting
+   */
+  async findAll(filter = {}, options = {}) {
+    const {
+      page = 1,
+      limit = 10,
+      sort = { createdAt: -1 },
+      populate = true,
+      lean = true,
+    } = options;
 
-/**
- * Delete a project record from the database
- * @param {string} id - Project ID
- * @returns {Promise<Object|null>} Deleted project document
- */
-exports.remove = (id) => Project.findByIdAndDelete(id);
+    const skip = (Math.max(1, page) - 1) * limit;
 
-/**
- * Count all projects matching a specific filter
- * @param {Object} filter - Mongoose filter object
- * @returns {Promise<number>} Record count
- */
-exports.count = (filter = {}) => Project.countDocuments(filter);
+    let req = Project.find(filter)
+      .sort(sort)
+      .skip(skip)
+      .limit(limit);
+
+    if (populate) {
+      req = req
+        .populate('leader', 'name email avatar studentId department')
+        .populate('members', 'name email avatar studentId department')
+        .populate('guide', 'name email avatar designation department')
+        .populate('createdBy', 'name email role');
+    }
+
+    if (lean) {
+      req = req.lean({ virtuals: true });
+    }
+
+    const [data, total] = await Promise.all([
+      req.exec(),
+      Project.countDocuments(filter),
+    ]);
+
+    data.projects = data;
+    data.pagination = {
+      total,
+      page: Number(page),
+      limit: Number(limit),
+      totalPages: Math.ceil(total / limit) || 1,
+    };
+
+    return data;
+  }
+
+  /**
+   * Create new project document
+   */
+  async create(projectData) {
+    const project = new Project(projectData);
+    await project.save();
+    return await this.findByIdOrSlug(project._id);
+  }
+
+  /**
+   * Update existing project
+   */
+  async update(idOrSlug, updateData = {}) {
+    const strId = String(idOrSlug?._id || idOrSlug?.id || idOrSlug || '').trim();
+    const isObjectId = Boolean(strId && strId.match(/^[0-9a-fA-F]{24}$/));
+    const filter = isObjectId ? { _id: strId } : { slug: strId };
+
+    let updateQuery = { ...updateData };
+    const keys = Object.keys(updateQuery);
+    const hasOperators = keys.some((k) => k.startsWith('$'));
+
+    if (hasOperators) {
+      const setFields = {};
+      const operatorFields = {};
+
+      for (const key of keys) {
+        if (key.startsWith('$')) {
+          operatorFields[key] = updateQuery[key];
+        } else {
+          setFields[key] = updateQuery[key];
+        }
+      }
+
+      updateQuery = { ...operatorFields };
+      if (Object.keys(setFields).length > 0) {
+        updateQuery.$set = { ...(updateQuery.$set || {}), ...setFields };
+      }
+    }
+
+    const project = await Project.findOneAndUpdate(filter, updateQuery, {
+      returnDocument: 'after',
+      runValidators: true,
+    });
+
+    if (!project) return null;
+    return await this.findByIdOrSlug(project._id);
+  }
+
+  /**
+   * Delete project by ID
+   */
+  async delete(idOrSlug) {
+    const strId = String(idOrSlug?._id || idOrSlug?.id || idOrSlug || '').trim();
+    const isObjectId = Boolean(strId && strId.match(/^[0-9a-fA-F]{24}$/));
+    const filter = isObjectId ? { _id: strId } : { slug: strId };
+    return await Project.findOneAndDelete(filter);
+  }
+
+  /**
+   * Count documents matching query
+   */
+  async count(filter = {}) {
+    return await Project.countDocuments(filter);
+  }
+
+  /**
+   * Aggregate stats for metrics dashboard
+   */
+  async getDashboardStats(userFilter = {}) {
+    const [
+      totalProjects,
+      activeProjects,
+      completedProjects,
+      underReviewProjects,
+      draftProjects,
+      archivedProjects,
+      statusBreakdown,
+      departmentBreakdown,
+      categoryBreakdown,
+    ] = await Promise.all([
+      Project.countDocuments({ ...userFilter, isArchived: { $ne: true } }),
+      Project.countDocuments({
+        ...userFilter,
+        isArchived: { $ne: true },
+        status: { $in: ['assigned', 'in_progress'] },
+      }),
+      Project.countDocuments({
+        ...userFilter,
+        isArchived: { $ne: true },
+        status: 'completed',
+      }),
+      Project.countDocuments({
+        ...userFilter,
+        isArchived: { $ne: true },
+        status: 'under_review',
+      }),
+      Project.countDocuments({
+        ...userFilter,
+        isArchived: { $ne: true },
+        status: 'draft',
+      }),
+      Project.countDocuments({ ...userFilter, isArchived: true }),
+
+      // Aggregations
+      Project.aggregate([
+        { $match: { ...userFilter, isArchived: { $ne: true } } },
+        { $group: { _id: '$status', count: { $sum: 1 } } },
+      ]),
+      Project.aggregate([
+        { $match: { ...userFilter, isArchived: { $ne: true } } },
+        { $group: { _id: '$department', count: { $sum: 1 } } },
+      ]),
+      Project.aggregate([
+        { $match: { ...userFilter, isArchived: { $ne: true } } },
+        { $group: { _id: '$category', count: { $sum: 1 } } },
+      ]),
+    ]);
+
+    return {
+      totalProjects,
+      activeProjects,
+      completedProjects,
+      underReviewProjects,
+      draftProjects,
+      archivedProjects,
+      statusBreakdown: statusBreakdown.map((s) => ({
+        status: s._id,
+        count: s.count,
+      })),
+      departmentBreakdown: departmentBreakdown.map((d) => ({
+        department: d._id || 'Unassigned',
+        count: d.count,
+      })),
+      categoryBreakdown: categoryBreakdown.map((c) => ({
+        category: c._id || 'General',
+        count: c.count,
+      })),
+    };
+  }
+}
+
+module.exports = new ProjectRepository();

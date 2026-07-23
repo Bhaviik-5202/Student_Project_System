@@ -1,62 +1,86 @@
-import React, { memo, useMemo, useState, useEffect } from 'react';
+import React, { memo, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FolderKanban, Plus, UserCheck, Users, ExternalLink } from 'lucide-react';
 import api from '../../../utils/api';
+import {
+  PageHeader,
+  Card,
+  StatusBadge,
+  PrimaryButton,
+  SecondaryButton,
+  LoadingState,
+  EmptyState,
+} from './ui';
 
 const GroupCard = memo(({ group }) => {
   const navigate = useNavigate();
 
+  const title = group.name || group.title || 'Untitled Project Group';
+
+  const guideName = group.guide
+    ? typeof group.guide === 'object'
+      ? group.guide.name || group.guide.email || 'Assigned Guide'
+      : group.guide
+    : 'Not Assigned';
+
+  const membersList = Array.isArray(group.members)
+    ? group.members
+        .map((m) => (typeof m === 'object' ? m.name || m.email : m))
+        .filter(Boolean)
+        .join(', ')
+    : 'No team members';
+
   return (
-    <div className='project-card-simple flex flex-col gap-5'>
-      <div className='flex items-start justify-between'>
-        <div className='min-w-0'>
-          <h3 className='mb-1 truncate text-lg font-bold text-gray-900 dark:text-white'>
-            {group.name}
+    <Card className='flex flex-col justify-between space-y-4 !p-5'>
+      <div className='flex items-start justify-between gap-3'>
+        <div className='min-w-0 flex-1'>
+          <h3 className='truncate text-base font-bold text-gray-900 dark:text-white'>
+            {title}
           </h3>
-          <div className='flex items-center gap-2'>
-            <span className='rounded-full bg-indigo-50 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400'>
-              {group.status}
-            </span>
+          <div className='flex items-center gap-2 mt-1.5'>
+            <StatusBadge status={group.status || 'assigned'} />
             <span className='text-[10px] font-bold uppercase text-gray-400'>
               {group.progress || 0}% PROGRESS
             </span>
           </div>
         </div>
-        <button
+        <SecondaryButton
+          size='sm'
+          icon={ExternalLink}
           onClick={() =>
             navigate(
               `/projects/${group.slug || group.projectId || group.id || group._id}`
             )
           }
-          className='project-btn project-btn-primary px-4 py-2 text-xs'
         >
           Details
-        </button>
+        </SecondaryButton>
       </div>
 
-      <div className='space-y-3'>
-        <div className='flex items-center gap-3'>
-          <i className='fas fa-user-tie text-xs text-indigo-500' />
-          <p className='text-sm font-medium text-gray-600 dark:text-gray-400'>
-            <strong>Guide:</strong> {group.guide}
-          </p>
+      <div className='space-y-2 border-t border-gray-100 pt-3 dark:border-slate-700/60 text-xs'>
+        <div className='flex items-center gap-2 text-gray-600 dark:text-gray-300'>
+          <UserCheck size={15} className='text-indigo-500 shrink-0' />
+          <span className='truncate'>
+            <strong className='font-semibold text-gray-800 dark:text-gray-200'>Guide:</strong> {guideName}
+          </span>
         </div>
-        <div className='flex items-center gap-3'>
-          <i className='fas fa-users text-xs text-indigo-500' />
-          <p className='truncate text-sm font-medium text-gray-600 dark:text-gray-400'>
-            <strong>Team:</strong> {group.members.join(', ')}
-          </p>
+        <div className='flex items-center gap-2 text-gray-600 dark:text-gray-300'>
+          <Users size={15} className='text-indigo-500 shrink-0' />
+          <span className='truncate'>
+            <strong className='font-semibold text-gray-800 dark:text-gray-200'>Team:</strong> {membersList}
+          </span>
         </div>
       </div>
 
-      <div className='border-t border-gray-50 pt-4 dark:border-slate-700'>
+      <div className='border-t border-gray-100 pt-3 dark:border-slate-700'>
         <div className='h-1.5 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-slate-900'>
           <div
-            className='h-full bg-indigo-500 transition-all duration-700'
+            className='h-full bg-indigo-500 transition-all duration-700 rounded-full'
             style={{ width: `${group.progress || 0}%` }}
           />
         </div>
       </div>
-    </div>
+    </Card>
   );
 });
 
@@ -83,50 +107,36 @@ const ProjectGroupsList = memo(() => {
   }, []);
 
   return (
-    <div className='project-page animate-fade-in text-gray-600 dark:text-gray-400'>
-      <div className='project-header'>
-        <div>
-          <h2 className='project-title text-gray-900 dark:text-white'>
-            Project Groups
-          </h2>
-          <p className='project-subtitle'>
-            Management for collaborative ventures
-          </p>
-        </div>
-        <button
-          onClick={() => navigate('/projects/new')}
-          className='project-btn project-btn-secondary'
-        >
-          Create Group
-        </button>
-      </div>
+    <div className='space-y-6 p-4 md:p-6 animate-fade-in'>
+      <PageHeader
+        title='Project Groups'
+        subtitle='Management for collaborative ventures'
+        icon={FolderKanban}
+        actions={
+          <PrimaryButton
+            icon={Plus}
+            onClick={() => navigate('/projects/new')}
+          >
+            Create Group
+          </PrimaryButton>
+        }
+      />
 
       {loading ? (
-        <div className='py-20 text-center text-sm italic text-gray-400'>
-          Synchronizing groups...
-        </div>
+        <LoadingState message='Synchronizing groups...' />
       ) : groups.length === 0 ? (
-        <div className='rounded-2xl border border-dashed border-gray-200 bg-gray-50 p-12 text-center dark:border-slate-700 dark:bg-slate-800'>
-          <h3 className='font-bold text-gray-900 dark:text-white'>
-            No Groups Found
-          </h3>
-          <p className='mx-auto mt-1 max-w-[200px] text-xs leading-relaxed text-gray-500'>
-            System is currently clear of any project groups. Initialize a new
-            one to begin.
-          </p>
-        </div>
+        <EmptyState
+          title='No Groups Found'
+          description='System is currently clear of any project groups. Initialize a new one to begin.'
+          icon={FolderKanban}
+          actionText='Create Group'
+          onAction={() => navigate('/projects/new')}
+        />
       ) : (
         <div className='grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3'>
           {groups.map((group) => (
             <GroupCard key={group.id || group._id} group={group} />
           ))}
-          {/* Diagnostic segment - only for troubleshooting */}
-          <div
-            className='pointer-events-none hidden h-0 overflow-hidden opacity-0'
-            id='diagnostic-data'
-          >
-            {JSON.stringify(groups)}
-          </div>
         </div>
       )}
     </div>

@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { UserCog } from 'lucide-react';
+import PageHeader from '../../common/PageHeader';
 import { useAuth } from '../../../hooks/useAuth';
 import authService from '../../../services/authService';
 import { toast } from 'react-hot-toast';
@@ -106,22 +108,12 @@ const ProfileSettings = memo(() => {
     'w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500';
 
   return (
-    <div className='min-h-screen bg-slate-50 dark:bg-slate-900'>
-      <div className='container mx-auto px-4 py-8'>
-        <div className='mb-6'>
-          <button
-            onClick={() => navigate('/profile')}
-            className='mb-4 flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-300 dark:hover:text-blue-200'
-          >
-            ← Back to Profile
-          </button>
-          <h1 className='text-2xl font-bold text-slate-900 dark:text-slate-100'>
-            Edit Profile
-          </h1>
-          <p className='text-slate-600 dark:text-slate-300'>
-            Update your personal information and settings
-          </p>
-        </div>
+    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+      <PageHeader
+        title='Edit Profile'
+        subtitle='Update your personal details, contact info, and authentication credentials'
+        icon={UserCog}
+      />
 
         <div className='max-w-3xl rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800'>
           <form onSubmit={handleSubmit} className='space-y-8'>
@@ -264,9 +256,8 @@ const ProfileSettings = memo(() => {
           </form>
         </div>
       </div>
-    </div>
-  );
-});
+    );
+  });
 
 ProfileSettings.displayName = 'ProfileSettings';
 

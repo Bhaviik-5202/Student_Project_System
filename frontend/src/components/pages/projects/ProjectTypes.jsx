@@ -2,93 +2,93 @@ import React, { memo, useMemo, useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import {
-  Search as SearchIcon,
-  Edit2 as EditIcon,
+  FolderKanban,
+  Plus,
   Trash2 as TrashIcon,
   Calendar as CalendarIcon,
   Users as UsersIcon,
   ChevronRight as ChevronRightIcon,
 } from 'lucide-react';
 import api from '../../../utils/api';
+import {
+  PageHeader,
+  Card,
+  Badge,
+  StatusBadge,
+  SearchInput,
+  PrimaryButton,
+  IconButton,
+  LoadingState,
+  EmptyState,
+  ConfirmationModal,
+} from './ui';
 
 const ProjectArchitectureCard = memo(({ architecture, onEdit, onDelete }) => (
-  <div className='rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md dark:border-slate-700 dark:bg-slate-800'>
-    <div className='mb-4 flex items-start justify-between gap-4'>
-      <div className='flex-1'>
-        <div className='mb-1 flex items-center gap-2'>
-          <h3 className='text-lg font-bold leading-tight text-gray-900 dark:text-white'>
-            {architecture.name}
-          </h3>
-          <span
-            className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${architecture.status === 'Active'
-              ? 'bg-green-50 text-green-700'
-              : 'bg-red-50 text-red-700'
-              }`}
-          >
-            {architecture.status || 'Active'}
-          </span>
+  <Card className='flex flex-col justify-between space-y-4 !p-5'>
+    <div>
+      <div className='mb-3 flex items-start justify-between gap-3'>
+        <div className='flex-1'>
+          <div className='mb-1 flex items-center gap-2'>
+            <h3 className='text-base font-bold leading-tight text-gray-900 dark:text-white'>
+              {architecture.name}
+            </h3>
+            <StatusBadge status={architecture.status || 'Active'} />
+          </div>
+          <Badge variant='indigo' className='!px-2 !py-0.5 mt-1'>
+            {architecture.category || 'General'}
+          </Badge>
         </div>
-        <span className='mb-2 block text-[10px] font-bold uppercase tracking-widest text-indigo-500'>
-          {architecture.category || 'General'}
-        </span>
-        <p className='line-clamp-2 text-sm text-gray-500 dark:text-gray-400'>
-          {architecture.description}
-        </p>
+
+        <IconButton
+          icon={TrashIcon}
+          variant='danger'
+          title='Delete Architecture'
+          onClick={() => onDelete(architecture._id || architecture.id)}
+        />
       </div>
 
-      <div className='flex gap-2'>
+      <p className='line-clamp-2 text-xs text-gray-500 dark:text-gray-400 leading-relaxed'>
+        {architecture.description}
+      </p>
+    </div>
+
+    <div>
+      <div className='grid grid-cols-2 gap-4 border-t border-gray-100 pt-3 dark:border-slate-700'>
+        <div className='flex items-center gap-2'>
+          <CalendarIcon size={14} className='text-gray-400 shrink-0' />
+          <div className='flex flex-col'>
+            <span className='text-[10px] font-bold uppercase tracking-widest text-gray-400'>
+              Timeline
+            </span>
+            <span className='text-xs font-semibold text-gray-700 dark:text-gray-300'>
+              {architecture.duration}
+            </span>
+          </div>
+        </div>
+
+        <div className='flex items-center gap-2'>
+          <UsersIcon size={14} className='text-gray-400 shrink-0' />
+          <div className='flex flex-col'>
+            <span className='text-[10px] font-bold uppercase tracking-widest text-gray-400'>
+              Team Size
+            </span>
+            <span className='text-xs font-semibold text-gray-700 dark:text-gray-300'>
+              {architecture.maxStudents} Students
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div className='mt-4 flex justify-end border-t border-gray-100 pt-3 dark:border-slate-700'>
         <button
           onClick={() => onEdit(architecture._id || architecture.id)}
-          className='rounded-lg p-2 text-gray-400 transition-colors hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-900/30'
-          title='Edit'
+          className='flex items-center gap-1 text-xs font-bold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 transition-all'
         >
-          <EditIcon size={16} />
-        </button>
-        <button
-          onClick={() => onDelete(architecture._id || architecture.id)}
-          className='rounded-lg p-2 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/30'
-          title='Delete'
-        >
-          <TrashIcon size={16} />
+          Manage Configuration <ChevronRightIcon size={14} />
         </button>
       </div>
     </div>
-
-    <div className='grid grid-cols-2 gap-4 border-t border-gray-50 pt-4 dark:border-slate-700'>
-      <div className='flex items-center gap-2'>
-        <CalendarIcon size={14} className='text-gray-400' />
-        <div className='flex flex-col'>
-          <span className='text-[10px] font-bold uppercase tracking-widest text-gray-400'>
-            Timeline
-          </span>
-          <span className='text-xs font-semibold text-gray-700 dark:text-gray-300'>
-            {architecture.duration}
-          </span>
-        </div>
-      </div>
-
-      <div className='flex items-center gap-2'>
-        <UsersIcon size={14} className='text-gray-400' />
-        <div className='flex flex-col'>
-          <span className='text-[10px] font-bold uppercase tracking-widest text-gray-400'>
-            Team Size
-          </span>
-          <span className='text-xs font-semibold text-gray-700 dark:text-gray-300'>
-            {architecture.maxStudents} Students
-          </span>
-        </div>
-      </div>
-    </div>
-
-    <div className='mt-4 flex justify-end border-t border-gray-50 pt-4 dark:border-slate-700'>
-      <button
-        onClick={() => onEdit(architecture._id || architecture.id)}
-        className='flex items-center gap-1 text-xs font-bold text-indigo-600 transition-all hover:text-indigo-700'
-      >
-        Manage Configuration <ChevronRightIcon size={14} />
-      </button>
-    </div>
-  </div>
+  </Card>
 ));
 
 ProjectArchitectureCard.displayName = 'ProjectArchitectureCard';
@@ -99,6 +99,7 @@ const ProjectArchitecturesList = memo(() => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterCategory, setFilterCategory] = useState('All');
+  const [architectureToDelete, setArchitectureToDelete] = useState(null);
 
   const DEFAULT_ARCHITECTURES = [
     { _id: '1', name: 'Web Application', category: 'Software Development', description: 'Full stack responsive web platform architecture using modern frameworks.', duration: '16 Weeks', maxStudents: 4, status: 'Active' },
@@ -161,12 +162,12 @@ const ProjectArchitecturesList = memo(() => {
     [navigate]
   );
 
-  const handleDelete = useCallback(
-    async (id) => {
-      if (!window.confirm('Confirm deletion?')) return;
-      const toastId = toast.loading('Processing...');
+  const confirmDelete = useCallback(
+    async () => {
+      if (!architectureToDelete) return;
+      const toastId = toast.loading('Processing deletion...');
       try {
-        const res = await api.delete(`/projects/types/${id}`);
+        const res = await api.delete(`/projects/types/${architectureToDelete}`);
         if (res.success) {
           toast.success('Architecture deleted', { id: toastId });
           fetchArchitectures();
@@ -175,64 +176,55 @@ const ProjectArchitecturesList = memo(() => {
         }
       } catch (error) {
         toast.error('Error occurred', { id: toastId });
+      } finally {
+        setArchitectureToDelete(null);
       }
     },
-    [fetchArchitectures]
+    [architectureToDelete, fetchArchitectures]
   );
 
   return (
-    <div className='space-y-6 p-4 md:p-6'>
-      <div className='flex items-center justify-between'>
-        <div>
-          <h2 className='flex items-center text-xl font-bold text-gray-900 dark:text-white'>
-            Project Types
-          </h2>
-          <p className='text-sm text-gray-500'>
-            Manage project classification templates
-          </p>
-        </div>
-        <button
-          onClick={() => navigate('/project-types/new')}
-          className='flex items-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-bold text-white shadow-sm transition-colors hover:bg-indigo-700'
-        >
-          <i className='fas fa-plus mr-2'></i> New Definition
-        </button>
-      </div>
+    <div className='space-y-6 p-4 md:p-6 animate-fade-in'>
+      <PageHeader
+        title='Project Types'
+        subtitle='Manage project classification templates & architectures'
+        icon={FolderKanban}
+        actions={
+          <PrimaryButton
+            icon={Plus}
+            onClick={() => navigate('/project-types/new')}
+          >
+            New Definition
+          </PrimaryButton>
+        }
+      />
 
-      <div className='flex flex-col items-center gap-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800 md:flex-row'>
-        <div className='relative flex-1'>
-          <SearchIcon
-            size={16}
-            className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-400'
-          />
-          <input
-            type='text'
-            placeholder='Search definitions...'
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className='w-full rounded-lg border border-transparent bg-gray-50 py-2 pl-10 pr-4 text-sm outline-none transition-all focus:border-indigo-500 dark:bg-slate-900 dark:text-white'
-          />
-        </div>
-        <div className='flex gap-2 overflow-x-auto pb-1 md:pb-0'>
+      <Card className='flex flex-col items-center gap-4 md:flex-row !p-4'>
+        <SearchInput
+          placeholder='Search definitions...'
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className='flex-1 w-full'
+        />
+        <div className='flex gap-2 overflow-x-auto pb-1 md:pb-0 w-full md:w-auto'>
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setFilterCategory(cat)}
-              className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-bold transition-all ${filterCategory === cat
-                ? 'bg-indigo-600 text-white'
-                : 'bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-400'
-                }`}
+              className={`whitespace-nowrap rounded-xl px-3.5 py-2 text-xs font-bold transition-all ${
+                filterCategory === cat
+                  ? 'bg-indigo-600 text-white shadow-sm'
+                  : 'bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-400'
+              }`}
             >
               {cat}
             </button>
           ))}
         </div>
-      </div>
+      </Card>
 
       {loading && architectures.length === 0 ? (
-        <div className='py-20 text-center text-sm italic text-gray-400'>
-          Loading definitions...
-        </div>
+        <LoadingState message='Loading definitions...' />
       ) : (
         <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
           {filteredArchitectures.length > 0 ? (
@@ -241,18 +233,30 @@ const ProjectArchitecturesList = memo(() => {
                 key={arch._id || arch.id}
                 architecture={arch}
                 onEdit={handleEdit}
-                onDelete={handleDelete}
+                onDelete={(id) => setArchitectureToDelete(id)}
               />
             ))
           ) : (
-            <div className='col-span-full rounded-xl border border-dashed border-gray-200 bg-gray-50 py-20 text-center dark:border-slate-700 dark:bg-slate-800'>
-              <p className='text-sm text-gray-400'>
-                No architectures found matching your criteria
-              </p>
+            <div className='col-span-full'>
+              <EmptyState
+                title='No Architectures Found'
+                description='No project architecture definitions match your criteria.'
+                icon={FolderKanban}
+              />
             </div>
           )}
         </div>
       )}
+
+      <ConfirmationModal
+        isOpen={Boolean(architectureToDelete)}
+        onClose={() => setArchitectureToDelete(null)}
+        onConfirm={confirmDelete}
+        title='Delete Project Definition'
+        message='Are you sure you want to delete this project architecture definition?'
+        isDanger
+        confirmText='Delete'
+      />
     </div>
   );
 });

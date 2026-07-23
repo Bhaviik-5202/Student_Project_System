@@ -1,7 +1,12 @@
 import { useState, useCallback, useEffect, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
+import { Shield } from 'lucide-react';
+import PageHeader from '../../common/PageHeader';
 import api from '../../../utils/api';
+
+const formatLabel = (str) =>
+  str ? str.replace(/([A-Z])/g, ' $1').replace(/^./, (s) => s.toUpperCase()) : '';
 
 const PermissionsManager = memo(() => {
   const navigate = useNavigate();
@@ -99,24 +104,20 @@ const PermissionsManager = memo(() => {
   }, [selectedRole]);
 
   return (
-    <div className='min-h-screen bg-slate-50 dark:bg-slate-900'>
-      <div className='container mx-auto px-4 py-8'>
-        <div className='mb-6 flex items-center justify-between'>
-          <div>
-            <h1 className='text-2xl font-bold text-slate-900 dark:text-white'>
-              Permissions Manager
-            </h1>
-            <p className='text-slate-600 dark:text-slate-400'>
-              Manage user roles and permissions
-            </p>
-          </div>
+    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+      <PageHeader
+        title='Permissions Manager'
+        subtitle='Configure role-based access control and system permissions'
+        icon={Shield}
+        actions={
           <button
             onClick={savePermissions}
-            className='rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800'
+            className='rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-md hover:bg-indigo-700 transition-all'
           >
             Save Changes
           </button>
-        </div>
+        }
+      />
 
         <div className='grid grid-cols-1 gap-6 lg:grid-cols-4'>
           {/* Roles List */}
@@ -216,9 +217,7 @@ const PermissionsManager = memo(() => {
                         >
                           <td className='whitespace-nowrap px-6 py-4'>
                             <div className='font-medium text-slate-900 dark:text-white'>
-                              {key
-                                .replace(/([A-Z])/g, ' $1')
-                                .replace(/^./, (str) => str.toUpperCase())}
+                              {formatLabel(key)}
                             </div>
                           </td>
                           <td className='px-6 py-4'>
@@ -283,9 +282,8 @@ const PermissionsManager = memo(() => {
           </div>
         </div>
       </div>
-    </div>
-  );
-});
+    );
+  });
 
 PermissionsManager.displayName = 'PermissionsManager';
 

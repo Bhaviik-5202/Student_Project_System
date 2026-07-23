@@ -1,5 +1,7 @@
 import React, { memo, useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FileText } from 'lucide-react';
+import PageHeader from '../../common/PageHeader';
 import api from '../../../utils/api';
 
 const DEFAULT_CHAPTERS = [
@@ -131,25 +133,12 @@ const UserGuide = memo(() => {
   }, []);
 
   return (
-    <div className='min-h-screen bg-slate-50 dark:bg-slate-900'>
-      <div className='container mx-auto px-4 py-8'>
-        <div className='mb-6'>
-          <button
-            onClick={() => navigate('/help')}
-            className='mb-4 flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300'
-          >
-            ← Back to Help Center
-          </button>
-          <div className='mb-8 text-center'>
-            <h1 className='mb-4 text-3xl font-bold text-slate-900 dark:text-white'>
-              User Guide
-            </h1>
-            <p className='mx-auto max-w-2xl text-slate-600 dark:text-slate-400'>
-              Complete user manual and documentation for the Project Management
-              System
-            </p>
-          </div>
-        </div>
+    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+      <PageHeader
+        title='System User Guide'
+        subtitle='Complete user manual and technical documentation for the Student Project Management System'
+        icon={FileText}
+      />
 
         <div className='grid grid-cols-1 gap-6 lg:grid-cols-4'>
           {/* Chapters Navigation */}
@@ -252,9 +241,8 @@ const UserGuide = memo(() => {
           </div>
         </div>
       </div>
-    </div>
-  );
-});
+    );
+  });
 
 UserGuide.displayName = 'UserGuide';
 

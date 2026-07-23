@@ -24,7 +24,15 @@
   --project-secondary-hover: #334155;
 }
 
-/* Page Layout */
+/* Page Layout & Typography System */
+.project-page,
+.project-card-simple,
+.project-container {
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 .project-page {
   padding: 24px;
   background-color: var(--project-bg-light);
@@ -48,13 +56,15 @@
 
 .project-title {
   font-size: 24px;
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: -0.02em;
   margin: 0;
 }
 
 .project-subtitle {
   color: var(--project-text-muted);
-  font-size: 14px;
+  font-size: 13px;
+  font-weight: 500;
   margin-top: 4px;
 }
 

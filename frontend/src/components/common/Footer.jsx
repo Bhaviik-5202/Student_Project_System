@@ -1,11 +1,11 @@
 import { useMemo, memo } from 'react';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import {
   Github,
   Linkedin,
   Twitter,
   Mail,
-  ArrowRight,
   Heart,
   Cpu,
   ShieldCheck,
@@ -14,27 +14,42 @@ import {
   Phone,
   HelpCircle,
   BookOpen,
-  CheckCircle2,
 } from 'lucide-react';
 
 /**
- * Modern Redesigned Footer Component
- * Features:
- * - Subtle geometric SVG pattern overlay with dark gradient
- * - University & Academic System Branding
- * - Quick Navigation Links & Resources
- * - Campus Contact Details & Operational Status
- * - Dynamic Copyright & Social Icons
+ * Footer Component
+ * variant='full'    → Rich multi-column footer (Dashboard only)
+ * variant='minimal' → Single-line copyright bar (all other pages)
  */
-const Footer = memo(() => {
+const Footer = memo(({ variant = 'minimal' }) => {
   const currentYear = useMemo(() => new Date().getFullYear(), []);
 
+  /* ─── Minimal footer ─────────────────────────────────────────── */
+  if (variant === 'minimal') {
+    return (
+      <footer
+        className='border-t border-slate-200 bg-white py-3 dark:border-slate-800 dark:bg-slate-950'
+        role='contentinfo'
+      >
+        <div className='mx-auto flex max-w-7xl flex-col items-center justify-between gap-1 px-4 sm:flex-row sm:px-6 lg:px-8'>
+          <p className='text-[11px] text-slate-400 dark:text-slate-500'>
+            © {currentYear} Student Project System. All rights reserved.
+          </p>
+          <p className='flex items-center gap-1 text-[11px] text-slate-400 dark:text-slate-500'>
+            Built with <Heart size={10} className='fill-rose-400 text-rose-400' /> for academic excellence
+          </p>
+        </div>
+      </footer>
+    );
+  }
+
+  /* ─── Full footer (dashboard only) ──────────────────────────── */
   return (
     <footer
       className='relative overflow-hidden border-t border-slate-800/80 bg-slate-950 py-16 text-slate-400 select-none'
       role='contentinfo'
     >
-      {/* Background SVG Grid Pattern Overlay with Dark Mask */}
+      {/* Background SVG Grid Pattern */}
       <div className='pointer-events-none absolute inset-0 opacity-15'>
         <svg className='h-full w-full' xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'>
           <defs>
@@ -55,7 +70,7 @@ const Footer = memo(() => {
 
           {/* Brand & Platform Tagline */}
           <div className='md:col-span-4'>
-            <Link to='/' className='group mb-6 flex items-center gap-3 w-fit'>
+            <Link to='/' className='group mb-6 flex w-fit items-center gap-3'>
               <div className='flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-700 shadow-lg shadow-blue-500/20 transition-transform duration-300 group-hover:scale-105'>
                 <ShieldCheck className='h-6 w-6 text-white' />
               </div>
@@ -74,48 +89,29 @@ const Footer = memo(() => {
             </p>
 
             <div className='flex items-center gap-3'>
-              <a
-                href='https://github.com/Bhaviik-5202'
-                target='_blank'
-                rel='noopener noreferrer'
-                className='group flex h-9 w-9 items-center justify-center rounded-lg border border-slate-800 bg-slate-900/80 text-slate-400 transition-all duration-200 hover:border-blue-500 hover:bg-blue-600 hover:text-white'
-                aria-label='GitHub Repository'
-              >
-                <Github size={17} />
-              </a>
-              <a
-                href='https://linkedin.com//in/bhavik-parmar-51baa1303/'
-                target='_blank'
-                rel='noopener noreferrer'
-                className='group flex h-9 w-9 items-center justify-center rounded-lg border border-slate-800 bg-slate-900/80 text-slate-400 transition-all duration-200 hover:border-blue-500 hover:bg-blue-600 hover:text-white'
-                aria-label='LinkedIn Profile'
-              >
-                <Linkedin size={17} />
-              </a>
-              <a
-                href='https://twitter.com'
-                target='_blank'
-                rel='noopener noreferrer'
-                className='group flex h-9 w-9 items-center justify-center rounded-lg border border-slate-800 bg-slate-900/80 text-slate-400 transition-all duration-200 hover:border-blue-500 hover:bg-blue-600 hover:text-white'
-                aria-label='Twitter / X'
-              >
-                <Twitter size={17} />
-              </a>
-              <a
-                href='mailto:[EMAIL_ADDRESS]'
-                target='_blank'
-                rel='noopener noreferrer'
-                className='group flex h-9 w-9 items-center justify-center rounded-lg border border-slate-800 bg-slate-900/80 text-slate-400 transition-all duration-200 hover:border-blue-500 hover:bg-blue-600 hover:text-white'
-                aria-label='Email Support'
-              >
-                <Mail size={17} />
-              </a>
+              {[
+                { href: 'https://github.com/Bhaviik-5202', icon: Github, label: 'GitHub' },
+                { href: 'https://linkedin.com/in/bhavik-parmar-51baa1303/', icon: Linkedin, label: 'LinkedIn' },
+                { href: 'https://twitter.com', icon: Twitter, label: 'Twitter' },
+                { href: 'mailto:er.bhavik5202@gmail.com', icon: Mail, label: 'Email' },
+              ].map(({ href, icon: Icon, label }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  aria-label={label}
+                  className='flex h-9 w-9 items-center justify-center rounded-lg border border-slate-800 bg-slate-900/80 text-slate-400 transition-all duration-200 hover:border-blue-500 hover:bg-blue-600 hover:text-white'
+                >
+                  <Icon size={17} />
+                </a>
+              ))}
             </div>
           </div>
 
           {/* Quick Navigation Links */}
           <div className='md:col-span-3'>
-            <h3 className='mb-5 text-xs font-bold uppercase tracking-wider text-slate-200 flex items-center gap-2'>
+            <h3 className='mb-5 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-200'>
               <BookOpen size={14} className='text-blue-400' /> Navigation & Tools
             </h3>
             <ul className='space-y-3 text-sm'>
@@ -123,7 +119,6 @@ const Footer = memo(() => {
                 { name: 'Overview Dashboard', path: '/dashboard' },
                 { name: 'Project Repository', path: '/projects' },
                 { name: 'Faculty Meetings', path: '/meetings' },
-                { name: 'Academic Calendar', path: '/meetings' },
               ].map((item) => (
                 <li key={item.name}>
                   <Link
@@ -140,7 +135,7 @@ const Footer = memo(() => {
 
           {/* Contact & Support Info */}
           <div className='md:col-span-3'>
-            <h3 className='mb-5 text-xs font-bold uppercase tracking-wider text-slate-200 flex items-center gap-2'>
+            <h3 className='mb-5 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-200'>
               <HelpCircle size={14} className='text-indigo-400' /> Campus & Contact
             </h3>
             <ul className='space-y-3 text-sm'>
@@ -150,7 +145,7 @@ const Footer = memo(() => {
               </li>
               <li className='flex items-center gap-2.5 text-slate-400'>
                 <Mail size={16} className='shrink-0 text-slate-500' />
-                <a href='mailto:[EMAIL_ADDRESS]' className='hover:text-blue-400 transition-colors'>
+                <a href='mailto:er.bhavik5202@gmail.com' className='transition-colors hover:text-blue-400'>
                   er.bhavik5202@gmail.com
                 </a>
               </li>
@@ -172,11 +167,9 @@ const Footer = memo(() => {
                   <span className='block h-2.5 w-2.5 rounded-full bg-emerald-500' />
                   <span className='absolute inset-0 animate-ping rounded-full bg-emerald-500 opacity-75' />
                 </div>
-                <span className='text-xs font-semibold text-emerald-400'>
-                  Operational
-                </span>
+                <span className='text-xs font-semibold text-emerald-400'>Operational</span>
               </div>
-              <p className='text-[11px] text-slate-400 leading-snug mb-3'>
+              <p className='mb-3 text-[11px] leading-snug text-slate-400'>
                 All backend APIs & real-time sync active.
               </p>
               <div className='flex items-center gap-1.5 border-t border-slate-800 pt-2.5 text-[11px] text-slate-500'>
@@ -190,13 +183,12 @@ const Footer = memo(() => {
 
         {/* Bottom Bar / Copyright */}
         <div className='flex flex-col items-center justify-between gap-4 border-t border-slate-900 pt-8 md:flex-row'>
-          <div className='flex items-center gap-2 text-xs text-slate-500'>
-            <span>© {currentYear} Student Project System. All rights reserved.</span>
-          </div>
-
+          <p className='text-xs text-slate-500'>
+            © {currentYear} Student Project System. All rights reserved.
+          </p>
           <div className='flex items-center gap-6 text-xs text-slate-500'>
             <span className='flex items-center gap-1'>
-              Built with <Heart size={12} className='text-rose-500 fill-rose-500' /> for academic excellence
+              Built with <Heart size={12} className='fill-rose-500 text-rose-500' /> for academic excellence
             </span>
             <div className='flex items-center gap-1 text-slate-600'>
               <Globe size={13} />
@@ -210,5 +202,9 @@ const Footer = memo(() => {
 });
 
 Footer.displayName = 'Footer';
+
+Footer.propTypes = {
+  variant: PropTypes.oneOf(['full', 'minimal']),
+};
 
 export default Footer;

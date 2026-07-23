@@ -64,7 +64,7 @@ exports.deleteReport = async (id) => {
 exports.updateReport = async (id, updateData) => {
   try {
     const report = await Report.findByIdAndUpdate(id, updateData, {
-      new: true,
+      returnDocument: 'after',
     });
     if (!report) throw new Error('Report not found');
     return response(false, report, 'Report updated successfully');

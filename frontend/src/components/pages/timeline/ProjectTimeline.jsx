@@ -1,5 +1,7 @@
 import { useCallback, useState, useEffect, useMemo, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Clock, Plus } from 'lucide-react';
+import PageHeader from '../../common/PageHeader';
 import timelineService from '../../../services/timelineService';
 import { useAuth } from '../../../hooks/useAuth';
 
@@ -58,25 +60,24 @@ const ProjectTimeline = memo(() => {
 
   return (
     <div className='project-page animate-fade-in text-gray-600 dark:text-gray-400'>
-      <div className='project-header'>
-        <div>
-          <h1 className='project-title text-gray-900 dark:text-white'>
-            Project Timelines
-          </h1>
-          <p className='project-subtitle'>
-            Orchestration of active academic ventures
-          </p>
-        </div>
-        {user?.role !== 'student' && (
-          <button
-            onClick={() => navigate('/projects/new')}
-            className='project-btn project-btn-primary'
-          >
-            New Project
-          </button>
-        )}
-      </div>
-
+      <PageHeader
+        title='Project Timelines'
+        subtitle='Orchestration of active academic ventures and milestone schedules'
+        icon={Clock}
+        badge={`${projects.length} Active Timelines`}
+        actions={
+          user?.role !== 'student' && (
+            <button
+              onClick={() => navigate('/projects/new')}
+              className='flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-100 hover:bg-indigo-700 transition-all dark:shadow-none'
+            >
+              <Plus size={16} />
+              New Project
+            </button>
+          )
+        }
+      />
+      <br />
       {loading ? (
         <div className='p-20 text-center text-sm italic text-gray-400'>
           Synchronizing roadmap...

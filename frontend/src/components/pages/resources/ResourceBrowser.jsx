@@ -1,7 +1,9 @@
 // src/components/pages/resources/ResourceBrowser.jsx
 import { useState, useMemo, useCallback, useEffect, memo } from 'react';
-import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
+import { Folder, Plus } from 'lucide-react';
+import PageHeader from '../../common/PageHeader';
 import resourceService from '../../../services/resourceService';
 
 const ResourceCard = memo(({ resource, icon }) => {
@@ -187,18 +189,22 @@ const ResourceBrowser = memo(() => {
   }, []);
 
   return (
-    <div className='p-6'>
-      <div className='mb-6 flex items-center justify-between'>
-        <h1 className='text-2xl font-bold text-slate-800 dark:text-white'>
-          Resource Browser
-        </h1>
-        <button
-          onClick={() => navigate('/resource-upload')}
-          className='flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2 text-white hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 dark:focus:ring-blue-400'
-        >
-          <i className='fas fa-plus' /> Upload Resource
-        </button>
-      </div>
+    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+      <PageHeader
+        title='Resource Browser'
+        subtitle='Browse and download project documentation, templates, and guides'
+        icon={Folder}
+        badge={`${filteredResources.length} Items`}
+        actions={
+          <button
+            onClick={() => navigate('/resource-upload')}
+            className='flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-100 hover:bg-indigo-700 transition-all dark:shadow-none'
+          >
+            <Plus size={16} />
+            Upload Resource
+          </button>
+        }
+      />
 
       <div className='mb-6'>
         <h3 className='mb-3 text-lg font-semibold text-slate-800 dark:text-white'>
@@ -264,7 +270,7 @@ const ResourceBrowser = memo(() => {
       </div>
     </div>
   );
-});
+  });
 
 ResourceBrowser.displayName = 'ResourceBrowser';
 

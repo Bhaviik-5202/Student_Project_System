@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo, memo } from 'react';
+import { BarChart } from 'lucide-react';
+import PageHeader from '../../common/PageHeader';
 import timelineService from '../../../services/timelineService';
 
 const GanttChart = memo(() => {
@@ -92,38 +94,13 @@ const GanttChart = memo(() => {
   };
 
   return (
-    <div className='min-h-screen bg-slate-50 font-sans dark:bg-slate-900'>
-      <div className='container mx-auto max-w-7xl px-4 py-8'>
-        <div className='animate-in fade-in slide-in-from-top-4 mb-10 flex flex-col items-start justify-between gap-6 duration-700 md:flex-row md:items-center'>
-          <div>
-            <div className='mb-2 flex items-center gap-3'>
-              <div className='flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-600 shadow-lg shadow-indigo-200 dark:shadow-none'>
-                <svg
-                  className='h-4 w-4 text-white'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                  stroke='currentColor'
-                >
-                  <path
-                    strokeLinecap='round'
-                    strokeLinejoin='round'
-                    strokeWidth={2}
-                    d='M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'
-                  />
-                </svg>
-              </div>
-              <h1 className='text-3xl font-black uppercase italic tracking-tighter text-slate-900 dark:text-white'>
-                Strategic Scheduler
-              </h1>
-            </div>
-            <p className='pl-11 text-sm font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400'>
-              Visualize professional project trajectories
-            </p>
-          </div>
-          <button className='rounded-xl bg-gray-900 px-6 py-3 text-[10px] font-black uppercase leading-none tracking-[0.2em] text-white shadow-xl transition-all hover:scale-105 hover:bg-black active:scale-95 dark:bg-indigo-600 dark:hover:bg-indigo-700'>
-            Add New Venture
-          </button>
-        </div>
+    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+      <PageHeader
+        title='Gantt Chart View'
+        subtitle='Visual milestone tracking and project timeline schedule'
+        icon={BarChart}
+        badge={`${timelines.length} Projects Tracked`}
+      />
 
         {/* Gantt Visualization */}
         <div className='animate-in fade-in zoom-in mb-12 overflow-hidden rounded-[2.5rem] border border-gray-100 bg-white shadow-sm duration-1000 dark:border-slate-700 dark:bg-slate-800'>
@@ -318,9 +295,8 @@ const GanttChart = memo(() => {
           </div>
         </div>
       </div>
-    </div>
-  );
-});
+    );
+  });
 
 GanttChart.displayName = 'GanttChart';
 

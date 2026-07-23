@@ -1,6 +1,8 @@
 import { memo, useMemo, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
+import { FileText, Upload } from 'lucide-react';
+import PageHeader from '../../common/PageHeader';
 import resourceService from '../../../services/resourceService';
 
 const DocumentRow = memo(({ doc }) => {
@@ -90,65 +92,61 @@ const DocumentLibrary = memo(() => {
   }, []);
 
   return (
-    <div className='min-h-screen bg-slate-50 dark:bg-slate-900'>
-      <div className='container mx-auto px-4 py-8'>
-        <div className='mb-6 flex items-center justify-between'>
-          <div>
-            <h1 className='text-2xl font-bold text-slate-900 dark:text-white'>
-              Document Library
-            </h1>
-            <p className='text-slate-600 dark:text-slate-400'>
-              Access and manage all shared documents
-            </p>
-          </div>
+    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+      <PageHeader
+        title='Document Library'
+        subtitle='Access and manage all shared project documents'
+        icon={FileText}
+        badge={`${documents.length} Documents`}
+        actions={
           <button
             onClick={() => navigate('/resource-upload')}
-            className='rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-2 text-white hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 dark:focus:ring-blue-400'
+            className='flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-100 hover:bg-indigo-700 transition-all dark:shadow-none'
           >
+            <Upload size={16} />
             Upload Document
           </button>
-        </div>
-        ...
-        <div className='overflow-hidden rounded-lg border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800'>
-          <div className='overflow-x-auto'>
-            {loading ? (
-              <div className='p-8 text-center text-slate-500 dark:text-slate-400'>
-                Loading documents...
-              </div>
-            ) : error ? (
-              <div className='p-8 text-center text-red-500'>{error}</div>
-            ) : (
-              <table className='min-w-full divide-y divide-slate-200 dark:divide-slate-700'>
-                <thead className='bg-slate-50 dark:bg-slate-700'>
-                  <tr>
-                    <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-300'>
-                      Document Title
-                    </th>
-                    <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-300'>
-                      Category
-                    </th>
-                    <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-300'>
-                      Uploaded By
-                    </th>
-                    <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-300'>
-                      Date
-                    </th>
-                    <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-300'>
-                      Size
-                    </th>
-                    <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-300'>
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className='divide-y divide-slate-200 bg-white dark:divide-slate-700 dark:bg-slate-800'>
-                  {documents.map((doc) => (
-                    <DocumentRow key={doc.id || doc._id} doc={doc} />
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </div>
+        }
+      />
+      <div className='overflow-hidden rounded-lg border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800'>
+        <div className='overflow-x-auto'>
+          {loading ? (
+            <div className='p-8 text-center text-slate-500 dark:text-slate-400'>
+              Loading documents...
+            </div>
+          ) : error ? (
+            <div className='p-8 text-center text-red-500'>{error}</div>
+          ) : (
+            <table className='min-w-full divide-y divide-slate-200 dark:divide-slate-700'>
+              <thead className='bg-slate-50 dark:bg-slate-700'>
+                <tr>
+                  <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-300'>
+                    Document Title
+                  </th>
+                  <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-300'>
+                    Category
+                  </th>
+                  <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-300'>
+                    Uploaded By
+                  </th>
+                  <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-300'>
+                    Date
+                  </th>
+                  <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-300'>
+                    Size
+                  </th>
+                  <th className='px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-300'>
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className='divide-y divide-slate-200 bg-white dark:divide-slate-700 dark:bg-slate-800'>
+                {documents.map((doc) => (
+                  <DocumentRow key={doc.id || doc._id} doc={doc} />
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </div>
