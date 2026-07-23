@@ -14,10 +14,11 @@ before(async function () {
   this.timeout(20000);
 
   const user = {
-    name: 'Test User',
+    name: 'Resource User',
     email: `testuser+resource+${Date.now()}@example.com`,
     password: 'testpass123',
-    role: 'faculty',
+    role: 'admin',
+    bypassOTP: true,
   };
 
   // Register

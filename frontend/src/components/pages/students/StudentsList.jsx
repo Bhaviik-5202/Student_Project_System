@@ -2,13 +2,10 @@ import React, { memo, useEffect, useState, useMemo, useCallback } from 'react';
 import { useAuth } from '../../../hooks/useAuth';
 import {
   User as UserIcon,
-  UserPlus as UserPlusIcon,
   Search as SearchIcon,
   Mail as MailIcon,
   Edit2 as EditIcon,
   Trash2 as TrashIcon,
-  XCircle as XCircleIcon,
-  Users as UsersIcon,
   Calendar as CalendarIcon,
   Building as DeptIcon,
 } from 'lucide-react';
@@ -16,89 +13,107 @@ import { useNavigate, Outlet } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import studentService from '../../../services/studentService';
 
-const StudentRow = memo(
-  ({ student, onEdit, onDelete, onAttendance, userRole }) => (
-    <tr className='group transition-colors hover:bg-gray-50 dark:hover:bg-slate-900/50'>
-      <td className='whitespace-nowrap px-4 py-4'>
-        <div className='font-mono text-[10px] font-bold text-gray-400 dark:text-slate-500'>
-          #{(student.id || '').toString().slice(-6).toUpperCase()}
+const StudentRow = memo(({ student, onEdit, onDelete, userRole }) => (
+  <tr className='group transition-colors hover:bg-gray-50 dark:hover:bg-slate-900/50'>
+    {/* Roll Number */}
+    <td className='whitespace-nowrap px-4 py-4'>
+      <div className='font-mono text-xs font-bold text-indigo-600 dark:text-indigo-400'>
+        {student.rollNumber || <span className='text-gray-400 italic'>—</span>}
+      </div>
+      {student.enrollmentNumber && (
+        <div className='font-mono text-[10px] text-gray-400 dark:text-slate-500'>
+          {student.enrollmentNumber}
         </div>
-      </td>
-      <td className='whitespace-nowrap px-4 py-4'>
-        <div className='flex items-center'>
-          <div className='flex h-9 w-9 items-center justify-center rounded-xl border border-indigo-100 bg-gradient-to-br from-indigo-50 to-indigo-100/50 text-indigo-600 dark:border-indigo-800 dark:from-indigo-900/30 dark:to-indigo-800/20 dark:text-indigo-400'>
-            <UserIcon size={18} />
+      )}
+    </td>
+
+    {/* Full Name */}
+    <td className='whitespace-nowrap px-4 py-4'>
+      <div className='flex items-center gap-3'>
+        <div className='flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl border border-indigo-100 bg-gradient-to-br from-indigo-50 to-indigo-100/50 text-indigo-600 dark:border-indigo-800 dark:from-indigo-900/30 dark:to-indigo-800/20 dark:text-indigo-400'>
+          <UserIcon size={16} />
+        </div>
+        <div>
+          <div className='text-sm font-bold text-gray-900 transition-colors group-hover:text-indigo-600 dark:text-white'>
+            {student.name}
           </div>
-          <div className='ml-3'>
-            <div className='text-sm font-bold text-gray-900 transition-colors group-hover:text-indigo-600 dark:text-white'>
-              {student.name}
-            </div>
-            <div className='flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400'>
-              <MailIcon size={10} className='text-gray-400' />
-              {student.email}
-            </div>
+          <div className='flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400'>
+            <MailIcon size={10} className='text-gray-400' />
+            {student.email}
           </div>
         </div>
-      </td>
-      <td className='whitespace-nowrap px-4 py-4'>
-        <div className='flex flex-col'>
-          <span className='text-sm font-semibold text-gray-700 dark:text-gray-300'>
-            {student.department}
+      </div>
+    </td>
+
+    {/* Department */}
+    <td className='whitespace-nowrap px-4 py-4'>
+      <div className='flex items-center gap-1.5'>
+        <DeptIcon size={14} className='text-gray-400' />
+        <span className='text-sm font-semibold text-gray-700 dark:text-gray-300'>
+          {student.department || <span className='italic text-gray-400'>—</span>}
+        </span>
+      </div>
+    </td>
+
+    {/* Semester / Year */}
+    <td className='whitespace-nowrap px-4 py-4'>
+      <div className='flex flex-col gap-0.5'>
+        {student.semester && (
+          <span className='text-xs font-medium text-gray-700 dark:text-gray-300'>
+            Sem {student.semester}
           </span>
-          <span className='text-[10px] font-bold uppercase tracking-widest text-gray-400'>
-            {student.rollNumber}
-          </span>
-        </div>
-      </td>
-      <td className='whitespace-nowrap px-4 py-4'>
-        <div className='flex items-center gap-2'>
-          <CalendarIcon size={14} className='text-gray-400' />
-          <span className='text-sm font-medium text-gray-600 dark:text-gray-400'>
+        )}
+        {student.year && (
+          <span className='text-[10px] font-bold uppercase tracking-wide text-gray-400'>
             Year {student.year}
           </span>
-        </div>
-      </td>
-      <td className='whitespace-nowrap px-4 py-4'>
-        <span
-          className={`table-status ${student.status === 'Active' ? 'status-active' : 'status-error'}`}
-        >
-          {student.status || 'Active'}
-        </span>
-      </td>
-      <td className='whitespace-nowrap px-4 py-4 text-right text-sm'>
-        {userRole !== 'faculty' && (
-          <div className='flex justify-end gap-2 opacity-0 transition-opacity group-hover:opacity-100'>
-            <button
-              onClick={() => onAttendance(student.id)}
-              className='rounded-xl p-2 text-blue-600 transition-all hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/30'
-              title='View Attendance'
-            >
-              <CalendarIcon size={16} />
-            </button>
-            {userRole !== 'faculty' && (
-              <>
-                <button
-                  onClick={() => onEdit(student.id)}
-                  className='rounded-xl p-2 text-indigo-600 transition-all hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-900/30'
-                  title='Update Profile'
-                >
-                  <EditIcon size={16} />
-                </button>
-                <button
-                  onClick={() => onDelete(student.id)}
-                  className='rounded-xl p-2 text-red-600 transition-all hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30'
-                  title='Remove Record'
-                >
-                  <TrashIcon size={16} />
-                </button>
-              </>
-            )}
-          </div>
         )}
-      </td>
-    </tr>
-  )
-);
+      </div>
+    </td>
+
+    {/* Contact */}
+    <td className='whitespace-nowrap px-4 py-4'>
+      <span className='text-xs text-gray-600 dark:text-gray-400'>
+        {student.phone && student.phone !== 'N/A' ? student.phone : <span className='italic text-gray-400'>—</span>}
+      </span>
+    </td>
+
+    {/* Status */}
+    <td className='whitespace-nowrap px-4 py-4'>
+      <span
+        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
+          student.status === 'Active'
+            ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
+            : 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+        }`}
+      >
+        {student.status || 'Active'}
+      </span>
+    </td>
+
+    {/* Actions — Edit + Delete only */}
+    <td className='whitespace-nowrap px-4 py-4 text-right text-sm'>
+      {userRole !== 'faculty' && (
+        <div className='flex justify-end gap-1.5 opacity-0 transition-opacity group-hover:opacity-100'>
+          <button
+            onClick={() => onEdit(student.id)}
+            className='rounded-xl p-2 text-indigo-600 transition-all hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-900/30'
+            title='Edit Student'
+          >
+            <EditIcon size={15} />
+          </button>
+          <button
+            onClick={() => onDelete(student.id)}
+            className='rounded-xl p-2 text-red-600 transition-all hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30'
+            title='Delete Student'
+          >
+            <TrashIcon size={15} />
+          </button>
+        </div>
+      )}
+    </td>
+  </tr>
+));
 
 const StudentsList = memo(() => {
   const { user } = useAuth();
@@ -140,11 +155,13 @@ const StudentsList = memo(() => {
             (res.data || []).map((student) => ({
               id: student._id || student.id,
               name: student.name,
-              rollNumber: student.rollNumber,
+              rollNumber: student.rollNumber || student.studentId || '',
+              enrollmentNumber: student.enrollmentNumber || '',
               department: student.department,
+              semester: student.semester || '',
               year: student.year,
               email: student.email,
-              phone: student.phone || 'N/A',
+              phone: student.phone || '',
               status: student.status || 'Active',
             }))
           );
@@ -163,13 +180,6 @@ const StudentsList = memo(() => {
   const handleEdit = useCallback(
     (id) => {
       navigate(`/students/${id}/edit`);
-    },
-    [navigate]
-  );
-
-  const handleAttendance = useCallback(
-    (id) => {
-      navigate(`/attendance/${id}`);
     },
     [navigate]
   );
@@ -199,21 +209,12 @@ const StudentsList = memo(() => {
       <div className='flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center'>
         <div>
           <h1 className='text-xl font-bold uppercase tracking-tight text-gray-900 dark:text-white'>
-            Student Enrollment Centre
+            Student Directory
           </h1>
           <p className='mt-1 text-sm text-gray-500 dark:text-gray-400'>
-            Manage and track academic records
+            Manage active student profiles and academic records
           </p>
         </div>
-        {user?.role !== 'faculty' && (
-          <button
-            onClick={() => navigate('/students/new')}
-            className='flex items-center gap-2 rounded-lg bg-indigo-600 px-6 py-2.5 text-xs font-bold uppercase tracking-widest text-white shadow-sm transition-colors hover:bg-indigo-700'
-          >
-            <i className='fas fa-user-plus text-sm'></i>
-            Registration Enrollment
-          </button>
-        )}
       </div>
 
       {/* Basic Filter Toolbar */}
@@ -291,23 +292,26 @@ const StudentsList = memo(() => {
         <table className='table'>
           <thead>
             <tr className='bg-gray-50/50 dark:bg-slate-900/50'>
-              <th className='w-24 px-6 py-4 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400'>
-                ID
+              <th className='px-6 py-4 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400'>
+                Roll No.
               </th>
               <th className='px-6 py-4 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400'>
-                Student Info
+                Full Name
               </th>
               <th className='px-6 py-4 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400'>
-                Record Details
+                Department
               </th>
               <th className='px-6 py-4 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400'>
-                Academic
+                Semester
+              </th>
+              <th className='px-6 py-4 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400'>
+                Contact
               </th>
               <th className='px-6 py-4 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400'>
                 Status
               </th>
               <th className='px-6 py-4 text-right text-[10px] font-bold uppercase tracking-widest text-gray-400'>
-                Management
+                Actions
               </th>
             </tr>
           </thead>
@@ -319,14 +323,13 @@ const StudentsList = memo(() => {
                   student={student}
                   onEdit={handleEdit}
                   onDelete={handleDelete}
-                  onAttendance={handleAttendance}
                   userRole={user?.role}
                 />
               ))
             ) : (
               <tr>
                 <td
-                  colSpan='6'
+                  colSpan='7'
                   className='py-20 text-center font-medium italic text-gray-400'
                 >
                   {loading ? (

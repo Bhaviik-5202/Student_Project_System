@@ -1,10 +1,19 @@
 import api from '../utils/api';
 
 const reportService = {
+  getReportsAnalytics: async () => {
+    try {
+      return await api.get('/analytics/reports');
+    } catch (error) {
+      console.error('Fetch reports analytics failed', error);
+      return { success: false, message: 'Failed to fetch report analytics' };
+    }
+  },
+
   getProjectStatusReport: async (params = {}) => {
     try {
       const response = await api.get('/analytics/dashboard', { params });
-      return response; // api.js already returns response.data
+      return response;
     } catch (error) {
       console.error('Fetch report data failed', error);
       throw error;

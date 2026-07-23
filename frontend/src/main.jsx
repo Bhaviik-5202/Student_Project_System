@@ -100,24 +100,32 @@ ReactDOM.createRoot(rootElement).render(
           <App />
           <Toaster
             position='top-right'
+            containerStyle={{
+              top: 24,
+              right: 24,
+              zIndex: 9999,
+            }}
             toastOptions={{
               duration: 4000,
               style: {
-                background: '#363636',
-                color: '#fff',
+                background: '#0f172a',
+                color: '#f8fafc',
+                border: '1px solid rgba(51, 65, 85, 0.5)',
+                borderRadius: '0.75rem',
+                boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5)',
               },
               success: {
-                duration: 3000,
+                duration: 4000,
                 iconTheme: {
                   primary: '#10b981',
-                  secondary: '#fff',
+                  secondary: '#0f172a',
                 },
               },
               error: {
                 duration: 5000,
                 iconTheme: {
-                  primary: '#ef4444',
-                  secondary: '#fff',
+                  primary: '#f43f5e',
+                  secondary: '#0f172a',
                 },
               },
             }}

@@ -85,7 +85,7 @@ exports.createUser = async (req, res) => {
  */
 exports.getAllUsers = async (req, res) => {
   try {
-    const result = await userService.getAll();
+    const result = await userService.getAll(req.query);
 
     sendResponse(
       res,

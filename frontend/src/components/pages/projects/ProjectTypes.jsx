@@ -101,14 +101,30 @@ const ProjectArchitecturesList = memo(() => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterCategory, setFilterCategory] = useState('All');
 
+  const DEFAULT_ARCHITECTURES = [
+    { _id: '1', name: 'Web Application', category: 'Software Development', description: 'Full stack responsive web platform architecture using modern frameworks.', duration: '16 Weeks', maxStudents: 4, status: 'Active' },
+    { _id: '2', name: 'Mobile Application', category: 'Software Development', description: 'Native and cross-platform mobile apps for iOS and Android devices.', duration: '14 Weeks', maxStudents: 3, status: 'Active' },
+    { _id: '3', name: 'AI / Machine Learning', category: 'Data Science', description: 'Deep learning models, predictive analysis, and intelligent automation systems.', duration: '20 Weeks', maxStudents: 2, status: 'Active' },
+    { _id: '4', name: 'Cyber Security', category: 'Security & Networks', description: 'Vulnerability assessment, penetration testing, and security auditing framework.', duration: '12 Weeks', maxStudents: 3, status: 'Active' },
+    { _id: '5', name: 'Cloud & DevOps', category: 'Infrastructure', description: 'Microservices architecture, CI/CD pipelines, and cloud containerization.', duration: '16 Weeks', maxStudents: 4, status: 'Active' },
+    { _id: '6', name: 'IoT & Embedded Systems', category: 'Hardware & Systems', description: 'Smart hardware integration, microcontrollers, and sensor telemetry.', duration: '18 Weeks', maxStudents: 4, status: 'Active' },
+  ];
+
   const fetchArchitectures = useCallback(async () => {
     try {
       setLoading(true);
       const response = await api.get('/projects/types');
-      const data = response.data || response || [];
-      setArchitectures(Array.isArray(data) ? data : []);
+      const rawData = response?.data || response;
+      const typesList = Array.isArray(rawData)
+        ? rawData
+        : Array.isArray(rawData?.data)
+        ? rawData.data
+        : [];
+
+      setArchitectures(typesList.length > 0 ? typesList : DEFAULT_ARCHITECTURES);
     } catch (error) {
-      toast.error('Failed to load architectures');
+      console.warn('Could not fetch project types API, using standard templates:', error);
+      setArchitectures(DEFAULT_ARCHITECTURES);
     } finally {
       setLoading(false);
     }

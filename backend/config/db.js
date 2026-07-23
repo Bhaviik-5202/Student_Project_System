@@ -58,8 +58,20 @@ const connectDB = async () => {
 
     await mongoose.connect(mongoUri, {
       autoIndex: true,
-      serverSelectionTimeoutMS: process.env.NODE_ENV === 'test' ? 30000 : 5000,
+      maxPoolSize: 50,
+      minPoolSize: 5,
+      socketTimeoutMS: 45000,
+      serverSelectionTimeoutMS: process.env.NODE_ENV === 'test' ? 30000 : 10000,
       connectTimeoutMS: process.env.NODE_ENV === 'test' ? 30000 : 10000,
+      family: 4,
+    });
+
+    mongoose.connection.on('disconnected', () => {
+      logger.warn('MongoDB connection lost. Mongoose will attempt to reconnect...');
+    });
+
+    mongoose.connection.on('error', (err) => {
+      logger.error('MongoDB connection error', { error: err.message });
     });
 
     const dbName = mongoose.connection.name;

@@ -124,6 +124,24 @@ exports.createProject = async (req, res) => {
       projectData.members = [projectData.members];
     }
 
+    // Server-side date validation: reject past dates
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (projectData.startDate && new Date(projectData.startDate) < today) {
+      return sendResponse(
+        res,
+        { success: false, message: 'Start date cannot be in the past' },
+        422
+      );
+    }
+    if (projectData.endDate && new Date(projectData.endDate) < today) {
+      return sendResponse(
+        res,
+        { success: false, message: 'Completion date cannot be in the past' },
+        422
+      );
+    }
+
     const result = await projectService.create(projectData);
 
     if (!result.error && result.data) {
@@ -386,6 +404,25 @@ exports.updateProject = async (req, res) => {
     if (Array.isArray(updateData.members)) {
       updateData.members = updateData.members.filter((m) => m !== '');
     }
+
+    // Server-side date validation: reject past dates
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (updateData.startDate && new Date(updateData.startDate) < today) {
+      return sendResponse(
+        res,
+        { success: false, message: 'Start date cannot be in the past' },
+        422
+      );
+    }
+    if (updateData.endDate && new Date(updateData.endDate) < today) {
+      return sendResponse(
+        res,
+        { success: false, message: 'Completion date cannot be in the past' },
+        422
+      );
+    }
+
     const result = await projectService.update(req.params.id, updateData);
 
     sendResponse(

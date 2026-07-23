@@ -2,22 +2,123 @@ import React, { memo, useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../../utils/api';
 
+const DEFAULT_CHAPTERS = [
+  {
+    id: 1,
+    title: '1. Login & Authentication',
+    sections: [
+      {
+        title: 'Account Authentication & OTP Verification',
+        content: 'Access the system by selecting your assigned role (Student, Faculty, or Admin) on the Login screen. Enter your institutional email address and password. First-time registrations generate a 6-digit One-Time Password (OTP) sent to your inbox to activate your credentials.',
+      },
+    ],
+  },
+  {
+    id: 2,
+    title: '2. Role-Based Dashboards',
+    sections: [
+      {
+        title: 'Personalized Workspace Dashboards',
+        content: 'The system renders customized dashboards based on user permissions: Admin Dashboard provides system oversight, user management, and global reports. Faculty Dashboard displays guided projects, review queues, and sync meetings. Student Dashboard tracks assigned projects, guide updates, upcoming deadlines, and notifications.',
+      },
+    ],
+  },
+  {
+    id: 3,
+    title: '3. Project Management',
+    sections: [
+      {
+        title: 'Submitting & Editing Project Proposals',
+        content: 'Students create proposals under Projects → New Proposal. Select project category (Web, Mobile, AI/ML, Cyber Security, etc.), classification (Major Project, Minor Project, UDP, IDP, Academic), assign active student teammates, and choose a Faculty Guide.',
+      },
+    ],
+  },
+  {
+    id: 4,
+    title: '4. Faculty Guide Allocation',
+    sections: [
+      {
+        title: 'Guide Assignment & Workload Distribution',
+        content: 'Faculty members guide up to 5 project groups. Department heads and administrators can allocate or reassign faculty guides dynamically via the Guide Allocation tool.',
+      },
+    ],
+  },
+  {
+    id: 5,
+    title: '5. Meeting Management',
+    sections: [
+      {
+        title: 'Review Meetings & Event Synchronization',
+        content: 'Faculty guides and admins schedule evaluation meetings. Scheduled meetings appear live across Student, Faculty, and Admin dashboards without requiring manual page refreshes.',
+      },
+    ],
+  },
+  {
+    id: 6,
+    title: '6. Resource Management',
+    sections: [
+      {
+        title: 'Document Library, Preview & Downloads',
+        content: 'Access project guidelines, SRS templates, evaluation rubrics, and video tutorials under Resources. Authenticated users can preview documents in-browser or download attachments directly.',
+      },
+    ],
+  },
+  {
+    id: 7,
+    title: '7. Reports & Export Capabilities',
+    sections: [
+      {
+        title: 'Dynamic Analytics & Multi-Format Exports',
+        content: 'Generate dynamic database reports on project status distribution, guide workloads, and student progress. Export reports to PDF, Excel, or CSV formats with single-click actions.',
+      },
+    ],
+  },
+  {
+    id: 8,
+    title: '8. Notifications & Real-Time Alerts',
+    sections: [
+      {
+        title: 'System Activity Alerts',
+        content: 'Receive instant notifications for project status updates, meeting invitations, guide assignments, and milestone deadlines through the top navigation alert bell.',
+      },
+    ],
+  },
+  {
+    id: 9,
+    title: '9. Profile & Settings Management',
+    sections: [
+      {
+        title: 'Account Customization & Security',
+        content: 'Update your contact details, profile picture, department information, and change password securely in Profile Settings.',
+      },
+    ],
+  },
+  {
+    id: 10,
+    title: '10. Troubleshooting & Support',
+    sections: [
+      {
+        title: 'Common Issues & Help Contact',
+        content: 'If you encounter login errors or document download issues, check your internet connectivity or request a new OTP code. Contact institutional IT support at support@sps-univ.edu for assistance.',
+      },
+    ],
+  },
+];
+
 const UserGuide = memo(() => {
   const navigate = useNavigate();
-  const [chapters, setChapters] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [chapters, setChapters] = useState(DEFAULT_CHAPTERS);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchGuide = async () => {
       try {
         const response = await api.get('/help/guide');
-        if (response.success && response.data) {
+        if (response.success && Array.isArray(response.data) && response.data.length > 0) {
           setChapters(response.data);
         }
       } catch (error) {
         console.error('Failed to fetch user guide', error);
-      } finally {
-        setLoading(false);
       }
     };
     fetchGuide();

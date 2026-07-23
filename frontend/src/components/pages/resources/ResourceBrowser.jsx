@@ -5,9 +5,33 @@ import PropTypes from 'prop-types';
 import resourceService from '../../../services/resourceService';
 
 const ResourceCard = memo(({ resource, icon }) => {
+  const getToken = () => {
+    const raw = localStorage.getItem('token') || '';
+    return raw.replace(/^"|"$/g, '').trim();
+  };
+
+  const getFileUrl = (url) => {
+    if (!url) return '#';
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+    const cleanPath = url.replace(/\\/g, '/');
+    const fullUrl = `http://localhost:5000/${cleanPath.startsWith('/') ? cleanPath.slice(1) : cleanPath}`;
+    const token = getToken();
+    return token ? `${fullUrl}?token=${encodeURIComponent(token)}` : fullUrl;
+  };
+
   const handleDownload = () => {
+    const id = resource._id || resource.id;
+    const token = getToken();
+    if (id) {
+      window.open(`http://localhost:5000/api/v1/resources/${id}/download?token=${encodeURIComponent(token)}`, '_blank');
+    } else if (resource.url) {
+      window.open(getFileUrl(resource.url), '_blank');
+    }
+  };
+
+  const handlePreview = () => {
     if (resource.url) {
-      window.open(resource.url, '_blank');
+      window.open(getFileUrl(resource.url), '_blank');
     }
   };
 
@@ -32,7 +56,7 @@ const ResourceCard = memo(({ resource, icon }) => {
 
       <div className='flex items-center justify-between text-sm text-slate-500 dark:text-slate-400'>
         <span>{resource.size || 'MB'}</span>
-        <span>{new Date(resource.createdAt).toLocaleDateString()}</span>
+        <span>{resource.createdAt ? new Date(resource.createdAt).toLocaleDateString() : 'Recent'}</span>
       </div>
 
       <div className='mt-4 flex gap-2'>
@@ -43,7 +67,7 @@ const ResourceCard = memo(({ resource, icon }) => {
           Download
         </button>
         <button
-          onClick={handleDownload}
+          onClick={handlePreview}
           className='rounded border border-slate-300 px-3 py-2 text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700'
         >
           Preview

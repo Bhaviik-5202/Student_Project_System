@@ -271,3 +271,18 @@ exports.getSystemHealth = async (req, res) => {
     sendResponse(res, { success: false, message: error.message }, 500);
   }
 };
+
+/**
+ * Get dynamic reports analytics
+ * @route GET /analytics/reports
+ * @access Admin, Faculty
+ */
+exports.getReportsAnalytics = async (req, res) => {
+  try {
+    const { error, data, message } = await analyticsService.getReportsAnalytics();
+    if (error) throw new Error(message);
+    sendResponse(res, { success: true, message, data }, 200);
+  } catch (error) {
+    sendResponse(res, { success: false, message: error.message }, 500);
+  }
+};

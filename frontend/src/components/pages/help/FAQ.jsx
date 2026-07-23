@@ -14,8 +14,20 @@ const FAQ = memo(() => {
       try {
         const response = await api.get('/help/overview');
         if (response.success && response.data) {
-          const faqsData = response.data.groupedFaqs || [];
-          setFaqs(faqsData);
+          const rawFaqs = response.data.faqs || response.data.groupedFaqs || [];
+          if (Array.isArray(rawFaqs) && rawFaqs.length > 0 && rawFaqs[0].question) {
+            const grouped = Object.values(
+              rawFaqs.reduce((acc, curr) => {
+                const cat = curr.category || 'General';
+                if (!acc[cat]) acc[cat] = { category: cat, questions: [] };
+                acc[cat].questions.push(curr);
+                return acc;
+              }, {})
+            );
+            setFaqs(grouped);
+          } else {
+            setFaqs(Array.isArray(rawFaqs) ? rawFaqs : []);
+          }
         }
       } catch (error) {
         console.error('Failed to fetch FAQs', error);

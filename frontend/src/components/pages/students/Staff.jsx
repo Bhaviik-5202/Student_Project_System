@@ -29,7 +29,14 @@ const StaffModal = ({ isOpen, onClose, onSave, staff = null }) => {
 
   useEffect(() => {
     if (staff) {
-      setFormData(staff);
+      setFormData({
+        name: staff.name || '',
+        email: staff.email || '',
+        phone: staff.phone || '',
+        role: staff.role || 'Faculty',
+        department: staff.department || '',
+        staffId: staff.staffId || staff.id || '',
+      });
     } else {
       setFormData({
         name: '',
@@ -46,20 +53,30 @@ const StaffModal = ({ isOpen, onClose, onSave, staff = null }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!formData.name || !formData.email) {
+      toast.error('Please provide both name and email');
+      return;
+    }
     onSave(formData);
   };
 
   return (
-    <div className='fixed inset-0 z-50 flex animate-fade-in items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm'>
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      className='fixed inset-0 z-50 flex animate-fade-in items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm'
+    >
       <div className='card w-full max-w-lg animate-scale-up shadow-2xl'>
         <div className='card-body p-0'>
           <div className='flex items-center justify-between rounded-t-2xl border-b border-gray-100 bg-indigo-600 px-6 py-4 dark:border-slate-800'>
             <h3 className='flex items-center gap-2 text-lg font-bold text-white'>
               {staff ? <Edit2 size={18} /> : <UserPlus size={18} />}
-              {staff ? 'Edit Staff Profile' : 'Add New Staff Member'}
+              {staff ? 'Edit Staff Profile' : 'Enroll Staff Member'}
             </h3>
             <button
               onClick={onClose}
+              type='button'
               className='text-white/80 transition-colors hover:text-white'
             >
               <X size={20} />
@@ -408,15 +425,6 @@ const Staff = memo(() => {
             className='rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800'
           >
             Export Staff
-          </button>
-          <button
-            onClick={() => {
-              setSelectedStaff(null);
-              setIsModalOpen(true);
-            }}
-            className='rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-indigo-700'
-          >
-            Add Staff Member
           </button>
         </div>
       </div>

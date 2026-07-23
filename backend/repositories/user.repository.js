@@ -65,11 +65,13 @@ exports.create = (data) => User.create(data);
  * @param {Object} data - Attributes to update
  * @returns {Promise<Object|null>} Updated user document
  */
-exports.update = (id, data) =>
-  User.findByIdAndUpdate(id, data, {
+exports.update = (id, data) => {
+  const updateOp = data.$set || data.$addToSet || data.$unset ? data : { $set: data };
+  return User.findByIdAndUpdate(id, updateOp, {
     returnDocument: 'after',
     runValidators: true,
   });
+};
 
 /**
  * Delete a user record from the database

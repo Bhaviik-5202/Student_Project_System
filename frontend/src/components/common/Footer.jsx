@@ -10,110 +10,125 @@ import {
   Cpu,
   ShieldCheck,
   Globe,
+  MapPin,
+  Phone,
+  HelpCircle,
+  BookOpen,
+  CheckCircle2,
 } from 'lucide-react';
 
 /**
- * Premium Footer Component
- *
- * Enhanced version with modern aesthetics, social links,
- * and a cleaner, more interactive layout.
+ * Modern Redesigned Footer Component
+ * Features:
+ * - Subtle geometric SVG pattern overlay with dark gradient
+ * - University & Academic System Branding
+ * - Quick Navigation Links & Resources
+ * - Campus Contact Details & Operational Status
+ * - Dynamic Copyright & Social Icons
  */
 const Footer = memo(() => {
   const currentYear = useMemo(() => new Date().getFullYear(), []);
 
   return (
     <footer
-      className='relative overflow-hidden border-t border-slate-800/50 bg-slate-950 py-16 text-slate-400'
+      className='relative overflow-hidden border-t border-slate-800/80 bg-slate-950 py-16 text-slate-400 select-none'
       role='contentinfo'
     >
-      {/* Decorative Gradient Background */}
-      <div className='pointer-events-none absolute left-1/4 top-0 h-96 w-96 -translate-y-1/2 rounded-full bg-blue-500/5 blur-3xl'></div>
-      <div className='pointer-events-none absolute bottom-0 right-1/4 h-96 w-96 translate-y-1/2 rounded-full bg-indigo-500/5 blur-3xl'></div>
+      {/* Background SVG Grid Pattern Overlay with Dark Mask */}
+      <div className='pointer-events-none absolute inset-0 opacity-15'>
+        <svg className='h-full w-full' xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'>
+          <defs>
+            <pattern id='footer-grid' width='40' height='40' patternUnits='userSpaceOnUse'>
+              <path d='M 40 0 L 0 0 0 40' fill='none' stroke='rgba(255, 255, 255, 0.15)' strokeWidth='1' />
+            </pattern>
+          </defs>
+          <rect width='100%' height='100%' fill='url(#footer-grid)' />
+        </svg>
+      </div>
+
+      {/* Decorative Blur Glows */}
+      <div className='pointer-events-none absolute left-1/4 top-0 h-96 w-96 -translate-y-1/2 rounded-full bg-blue-600/10 blur-3xl' />
+      <div className='pointer-events-none absolute bottom-0 right-1/4 h-96 w-96 translate-y-1/2 rounded-full bg-indigo-600/10 blur-3xl' />
 
       <div className='relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
         <div className='mb-16 grid grid-cols-1 gap-12 md:grid-cols-12'>
-          {/* Brand and Mission */}
+
+          {/* Brand & Platform Tagline */}
           <div className='md:col-span-4'>
-            <Link to='/' className='group mb-6 flex items-center gap-3'>
-              <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 shadow-lg shadow-blue-500/20 transition-transform duration-300 group-hover:scale-110'>
+            <Link to='/' className='group mb-6 flex items-center gap-3 w-fit'>
+              <div className='flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-700 shadow-lg shadow-blue-500/20 transition-transform duration-300 group-hover:scale-105'>
                 <ShieldCheck className='h-6 w-6 text-white' />
               </div>
-              <span className='text-xl font-bold tracking-tight text-white'>
-                Project
-                <span className='text-2xl leading-none text-blue-500'>.</span>
-                Point
-              </span>
+              <div className='flex flex-col'>
+                <span className='text-xl font-bold tracking-tight text-white'>
+                  Student<span className='text-blue-500'>.</span>Project<span className='text-indigo-400'>.</span>System
+                </span>
+                <span className='text-[10px] uppercase font-semibold tracking-widest text-slate-500'>
+                  Academic Excellence Portal
+                </span>
+              </div>
             </Link>
-            <p className='mb-8 max-w-sm text-sm leading-relaxed text-slate-400'>
-              Empowering the next generation of innovators with a streamlined
-              platform for academic excellence and collaborative project
-              management.
+
+            <p className='mb-6 max-w-sm text-sm leading-relaxed text-slate-400'>
+              Streamlining academic project lifecycles, milestone tracking, and faculty evaluations into a unified, secure platform.
             </p>
-            <div className='flex items-center gap-4'>
+
+            <div className='flex items-center gap-3'>
               <a
                 href='https://github.com'
                 target='_blank'
                 rel='noopener noreferrer'
-                className='group flex h-10 w-10 items-center justify-center rounded-full border border-slate-800 bg-slate-900 transition-all duration-300 hover:border-blue-600 hover:bg-blue-600 hover:text-white'
+                className='group flex h-9 w-9 items-center justify-center rounded-lg border border-slate-800 bg-slate-900/80 text-slate-400 transition-all duration-200 hover:border-blue-500 hover:bg-blue-600 hover:text-white'
+                aria-label='GitHub Repository'
               >
-                <Github size={18} />
+                <Github size={17} />
               </a>
               <a
                 href='https://linkedin.com'
                 target='_blank'
                 rel='noopener noreferrer'
-                className='group flex h-10 w-10 items-center justify-center rounded-full border border-slate-800 bg-slate-900 transition-all duration-300 hover:border-blue-600 hover:bg-blue-600 hover:text-white'
+                className='group flex h-9 w-9 items-center justify-center rounded-lg border border-slate-800 bg-slate-900/80 text-slate-400 transition-all duration-200 hover:border-blue-500 hover:bg-blue-600 hover:text-white'
+                aria-label='LinkedIn Profile'
               >
-                <Linkedin size={18} />
+                <Linkedin size={17} />
               </a>
               <a
                 href='https://twitter.com'
                 target='_blank'
                 rel='noopener noreferrer'
-                className='group flex h-10 w-10 items-center justify-center rounded-full border border-slate-800 bg-slate-900 transition-all duration-300 hover:border-blue-600 hover:bg-blue-600 hover:text-white'
+                className='group flex h-9 w-9 items-center justify-center rounded-lg border border-slate-800 bg-slate-900/80 text-slate-400 transition-all duration-200 hover:border-blue-500 hover:bg-blue-600 hover:text-white'
+                aria-label='Twitter / X'
               >
-                <Twitter size={18} />
+                <Twitter size={17} />
+              </a>
+              <a
+                href='mailto:support@sps-univ.edu'
+                className='group flex h-9 w-9 items-center justify-center rounded-lg border border-slate-800 bg-slate-900/80 text-slate-400 transition-all duration-200 hover:border-blue-500 hover:bg-blue-600 hover:text-white'
+                aria-label='Email Support'
+              >
+                <Mail size={17} />
               </a>
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div className='md:col-span-2'>
-            <h3 className='mb-6 text-sm font-semibold uppercase tracking-widest text-white'>
-              Explore
+          {/* Quick Navigation Links */}
+          <div className='md:col-span-3'>
+            <h3 className='mb-5 text-xs font-bold uppercase tracking-wider text-slate-200 flex items-center gap-2'>
+              <BookOpen size={14} className='text-blue-400' /> Navigation & Tools
             </h3>
-            <ul className='space-y-4'>
-              {['Dashboard', 'Projects', 'Meetings', 'Schedule'].map((item) => (
-                <li key={item}>
-                  <Link
-                    to={`/${item.toLowerCase()}`}
-                    className='group flex items-center gap-2 text-sm transition-colors hover:text-blue-400'
-                  >
-                    <span className='h-1 w-1 scale-0 rounded-full bg-blue-500 transition-transform group-hover:scale-100'></span>
-                    {item}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Support */}
-          <div className='md:col-span-2'>
-            <h3 className='mb-6 text-sm font-semibold uppercase tracking-widest text-white'>
-              Support
-            </h3>
-            <ul className='space-y-4'>
+            <ul className='space-y-3 text-sm'>
               {[
-                { name: 'Help Center', path: '/help' },
-                { name: 'Global FAQ', path: '/faq' },
-                { name: 'Contact Us', path: '/contact' },
+                { name: 'Overview Dashboard', path: '/dashboard' },
+                { name: 'Project Repository', path: '/projects' },
+                { name: 'Faculty Meetings', path: '/meetings' },
+                { name: 'Academic Calendar', path: '/calendar' },
               ].map((item) => (
                 <li key={item.name}>
                   <Link
                     to={item.path}
-                    className='group flex items-center gap-2 text-sm transition-colors hover:text-blue-400'
+                    className='group flex items-center gap-2 transition-colors hover:text-blue-400'
                   >
-                    <span className='h-1 w-1 scale-0 rounded-full bg-blue-500 transition-transform group-hover:scale-100'></span>
+                    <span className='h-1.5 w-1.5 rounded-full bg-slate-700 transition-colors group-hover:bg-blue-500' />
                     {item.name}
                   </Link>
                 </li>
@@ -121,75 +136,68 @@ const Footer = memo(() => {
             </ul>
           </div>
 
-          {/* Newsletter */}
-          <div className='md:col-span-4'>
-            <h3 className='mb-6 text-sm font-semibold uppercase tracking-widest text-white'>
-              Stay Updated
+          {/* Contact & Support Info */}
+          <div className='md:col-span-3'>
+            <h3 className='mb-5 text-xs font-bold uppercase tracking-wider text-slate-200 flex items-center gap-2'>
+              <HelpCircle size={14} className='text-indigo-400' /> Campus & Contact
             </h3>
-            <p className='mb-6 text-sm text-slate-500'>
-              Get the latest platform updates and academic resources delivered.
-            </p>
-            <form
-              className='group relative'
-              onSubmit={(e) => e.preventDefault()}
-            >
-              <input
-                type='email'
-                placeholder='Enter your email'
-                className='w-full rounded-xl border border-slate-800 bg-slate-900 px-4 py-3 text-sm text-white transition-all placeholder:text-slate-600 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20'
-              />
-              <button
-                className='absolute right-2 top-2 rounded-lg bg-blue-600 p-1.5 text-white transition-colors hover:bg-blue-700 group-hover:translate-x-0'
-                aria-label='Subscribe'
-              >
-                <ArrowRight size={18} />
-              </button>
-            </form>
-            <div className='mt-8 flex items-center gap-6'>
-              <div className='flex items-center gap-2'>
+            <ul className='space-y-3 text-sm'>
+              <li className='flex items-start gap-2.5 text-slate-400'>
+                <MapPin size={16} className='mt-0.5 shrink-0 text-slate-500' />
+                <span>Department of Computer Science & Engineering</span>
+              </li>
+              <li className='flex items-center gap-2.5 text-slate-400'>
+                <Mail size={16} className='shrink-0 text-slate-500' />
+                <a href='mailto:support@sps-univ.edu' className='hover:text-blue-400 transition-colors'>
+                  support@sps-univ.edu
+                </a>
+              </li>
+              <li className='flex items-center gap-2.5 text-slate-400'>
+                <Phone size={16} className='shrink-0 text-slate-500' />
+                <span>+1 (800) 555-SPS-HELP</span>
+              </li>
+            </ul>
+          </div>
+
+          {/* Platform Status */}
+          <div className='md:col-span-2'>
+            <h3 className='mb-5 text-xs font-bold uppercase tracking-wider text-slate-200'>
+              System Status
+            </h3>
+            <div className='rounded-xl border border-slate-800 bg-slate-900/60 p-4 backdrop-blur-sm'>
+              <div className='mb-3 flex items-center gap-2'>
                 <div className='relative'>
-                  <span className='block h-2.5 w-2.5 rounded-full bg-emerald-500'></span>
-                  <span className='absolute inset-0 animate-ping rounded-full bg-emerald-500 opacity-75'></span>
+                  <span className='block h-2.5 w-2.5 rounded-full bg-emerald-500' />
+                  <span className='absolute inset-0 animate-ping rounded-full bg-emerald-500 opacity-75' />
                 </div>
-                <span className='text-xs font-medium uppercase tracking-wide text-emerald-500/90'>
+                <span className='text-xs font-semibold text-emerald-400'>
                   Operational
                 </span>
               </div>
-              <div className='flex items-center gap-2 text-slate-500'>
-                <Cpu size={14} />
-                <span className='text-xs font-medium'>v2.1.0-stable</span>
+              <p className='text-[11px] text-slate-400 leading-snug mb-3'>
+                All backend APIs & real-time sync active.
+              </p>
+              <div className='flex items-center gap-1.5 border-t border-slate-800 pt-2.5 text-[11px] text-slate-500'>
+                <Cpu size={12} />
+                <span>v2.4.0 • Enterprise</span>
               </div>
             </div>
           </div>
+
         </div>
 
-        {/* Bottom Bar */}
-        <div className='flex flex-col items-center justify-between gap-6 border-t border-slate-900 pt-8 md:flex-row'>
+        {/* Bottom Bar / Copyright */}
+        <div className='flex flex-col items-center justify-between gap-4 border-t border-slate-900 pt-8 md:flex-row'>
           <div className='flex items-center gap-2 text-xs text-slate-500'>
-            <span>© {currentYear} Student Project Management System.</span>
-            <span className='hidden md:inline'>•</span>
-            <span className='flex items-center gap-1'>
-              Crafted with{' '}
-              <Heart size={12} className='fill-rose-500/10 text-rose-500' /> for
-              researchers.
-            </span>
+            <span>© {currentYear} Student Project System. All rights reserved.</span>
           </div>
 
-          <div className='flex items-center gap-8'>
-            <Link
-              to='/privacy'
-              className='text-xs transition-colors hover:text-white'
-            >
-              Privacy Policy
-            </Link>
-            <Link
-              to='/terms'
-              className='text-xs transition-colors hover:text-white'
-            >
-              Terms of Service
-            </Link>
-            <div className='flex items-center gap-1.5 text-xs text-slate-600'>
-              <Globe size={12} />
+          <div className='flex items-center gap-6 text-xs text-slate-500'>
+            <span className='flex items-center gap-1'>
+              Built with <Heart size={12} className='text-rose-500 fill-rose-500' /> for academic excellence
+            </span>
+            <div className='flex items-center gap-1 text-slate-600'>
+              <Globe size={13} />
               <span>English (US)</span>
             </div>
           </div>

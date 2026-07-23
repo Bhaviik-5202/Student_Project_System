@@ -95,9 +95,16 @@ const MeetingForm = memo(() => {
           .map((id) => id.trim())
           .filter((id) => id && /^[0-9a-fA-F]{24}$/.test(id));
 
+        const meetingDate = new Date(`${formData.date}T${formData.time}`);
+        if (meetingDate < new Date()) {
+          toast.error('Meeting date and time cannot be in the past');
+          setLoading(false);
+          return;
+        }
+
         const meetingData = {
           ...formData,
-          date: new Date(`${formData.date}T${formData.time}`),
+          date: meetingDate,
           participants: potentialParticipants,
         };
 
@@ -178,6 +185,7 @@ const MeetingForm = memo(() => {
                       type='date'
                       name='date'
                       required
+                      min={new Date().toISOString().split('T')[0]}
                       value={formData.date}
                       onChange={handleChange}
                       readOnly={isViewing}

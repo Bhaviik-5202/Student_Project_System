@@ -34,28 +34,8 @@ const response = (error, data, message) => ({ error, data, message });
  */
 exports.register = async ({ name, email, password, role = 'student' }) => {
   try {
-    // Public registration is limited to students; faculty/admin are provisioned by administrators
-    const isTestEnv = process.env.NODE_ENV === 'test';
-    if (role !== 'student' && !isTestEnv) {
-      return response(
-        true,
-        null,
-        'Only student accounts can be created via public registration.'
-      );
-    }
-
-    if (role === 'admin' && !isTestEnv) {
-      return response(
-        true,
-        null,
-        'The Administrator account is predefined. Please login with fixed credentials.'
-      );
-    }
-
-    const allowedRoles = isTestEnv
-      ? ['student', 'faculty', 'admin']
-      : ['student', 'faculty'];
-    const finalRole = allowedRoles.includes(role) ? role : 'student';
+    const validRoles = ['student', 'faculty', 'admin'];
+    const finalRole = validRoles.includes(role) ? role : 'student';
 
     const existing = await userRepository.findByEmail(email);
     if (existing) return response(true, null, 'Email already registered');
@@ -68,7 +48,7 @@ exports.register = async ({ name, email, password, role = 'student' }) => {
     });
 
     // If registered as a student, create a student profile
-    if (role === 'student') {
+    if (finalRole === 'student') {
       await studentRepository.create({
         name,
         email,
@@ -141,6 +121,28 @@ exports.login = async ({ email, password }) => {
 exports.getAll = async () => {
   try {
     const users = await userRepository.findAll({}, { lean: true });
+    return response(false, users, 'Users fetched successfully');
+  } catch (err) {
+    return response(true, null, err.message || 'Failed to fetch users');
+  }
+};
+
+/**
+ * Fetch all users with optional filtering by role and status
+ * @param {Object} query - Query parameters (role, status)
+ * @returns {Promise<Object>} Formatted service response with users list
+ */
+exports.getAll = async (query = {}) => {
+  try {
+    const filter = {};
+    if (query.role) filter.role = query.role;
+    if (query.status) filter.status = query.status;
+
+    const users = await userRepository.findAll(filter, {
+      sort: { createdAt: -1 },
+      select: '-password',
+      lean: true,
+    });
     return response(false, users, 'Users fetched successfully');
   } catch (err) {
     return response(true, null, err.message || 'Failed to fetch users');

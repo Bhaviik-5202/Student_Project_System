@@ -31,12 +31,8 @@ router.post(
 
     body('role')
       .optional()
-      .isIn(
-        process.env.NODE_ENV === 'test'
-          ? ['student', 'faculty', 'admin']
-          : ['student', 'faculty']
-      )
-      .withMessage('Invalid role'),
+      .isIn(['student', 'faculty', 'admin'])
+      .withMessage('Role must be one of: student, faculty, admin'),
   ],
   validateRequest,
   authController.register

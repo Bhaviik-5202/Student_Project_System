@@ -27,14 +27,31 @@ exports.create = async (data) => {
   }
 };
 
+const userRepository = require('../repositories/user.repository');
+
 /**
- * Fetch all registered staff members
+ * Fetch all registered faculty staff members
  * @returns {Promise<Object>} Formatted service response with staff list
  */
 exports.getAll = async () => {
   try {
-    const staff = await staffRepository.findAll();
-    return response(false, staff, 'Staff fetched successfully');
+    const facultyUsers = await userRepository.findAll({ role: 'faculty' }, { select: '-password', lean: true });
+    const legacyStaff = await staffRepository.findAll();
+
+    const formattedFaculty = (facultyUsers || []).map((user) => ({
+      _id: user._id,
+      id: user._id,
+      staffId: user.staffId || user._id.toString().slice(-6).toUpperCase(),
+      name: user.name,
+      role: 'Faculty',
+      department: user.department || 'Computer Science',
+      email: user.email,
+      phone: user.phone || '',
+      status: user.status || 'Active',
+    }));
+
+    const combinedStaff = [...formattedFaculty, ...(legacyStaff || [])];
+    return response(false, combinedStaff, 'Staff fetched successfully');
   } catch (err) {
     return response(true, null, err.message || 'Failed to fetch staff');
   }
@@ -63,6 +80,20 @@ exports.getById = async (id) => {
  */
 exports.update = async (id, data) => {
   try {
+    // Faculty listed in the Staff Management page comes from the User collection.
+    // Try updating the User document first; if not found, fall back to legacy Staff model.
+    const allowedUserFields = ['name', 'phone', 'department', 'role', 'status'];
+    const userUpdateData = {};
+    allowedUserFields.forEach((field) => {
+      if (data[field] !== undefined) userUpdateData[field] = data[field];
+    });
+
+    const updatedUser = await userRepository.update(id, userUpdateData);
+    if (updatedUser) {
+      return response(false, updatedUser, 'Staff updated successfully');
+    }
+
+    // Fallback: legacy Staff model
     const staff = await staffRepository.update(id, data);
     if (!staff) return response(true, null, 'Staff not found');
     return response(false, staff, 'Staff updated successfully');

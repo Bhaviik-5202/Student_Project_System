@@ -102,9 +102,21 @@ app.use((req, res, next) => {
 app.use(
   rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: Number(process.env.RATE_LIMIT_MAX) || 100,
+    max: process.env.NODE_ENV === 'test' ? 10000 : Number(process.env.RATE_LIMIT_MAX) || 2000,
     standardHeaders: true,
     legacyHeaders: false,
+    handler: (req, res) => {
+      sendResponse(
+        res,
+        {
+          success: false,
+          message: 'Too many requests from this IP, please try again later',
+          data: null,
+          error: 'Rate limit exceeded',
+        },
+        429
+      );
+    },
   })
 );
 

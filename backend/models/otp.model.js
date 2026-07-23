@@ -24,6 +24,13 @@ const otpSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Password is required'],
     },
+    role: {
+      type: String,
+      enum: ['admin', 'faculty', 'student'],
+      default: 'student',
+      lowercase: true,
+      trim: true,
+    },
     otp: {
       type: String,
       required: [true, 'OTP is required'],

@@ -1,6 +1,7 @@
 import { useState, useEffect, memo, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import analyticsService from '../../../services/analyticsService';
+import { subscribeDataChanged } from '../../../utils/eventBus';
 import '../../../assets/styles/admin.css';
 
 // SVG Icon Components (no external dependencies)
@@ -231,7 +232,7 @@ ServiceStatusItem.displayName = 'ServiceStatusItem';
 const STATS_CONFIG = [
   { key: 'totalUsers', icon: Icons.Users, label: 'Total Users' },
   { key: 'activeProjects', icon: Icons.Project, label: 'Active Projects' },
-  { key: 'pendingApprovals', icon: Icons.Clock, label: 'Pending Approvals' },
+  { key: 'completionRate', icon: Icons.Heartbeat, label: 'Completion Rate', suffix: '%' },
   {
     key: 'systemHealth',
     icon: Icons.Heartbeat,
@@ -350,12 +351,25 @@ const AdminDashboard = memo(() => {
 
     loadData();
 
+    const unsubscribeBus = subscribeDataChanged(() => loadData(true));
     const handleFocus = () => loadData(true);
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') loadData(true);
+    };
+
     window.addEventListener('focus', handleFocus);
+    document.addEventListener('visibilitychange', handleVisibility);
+
+    const pollInterval = setInterval(() => {
+      if (document.visibilityState === 'visible') loadData(true);
+    }, 10000);
 
     return () => {
       mounted = false;
+      unsubscribeBus();
       window.removeEventListener('focus', handleFocus);
+      document.removeEventListener('visibilitychange', handleVisibility);
+      clearInterval(pollInterval);
     };
   }, [location.key]);
 

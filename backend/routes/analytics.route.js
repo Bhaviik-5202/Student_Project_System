@@ -60,6 +60,18 @@ router.get(
 );
 
 /**
+ * @route   GET /api/v1/analytics/reports
+ * @desc    Retrieve dynamic reports analytics
+ * @access  Private (Admin/Faculty)
+ */
+router.get(
+  '/reports',
+  authMiddleware,
+  roleMiddleware(['admin', 'faculty']),
+  analyticsController.getReportsAnalytics
+);
+
+/**
  * @route   GET /api/v1/analytics/performance
  * @desc    Retrieve performance metrics
  * @access  Private (Admin/Faculty)

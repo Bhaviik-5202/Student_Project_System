@@ -52,9 +52,6 @@ const BatchOperations = lazy(
 const StudentForm = lazy(
   () => import('../components/pages/students/StudentForm')
 );
-const StudentFilters = lazy(
-  () => import('../components/pages/students/StudentFilters')
-);
 
 // Project Pages
 const ProjectList = lazy(
@@ -126,6 +123,9 @@ const TutorialVideos = lazy(
 // Analytics Pages
 const AnalyticsDashboard = lazy(
   () => import('../components/pages/analytics/AnalyticsDashboard')
+);
+const GradeDistribution = lazy(
+  () => import('../components/pages/analytics/GradeDistribution')
 );
 const PerformanceMetrics = lazy(
   () => import('../components/pages/analytics/PerformanceMetrics')
@@ -243,7 +243,7 @@ const AppRoutes = () => {
           }
         />
 
-        {/* Admin Management Routes */}
+        {/* Admin & Student Management Routes */}
         <Route
           path='students'
           element={
@@ -265,14 +265,6 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <StudentForm />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='students/filters'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
-              <StudentFilters />
             </ProtectedRoute>
           }
         />
@@ -345,7 +337,7 @@ const AppRoutes = () => {
         <Route
           path='projects/new'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
               <ProjectProposal />
             </ProtectedRoute>
           }
@@ -423,7 +415,7 @@ const AppRoutes = () => {
         <Route
           path='meetings/new'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
               <MeetingForm />
             </ProtectedRoute>
           }
@@ -439,7 +431,7 @@ const AppRoutes = () => {
         <Route
           path='meetings/:id/edit'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
               <MeetingForm />
             </ProtectedRoute>
           }
@@ -512,7 +504,6 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
-
         <Route
           path='analytics/performance'
           element={
@@ -542,6 +533,22 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
               <Visualizations />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='grade'
+          element={
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
+              <GradeDistribution />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='analytics/grades'
+          element={
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
+              <GradeDistribution />
             </ProtectedRoute>
           }
         />

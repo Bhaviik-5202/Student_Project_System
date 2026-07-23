@@ -232,3 +232,38 @@ exports.deleteResource = async (req, res) => {
     );
   }
 };
+
+/**
+ * Download resource file attachment
+ * @route GET /resources/:id/download
+ * @access Authenticated
+ */
+exports.downloadResource = async (req, res) => {
+  try {
+    const path = require('path');
+    const fs = require('fs');
+
+    const result = await resourceService.getById(req.params.id);
+    if (result.error || !result.data) {
+      return sendResponse(res, { success: false, message: 'Resource not found' }, 404);
+    }
+
+    const resource = result.data;
+    if (!resource.url) {
+      return sendResponse(res, { success: false, message: 'Resource has no file attachment' }, 400);
+    }
+
+    if (resource.url.startsWith('http://') || resource.url.startsWith('https://')) {
+      return res.redirect(resource.url);
+    }
+
+    const filePath = path.resolve(resource.url);
+    if (!fs.existsSync(filePath)) {
+      return sendResponse(res, { success: false, message: 'File not found on disk' }, 404);
+    }
+
+    return res.download(filePath, path.basename(filePath));
+  } catch (error) {
+    sendResponse(res, { success: false, message: 'Download failed', error: error.message }, 500);
+  }
+};

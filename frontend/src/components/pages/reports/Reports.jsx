@@ -174,16 +174,20 @@ const Reports = memo(() => {
     const fetchReportData = async () => {
       try {
         setLoading(true);
-        const response = await reportService.getProjectStatusReport({
-          range: dateRange,
-        });
-        const data = response?.data || {};
+        const [dashRes, reportsRes] = await Promise.allSettled([
+          reportService.getProjectStatusReport({ range: dateRange }),
+          reportService.getReportsAnalytics(),
+        ]);
+
+        const data = dashRes.status === 'fulfilled' ? dashRes.value?.data || {} : {};
+        const reportMetrics = reportsRes.status === 'fulfilled' ? reportsRes.value?.data || {} : {};
+
         if (data && data.stats) {
           setProjectStats((prev) => ({
             ...prev,
-            total:
-              (data.stats.totalProjects || 0) + (data.stats.totalStudents || 0),
-            byStatus: data.activityData || [],
+            total: data.stats.totalProjects || reportMetrics.summary?.totalProjects || 0,
+            byStatus: reportMetrics.statusDistribution || data.activityData || [],
+            summary: reportMetrics.summary || {},
           }));
           setMonthlyData(data.performanceData || []);
         }

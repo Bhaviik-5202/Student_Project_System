@@ -119,7 +119,7 @@ const StudentFilters = memo(({ onFilter }) => {
           <div className='form-group'>
             <label className='form-label flex items-center gap-2'>
               <CheckCircle2 size={14} className='text-gray-400' />
-              Enrollment Status
+              Status
             </label>
             <select
               name='status'

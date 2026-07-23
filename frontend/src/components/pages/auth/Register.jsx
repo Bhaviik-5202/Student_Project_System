@@ -350,7 +350,7 @@ const Register = memo(() => {
             value={formData.email}
             onChange={handleChange}
             className='auth-input'
-            placeholder='jane@university.edu'
+            placeholder='darshan@university.edu'
           />
         </motion.div>
 

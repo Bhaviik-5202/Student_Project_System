@@ -17,6 +17,7 @@ before(async function () {
     email: `activity+${Date.now()}@example.com`,
     password: 'testpass123',
     role: 'faculty',
+    bypassOTP: true,
   };
 
   await request(app).post('/api/v1/auth/register').send(user);

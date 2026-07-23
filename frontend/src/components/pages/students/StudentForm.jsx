@@ -157,7 +157,7 @@ const StudentForm = memo(() => {
               </div>
               <div>
                 <h1 className='text-xl font-bold uppercase tracking-tight text-gray-900 dark:text-white'>
-                  {isEditing ? 'Update Student Profile' : 'Enrollment Registry'}
+                  {isEditing ? 'Update Student Profile' : 'Student Directory'}
                 </h1>
                 <p className='mt-1 text-sm font-medium text-gray-500 dark:text-gray-400'>
                   {isEditing
@@ -346,7 +346,7 @@ const StudentForm = memo(() => {
                 className='flex h-12 flex-[2] items-center justify-center gap-2 rounded-xl bg-indigo-600 text-[11px] font-bold uppercase tracking-widest text-white shadow-lg shadow-indigo-100 transition-all hover:bg-indigo-700 dark:shadow-none'
               >
                 <SaveIcon size={18} />
-                {isEditing ? 'Update Student Profile' : 'Complete Enrollment'}
+                {isEditing ? 'Update Student Profile' : 'Save Student'}
               </button>
             </div>
           </form>

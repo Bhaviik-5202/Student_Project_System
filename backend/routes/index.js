@@ -23,6 +23,7 @@ const adminRoutes = require('./admin.route');
 const meetingsRoutes = require('./meetings.route');
 const settingRoutes = require('./setting.route');
 const faqRoutes = require('./faq.route');
+const helpRoutes = require('./help.route');
 
 /**
  * Mount routes
@@ -43,6 +44,7 @@ router.use('/admin', adminRoutes);
 router.use('/meetings', meetingsRoutes);
 router.use('/settings', settingRoutes);
 router.use('/faqs', faqRoutes);
+router.use('/help', helpRoutes);
 
 /**
  * @route   GET /api/v1

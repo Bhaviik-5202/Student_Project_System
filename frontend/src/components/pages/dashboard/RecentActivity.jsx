@@ -65,6 +65,24 @@ const ActivityItem = memo(({ activity, isLast }) => {
     </div>
   );
 
+  const getActivityPath = () => {
+    if (activity.link) return activity.link;
+    const type = (activity.type || activity.action || '').toLowerCase();
+    const title = (activity.title || '').toLowerCase();
+
+    // Route to specific project page when possible
+    if (type === 'project' && (activity.id || activity._id)) {
+      return `/projects/${activity.id || activity._id}`;
+    }
+    if (type.includes('meeting') || title.includes('meeting')) return '/meetings';
+    if (type.includes('resource') || title.includes('resource') || title.includes('document')) return '/resources';
+    if (type.includes('student') || title.includes('student')) return '/students';
+    if (type.includes('staff') || title.includes('faculty') || title.includes('guide')) return '/staff';
+    // Generic project fallback with ID if available
+    if (activity.id || activity._id) return `/projects/${activity.id || activity._id}`;
+    return '/projects';
+  };
+
   return (
     <div className='relative'>
       {/* Timeline connector */}
@@ -72,13 +90,9 @@ const ActivityItem = memo(({ activity, isLast }) => {
         <div className='absolute bottom-0 left-6 top-10 z-0 -mb-4 w-0.5 bg-gray-100 dark:bg-slate-700' />
       )}
 
-      {activity.id ? (
-        <Link to={`/projects/${activity.id}`} className='block'>
-          {itemContent}
-        </Link>
-      ) : (
-        itemContent
-      )}
+      <Link to={getActivityPath()} className='block'>
+        {itemContent}
+      </Link>
     </div>
   );
 });

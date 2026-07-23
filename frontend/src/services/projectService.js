@@ -1,4 +1,5 @@
 import api from '../utils/api';
+import { notifyDataChanged } from '../utils/eventBus';
 
 const projectService = {
   getAllProjects: async (params = {}) => {
@@ -25,7 +26,9 @@ const projectService = {
 
   createProject: async (projectData) => {
     try {
-      return await api.post('/projects', projectData);
+      const res = await api.post('/projects', projectData);
+      if (res.success) notifyDataChanged({ type: 'project_created' });
+      return res;
     } catch (error) {
       return {
         success: false,
@@ -36,7 +39,9 @@ const projectService = {
 
   updateProject: async (id, projectData) => {
     try {
-      return await api.put(`/projects/${id}`, projectData);
+      const res = await api.put(`/projects/${id}`, projectData);
+      if (res.success) notifyDataChanged({ type: 'project_updated', id });
+      return res;
     } catch (error) {
       return {
         success: false,
@@ -47,7 +52,9 @@ const projectService = {
 
   deleteProject: async (id) => {
     try {
-      return await api.delete(`/projects/${id}`);
+      const res = await api.delete(`/projects/${id}`);
+      if (res.success) notifyDataChanged({ type: 'project_deleted', id });
+      return res;
     } catch (error) {
       return {
         success: false,
@@ -70,10 +77,12 @@ const projectService = {
 
   addProjectMember: async (projectId, userId, role) => {
     try {
-      return await api.post(`/projects/${projectId}/members`, {
+      const res = await api.post(`/projects/${projectId}/members`, {
         userId,
         role,
       });
+      if (res.success) notifyDataChanged({ type: 'member_added', projectId });
+      return res;
     } catch (error) {
       return {
         success: false,

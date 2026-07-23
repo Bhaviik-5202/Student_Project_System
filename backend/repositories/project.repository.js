@@ -65,11 +65,16 @@ exports.create = (data) => Project.create(data);
  * @param {Object} data - Attributes to update
  * @returns {Promise<Object|null>} Updated project document
  */
-exports.update = (id, data) =>
-  Project.findByIdAndUpdate(id, data, {
+exports.update = (id, data) => {
+  // Wrap in $set so runValidators only validates provided fields,
+  // preventing spurious "field is required" errors on partial updates
+  // (e.g. assigning only a guide without sending type/title).
+  const updateOp = data.$set || data.$addToSet ? data : { $set: data };
+  return Project.findByIdAndUpdate(id, updateOp, {
     returnDocument: 'after',
     runValidators: true,
   });
+};
 
 /**
  * Delete a project record from the database

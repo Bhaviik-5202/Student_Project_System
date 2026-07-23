@@ -1,4 +1,5 @@
 import api from '../utils/api';
+import { notifyDataChanged } from '../utils/eventBus';
 
 const meetingService = {
   getMeetings: async (params = {}) => {
@@ -29,7 +30,9 @@ const meetingService = {
 
   createMeeting: async (meetingData) => {
     try {
-      return await api.post('/meetings', meetingData);
+      const res = await api.post('/meetings', meetingData);
+      if (res.success) notifyDataChanged({ type: 'meeting_created' });
+      return res;
     } catch (error) {
       return {
         success: false,
@@ -40,7 +43,9 @@ const meetingService = {
 
   updateMeeting: async (id, meetingData) => {
     try {
-      return await api.put(`/meetings/${id}`, meetingData);
+      const res = await api.put(`/meetings/${id}`, meetingData);
+      if (res.success) notifyDataChanged({ type: 'meeting_updated', id });
+      return res;
     } catch (error) {
       return {
         success: false,
@@ -51,7 +56,9 @@ const meetingService = {
 
   deleteMeeting: async (id) => {
     try {
-      return await api.delete(`/meetings/${id}`);
+      const res = await api.delete(`/meetings/${id}`);
+      if (res.success) notifyDataChanged({ type: 'meeting_deleted', id });
+      return res;
     } catch (error) {
       return {
         success: false,

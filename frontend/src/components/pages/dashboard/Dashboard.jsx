@@ -18,6 +18,8 @@ import analyticsService from '../../../services/analyticsService';
 import { exportDashboardToCSV } from '../../../utils/exportUtils';
 import api from '../../../utils/api';
 import { timeAgo } from '../../../utils/helpers';
+import { subscribeDataChanged } from '../../../utils/eventBus';
+import { DashboardSkeleton } from '../../common/Skeleton';
 
 // Import icons from lucide-react
 import {
@@ -221,10 +223,8 @@ const Dashboard = () => {
   const [statsData, setStatsData] = useState({});
 
   // --- Data Loading Logic ---
-  // Memoize the loadDashboardData function
   const loadDashboardData = useCallback(async () => {
     try {
-      setIsLoading(true);
       if (!user) {
         setDashboardData({
           title: 'Dashboard',
@@ -247,48 +247,40 @@ const Dashboard = () => {
       const greetings =
         user?.role === 'student'
           ? [
-              'Welcome back! Ready to track your progress?',
-              'Great to see you! How are your projects coming along?',
-              'Ready to achieve your milestones today?',
+              'Welcome back! Track your project milestones, deadlines, assigned guide, and meeting schedules.',
+              'Great to see you! Review your team project progress and upcoming deadlines.',
+              'Ready to achieve your project goals today?',
             ]
           : user?.role === 'faculty'
             ? [
-                'Welcome back! Your students value your guidance.',
-                "Ready to review today's project milestones?",
-                'Great to have you back in the workspace.',
+                'Welcome back! Review student proposals, manage assigned projects, and conduct sync meetings.',
+                "Ready to evaluate today's project submissions and provide guidance?",
+                'Great to have you back in the faculty workspace.',
               ]
             : [
-                'Welcome to the management console.',
-                'System oversight is ready for your review.',
-                'Ready to optimize organizational performance?',
+                'Welcome to System Oversight. Manage operations, users, faculty guides, and project governance.',
+                'Administrator Console ready. System status and analytics are up to date.',
+                'Ready to optimize organizational project workflow?',
               ];
       setGreeting(greetings[Math.floor(Math.random() * greetings.length)]);
 
-      // Fetch dashboard data from API
-      let apiData;
-      try {
-        if (user.role === 'admin') {
-          apiData = await analyticsService.getDashboardStats();
-        } else if (user.role === 'faculty') {
-          apiData = await analyticsService.getFacultyDashboardStats();
-        } else if (user.role === 'student') {
-          apiData = await analyticsService.getStudentDashboardStats();
-        }
-      } catch (error) {
-        console.error('Failed to fetch dashboard data:', error);
-        // Fallback to empty data
-        apiData = { data: {} };
-      }
+      // Fetch dashboard data and notifications concurrently from API
+      const [statsResult, notifResult] = await Promise.allSettled([
+        user.role === 'admin'
+          ? analyticsService.getDashboardStats()
+          : user.role === 'faculty'
+            ? analyticsService.getFacultyDashboardStats()
+            : analyticsService.getStudentDashboardStats(),
+        api.get('/notifications'),
+      ]);
 
-      const statsData = apiData.data || {};
+      const apiData = statsResult.status === 'fulfilled' ? statsResult.value : { data: {} };
+      const statsData = apiData?.data || apiData || {};
 
-      // Fetch notifications dynamically from the live API
       let apiNotifications = [];
-      try {
-        const notifRes = await api.get('/notifications');
-        apiNotifications = notifRes.data || notifRes || [];
-      } catch (error) {
-        console.error('Failed to fetch notifications:', error);
+      if (notifResult.status === 'fulfilled') {
+        const rawNotifs = notifResult.value;
+        apiNotifications = rawNotifs?.data || rawNotifs || [];
       }
 
       const mappedNotifications = (
@@ -312,7 +304,7 @@ const Dashboard = () => {
         case 'admin':
           data = {
             title: 'Administrator Dashboard',
-            subtitle: 'Manage system operations and monitor performance',
+            subtitle: 'Manage system operations, user accounts, and project governance',
             stats: [
               {
                 title: 'Total Projects',
@@ -325,31 +317,28 @@ const Dashboard = () => {
               },
               {
                 title: 'Active Students',
-                value: statsData.totalUsers || 0,
+                value: statsData.activeStudents || statsData.totalStudents || 0,
                 icon: UserGroupIcon,
                 color: 'green',
-                change: statsData.userGrowth || '+0%',
+                change: 'Active enrolled',
                 trend: 'up',
                 onClick: () => navigate('/students'),
               },
               {
-                title: 'Pending Approvals',
-                value: statsData.pendingApprovals || 0,
-                icon: ClockIcon,
-                color: 'yellow',
-                change: 'Requires attention',
-                trend: 'attention',
-                onClick: () => navigate('/projects'),
+                title: 'Total Faculty',
+                value: statsData.activeFaculty || 0,
+                icon: AcademicCapIcon,
+                color: 'purple',
+                change: 'Active guides',
+                trend: 'info',
+                onClick: () => navigate('/staff'),
               },
               {
                 title: 'Upcoming Meetings',
                 value: freshMeetings.length || 0,
                 icon: CalendarIcon,
-                color: 'purple',
-                change:
-                  freshMeetings.length > 0
-                    ? `Next: ${freshMeetings[0].time}`
-                    : 'No meetings today',
+                color: 'emerald',
+                change: freshMeetings.length > 0 ? `Next: ${freshMeetings[0].time}` : 'No meetings today',
                 trend: 'info',
                 onClick: () => navigate('/meetings'),
               },
@@ -361,44 +350,41 @@ const Dashboard = () => {
         case 'faculty':
           data = {
             title: 'Faculty Dashboard',
-            subtitle: 'Guide and evaluate student projects',
+            subtitle: 'Guide and evaluate assigned student projects',
             stats: [
               {
-                title: 'Total Projects',
-                value: statsData.totalProjects || 0,
+                title: 'Assigned Projects',
+                value: statsData.myProjects || statsData.assignedProjects || statsData.totalProjects || 0,
                 icon: ChartBarIcon,
                 color: 'blue',
-                change: `Your projects: ${statsData.myProjects || 0}`,
+                change: 'Under your guidance',
                 trend: 'info',
                 onClick: () => navigate('/projects'),
               },
               {
-                title: 'Students Assigned',
+                title: 'Students Under Guidance',
                 value: statsData.activeStudents || 0,
                 icon: UserGroupIcon,
                 color: 'green',
-                change: 'All active',
+                change: 'Active group members',
                 trend: 'info',
                 onClick: () => navigate('/students'),
               },
               {
                 title: 'Pending Reviews',
-                value: statsData.pendingReviews || 0,
+                value: statsData.pendingReviews || statsData.pendingApprovals || 0,
                 icon: ClipboardIcon,
                 color: 'yellow',
-                change: 'Due this week',
+                change: 'Awaiting feedback',
                 trend: 'attention',
                 onClick: () => navigate('/projects'),
               },
               {
-                title: 'Meetings Today',
+                title: 'Upcoming Meetings',
                 value: freshMeetings.length || 0,
                 icon: CalendarIcon,
                 color: 'purple',
-                change:
-                  freshMeetings.length > 0
-                    ? `Next: ${freshMeetings[0].time}`
-                    : 'No meetings today',
+                change: freshMeetings.length > 0 ? `Next: ${freshMeetings[0].time}` : 'No meetings today',
                 trend: 'info',
                 onClick: () => navigate('/meetings'),
               },
@@ -410,48 +396,43 @@ const Dashboard = () => {
         case 'student':
           data = {
             title: 'Student Dashboard',
-            subtitle: 'Track your projects and progress',
+            subtitle: 'Track your project status, deadlines, and team communications',
             stats: [
               {
-                title: 'Total Projects',
-                value: statsData.totalProjects || 0,
+                title: 'My Project',
+                value: statsData.myProjects || 1,
                 icon: ChartBarIcon,
                 color: 'blue',
-                change: `Your projects: ${statsData.myProjects || 0}`,
+                change: statsData.projectStatus || 'In Progress',
                 trend: 'info',
                 onClick: () => navigate('/projects'),
               },
               {
-                title: 'Assignments Due',
-                value: freshDeadlines.length || 0,
-                icon: ClipboardListIcon,
-                color: 'yellow',
-                change: statsData.urgentTasks
-                  ? `${statsData.urgentTasks} urgent`
-                  : 'None urgent',
-                trend: 'attention',
+                title: 'Project Status',
+                value: statsData.projectStatus || 'Active',
+                icon: CheckCircleIcon,
+                color: 'green',
+                change: 'On Schedule',
+                trend: 'up',
                 onClick: () => navigate('/projects'),
               },
               {
-                title: 'Meetings',
+                title: 'Upcoming Meetings',
                 value: freshMeetings.length || 0,
                 icon: CalendarIcon,
                 color: 'purple',
-                change:
-                  freshMeetings.length > 0
-                    ? `Next: ${freshMeetings[0].time}`
-                    : 'None today',
+                change: freshMeetings.length > 0 ? `Next: ${freshMeetings[0].time}` : 'None today',
                 trend: 'info',
                 onClick: () => navigate('/meetings'),
               },
               {
-                title: 'Grades',
-                value: statsData.currentGrade || 'N/A',
-                icon: AcademicCapIcon,
-                color: 'green',
-                change: 'Current average',
-                trend: 'info',
-                onClick: () => navigate('/profile'),
+                title: 'Deadlines',
+                value: freshDeadlines.length || 0,
+                icon: ClipboardListIcon,
+                color: 'yellow',
+                change: 'Upcoming milestones',
+                trend: 'attention',
+                onClick: () => navigate('/projects'),
               },
             ],
           };
@@ -493,22 +474,42 @@ const Dashboard = () => {
   useEffect(() => {
     if (authLoading) return;
 
+    let isMounted = true;
     const loadData = async (isBackground = false) => {
       if (!isBackground) setIsLoading(true);
       await loadDashboardData();
-      if (!isBackground) setIsLoading(false);
+      if (isMounted && !isBackground) setIsLoading(false);
     };
 
-    loadData();
+    loadData(false);
 
-    // Re-fetch when window gains focus (sync between tabs/windows)
+    // 1. Re-fetch on event bus notification
+    const unsubscribeBus = subscribeDataChanged(() => loadData(true));
+
+    // 2. Re-fetch when window gains focus or visibility changes
     const handleFocus = () => loadData(true);
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') loadData(true);
+    };
+
     window.addEventListener('focus', handleFocus);
+    document.addEventListener('visibilitychange', handleVisibility);
+
+    // 3. Polling interval every 15 seconds for real-time live updates
+    const pollInterval = setInterval(() => {
+      if (document.visibilityState === 'visible') {
+        loadData(true);
+      }
+    }, 15000);
 
     return () => {
+      isMounted = false;
+      unsubscribeBus();
       window.removeEventListener('focus', handleFocus);
+      document.removeEventListener('visibilitychange', handleVisibility);
+      clearInterval(pollInterval);
     };
-  }, [authLoading, loadDashboardData, location.key]);
+  }, [authLoading, user?.id]);
 
   const handleRefresh = async () => {
     setIsLoading(true);
@@ -551,19 +552,11 @@ const Dashboard = () => {
     }
   };
 
-  // Loading state
+  // Loading state with Skeleton Loader
   if (authLoading || isLoading) {
     return (
-      <div className='flex min-h-[60vh] items-center justify-center'>
-        <div className='text-center'>
-          <div className='mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-blue-600'></div>
-          <h2 className='mb-2 text-xl font-semibold text-gray-900 dark:text-gray-100'>
-            Loading Dashboard
-          </h2>
-          <p className='text-gray-600 dark:text-gray-400'>
-            Preparing your personalized dashboard...
-          </p>
-        </div>
+      <div className='min-h-screen space-y-6 p-4 md:p-6'>
+        <DashboardSkeleton />
       </div>
     );
   }

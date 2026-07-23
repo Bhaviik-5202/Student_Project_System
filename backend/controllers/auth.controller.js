@@ -161,6 +161,7 @@ exports.register = async (req, res) => {
       {
         name,
         password: encryptedPassword,
+        role: role || 'student',
         otp,
         expiresAt,
         resendCount: 0,
@@ -741,7 +742,7 @@ exports.verifyOtp = async (req, res) => {
       name: pending.name,
       email: pending.email,
       password: decryptedPassword,
-      role: 'student',
+      role: pending.role || 'student',
     });
 
     if (result.error) {

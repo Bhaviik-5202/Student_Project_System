@@ -1,4 +1,5 @@
 import api from '../utils/api';
+import { notifyDataChanged } from '../utils/eventBus';
 
 const studentService = {
   getAllStudents: async (params = {}) => {
@@ -25,7 +26,9 @@ const studentService = {
 
   createStudent: async (studentData) => {
     try {
-      return await api.post('/students', studentData);
+      const res = await api.post('/students', studentData);
+      if (res.success) notifyDataChanged({ type: 'student_created' });
+      return res;
     } catch (error) {
       return {
         success: false,
@@ -36,7 +39,9 @@ const studentService = {
 
   updateStudent: async (id, studentData) => {
     try {
-      return await api.put(`/students/${id}`, studentData);
+      const res = await api.put(`/students/${id}`, studentData);
+      if (res.success) notifyDataChanged({ type: 'student_updated', id });
+      return res;
     } catch (error) {
       return {
         success: false,
@@ -47,7 +52,9 @@ const studentService = {
 
   deleteStudent: async (id) => {
     try {
-      return await api.delete(`/students/${id}`);
+      const res = await api.delete(`/students/${id}`);
+      if (res.success) notifyDataChanged({ type: 'student_deleted', id });
+      return res;
     } catch (error) {
       return {
         success: false,

@@ -54,6 +54,13 @@ router.get('/', authMiddleware, resourceController.getAllResources);
 router.get('/:id', authMiddleware, resourceController.getResourceById);
 
 /**
+ * @route   GET /api/v1/resources/:id/download
+ * @desc    Download resource file attachment
+ * @access  Private (Authenticated Users)
+ */
+router.get('/:id/download', authMiddleware, resourceController.downloadResource);
+
+/**
  * @route   DELETE /api/v1/resources/:id
  * @desc    Delete a resource
  * @access  Private (Authenticated Users)

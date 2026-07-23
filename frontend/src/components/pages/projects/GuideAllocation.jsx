@@ -1,8 +1,11 @@
 import React, { memo, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { toast } from 'react-hot-toast';
 import projectService from '../../../services/projectService';
 import staffService from '../../../services/staffService';
+import api from '../../../utils/api';
+import { notifyDataChanged } from '../../../utils/eventBus';
 
 const GuideCard = memo(({ guide }) => {
   const statusClass =
@@ -117,15 +120,30 @@ const GuideAllocationList = memo(() => {
   useEffect(() => {
     const fetchGuides = async () => {
       setLoadingGuides(true);
-      const res = await staffService.getAllStaff();
-      if (res.success) {
-        setAllocations(
-          (res.data || [])
-            .filter(
-              (s) =>
-                s.role?.toLowerCase() === 'faculty' ||
-                s.role?.toLowerCase() === 'guide'
-            )
+      try {
+        const [staffRes, facultyRes] = await Promise.allSettled([
+          staffService.getAllStaff(),
+          api.get('/users?role=faculty&status=active'),
+        ]);
+
+        let guideList = [];
+        if (facultyRes.status === 'fulfilled' && facultyRes.value?.data) {
+          const raw = facultyRes.value.data || [];
+          const users = Array.isArray(raw) ? raw : raw.users || [];
+          guideList = users.map((g) => ({
+            id: g._id || g.id,
+            guide: g.name,
+            department: g.department || 'Computer Science',
+            allocatedGroups: 0,
+            maxCapacity: 5,
+            students: 0,
+            status: 'Available',
+          }));
+        }
+
+        if (guideList.length === 0 && staffRes.status === 'fulfilled' && staffRes.value?.success) {
+          guideList = (staffRes.value.data || [])
+            .filter((s) => s.role?.toLowerCase() === 'faculty' || s.role?.toLowerCase() === 'guide')
             .map((g) => ({
               id: g._id || g.id,
               guide: g.name,
@@ -133,14 +151,16 @@ const GuideAllocationList = memo(() => {
               allocatedGroups: g.allocatedGroups || 0,
               maxCapacity: g.maxCapacity || 5,
               students: g.studentsCount || 0,
-              status:
-                (g.allocatedGroups || 0) < (g.maxCapacity || 5)
-                  ? 'Available'
-                  : 'Full',
-            }))
-        );
+              status: (g.allocatedGroups || 0) < (g.maxCapacity || 5) ? 'Available' : 'Full',
+            }));
+        }
+
+        setAllocations(guideList);
+      } catch (err) {
+        console.error('Failed to fetch guides', err);
+      } finally {
+        setLoadingGuides(false);
       }
-      setLoadingGuides(false);
     };
 
     const fetchProjects = async () => {
@@ -169,20 +189,26 @@ const GuideAllocationList = memo(() => {
 
   const handleAssignGuide = async (projectId, guideId) => {
     const guideName = allocations.find((g) => g.id === guideId)?.guide;
-    const res = await projectService.updateProject(projectId, {
-      guide: guideId,
-    });
-    if (res.success) {
-      setProjects((prev) =>
-        prev.map((p) =>
-          p.id === projectId
-            ? { ...p, currentGuide: guideName || 'Assigned' }
-            : p
-        )
-      );
-      alert('Guide assigned successfully!');
-    } else {
-      alert('Failed to assign guide: ' + res.message);
+    const toastId = toast.loading('Assigning guide...');
+    try {
+      const res = await projectService.updateProject(projectId, {
+        guide: guideId,
+      });
+      if (res.success) {
+        setProjects((prev) =>
+          prev.map((p) =>
+            p.id === projectId
+              ? { ...p, currentGuide: guideName || 'Assigned' }
+              : p
+          )
+        );
+        notifyDataChanged({ type: 'guide_assigned', projectId, guideId });
+        toast.success(`Guide ${guideName ? `(${guideName})` : ''} assigned successfully!`, { id: toastId });
+      } else {
+        toast.error('Failed to assign guide: ' + (res.message || 'Error occurred'), { id: toastId });
+      }
+    } catch (err) {
+      toast.error('Failed to assign guide', { id: toastId });
     }
   };
 

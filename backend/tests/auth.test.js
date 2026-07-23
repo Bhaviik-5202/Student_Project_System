@@ -13,6 +13,7 @@ describe('Authentication API', function () {
     email: `authtest+${Date.now()}@example.com`,
     password: 'testpass123',
     role: 'student',
+    bypassOTP: true,
   };
 
   /**
@@ -24,6 +25,36 @@ describe('Authentication API', function () {
     expect(res.statusCode).to.equal(201);
     expect(res.body.success).to.be.true;
     expect(res.body.message).to.equal('User registered successfully');
+  });
+
+  it('should register a new admin user', async function () {
+    const adminUser = {
+      name: 'Admin Test User',
+      email: `admintest+${Date.now()}@example.com`,
+      password: 'adminpass123',
+      role: 'admin',
+      bypassOTP: true,
+    };
+    const res = await request(app).post('/api/v1/auth/register').send(adminUser);
+
+    expect(res.statusCode).to.equal(201);
+    expect(res.body.success).to.be.true;
+    expect(res.body.data.role).to.equal('admin');
+  });
+
+  it('should register a new faculty user', async function () {
+    const facultyUser = {
+      name: 'Faculty Test User',
+      email: `facultytest+${Date.now()}@example.com`,
+      password: 'facultypass123',
+      role: 'faculty',
+      bypassOTP: true,
+    };
+    const res = await request(app).post('/api/v1/auth/register').send(facultyUser);
+
+    expect(res.statusCode).to.equal(201);
+    expect(res.body.success).to.be.true;
+    expect(res.body.data.role).to.equal('faculty');
   });
 
   /**

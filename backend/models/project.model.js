@@ -53,8 +53,22 @@ const projectSchema = new mongoose.Schema(
     },
     classification: {
       type: String,
-      enum: ['Internal', 'External', 'UDP', 'IDP'],
-      default: 'Internal',
+      enum: [
+        'Internal',
+        'External',
+        'UDP',
+        'IDP',
+        'Major Project',
+        'Minor Project',
+        'Academic Project',
+        'Research Project',
+        'Industry Project',
+        'Individual',
+        'Group',
+        'Final Year Project',
+        'Internship Project',
+      ],
+      default: 'Major Project',
     },
     abstract: {
       type: String,
@@ -87,12 +101,12 @@ const projectSchema = new mongoose.Schema(
     members: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Student',
+        ref: 'User',
       },
     ],
     guide: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Staff',
+      ref: 'User',
       default: null,
       index: true,
     },
