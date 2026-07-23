@@ -66,6 +66,17 @@ const meetingService = {
       };
     }
   },
+
+  joinMeeting: async (id) => {
+    try {
+      return await api.post(`/meetings/${id}/join`);
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Failed to join meeting',
+      };
+    }
+  },
 };
 
 export default meetingService;

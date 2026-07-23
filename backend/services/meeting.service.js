@@ -47,7 +47,16 @@ exports.getAll = async () => {
  */
 exports.getById = async (id) => {
   try {
-    const meeting = await meetingRepository.findById(id);
+    const meeting = await meetingRepository.findById(id, {
+      populate: [
+        { path: 'participants', select: 'name email role' },
+        {
+          path: 'project',
+          select: 'title slug status guide',
+          populate: { path: 'guide', select: 'name email role' },
+        },
+      ],
+    });
     if (!meeting) return response(true, null, 'Meeting not found');
     return response(false, meeting, 'Meeting fetched successfully');
   } catch (err) {

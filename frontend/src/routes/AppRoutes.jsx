@@ -86,6 +86,9 @@ const MeetingList = lazy(
 const MeetingForm = lazy(
   () => import('../components/pages/meetings/MeetingForm')
 );
+const MeetingDetails = lazy(
+  () => import('../components/pages/meetings/MeetingDetails')
+);
 
 // Settings Pages
 const Profile = lazy(() => import('../components/pages/settings/Profile'));
@@ -413,17 +416,17 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path='meetings/new'
+          path='meetings/list'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
-              <MeetingForm />
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
+              <MeetingList />
             </ProtectedRoute>
           }
         />
         <Route
-          path='meetings/:id'
+          path='meetings/new'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
               <MeetingForm />
             </ProtectedRoute>
           }
@@ -437,10 +440,10 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path='meetings/list'
+          path='meetings/:id'
           element={
             <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
-              <MeetingList />
+              <MeetingDetails />
             </ProtectedRoute>
           }
         />

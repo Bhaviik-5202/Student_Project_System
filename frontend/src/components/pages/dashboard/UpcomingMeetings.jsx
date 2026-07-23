@@ -1,15 +1,123 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 import {
   Plus,
   Users,
   Clock,
   MapPin,
   Video,
-  MoreHorizontal,
   Calendar as CalendarIcon,
 } from 'lucide-react';
+import { useAuth } from '../../../hooks/useAuth';
+import meetingService from '../../../services/meetingService';
+import { MEETING_TYPES } from '../../../utils/constants';
+
+const TYPE_CONFIG = {
+  review: {
+    label: 'Project Review',
+    cardClass:
+      'border-blue-200 bg-blue-50 dark:border-blue-700 dark:bg-blue-900/30',
+    badgeClass:
+      'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+    isReview: true,
+  },
+  [MEETING_TYPES.PROJECT]: {
+    label: 'Project Review',
+    cardClass:
+      'border-blue-200 bg-blue-50 dark:border-blue-700 dark:bg-blue-900/30',
+    badgeClass:
+      'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+    isReview: true,
+  },
+  faculty: {
+    label: 'Faculty Meeting',
+    cardClass:
+      'border-emerald-200 bg-emerald-50 dark:border-emerald-700 dark:bg-emerald-900/30',
+    badgeClass:
+      'bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200',
+    isReview: false,
+  },
+  [MEETING_TYPES.ONE_ON_ONE]: {
+    label: 'One-on-One',
+    cardClass:
+      'border-emerald-200 bg-emerald-50 dark:border-emerald-700 dark:bg-emerald-900/30',
+    badgeClass:
+      'bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200',
+    isReview: false,
+  },
+};
+
+const DEFAULT_TYPE_CONFIG = {
+  label: 'Weekly Sync',
+  cardClass:
+    'border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-700/30',
+  badgeClass:
+    'bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-200',
+  isReview: false,
+};
+
+const getTypeConfig = (type) => TYPE_CONFIG[type] || DEFAULT_TYPE_CONFIG;
+
+const isUrl = (value) => /^https?:\/\//i.test(value || '');
+
+const formatMeetingTime = (meeting) => {
+  if (meeting.time) return meeting.time;
+  if (meeting.date) {
+    return new Date(meeting.date).toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  }
+  return 'TBD';
+};
 
 const UpcomingMeetings = ({ meetings = [], userRole }) => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const canJoinMeeting = () => {
+    if (!user) return false;
+    return true;
+  };
+
+  const handleDetails = (meetingId) => {
+    if (!meetingId) {
+      toast.error('Meeting details are unavailable');
+      return;
+    }
+    navigate(`/meetings/${meetingId}`);
+  };
+
+  const handleJoin = async (meeting) => {
+    const link = isUrl(meeting.location) ? meeting.location : null;
+
+    if (!link) {
+      toast.error('No meeting link available for this session');
+      return;
+    }
+
+    if (!canJoinMeeting()) {
+      toast.error('You do not have permission to join this meeting');
+      return;
+    }
+
+    if (!meeting.id) {
+      toast.error('Meeting details are unavailable');
+      return;
+    }
+
+    try {
+      const res = await meetingService.joinMeeting(meeting.id);
+      if (!res.success) {
+        toast.error(res.message || 'Unable to join meeting');
+        return;
+      }
+      window.open(link, '_blank', 'noopener,noreferrer');
+    } catch {
+      toast.error('Failed to join meeting');
+    }
+  };
+
   return (
     <div className='rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
       <div className='mb-6 flex items-center justify-between'>
@@ -29,71 +137,69 @@ const UpcomingMeetings = ({ meetings = [], userRole }) => {
       </div>
       <div className='space-y-4'>
         {meetings.length > 0 ? (
-          meetings.map((meeting, index) => (
-            <div
-              key={index}
-              className={`rounded-lg border p-4 transition-all duration-150 hover:shadow-sm ${meeting.type === 'review'
-                  ? 'border-blue-200 bg-blue-50 dark:border-blue-700 dark:bg-blue-900/30'
-                  : meeting.type === 'faculty'
-                    ? 'border-emerald-200 bg-emerald-50 dark:border-emerald-700 dark:bg-emerald-900/30'
-                    : 'border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-700/30'
-                }`}
-            >
-              <div className='flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between'>
-                <div className='flex-1'>
-                  <div className='mb-2 flex items-center'>
-                    <span
-                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${meeting.type === 'review'
-                          ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-                          : meeting.type === 'faculty'
-                            ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200'
-                            : 'bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-200'
-                        } mr-3`}
-                    >
-                      {meeting.type === 'review'
-                        ? 'Project Review'
-                        : meeting.type === 'faculty'
-                          ? 'Faculty Meeting'
-                          : 'Weekly Sync'}
-                    </span>
-                    <span className='flex items-center text-xs text-slate-500 dark:text-slate-400'>
-                      <Users size={12} className='mr-1' />
-                      {meeting.participants || 0} people
-                    </span>
+          meetings.map((meeting) => {
+            const typeConfig = getTypeConfig(meeting.type);
+            const meetingId = meeting.id || meeting._id;
+
+            return (
+              <div
+                key={meetingId}
+                className={`rounded-lg border p-4 transition-all duration-150 hover:shadow-sm ${typeConfig.cardClass}`}
+              >
+                <div className='flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between'>
+                  <div className='flex-1'>
+                    <div className='mb-2 flex items-center'>
+                      <span
+                        className={`mr-3 inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${typeConfig.badgeClass}`}
+                      >
+                        {typeConfig.label}
+                      </span>
+                      <span className='flex items-center text-xs text-slate-500 dark:text-slate-400'>
+                        <Users size={12} className='mr-1' />
+                        {meeting.participants || 0} people
+                      </span>
+                    </div>
+                    <h4 className='mb-1 font-medium text-slate-900 dark:text-white'>
+                      {meeting.title}
+                    </h4>
+                    <div className='flex flex-wrap items-center gap-3 text-sm text-slate-600 dark:text-slate-400'>
+                      <span className='flex items-center'>
+                        <Clock size={14} className='mr-1' />
+                        {formatMeetingTime(meeting)}
+                      </span>
+                      <span className='flex items-center'>
+                        <MapPin size={14} className='mr-1' />
+                        {meeting.location || 'Online'}
+                      </span>
+                    </div>
                   </div>
-                  <h4 className='mb-1 font-medium text-slate-900 dark:text-white'>
-                    {meeting.title}
-                  </h4>
-                  <div className='flex flex-wrap items-center gap-3 text-sm text-slate-600 dark:text-slate-400'>
-                    <span className='flex items-center'>
-                      <Clock size={14} className='mr-1' />
-                      {meeting.time}
-                    </span>
-                    <span className='flex items-center'>
-                      <MapPin size={14} className='mr-1' />
-                      {meeting.location}
-                    </span>
-                  </div>
-                </div>
-                <div className='flex items-center gap-2'>
-                  <button
-                    className={`rounded-lg px-3 py-1.5 text-sm transition duration-150 ${meeting.type === 'review'
-                        ? 'bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600'
-                        : 'border border-slate-300 text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700'
+                  <div className='flex items-center gap-2'>
+                    <button
+                      type='button'
+                      onClick={() =>
+                        typeConfig.isReview
+                          ? handleJoin(meeting)
+                          : handleDetails(meetingId)
+                      }
+                      className={`inline-flex items-center rounded-lg px-3 py-1.5 text-sm transition duration-150 ${
+                        typeConfig.isReview
+                          ? 'bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600'
+                          : 'border border-slate-300 text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700'
                       }`}
-                  >
-                    {meeting.type === 'review' ? (
-                      <>
-                        <Video size={14} className='mr-1' /> Join
-                      </>
-                    ) : (
-                      'Details'
-                    )}
-                  </button>
+                    >
+                      {typeConfig.isReview ? (
+                        <>
+                          <Video size={14} className='mr-1' /> Join
+                        </>
+                      ) : (
+                        'Details'
+                      )}
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
+            );
+          })
         ) : (
           <div className='rounded-lg border border-dashed border-slate-200 py-8 text-center text-slate-500 dark:border-slate-700 dark:text-slate-400'>
             No upcoming meetings found.
@@ -101,13 +207,12 @@ const UpcomingMeetings = ({ meetings = [], userRole }) => {
         )}
       </div>
 
-      {/* Meeting Stats */}
-      <div className='mt-6 border-t border-gray-200 pt-6'>
+      <div className='mt-6 border-t border-gray-200 pt-6 dark:border-slate-700'>
         <div className='flex items-center justify-between text-sm'>
           <div className='flex items-center'>
             <CalendarIcon size={16} className='mr-2 text-gray-400' />
-            <span className='text-gray-600'>Total:</span>
-            <span className='ml-1 font-medium text-gray-900'>
+            <span className='text-gray-600 dark:text-gray-400'>Total:</span>
+            <span className='ml-1 font-medium text-gray-900 dark:text-white'>
               {meetings.length} meetings
             </span>
           </div>
