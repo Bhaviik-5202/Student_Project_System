@@ -37,18 +37,18 @@ const STYLE = `
 
 /* ─── Size tokens ──────────────────────────────────────────────────────────── */
 const SIZE = {
-  small:  { box: 32,  strokeOuter: 2.5, strokeInner: 2,   orb: 7  },
-  medium: { box: 52,  strokeOuter: 3,   strokeInner: 2.5, orb: 11 },
-  large:  { box: 72,  strokeOuter: 3.5, strokeInner: 3,   orb: 15 },
-  lg:     { box: 72,  strokeOuter: 3.5, strokeInner: 3,   orb: 15 },
+  small: { box: 32, strokeOuter: 2.5, strokeInner: 2, orb: 7 },
+  medium: { box: 52, strokeOuter: 3, strokeInner: 2.5, orb: 11 },
+  large: { box: 72, strokeOuter: 3.5, strokeInner: 3, orb: 15 },
+  lg: { box: 72, strokeOuter: 3.5, strokeInner: 3, orb: 15 },
 };
 
 /* ─── Core spinner SVG ─────────────────────────────────────────────────────── */
 function SpinnerSVG({ config }) {
   const { box, strokeOuter, strokeInner, orb } = config;
-  const half    = box / 2;
-  const rOuter  = half - strokeOuter * 1.5;
-  const rInner  = half - strokeOuter * 1.5 - strokeInner * 3;
+  const half = box / 2;
+  const rOuter = half - strokeOuter * 1.5;
+  const rInner = half - strokeOuter * 1.5 - strokeInner * 3;
   const circOuter = 2 * Math.PI * rOuter;
   const circInner = 2 * Math.PI * rInner;
 
@@ -64,17 +64,17 @@ function SpinnerSVG({ config }) {
       <defs>
         {/* Blue → Indigo gradient for outer arc */}
         <linearGradient id='sps-grad-outer' x1='0%' y1='0%' x2='100%' y2='100%'>
-          <stop offset='0%'   stopColor='#3b82f6' />
+          <stop offset='0%' stopColor='#3b82f6' />
           <stop offset='100%' stopColor='#6366f1' />
         </linearGradient>
         {/* Violet → Purple gradient for inner arc */}
         <linearGradient id='sps-grad-inner' x1='100%' y1='0%' x2='0%' y2='100%'>
-          <stop offset='0%'   stopColor='#8b5cf6' />
+          <stop offset='0%' stopColor='#8b5cf6' />
           <stop offset='100%' stopColor='#06b6d4' />
         </linearGradient>
         {/* Radial glow for orb */}
         <radialGradient id='sps-grad-orb' cx='50%' cy='50%' r='50%'>
-          <stop offset='0%'   stopColor='#93c5fd' stopOpacity='0.9' />
+          <stop offset='0%' stopColor='#93c5fd' stopOpacity='0.9' />
           <stop offset='100%' stopColor='#3b82f6' stopOpacity='0.3' />
         </radialGradient>
       </defs>
@@ -167,7 +167,7 @@ const LoadingSpinner = ({
           <div
             className='sps-glow absolute rounded-full bg-blue-500/20 blur-xl dark:bg-blue-400/15'
             style={{
-              width:  config.box * 1.5,
+              width: config.box * 1.5,
               height: config.box * 1.5,
             }}
           />
@@ -208,9 +208,9 @@ const LoadingSpinner = ({
 };
 
 LoadingSpinner.propTypes = {
-  fullPage:  PropTypes.bool,
-  size:      PropTypes.oneOf(['small', 'medium', 'large', 'lg']),
-  message:   PropTypes.string,
+  fullPage: PropTypes.bool,
+  size: PropTypes.oneOf(['small', 'medium', 'large', 'lg']),
+  message: PropTypes.string,
   className: PropTypes.string,
 };
 

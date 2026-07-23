@@ -26,9 +26,13 @@ module.exports = function (req, res, next) {
       try {
         rawToken = decodeURIComponent(rawToken);
       } catch (e) {
-        // Fallback if token was not URL encoded
+        // Fallback
       }
-      token = rawToken.replace(/^"|"$/g, '').replace(/ /g, '+');
+      rawToken = rawToken.replace(/^"|"$/g, '').trim();
+      if (rawToken.startsWith('Bearer ')) {
+        rawToken = rawToken.replace('Bearer ', '').trim();
+      }
+      token = rawToken.replace(/ /g, '+');
     }
 
     if (!token) {

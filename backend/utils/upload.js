@@ -16,9 +16,20 @@ if (!fs.existsSync(uploadDir)) {
 const allowedMimeTypes = [
   'image/jpeg',
   'image/png',
+  'image/gif',
+  'image/webp',
   'application/pdf',
   'application/msword',
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/vnd.ms-powerpoint',
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  'application/vnd.ms-excel',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'text/plain',
+  'application/zip',
+  'application/x-zip-compressed',
+  'video/mp4',
+  'video/webm',
 ];
 
 const storage = multer.diskStorage({
@@ -35,7 +46,31 @@ const storage = multer.diskStorage({
 
 const fileFilter = (req, file, cb) => {
   if (!allowedMimeTypes.includes(file.mimetype)) {
-    return cb(new Error('Invalid file type'));
+    // Allow by extension fallback for uncommon mime types
+    const ext = path.extname(file.originalname).toLowerCase();
+    const validExts = [
+      '.pdf',
+      '.doc',
+      '.docx',
+      '.ppt',
+      '.pptx',
+      '.xls',
+      '.xlsx',
+      '.txt',
+      '.zip',
+      '.png',
+      '.jpg',
+      '.jpeg',
+      '.mp4',
+    ];
+    if (validExts.includes(ext)) {
+      return cb(null, true);
+    }
+    return cb(
+      new Error(
+        'Invalid file type. Supported types: PDF, DOCX, PPTX, XLSX, TXT, ZIP, Images, MP4'
+      )
+    );
   }
   cb(null, true);
 };
@@ -43,7 +78,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
   storage,
   limits: {
-    fileSize: Number(process.env.MAX_FILE_SIZE) || 10 * 1024 * 1024, // 10MB default
+    fileSize: Number(process.env.MAX_FILE_SIZE) || 50 * 1024 * 1024, // 50MB default
   },
   fileFilter,
 });

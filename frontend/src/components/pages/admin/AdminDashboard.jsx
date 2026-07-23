@@ -173,30 +173,28 @@ const QuickActionButton = memo(({ icon: IconComponent, label, onClick }) => (
       height: 'auto',
     }}
   >
-    <IconComponent className='mb-2 h-6 w-6 text-blue-600' />
+    <IconComponent className='mb-2 h-6 w-6 text-blue-600 dark:text-blue-400' />
     <span>{label}</span>
   </button>
 ));
 
 QuickActionButton.displayName = 'QuickActionButton';
 
-QuickActionButton.displayName = 'QuickActionButton';
-
 // Activity Item Component
 const ActivityItem = memo(({ user, action, time }) => (
-  <div className='flex items-center justify-between border-b border-slate-100 p-4 last:border-0 dark:border-slate-700'>
+  <div className='flex items-center justify-between border-b border-slate-100 p-4 last:border-0 dark:border-slate-700/60'>
     <div className='flex items-center gap-3'>
-      <div className='flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-xs font-semibold text-slate-700 dark:bg-slate-700 dark:text-slate-300'>
+      <div className='flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-xs font-semibold text-slate-700 dark:bg-slate-700 dark:text-slate-200'>
         {user.charAt(0).toUpperCase()}
       </div>
       <div>
         <div className='text-sm font-medium text-slate-900 dark:text-white'>
           {user}
         </div>
-        <div className='text-xs text-slate-500'>{action}</div>
+        <div className='text-xs text-slate-500 dark:text-slate-400'>{action}</div>
       </div>
     </div>
-    <time className='text-xs text-slate-400'>{time}</time>
+    <time className='text-xs text-slate-400 dark:text-slate-500'>{time}</time>
   </div>
 ));
 
@@ -208,7 +206,7 @@ const ServiceStatusItem = memo(
     const isOnline = status === 'Online';
 
     return (
-      <div className='flex items-center justify-between border-b border-slate-100 p-4 last:border-0 dark:border-slate-700'>
+      <div className='flex items-center justify-between border-b border-slate-100 p-4 last:border-0 dark:border-slate-700/60'>
         <div className='flex items-center gap-3'>
           <div
             className={`h-2 w-2 rounded-full ${isOnline ? 'bg-emerald-500' : 'bg-rose-500'}`}
@@ -221,7 +219,7 @@ const ServiceStatusItem = memo(
           <div className='text-xs font-semibold text-slate-900 dark:text-white'>
             {uptime}
           </div>
-          <div className='text-[10px] uppercase text-slate-400'>Uptime</div>
+          <div className='text-[10px] uppercase text-slate-400 dark:text-slate-500'>Uptime</div>
         </div>
       </div>
     );
@@ -391,117 +389,99 @@ const AdminDashboard = memo(() => {
         badge='Admin Access'
       />
 
-        <section className='admin-stat-grid'>
-          {STATS_CONFIG.map(({ key, icon, label, suffix }) => (
-            <StatCard
-              key={key}
-              icon={icon}
-              value={`${stats[key]}${suffix || ''}`}
-              label={label}
-            />
-          ))}
-        </section>
+      <section className='admin-stat-grid'>
+        {STATS_CONFIG.map(({ key, icon, label, suffix }) => (
+          <StatCard
+            key={key}
+            icon={icon}
+            value={`${stats[key]}${suffix || ''}`}
+            label={label}
+          />
+        ))}
+      </section>
 
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: '24px',
-            marginBottom: '24px',
-          }}
-        >
-          <section className='admin-card'>
-            <h2
-              style={{
-                fontSize: '18px',
-                fontWeight: '700',
-                marginBottom: '20px',
-              }}
-            >
-              Quick Actions
-            </h2>
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(2, 1fr)',
-                gap: '16px',
-              }}
-            >
-              {QUICK_ACTIONS_CONFIG.map(({ id, icon, label, path }) => (
-                <QuickActionButton
-                  key={id}
-                  icon={icon}
-                  label={label}
-                  onClick={handleNavigate(path)}
-                />
-              ))}
-            </div>
-          </section>
-
-          <section className='admin-card'>
-            <h2
-              style={{
-                fontSize: '18px',
-                fontWeight: '700',
-                marginBottom: '20px',
-              }}
-            >
-              Recent Activities
-            </h2>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              {recentActivities.length === 0 ? (
-                <p className='py-4 text-center text-sm text-slate-500'>
-                  No recent activities
-                </p>
-              ) : (
-                recentActivities.map((activity) => (
-                  <ActivityItem
-                    key={activity.id}
-                    user={activity.user}
-                    action={activity.action}
-                    time={activity.time}
-                  />
-                ))
-              )}
-            </div>
-          </section>
-        </div>
-
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gap: '24px',
+          marginBottom: '24px',
+        }}
+      >
         <section className='admin-card'>
-          <h2
-            style={{
-              fontSize: '18px',
-              fontWeight: '700',
-              marginBottom: '20px',
-            }}
-          >
-            System Status
+          <h2 className='text-lg font-bold text-slate-900 dark:text-white mb-5'>
+            Quick Actions
           </h2>
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-              gap: '1px',
-              backgroundColor: 'var(--admin-border)',
+              gridTemplateColumns: 'repeat(2, 1fr)',
+              gap: '16px',
             }}
           >
-            {systemServices.map((service) => (
-              <div
-                key={service.id}
-                style={{ backgroundColor: 'var(--admin-white)' }}
-              >
-                <ServiceStatusItem
-                  service={service.service}
-                  status={service.status}
-                  uptime={service.uptime}
-                />
-              </div>
+            {QUICK_ACTIONS_CONFIG.map(({ id, icon, label, path }) => (
+              <QuickActionButton
+                key={id}
+                icon={icon}
+                label={label}
+                onClick={handleNavigate(path)}
+              />
             ))}
           </div>
         </section>
+
+        <section className='admin-card'>
+          <h2 className='text-lg font-bold text-slate-900 dark:text-white mb-5'>
+            Recent Activities
+          </h2>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            {recentActivities.length === 0 ? (
+              <p className='py-4 text-center text-sm text-slate-500 dark:text-slate-400'>
+                No recent activities
+              </p>
+            ) : (
+              recentActivities.map((activity) => (
+                <ActivityItem
+                  key={activity.id}
+                  user={activity.user}
+                  action={activity.action}
+                  time={activity.time}
+                />
+              ))
+            )}
+          </div>
+        </section>
       </div>
-    );
-  });
+
+      <section className='admin-card'>
+        <h2 className='text-lg font-bold text-slate-900 dark:text-white mb-5'>
+          System Status
+        </h2>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gap: '1px',
+            backgroundColor: 'var(--admin-border)',
+          }}
+        >
+          {systemServices.map((service) => (
+            <div
+              key={service.id}
+              style={{ backgroundColor: 'var(--admin-white)' }}
+            >
+              <ServiceStatusItem
+                service={service.service}
+                status={service.status}
+                uptime={service.uptime}
+              />
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+});
 
 AdminDashboard.displayName = 'AdminDashboard';
 

@@ -31,8 +31,14 @@ const StudentsList = lazy(
 const StaffManagement = lazy(
   () => import('../components/pages/students/Staff')
 );
+const StaffForm = lazy(
+  () => import('../components/pages/students/StaffForm')
+);
 const UserManagement = lazy(
   () => import('../components/pages/admin/UserManagement')
+);
+const UserForm = lazy(
+  () => import('../components/pages/admin/UserForm')
 );
 const PermissionsManager = lazy(
   () => import('../components/pages/admin/PermissionsManager')
@@ -282,10 +288,42 @@ const AppRoutes = () => {
           }
         />
         <Route
+          path='staff/new'
+          element={
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
+              <StaffForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='staff/:id/edit'
+          element={
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
+              <StaffForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path='user-management'
           element={
             <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <UserManagement />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='user-management/new'
+          element={
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
+              <UserForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='user-management/:id/edit'
+          element={
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
+              <UserForm />
             </ProtectedRoute>
           }
         />

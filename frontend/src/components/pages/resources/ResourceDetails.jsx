@@ -1,194 +1,302 @@
 // src/components/pages/resources/ResourceDetails.jsx
-import React, { useState, useCallback, useMemo, useEffect, memo } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useCallback, useEffect, memo } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import {
+  FileText,
+  Download,
+  Share2,
+  Trash2,
+  Edit,
+  User,
+  Calendar,
+  HardDrive,
+  Eye,
+  ArrowLeft,
+  CheckCircle,
+} from 'lucide-react';
 import useNotification from '../../../hooks/useNotification';
-import api from '../../../utils/api';
+import resourceService from '../../../services/resourceService';
+import { PreviewModal, EditModal } from './ResourceModals';
 
 const ResourceDetails = memo(() => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [resource, setResource] = useState(null);
   const [relatedResources, setRelatedResources] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+
   const { showSuccess, showError } = useNotification();
 
-  useEffect(() => {
-    const fetchResourceDetails = async () => {
-      try {
-        const response = await api.get(`/resources/${id}`);
-        setResource(response.data?.resource || response.data || null);
-        setRelatedResources(response.data?.related || []);
-      } catch (error) {
-        console.error('Failed to fetch resource details', error);
-        showError('Failed to load resource details.'); // Add error notification
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchResourceDetails();
-  }, [id, showError]); // Add showError to dependency array
+  const fetchResourceDetails = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await resourceService.getById(id);
+      if (response.success || response.data) {
+        const item = response.data || response;
+        setResource(item);
 
-  if (loading)
+        // Fetch related resources
+        const relatedRes = await resourceService.getAll({ limit: 4 });
+        if (relatedRes.data) {
+          setRelatedResources(relatedRes.data.filter((r) => r._id !== id));
+        }
+      } else {
+        showError('Resource not found.');
+      }
+    } catch (error) {
+      console.error('Failed to fetch resource details', error);
+      showError('Failed to load resource details.');
+    } finally {
+      setLoading(false);
+    }
+  }, [id, showError]);
+
+  useEffect(() => {
+    fetchResourceDetails();
+  }, [fetchResourceDetails]);
+
+  const handleDownload = async () => {
+    if (!resource) return;
+    showSuccess(`Downloading ${resource.title || resource.name}...`);
+    await resourceService.download(
+      resource._id,
+      `${resource.title || resource.name}.${resource.fileType || 'pdf'}`
+    );
+  };
+
+  const handleDelete = async () => {
+    if (!resource) return;
+    if (window.confirm(`Delete "${resource.title || resource.name}"?`)) {
+      const res = await resourceService.delete(resource._id);
+      if (res.success || !res.error) {
+        showSuccess('Resource deleted successfully.');
+        navigate('/resources');
+      } else {
+        showError(res.message || 'Failed to delete resource');
+      }
+    }
+  };
+
+  const handleShare = () => {
+    const url = `${window.location.origin}/resources/${id}`;
+    navigator.clipboard.writeText(url);
+    showSuccess('Resource link copied to clipboard!');
+  };
+
+  if (loading) {
     return (
-      <div className='p-6 text-center text-slate-500'>
+      <div className='p-8 text-center text-slate-500 dark:text-slate-400'>
         Loading resource details...
       </div>
     );
-  if (!resource)
+  }
+
+  if (!resource) {
     return (
-      <div className='p-6 text-center text-red-500'>Resource not found</div>
+      <div className='p-8 text-center text-red-500'>
+        <p className='font-bold text-lg mb-2'>Resource not found</p>
+        <button
+          onClick={() => navigate('/resources')}
+          className='inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-bold text-white'
+        >
+          <ArrowLeft size={16} /> Back to Resources
+        </button>
+      </div>
     );
+  }
+
+  const title = resource.title || resource.name || 'Untitled Resource';
+  const category = resource.category || 'General';
+  const fileSize = resource.fileSize || resource.size || '1.0 MB';
+  const downloads = resource.downloadsCount || resource.downloads || 0;
+  const tags = Array.isArray(resource.tags) ? resource.tags : [];
+  const uploaderName = resource.uploadedBy?.name || resource.uploadedBy || 'Academic Faculty';
 
   return (
-    <div className='p-6'>
-      <div className='mb-6 flex items-center justify-between'>
-        <h1 className='text-2xl font-bold text-slate-800 dark:text-white'>
-          Resource Details
-        </h1>
-        <button className='rounded-lg bg-red-100 px-4 py-2 text-red-700 hover:bg-red-200 dark:bg-red-900/40 dark:text-red-300 dark:hover:bg-red-900/60'>
-          Delete Resource
+    <div className='p-4 md:p-6 space-y-6 animate-fade-in'>
+      {/* Top Header */}
+      <div className='flex items-center justify-between'>
+        <button
+          onClick={() => navigate('/resources')}
+          className='flex items-center gap-2 text-xs font-semibold text-slate-600 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400 transition-colors'
+        >
+          <ArrowLeft size={16} /> Back to Resource Browser
         </button>
+        <div className='flex items-center gap-2'>
+          <button
+            onClick={() => setIsEditOpen(true)}
+            className='flex items-center gap-1.5 rounded-xl border border-slate-300 px-3.5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700 transition-colors'
+          >
+            <Edit size={14} /> Edit
+          </button>
+          <button
+            onClick={handleDelete}
+            className='flex items-center gap-1.5 rounded-xl border border-red-200 bg-red-50 px-3.5 py-2 text-xs font-semibold text-red-600 hover:bg-red-100 dark:border-red-900/40 dark:bg-red-950/30 dark:text-red-400 transition-colors'
+          >
+            <Trash2 size={14} /> Delete
+          </button>
+        </div>
       </div>
 
       <div className='grid grid-cols-1 gap-6 lg:grid-cols-3'>
-        <div className='lg:col-span-2'>
-          <div className='rounded-xl bg-white p-6 shadow dark:bg-slate-800 dark:shadow-md'>
-            <div className='mb-6 flex items-start justify-between'>
-              <div className='flex items-center gap-4'>
-                <div className='flex h-16 w-16 items-center justify-center rounded-xl bg-blue-100 dark:bg-blue-900'>
-                  <span className='text-3xl'>📄</span>
-                </div>
-                <div>
-                  <h2 className='text-xl font-bold text-slate-800 dark:text-white'>
-                    {resource.name}
-                  </h2>
-                  <div className='mt-2 flex items-center gap-3'>
-                    <span className='rounded bg-slate-100 px-2 py-1 text-sm text-slate-700 dark:bg-slate-700 dark:text-slate-200'>
-                      {resource.category}
-                    </span>
-                    <span className='text-slate-600 dark:text-slate-400'>
-                      {resource.size}
-                    </span>
-                    <span className='text-slate-600 dark:text-slate-400'>
-                      📥 {resource.downloads} downloads
-                    </span>
-                  </div>
+        {/* Left 2 Columns */}
+        <div className='lg:col-span-2 space-y-6'>
+          <div className='rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
+            <div className='mb-6 flex items-start gap-4'>
+              <div className='flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-400 shadow-sm'>
+                <FileText size={28} />
+              </div>
+              <div className='flex-1'>
+                <span className='inline-block rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700 dark:bg-slate-700 dark:text-slate-200 mb-1.5'>
+                  {category}
+                </span>
+                <h1 className='text-xl font-bold text-slate-900 dark:text-white'>
+                  {title}
+                </h1>
+                <div className='mt-2 flex flex-wrap items-center gap-4 text-xs text-slate-500 dark:text-slate-400'>
+                  <span className='flex items-center gap-1'>
+                    <HardDrive size={14} /> {fileSize}
+                  </span>
+                  <span className='flex items-center gap-1 font-semibold text-slate-700 dark:text-slate-300'>
+                    <Download size={14} className='text-indigo-500' /> {downloads} downloads
+                  </span>
                 </div>
               </div>
             </div>
 
-            <div className='space-y-6'>
+            <div className='space-y-6 border-t border-slate-100 pt-6 dark:border-slate-700/60'>
               <div>
-                <h3 className='mb-2 font-semibold text-slate-800 dark:text-white'>
+                <h3 className='mb-2 text-xs font-bold uppercase tracking-wider text-slate-400'>
                   Description
                 </h3>
-                <p className='text-slate-700 dark:text-slate-300'>
-                  {resource.description}
+                <p className='text-sm leading-relaxed text-slate-700 dark:text-slate-300'>
+                  {resource.description || 'No additional description provided.'}
                 </p>
               </div>
 
-              <div>
-                <h3 className='mb-3 font-semibold text-slate-800 dark:text-white'>
-                  Tags
-                </h3>
-                <div className='flex flex-wrap gap-2'>
-                  {resource.tags.map((tag, index) => (
-                    <span
-                      key={index}
-                      className='rounded-full bg-blue-50 px-3 py-1 text-sm text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className='grid grid-cols-2 gap-6'>
+              {tags.length > 0 && (
                 <div>
-                  <h3 className='mb-2 font-semibold text-slate-800 dark:text-white'>
-                    Upload Information
+                  <h3 className='mb-2 text-xs font-bold uppercase tracking-wider text-slate-400'>
+                    Tags & Keywords
                   </h3>
-                  <div className='space-y-2'>
-                    <p className='text-slate-700 dark:text-slate-300'>
-                      <span className='font-medium'>Uploaded by:</span>{' '}
-                      {resource.uploadedBy}
-                    </p>
-                    <p className='text-slate-700 dark:text-slate-300'>
-                      <span className='font-medium'>Upload date:</span>{' '}
-                      {resource.uploadDate}
-                    </p>
+                  <div className='flex flex-wrap gap-1.5'>
+                    {tags.map((tag, index) => (
+                      <span
+                        key={index}
+                        className='rounded-md bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-300'
+                      >
+                        #{tag}
+                      </span>
+                    ))}
                   </div>
                 </div>
+              )}
 
-                <div>
-                  <h3 className='mb-2 font-semibold text-slate-800 dark:text-white'>
-                    Permissions
-                  </h3>
-                  <div className='space-y-2'>
-                    <p className='text-slate-700 dark:text-slate-300'>
-                      ✅ View & Download
-                    </p>
-                    <p className='text-slate-700 dark:text-slate-300'>
-                      ❌ Edit & Delete
+              <div className='grid grid-cols-2 gap-4 rounded-xl bg-slate-50 p-4 dark:bg-slate-700/40 text-xs'>
+                <div className='flex items-center gap-3'>
+                  <User size={18} className='text-slate-400' />
+                  <div>
+                    <p className='text-[10px] uppercase font-bold text-slate-400'>Uploaded By</p>
+                    <p className='font-bold text-slate-800 dark:text-slate-200'>{uploaderName}</p>
+                  </div>
+                </div>
+                <div className='flex items-center gap-3'>
+                  <Calendar size={18} className='text-slate-400' />
+                  <div>
+                    <p className='text-[10px] uppercase font-bold text-slate-400'>Date Uploaded</p>
+                    <p className='font-bold text-slate-800 dark:text-slate-200'>
+                      {resource.createdAt ? new Date(resource.createdAt).toLocaleDateString() : 'N/A'}
                     </p>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className='mt-8 flex gap-4'>
-              <button className='flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-3 text-white hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:from-blue-500 dark:to-indigo-500 dark:hover:from-blue-600 dark:hover:to-indigo-600 dark:focus:ring-blue-400'>
-                <span>📥</span> Download Resource
+            <div className='mt-8 flex flex-wrap gap-3 pt-4 border-t border-slate-100 dark:border-slate-700'>
+              <button
+                onClick={handleDownload}
+                className='flex flex-1 items-center justify-center gap-2 rounded-xl bg-indigo-600 py-3 text-xs font-bold text-white shadow hover:bg-indigo-700 transition-colors'
+              >
+                <Download size={16} /> Download Asset
               </button>
-              <button className='rounded-lg border border-slate-300 px-6 py-3 text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700'>
-                Share Resource
+              <button
+                onClick={() => setIsPreviewOpen(true)}
+                className='flex items-center gap-2 rounded-xl border border-slate-300 px-5 py-3 text-xs font-bold text-slate-700 hover:bg-slate-100 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700 transition-colors'
+              >
+                <Eye size={16} /> Preview File
+              </button>
+              <button
+                onClick={handleShare}
+                className='flex items-center gap-2 rounded-xl border border-slate-300 px-5 py-3 text-xs font-bold text-slate-700 hover:bg-slate-100 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700 transition-colors'
+              >
+                <Share2 size={16} /> Share Link
               </button>
             </div>
           </div>
         </div>
 
+        {/* Right Sidebar */}
         <div className='space-y-6'>
-          <div className='rounded-xl bg-white p-6 shadow dark:bg-slate-800 dark:shadow-md'>
-            <h3 className='mb-4 font-semibold text-slate-800 dark:text-white'>
-              Preview
+          <div className='rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
+            <h3 className='mb-3 text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2'>
+              <Eye size={16} className='text-indigo-600' /> Quick Preview
             </h3>
-            <div className='flex h-64 items-center justify-center rounded-lg bg-slate-50 dark:bg-slate-700'>
-              <div className='text-center'>
-                <div className='mb-2 text-4xl'>📄</div>
-                <p className='text-slate-600 dark:text-slate-300'>
-                  PDF Preview
-                </p>
-                <p className='text-sm text-slate-500 dark:text-slate-400'>
-                  Click to view full document
-                </p>
-              </div>
+            <div
+              onClick={() => setIsPreviewOpen(true)}
+              className='flex h-48 cursor-pointer flex-col items-center justify-center rounded-xl bg-slate-50 border border-dashed border-slate-300 hover:border-indigo-400 dark:bg-slate-700/50 dark:border-slate-600 transition-all group'
+            >
+              <FileText size={40} className='mb-2 text-indigo-500 group-hover:scale-110 transition-transform' />
+              <p className='text-xs font-bold text-slate-800 dark:text-white'>Click to Open Preview</p>
+              <p className='text-[10px] text-slate-400 mt-1'>PDF, Doc, Image, or Video viewer</p>
             </div>
           </div>
 
-          <div className='rounded-xl bg-white p-6 shadow dark:bg-slate-800 dark:shadow-md'>
-            <h3 className='mb-4 font-semibold text-slate-800 dark:text-white'>
-              Related Resources
-            </h3>
-            <div className='space-y-3'>
-              {relatedResources.map((item, index) => (
-                <div
-                  key={index}
-                  className='flex items-center gap-3 rounded p-2 hover:bg-slate-50 dark:hover:bg-slate-700'
-                >
-                  <span className='text-xl'>📄</span>
-                  <div className='flex-1'>
-                    <p className='text-sm font-medium text-slate-900 dark:text-white'>
-                      {item.name || item.title || item}
-                    </p>
-                    <p className='text-xs text-slate-500 dark:text-slate-400'>
-                      {item.type || 'PDF'} • {item.size || '1.2 MB'}
-                    </p>
+          {relatedResources.length > 0 && (
+            <div className='rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
+              <h3 className='mb-3 text-sm font-bold text-slate-900 dark:text-white'>
+                Related Assets
+              </h3>
+              <div className='space-y-2.5'>
+                {relatedResources.map((item) => (
+                  <div
+                    key={item._id}
+                    onClick={() => navigate(`/resources/${item._id}`)}
+                    className='flex items-center gap-3 rounded-xl p-2.5 hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700'
+                  >
+                    <div className='flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-900/40 dark:text-indigo-300 shrink-0'>
+                      <FileText size={16} />
+                    </div>
+                    <div className='flex-1 overflow-hidden'>
+                      <p className='truncate text-xs font-bold text-slate-800 dark:text-white'>
+                        {item.title || item.name}
+                      </p>
+                      <p className='text-[10px] text-slate-400'>
+                        {item.category || 'Resource'} &bull; {item.fileSize || '1.0 MB'}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
+
+      <PreviewModal
+        resource={resource}
+        isOpen={isPreviewOpen}
+        onClose={() => setIsPreviewOpen(false)}
+        onDownload={handleDownload}
+      />
+
+      <EditModal
+        resource={resource}
+        isOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+        onSaved={fetchResourceDetails}
+      />
     </div>
   );
 });

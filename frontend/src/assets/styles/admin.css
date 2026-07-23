@@ -14,13 +14,18 @@
   --admin-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
-.dark .admin-page {
+.dark,
+[data-theme='dark'] {
+  --admin-primary: #3b82f6;
+  --admin-primary-hover: #60a5fa;
+  --admin-secondary: #334155;
+  --admin-secondary-hover: #475569;
   --admin-bg-light: #0f172a;
   --admin-white: #1e293b;
-  --admin-text-main: #f1f5f9;
+  --admin-text-main: #f8fafc;
   --admin-text-muted: #94a3b8;
   --admin-border: #334155;
-  --admin-secondary-hover: #334155;
+  --admin-shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
 }
 
 .admin-page {
@@ -54,6 +59,7 @@
   font-size: 24px;
   font-weight: 700;
   margin: 0;
+  color: var(--admin-text-main);
 }
 
 .admin-subtitle {
@@ -67,6 +73,7 @@
   border-radius: var(--admin-radius);
   padding: 24px;
   box-shadow: var(--admin-shadow-sm);
+  color: var(--admin-text-main);
 }
 
 .admin-stat-grid {
@@ -84,6 +91,7 @@
   display: flex;
   align-items: center;
   gap: 16px;
+  color: var(--admin-text-main);
 }
 
 .admin-stat-icon {
@@ -101,6 +109,7 @@
   font-size: 24px;
   font-weight: 700;
   line-height: 1;
+  color: var(--admin-text-main);
 }
 
 .admin-stat-label {
@@ -152,6 +161,18 @@
   background-color: #fee2e2;
 }
 
+.dark .admin-btn-danger,
+[data-theme='dark'] .admin-btn-danger {
+  background-color: rgba(153, 27, 27, 0.2);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+}
+
+.dark .admin-btn-danger:hover,
+[data-theme='dark'] .admin-btn-danger:hover {
+  background-color: rgba(153, 27, 27, 0.35);
+}
+
 .admin-table-container {
   background-color: var(--admin-white);
   border: 1px solid var(--admin-border);
@@ -179,6 +200,16 @@
   padding: 16px;
   border-bottom: 1px solid var(--admin-border);
   font-size: 14px;
+  color: var(--admin-text-main);
+}
+
+.admin-table tr:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.dark .admin-table tr:hover,
+[data-theme='dark'] .admin-table tr:hover {
+  background-color: rgba(255, 255, 255, 0.04);
 }
 
 .admin-table tr:last-child td {
@@ -197,21 +228,60 @@
   background-color: #ecfdf5;
   color: #065f46;
 }
+
+.dark .admin-badge-success,
+[data-theme='dark'] .admin-badge-success {
+  background-color: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(52, 211, 153, 0.25);
+}
+
 .admin-badge-blue {
   background-color: #eff6ff;
   color: #1e40af;
 }
+
+.dark .admin-badge-blue,
+[data-theme='dark'] .admin-badge-blue {
+  background-color: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border: 1px solid rgba(96, 165, 250, 0.25);
+}
+
 .admin-badge-gray {
   background-color: #f1f5f9;
   color: #475569;
 }
+
+.dark .admin-badge-gray,
+[data-theme='dark'] .admin-badge-gray {
+  background-color: rgba(100, 116, 139, 0.2);
+  color: #cbd5e1;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
 .admin-badge-danger {
   background-color: #fef2f2;
   color: #991b1b;
 }
+
+.dark .admin-badge-danger,
+[data-theme='dark'] .admin-badge-danger {
+  background-color: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(248, 113, 113, 0.25);
+}
+
 .admin-badge-warning {
   background-color: #fffbeb;
   color: #92400e;
+}
+
+.dark .admin-badge-warning,
+[data-theme='dark'] .admin-badge-warning {
+  background-color: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.25);
 }
 
 .admin-modal-overlay {
@@ -220,11 +290,11 @@
   background-color: rgba(15, 23, 42, 0.5);
   backdrop-filter: blur(4px);
   display: flex;
-  align-items: flex-start; /* Start at top */
+  align-items: flex-start;
   justify-content: center;
   z-index: 9999;
-  padding: 60px 16px; /* Space from top */
-  overflow-y: auto; /* Support scrolling if content is long */
+  padding: 60px 16px;
+  overflow-y: auto;
 }
 
 .admin-modal {
@@ -233,6 +303,8 @@
   width: 100%;
   max-width: 500px;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  color: var(--admin-text-main);
+  border: 1px solid var(--admin-border);
 }
 
 .admin-modal-header {
@@ -264,6 +336,7 @@
   font-size: 13px;
   font-weight: 600;
   margin-bottom: 6px;
+  color: var(--admin-text-main);
 }
 
 .admin-input {
@@ -275,8 +348,22 @@
   color: var(--admin-text-main);
 }
 
+.dark .admin-input,
+[data-theme='dark'] .admin-input {
+  background-color: #1e293b;
+  color: #f8fafc;
+  border-color: #334155;
+}
+
+.dark .admin-input option,
+[data-theme='dark'] .admin-input option {
+  background-color: #1e293b;
+  color: #f8fafc;
+}
+
 .admin-input:focus {
   outline: none;
   border-color: var(--admin-primary);
   box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
 }
+

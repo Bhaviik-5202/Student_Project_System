@@ -24,18 +24,6 @@ router.post(
   authMiddleware,
   roleMiddleware(['admin', 'faculty']),
   upload.array('files'),
-  [
-    body('title')
-      .optional()
-      .notEmpty()
-      .withMessage('Title cannot be empty if provided'),
-
-    body('type')
-      .notEmpty()
-      .isIn(['document', 'template', 'video'])
-      .withMessage('Type must be document, template, or video'),
-  ],
-  validateRequest,
   resourceController.createResource
 );
 
@@ -58,12 +46,35 @@ router.get('/:id', authMiddleware, resourceController.getResourceById);
  * @desc    Download resource file attachment
  * @access  Private (Authenticated Users)
  */
-router.get('/:id/download', authMiddleware, resourceController.downloadResource);
+router.get(
+  '/:id/download',
+  authMiddleware,
+  resourceController.downloadResource
+);
+
+/**
+ * @route   GET /api/v1/resources/:id/preview
+ * @desc    Preview resource file attachment or metadata
+ * @access  Private (Authenticated Users)
+ */
+router.get('/:id/preview', authMiddleware, resourceController.previewResource);
+
+/**
+ * @route   PUT /api/v1/resources/:id
+ * @desc    Update resource metadata
+ * @access  Private (Admin / Faculty)
+ */
+router.put(
+  '/:id',
+  authMiddleware,
+  roleMiddleware(['admin', 'faculty']),
+  resourceController.updateResource
+);
 
 /**
  * @route   DELETE /api/v1/resources/:id
  * @desc    Delete a resource
- * @access  Private (Authenticated Users)
+ * @access  Private (Admin / Faculty)
  */
 router.delete(
   '/:id',

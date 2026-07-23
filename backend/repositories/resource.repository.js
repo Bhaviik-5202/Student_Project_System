@@ -15,7 +15,7 @@ exports.findAll = (filter = {}, options = {}) =>
     .sort(options.sort || { createdAt: -1 })
     .skip(options.skip || 0)
     .limit(options.limit || 0)
-    .populate(options.populate || '')
+    .populate(options.populate || { path: 'uploadedBy', select: 'name email role department' })
     .select(options.select || '');
 
 /**
@@ -26,7 +26,7 @@ exports.findAll = (filter = {}, options = {}) =>
  */
 exports.findById = (id, options = {}) =>
   Resource.findById(id)
-    .populate(options.populate || '')
+    .populate(options.populate || { path: 'uploadedBy', select: 'name email role department' })
     .select(options.select || '');
 
 /**

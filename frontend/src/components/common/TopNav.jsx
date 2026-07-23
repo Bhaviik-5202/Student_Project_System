@@ -6,11 +6,41 @@ import { useTheme } from '../../hooks/useTheme';
 import { navigationItems } from '../../config/navigation';
 
 /**
+ * Submenu Icon Mapping
+ * Provides clean visual identifiers for sub-navigation items
+ */
+const SUBMENU_ICONS = {
+  'All Projects': 'th-large',
+  'Project Proposal': 'plus-circle',
+  'Project Groups': 'users',
+  'Guide Allocation': 'user-tag',
+  'Timeline': 'stream',
+  'Milestones': 'flag-checkered',
+  'Student List': 'user-graduate',
+  'Calendar': 'calendar-alt',
+  'Meeting List': 'list-ul',
+  'Schedule Meeting': 'plus',
+  'Browse Resources': 'folder-open',
+  'Document Library': 'file-alt',
+  'Templates': 'copy',
+  'Admin Dashboard': 'chart-pie',
+  'User Management': 'user-cog',
+  'Staff Management': 'id-badge',
+  'System Settings': 'sliders-h',
+  'Audit Log': 'shield-alt',
+  'Dashboard': 'chart-line',
+  'Performance': 'tachometer-alt',
+  'Reports': 'file-invoice',
+  'Help Center': 'life-ring',
+  'FAQ': 'question-circle',
+};
+
+/**
  * TopNav Component
  *
  * Secondary horizontal navigation bar providing access to module-specific
- * sub-routes. Features role-based visibility and fluid dropdown menus
- * for advanced navigation.
+ * sub-routes. Features role-based visibility, rich dropdown menus,
+ * active path indicators, and responsive mobile navigation.
  */
 const TopNav = memo(
   ({
@@ -26,24 +56,36 @@ const TopNav = memo(
 
     const [activeDropdown, setActiveDropdown] = useState(null);
     const [hoveredItem, setHoveredItem] = useState(null);
+    const [expandedMobileItem, setExpandedMobileItem] = useState(null);
     const navRef = useRef(null);
     const dropdownTimeoutRef = useRef(null);
 
-    const colors = useMemo(
-      () => ({
-        navBg: isDark ? 'rgba(17, 24, 39, 0.95)' : 'rgba(255, 255, 255, 0.95)',
-        navBgSolid: isDark ? '#111827' : '#ffffff',
-        dropdownBg: isDark ? '#1f2937' : '#ffffff',
-        border: isDark ? '#374151' : '#e5e7eb',
-        borderLight: isDark ? '#4b5563' : '#f3f4f6',
-        text: isDark ? '#f3f4f6' : '#374151',
-        textMuted: isDark ? '#9ca3af' : '#6b7280',
-        textActive: '#3b82f6',
-      }),
-      [isDark]
+    const userRole = useMemo(() => user?.role || 'student', [user?.role]);
+
+    // Filter navigation items based on user role
+    const filteredItems = useMemo(
+      () => navigationItems.filter((item) => item.roles.includes(userRole)),
+      [userRole]
     );
 
-    const userRole = useMemo(() => user?.role || 'student', [user?.role]);
+    // Find currently active nav item
+    const currentActiveItem = useMemo(() => {
+      return filteredItems.find(
+        (item) =>
+          location.pathname === item.path ||
+          (item.submenu &&
+            item.submenu.some((sub) => location.pathname === sub.path))
+      );
+    }, [filteredItems, location.pathname]);
+
+    // Find currently active submenu title
+    const currentActiveSubTitle = useMemo(() => {
+      if (!currentActiveItem?.submenu) return null;
+      const match = currentActiveItem.submenu.find(
+        (sub) => location.pathname === sub.path
+      );
+      return match ? match.title : null;
+    }, [currentActiveItem, location.pathname]);
 
     useEffect(() => {
       onCloseMobileMenu?.();
@@ -71,13 +113,12 @@ const TopNav = memo(
       dropdownTimeoutRef.current = setTimeout(() => {
         setHoveredItem(null);
         setActiveDropdown(null);
-      }, 150);
+      }, 180);
     }, []);
 
-    const filteredItems = useMemo(
-      () => navigationItems.filter((item) => item.roles.includes(userRole)),
-      [userRole]
-    );
+    const toggleMobileSubmenu = useCallback((title) => {
+      setExpandedMobileItem((prev) => (prev === title ? null : title));
+    }, []);
 
     const renderDesktopNavItem = (item) => {
       const hasSubmenu = item.submenu && item.submenu.length > 0;
@@ -88,6 +129,10 @@ const TopNav = memo(
       const isOpen =
         hoveredItem === item.title || activeDropdown === item.title;
 
+      const visibleSubmenu = hasSubmenu
+        ? item.submenu.filter((sub) => sub.roles.includes(userRole))
+        : [];
+
       return (
         <div
           key={item.title}
@@ -97,58 +142,92 @@ const TopNav = memo(
         >
           {hasSubmenu ? (
             <button
+              type='button'
+              aria-haspopup='true'
+              aria-expanded={isOpen}
               onClick={() =>
                 setActiveDropdown((prev) =>
                   prev === item.title ? null : item.title
                 )
               }
-              className={`group inline-flex items-center rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 ${isActive ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/30' : 'hover:bg-gray-100 hover:text-blue-600 dark:hover:bg-gray-700/50'}`}
-              style={{ color: isActive ? colors.textActive : colors.text }}
+              className={`group relative inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-semibold tracking-wide transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${isActive
+                  ? 'bg-indigo-50 text-indigo-600 shadow-xs dark:bg-indigo-950/60 dark:text-indigo-400'
+                  : 'text-slate-600 hover:bg-slate-100/80 hover:text-indigo-600 dark:text-slate-300 dark:hover:bg-slate-800/80 dark:hover:text-indigo-400'
+                }`}
             >
-              <i className={`fas fa-${item.icon} mr-2 text-sm`}></i>
+              <i
+                className={`fas fa-${item.icon} text-xs transition-transform duration-200 ${isActive ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 group-hover:text-indigo-500'
+                  }`}
+              />
               <span>{item.title}</span>
               <i
-                className={`fas fa-chevron-down ml-2 text-[10px] transition-transform ${isOpen ? 'rotate-180' : ''}`}
-              ></i>
+                className={`fas fa-chevron-down text-[9px] opacity-70 transition-transform duration-200 ${isOpen ? 'rotate-180 text-indigo-600' : ''
+                  }`}
+              />
+              {isActive && (
+                <span className='absolute bottom-0 left-3 right-3 h-0.5 rounded-full bg-indigo-600 dark:bg-indigo-400' />
+              )}
             </button>
           ) : (
             <NavLink
               to={item.path}
-              className={`group inline-flex items-center rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 ${isActive ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/30' : 'hover:bg-gray-100 hover:text-blue-600 dark:hover:bg-gray-700/50'}`}
-              style={{ color: isActive ? colors.textActive : colors.text }}
+              className={`group relative inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-semibold tracking-wide transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${isActive
+                  ? 'bg-indigo-50 text-indigo-600 shadow-xs dark:bg-indigo-950/60 dark:text-indigo-400'
+                  : 'text-slate-600 hover:bg-slate-100/80 hover:text-indigo-600 dark:text-slate-300 dark:hover:bg-slate-800/80 dark:hover:text-indigo-400'
+                }`}
             >
-              <i className={`fas fa-${item.icon} mr-2 text-sm`}></i>
+              <i
+                className={`fas fa-${item.icon} text-xs transition-transform duration-200 ${isActive ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 group-hover:text-indigo-500'
+                  }`}
+              />
               <span>{item.title}</span>
+              {isActive && (
+                <span className='absolute bottom-0 left-3 right-3 h-0.5 rounded-full bg-indigo-600 dark:bg-indigo-400' />
+              )}
             </NavLink>
           )}
 
-          {hasSubmenu && isOpen && (
-            <div className='animate-dropdown absolute left-0 top-full z-[9999] w-60 pt-2'>
-              <div className='absolute -top-2 left-0 right-0 h-4' />
-              <div
-                className='rounded-xl border py-2 shadow-2xl backdrop-blur-sm'
-                style={{
-                  backgroundColor: colors.dropdownBg,
-                  borderColor: colors.border,
-                }}
-              >
-                {item.submenu
-                  .filter((sub) => sub.roles.includes(userRole))
-                  .map((subItem, idx) => {
+          {/* Submenu Dropdown Popover */}
+          {hasSubmenu && isOpen && visibleSubmenu.length > 0 && (
+            <div className='animate-in fade-in slide-in-from-top-1 duration-150 absolute left-0 top-full z-[9999] min-w-[220px] pt-1.5'>
+              <div className='rounded-2xl border border-slate-200/90 bg-white/95 p-1.5 shadow-xl backdrop-blur-md dark:border-slate-800 dark:bg-slate-900/95'>
+                <div className='mb-1 px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 border-b border-slate-100 dark:border-slate-800/80 flex items-center justify-between'>
+                  <span>{item.title} Options</span>
+                  <span className='rounded-full bg-indigo-50 px-1.5 py-0.5 text-[9px] font-bold text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400'>
+                    {visibleSubmenu.length}
+                  </span>
+                </div>
+                <div className='space-y-0.5'>
+                  {visibleSubmenu.map((subItem, idx) => {
                     const subIsActive = location.pathname === subItem.path;
+                    const subIcon =
+                      SUBMENU_ICONS[subItem.title] || 'angle-right';
+
                     return (
                       <NavLink
                         key={`${item.title}-${idx}`}
                         to={subItem.path}
-                        className={`flex items-center gap-3 px-4 py-2.5 text-sm transition-all hover:bg-blue-50 hover:pl-5 dark:hover:bg-blue-900/20 ${subIsActive ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/30' : 'text-gray-700 dark:text-gray-300'}`}
+                        className={`flex items-center justify-between gap-3 rounded-xl px-3 py-2 text-xs font-medium transition-all duration-150 ${subIsActive
+                            ? 'bg-indigo-50/90 text-indigo-600 font-semibold dark:bg-indigo-950/70 dark:text-indigo-400'
+                            : 'text-slate-700 hover:bg-slate-100/80 hover:text-indigo-600 dark:text-slate-300 dark:hover:bg-slate-800/80 dark:hover:text-indigo-400'
+                          }`}
                       >
-                        <span
-                          className={`h-1.5 w-1.5 rounded-full ${subIsActive ? 'bg-blue-500' : 'bg-gray-300 dark:bg-gray-600'}`}
-                        />
-                        <span className='font-medium'>{subItem.title}</span>
+                        <div className='flex items-center gap-2.5'>
+                          <i
+                            className={`fas fa-${subIcon} text-[11px] w-4 text-center ${subIsActive
+                                ? 'text-indigo-600 dark:text-indigo-400'
+                                : 'text-slate-400 group-hover:text-indigo-500'
+                              }`}
+                          />
+                          <span>{subItem.title}</span>
+                        </div>
+                        {subIsActive && (
+                          <span className='h-1.5 w-1.5 rounded-full bg-indigo-600 dark:bg-indigo-400' />
+                        )}
                       </NavLink>
                     );
                   })}
+                </div>
               </div>
             </div>
           )}
@@ -159,40 +238,160 @@ const TopNav = memo(
     return (
       <nav
         ref={navRef}
-        className={`fixed left-0 right-0 top-16 z-50 transition-all duration-300 ${isScrolled ? 'shadow-md backdrop-blur-md' : ''}`}
-        style={{
-          backgroundColor: isScrolled ? colors.navBg : colors.navBgSolid,
-          borderBottom: `1px solid ${colors.border}`,
-        }}
+        aria-label='Secondary Navigation'
+        className={`fixed left-0 right-0 top-16 z-40 border-b transition-all duration-200 ${isScrolled
+            ? 'border-slate-200/90 bg-white/95 shadow-xs backdrop-blur-md dark:border-slate-800/90 dark:bg-slate-900/95'
+            : 'border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900'
+          }`}
       >
-        <div className='w-full px-4 lg:px-6'>
-          <div className='hidden h-14 items-center gap-0.5 lg:flex'>
-            {filteredItems.map(renderDesktopNavItem)}
+        <div className='mx-auto max-w-7xl px-4 lg:px-8'>
+          {/* Desktop Top Navigation Bar */}
+          <div className='hidden h-12 w-full items-center justify-between lg:flex'>
+            <div className='flex items-center gap-1.5'>
+              {filteredItems.map(renderDesktopNavItem)}
+            </div>
+
+            {/* Active Route / Section Indicator Badge */}
+            {currentActiveItem && (
+              <div className='flex items-center gap-2 rounded-full border border-slate-200/80 bg-slate-50/80 px-3 py-1 text-[11px] font-semibold text-slate-600 shadow-2xs dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-300'>
+                <i
+                  className={`fas fa-${currentActiveItem.icon} text-indigo-500 dark:text-indigo-400`}
+                />
+                <span>{currentActiveItem.title}</span>
+                {currentActiveSubTitle && (
+                  <>
+                    <i className='fas fa-chevron-right text-[8px] text-slate-400' />
+                    <span className='text-indigo-600 dark:text-indigo-400 font-bold'>
+                      {currentActiveSubTitle}
+                    </span>
+                  </>
+                )}
+              </div>
+            )}
           </div>
 
-          {/* Mobile Header indicator */}
+          {/* Mobile Header Bar */}
           <div className='flex h-12 items-center justify-between lg:hidden'>
             <button
+              type='button'
               onClick={onMobileMenuToggle}
-              className='inline-flex items-center rounded-lg px-3 py-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'
+              className='inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700'
             >
               <i
-                className={`fas ${isMobileMenuOpen ? 'fa-times' : 'fa-bars'} mr-2`}
-              ></i>
-              <span className='text-sm font-medium'>Menu</span>
+                className={`fas ${isMobileMenuOpen ? 'fa-times' : 'fa-bars'
+                  } text-indigo-600 dark:text-indigo-400`}
+              />
+              <span>Navigation</span>
             </button>
-            <span className='text-sm font-medium text-gray-500 dark:text-gray-400'>
-              {filteredItems.find((i) => location.pathname.startsWith(i.path))
-                ?.title || 'Navigation'}
-            </span>
-            <NavLink
-              to='/profile'
-              className='p-2 text-gray-500 hover:text-blue-500'
-            >
-              <i className='fas fa-user'></i>
-            </NavLink>
+
+            {currentActiveItem && (
+              <div className='truncate text-xs font-bold text-indigo-600 dark:text-indigo-400'>
+                {currentActiveItem.title}
+                {currentActiveSubTitle ? ` › ${currentActiveSubTitle}` : ''}
+              </div>
+            )}
           </div>
         </div>
+
+        {/* Mobile Navigation Dropdown Drawer */}
+        {isMobileMenuOpen && (
+          <div className='border-t border-slate-200 bg-white/95 px-4 py-3 shadow-2xl backdrop-blur-md dark:border-slate-800 dark:bg-slate-900/95 lg:hidden max-h-[75vh] overflow-y-auto animate-in fade-in duration-150'>
+            <div className='space-y-1'>
+              {filteredItems.map((item) => {
+                const hasSubmenu = item.submenu && item.submenu.length > 0;
+                const isActive =
+                  location.pathname === item.path ||
+                  (hasSubmenu &&
+                    item.submenu.some(
+                      (sub) => location.pathname === sub.path
+                    ));
+                const isExpanded = expandedMobileItem === item.title;
+                const visibleSubmenu = hasSubmenu
+                  ? item.submenu.filter((sub) => sub.roles.includes(userRole))
+                  : [];
+
+                return (
+                  <div key={item.title} className='rounded-xl space-y-1'>
+                    {hasSubmenu ? (
+                      <div>
+                        <button
+                          type='button'
+                          onClick={() => toggleMobileSubmenu(item.title)}
+                          className={`flex w-full items-center justify-between rounded-xl px-3.5 py-2.5 text-xs font-semibold transition ${isActive
+                              ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400'
+                              : 'text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800'
+                            }`}
+                        >
+                          <div className='flex items-center gap-2.5'>
+                            <i
+                              className={`fas fa-${item.icon} text-sm ${isActive
+                                  ? 'text-indigo-600 dark:text-indigo-400'
+                                  : 'text-slate-400'
+                                }`}
+                            />
+                            <span>{item.title}</span>
+                          </div>
+                          <i
+                            className={`fas fa-chevron-down text-[10px] transition-transform ${isExpanded ? 'rotate-180 text-indigo-600' : ''
+                              }`}
+                          />
+                        </button>
+
+                        {isExpanded && visibleSubmenu.length > 0 && (
+                          <div className='ml-4 mt-1 space-y-1 border-l-2 border-indigo-100 pl-3 dark:border-indigo-900/40'>
+                            {visibleSubmenu.map((subItem, idx) => {
+                              const subIsActive =
+                                location.pathname === subItem.path;
+                              const subIcon =
+                                SUBMENU_ICONS[subItem.title] || 'angle-right';
+
+                              return (
+                                <NavLink
+                                  key={`mob-${item.title}-${idx}`}
+                                  to={subItem.path}
+                                  onClick={onCloseMobileMenu}
+                                  className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium transition ${subIsActive
+                                      ? 'bg-indigo-50/90 text-indigo-600 font-semibold dark:bg-indigo-950/70 dark:text-indigo-400'
+                                      : 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800'
+                                    }`}
+                                >
+                                  <i
+                                    className={`fas fa-${subIcon} text-[10px] w-3 text-center ${subIsActive
+                                        ? 'text-indigo-600 dark:text-indigo-400'
+                                        : 'text-slate-400'
+                                      }`}
+                                  />
+                                  <span>{subItem.title}</span>
+                                </NavLink>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <NavLink
+                        to={item.path}
+                        onClick={onCloseMobileMenu}
+                        className={`flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-xs font-semibold transition ${isActive
+                            ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400'
+                            : 'text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800'
+                          }`}
+                      >
+                        <i
+                          className={`fas fa-${item.icon} text-sm ${isActive
+                              ? 'text-indigo-600 dark:text-indigo-400'
+                              : 'text-slate-400'
+                            }`}
+                        />
+                        <span>{item.title}</span>
+                      </NavLink>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </nav>
     );
   }

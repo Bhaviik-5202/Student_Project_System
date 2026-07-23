@@ -11,69 +11,205 @@ const User = require('../models/user.model');
 const connectDB = require('../config/db');
 
 const resourceData = [
-  // Documents
+  // --- DOCUMENTS ---
   {
-    title: 'Project Guidelines 2024',
+    title: 'Senior Year Project Guidelines & Policy 2024-25',
     description:
-      'Official guidelines for senior year project development and documentation.',
+      'Official department handbook detailing milestone deadlines, rubric evaluations, guide allocation rules, and submission protocols.',
     type: 'document',
+    category: 'Guidelines',
+    fileSize: '2.4 MB',
+    fileType: 'pdf',
+    downloadsCount: 184,
+    status: 'active',
+    tags: ['Guidelines', 'Policy', 'Handbook', 'Milestones'],
     url: '/uploads/guidelines_2024.pdf',
   },
   {
-    title: 'IEEE Format Template',
-    description: 'Standard IEEE conference paper format for project reports.',
-    type: 'document',
-    url: '/uploads/ieee_template.docx',
-  },
-  {
-    title: 'Academic Calendar Fall 2024',
-    description: 'Important dates for submissions, evaluations, and holidays.',
-    type: 'document',
-    url: '/uploads/calendar_fall_2024.pdf',
-  },
-  // Templates
-  {
-    title: 'SRS Template',
+    title: 'IEEE Conference Format Guidelines',
     description:
-      'Software Requirements Specification template with detailed sections.',
+      'Standard double-column IEEE format instructions, reference styling, and manuscript guidelines for final project reports.',
+    type: 'document',
+    category: 'Documentation',
+    fileSize: '1.8 MB',
+    fileType: 'pdf',
+    downloadsCount: 245,
+    status: 'active',
+    tags: ['IEEE', 'Formatting', 'Standards', 'Paper'],
+    url: '/uploads/ieee_format_guide.pdf',
+  },
+  {
+    title: 'Academic Calendar & Evaluation Schedule 2024',
+    description:
+      'Key dates for synopsis defense, mid-term review, poster presentation, and final viva voce examination.',
+    type: 'document',
+    category: 'Guidelines',
+    fileSize: '850 KB',
+    fileType: 'pdf',
+    downloadsCount: 112,
+    status: 'active',
+    tags: ['Calendar', 'Deadlines', 'Schedule', 'Exams'],
+    url: '/uploads/academic_calendar.pdf',
+  },
+  {
+    title: 'Plagiarism Policy & Turnitin Check Protocol',
+    description:
+      'Guidelines on acceptable similarity index (<15%), citation conventions, and plagiarism verification procedures.',
+    type: 'document',
+    category: 'Guidelines',
+    fileSize: '1.1 MB',
+    fileType: 'pdf',
+    downloadsCount: 96,
+    status: 'active',
+    tags: ['Plagiarism', 'Ethics', 'Turnitin', 'Rules'],
+    url: '/uploads/plagiarism_policy.pdf',
+  },
+  {
+    title: 'Project Evaluation & Grading Rubric',
+    description:
+      'Detailed point breakdown for innovation, methodology, code quality, presentation skills, and Q&A defense.',
+    type: 'document',
+    category: 'Reports',
+    fileSize: '1.4 MB',
+    fileType: 'pdf',
+    downloadsCount: 156,
+    status: 'active',
+    tags: ['Rubric', 'Grading', 'Evaluation', 'Marks'],
+    url: '/uploads/grading_rubric.pdf',
+  },
+
+  // --- TEMPLATES ---
+  {
+    title: 'Project Proposal Template',
+    description:
+      'Official project proposal document with problem statement, objective, literature review, and proposed methodology sections.',
     type: 'template',
+    category: 'Project Proposal',
+    fileSize: '620 KB',
+    fileType: 'docx',
+    downloadsCount: 310,
+    status: 'active',
+    tags: ['Proposal', 'Synopsis', 'Starter', 'Docx'],
+    url: '/uploads/project_proposal_template.docx',
+  },
+  {
+    title: 'Software Requirements Specification (SRS) Template',
+    description:
+      'Complete IEEE 830 compliant SRS template including functional/non-functional requirements, use cases, and hardware specs.',
+    type: 'template',
+    category: 'Documentation Template',
+    fileSize: '1.2 MB',
+    fileType: 'docx',
+    downloadsCount: 289,
+    status: 'active',
+    tags: ['SRS', 'Requirements', 'IEEE830', 'Docx'],
     url: '/uploads/srs_template.docx',
   },
   {
-    title: 'System Architecture Design',
+    title: 'Project Progress Report Template',
     description:
-      'Template for creating architectural diagrams and component descriptions.',
+      'Bi-weekly and monthly progress report template to track sprint velocity, completed deliverables, and roadmaps.',
     type: 'template',
-    url: '/uploads/architecture_template.pdf',
+    category: 'Progress Report',
+    fileSize: '480 KB',
+    fileType: 'docx',
+    downloadsCount: 175,
+    status: 'active',
+    tags: ['Progress', 'Sprint', 'Status', 'BiWeekly'],
+    url: '/uploads/progress_report_template.docx',
   },
   {
-    title: 'Project Presentation PPT',
+    title: 'Final Project Report (IEEE Format)',
     description:
-      'Official slide deck template for mid-semester and final reviews.',
+      'Comprehensive final dissertation template pre-formatted with IEEE styling, table of contents, and reference formatting.',
     type: 'template',
-    url: '/uploads/presentation_style.pptx',
+    category: 'Final Report',
+    fileSize: '2.1 MB',
+    fileType: 'docx',
+    downloadsCount: 420,
+    status: 'active',
+    tags: ['FinalReport', 'Dissertation', 'Thesis', 'IEEE'],
+    url: '/uploads/final_report_template.docx',
   },
-  // Videos
   {
-    title: 'Getting Started with React',
+    title: 'Mid-Term & Final Presentation Template',
     description:
-      'Comprehensive tutorial on building your first frontend with React and Vite.',
+      'Official slide deck template with department branding, diagrams, demo screens, and evaluation slide structure.',
+    type: 'template',
+    category: 'Presentation Template',
+    fileSize: '4.8 MB',
+    fileType: 'pptx',
+    downloadsCount: 380,
+    status: 'active',
+    tags: ['Presentation', 'Slides', 'PPTX', 'Viva'],
+    url: '/uploads/presentation_template.pptx',
+  },
+  {
+    title: 'System Architecture & Design Document',
+    description:
+      'High-level and low-level architecture design template including ERD, UML sequence diagrams, and API contracts.',
+    type: 'template',
+    category: 'Documentation Template',
+    fileSize: '1.6 MB',
+    fileType: 'pdf',
+    downloadsCount: 215,
+    status: 'active',
+    tags: ['Architecture', 'UML', 'ERD', 'SystemDesign'],
+    url: '/uploads/architecture_design_template.pdf',
+  },
+  {
+    title: 'Guide Meeting Minutes Template',
+    description:
+      'Standardized format for logging discussions, supervisor feedback, and action items during weekly guide meetings.',
+    type: 'template',
+    category: 'Meeting Minutes',
+    fileSize: '310 KB',
+    fileType: 'docx',
+    downloadsCount: 142,
+    status: 'active',
+    tags: ['Minutes', 'Guide', 'Meeting', 'Log'],
+    url: '/uploads/meeting_minutes_template.docx',
+  },
+  {
+    title: 'External Review & Feedback Form',
+    description:
+      'Form used by industry examiners and external reviewers during project expo and final defense.',
+    type: 'template',
+    category: 'Review Form',
+    fileSize: '520 KB',
+    fileType: 'pdf',
+    downloadsCount: 98,
+    status: 'active',
+    tags: ['Review', 'Feedback', 'Examiner', 'Form'],
+    url: '/uploads/review_form_template.pdf',
+  },
+
+  // --- VIDEOS / MEDIA ---
+  {
+    title: 'Project Architecture & Tech Stack Selection',
+    description:
+      'Video guide explaining how to structure full-stack React + Node.js applications and select appropriate database architectures.',
     type: 'video',
+    category: 'Tutorials',
+    fileSize: '45.0 MB',
+    fileType: 'mp4',
+    downloadsCount: 260,
+    status: 'active',
+    tags: ['Video', 'Tutorial', 'Architecture', 'React'],
     url: 'https://www.youtube.com/embed/SqcY0GlETPk',
   },
   {
-    title: 'Node.js API Development',
+    title: 'RESTful API Design & MongoDB Integration',
     description:
-      'Step-by-step guide to creating RESTful services with Express and MongoDB.',
+      'In-depth tutorial covering Express controllers, Mongoose schemas, JWT security, and file handling.',
     type: 'video',
+    category: 'Tutorials',
+    fileSize: '38.5 MB',
+    fileType: 'mp4',
+    downloadsCount: 210,
+    status: 'active',
+    tags: ['Video', 'API', 'NodeJS', 'MongoDB'],
     url: 'https://www.youtube.com/embed/vjf774RKrLc',
-  },
-  {
-    title: 'Database Normalization',
-    description:
-      'Understanding 1NF, 2NF, and 3NF for efficient database design.',
-    type: 'video',
-    url: 'https://www.youtube.com/embed/5lsC10Osqt0',
   },
 ];
 
@@ -82,11 +218,23 @@ const seed = async () => {
     await connectDB();
     console.log('Connected to MongoDB for seeding resources...');
 
-    // Get an admin/staff user
-    const admin = await User.findOne({ role: { $in: ['admin', 'faculty'] } });
+    // Get or create an admin/staff user
+    let admin = await User.findOne({ role: { $in: ['admin', 'faculty'] } });
     if (!admin) {
-      console.error('No admin/faculty user found to assign as uploader.');
-      process.exit(1);
+      admin = await User.findOne({});
+    }
+    if (!admin) {
+      console.log(
+        'No existing user found. Creating default Academic Admin user...'
+      );
+      admin = await User.create({
+        name: 'Academic Administrator',
+        email: 'admin@university.edu',
+        password:
+          '$2b$12$eImiTXuWVxfM37uY4JANjO2B.8.s3Bf/8QcI8Xm2a4x1234567890', // bcrypt hash for Password123!
+        role: 'admin',
+        department: 'Computer Science',
+      });
     }
 
     // Clear existing

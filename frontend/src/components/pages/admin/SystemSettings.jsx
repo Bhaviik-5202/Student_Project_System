@@ -72,7 +72,7 @@ const SystemSettings = memo(() => {
       <div className='grid grid-cols-1 gap-8 lg:grid-cols-3'>
         <div className='space-y-6 lg:col-span-2'>
           <section className='admin-card'>
-            <h3 className='mb-6 text-lg font-bold'>General Configuration</h3>
+            <h3 className='mb-6 text-lg font-bold text-slate-900 dark:text-white'>General Configuration</h3>
             <div className='space-y-6'>
               <div className='admin-form-group'>
                 <label className='admin-label'>System Name</label>
@@ -87,12 +87,12 @@ const SystemSettings = memo(() => {
                 />
               </div>
 
-              <div className='flex items-center justify-between rounded-lg bg-slate-50 p-4 dark:bg-slate-700/30'>
+              <div className='flex items-center justify-between rounded-lg bg-slate-50 p-4 border border-slate-100 dark:bg-slate-700/30 dark:border-slate-700/50'>
                 <div>
                   <div className='font-semibold text-slate-900 dark:text-white'>
                     Maintenance Mode
                   </div>
-                  <div className='text-sm text-slate-500'>
+                  <div className='text-sm text-slate-500 dark:text-slate-400'>
                     Temporarily disable public access to the system
                   </div>
                 </div>
@@ -104,9 +104,8 @@ const SystemSettings = memo(() => {
                       maintenanceMode: !settings.maintenanceMode,
                     })
                   }
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                    settings.maintenanceMode ? 'bg-rose-500' : 'bg-slate-300'
-                  }`}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${settings.maintenanceMode ? 'bg-rose-500' : 'bg-slate-300 dark:bg-slate-600'
+                    }`}
                 >
                   <span
                     className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${settings.maintenanceMode ? 'translate-x-6' : 'translate-x-1'}`}
@@ -117,7 +116,7 @@ const SystemSettings = memo(() => {
           </section>
 
           <section className='admin-card'>
-            <h3 className='mb-6 text-lg font-bold'>
+            <h3 className='mb-6 text-lg font-bold text-slate-900 dark:text-white'>
               System Limits & Performance
             </h3>
             <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
@@ -134,7 +133,7 @@ const SystemSettings = memo(() => {
                     })
                   }
                 />
-                <p className='mt-1 text-[11px] text-slate-400'>
+                <p className='mt-1 text-[11px] text-slate-500 dark:text-slate-400'>
                   Maximum size allowed for document uploads
                 </p>
               </div>
@@ -151,7 +150,7 @@ const SystemSettings = memo(() => {
                     })
                   }
                 />
-                <p className='mt-1 text-[11px] text-slate-400'>
+                <p className='mt-1 text-[11px] text-slate-500 dark:text-slate-400'>
                   Automatic logout after inactivity
                 </p>
               </div>
@@ -161,7 +160,7 @@ const SystemSettings = memo(() => {
 
         <div className='space-y-6'>
           <section className='admin-card'>
-            <h3 className='mb-6 text-lg font-bold'>Backup & Recovery</h3>
+            <h3 className='mb-6 text-lg font-bold text-slate-900 dark:text-white'>Backup & Recovery</h3>
             <div className='admin-form-group'>
               <label className='admin-label'>Backup Frequency</label>
               <select
@@ -174,10 +173,10 @@ const SystemSettings = memo(() => {
                   })
                 }
               >
-                <option value='hourly'>Hourly</option>
-                <option value='daily'>Daily</option>
-                <option value='weekly'>Weekly</option>
-                <option value='monthly'>Monthly</option>
+                <option value='hourly' className='bg-white dark:bg-slate-800 text-slate-900 dark:text-white'>Hourly</option>
+                <option value='daily' className='bg-white dark:bg-slate-800 text-slate-900 dark:text-white'>Daily</option>
+                <option value='weekly' className='bg-white dark:bg-slate-800 text-slate-900 dark:text-white'>Weekly</option>
+                <option value='monthly' className='bg-white dark:bg-slate-800 text-slate-900 dark:text-white'>Monthly</option>
               </select>
             </div>
             <button className='admin-btn admin-btn-secondary mt-4 w-full text-sm'>
@@ -186,13 +185,13 @@ const SystemSettings = memo(() => {
           </section>
 
           <section className='admin-card'>
-            <h3 className='mb-6 text-lg font-bold'>Notifications</h3>
+            <h3 className='mb-6 text-lg font-bold text-slate-900 dark:text-white'>Notifications</h3>
             <div className='flex items-center justify-between'>
               <div>
                 <div className='font-semibold text-slate-900 dark:text-white'>
                   Email Notifications
                 </div>
-                <div className='text-xs text-slate-500'>
+                <div className='text-xs text-slate-500 dark:text-slate-400'>
                   Alert admins on critical events
                 </div>
               </div>
@@ -204,11 +203,10 @@ const SystemSettings = memo(() => {
                     emailNotifications: !settings.emailNotifications,
                   })
                 }
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  settings.emailNotifications
-                    ? 'bg-emerald-500'
-                    : 'bg-slate-300'
-                }`}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${settings.emailNotifications
+                  ? 'bg-emerald-500'
+                  : 'bg-slate-300 dark:bg-slate-600'
+                  }`}
               >
                 <span
                   className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${settings.emailNotifications ? 'translate-x-6' : 'translate-x-1'}`}

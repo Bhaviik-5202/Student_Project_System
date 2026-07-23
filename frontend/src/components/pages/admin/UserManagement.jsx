@@ -1,143 +1,14 @@
 import { useState, useEffect, useCallback, memo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { Users, UserPlus, RefreshCw, AlertCircle } from 'lucide-react';
 import PageHeader from '../../common/PageHeader';
 import api from '../../../utils/api';
 import '../../../assets/styles/admin.css';
 
-function UserModal({ isOpen, onClose, onSave, user = null }) {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    role: 'student',
-    password: '',
-  });
-
-  useEffect(() => {
-    if (isOpen) {
-      if (user) {
-        setFormData({
-          name: user.name || '',
-          email: user.email || '',
-          role: user.role || 'student',
-          password: '',
-        });
-      } else {
-        setFormData({
-          name: '',
-          email: '',
-          role: 'student',
-          password: '',
-        });
-      }
-    }
-  }, [user, isOpen]);
-
-  if (!isOpen) return null;
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSave(formData);
-  };
-
-  return (
-    <div
-      className='fixed inset-0 z-[9999] flex animate-fade-in items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm'
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
-    >
-      <div
-        className='w-full max-w-lg rounded-2xl bg-white shadow-2xl dark:bg-slate-800'
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Header */}
-        <div className='flex items-center justify-between rounded-t-2xl border-b border-gray-100 bg-indigo-600 px-6 py-4 dark:border-slate-700'>
-          <h3 className='flex items-center gap-2 text-lg font-bold text-white'>
-            {user ? 'Edit User' : 'Add New User'}
-          </h3>
-          <button
-            onClick={onClose}
-            type='button'
-            className='text-white/80 transition-colors hover:text-white'
-          >
-            <span className='text-xl leading-none'>&times;</span>
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit} className='space-y-4 p-6'>
-          <div>
-            <label className='mb-1.5 block text-xs font-semibold text-slate-700 dark:text-slate-300'>Full Name</label>
-            <input
-              type='text'
-              className='w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white'
-              placeholder='John Doe'
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              required
-            />
-          </div>
-          <div>
-            <label className='mb-1.5 block text-xs font-semibold text-slate-700 dark:text-slate-300'>Email Address</label>
-            <input
-              type='email'
-              className='w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white'
-              placeholder='email@example.com'
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              required
-            />
-          </div>
-          <div>
-            <label className='mb-1.5 block text-xs font-semibold text-slate-700 dark:text-slate-300'>Role</label>
-            <select
-              className='w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white'
-              value={formData.role}
-              onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-            >
-              <option value='student'>Student</option>
-              <option value='faculty'>Faculty</option>
-              <option value='admin'>Admin</option>
-            </select>
-          </div>
-          {!user && (
-            <div>
-              <label className='mb-1.5 block text-xs font-semibold text-slate-700 dark:text-slate-300'>Password</label>
-              <input
-                type='password'
-                className='w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white'
-                placeholder='At least 6 characters'
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                required
-              />
-            </div>
-          )}
-
-          <div className='flex justify-end gap-3 border-t border-slate-100 pt-4 dark:border-slate-700'>
-            <button
-              type='button'
-              onClick={onClose}
-              className='rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200'
-            >
-              Cancel
-            </button>
-            <button
-              type='submit'
-              className='rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 transition-colors'
-            >
-              {user ? 'Update User' : 'Create User'}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
-}
-
 const UserManagement = memo(() => {
   const navigate = useNavigate();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const location = useLocation();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -171,40 +42,21 @@ const UserManagement = memo(() => {
     fetchUsers();
   }, [fetchUsers]);
 
+  useEffect(() => {
+    if (location.state?.refresh) {
+      fetchUsers();
+      // Clear refresh state from history
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state, fetchUsers, navigate, location.pathname]);
+
   const handleAddUser = () => {
-    setSelectedUser(null);
-    setIsModalOpen(true);
+    navigate('/user-management/new');
   };
 
   const handleEditUser = (user) => {
-    setSelectedUser(user);
-    setIsModalOpen(true);
-  };
-
-  const handleSaveUser = async (formData) => {
-    try {
-      const payload = { ...formData };
-      if (selectedUser && !payload.password) {
-        delete payload.password;
-      }
-
-      const targetId = selectedUser?._id || selectedUser?.id;
-      if (selectedUser) {
-        await api.put(`/users/${targetId}`, payload);
-        toast.success('User updated successfully');
-      } else {
-        await api.post('/users', payload);
-        toast.success('User created successfully');
-      }
-      setIsModalOpen(false);
-      fetchUsers();
-    } catch (err) {
-      console.error('Failed to save user', err);
-      const msg =
-        err.response?.data?.message ||
-        'Please check if the email already exists.';
-      toast.error(`Failed to save user: ${msg}`);
-    }
+    const userId = user.id || user._id;
+    navigate(`/user-management/${userId}/edit`);
   };
 
   const handleDeleteUser = async (userId) => {
@@ -307,18 +159,17 @@ const UserManagement = memo(() => {
               users.map((user) => (
                 <tr key={user.id || user._id}>
                   <td>
-                    <div style={{ fontWeight: '600' }}>{user.name}</div>
+                    <div className='font-semibold text-slate-900 dark:text-white'>{user.name}</div>
                   </td>
-                  <td>{user.email}</td>
+                  <td className='text-slate-700 dark:text-slate-300'>{user.email}</td>
                   <td>
                     <span
-                      className={`admin-badge ${
-                        user.role === 'admin'
+                      className={`admin-badge ${user.role === 'admin'
                           ? 'admin-badge-blue'
                           : user.role === 'faculty'
                             ? 'admin-badge-success'
                             : 'admin-badge-gray'
-                      }`}
+                        }`}
                     >
                       {user.role}
                     </span>
@@ -328,12 +179,7 @@ const UserManagement = memo(() => {
                       {user.status || 'Active'}
                     </span>
                   </td>
-                  <td
-                    style={{
-                      color: 'var(--admin-text-muted)',
-                      fontSize: '13px',
-                    }}
-                  >
+                  <td className='text-xs text-slate-500 dark:text-slate-400'>
                     {user.joined ||
                       (user.createdAt
                         ? new Date(user.createdAt).toLocaleDateString()
@@ -359,13 +205,6 @@ const UserManagement = memo(() => {
           </tbody>
         </table>
       </div>
-
-      <UserModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSave={handleSaveUser}
-        user={selectedUser}
-      />
     </div>
   );
 });

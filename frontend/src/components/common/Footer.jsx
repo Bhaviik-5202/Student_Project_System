@@ -7,193 +7,282 @@ import {
   Twitter,
   Mail,
   Heart,
-  Cpu,
-  ShieldCheck,
-  Globe,
-  MapPin,
-  Phone,
-  HelpCircle,
-  BookOpen,
+  Shield,
+  Zap,
+  Layers,
+  Award,
+  Clock,
+  CheckCircle,
+  ArrowRight,
+  Sparkles,
+  Users,
 } from 'lucide-react';
 
-/**
- * Footer Component
- * variant='full'    → Rich multi-column footer (Dashboard only)
- * variant='minimal' → Single-line copyright bar (all other pages)
- */
+// ─── Constants ──────────────────────────────────────────────
+const SOCIAL_LINKS = [
+  { href: 'https://github.com/Bhaviik-5202', icon: Github, label: 'GitHub' },
+  { href: 'https://linkedin.com/in/bhavik-parmar-51baa1303/', icon: Linkedin, label: 'LinkedIn' },
+  { href: 'https://twitter.com', icon: Twitter, label: 'Twitter' },
+  { href: 'mailto:er.bhavik5202@gmail.com', icon: Mail, label: 'Email' },
+];
+
+const QUICK_LINKS = [
+  { name: 'Dashboard', path: '/dashboard' },
+  { name: 'Projects', path: '/projects' },
+  { name: 'Teams', path: '/teams' },
+  { name: 'Resources', path: '/resources' },
+];
+
+const SUPPORT_LINKS = [
+  { name: 'Help Center', path: '/help' },
+  { name: 'Documentation', path: '/docs' },
+  { name: 'API Status', path: '/status' },
+  { name: 'Contact', path: '/contact' },
+];
+
+const FEATURES = [
+  { icon: Zap, text: 'Real-time Updates' },
+  { icon: Layers, text: 'Project Management' },
+  { icon: Award, text: 'Faculty Evaluation' },
+  { icon: Shield, text: 'Secure Platform' },
+];
+
+// ─── Sub-components ─────────────────────────────────────────
+
+const SocialLink = memo(({ href, icon: Icon, label }) => (
+  <a
+    href={href}
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label={label}
+    className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/5 text-slate-400 transition-all duration-300 hover:bg-indigo-500 hover:text-white hover:scale-110 hover:shadow-lg hover:shadow-indigo-500/25 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-slate-900"
+  >
+    <Icon size={16} aria-hidden="true" />
+  </a>
+));
+
+SocialLink.displayName = 'SocialLink';
+SocialLink.propTypes = {
+  href: PropTypes.string.isRequired,
+  icon: PropTypes.elementType.isRequired,
+  label: PropTypes.string.isRequired,
+};
+
+const FooterLink = memo(({ name, path }) => (
+  <li>
+    <Link
+      to={path}
+      className="group inline-flex items-center gap-1.5 text-sm text-slate-400 transition-all duration-200 hover:text-white hover:translate-x-1 focus:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-slate-900 rounded-md px-1 py-0.5"
+    >
+      <ArrowRight
+        size={12}
+        className="opacity-0 -translate-x-2 transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0"
+        aria-hidden="true"
+      />
+      {name}
+    </Link>
+  </li>
+));
+
+FooterLink.displayName = 'FooterLink';
+FooterLink.propTypes = {
+  name: PropTypes.string.isRequired,
+  path: PropTypes.string.isRequired,
+};
+
+const FeatureBadge = memo(({ icon: Icon, text }) => (
+  <div className="flex items-center gap-2 rounded-full bg-white/5 px-3 py-1.5 backdrop-blur-sm border border-white/5">
+    <Icon size={14} className="text-indigo-400" aria-hidden="true" />
+    <span className="text-xs text-slate-300">{text}</span>
+  </div>
+));
+
+FeatureBadge.displayName = 'FeatureBadge';
+FeatureBadge.propTypes = {
+  icon: PropTypes.elementType.isRequired,
+  text: PropTypes.string.isRequired,
+};
+
+// ─── Main Component ─────────────────────────────────────────
+
 const Footer = memo(({ variant = 'minimal' }) => {
   const currentYear = useMemo(() => new Date().getFullYear(), []);
 
-  /* ─── Minimal footer ─────────────────────────────────────────── */
+  // ─── Minimal Footer ──────────────────────────────────────
   if (variant === 'minimal') {
     return (
       <footer
-        className='border-t border-slate-200 bg-white py-3 dark:border-slate-800 dark:bg-slate-950'
-        role='contentinfo'
+        className="border-t border-slate-200/80 bg-gradient-to-b from-white to-slate-50/80 dark:from-slate-900 dark:to-slate-950 dark:border-slate-800/80 py-4 transition-colors"
+        role="contentinfo"
+        aria-label="Site footer"
       >
-        <div className='mx-auto flex max-w-7xl flex-col items-center justify-between gap-1 px-4 sm:flex-row sm:px-6 lg:px-8'>
-          <p className='text-[11px] text-slate-400 dark:text-slate-500'>
-            © {currentYear} Student Project System. All rights reserved.
-          </p>
-          <p className='flex items-center gap-1 text-[11px] text-slate-400 dark:text-slate-500'>
-            Built with <Heart size={10} className='fill-rose-400 text-rose-400' /> for academic excellence
-          </p>
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 sm:flex-row sm:px-6 lg:px-8">
+          <div className="flex items-center gap-3">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-indigo-600 shadow-md shadow-indigo-500/20">
+              <Shield size={16} className="text-white" />
+            </div>
+            <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
+              © {currentYear} <span className="font-semibold text-slate-800 dark:text-white">Student Project System</span>
+            </p>
+          </div>
+
+          <div className="flex items-center gap-6">
+            <span className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+              <Sparkles size={12} className="text-indigo-400" aria-hidden="true" />
+              <span>Making education better</span>
+            </span>
+            <div className="flex items-center gap-2">
+              {SOCIAL_LINKS.slice(0, 3).map((link) => (
+                <SocialLink key={link.label} {...link} />
+              ))}
+            </div>
+          </div>
         </div>
       </footer>
     );
   }
 
-  /* ─── Full footer (dashboard only) ──────────────────────────── */
+  // ─── Full Footer ────────────────────────────────────────
   return (
     <footer
-      className='relative overflow-hidden border-t border-slate-800/80 bg-slate-950 py-16 text-slate-400 select-none'
-      role='contentinfo'
+      className="relative bg-gradient-to-b from-slate-900 via-slate-950 to-black text-slate-300 pt-16 pb-6"
+      role="contentinfo"
+      aria-label="Site footer"
     >
-      {/* Background SVG Grid Pattern */}
-      <div className='pointer-events-none absolute inset-0 opacity-15'>
-        <svg className='h-full w-full' xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'>
-          <defs>
-            <pattern id='footer-grid' width='40' height='40' patternUnits='userSpaceOnUse'>
-              <path d='M 40 0 L 0 0 0 40' fill='none' stroke='rgba(255, 255, 255, 0.15)' strokeWidth='1' />
-            </pattern>
-          </defs>
-          <rect width='100%' height='100%' fill='url(#footer-grid)' />
-        </svg>
+      {/* Decorative Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-indigo-500/5 blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-blue-500/5 blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-purple-500/5 blur-3xl" />
       </div>
 
-      {/* Decorative Blur Glows */}
-      <div className='pointer-events-none absolute left-1/4 top-0 h-96 w-96 -translate-y-1/2 rounded-full bg-blue-600/10 blur-3xl' />
-      <div className='pointer-events-none absolute bottom-0 right-1/4 h-96 w-96 translate-y-1/2 rounded-full bg-indigo-600/10 blur-3xl' />
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Main Footer Content */}
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-12 lg:gap-8">
 
-      <div className='relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
-        <div className='mb-16 grid grid-cols-1 gap-12 md:grid-cols-12'>
-
-          {/* Brand & Platform Tagline */}
-          <div className='md:col-span-4'>
-            <Link to='/' className='group mb-6 flex w-fit items-center gap-3'>
-              <div className='flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-700 shadow-lg shadow-blue-500/20 transition-transform duration-300 group-hover:scale-105'>
-                <ShieldCheck className='h-6 w-6 text-white' />
+          {/* Brand Section */}
+          <div className="md:col-span-4 space-y-6">
+            <Link
+              to="/dashboard"
+              className="inline-flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-slate-950 rounded-lg"
+            >
+              <div className="relative">
+                <div className="absolute inset-0 bg-indigo-500/20 blur-xl rounded-full group-hover:bg-indigo-500/30 transition-all duration-300" />
+                <div className="relative flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/25">
+                  <Shield size={22} className="text-white" />
+                </div>
               </div>
-              <div className='flex flex-col'>
-                <span className='text-xl font-bold tracking-tight text-white'>
-                  Student<span className='text-blue-500'>.</span>Project<span className='text-indigo-400'>.</span>System
-                </span>
-                <span className='text-[10px] uppercase font-semibold tracking-widest text-slate-500'>
-                  Academic Excellence Portal
-                </span>
+              <div>
+                <h2 className="text-xl font-bold text-white tracking-tight">
+                  Student<span className="text-indigo-400">.</span>Project
+                </h2>
+                <p className="text-xs font-medium text-slate-400 tracking-wider uppercase">
+                  Academic Platform
+                </p>
               </div>
             </Link>
 
-            <p className='mb-6 max-w-sm text-sm leading-relaxed text-slate-400'>
-              Streamlining academic project lifecycles, milestone tracking, and faculty evaluations into a unified, secure platform.
+            <p className="text-sm leading-relaxed text-slate-400 max-w-sm">
+              Empowering students and faculty with modern tools for academic project management, collaboration, and evaluation.
             </p>
 
-            <div className='flex items-center gap-3'>
-              {[
-                { href: 'https://github.com/Bhaviik-5202', icon: Github, label: 'GitHub' },
-                { href: 'https://linkedin.com/in/bhavik-parmar-51baa1303/', icon: Linkedin, label: 'LinkedIn' },
-                { href: 'https://twitter.com', icon: Twitter, label: 'Twitter' },
-                { href: 'mailto:er.bhavik5202@gmail.com', icon: Mail, label: 'Email' },
-              ].map(({ href, icon: Icon, label }) => (
-                <a
-                  key={label}
-                  href={href}
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  aria-label={label}
-                  className='flex h-9 w-9 items-center justify-center rounded-lg border border-slate-800 bg-slate-900/80 text-slate-400 transition-all duration-200 hover:border-blue-500 hover:bg-blue-600 hover:text-white'
-                >
-                  <Icon size={17} />
-                </a>
+            <div className="flex flex-wrap gap-2">
+              {FEATURES.map((feature) => (
+                <FeatureBadge key={feature.text} {...feature} />
+              ))}
+            </div>
+
+            <div className="flex gap-3 pt-2">
+              {SOCIAL_LINKS.map((link) => (
+                <SocialLink key={link.label} {...link} />
               ))}
             </div>
           </div>
 
-          {/* Quick Navigation Links */}
-          <div className='md:col-span-3'>
-            <h3 className='mb-5 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-200'>
-              <BookOpen size={14} className='text-blue-400' /> Navigation & Tools
+          {/* Quick Links */}
+          <nav className="md:col-span-2" aria-label="Quick links">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-white mb-4">
+              Quick Links
             </h3>
-            <ul className='space-y-3 text-sm'>
-              {[
-                { name: 'Overview Dashboard', path: '/dashboard' },
-                { name: 'Project Repository', path: '/projects' },
-                { name: 'Faculty Meetings', path: '/meetings' },
-              ].map((item) => (
-                <li key={item.name}>
-                  <Link
-                    to={item.path}
-                    className='group flex items-center gap-2 transition-colors hover:text-blue-400'
-                  >
-                    <span className='h-1.5 w-1.5 rounded-full bg-slate-700 transition-colors group-hover:bg-blue-500' />
-                    {item.name}
-                  </Link>
-                </li>
+            <ul className="space-y-2.5">
+              {QUICK_LINKS.map((link) => (
+                <FooterLink key={link.name} {...link} />
               ))}
             </ul>
-          </div>
+          </nav>
 
-          {/* Contact & Support Info */}
-          <div className='md:col-span-3'>
-            <h3 className='mb-5 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-200'>
-              <HelpCircle size={14} className='text-indigo-400' /> Campus & Contact
+          {/* Support */}
+          <nav className="md:col-span-2" aria-label="Support links">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-white mb-4">
+              Support
             </h3>
-            <ul className='space-y-3 text-sm'>
-              <li className='flex items-start gap-2.5 text-slate-400'>
-                <MapPin size={16} className='mt-0.5 shrink-0 text-slate-500' />
-                <span>Department of Computer Science & Engineering</span>
-              </li>
-              <li className='flex items-center gap-2.5 text-slate-400'>
-                <Mail size={16} className='shrink-0 text-slate-500' />
-                <a href='mailto:er.bhavik5202@gmail.com' className='transition-colors hover:text-blue-400'>
-                  er.bhavik5202@gmail.com
-                </a>
-              </li>
-              <li className='flex items-center gap-2.5 text-slate-400'>
-                <Phone size={16} className='shrink-0 text-slate-500' />
-                <span>+91 (0288) 2211401</span>
-              </li>
+            <ul className="space-y-2.5">
+              {SUPPORT_LINKS.map((link) => (
+                <FooterLink key={link.name} {...link} />
+              ))}
             </ul>
-          </div>
+          </nav>
 
-          {/* Platform Status */}
-          <div className='md:col-span-2'>
-            <h3 className='mb-5 text-xs font-bold uppercase tracking-wider text-slate-200'>
-              System Status
+          {/* Stats & Updates */}
+          <div className="md:col-span-4 space-y-4">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-white">
+              Platform Status
             </h3>
-            <div className='rounded-xl border border-slate-800 bg-slate-900/60 p-2.5 backdrop-blur-sm'>
-              <div className='mb-3 flex items-center gap-2'>
-                <div className='relative'>
-                  <span className='block h-2.5 w-2.5 rounded-full bg-emerald-500' />
-                  <span className='absolute inset-0 animate-ping rounded-full bg-emerald-500 opacity-75' />
+
+            <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="relative">
+                    <span className="block h-2.5 w-2.5 rounded-full bg-emerald-400" />
+                    <span className="absolute inset-0 animate-ping rounded-full bg-emerald-400 opacity-75" />
+                  </div>
+                  <span className="text-sm font-medium text-emerald-400">All Systems Go</span>
                 </div>
-                <span className='text-xs font-semibold text-emerald-400'>Operational</span>
+                <span className="text-xs text-slate-400 flex items-center gap-1">
+                  <Clock size={12} aria-hidden="true" />
+                  99.9% uptime
+                </span>
               </div>
-              <p className='mb-3 text-[11px] leading-snug text-slate-400'>
-                All backend APIs & real-time sync active.
-              </p>
-              <div className='flex items-center gap-1.5 border-t border-slate-800 pt-2.5 text-[11px] text-slate-500'>
-                <Cpu size={12} />
-                <span>v2.0.0 • Beta Release</span>
+
+              <div className="flex items-center gap-3 text-xs text-slate-400">
+                <div className="flex items-center gap-1.5">
+                  <CheckCircle size={12} className="text-indigo-400" aria-hidden="true" />
+                  <span>Active projects</span>
+                  <span className="font-semibold text-white">1,247</span>
+                </div>
+                <div className="w-px h-4 bg-white/10" aria-hidden="true" />
+                <div className="flex items-center gap-1.5">
+                  <Users size={12} className="text-indigo-400" aria-hidden="true" />
+                  <span>Students</span>
+                  <span className="font-semibold text-white">3.2k</span>
+                </div>
               </div>
             </div>
-          </div>
 
+            <div className="flex items-center gap-3 text-xs text-slate-500">
+              <span className="flex items-center gap-1.5">
+                <Heart size={12} className="text-rose-400 fill-rose-400" aria-hidden="true" />
+                Made with passion
+              </span>
+              <span aria-hidden="true">•</span>
+              <span>v2.0.0</span>
+            </div>
+          </div>
         </div>
 
-        {/* Bottom Bar / Copyright */}
-        <div className='flex flex-col items-center justify-between gap-4 border-t border-slate-900 pt-8 md:flex-row'>
-          <p className='text-xs text-slate-500'>
+        {/* Bottom Bar */}
+        <div className="mt-12 pt-6 border-t border-white/5 flex flex-col items-center justify-between gap-4 sm:flex-row">
+          <p className="text-xs text-slate-500">
             © {currentYear} Student Project System. All rights reserved.
           </p>
-          <div className='flex items-center gap-6 text-xs text-slate-500'>
-            <span className='flex items-center gap-1'>
-              Built with <Heart size={12} className='fill-rose-500 text-rose-500' /> for academic excellence
-            </span>
-            <div className='flex items-center gap-1 text-slate-600'>
-              <Globe size={13} />
-              <span>English (US)</span>
-            </div>
+          <div className="flex items-center gap-6 text-xs text-slate-500">
+            <Link to="/privacy" className="hover:text-white transition-colors focus:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-md px-1">
+              Privacy Policy
+            </Link>
+            <Link to="/terms" className="hover:text-white transition-colors focus:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-md px-1">
+              Terms of Service
+            </Link>
+            <span>🌐 English</span>
           </div>
         </div>
       </div>
@@ -205,6 +294,10 @@ Footer.displayName = 'Footer';
 
 Footer.propTypes = {
   variant: PropTypes.oneOf(['full', 'minimal']),
+};
+
+Footer.defaultProps = {
+  variant: 'minimal',
 };
 
 export default Footer;

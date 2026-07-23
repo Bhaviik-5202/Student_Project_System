@@ -1,4 +1,5 @@
 import React, { memo, useEffect, useState, useCallback, useMemo } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
   Users,
@@ -10,215 +11,11 @@ import {
   Building,
   Edit2,
   Trash2,
-  X,
-  Save,
   UserCheck,
 } from 'lucide-react';
 import PageHeader from '../../common/PageHeader';
 import staffService from '../../../services/staffService';
 import { toast } from 'react-hot-toast';
-
-const StaffModal = ({ isOpen, onClose, onSave, staff = null }) => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    role: 'Faculty',
-    department: '',
-    staffId: '',
-  });
-
-  useEffect(() => {
-    if (staff) {
-      setFormData({
-        name: staff.name || '',
-        email: staff.email || '',
-        phone: staff.phone || '',
-        role: staff.role || 'Faculty',
-        department: staff.department || '',
-        staffId: staff.staffId || staff.id || '',
-      });
-    } else {
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        role: 'Faculty',
-        department: '',
-        staffId: '',
-      });
-    }
-  }, [staff, isOpen]);
-
-  if (!isOpen) return null;
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!formData.name || !formData.email) {
-      toast.error('Please provide both name and email');
-      return;
-    }
-    onSave(formData);
-  };
-
-  return (
-    <div
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-      className='fixed inset-0 z-[9999] flex animate-fade-in items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm'
-    >
-      <div className='card w-full max-w-lg animate-scale-up shadow-2xl'>
-        <div className='card-body p-0'>
-          <div className='flex items-center justify-between rounded-t-2xl border-b border-gray-100 bg-indigo-600 px-6 py-4 dark:border-slate-800'>
-            <h3 className='flex items-center gap-2 text-lg font-bold text-white'>
-              {staff ? <Edit2 size={18} /> : <UserPlus size={18} />}
-              {staff ? 'Edit Staff Profile' : 'Enroll Staff Member'}
-            </h3>
-            <button
-              onClick={onClose}
-              type='button'
-              className='text-white/80 transition-colors hover:text-white'
-            >
-              <X size={20} />
-            </button>
-          </div>
-
-          <form onSubmit={handleSubmit} className='space-y-5 p-6'>
-            <div className='form-group'>
-              <label className='form-label'>Full Name</label>
-              <div className='relative'>
-                <Users
-                  size={16}
-                  className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-400'
-                />
-                <input
-                  type='text'
-                  className='form-control pl-10'
-                  value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
-                  placeholder='e.g. Dr. Sarah Connor'
-                  required
-                />
-              </div>
-            </div>
-
-            <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
-              <div className='form-group'>
-                <label className='form-label'>Email Address</label>
-                <div className='relative'>
-                  <Mail
-                    size={16}
-                    className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-400'
-                  />
-                  <input
-                    type='email'
-                    className='form-control pl-10'
-                    value={formData.email}
-                    onChange={(e) =>
-                      setFormData({ ...formData, email: e.target.value })
-                    }
-                    placeholder='sarah@university.edu'
-                    required
-                  />
-                </div>
-              </div>
-              <div className='form-group'>
-                <label className='form-label'>Phone Number</label>
-                <div className='relative'>
-                  <Phone
-                    size={16}
-                    className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-400'
-                  />
-                  <input
-                    type='text'
-                    className='form-control pl-10'
-                    value={formData.phone}
-                    onChange={(e) =>
-                      setFormData({ ...formData, phone: e.target.value })
-                    }
-                    placeholder='+91 98765 43210'
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
-              <div className='form-group'>
-                <label className='form-label'>Designation / Role</label>
-                <div className='relative'>
-                  <Shield
-                    size={16}
-                    className='pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400'
-                  />
-                  <select
-                    className='form-control appearance-none pl-10'
-                    value={formData.role}
-                    onChange={(e) =>
-                      setFormData({ ...formData, role: e.target.value })
-                    }
-                  >
-                    <option value='Faculty'>Faculty</option>
-                    <option value='HOD'>HOD</option>
-                    <option value='Admin'>Admin Staff</option>
-                    <option value='System Intern'>System Intern</option>
-                  </select>
-                </div>
-              </div>
-              <div className='form-group'>
-                <label className='form-label'>Department</label>
-                <div className='relative'>
-                  <Building
-                    size={16}
-                    className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-400'
-                  />
-                  <input
-                    type='text'
-                    className='form-control pl-10'
-                    value={formData.department}
-                    onChange={(e) =>
-                      setFormData({ ...formData, department: e.target.value })
-                    }
-                    placeholder='e.g. Computer Science'
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className='form-group'>
-              <label className='form-label'>Staff ID</label>
-              <input
-                type='text'
-                className='form-control'
-                value={formData.staffId}
-                onChange={(e) =>
-                  setFormData({ ...formData, staffId: e.target.value })
-                }
-                placeholder='Leave blank for auto-generation'
-              />
-            </div>
-
-            <div className='flex gap-3 pt-4'>
-              <button
-                type='button'
-                onClick={onClose}
-                className='btn btn-secondary flex-1'
-              >
-                Cancel
-              </button>
-              <button type='submit' className='btn btn-primary flex-[2]'>
-                <Save size={18} />
-                {staff ? 'Update Profile' : 'Enroll Staff'}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 const StaffRow = memo(({ staff, onEdit, onDelete }) => (
   <tr className='group transition-colors hover:bg-gray-50 dark:hover:bg-slate-900/50'>
@@ -274,9 +71,8 @@ const StaffRow = memo(({ staff, onEdit, onDelete }) => (
 
     {/* Status */}
     <td className='whitespace-nowrap px-6 py-4'>
-      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
-        staff.status === 'Active' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-      }`}>
+      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${staff.status === 'Active' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+        }`}>
         <UserCheck size={12} className='mr-1' />
         {staff.status || 'Active'}
       </span>
@@ -312,8 +108,8 @@ const StaffRow = memo(({ staff, onEdit, onDelete }) => (
 StaffRow.displayName = 'StaffRow';
 
 const Staff = memo(() => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedStaff, setSelectedStaff] = useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
   const [staffMembers, setStaffMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -347,30 +143,16 @@ const Staff = memo(() => {
     fetchStaff();
   }, [fetchStaff]);
 
-  const handleSaveStaff = async (formData) => {
-    const toastId = toast.loading(
-      selectedStaff ? 'Updating profile...' : 'Enrolling staff...'
-    );
-    try {
-      let res;
-      if (selectedStaff) {
-        res = await staffService.updateStaff(selectedStaff.dbId, formData);
-      } else {
-        res = await staffService.createStaff(formData);
-      }
-
-      if (res.success) {
-        toast.success(selectedStaff ? 'Profile updated!' : 'Staff enrolled!', {
-          id: toastId,
-        });
-        setIsModalOpen(false);
-        fetchStaff();
-      } else {
-        toast.error(res.message || 'Operation failed', { id: toastId });
-      }
-    } catch (err) {
-      toast.error('Network error occurred', { id: toastId });
+  useEffect(() => {
+    if (location.state?.refresh) {
+      fetchStaff();
+      navigate(location.pathname, { replace: true, state: {} });
     }
+  }, [location.state, fetchStaff, navigate, location.pathname]);
+
+  const handleEditStaff = (staff) => {
+    const targetId = staff.dbId || staff.id;
+    navigate(`/staff/${targetId}/edit`);
   };
 
   const handleDeleteStaff = async (id) => {
@@ -448,12 +230,21 @@ const Staff = memo(() => {
         icon={UserCheck}
         badge={`${filteredStaff.length} Staff Members`}
         actions={
-          <button
-            onClick={() => handleExport()}
-            className='rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-xs font-bold text-gray-700 shadow-sm transition hover:bg-gray-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200'
-          >
-            Export Staff CSV
-          </button>
+          <div className='flex items-center gap-3'>
+            <button
+              onClick={() => handleExport()}
+              className='rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-xs font-bold text-gray-700 shadow-sm transition hover:bg-gray-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200'
+            >
+              Export Staff CSV
+            </button>
+            <button
+              onClick={() => navigate('/staff/new')}
+              className='flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-100 hover:bg-indigo-700 transition-all dark:shadow-none'
+            >
+              <UserPlus size={16} />
+              <span>Add Staff Member</span>
+            </button>
+          </div>
         }
       />
 
@@ -541,10 +332,7 @@ const Staff = memo(() => {
                 <StaffRow
                   key={staff.dbId}
                   staff={staff}
-                  onEdit={(s) => {
-                    setSelectedStaff(s);
-                    setIsModalOpen(true);
-                  }}
+                  onEdit={handleEditStaff}
                   onDelete={handleDeleteStaff}
                 />
               ))
@@ -552,13 +340,6 @@ const Staff = memo(() => {
           </tbody>
         </table>
       </div>
-
-      <StaffModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSave={handleSaveStaff}
-        staff={selectedStaff}
-      />
     </div>
   );
 });

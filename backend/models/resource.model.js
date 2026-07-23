@@ -19,11 +19,43 @@ const resourceSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ['document', 'template', 'video'],
       required: [true, 'Resource type is required'],
       lowercase: true,
       trim: true,
       index: true,
+      default: 'document',
+    },
+    category: {
+      type: String,
+      trim: true,
+      default: 'General',
+      index: true,
+    },
+    fileSize: {
+      type: String,
+      trim: true,
+      default: '1.2 MB',
+    },
+    fileType: {
+      type: String,
+      trim: true,
+      lowercase: true,
+      default: 'pdf',
+    },
+    downloadsCount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    status: {
+      type: String,
+      enum: ['active', 'archived', 'draft'],
+      default: 'active',
+      index: true,
+    },
+    tags: {
+      type: [String],
+      default: [],
     },
     url: {
       type: String,

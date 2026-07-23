@@ -152,171 +152,170 @@ const AuditLog = memo(() => {
       />
 
       <div className='admin-card mb-6'>
-          <div className='grid grid-cols-1 gap-4 md:grid-cols-4'>
-            <div className='admin-form-group mb-0'>
-              <label className='admin-label'>
-                <i className='fas fa-tasks mr-2 opacity-50'></i>
-                Action Type
-              </label>
-              <select
-                className='admin-input'
-                value={filters.action}
-                onChange={(e) =>
-                  setFilters({ ...filters, action: e.target.value })
-                }
-              >
-                <option value=''>All Actions</option>
-                <option value='User Login'>Login Events</option>
-                <option value='User Registration'>Registrations</option>
-                <option value='User Creation'>User Creation</option>
-                <option value='User Management'>User Management</option>
-              </select>
-            </div>
-            <div className='admin-form-group mb-0'>
-              <label className='admin-label'>
-                <i className='fas fa-check-circle mr-2 opacity-50'></i>
-                Status
-              </label>
-              <select
-                className='admin-input'
-                value={filters.status}
-                onChange={(e) =>
-                  setFilters({ ...filters, status: e.target.value })
-                }
-              >
-                <option value=''>All Status</option>
-                <option value='Success'>Success</option>
-                <option value='Failed'>Failed</option>
-                <option value='Warning'>Warning</option>
-              </select>
-            </div>
-            <div className='admin-form-group mb-0'>
-              <label className='admin-label'>
-                <i className='fas fa-calendar-alt mr-2 opacity-50'></i>
-                Event Date
-              </label>
-              <input
-                type='date'
-                className='admin-input'
-                value={filters.date}
-                onChange={(e) =>
-                  setFilters({ ...filters, date: e.target.value })
-                }
-              />
-            </div>
-            <div className='flex items-end'>
-              <button
-                onClick={handleApplyFilters}
-                className='admin-btn admin-btn-primary w-full'
-              >
-                <i className='fas fa-filter'></i>
-                Apply Filters
-              </button>
-            </div>
+        <div className='grid grid-cols-1 gap-4 md:grid-cols-4'>
+          <div className='admin-form-group mb-0'>
+            <label className='admin-label'>
+              <i className='fas fa-tasks mr-2 opacity-50'></i>
+              Action Type
+            </label>
+            <select
+              className='admin-input'
+              value={filters.action}
+              onChange={(e) =>
+                setFilters({ ...filters, action: e.target.value })
+              }
+            >
+              <option value='' className='bg-white dark:bg-slate-800 text-slate-900 dark:text-white'>All Actions</option>
+              <option value='User Login' className='bg-white dark:bg-slate-800 text-slate-900 dark:text-white'>Login Events</option>
+              <option value='User Registration' className='bg-white dark:bg-slate-800 text-slate-900 dark:text-white'>Registrations</option>
+              <option value='User Creation' className='bg-white dark:bg-slate-800 text-slate-900 dark:text-white'>User Creation</option>
+              <option value='User Management' className='bg-white dark:bg-slate-800 text-slate-900 dark:text-white'>User Management</option>
+            </select>
+          </div>
+          <div className='admin-form-group mb-0'>
+            <label className='admin-label'>
+              <i className='fas fa-check-circle mr-2 opacity-50'></i>
+              Status
+            </label>
+            <select
+              className='admin-input'
+              value={filters.status}
+              onChange={(e) =>
+                setFilters({ ...filters, status: e.target.value })
+              }
+            >
+              <option value='' className='bg-white dark:bg-slate-800 text-slate-900 dark:text-white'>All Status</option>
+              <option value='Success' className='bg-white dark:bg-slate-800 text-slate-900 dark:text-white'>Success</option>
+              <option value='Failed' className='bg-white dark:bg-slate-800 text-slate-900 dark:text-white'>Failed</option>
+              <option value='Warning' className='bg-white dark:bg-slate-800 text-slate-900 dark:text-white'>Warning</option>
+            </select>
+          </div>
+          <div className='admin-form-group mb-0'>
+            <label className='admin-label'>
+              <i className='fas fa-calendar-alt mr-2 opacity-50'></i>
+              Event Date
+            </label>
+            <input
+              type='date'
+              className='admin-input dark:[color-scheme:dark]'
+              value={filters.date}
+              onChange={(e) =>
+                setFilters({ ...filters, date: e.target.value })
+              }
+            />
+          </div>
+          <div className='flex items-end'>
+            <button
+              onClick={handleApplyFilters}
+              className='admin-btn admin-btn-primary w-full'
+            >
+              <i className='fas fa-filter'></i>
+              Apply Filters
+            </button>
           </div>
         </div>
-
-        <div className='admin-table-container'>
-          <table className='admin-table'>
-            <thead>
-              <tr>
-                <th style={{ width: '200px' }}>Timestamp</th>
-                <th style={{ width: '250px' }}>User Entity</th>
-                <th>Operation</th>
-                <th style={{ width: '150px', textAlign: 'center' }}>IP Node</th>
-                <th style={{ width: '120px', textAlign: 'center' }}>
-                  Response
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
-                <tr>
-                  <td colSpan='5' className='p-20 text-center'>
-                    <div className='flex flex-col items-center gap-4 py-10'>
-                      <i className='fas fa-circle-notch fa-spin text-3xl text-blue-500'></i>
-                      <p className='font-medium text-slate-500'>
-                        Synchronizing records...
-                      </p>
-                    </div>
-                  </td>
-                </tr>
-              ) : logs.length === 0 ? (
-                <tr>
-                  <td colSpan='5' className='p-20 text-center'>
-                    <div className='flex flex-col items-center gap-3 py-10'>
-                      <i className='fas fa-folder-open mb-2 text-5xl text-slate-200'></i>
-                      <p className='font-bold text-slate-500'>
-                        No security events found.
-                      </p>
-                      <button
-                        onClick={() => {
-                          const resetFilters = {
-                            action: '',
-                            status: '',
-                            date: '',
-                          };
-                          setFilters(resetFilters);
-                          fetchLogs(resetFilters);
-                        }}
-                        className='text-sm font-bold text-blue-600 hover:underline'
-                      >
-                        Clear search parameters
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ) : (
-                logs.map((log) => (
-                  <tr key={log.id || log._id}>
-                    <td className='font-mono text-xs text-slate-400'>
-                      {log.timestamp ||
-                        (log.createdAt
-                          ? new Date(log.createdAt).toLocaleString()
-                          : 'N/A')}
-                    </td>
-                    <td>
-                      <div className='flex items-center gap-2'>
-                        <i className='fas fa-user-circle text-slate-300'></i>
-                        <span className='font-semibold text-slate-700 dark:text-slate-300'>
-                          {getUserDisplay(log.user)}
-                        </span>
-                      </div>
-                    </td>
-                    <td>
-                      <div className='font-medium text-slate-900 dark:text-white'>
-                        {log.action}
-                      </div>
-                      {log.details && (
-                        <div className='mt-0.5 text-[11px] text-slate-400'>
-                          {log.details}
-                        </div>
-                      )}
-                    </td>
-                    <td className='text-center font-mono text-[11px] text-slate-500'>
-                      {log.ip || '127.0.0.1'}
-                    </td>
-                    <td className='text-center'>
-                      <span
-                        className={`admin-badge ${
-                          log.status === 'Success'
-                            ? 'admin-badge-success'
-                            : log.status === 'Warning'
-                              ? 'admin-badge-warning'
-                              : 'admin-badge-danger'
-                        }`}
-                      >
-                        {log.status || 'Unknown'}
-                      </span>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
       </div>
-    );
+
+      <div className='admin-table-container'>
+        <table className='admin-table'>
+          <thead>
+            <tr>
+              <th style={{ width: '200px' }}>Timestamp</th>
+              <th style={{ width: '250px' }}>User Entity</th>
+              <th>Operation</th>
+              <th style={{ width: '150px', textAlign: 'center' }}>IP Node</th>
+              <th style={{ width: '120px', textAlign: 'center' }}>
+                Response
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? (
+              <tr>
+                <td colSpan='5' className='p-20 text-center'>
+                  <div className='flex flex-col items-center gap-4 py-10'>
+                    <i className='fas fa-circle-notch fa-spin text-3xl text-blue-500'></i>
+                    <p className='font-medium text-slate-500 dark:text-slate-400'>
+                      Synchronizing records...
+                    </p>
+                  </div>
+                </td>
+              </tr>
+            ) : logs.length === 0 ? (
+              <tr>
+                <td colSpan='5' className='p-20 text-center'>
+                  <div className='flex flex-col items-center gap-3 py-10'>
+                    <i className='fas fa-folder-open mb-2 text-5xl text-slate-300 dark:text-slate-600'></i>
+                    <p className='font-bold text-slate-500 dark:text-slate-400'>
+                      No security events found.
+                    </p>
+                    <button
+                      onClick={() => {
+                        const resetFilters = {
+                          action: '',
+                          status: '',
+                          date: '',
+                        };
+                        setFilters(resetFilters);
+                        fetchLogs(resetFilters);
+                      }}
+                      className='text-sm font-bold text-blue-600 hover:underline dark:text-blue-400'
+                    >
+                      Clear search parameters
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ) : (
+              logs.map((log) => (
+                <tr key={log.id || log._id}>
+                  <td className='font-mono text-xs text-slate-500 dark:text-slate-400'>
+                    {log.timestamp ||
+                      (log.createdAt
+                        ? new Date(log.createdAt).toLocaleString()
+                        : 'N/A')}
+                  </td>
+                  <td>
+                    <div className='flex items-center gap-2'>
+                      <i className='fas fa-user-circle text-slate-400 dark:text-slate-500'></i>
+                      <span className='font-semibold text-slate-900 dark:text-slate-200'>
+                        {getUserDisplay(log.user)}
+                      </span>
+                    </div>
+                  </td>
+                  <td>
+                    <div className='font-medium text-slate-900 dark:text-white'>
+                      {log.action}
+                    </div>
+                    {log.details && (
+                      <div className='mt-0.5 text-[11px] text-slate-500 dark:text-slate-400'>
+                        {log.details}
+                      </div>
+                    )}
+                  </td>
+                  <td className='text-center font-mono text-[11px] text-slate-600 dark:text-slate-400'>
+                    {log.ip || '127.0.0.1'}
+                  </td>
+                  <td className='text-center'>
+                    <span
+                      className={`admin-badge ${log.status === 'Success'
+                        ? 'admin-badge-success'
+                        : log.status === 'Warning'
+                          ? 'admin-badge-warning'
+                          : 'admin-badge-danger'
+                        }`}
+                    >
+                      {log.status || 'Unknown'}
+                    </span>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 });
 
 AuditLog.displayName = 'AuditLog';
