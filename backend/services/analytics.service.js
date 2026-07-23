@@ -242,7 +242,14 @@ exports.getDashboardStats = async () => {
         todayMeetings: todayMeetings.map((m) => ({
           id: m._id,
           title: m.title,
-          time: m.time,
+          date: m.date,
+          time: m.time ||
+            (m.date
+              ? new Date(m.date).toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })
+              : null),
           location: m.location,
           type: m.type,
           participants: m.participants?.length || 0,
@@ -750,7 +757,14 @@ exports.getFacultyDashboardStats = async (userId) => {
         todayMeetings: todayMeetings.map((m) => ({
           id: m._id,
           title: m.title,
-          time: m.time,
+          date: m.date,
+          time: m.time ||
+            (m.date
+              ? new Date(m.date).toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })
+              : null),
           location: m.location,
           type: m.type,
           participants: m.participants?.length || 0,
@@ -838,7 +852,14 @@ exports.getStudentDashboardStats = async (studentId) => {
         todayMeetings: todayMeetings.map((m) => ({
           id: m._id,
           title: m.title,
-          time: m.time,
+          date: m.date,
+          time: m.time ||
+            (m.date
+              ? new Date(m.date).toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })
+              : null),
           location: m.location,
           type: m.type,
           participants: m.participants?.length || 0,
