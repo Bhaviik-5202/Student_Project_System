@@ -20,11 +20,10 @@ const ProjectArchitectureCard = memo(({ architecture, onEdit, onDelete }) => (
             {architecture.name}
           </h3>
           <span
-            className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${
-              architecture.status === 'Active'
-                ? 'bg-green-50 text-green-700'
-                : 'bg-red-50 text-red-700'
-            }`}
+            className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${architecture.status === 'Active'
+              ? 'bg-green-50 text-green-700'
+              : 'bg-red-50 text-red-700'
+              }`}
           >
             {architecture.status || 'Active'}
           </span>
@@ -118,8 +117,8 @@ const ProjectArchitecturesList = memo(() => {
       const typesList = Array.isArray(rawData)
         ? rawData
         : Array.isArray(rawData?.data)
-        ? rawData.data
-        : [];
+          ? rawData.data
+          : [];
 
       setArchitectures(typesList.length > 0 ? typesList : DEFAULT_ARCHITECTURES);
     } catch (error) {
@@ -186,7 +185,7 @@ const ProjectArchitecturesList = memo(() => {
       <div className='flex items-center justify-between'>
         <div>
           <h2 className='flex items-center text-xl font-bold text-gray-900 dark:text-white'>
-            Project Architectures
+            Project Types
           </h2>
           <p className='text-sm text-gray-500'>
             Manage project classification templates
@@ -219,11 +218,10 @@ const ProjectArchitecturesList = memo(() => {
             <button
               key={cat}
               onClick={() => setFilterCategory(cat)}
-              className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-bold transition-all ${
-                filterCategory === cat
-                  ? 'bg-indigo-600 text-white'
-                  : 'bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-400'
-              }`}
+              className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-xs font-bold transition-all ${filterCategory === cat
+                ? 'bg-indigo-600 text-white'
+                : 'bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-400'
+                }`}
             >
               {cat}
             </button>

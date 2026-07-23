@@ -114,13 +114,6 @@ const RecentActivity = memo(({ activities = [] }) => {
             Latest updates from your workspace
           </p>
         </div>
-        <Link
-          to={viewAllPath}
-          className='flex items-center gap-1 text-xs font-semibold text-blue-600 hover:underline dark:text-blue-400'
-        >
-          View all
-          <i className='fas fa-chevron-right text-[10px]'></i>
-        </Link>
       </div>
 
       <div className='space-y-2'>

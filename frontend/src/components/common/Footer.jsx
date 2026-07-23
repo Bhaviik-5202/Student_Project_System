@@ -75,7 +75,7 @@ const Footer = memo(() => {
 
             <div className='flex items-center gap-3'>
               <a
-                href='https://github.com'
+                href='https://github.com/Bhaviik-5202'
                 target='_blank'
                 rel='noopener noreferrer'
                 className='group flex h-9 w-9 items-center justify-center rounded-lg border border-slate-800 bg-slate-900/80 text-slate-400 transition-all duration-200 hover:border-blue-500 hover:bg-blue-600 hover:text-white'
@@ -84,7 +84,7 @@ const Footer = memo(() => {
                 <Github size={17} />
               </a>
               <a
-                href='https://linkedin.com'
+                href='https://linkedin.com//in/bhavik-parmar-51baa1303/'
                 target='_blank'
                 rel='noopener noreferrer'
                 className='group flex h-9 w-9 items-center justify-center rounded-lg border border-slate-800 bg-slate-900/80 text-slate-400 transition-all duration-200 hover:border-blue-500 hover:bg-blue-600 hover:text-white'
@@ -102,7 +102,9 @@ const Footer = memo(() => {
                 <Twitter size={17} />
               </a>
               <a
-                href='mailto:support@sps-univ.edu'
+                href='mailto:[EMAIL_ADDRESS]'
+                target='_blank'
+                rel='noopener noreferrer'
                 className='group flex h-9 w-9 items-center justify-center rounded-lg border border-slate-800 bg-slate-900/80 text-slate-400 transition-all duration-200 hover:border-blue-500 hover:bg-blue-600 hover:text-white'
                 aria-label='Email Support'
               >
@@ -121,7 +123,7 @@ const Footer = memo(() => {
                 { name: 'Overview Dashboard', path: '/dashboard' },
                 { name: 'Project Repository', path: '/projects' },
                 { name: 'Faculty Meetings', path: '/meetings' },
-                { name: 'Academic Calendar', path: '/calendar' },
+                { name: 'Academic Calendar', path: '/meetings' },
               ].map((item) => (
                 <li key={item.name}>
                   <Link
@@ -148,13 +150,13 @@ const Footer = memo(() => {
               </li>
               <li className='flex items-center gap-2.5 text-slate-400'>
                 <Mail size={16} className='shrink-0 text-slate-500' />
-                <a href='mailto:support@sps-univ.edu' className='hover:text-blue-400 transition-colors'>
-                  support@sps-univ.edu
+                <a href='mailto:[EMAIL_ADDRESS]' className='hover:text-blue-400 transition-colors'>
+                  er.bhavik5202@gmail.com
                 </a>
               </li>
               <li className='flex items-center gap-2.5 text-slate-400'>
                 <Phone size={16} className='shrink-0 text-slate-500' />
-                <span>+1 (800) 555-SPS-HELP</span>
+                <span>+91 (0288) 2211401</span>
               </li>
             </ul>
           </div>
@@ -164,7 +166,7 @@ const Footer = memo(() => {
             <h3 className='mb-5 text-xs font-bold uppercase tracking-wider text-slate-200'>
               System Status
             </h3>
-            <div className='rounded-xl border border-slate-800 bg-slate-900/60 p-4 backdrop-blur-sm'>
+            <div className='rounded-xl border border-slate-800 bg-slate-900/60 p-2.5 backdrop-blur-sm'>
               <div className='mb-3 flex items-center gap-2'>
                 <div className='relative'>
                   <span className='block h-2.5 w-2.5 rounded-full bg-emerald-500' />
@@ -179,7 +181,7 @@ const Footer = memo(() => {
               </p>
               <div className='flex items-center gap-1.5 border-t border-slate-800 pt-2.5 text-[11px] text-slate-500'>
                 <Cpu size={12} />
-                <span>v2.4.0 • Enterprise</span>
+                <span>v2.0.0 • Beta Release</span>
               </div>
             </div>
           </div>
