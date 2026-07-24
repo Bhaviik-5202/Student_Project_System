@@ -1,54 +1,34 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 /**
  * SystemMetrics Component
  *
- * Displays live system telemetry and performance indicators in a simplified card format.
- * Replaces the previous premium/dark-themed implementation with standardized global styles.
+ * Displays live system telemetry and performance indicators in an Area Chart.
  */
 const SystemMetrics = memo(({ stats = {} }) => {
-  const metrics = [
-    {
-      label: 'System Performance',
-      value: `${stats.systemPerformance || 92}%`,
-      change: stats.performanceChange || '+2.5%',
-      progress: stats.systemPerformance || 92,
-      icon: 'fa-server',
-    },
-    {
-      label: 'Response Time',
-      value: `${stats.responseTime || 128}ms`,
-      change: stats.responseTimeChange || '-12ms',
-      progress: 85,
-      icon: 'fa-bolt',
-    },
-    {
-      label: 'Active Users',
-      value: stats.activeUsers || 156,
-      change: stats.userChange || '+8',
-      progress: 75,
-      icon: 'fa-users',
-    },
-    {
-      label: 'Data Accuracy',
-      value: stats.dataAccuracy || '99.8%',
-      change: 'Verified',
-      progress: 99,
-      icon: 'fa-shield-halved',
-    },
+  // Mock data for the chart, ideally this would come from the API (stats.telemetry)
+  const data = [
+    { time: '08:00', performance: 85, users: 120 },
+    { time: '10:00', performance: 88, users: 132 },
+    { time: '12:00', performance: 92, users: 156 },
+    { time: '14:00', performance: 90, users: 145 },
+    { time: '16:00', performance: 95, users: 160 },
+    { time: '18:00', performance: 91, users: 150 },
+    { time: '20:00', performance: 96, users: 175 },
   ];
 
   return (
-    <div className='rounded-2xl border border-gray-100 bg-white dark:bg-slate-900 p-6 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800'>
+    <div className='rounded-2xl border border-gray-100 bg-white dark:bg-slate-900 p-6 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800 flex flex-col h-full'>
       <div className='mb-6 flex items-center justify-between'>
         <div>
           <h3 className='text-lg font-bold text-slate-900 dark:text-white'>
-            <i className='fas fa-chart-pie mr-2 text-blue-600'></i>
-            System Metrics
+            <i className='fas fa-chart-line mr-2 text-blue-600'></i>
+            System Telemetry
           </h3>
           <p className='text-sm text-slate-500 dark:text-slate-400'>
-            Live performance monitoring
+            Performance vs Active Users (Live)
           </p>
         </div>
         <div className='flex items-center gap-2'>
@@ -59,48 +39,44 @@ const SystemMetrics = memo(({ stats = {} }) => {
         </div>
       </div>
 
-      <div className='space-y-6'>
-        {metrics.map((metric, index) => (
-          <div key={index}>
-            <div className='mb-2 flex items-center justify-between'>
-              <div className='flex items-center text-sm font-medium text-slate-700 dark:text-slate-300'>
-                <div className='mr-3 flex h-8 w-8 items-center justify-center rounded-lg bg-slate-50 dark:bg-slate-700/50'>
-                  <i className={`fas ${metric.icon} text-slate-400`}></i>
-                </div>
-                {metric.label}
-              </div>
-              <div className='flex items-center gap-3'>
-                <span className='font-bold text-slate-900 dark:text-white'>
-                  {metric.value}
-                </span>
-                <span className='rounded bg-blue-50 px-1.5 py-0.5 text-[10px] font-semibold text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'>
-                  {metric.change}
-                </span>
-              </div>
-            </div>
-            <div className='h-1.5 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-700'>
-              <div
-                className='h-full rounded-full bg-blue-600 transition-all duration-1000 ease-out'
-                style={{ width: `${metric.progress}%` }}
-              ></div>
-            </div>
-          </div>
-        ))}
+      <div className='flex-1 min-h-[250px] w-full'>
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart
+            data={data}
+            margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+          >
+            <defs>
+              <linearGradient id="colorPerformance" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+              </linearGradient>
+              <linearGradient id="colorUsers" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" opacity={0.5} />
+            <XAxis dataKey="time" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} dy={10} />
+            <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} />
+            <Tooltip
+              contentStyle={{ borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+              itemStyle={{ fontSize: '14px', fontWeight: 'bold' }}
+            />
+            <Area type="monotone" dataKey="performance" name="Performance (%)" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorPerformance)" />
+            <Area type="monotone" dataKey="users" name="Active Users" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorUsers)" />
+          </AreaChart>
+        </ResponsiveContainer>
       </div>
 
-      <div className='mt-6 flex items-end justify-between border-t border-slate-100 pt-4 dark:border-slate-700'>
-        <div>
-          <div className='text-[10px] font-semibold uppercase tracking-wider text-slate-400'>
-            Last updated
-          </div>
-          <div className='text-sm font-bold text-slate-900 dark:text-white'>
-            {new Date().toLocaleTimeString([], {
-              hour: '2-digit',
-              minute: '2-digit',
-            })}
-          </div>
+      <div className='mt-6 grid grid-cols-2 gap-4 border-t border-slate-100 pt-4 dark:border-slate-700'>
+        <div className="flex flex-col">
+          <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Avg Performance</span>
+          <span className="text-xl font-bold text-blue-600 dark:text-blue-400">{stats.systemPerformance || 92.4}%</span>
         </div>
-        <i className='fas fa-microchip text-2xl text-slate-200 dark:text-slate-700 dark:text-slate-200'></i>
+        <div className="flex flex-col items-end">
+          <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Active Users</span>
+          <span className="text-xl font-bold text-emerald-600 dark:text-emerald-400">{stats.activeUsers || 175}</span>
+        </div>
       </div>
     </div>
   );

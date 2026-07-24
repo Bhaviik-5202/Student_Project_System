@@ -1,114 +1,79 @@
-// src/components/pages/dashboard/ProgressVisualization.jsx
-import React, { memo, useMemo } from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
-const MilestoneMarker = memo(({ milestone, projectProgress }) => (
-  <div key={milestone} className='flex flex-col items-center'>
-    <div
-      className={`h-1 w-1 rounded-full ${
-        projectProgress >= milestone
-          ? 'bg-slate-600 dark:bg-slate-300'
-          : 'bg-slate-300 dark:bg-slate-600'
-      }`}
-    />
-    <span className='mt-1 text-xs text-slate-500 dark:text-slate-400'>
-      {milestone}%
-    </span>
-  </div>
-));
-
-MilestoneMarker.displayName = 'MilestoneMarker';
-
-MilestoneMarker.propTypes = {
-  milestone: PropTypes.number.isRequired,
-  projectProgress: PropTypes.number.isRequired,
-};
-
-const getColorClass = (color) => {
+const getColorHex = (color) => {
   const colorMap = {
-    blue: 'bg-blue-500',
-    green: 'bg-emerald-500',
-    yellow: 'bg-amber-500',
-    purple: 'bg-purple-500',
+    blue: '#3b82f6',
+    green: '#10b981',
+    yellow: '#f59e0b',
+    purple: '#8b5cf6',
   };
-  return colorMap[color] || 'bg-blue-500';
+  return colorMap[color] || '#3b82f6';
 };
 
-const ProgressVisualization = memo(
-  ({ projects = [], userRole = 'student' }) => {
-    return (
-      <div className='space-y-6'>
-        {projects && projects.length > 0 ? (
-          projects
-            .filter((project) => project && (project.name || project.title))
-            .map((project, index) => (
-              <div key={index} className='space-y-3'>
-                <div className='flex items-center justify-between'>
-                  <div className='flex items-center'>
-                    <div
-                      className={`mr-3 h-3 w-3 rounded-full ${getColorClass(
-                        project.color
-                      )}`}
-                    />
-                    <div>
-                      <div className='font-medium text-slate-900 dark:text-white'>
-                        {project.name || project.title}
-                      </div>
-                      <div className='text-sm text-slate-500 dark:text-slate-400'>
-                        {userRole === 'student'
-                          ? project.status || 'In Progress'
-                          : `${project.students || 0} students`}
-                      </div>
-                    </div>
-                  </div>
-                  <div className='flex items-center'>
-                    <span className='mr-3 font-bold text-slate-900 dark:text-white'>
-                      {project.progress || 0}%
-                    </span>
-                    {project.progress === 100 && (
-                      <span className='rounded bg-emerald-100 px-2 py-1 text-xs font-medium text-emerald-700 dark:bg-emerald-900 dark:text-emerald-200'>
-                        Completed
-                      </span>
-                    )}
-                  </div>
-                </div>
+const ProgressVisualization = memo(({ projects = [], userRole = 'student' }) => {
+  const chartData = projects
+    .filter((project) => project && (project.name || project.title))
+    .map((project) => ({
+      name: project.name || project.title,
+      progress: project.progress || 0,
+      color: getColorHex(project.color),
+      status: project.status || 'In Progress',
+    }));
 
-                <div className='relative'>
-                  <div className='h-3 w-full rounded-full bg-slate-200 dark:bg-slate-700'>
-                    <div
-                      className={`h-3 rounded-full ${getColorClass(
-                        project.color
-                      )} transition-all duration-500`}
-                      style={{ width: `${project.progress || 0}%` }}
-                    />
-                  </div>
-
-                  {/* Milestone markers */}
-                  <div className='mt-1 flex justify-between'>
-                    {[0, 25, 50, 75, 100].map((milestone) => (
-                      <MilestoneMarker
-                        key={milestone}
-                        milestone={milestone}
-                        projectProgress={project.progress || 0}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ))
-        ) : (
-          <div className='py-8 text-center text-slate-500 dark:text-slate-400'>
-            No project progress data found.
-          </div>
-        )}
-      </div>
-    );
-  }
-);
+  return (
+    <div className='flex flex-col h-full space-y-4'>
+      {chartData.length > 0 ? (
+        <div className='h-72 w-full'>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={chartData}
+              margin={{ top: 20, right: 20, left: -20, bottom: 0 }}
+              barSize={40}
+            >
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" opacity={0.5} />
+              <XAxis 
+                dataKey="name" 
+                axisLine={false} 
+                tickLine={false} 
+                tick={{ fontSize: 12, fill: '#64748b' }} 
+                dy={10}
+              />
+              <YAxis 
+                axisLine={false} 
+                tickLine={false} 
+                tick={{ fontSize: 12, fill: '#64748b' }}
+                domain={[0, 100]}
+                tickFormatter={(value) => `${value}%`}
+              />
+              <Tooltip
+                cursor={{ fill: '#f1f5f9', opacity: 0.4 }}
+                contentStyle={{ borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                itemStyle={{ fontSize: '14px', fontWeight: 'bold' }}
+                formatter={(value) => [`${value}%`, 'Progress']}
+              />
+              <Bar dataKey="progress" radius={[6, 6, 0, 0]}>
+                {chartData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      ) : (
+        <div className='py-12 flex-1 flex items-center justify-center text-slate-500 dark:text-slate-400'>
+          No project progress data found.
+        </div>
+      )}
+    </div>
+  );
+});
 
 ProgressVisualization.displayName = 'ProgressVisualization';
 
 ProgressVisualization.propTypes = {
+  projects: PropTypes.array,
   userRole: PropTypes.oneOf(['student', 'faculty', 'admin']),
 };
 
