@@ -64,7 +64,7 @@ router.put(
     body('email').optional().isEmail().withMessage('Valid email is required'),
 
     body('password')
-      .optional()
+      .optional({ checkFalsy: true })
       .isLength({ min: 6 })
       .withMessage('Password must be at least 6 characters'),
 

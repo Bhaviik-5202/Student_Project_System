@@ -29,7 +29,7 @@ exports.createMeeting = async (req, res) => {
       );
     }
 
-    const result = await meetingService.create(req.body);
+    const result = await meetingService.create(req.body, req.user);
 
     sendResponse(
       res,

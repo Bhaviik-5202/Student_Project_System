@@ -19,7 +19,7 @@ const roleMiddleware = require('../middleware/roleMiddleware');
 router.post(
   '/',
   authMiddleware,
-  roleMiddleware(['admin']),
+  roleMiddleware(['admin', 'faculty']),
   meetingController.createMeeting
 );
 
@@ -52,7 +52,7 @@ router.post('/:id/join', authMiddleware, meetingController.joinMeeting);
 router.put(
   '/:id',
   authMiddleware,
-  roleMiddleware(['admin']),
+  roleMiddleware(['admin', 'faculty']),
   meetingController.updateMeeting
 );
 
@@ -64,7 +64,7 @@ router.put(
 router.delete(
   '/:id',
   authMiddleware,
-  roleMiddleware(['admin']),
+  roleMiddleware(['admin', 'faculty']),
   meetingController.deleteMeeting
 );
 

@@ -459,7 +459,7 @@ const AppRoutes = () => {
           path='meetings'
           element={
             <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
-              <MeetingCalendar />
+              <MeetingList />
             </ProtectedRoute>
           }
         />
@@ -468,6 +468,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
               <MeetingList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='meetings/calendar'
+          element={
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
+              <MeetingCalendar />
             </ProtectedRoute>
           }
         />

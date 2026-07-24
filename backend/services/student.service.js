@@ -140,7 +140,31 @@ exports.getAll = async () => {
  */
 exports.getById = async (id) => {
   try {
-    const student = await studentRepository.findById(id);
+    let student = await studentRepository.findById(id);
+    if (!student) {
+      const user = await userRepository.findById(id, { select: '-password', lean: true });
+      if (user && (user.role === 'student' || !user.role)) {
+        const existingStudent = await studentRepository.findByEmail(user.email);
+        if (existingStudent) {
+          student = existingStudent;
+        } else {
+          student = {
+            _id: user._id,
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            rollNumber: user.rollNumber || `STU${new Date().getFullYear()}${user._id.toString().slice(-4).toUpperCase()}`,
+            enrollmentNumber: user.enrollmentNumber || `EN${new Date().getFullYear()}${user._id.toString().slice(-6).toUpperCase()}`,
+            department: normalizeDepartment(user.department),
+            semester: user.semester || 'Sem 1',
+            year: user.year || 1,
+            phone: user.phone || '',
+            status: user.status === 'inactive' ? 'Inactive' : 'Active',
+            avatar: user.avatar || null,
+          };
+        }
+      }
+    }
     if (!student) return response(true, null, 'Student not found');
     return response(false, student, 'Student fetched successfully');
   } catch (err) {
@@ -156,9 +180,55 @@ exports.getById = async (id) => {
  */
 exports.update = async (id, data) => {
   try {
-    const student = await studentRepository.update(id, data);
-    if (!student) return response(true, null, 'Student not found');
-    return response(false, student, 'Student updated successfully');
+    const cleanDepartment = data.department ? normalizeDepartment(data.department) : undefined;
+    const updateData = { ...data };
+    if (cleanDepartment) updateData.department = cleanDepartment;
+
+    let student = await studentRepository.update(id, updateData);
+    let user = null;
+
+    if (student) {
+      user = await userRepository.findByEmail(student.email);
+      if (user) {
+        await userRepository.update(user._id, {
+          name: data.name || user.name,
+          department: cleanDepartment || user.department,
+          year: data.year ? String(data.year) : user.year,
+          phone: data.phone !== undefined ? data.phone : user.phone,
+          status: data.status ? data.status.toLowerCase() : user.status,
+          rollNumber: data.rollNumber || user.rollNumber,
+        });
+      }
+    } else {
+      user = await userRepository.findById(id);
+      if (user) {
+        user = await userRepository.update(id, {
+          name: data.name || user.name,
+          department: cleanDepartment || user.department,
+          year: data.year ? String(data.year) : user.year,
+          phone: data.phone !== undefined ? data.phone : user.phone,
+          status: data.status ? data.status.toLowerCase() : user.status,
+          rollNumber: data.rollNumber || user.rollNumber,
+        });
+        let studentRecord = await studentRepository.findByEmail(user.email);
+        if (studentRecord) {
+          student = await studentRepository.update(studentRecord._id, updateData);
+        } else {
+          student = await studentRepository.create({
+            name: user.name,
+            email: user.email,
+            rollNumber: data.rollNumber || user.rollNumber || `STU${new Date().getFullYear()}${user._id.toString().slice(-4).toUpperCase()}`,
+            department: cleanDepartment || user.department,
+            year: Number(data.year) || 1,
+            phone: data.phone || '',
+            status: 'Active',
+          });
+        }
+      }
+    }
+
+    if (!student && !user) return response(true, null, 'Student not found');
+    return response(false, student || user, 'Student updated successfully');
   } catch (err) {
     return response(true, null, err.message || 'Failed to update student');
   }
@@ -171,8 +241,31 @@ exports.update = async (id, data) => {
  */
 exports.remove = async (id) => {
   try {
-    const student = await studentRepository.remove(id);
-    if (!student) return response(true, null, 'Student not found');
+    let deletedStudent = null;
+    let deletedUser = null;
+
+    deletedStudent = await studentRepository.remove(id);
+
+    if (deletedStudent && deletedStudent.email) {
+      const user = await userRepository.findByEmail(deletedStudent.email);
+      if (user) {
+        deletedUser = await userRepository.remove(user._id);
+      }
+    } else {
+      const user = await userRepository.findById(id);
+      if (user) {
+        deletedUser = await userRepository.remove(id);
+        const studentRecord = await studentRepository.findByEmail(user.email);
+        if (studentRecord) {
+          deletedStudent = await studentRepository.remove(studentRecord._id);
+        }
+      }
+    }
+
+    if (!deletedStudent && !deletedUser) {
+      return response(true, null, 'Student not found');
+    }
+
     return response(false, null, 'Student deleted successfully');
   } catch (err) {
     return response(true, null, err.message || 'Failed to delete student');

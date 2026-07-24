@@ -146,7 +146,7 @@ const StudentsList = memo(() => {
 
       const matchesDepartment =
         department === '' || student.department === department;
-      const matchesYear = year === '' || student.year === year;
+      const matchesYear = year === '' || String(student.year) === String(year);
       return matchesSearch && matchesDepartment && matchesYear;
     });
   }, [students, search, department, year]);

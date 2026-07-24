@@ -67,16 +67,16 @@ export const navigationItems = [
     path: '/meetings',
     roles: ROLE_COMBINATIONS.ALL,
     submenu: [
-      { title: 'Calendar', path: '/meetings', roles: ROLE_COMBINATIONS.ALL },
       {
         title: 'Meeting List',
         path: '/meetings/list',
         roles: ROLE_COMBINATIONS.ALL,
       },
+      { title: 'Calendar', path: '/meetings/calendar', roles: ROLE_COMBINATIONS.ALL },
       {
         title: 'Schedule Meeting',
         path: '/meetings/new',
-        roles: ROLE_COMBINATIONS.ADMIN_ONLY,
+        roles: ROLE_COMBINATIONS.ADMIN_FACULTY,
       },
     ],
   },

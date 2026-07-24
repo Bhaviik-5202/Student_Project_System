@@ -207,7 +207,48 @@ exports.create = async (data) => {
     const existing = await userRepository.findByEmail(data.email);
     if (existing) return response(true, null, 'Email already exists');
 
-    const user = await userRepository.create(data);
+    const cleanDepartment = normalizeDepartment(data.department);
+    const userData = {
+      ...data,
+      department: cleanDepartment,
+    };
+
+    if (userData.role === 'student' && !userData.rollNumber) {
+      userData.rollNumber = await generateRollNumber();
+      userData.enrollmentNumber = `EN${new Date().getFullYear()}${Math.floor(100000 + Math.random() * 900000)}`;
+    } else if ((userData.role === 'faculty' || userData.role === 'admin') && !userData.facultyId) {
+      userData.facultyId = await generateFacultyId();
+    }
+
+    const user = await userRepository.create(userData);
+
+    if (user.role === 'student') {
+      await studentRepository.create({
+        name: user.name,
+        email: user.email,
+        rollNumber: user.rollNumber,
+        enrollmentNumber: user.enrollmentNumber,
+        department: cleanDepartment,
+        year: Number(user.year) || 1,
+        phone: user.phone || '',
+        status: user.status === 'active' ? 'Active' : 'Inactive',
+        avatar: user.avatar || null,
+      });
+    } else if (user.role === 'faculty' || user.role === 'admin') {
+      const staffRepository = require('../repositories/staff.repository');
+      await staffRepository.create({
+        name: user.name,
+        email: user.email,
+        facultyId: user.facultyId,
+        department: cleanDepartment,
+        designation: user.designation || 'Assistant Professor',
+        phone: user.phone || '',
+        status: user.status === 'active' ? 'Active' : 'Inactive',
+        role: user.role,
+        avatar: user.avatar || null,
+      });
+    }
+
     return response(false, user, 'User created successfully');
   } catch (err) {
     return response(true, null, err.message || 'Failed to create user');
@@ -222,8 +263,48 @@ exports.create = async (data) => {
  */
 exports.update = async (id, data) => {
   try {
-    const user = await userRepository.update(id, data);
+    const updatePayload = { ...data };
+
+    if (updatePayload.password && updatePayload.password.trim() !== '') {
+      const saltRounds = Number(process.env.BCRYPT_SALT_ROUNDS) || 12;
+      updatePayload.password = await bcrypt.hash(updatePayload.password, saltRounds);
+    } else {
+      delete updatePayload.password;
+    }
+
+    if (updatePayload.department) {
+      updatePayload.department = normalizeDepartment(updatePayload.department);
+    }
+
+    const user = await userRepository.update(id, updatePayload);
     if (!user) return response(true, null, 'User not found');
+
+    if (user.role === 'student') {
+      const studentRecord = await studentRepository.findByEmail(user.email);
+      if (studentRecord) {
+        await studentRepository.update(studentRecord._id, {
+          name: user.name,
+          email: user.email,
+          department: user.department,
+          phone: user.phone || '',
+          status: user.status === 'active' || user.status === 'Active' ? 'Active' : 'Inactive',
+        });
+      }
+    } else if (user.role === 'faculty' || user.role === 'admin') {
+      const staffRepository = require('../repositories/staff.repository');
+      const staffRecord = await staffRepository.findOne({ email: user.email });
+      if (staffRecord) {
+        await staffRepository.update(staffRecord._id, {
+          name: user.name,
+          email: user.email,
+          department: user.department,
+          phone: user.phone || '',
+          status: user.status === 'active' || user.status === 'Active' ? 'Active' : 'Inactive',
+          role: user.role,
+        });
+      }
+    }
+
     return response(false, user, 'User updated successfully');
   } catch (err) {
     return response(true, null, err.message || 'Failed to update user');

@@ -154,7 +154,7 @@ const MeetingDetails = memo(() => {
     const res = await meetingService.deleteMeeting(id);
     if (res.success) {
       toast.success('Meeting cancelled successfully');
-      navigate('/meetings');
+      navigate('/meetings/list');
     } else {
       toast.error(res.message || 'Failed to cancel meeting');
     }
@@ -182,10 +182,10 @@ const MeetingDetails = memo(() => {
         </h3>
         <p className='mb-6 text-sm text-gray-500 dark:text-gray-400'>{error}</p>
         <button
-          onClick={() => navigate('/meetings')}
+          onClick={() => navigate('/meetings/list')}
           className='meeting-btn meeting-btn-primary px-8'
         >
-          Back to Calendar
+          Back to Meeting Management
         </button>
       </div>
     );
@@ -214,11 +214,11 @@ const MeetingDetails = memo(() => {
           actions={
             <>
               <button
-                onClick={() => navigate('/meetings')}
+                onClick={() => navigate('/meetings/list')}
                 className='flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-xs font-bold text-gray-700 shadow-sm hover:bg-gray-50 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-200 transition-all'
               >
                 <ArrowLeft size={16} />
-                Back to Calendar
+                Back to Meeting Management
               </button>
               {isReviewMeeting(meeting.type) && (
                 <button
@@ -242,6 +242,7 @@ const MeetingDetails = memo(() => {
           }
         />
 
+        <br />
         <div className='grid grid-cols-1 gap-6 lg:grid-cols-3'>
           <div className='space-y-6 lg:col-span-2'>
             <div className='meeting-card'>
@@ -266,11 +267,11 @@ const MeetingDetails = memo(() => {
                       <p className='text-sm font-bold text-gray-900 dark:text-white'>
                         {meeting.date
                           ? new Date(meeting.date).toLocaleDateString(undefined, {
-                              weekday: 'long',
-                              year: 'numeric',
-                              month: 'long',
-                              day: 'numeric',
-                            })
+                            weekday: 'long',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                          })
                           : 'N/A'}
                       </p>
                     </div>
@@ -345,7 +346,7 @@ const MeetingDetails = memo(() => {
               <div className='meeting-card-body'>
                 <h2 className='meeting-subtitle mb-4'>Attachments</h2>
                 {Array.isArray(meeting.attachments) &&
-                meeting.attachments.length > 0 ? (
+                  meeting.attachments.length > 0 ? (
                   <ul className='space-y-2'>
                     {meeting.attachments.map((file, index) => (
                       <li key={index}>
@@ -496,9 +497,9 @@ const MeetingDetails = memo(() => {
           </div>
         </div>
       </div>
-      </div>
-    );
-  });
+    </div>
+  );
+});
 
 MeetingDetails.displayName = 'MeetingDetails';
 export default MeetingDetails;

@@ -18,9 +18,25 @@ const response = (error, data, message) => ({ error, data, message });
  * @param {Object} data - Meeting details (title, time, participants)
  * @returns {Promise<Object>} Formatted service response with new meeting instance
  */
-exports.create = async (data) => {
+exports.create = async (data, user) => {
   try {
-    const meeting = await meetingRepository.create(data);
+    const meetingData = { ...data };
+    if (!meetingData.organizer && user) {
+      meetingData.organizer = user.id || user._id;
+    }
+    if (!meetingData.status) {
+      const now = new Date();
+      const meetingDate = new Date(meetingData.date);
+      if (meetingDate < now - 60 * 60 * 1000) {
+        meetingData.status = 'completed';
+      } else if (Math.abs(meetingDate - now) <= 60 * 60 * 1000) {
+        meetingData.status = 'ongoing';
+      } else {
+        meetingData.status = 'scheduled';
+      }
+    }
+    meetingData.isActive = meetingData.status !== 'cancelled';
+    const meeting = await meetingRepository.create(meetingData);
     return response(false, meeting, 'Meeting created successfully');
   } catch (err) {
     return response(true, null, err.message || 'Failed to create meeting');
@@ -33,8 +49,41 @@ exports.create = async (data) => {
  */
 exports.getAll = async () => {
   try {
-    const meetings = await meetingRepository.findAll();
-    return response(false, meetings, 'Meetings fetched successfully');
+    const meetings = await meetingRepository.findAll(
+      {},
+      {
+        populate: [
+          { path: 'organizer', select: 'name email role avatar' },
+          { path: 'participants', select: 'name email role avatar' },
+          {
+            path: 'project',
+            select: 'title slug status guide',
+            populate: { path: 'guide', select: 'name email role' },
+          },
+        ],
+        sort: { date: 1 },
+      }
+    );
+
+    const now = new Date();
+    const formattedMeetings = (meetings || []).map((m) => {
+      const doc = m.toObject ? m.toObject() : m;
+      if (doc.status !== 'cancelled') {
+        const meetingDate = new Date(doc.date);
+        const diffMs = meetingDate - now;
+        if (diffMs > 60 * 60 * 1000) {
+          doc.status = 'upcoming';
+        } else if (diffMs >= -60 * 60 * 1000) {
+          doc.status = 'ongoing';
+        } else {
+          doc.status = 'completed';
+        }
+      }
+      doc.isActive = doc.status !== 'cancelled' && doc.isActive !== false;
+      return doc;
+    });
+
+    return response(false, formattedMeetings, 'Meetings fetched successfully');
   } catch (err) {
     return response(true, null, err.message || 'Failed to fetch meetings');
   }
@@ -49,7 +98,8 @@ exports.getById = async (id) => {
   try {
     const meeting = await meetingRepository.findById(id, {
       populate: [
-        { path: 'participants', select: 'name email role' },
+        { path: 'organizer', select: 'name email role avatar' },
+        { path: 'participants', select: 'name email role avatar' },
         {
           path: 'project',
           select: 'title slug status guide',
@@ -58,7 +108,17 @@ exports.getById = async (id) => {
       ],
     });
     if (!meeting) return response(true, null, 'Meeting not found');
-    return response(false, meeting, 'Meeting fetched successfully');
+    const doc = meeting.toObject ? meeting.toObject() : meeting;
+    if (doc.status !== 'cancelled') {
+      const now = new Date();
+      const meetingDate = new Date(doc.date);
+      const diffMs = meetingDate - now;
+      if (diffMs > 60 * 60 * 1000) doc.status = 'upcoming';
+      else if (diffMs >= -60 * 60 * 1000) doc.status = 'ongoing';
+      else doc.status = 'completed';
+    }
+    doc.isActive = doc.status !== 'cancelled' && doc.isActive !== false;
+    return response(false, doc, 'Meeting fetched successfully');
   } catch (err) {
     return response(true, null, err.message || 'Failed to fetch meeting');
   }
@@ -72,7 +132,11 @@ exports.getById = async (id) => {
  */
 exports.update = async (id, data) => {
   try {
-    const meeting = await meetingRepository.update(id, data);
+    const updateData = { ...data };
+    if (updateData.status) {
+      updateData.isActive = updateData.status !== 'cancelled';
+    }
+    const meeting = await meetingRepository.update(id, updateData);
     if (!meeting) return response(true, null, 'Meeting not found');
     return response(false, meeting, 'Meeting updated successfully');
   } catch (err) {

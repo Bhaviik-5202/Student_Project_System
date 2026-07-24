@@ -21,11 +21,21 @@ const meetingSchema = new mongoose.Schema(
       type: Date,
       required: [true, 'Meeting date is required'],
     },
+    time: {
+      type: String,
+      trim: true,
+      default: '',
+    },
     type: {
       type: String,
-      enum: ['team', 'project', 'one_on_one', 'client'],
-      default: 'team',
+      enum: ['team', 'project', 'one_on_one', 'client', 'review', 'faculty'],
+      default: 'review',
       lowercase: true,
+    },
+    organizer: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      default: null,
     },
     participants: [
       {
@@ -43,6 +53,16 @@ const meetingSchema = new mongoose.Schema(
       ref: 'Project',
       default: null,
     },
+    status: {
+      type: String,
+      enum: ['scheduled', 'upcoming', 'ongoing', 'completed', 'cancelled'],
+      default: 'scheduled',
+      lowercase: true,
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: true,
@@ -51,6 +71,7 @@ const meetingSchema = new mongoose.Schema(
 
 meetingSchema.index({ date: 1 });
 meetingSchema.index({ project: 1 });
+meetingSchema.index({ organizer: 1 });
 meetingSchema.index({ participants: 1 });
 
 module.exports = mongoose.model('Meeting', meetingSchema);
