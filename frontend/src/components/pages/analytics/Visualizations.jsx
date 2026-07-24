@@ -47,21 +47,21 @@ const Visualizations = memo(() => {
   }, []);
 
   return (
-    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+    <div className='space-y-6 animate-fade-in pt-0 pb-6'>
       <PageHeader
         title='Data Visualizations'
         subtitle='Interactive graphical breakdowns and telemetry visualizations'
         icon={BarChart2}
         actions={
-          <div className='flex items-center gap-1.5 rounded-xl bg-gray-100 p-1 dark:bg-slate-800'>
+          <div className='flex items-center gap-1.5 rounded-xl bg-gray-100 dark:bg-gray-800 p-1 dark:bg-slate-800'>
             {['bar', 'line', 'pie', 'radar'].map((type) => (
               <button
                 key={type}
                 onClick={() => setChartType(type)}
                 className={`rounded-lg px-3 py-1.5 text-xs font-bold capitalize transition-all ${
                   chartType === type
-                    ? 'bg-white text-indigo-600 shadow dark:bg-slate-700 dark:text-indigo-400'
-                    : 'text-gray-500 hover:text-gray-700 dark:text-gray-400'
+                    ? 'bg-white dark:bg-slate-900 text-indigo-600 shadow dark:bg-slate-700 dark:text-indigo-400'
+                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 '
                 }`}
               >
                 {type}
@@ -72,17 +72,17 @@ const Visualizations = memo(() => {
       />
 
         {loading ? (
-          <div className='p-8 text-center text-slate-500'>
+          <div className='p-8 text-center text-slate-500 dark:text-slate-400'>
             Loading visualizations...
           </div>
         ) : gradeBars.length === 0 ? (
-          <div className='p-8 text-center text-slate-500'>
+          <div className='p-8 text-center text-slate-500 dark:text-slate-400'>
             No visualization data available.
           </div>
         ) : (
           <div className='mb-8 grid grid-cols-1 gap-6 lg:grid-cols-2'>
             {/* Grade Distribution Chart */}
-            <div className='rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800'>
+            <div className='rounded-lg border border-slate-200 bg-white dark:bg-slate-900 p-6 dark:border-slate-700 dark:bg-slate-800'>
               <h3 className='mb-4 text-lg font-semibold text-slate-900 dark:text-white'>
                 Activity Distribution
               </h3>
@@ -108,7 +108,7 @@ const Visualizations = memo(() => {
             </div>
 
             {/* Course Enrollment */}
-            <div className='rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800'>
+            <div className='rounded-lg border border-slate-200 bg-white dark:bg-slate-900 p-6 dark:border-slate-700 dark:bg-slate-800'>
               <h3 className='mb-4 text-lg font-semibold text-slate-900 dark:text-white'>
                 Course Enrollment
               </h3>
@@ -145,7 +145,7 @@ const Visualizations = memo(() => {
         )}
 
         {/* Performance Trends */}
-        <div className='mb-8 rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800'>
+        <div className='mb-8 rounded-lg border border-slate-200 bg-white dark:bg-slate-900 p-6 dark:border-slate-700 dark:bg-slate-800'>
           <h3 className='mb-6 text-lg font-semibold text-slate-900 dark:text-white'>
             Performance Trends Over Time
           </h3>

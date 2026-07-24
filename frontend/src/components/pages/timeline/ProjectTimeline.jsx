@@ -125,11 +125,11 @@ const ProjectTimeline = memo(() => {
                         >
                           {project.name}
                         </div>
-                        <div className='mt-1 text-[10px] text-gray-500'>
+                        <div className='mt-1 text-[10px] text-gray-500 dark:text-gray-400'>
                           {project.progress}% Complete
                         </div>
                       </div>
-                      <div className='relative h-6 flex-1 overflow-hidden rounded-lg border border-gray-100 bg-gray-50 dark:border-slate-800 dark:bg-slate-900'>
+                      <div className='relative h-6 flex-1 overflow-hidden rounded-lg border border-gray-100 bg-gray-50 dark:bg-gray-800 dark:border-slate-800 dark:bg-slate-900'>
                         <div
                           className='absolute inset-y-0 border-x border-indigo-500/20 bg-indigo-500/10'
                           style={{
@@ -155,7 +155,7 @@ const ProjectTimeline = memo(() => {
             <div className='overflow-x-auto'>
               <table className='w-full text-left'>
                 <thead>
-                  <tr className='border-b border-gray-100 bg-gray-50/50 dark:border-slate-700 dark:bg-slate-900/40'>
+                  <tr className='border-b border-gray-100 bg-gray-50 dark:bg-gray-800/50 dark:border-slate-700 dark:bg-slate-900/40'>
                     <th className='px-6 py-4 text-[10px] font-bold text-gray-400'>
                       Venture
                     </th>
@@ -174,7 +174,7 @@ const ProjectTimeline = memo(() => {
                   {projects.map((project) => (
                     <tr
                       key={project.id || project._id}
-                      className='transition-colors hover:bg-gray-50 dark:hover:bg-slate-800/30'
+                      className='transition-colors hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-800 dark:hover:bg-slate-800/30'
                     >
                       <td className='px-6 py-4'>
                         <span className='text-xs font-bold text-gray-900 dark:text-white'>
@@ -182,7 +182,7 @@ const ProjectTimeline = memo(() => {
                         </span>
                       </td>
                       <td className='px-6 py-4'>
-                        <span className='text-[10px] font-bold text-gray-500'>
+                        <span className='text-[10px] font-bold text-gray-500 dark:text-gray-400'>
                           {new Date(project.start).toLocaleDateString()} —{' '}
                           {new Date(project.end).toLocaleDateString()}
                         </span>

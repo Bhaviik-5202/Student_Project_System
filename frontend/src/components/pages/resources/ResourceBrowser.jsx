@@ -24,7 +24,7 @@ import {
   Tag,
   Check,
 } from 'lucide-react';
-import PageHeader from '../../ui/PageHeader';
+import PageHeader from '../../common/PageHeader';
 import StatisticsCard from '../../ui/StatisticsCard';
 import SearchInput from '../../ui/SearchInput';
 import Select from '../../ui/Select';
@@ -57,7 +57,7 @@ const getFormatIcon = (fileType, type) => {
   if (ext === 'xlsx' || ext === 'xls') {
     return { icon: FileSpreadsheet, color: 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-400' };
   }
-  return { icon: FolderOpen, color: 'text-slate-600 bg-slate-100 dark:bg-slate-700 dark:text-slate-300' };
+  return { icon: FolderOpen, color: 'text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 ' };
 };
 
 export const ResourceBrowser = () => {
@@ -190,7 +190,7 @@ export const ResourceBrowser = () => {
       formData.append('description', uploadDescription);
       formData.append('tags', uploadTags);
       if (uploadFile) {
-        formData.append('file', uploadFile);
+        formData.append('files', uploadFile);
       }
 
       const res = await resourceService.upload(formData);
@@ -216,10 +216,9 @@ export const ResourceBrowser = () => {
       {/* Page Header */}
       <PageHeader
         title="Resource Library"
-        description="Access and manage shared project documents, templates, reference materials, and guidelines."
+        subtitle="Access and manage shared project documents, templates, reference materials, and guidelines."
         icon={FolderOpen}
-        badgeText="Central Hub"
-        badgeVariant="info"
+        badge={`${stats.total} Files`}
         actions={
           <div className="flex items-center gap-2">
             <Button
@@ -268,7 +267,7 @@ export const ResourceBrowser = () => {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-4 shadow-sm dark:border-slate-800 ">
         <div className="flex flex-1 items-center gap-3">
           <SearchInput
             value={searchQuery}
@@ -309,7 +308,7 @@ export const ResourceBrowser = () => {
             onClick={() => setViewMode('grid')}
             className={`rounded-lg p-2 text-xs font-semibold transition-all ${viewMode === 'grid'
               ? 'bg-indigo-600 text-white shadow-xs'
-              : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+              : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white dark:text-white '
               }`}
           >
             <Grid className="h-4 w-4" />
@@ -318,7 +317,7 @@ export const ResourceBrowser = () => {
             onClick={() => setViewMode('list')}
             className={`rounded-lg p-2 text-xs font-semibold transition-all ${viewMode === 'list'
               ? 'bg-indigo-600 text-white shadow-xs'
-              : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+              : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white dark:text-white '
               }`}
           >
             <List className="h-4 w-4" />
@@ -359,7 +358,7 @@ export const ResourceBrowser = () => {
             return (
               <div
                 key={resId}
-                className="group flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-xs transition-all duration-200 hover:-translate-y-1 hover:border-indigo-300 hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
+                className="group flex flex-col justify-between rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-5 shadow-xs transition-all duration-200 hover:-translate-y-1 hover:border-indigo-300 hover:shadow-md dark:border-slate-800 "
               >
                 <div>
                   <div className="mb-3.5 flex items-center justify-between">
@@ -368,7 +367,7 @@ export const ResourceBrowser = () => {
                         <FormatIcon className="h-6 w-6" />
                       </div>
                       <div>
-                        <span className="inline-block rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                        <span className="inline-block rounded-full bg-slate-100 dark:bg-slate-800 px-2.5 py-0.5 text-xs font-semibold text-slate-700 dark:text-slate-200  dark:text-slate-300">
                           {resource.category || 'General'}
                         </span>
                         <p className="mt-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">
@@ -416,23 +415,30 @@ export const ResourceBrowser = () => {
                       <button
                         onClick={() => setPreviewResource(resource)}
                         title="Preview"
-                        className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:hover:bg-slate-800 dark:hover:text-white"
+                        className="rounded-lg p-1.5 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800 hover:text-slate-800 dark:hover:text-slate-100 dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-white"
                       >
                         <Eye className="h-4 w-4" />
                       </button>
                       <button
                         onClick={() => setDetailsResource(resource)}
                         title="Details"
-                        className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:hover:bg-slate-800 dark:hover:text-white"
+                        className="rounded-lg p-1.5 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800 hover:text-slate-800 dark:hover:text-slate-100 dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-white"
                       >
                         <Info className="h-4 w-4" />
                       </button>
                       <button
                         onClick={() => handleShare(resource)}
                         title="Share link"
-                        className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:hover:bg-slate-800 dark:hover:text-white"
+                        className="rounded-lg p-1.5 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800 hover:text-slate-800 dark:hover:text-slate-100 dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-white"
                       >
                         {copiedId === resId ? <Check className="h-4 w-4 text-emerald-500" /> : <Share2 className="h-4 w-4" />}
+                      </button>
+                      <button
+                        onClick={() => setEditResource(resource)}
+                        title="Edit"
+                        className="rounded-lg p-1.5 text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-950/40"
+                      >
+                        <Edit className="h-4 w-4" />
                       </button>
                       <button
                         onClick={() => handleDelete(resource)}
@@ -459,9 +465,9 @@ export const ResourceBrowser = () => {
         </div>
       ) : (
         /* List View */
-        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900">
+        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 shadow-xs dark:border-slate-800 ">
           <table className="w-full text-left text-sm text-slate-600 dark:text-slate-400">
-            <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase text-slate-500 dark:border-slate-800 dark:bg-slate-800/50 dark:text-slate-400">
+            <thead className="border-b border-slate-200 bg-slate-50 dark:bg-slate-800 text-xs uppercase text-slate-500 dark:text-slate-400 dark:border-slate-800 /50 ">
               <tr>
                 <th className="px-6 py-3.5 font-semibold">Title</th>
                 <th className="px-6 py-3.5 font-semibold">Category</th>
@@ -479,7 +485,7 @@ export const ResourceBrowser = () => {
                 const resId = resource._id || resource.id;
 
                 return (
-                  <tr key={resId} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
+                  <tr key={resId} className="hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800/50 /50">
                     <td className="px-6 py-4 font-medium text-slate-900 dark:text-white">
                       <div className="flex items-center gap-3">
                         <div className={`flex h-9 w-9 items-center justify-center rounded-lg ${iconStyle}`}>
@@ -492,7 +498,7 @@ export const ResourceBrowser = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                      <span className="rounded-full bg-slate-100 dark:bg-slate-800 px-2.5 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200  dark:text-slate-300">
                         {resource.category || 'General'}
                       </span>
                     </td>
@@ -511,6 +517,14 @@ export const ResourceBrowser = () => {
                           onClick={() => setPreviewResource(resource)}
                         >
                           Preview
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          icon={Edit}
+                          onClick={() => setEditResource(resource)}
+                        >
+                          Edit
                         </Button>
                         <Button
                           variant="primary"
@@ -533,7 +547,7 @@ export const ResourceBrowser = () => {
       {/* Upload Modal */}
       {isUploadOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4 backdrop-blur-xs">
-          <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-xl dark:border-slate-800 dark:bg-slate-900">
+          <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-xl dark:border-slate-800 ">
             <h3 className="text-lg font-bold text-slate-900 dark:text-white">
               Upload New Resource
             </h3>
@@ -607,7 +621,7 @@ export const ResourceBrowser = () => {
                 <input
                   type="file"
                   onChange={(e) => setUploadFile(e.target.files[0])}
-                  className="mt-1 w-full text-xs text-slate-500 file:mr-3 file:rounded-xl file:border-0 file:bg-indigo-50 file:px-3 file:py-2 file:text-xs file:font-semibold file:text-indigo-600 hover:file:bg-indigo-100 dark:file:bg-indigo-950/60 dark:file:text-indigo-300"
+                  className="mt-1 w-full text-xs text-slate-500 dark:text-slate-400 file:mr-3 file:rounded-xl file:border-0 file:bg-indigo-50 file:px-3 file:py-2 file:text-xs file:font-semibold file:text-indigo-600 hover:file:bg-indigo-100 dark:file:bg-indigo-950/60 dark:file:text-indigo-300"
                 />
               </div>
 
@@ -644,6 +658,15 @@ export const ResourceBrowser = () => {
         isOpen={!!detailsResource}
         onClose={() => setDetailsResource(null)}
         onDownload={handleDownload}
+        onEdit={(res) => {
+          setDetailsResource(null);
+          setEditResource(res);
+        }}
+        onDelete={(res) => {
+          setDetailsResource(null);
+          handleDelete(res);
+        }}
+        onShare={handleShare}
       />
       <EditModal
         resource={editResource}

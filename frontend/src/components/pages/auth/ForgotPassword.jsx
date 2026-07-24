@@ -112,8 +112,8 @@ const ForgotPassword = memo(() => {
         </div>
 
         {/* Instructions card */}
-        <div className='rounded-xl border border-slate-100 bg-slate-50/80 p-4 dark:border-slate-800 dark:bg-slate-900/40'>
-          <p className='mb-2 text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500'>
+        <div className='rounded-xl border border-slate-100 bg-slate-50 dark:bg-slate-800/80 p-4 dark:border-slate-800 dark:bg-slate-900/40'>
+          <p className='mb-2 text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 dark:text-slate-400'>
             What to do next
           </p>
           <ol className='space-y-1.5 text-sm text-slate-600 dark:text-slate-400'>
@@ -147,9 +147,9 @@ const ForgotPassword = memo(() => {
         </div>
 
         {/* Spam notice */}
-        <p className='text-center text-xs text-slate-400 dark:text-slate-600'>
+        <p className='text-center text-xs text-slate-400 dark:text-slate-600 dark:text-slate-300'>
           Can&apos;t find the email? Check your{' '}
-          <span className='font-medium text-slate-500 dark:text-slate-500'>
+          <span className='font-medium text-slate-500 dark:text-slate-500 dark:text-slate-400'>
             Spam / Junk
           </span>{' '}
           folder.
@@ -160,7 +160,7 @@ const ForgotPassword = memo(() => {
           type='button'
           onClick={handleResend}
           disabled={cooldown > 0 || loading}
-          className='flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white py-3 text-sm font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700'
+          className='flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white dark:bg-slate-900 py-3 text-sm font-semibold text-slate-700 dark:text-slate-200 shadow-sm transition-all hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700   dark:hover:bg-slate-700'
         >
           {loading ? (
             <>
@@ -184,7 +184,7 @@ const ForgotPassword = memo(() => {
         <div className='text-center'>
           <Link
             to='/login'
-            className='inline-flex items-center gap-1.5 text-sm font-bold text-slate-600 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200'
+            className='inline-flex items-center gap-1.5 text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100 dark:text-slate-400 dark:hover:text-slate-200'
           >
             <ArrowLeft className='h-4 w-4' />
             Back to Sign In
@@ -233,7 +233,7 @@ const ForgotPassword = memo(() => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={loading}
-              className='w-full rounded-xl border border-slate-200 bg-slate-50 py-3.5 pl-11 pr-4 text-sm transition-all focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-500/10 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-blue-500/30'
+              className='w-full rounded-xl border border-slate-200 bg-slate-50 dark:bg-slate-800 py-3.5 pl-11 pr-4 text-sm transition-all focus:border-blue-500 focus:bg-white dark:bg-slate-900 focus:outline-none focus:ring-4 focus:ring-blue-500/10 disabled:opacity-60 dark:border-slate-700  dark:text-white dark:focus:border-blue-500/30'
               placeholder='you@university.edu'
             />
           </div>
@@ -261,7 +261,7 @@ const ForgotPassword = memo(() => {
         <div className='pt-1 text-center'>
           <Link
             to='/login'
-            className='inline-flex items-center justify-center gap-2 text-sm font-bold text-slate-600 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200'
+            className='inline-flex items-center justify-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100 dark:text-slate-400 dark:hover:text-slate-200'
           >
             <ArrowLeft className='h-4 w-4' />
             <span>Back to Sign In</span>

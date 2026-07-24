@@ -47,7 +47,7 @@ const ProjectArchitectureCard = memo(({ architecture, onEdit, onDelete }) => (
         />
       </div>
 
-      <p className='line-clamp-2 text-xs text-gray-500 dark:text-gray-400 leading-relaxed'>
+      <p className='line-clamp-2 text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500 leading-relaxed'>
         {architecture.description}
       </p>
     </div>
@@ -55,9 +55,9 @@ const ProjectArchitectureCard = memo(({ architecture, onEdit, onDelete }) => (
     <div>
       <div className='grid grid-cols-2 gap-4 border-t border-gray-100 pt-3 dark:border-slate-700'>
         <div className='flex items-center gap-2'>
-          <CalendarIcon size={14} className='text-gray-400 shrink-0' />
+          <CalendarIcon size={14} className='text-gray-400 dark:text-gray-500 shrink-0' />
           <div className='flex flex-col'>
-            <span className='text-[10px] font-bold uppercase tracking-widest text-gray-400'>
+            <span className='text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500'>
               Timeline
             </span>
             <span className='text-xs font-semibold text-gray-700 dark:text-gray-300'>
@@ -67,9 +67,9 @@ const ProjectArchitectureCard = memo(({ architecture, onEdit, onDelete }) => (
         </div>
 
         <div className='flex items-center gap-2'>
-          <UsersIcon size={14} className='text-gray-400 shrink-0' />
+          <UsersIcon size={14} className='text-gray-400 dark:text-gray-500 shrink-0' />
           <div className='flex flex-col'>
-            <span className='text-[10px] font-bold uppercase tracking-widest text-gray-400'>
+            <span className='text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500'>
               Team Size
             </span>
             <span className='text-xs font-semibold text-gray-700 dark:text-gray-300'>
@@ -82,7 +82,7 @@ const ProjectArchitectureCard = memo(({ architecture, onEdit, onDelete }) => (
       <div className='mt-4 flex justify-end border-t border-gray-100 pt-3 dark:border-slate-700'>
         <button
           onClick={() => onEdit(architecture._id || architecture.id)}
-          className='flex items-center gap-1 text-xs font-bold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 transition-all'
+          className='flex items-center gap-1 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-400 dark:text-indigo-400 dark:text-indigo-300 transition-all'
         >
           Manage Configuration <ChevronRightIcon size={14} />
         </button>
@@ -184,7 +184,7 @@ const ProjectArchitecturesList = memo(() => {
   );
 
   return (
-    <div className='space-y-6 p-4 md:p-6 animate-fade-in'>
+    <div className='space-y-6 pt-0 pb-6 animate-fade-in'>
       <PageHeader
         title='Project Types'
         subtitle='Manage project classification templates & architectures'
@@ -213,8 +213,8 @@ const ProjectArchitecturesList = memo(() => {
               onClick={() => setFilterCategory(cat)}
               className={`whitespace-nowrap rounded-xl px-3.5 py-2 text-xs font-bold transition-all ${
                 filterCategory === cat
-                  ? 'bg-indigo-600 text-white shadow-sm'
-                  : 'bg-gray-100 text-gray-500 hover:bg-gray-200 dark:bg-slate-700 dark:text-gray-400'
+                  ? 'bg-indigo-600 dark:bg-indigo-500 text-white shadow-sm'
+                  : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-600 dark:bg-slate-700 '
               }`}
             >
               {cat}

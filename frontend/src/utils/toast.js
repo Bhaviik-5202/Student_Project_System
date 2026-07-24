@@ -42,7 +42,7 @@ const renderToast = (t, type, message, icon) => {
       </div>
       <button
         onClick={() => toast.dismiss(t.id)}
-        className='shrink-0 rounded-lg p-1 text-slate-400 hover:text-white hover:bg-white/10 transition-colors focus:outline-none'
+        className='shrink-0 rounded-lg p-1 text-slate-400 hover:text-white hover:bg-white dark:bg-slate-900/10 transition-colors focus:outline-none'
         aria-label='Close notification'
       >
         <X className='h-4 w-4' />
@@ -52,26 +52,27 @@ const renderToast = (t, type, message, icon) => {
 };
 
 export const notify = {
-  success: (msg, duration = 4000) =>
-    toast.custom((t) => renderToast(t, 'success', msg, <CheckCircle2 className='h-5 w-5' />), {
+  success: (msg, duration = 2500) =>
+    toast.success(msg, {
       duration,
       position: 'top-right',
     }),
 
-  error: (msg, duration = 5000) =>
-    toast.custom((t) => renderToast(t, 'error', msg, <AlertCircle className='h-5 w-5' />), {
+  error: (msg, duration = 2500) =>
+    toast.error(msg, {
       duration,
       position: 'top-right',
     }),
 
-  warning: (msg, duration = 4500) =>
-    toast.custom((t) => renderToast(t, 'warning', msg, <AlertTriangle className='h-5 w-5' />), {
+  warning: (msg, duration = 2500) =>
+    toast(msg, {
       duration,
       position: 'top-right',
+      icon: '⚠️',
     }),
 
-  info: (msg, duration = 4000) =>
-    toast.custom((t) => renderToast(t, 'info', msg, <Info className='h-5 w-5' />), {
+  info: (msg, duration = 2500) =>
+    toast(msg, {
       duration,
       position: 'top-right',
     }),

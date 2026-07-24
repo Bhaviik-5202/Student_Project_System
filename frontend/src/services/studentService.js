@@ -24,19 +24,6 @@ const studentService = {
     }
   },
 
-  createStudent: async (studentData) => {
-    try {
-      const res = await api.post('/students', studentData);
-      if (res.success) notifyDataChanged({ type: 'student_created' });
-      return res;
-    } catch (error) {
-      return {
-        success: false,
-        message: error.response?.data?.message || 'Failed to create student',
-      };
-    }
-  },
-
   updateStudent: async (id, studentData) => {
     try {
       const res = await api.put(`/students/${id}`, studentData);

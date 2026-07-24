@@ -27,7 +27,7 @@ export const TableHeader = ({ children, className = '', ...props }) => {
 export const TableRow = ({ children, className = '', ...props }) => {
   return (
     <tr
-      className={`border-b border-slate-100 dark:border-slate-800/60 hover:bg-slate-50/50 dark:hover:bg-slate-800/40 transition-colors ${className}`}
+      className={`border-b border-slate-100 dark:border-slate-800/60 hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800/50 /40 transition-colors ${className}`}
       {...props}
     >
       {children}
@@ -77,7 +77,7 @@ export const Pagination = ({
           type="button"
           disabled={currentPage <= 1}
           onClick={() => onPageChange(currentPage - 1)}
-          className="px-3 py-1.5 rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="px-3 py-1.5 rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800  dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >
           Previous
         </button>
@@ -85,7 +85,7 @@ export const Pagination = ({
           type="button"
           disabled={currentPage >= totalPages}
           onClick={() => onPageChange(currentPage + 1)}
-          className="px-3 py-1.5 rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="px-3 py-1.5 rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800  dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >
           Next
         </button>

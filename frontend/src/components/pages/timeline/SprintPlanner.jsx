@@ -97,7 +97,7 @@ const SprintPlanner = memo(() => {
     'in-progress':
       'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/40 dark:text-indigo-200',
     planned:
-      'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200',
+      'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100  dark:text-slate-200',
   };
 
   const taskStatusStyles = {
@@ -105,7 +105,7 @@ const SprintPlanner = memo(() => {
       'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200',
     'in-progress':
       'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200',
-    todo: 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200',
+    todo: 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100  dark:text-slate-200',
   };
 
   const handleNavigate = useCallback(
@@ -123,7 +123,7 @@ const SprintPlanner = memo(() => {
   }, [projects, selectedProjectId]);
 
   return (
-    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+    <div className='space-y-6 animate-fade-in pt-0 pb-6'>
       <PageHeader
         title='Sprint Planner'
         subtitle={`Agile iteration cycles and sprint backlog management (${activeProjectTitle})`}
@@ -134,7 +134,7 @@ const SprintPlanner = memo(() => {
             <select
               value={selectedProjectId}
               onChange={handleProjectChange}
-              className='rounded-xl border border-gray-200 bg-white px-3 py-2 text-xs font-bold text-indigo-600 shadow-sm transition-all focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-indigo-400'
+              className='rounded-xl border border-gray-200 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-bold text-indigo-600 shadow-sm transition-all focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-indigo-400'
             >
               <option value='' disabled>
                 Change Project
@@ -143,7 +143,7 @@ const SprintPlanner = memo(() => {
                 <option
                   key={p._id || p.id}
                   value={p._id || p.id}
-                  className='bg-white text-xs text-gray-900 dark:bg-slate-800 dark:text-white'
+                  className='bg-white dark:bg-slate-900 text-xs text-gray-900 dark:text-white dark:bg-slate-800 '
                 >
                   {p.title}
                 </option>
@@ -168,7 +168,7 @@ const SprintPlanner = memo(() => {
           <div className='animate-in fade-in slide-in-from-bottom-4 mb-8 grid grid-cols-1 gap-8 duration-1000 lg:grid-cols-4'>
             {/* Sprint Navigation */}
             <div className='lg:col-span-1'>
-              <div className='rounded-[2rem] border border-gray-100 bg-white p-8 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
+              <div className='rounded-[2rem] border border-gray-100 bg-white dark:bg-slate-900 p-8 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
                 <h3 className='mb-6 flex items-center gap-2 text-xs font-black tracking-[0.2em] text-slate-900 dark:text-white'>
                   <div className='h-2 w-2 rounded-full bg-indigo-600'></div>
                   Iteration Cycles
@@ -186,7 +186,7 @@ const SprintPlanner = memo(() => {
                         className={`group relative w-full overflow-hidden rounded-2xl p-5 text-left transition-all duration-300 ${
                           activeSprintId === sprint.id
                             ? 'translate-x-1 bg-indigo-600 text-white shadow-xl shadow-indigo-500/20'
-                            : 'border border-gray-100 bg-gray-50/50 hover:border-indigo-500/50 dark:border-slate-700/50 dark:bg-slate-900/40'
+                            : 'border border-gray-100 bg-gray-50 dark:bg-gray-800/50 hover:border-indigo-500/50 dark:border-slate-700/50 dark:bg-slate-900/40'
                         }`}
                       >
                         <div
@@ -203,7 +203,7 @@ const SprintPlanner = memo(() => {
                           <span
                             className={`rounded px-2 py-0.5 text-[8px] font-black tracking-widest ${
                               activeSprintId === sprint.id
-                                ? 'bg-white/20 text-white'
+                                ? 'bg-white dark:bg-slate-900/20 text-white'
                                 : sprintStatusStyles[sprint.status]
                             }`}
                           >
@@ -212,7 +212,7 @@ const SprintPlanner = memo(() => {
                           </span>
                         </div>
                         {activeSprintId === sprint.id && (
-                          <div className='absolute bottom-0 right-0 top-0 w-1 bg-white/30'></div>
+                          <div className='absolute bottom-0 right-0 top-0 w-1 bg-white dark:bg-slate-900/30'></div>
                         )}
                       </button>
                     ))
@@ -224,7 +224,7 @@ const SprintPlanner = memo(() => {
             {/* Iteration Command Center */}
             <div className='lg:col-span-3'>
               {activeSprintData ? (
-                <div className='relative overflow-hidden rounded-[2.5rem] border border-gray-100 bg-white p-10 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
+                <div className='relative overflow-hidden rounded-[2.5rem] border border-gray-100 bg-white dark:bg-slate-900 p-10 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
                   <div className='relative z-10'>
                     <div className='mb-10 flex flex-col items-start justify-between gap-6 md:flex-row'>
                       <div>
@@ -235,8 +235,8 @@ const SprintPlanner = memo(() => {
                           "{activeSprintData.name}"
                         </h3>
                         <div className='mt-4 flex items-center gap-3'>
-                          <div className='flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-1 dark:bg-slate-900'>
-                            <span className='text-[9px] font-black tracking-widest text-gray-400 dark:text-gray-500'>
+                          <div className='flex items-center gap-2 rounded-lg bg-gray-50 dark:bg-gray-800 px-3 py-1 dark:bg-slate-900'>
+                            <span className='text-[9px] font-black tracking-widest text-gray-400 dark:text-gray-500 dark:text-gray-400'>
                               Timeframe
                             </span>
                             <span className='text-[11px] font-black tabular-nums text-slate-700 dark:text-slate-300'>
@@ -284,7 +284,7 @@ const SprintPlanner = memo(() => {
                       ].map((metric, i) => (
                         <div
                           key={i}
-                          className='rounded-2xl border border-gray-100 bg-gray-50/50 p-6 transition-all hover:scale-105 dark:border-slate-700/50 dark:bg-slate-900/40'
+                          className='rounded-2xl border border-gray-100 bg-gray-50 dark:bg-gray-800/50 p-6 transition-all hover:scale-105 dark:border-slate-700/50 dark:bg-slate-900/40'
                         >
                           <div className='mb-1 text-[9px] font-black tracking-widest text-gray-400'>
                             {metric.label}
@@ -321,7 +321,7 @@ const SprintPlanner = memo(() => {
                           %
                         </span>
                       </div>
-                      <div className='h-2 w-full overflow-hidden rounded-full bg-gray-200 shadow-inner dark:bg-slate-700'>
+                      <div className='h-2 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700 shadow-inner dark:bg-slate-700'>
                         <div
                           className='h-full bg-indigo-600 shadow-lg transition-all duration-1000 ease-out'
                           style={{
@@ -346,10 +346,10 @@ const SprintPlanner = memo(() => {
                         {activeSprintData.tasks.map((task, index) => (
                           <div
                             key={index}
-                            className='group/task flex flex-col items-center justify-between rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all hover:border-indigo-500/30 hover:shadow-xl hover:shadow-gray-200/30 dark:border-slate-700/50 dark:bg-slate-900/60 dark:hover:shadow-none sm:flex-row'
+                            className='group/task flex flex-col items-center justify-between rounded-2xl border border-gray-100 bg-white dark:bg-slate-900 p-6 shadow-sm transition-all hover:border-indigo-500/30 hover:shadow-xl hover:shadow-gray-200/30 dark:border-slate-700/50 /60 dark:hover:shadow-none sm:flex-row'
                           >
                             <div className='flex flex-1 items-center gap-4'>
-                              <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 text-xs font-black text-gray-400 dark:bg-slate-800'>
+                              <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-800 text-xs font-black text-gray-400 dark:bg-slate-800'>
                                 0{index + 1}
                               </div>
                               <div>
@@ -360,7 +360,7 @@ const SprintPlanner = memo(() => {
                                   <span className='text-[9px] font-bold tracking-widest text-slate-400'>
                                     Lead: {task.assignee}
                                   </span>
-                                  <div className='h-1 w-1 rounded-full bg-gray-200'></div>
+                                  <div className='h-1 w-1 rounded-full bg-gray-200 dark:bg-gray-700'></div>
                                   <span className='text-[9px] font-black tracking-widest text-indigo-500/70'>
                                     {task.points} Influence Points
                                   </span>
@@ -400,7 +400,7 @@ const SprintPlanner = memo(() => {
                   <div className='absolute right-0 top-0 -mr-40 -mt-40 h-80 w-80 rounded-full bg-indigo-600/5 blur-[100px]'></div>
                 </div>
               ) : (
-                <div className='flex flex-col items-center justify-center rounded-[2.5rem] border border-gray-100 bg-white py-32 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
+                <div className='flex flex-col items-center justify-center rounded-[2.5rem] border border-gray-100 bg-white dark:bg-slate-900 py-32 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
                   <div className='mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-gray-50 dark:bg-slate-900'>
                     <svg
                       className='h-6 w-6 text-gray-300'

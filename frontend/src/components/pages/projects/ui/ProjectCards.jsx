@@ -32,7 +32,7 @@ export const InfoCard = ({ title, children, icon: Icon, className = '', action }
       <div className='flex items-center justify-between'>
         <div className='flex items-center gap-2'>
           {Icon && <Icon size={18} className='text-indigo-600 dark:text-indigo-400' />}
-          <h3 className='text-xs font-bold uppercase tracking-wider text-gray-400'>
+          <h3 className='text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500'>
             {title}
           </h3>
         </div>
@@ -59,7 +59,7 @@ export const StatsCard = ({
     >
       <div className='flex items-center justify-between'>
         <div>
-          <p className='text-xs font-bold uppercase tracking-wider text-gray-400'>
+          <p className='text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500'>
             {title}
           </p>
           <p className='mt-2 text-3xl font-extrabold text-gray-900 dark:text-white'>

@@ -58,6 +58,58 @@
   --radius-xl: 1rem;
   --radius-2xl: 1.5rem;
   --radius-full: 9999px;
+
+  color-scheme: light;
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+/* Fix Native Date/Time Picker Icons */
+input[type="date"],
+input[type="time"] {
+  color-scheme: light;
+}
+
+.dark input[type="date"],
+.dark input[type="time"] {
+  color-scheme: dark;
+}
+
+/* Fix Native Date/Time Picker Icons (Foolproof SVG override) */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%23475569" d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z"/></svg>') !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: contain !important;
+  width: 1.2rem !important;
+  height: 1.2rem !important;
+  cursor: pointer !important;
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%23475569" d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>') !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: contain !important;
+  width: 1.2rem !important;
+  height: 1.2rem !important;
+  cursor: pointer !important;
+}
+
+.dark input[type="date"]::-webkit-calendar-picker-indicator {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%23cbd5e1" d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V8h16v13z"/></svg>') !important;
+}
+
+.dark input[type="time"]::-webkit-calendar-picker-indicator {
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%23cbd5e1" d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>') !important;
 }
 
 /* ==========================================================================
@@ -65,6 +117,7 @@
    ========================================================================== */
 
 @layer base {
+
   *,
   *::before,
   *::after {
@@ -742,10 +795,8 @@
   }
 
   .bg-gradient-conic {
-    background-image: conic-gradient(
-      from 180deg at 50% 50%,
-      var(--tw-gradient-stops)
-    );
+    background-image: conic-gradient(from 180deg at 50% 50%,
+        var(--tw-gradient-stops));
   }
 
   /* ========== Border Utilities ========== */
@@ -754,32 +805,23 @@
     @apply border-2 border-transparent;
     background:
       linear-gradient(white, white) padding-box,
-      linear-gradient(
-          to right,
-          var(--color-primary-500),
-          var(--color-secondary-500)
-        )
-        border-box;
+      linear-gradient(to right,
+        var(--color-primary-500),
+        var(--color-secondary-500)) border-box;
   }
 
   .gradient-border-primary {
     background:
       linear-gradient(white, white) padding-box,
-      linear-gradient(
-          to right,
-          var(--color-primary-500),
-          var(--color-primary-700)
-        )
-        border-box;
+      linear-gradient(to right,
+        var(--color-primary-500),
+        var(--color-primary-700)) border-box;
   }
 
   .border-gradient {
-    border-image: linear-gradient(
-        to right,
+    border-image: linear-gradient(to right,
         var(--color-primary-500),
-        var(--color-secondary-500)
-      )
-      1;
+        var(--color-secondary-500)) 1;
   }
 
   /* ========== Glass Morphism ========== */
@@ -1026,6 +1068,7 @@
 }
 
 @keyframes pulse {
+
   0%,
   100% {
     opacity: 1;
@@ -1037,6 +1080,7 @@
 }
 
 @keyframes float {
+
   0%,
   100% {
     transform: translateY(0);
@@ -1048,6 +1092,7 @@
 }
 
 @keyframes bounce {
+
   0%,
   100% {
     transform: translateY(0);
@@ -1059,6 +1104,7 @@
 }
 
 @keyframes shake {
+
   0%,
   100% {
     transform: translateX(0);
@@ -1093,6 +1139,7 @@
 }
 
 @keyframes glow {
+
   0%,
   100% {
     box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
@@ -1170,6 +1217,7 @@
 }
 
 @keyframes blink {
+
   0%,
   100% {
     opacity: 1;
@@ -1245,6 +1293,7 @@
    ========================================================================== */
 
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
@@ -1505,41 +1554,41 @@
 }
 
 /* Staggered children animation */
-.stagger-children > * {
+.stagger-children>* {
   opacity: 0;
   transform: translateY(10px);
   animation: staggerFadeIn 0.4s ease-out forwards;
 }
 
-.stagger-children > *:nth-child(1) {
+.stagger-children>*:nth-child(1) {
   animation-delay: 0.05s;
 }
 
-.stagger-children > *:nth-child(2) {
+.stagger-children>*:nth-child(2) {
   animation-delay: 0.1s;
 }
 
-.stagger-children > *:nth-child(3) {
+.stagger-children>*:nth-child(3) {
   animation-delay: 0.15s;
 }
 
-.stagger-children > *:nth-child(4) {
+.stagger-children>*:nth-child(4) {
   animation-delay: 0.2s;
 }
 
-.stagger-children > *:nth-child(5) {
+.stagger-children>*:nth-child(5) {
   animation-delay: 0.25s;
 }
 
-.stagger-children > *:nth-child(6) {
+.stagger-children>*:nth-child(6) {
   animation-delay: 0.3s;
 }
 
-.stagger-children > *:nth-child(7) {
+.stagger-children>*:nth-child(7) {
   animation-delay: 0.35s;
 }
 
-.stagger-children > *:nth-child(8) {
+.stagger-children>*:nth-child(8) {
   animation-delay: 0.4s;
 }
 
@@ -1552,23 +1601,19 @@
 
 /* Skeleton loading shimmer */
 .skeleton-shimmer {
-  background: linear-gradient(
-    90deg,
-    rgba(229, 231, 235, 1) 0%,
-    rgba(243, 244, 246, 1) 50%,
-    rgba(229, 231, 235, 1) 100%
-  );
+  background: linear-gradient(90deg,
+      rgba(229, 231, 235, 1) 0%,
+      rgba(243, 244, 246, 1) 50%,
+      rgba(229, 231, 235, 1) 100%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
 
 .dark .skeleton-shimmer {
-  background: linear-gradient(
-    90deg,
-    rgba(55, 65, 81, 1) 0%,
-    rgba(75, 85, 99, 1) 50%,
-    rgba(55, 65, 81, 1) 100%
-  );
+  background: linear-gradient(90deg,
+      rgba(55, 65, 81, 1) 0%,
+      rgba(75, 85, 99, 1) 50%,
+      rgba(55, 65, 81, 1) 100%);
   background-size: 200% 100%;
 }
 

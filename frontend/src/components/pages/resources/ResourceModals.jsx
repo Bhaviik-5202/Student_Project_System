@@ -32,7 +32,7 @@ export const PreviewModal = ({ resource, isOpen, onClose, onDownload }) => {
 
     return (
         <div className='fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm animate-fade-in'>
-            <div className='flex max-h-[90vh] w-full max-w-4xl flex-col rounded-2xl bg-white shadow-2xl dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden'>
+            <div className='flex max-h-[90vh] w-full max-w-4xl flex-col rounded-2xl bg-white dark:bg-slate-900 shadow-2xl dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden'>
                 {/* Header */}
                 <div className='flex items-center justify-between border-b border-slate-200 p-4 px-6 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80'>
                     <div className='flex items-center gap-3 overflow-hidden'>
@@ -58,7 +58,7 @@ export const PreviewModal = ({ resource, isOpen, onClose, onDownload }) => {
                         </button>
                         <button
                             onClick={onClose}
-                            className='rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-700 dark:hover:text-slate-200'
+                            className='rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800 hover:text-slate-600 dark:text-slate-300  dark:hover:text-slate-200'
                         >
                             <X size={20} />
                         </button>
@@ -66,9 +66,9 @@ export const PreviewModal = ({ resource, isOpen, onClose, onDownload }) => {
                 </div>
 
                 {/* Content Body */}
-                <div className='flex-1 overflow-y-auto p-6 min-h-[350px] flex flex-col justify-center items-center bg-slate-100/50 dark:bg-slate-900/50'>
+                <div className='flex-1 overflow-y-auto p-6 min-h-[350px] flex flex-col justify-center items-center bg-slate-100 dark:bg-slate-800/50 dark:bg-slate-900/50'>
                     {isPdf ? (
-                        <div className='w-full h-[550px] rounded-lg border border-slate-200 overflow-hidden dark:border-slate-700 bg-white'>
+                        <div className='w-full h-[550px] rounded-lg border border-slate-200 overflow-hidden dark:border-slate-700 bg-white dark:bg-slate-900'>
                             <iframe
                                 src={`/api/v1/resources/${resource._id}/preview`}
                                 className='w-full h-full border-0'
@@ -76,7 +76,7 @@ export const PreviewModal = ({ resource, isOpen, onClose, onDownload }) => {
                             />
                         </div>
                     ) : isImage ? (
-                        <div className='max-h-[500px] overflow-hidden rounded-xl border border-slate-200 bg-white p-2 dark:border-slate-700'>
+                        <div className='max-h-[500px] overflow-hidden rounded-xl border border-slate-200 bg-white dark:bg-slate-900 p-2 dark:border-slate-700'>
                             <img
                                 src={`/api/v1/resources/${resource._id}/preview`}
                                 alt={resource.title}
@@ -100,7 +100,7 @@ export const PreviewModal = ({ resource, isOpen, onClose, onDownload }) => {
                             )}
                         </div>
                     ) : (
-                        <div className='w-full max-w-md rounded-2xl bg-white p-8 text-center shadow-sm border border-slate-200 dark:bg-slate-800 dark:border-slate-700'>
+                        <div className='w-full max-w-md rounded-2xl bg-white dark:bg-slate-900 p-8 text-center shadow-sm border border-slate-200 dark:bg-slate-800 dark:border-slate-700'>
                             <div className='mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-900/40 dark:text-indigo-400'>
                                 <FileText size={32} />
                             </div>
@@ -110,7 +110,7 @@ export const PreviewModal = ({ resource, isOpen, onClose, onDownload }) => {
                             <p className='mb-4 text-xs text-slate-500 dark:text-slate-400'>
                                 {resource.description || 'No additional preview available for this file format.'}
                             </p>
-                            <div className='mb-6 rounded-xl bg-slate-50 p-4 text-left text-xs space-y-2 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600'>
+                            <div className='mb-6 rounded-xl bg-slate-50 dark:bg-slate-800 p-4 text-left text-xs space-y-2 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600'>
                                 <div className='flex justify-between text-slate-600 dark:text-slate-300'>
                                     <span className='font-medium'>Format:</span>
                                     <span className='font-semibold uppercase text-indigo-600 dark:text-indigo-400'>{resource.fileType || 'Doc'}</span>
@@ -152,7 +152,7 @@ export const DetailsModal = ({
 
     return (
         <div className='fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm animate-fade-in'>
-            <div className='w-full max-w-2xl rounded-2xl bg-white shadow-2xl dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden'>
+            <div className='w-full max-w-2xl rounded-2xl bg-white dark:bg-slate-900 shadow-2xl dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden'>
                 {/* Header */}
                 <div className='flex items-center justify-between border-b border-slate-200 p-5 px-6 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80'>
                     <div className='flex items-center gap-3'>
@@ -170,7 +170,7 @@ export const DetailsModal = ({
                     </div>
                     <button
                         onClick={onClose}
-                        className='rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-700 dark:hover:text-slate-200'
+                        className='rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800 hover:text-slate-600 dark:text-slate-300  dark:hover:text-slate-200'
                     >
                         <X size={20} />
                     </button>
@@ -190,7 +190,7 @@ export const DetailsModal = ({
                         </p>
                     </div>
 
-                    <div className='grid grid-cols-2 gap-4 rounded-xl bg-slate-50 p-4 dark:bg-slate-700/40 border border-slate-200 dark:border-slate-700 text-xs'>
+                    <div className='grid grid-cols-2 gap-4 rounded-xl bg-slate-50 dark:bg-slate-800 p-4 dark:bg-slate-700/40 border border-slate-200 dark:border-slate-700 text-xs'>
                         <div className='flex items-center gap-2.5 text-slate-700 dark:text-slate-300'>
                             <User size={16} className='text-slate-400' />
                             <div>
@@ -232,7 +232,7 @@ export const DetailsModal = ({
                                 {resource.tags.map((tag, idx) => (
                                     <span
                                         key={idx}
-                                        className='rounded-md bg-slate-100 px-2.5 py-1 text-xs text-slate-600 dark:bg-slate-700 dark:text-slate-300'
+                                        className='rounded-md bg-slate-100 dark:bg-slate-800 px-2.5 py-1 text-xs text-slate-600 dark:text-slate-300 dark:bg-slate-700 '
                                     >
                                         #{tag}
                                     </span>
@@ -243,12 +243,12 @@ export const DetailsModal = ({
                 </div>
 
                 {/* Footer Actions */}
-                <div className='flex items-center justify-between border-t border-slate-200 bg-slate-50 p-4 px-6 dark:border-slate-700 dark:bg-slate-800/80'>
+                <div className='flex items-center justify-between border-t border-slate-200 bg-slate-50 dark:bg-slate-800 p-4 px-6 dark:border-slate-700 /80'>
                     <div className='flex items-center gap-2'>
                         {onShare && (
                             <button
                                 onClick={() => onShare(resource)}
-                                className='flex items-center gap-1.5 rounded-lg border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors'
+                                className='flex items-center gap-1.5 rounded-lg border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-300  transition-colors'
                             >
                                 <Share2 size={14} />
                                 Share
@@ -257,7 +257,7 @@ export const DetailsModal = ({
                         {onEdit && (
                             <button
                                 onClick={() => onEdit(resource)}
-                                className='flex items-center gap-1.5 rounded-lg border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors'
+                                className='flex items-center gap-1.5 rounded-lg border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-300  transition-colors'
                             >
                                 <Edit size={14} />
                                 Edit
@@ -286,7 +286,7 @@ export const DetailsModal = ({
     );
 };
 
-export const EditModal = ({ resource, isOpen, onClose, onSaved }) => {
+export const EditModal = ({ resource, isOpen, onClose, onSave }) => {
     const [formData, setFormData] = useState({
         title: resource?.title || '',
         category: resource?.category || 'General',
@@ -322,10 +322,10 @@ export const EditModal = ({ resource, isOpen, onClose, onSaved }) => {
                 tags: formData.tags.split(',').map((t) => t.trim()).filter(Boolean),
             };
             const res = await resourceService.update(resource._id, payload);
-            if (res.success || !res.error) {
+            if (res.success) {
                 showSuccess('Resource updated successfully');
-                onSaved();
-                onClose();
+                if (onSave) onSave();
+                if (onClose) onClose();
             } else {
                 showError(res.message || 'Failed to update resource');
             }
@@ -338,14 +338,14 @@ export const EditModal = ({ resource, isOpen, onClose, onSaved }) => {
 
     return (
         <div className='fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm animate-fade-in'>
-            <div className='w-full max-w-lg rounded-2xl bg-white shadow-2xl dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden'>
+            <div className='w-full max-w-lg rounded-2xl bg-white dark:bg-slate-900 shadow-2xl dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden'>
                 <div className='flex items-center justify-between border-b border-slate-200 p-4 px-6 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80'>
                     <h3 className='font-bold text-slate-900 dark:text-white text-base flex items-center gap-2'>
                         <Edit size={18} className='text-indigo-600' /> Edit Resource Metadata
                     </h3>
                     <button
                         onClick={onClose}
-                        className='rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-700 dark:hover:text-slate-200'
+                        className='rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800 hover:text-slate-600 dark:text-slate-300  dark:hover:text-slate-200'
                     >
                         <X size={20} />
                     </button>
@@ -358,7 +358,7 @@ export const EditModal = ({ resource, isOpen, onClose, onSaved }) => {
                             type='text'
                             value={formData.title}
                             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                            className='w-full rounded-lg border border-slate-300 bg-white p-2.5 text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white'
+                            className='w-full rounded-lg border border-slate-300 bg-white dark:bg-slate-900 p-2.5 text-slate-900 dark:text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-700 '
                             required
                         />
                     </div>
@@ -370,7 +370,7 @@ export const EditModal = ({ resource, isOpen, onClose, onSaved }) => {
                                 type='text'
                                 value={formData.category}
                                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                                className='w-full rounded-lg border border-slate-300 bg-white p-2.5 text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white'
+                                className='w-full rounded-lg border border-slate-300 bg-white dark:bg-slate-900 p-2.5 text-slate-900 dark:text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-700 '
                                 required
                             />
                         </div>
@@ -379,7 +379,7 @@ export const EditModal = ({ resource, isOpen, onClose, onSaved }) => {
                             <select
                                 value={formData.type}
                                 onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                                className='w-full rounded-lg border border-slate-300 bg-white p-2.5 text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white'
+                                className='w-full rounded-lg border border-slate-300 bg-white dark:bg-slate-900 p-2.5 text-slate-900 dark:text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-700 '
                             >
                                 <option value='document'>Document</option>
                                 <option value='template'>Template</option>
@@ -394,7 +394,7 @@ export const EditModal = ({ resource, isOpen, onClose, onSaved }) => {
                             rows={3}
                             value={formData.description}
                             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                            className='w-full rounded-lg border border-slate-300 bg-white p-2.5 text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white'
+                            className='w-full rounded-lg border border-slate-300 bg-white dark:bg-slate-900 p-2.5 text-slate-900 dark:text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-700 '
                         />
                     </div>
 
@@ -404,7 +404,7 @@ export const EditModal = ({ resource, isOpen, onClose, onSaved }) => {
                             <select
                                 value={formData.status}
                                 onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                                className='w-full rounded-lg border border-slate-300 bg-white p-2.5 text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white'
+                                className='w-full rounded-lg border border-slate-300 bg-white dark:bg-slate-900 p-2.5 text-slate-900 dark:text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-700 '
                             >
                                 <option value='active'>Active</option>
                                 <option value='archived'>Archived</option>
@@ -418,7 +418,7 @@ export const EditModal = ({ resource, isOpen, onClose, onSaved }) => {
                                 value={formData.tags}
                                 onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
                                 placeholder='e.g. SRS, IEEE, Guidelines'
-                                className='w-full rounded-lg border border-slate-300 bg-white p-2.5 text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white'
+                                className='w-full rounded-lg border border-slate-300 bg-white dark:bg-slate-900 p-2.5 text-slate-900 dark:text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-700 '
                             />
                         </div>
                     </div>
@@ -427,7 +427,7 @@ export const EditModal = ({ resource, isOpen, onClose, onSaved }) => {
                         <button
                             type='button'
                             onClick={onClose}
-                            className='rounded-xl border border-slate-300 px-4 py-2 font-medium text-slate-700 hover:bg-slate-100 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors'
+                            className='rounded-xl border border-slate-300 px-4 py-2 font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-300  transition-colors'
                         >
                             Cancel
                         </button>
@@ -491,14 +491,14 @@ export const UploadModal = ({ isOpen, onClose, onUploaded, defaultType = 'docume
 
     return (
         <div className='fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm animate-fade-in'>
-            <div className='w-full max-w-lg rounded-2xl bg-white shadow-2xl dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden'>
+            <div className='w-full max-w-lg rounded-2xl bg-white dark:bg-slate-900 shadow-2xl dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden'>
                 <div className='flex items-center justify-between border-b border-slate-200 p-4 px-6 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80'>
                     <h3 className='font-bold text-slate-900 dark:text-white text-base flex items-center gap-2'>
                         <Upload size={18} className='text-indigo-600' /> Upload New Resource
                     </h3>
                     <button
                         onClick={onClose}
-                        className='rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-700 dark:hover:text-slate-200'
+                        className='rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800 hover:text-slate-600 dark:text-slate-300  dark:hover:text-slate-200'
                     >
                         <X size={20} />
                     </button>
@@ -512,7 +512,7 @@ export const UploadModal = ({ isOpen, onClose, onUploaded, defaultType = 'docume
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                             placeholder='e.g. IEEE Report Formatting Guidelines'
-                            className='w-full rounded-lg border border-slate-300 bg-white p-2.5 text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white'
+                            className='w-full rounded-lg border border-slate-300 bg-white dark:bg-slate-900 p-2.5 text-slate-900 dark:text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-700 '
                         />
                     </div>
 
@@ -524,7 +524,7 @@ export const UploadModal = ({ isOpen, onClose, onUploaded, defaultType = 'docume
                                 value={category}
                                 onChange={(e) => setCategory(e.target.value)}
                                 placeholder='e.g. Guidelines, Reports'
-                                className='w-full rounded-lg border border-slate-300 bg-white p-2.5 text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white'
+                                className='w-full rounded-lg border border-slate-300 bg-white dark:bg-slate-900 p-2.5 text-slate-900 dark:text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-700 '
                                 required
                             />
                         </div>
@@ -533,7 +533,7 @@ export const UploadModal = ({ isOpen, onClose, onUploaded, defaultType = 'docume
                             <select
                                 value={type}
                                 onChange={(e) => setType(e.target.value)}
-                                className='w-full rounded-lg border border-slate-300 bg-white p-2.5 text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white'
+                                className='w-full rounded-lg border border-slate-300 bg-white dark:bg-slate-900 p-2.5 text-slate-900 dark:text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-700 '
                             >
                                 <option value='document'>Document</option>
                                 <option value='template'>Template</option>
@@ -549,13 +549,13 @@ export const UploadModal = ({ isOpen, onClose, onUploaded, defaultType = 'docume
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                             placeholder='Brief description of the asset...'
-                            className='w-full rounded-lg border border-slate-300 bg-white p-2.5 text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white'
+                            className='w-full rounded-lg border border-slate-300 bg-white dark:bg-slate-900 p-2.5 text-slate-900 dark:text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-600 dark:bg-slate-700 '
                         />
                     </div>
 
                     <div>
                         <label className='block font-semibold text-slate-700 dark:text-slate-300 mb-1'>Select Attachment File</label>
-                        <div className='rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 p-5 text-center dark:border-slate-600 dark:bg-slate-700/50 hover:border-indigo-400 transition-colors cursor-pointer'>
+                        <div className='rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 dark:bg-slate-800 p-5 text-center dark:border-slate-600 dark:bg-slate-700/50 hover:border-indigo-400 transition-colors cursor-pointer'>
                             <input
                                 type='file'
                                 id='modal-file-upload'
@@ -584,7 +584,7 @@ export const UploadModal = ({ isOpen, onClose, onUploaded, defaultType = 'docume
                         <button
                             type='button'
                             onClick={onClose}
-                            className='rounded-xl border border-slate-300 px-4 py-2 font-medium text-slate-700 hover:bg-slate-100 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors'
+                            className='rounded-xl border border-slate-300 px-4 py-2 font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-300  transition-colors'
                         >
                             Cancel
                         </button>

@@ -21,7 +21,7 @@ const QuickAddMenu = ({ actions, onActionClick }) => {
           <button
             key={index}
             onClick={() => onActionClick(action.path)}
-            className='group flex w-full items-center px-4 py-2.5 text-sm text-gray-700 transition-colors hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700/50'
+            className='group flex w-full items-center px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700/50'
           >
             <div
               className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl ${action.bgColor} mr-3 transition-transform group-hover:scale-105`}

@@ -13,31 +13,6 @@ const authMiddleware = require('../middleware/auth.middleware');
 const roleMiddleware = require('../middleware/roleMiddleware');
 const validateRequest = require('../middleware/validateRequest');
 
-/**
- * @route   POST /api/v1/students
- * @desc    Create a new student
- * @access  Private (Authenticated Users)
- */
-router.post(
-  '/',
-  authMiddleware,
-  roleMiddleware(['admin']),
-  [
-    body('name').notEmpty().withMessage('Name is required'),
-
-    body('email').isEmail().withMessage('Valid email is required'),
-
-    body('rollNumber').notEmpty().withMessage('Roll number is required'),
-
-    body('department').notEmpty().withMessage('Department is required'),
-
-    body('year')
-      .isInt({ min: 1 })
-      .withMessage('Year must be a positive integer'),
-  ],
-  validateRequest,
-  studentController.createStudent
-);
 
 /**
  * @route   GET /api/v1/students

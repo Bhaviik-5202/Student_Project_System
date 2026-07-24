@@ -144,7 +144,7 @@ const SplashScreen = memo(() => {
               <div className='absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer' />
             </div>
           </div>
-          <p className='mt-2 text-[10px] text-slate-500 font-mono font-medium'>
+          <p className='mt-2 text-[10px] text-slate-500 dark:text-slate-400 font-mono font-medium'>
             Synchronizing modules & permissions
           </p>
         </div>

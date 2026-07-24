@@ -60,7 +60,7 @@ const SupportTicket = memo(() => {
           </p>
         </div>
 
-        <div className='max-w-3xl rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800'>
+        <div className='max-w-3xl rounded-lg border border-slate-200 bg-white dark:bg-slate-900 p-6 dark:border-slate-700 dark:bg-slate-800'>
           <form onSubmit={handleSubmit} className='space-y-6'>
             <div>
               <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300'>
@@ -69,7 +69,7 @@ const SupportTicket = memo(() => {
               <input
                 type='text'
                 required
-                className='w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white dark:focus:ring-blue-400'
+                className='w-full rounded-lg border border-slate-300 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-700  dark:focus:ring-blue-400'
                 value={ticket.subject}
                 onChange={(e) =>
                   setTicket({ ...ticket, subject: e.target.value })
@@ -84,7 +84,7 @@ const SupportTicket = memo(() => {
                   Category
                 </label>
                 <select
-                  className='w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white dark:focus:ring-blue-400'
+                  className='w-full rounded-lg border border-slate-300 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-700  dark:focus:ring-blue-400'
                   value={ticket.category}
                   onChange={(e) =>
                     setTicket({ ...ticket, category: e.target.value })
@@ -102,7 +102,7 @@ const SupportTicket = memo(() => {
                   Priority
                 </label>
                 <select
-                  className='w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white dark:focus:ring-blue-400'
+                  className='w-full rounded-lg border border-slate-300 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-700  dark:focus:ring-blue-400'
                   value={ticket.priority}
                   onChange={(e) =>
                     setTicket({ ...ticket, priority: e.target.value })
@@ -123,7 +123,7 @@ const SupportTicket = memo(() => {
               <textarea
                 rows='6'
                 required
-                className='w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white dark:focus:ring-blue-400'
+                className='w-full rounded-lg border border-slate-300 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-700  dark:focus:ring-blue-400'
                 value={ticket.description}
                 onChange={(e) =>
                   setTicket({ ...ticket, description: e.target.value })
@@ -136,7 +136,7 @@ const SupportTicket = memo(() => {
               <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300'>
                 Attachments (Optional)
               </label>
-              <div className='rounded-lg border-2 border-dashed border-slate-300 bg-slate-50 p-6 text-center dark:border-slate-600 dark:bg-slate-700/50'>
+              <div className='rounded-lg border-2 border-dashed border-slate-300 bg-slate-50 dark:bg-slate-800 p-6 text-center dark:border-slate-600 dark:bg-slate-700/50'>
                 <input
                   type='file'
                   multiple
@@ -152,7 +152,7 @@ const SupportTicket = memo(() => {
                 <label htmlFor='file-upload' className='cursor-pointer'>
                   <div className='text-slate-600 dark:text-slate-400'>
                     <svg
-                      className='mx-auto h-12 w-12 text-slate-400 dark:text-slate-500'
+                      className='mx-auto h-12 w-12 text-slate-400 dark:text-slate-500 dark:text-slate-400'
                       stroke='currentColor'
                       fill='none'
                       viewBox='0 0 48 48'
@@ -184,7 +184,7 @@ const SupportTicket = memo(() => {
               <button
                 type='button'
                 onClick={() => navigate('/help')}
-                className='rounded-lg border border-slate-300 px-4 py-2 text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700'
+                className='rounded-lg border border-slate-300 px-4 py-2 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700'
               >
                 Cancel
               </button>

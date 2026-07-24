@@ -988,7 +988,7 @@ const Landing = memo(() => {
                     <div className='flex h-16 w-16 items-center justify-center rounded-2xl border-2 border-slate-800 bg-slate-900 text-blue-400 shadow-xl transition-all duration-300 group-hover:scale-105 group-hover:border-blue-500/50 group-hover:text-blue-300'>
                       {step.icon}
                     </div>
-                    <span className='text-xs font-black uppercase text-slate-500 md:hidden'>
+                    <span className='text-xs font-black uppercase text-slate-500 dark:text-slate-400 md:hidden'>
                       Step {step.number}
                     </span>
                   </div>
@@ -999,7 +999,7 @@ const Landing = memo(() => {
                       <h4 className='font-display text-base font-bold text-white sm:text-lg'>
                         {step.title}
                       </h4>
-                      <span className='hidden rounded-md bg-slate-950 px-2 py-0.5 font-mono text-xs font-black text-slate-500 md:inline-block'>
+                      <span className='hidden rounded-md bg-slate-950 px-2 py-0.5 font-mono text-xs font-black text-slate-500 dark:text-slate-400 md:inline-block'>
                         0{step.number} / 09
                       </span>
                     </div>
@@ -1166,7 +1166,7 @@ const Landing = memo(() => {
 
           {/* Interactive Search Bar */}
           <div className='relative mx-auto max-w-lg'>
-            <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-500'>
+            <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-500 dark:text-slate-400'>
               <Search className='h-5 w-5' />
             </div>
             <input
@@ -1255,7 +1255,7 @@ const Landing = memo(() => {
                   );
                 })
               ) : (
-                <div className='py-10 text-center text-sm font-semibold text-slate-500'>
+                <div className='py-10 text-center text-sm font-semibold text-slate-500 dark:text-slate-400'>
                   No FAQ topics matching your query were found.
                 </div>
               )}
@@ -1323,28 +1323,28 @@ const Landing = memo(() => {
                 href='#section-about'
                 className='flex items-center gap-1.5 transition-all duration-200 hover:translate-x-1 hover:text-indigo-400'
               >
-                <ChevronRight className='h-3 w-3 text-slate-700' />
+                <ChevronRight className='h-3 w-3 text-slate-700 dark:text-slate-200' />
                 About System
               </a>
               <a
                 href='#section-features'
                 className='flex items-center gap-1.5 transition-all duration-200 hover:translate-x-1 hover:text-indigo-400'
               >
-                <ChevronRight className='h-3 w-3 text-slate-700' />
+                <ChevronRight className='h-3 w-3 text-slate-700 dark:text-slate-200' />
                 System Features
               </a>
               <a
                 href='#section-operational'
                 className='flex items-center gap-1.5 transition-all duration-200 hover:translate-x-1 hover:text-indigo-400'
               >
-                <ChevronRight className='h-3 w-3 text-slate-700' />
+                <ChevronRight className='h-3 w-3 text-slate-700 dark:text-slate-200' />
                 Operational Process
               </a>
               <Link
                 to='/login'
                 className='flex items-center gap-1.5 transition-all duration-200 hover:translate-x-1 hover:text-indigo-400'
               >
-                <ChevronRight className='h-3 w-3 text-slate-700' />
+                <ChevronRight className='h-3 w-3 text-slate-700 dark:text-slate-200' />
                 Sign In Portal
               </Link>
             </div>

@@ -1,7 +1,7 @@
 // src/main.jsx
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { Toaster } from 'react-hot-toast';
+import CustomToaster from './components/common/CustomToaster';
 import App from './App.jsx';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
@@ -32,7 +32,7 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div className='flex min-h-screen items-center justify-center bg-gray-50 px-4'>
+        <div className='flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-800 px-4'>
           <div className='w-full max-w-md text-center'>
             <div className='mb-4'>
               <svg
@@ -49,10 +49,10 @@ class ErrorBoundary extends React.Component {
                 />
               </svg>
             </div>
-            <h1 className='mb-2 text-2xl font-bold text-gray-900'>
+            <h1 className='mb-2 text-2xl font-bold text-gray-900 dark:text-white'>
               Oops! Something went wrong
             </h1>
-            <p className='mb-6 text-gray-600'>
+            <p className='mb-6 text-gray-600 dark:text-gray-300'>
               We are sorry for the inconvenience. Please try refreshing the
               page.
             </p>
@@ -98,38 +98,7 @@ ReactDOM.createRoot(rootElement).render(
       <ThemeProvider>
         <AuthProvider>
           <App />
-          <Toaster
-            position='top-right'
-            containerStyle={{
-              top: 24,
-              right: 24,
-              zIndex: 9999,
-            }}
-            toastOptions={{
-              duration: 4000,
-              style: {
-                background: '#0f172a',
-                color: '#f8fafc',
-                border: '1px solid rgba(51, 65, 85, 0.5)',
-                borderRadius: '0.75rem',
-                boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5)',
-              },
-              success: {
-                duration: 4000,
-                iconTheme: {
-                  primary: '#10b981',
-                  secondary: '#0f172a',
-                },
-              },
-              error: {
-                duration: 5000,
-                iconTheme: {
-                  primary: '#f43f5e',
-                  secondary: '#0f172a',
-                },
-              },
-            }}
-          />
+          <CustomToaster />
         </AuthProvider>
       </ThemeProvider>
     </ErrorBoundary>

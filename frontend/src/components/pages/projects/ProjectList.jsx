@@ -122,7 +122,7 @@ const ProjectList = () => {
   };
 
   return (
-    <div className='space-y-6 p-4 md:p-6 animate-fade-in'>
+    <div className='space-y-6 pt-0 pb-6 animate-fade-in'>
       {/* Top Bar Header */}
       <PageHeader
         title='Project Management Catalog'
@@ -131,12 +131,12 @@ const ProjectList = () => {
         actions={
           <>
             {/* Active / Archived Tab Toggle */}
-            <div className='flex rounded-xl bg-gray-100 p-1 dark:bg-slate-800'>
+            <div className='flex rounded-xl bg-gray-100 dark:bg-gray-800 p-1 dark:bg-slate-800'>
               <button
                 onClick={() => setFilter('isArchived', false)}
                 className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-all ${!filters.isArchived
-                  ? 'bg-white text-indigo-600 shadow dark:bg-slate-700 dark:text-indigo-400'
-                  : 'text-gray-500 hover:text-gray-700 dark:text-gray-400'
+                  ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow dark:bg-slate-700 dark:text-indigo-400 dark:text-indigo-300'
+                  : 'text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 '
                   }`}
               >
                 Active
@@ -144,8 +144,8 @@ const ProjectList = () => {
               <button
                 onClick={() => setFilter('isArchived', true)}
                 className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-all ${filters.isArchived
-                  ? 'bg-white text-indigo-600 shadow dark:bg-slate-700 dark:text-indigo-400'
-                  : 'text-gray-500 hover:text-gray-700 dark:text-gray-400'
+                  ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow dark:bg-slate-700 dark:text-indigo-400 dark:text-indigo-300'
+                  : 'text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 '
                   }`}
               >
                 Archived
@@ -153,7 +153,7 @@ const ProjectList = () => {
             </div>
 
             {/* Grid vs Table View Mode */}
-            <div className='flex rounded-xl border border-gray-200 bg-white p-1 dark:border-slate-700 dark:bg-slate-800'>
+            <div className='flex rounded-xl border border-gray-200 bg-white dark:bg-slate-900 p-1 dark:border-slate-700 dark:bg-slate-800'>
               <IconButton
                 icon={LayoutGrid}
                 onClick={() => setViewMode('grid')}
@@ -260,7 +260,7 @@ const ProjectList = () => {
                 <div className='flex items-start justify-between gap-2 mb-3'>
                   <div className='flex items-center gap-1.5'>
                     <Badge variant='indigo'>{project.code || 'PRJ-2026'}</Badge>
-                    <span className='text-[10px] font-bold text-gray-400 dark:text-gray-500'>
+                    <span className='text-[10px] font-bold text-gray-400 dark:text-gray-500 dark:text-gray-400 dark:text-gray-500'>
                       {project.department}
                     </span>
                   </div>
@@ -270,20 +270,20 @@ const ProjectList = () => {
                 {/* Title */}
                 <h3
                   onClick={() => navigate(`/projects/${project.slug || project._id || project.id}`)}
-                  className='text-base font-bold text-gray-900 hover:text-indigo-600 dark:text-white cursor-pointer line-clamp-2 transition-colors'
+                  className='text-base font-bold text-gray-900 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400 dark:text-indigo-400  cursor-pointer line-clamp-2 transition-colors'
                 >
                   {project.title}
                 </h3>
 
                 {/* Description abstract */}
-                <p className='mt-2 line-clamp-2 text-xs text-gray-500 dark:text-gray-400'>
+                <p className='mt-2 line-clamp-2 text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500'>
                   {project.description || 'No detailed abstract specified.'}
                 </p>
 
                 {/* Guide & Team info */}
                 <div className='mt-4 space-y-2 border-t border-gray-100 pt-3 dark:border-slate-700/60'>
                   <div className='flex items-center justify-between text-xs'>
-                    <span className='text-gray-400 font-medium'>Guide:</span>
+                    <span className='text-gray-400 dark:text-gray-500 font-medium'>Guide:</span>
                     <span className='font-bold text-gray-800 dark:text-gray-200'>
                       {project.guide
                         ? typeof project.guide === 'object'
@@ -293,7 +293,7 @@ const ProjectList = () => {
                     </span>
                   </div>
                   <div className='flex items-center justify-between text-xs'>
-                    <span className='text-gray-400 font-medium'>Team:</span>
+                    <span className='text-gray-400 dark:text-gray-500 font-medium'>Team:</span>
                     <span className='font-semibold text-gray-700 dark:text-gray-300'>
                       {Array.isArray(project.members) ? `${project.members.length} Students` : '0 Members'}
                     </span>
@@ -302,13 +302,13 @@ const ProjectList = () => {
 
                 {/* Progress bar */}
                 <div className='mt-3 space-y-1'>
-                  <div className='flex justify-between text-[10px] font-bold text-gray-400'>
+                  <div className='flex justify-between text-[10px] font-bold text-gray-400 dark:text-gray-500'>
                     <span>PROGRESS</span>
                     <span>{project.progress || 0}%</span>
                   </div>
                   <div className='h-1.5 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-slate-900'>
                     <div
-                      className='h-full bg-indigo-600 transition-all duration-500 rounded-full'
+                      className='h-full bg-indigo-600 dark:bg-indigo-500 transition-all duration-500 rounded-full'
                       style={{ width: `${project.progress || 0}%` }}
                     />
                   </div>
@@ -396,13 +396,13 @@ const ProjectList = () => {
           <TableBody>
             {projects.map((project) => (
               <TableRow key={project._id || project.id}>
-                <TableCell className='font-extrabold text-indigo-600 dark:text-indigo-400'>
+                <TableCell className='font-extrabold text-indigo-600 dark:text-indigo-400 dark:text-indigo-300'>
                   {project.code || 'PRJ'}
                 </TableCell>
                 <TableCell className='font-bold text-gray-900 dark:text-white max-w-xs truncate'>
                   <span
                     onClick={() => navigate(`/projects/${project.slug || project._id || project.id}`)}
-                    className='cursor-pointer hover:underline hover:text-indigo-600 transition-colors'
+                    className='cursor-pointer hover:underline hover:text-indigo-600 dark:hover:text-indigo-400 dark:text-indigo-400 transition-colors'
                   >
                     {project.title}
                   </span>
@@ -421,11 +421,11 @@ const ProjectList = () => {
                   <div className='flex items-center gap-2'>
                     <div className='h-1.5 w-16 overflow-hidden rounded-full bg-gray-100 dark:bg-slate-900'>
                       <div
-                        className='h-full bg-indigo-600 rounded-full'
+                        className='h-full bg-indigo-600 dark:bg-indigo-500 rounded-full'
                         style={{ width: `${project.progress || 0}%` }}
                       />
                     </div>
-                    <span className='font-bold text-[10px] text-gray-500'>
+                    <span className='font-bold text-[10px] text-gray-500 dark:text-gray-400 dark:text-gray-500'>
                       {project.progress || 0}%
                     </span>
                   </div>

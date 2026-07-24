@@ -123,7 +123,7 @@ const AuditLog = memo(() => {
   };
 
   return (
-    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+    <div className='space-y-6 animate-fade-in pt-0 pb-6'>
       <PageHeader
         title='Security Audit Logs'
         subtitle='Immutable record of administrative and security events'
@@ -134,7 +134,7 @@ const AuditLog = memo(() => {
             <button
               onClick={() => fetchLogs(filters, true)}
               disabled={loading || refreshing}
-              className='flex items-center gap-2 rounded-xl border border-gray-200 bg-white p-2.5 text-xs font-bold text-gray-700 shadow-sm hover:bg-gray-50 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-200 transition-all disabled:opacity-50'
+              className='flex items-center gap-2 rounded-xl border border-gray-200 bg-white dark:bg-slate-900 p-2.5 text-xs font-bold text-gray-700 dark:text-gray-200 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-800 dark:border-slate-700 dark:bg-slate-800  transition-all disabled:opacity-50'
               title='Refresh logs'
             >
               <RefreshCw size={16} className={refreshing ? 'animate-spin' : ''} />
@@ -204,10 +204,11 @@ const AuditLog = memo(() => {
               }
             />
           </div>
-          <div className='flex items-end'>
+          <div className='admin-form-group mb-0'>
+            <label className='admin-label invisible'>Apply</label>
             <button
               onClick={handleApplyFilters}
-              className='admin-btn admin-btn-primary w-full'
+              className='admin-btn admin-btn-primary w-full justify-center'
             >
               <i className='fas fa-filter'></i>
               Apply Filters
@@ -245,7 +246,7 @@ const AuditLog = memo(() => {
               <tr>
                 <td colSpan='5' className='p-20 text-center'>
                   <div className='flex flex-col items-center gap-3 py-10'>
-                    <i className='fas fa-folder-open mb-2 text-5xl text-slate-300 dark:text-slate-600'></i>
+                    <i className='fas fa-folder-open mb-2 text-5xl text-slate-300 dark:text-slate-600 dark:text-slate-300'></i>
                     <p className='font-bold text-slate-500 dark:text-slate-400'>
                       No security events found.
                     </p>
@@ -277,7 +278,7 @@ const AuditLog = memo(() => {
                   </td>
                   <td>
                     <div className='flex items-center gap-2'>
-                      <i className='fas fa-user-circle text-slate-400 dark:text-slate-500'></i>
+                      <i className='fas fa-user-circle text-slate-400 dark:text-slate-500 dark:text-slate-400'></i>
                       <span className='font-semibold text-slate-900 dark:text-slate-200'>
                         {getUserDisplay(log.user)}
                       </span>

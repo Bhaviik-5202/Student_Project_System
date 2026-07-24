@@ -24,7 +24,7 @@ const ProgressAnalytics = memo(() => {
   }, []);
 
   return (
-    <div className='animate-fade-in space-y-6 p-4 md:p-6'>
+    <div className='animate-fade-in space-y-6 pt-0 pb-6'>
       <PageHeader
         title='Progress Analytics'
         subtitle='Monitor project completion trajectories and milestone fulfillment'
@@ -35,7 +35,7 @@ const ProgressAnalytics = memo(() => {
       <div className='mb-8 grid grid-cols-1 gap-6 lg:grid-cols-3'>
         {/* Summary Stats */}
         <div className='lg:col-span-1'>
-          <div className='rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800'>
+          <div className='rounded-lg border border-slate-200 bg-white dark:bg-slate-900 p-6 dark:border-slate-700 dark:bg-slate-800'>
             <h3 className='mb-4 text-lg font-semibold text-slate-900 dark:text-white'>
               Progress Summary
             </h3>
@@ -120,17 +120,17 @@ const ProgressAnalytics = memo(() => {
 
         {/* Progress Details */}
         <div className='lg:col-span-2'>
-          <div className='rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800'>
+          <div className='rounded-lg border border-slate-200 bg-white dark:bg-slate-900 p-6 dark:border-slate-700 dark:bg-slate-800'>
             <h3 className='mb-4 text-lg font-semibold text-slate-900 dark:text-white'>
               Project Progress Details
             </h3>
             <div className='space-y-4'>
               {loading ? (
-                <div className='py-4 text-center text-slate-500'>
+                <div className='py-4 text-center text-slate-500 dark:text-slate-400'>
                   Loading project progress...
                 </div>
               ) : projects.length === 0 ? (
-                <div className='py-4 text-center text-slate-500'>
+                <div className='py-4 text-center text-slate-500 dark:text-slate-400'>
                   No project progress data found.
                 </div>
               ) : (
@@ -193,7 +193,7 @@ const ProgressAnalytics = memo(() => {
                       >
                         View Details
                       </button>
-                      <button className='text-sm text-slate-600 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200'>
+                      <button className='text-sm text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100 dark:text-slate-400 dark:hover:text-slate-200'>
                         View Team
                       </button>
                     </div>

@@ -127,7 +127,7 @@ const AssignGuideModal = ({ isOpen, onClose, project, onSuccess }) => {
                   <div
                     className={`flex h-6 w-6 items-center justify-center rounded-full border ${
                       isSelected
-                        ? 'border-purple-600 bg-purple-600 text-white'
+                        ? 'border-purple-600 bg-purple-600 dark:bg-purple-500 text-white'
                         : 'border-gray-300 dark:border-slate-600'
                     }`}
                   >

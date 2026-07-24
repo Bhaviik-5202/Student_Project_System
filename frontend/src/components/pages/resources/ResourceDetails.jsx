@@ -115,19 +115,19 @@ const ResourceDetails = memo(() => {
   const uploaderName = resource.uploadedBy?.name || resource.uploadedBy || 'Academic Faculty';
 
   return (
-    <div className='p-4 md:p-6 space-y-6 animate-fade-in'>
+    <div className='pt-0 pb-6 space-y-6 animate-fade-in'>
       {/* Top Header */}
       <div className='flex items-center justify-between'>
         <button
           onClick={() => navigate('/resources')}
-          className='flex items-center gap-2 text-xs font-semibold text-slate-600 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400 transition-colors'
+          className='flex items-center gap-2 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-indigo-600  dark:hover:text-indigo-400 transition-colors'
         >
           <ArrowLeft size={16} /> Back to Resource Browser
         </button>
         <div className='flex items-center gap-2'>
           <button
             onClick={() => setIsEditOpen(true)}
-            className='flex items-center gap-1.5 rounded-xl border border-slate-300 px-3.5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700 transition-colors'
+            className='flex items-center gap-1.5 rounded-xl border border-slate-300 px-3.5 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800 dark:border-slate-600   transition-colors'
           >
             <Edit size={14} /> Edit
           </button>
@@ -143,13 +143,13 @@ const ResourceDetails = memo(() => {
       <div className='grid grid-cols-1 gap-6 lg:grid-cols-3'>
         {/* Left 2 Columns */}
         <div className='lg:col-span-2 space-y-6'>
-          <div className='rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
+          <div className='rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
             <div className='mb-6 flex items-start gap-4'>
               <div className='flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-400 shadow-sm'>
                 <FileText size={28} />
               </div>
               <div className='flex-1'>
-                <span className='inline-block rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700 dark:bg-slate-700 dark:text-slate-200 mb-1.5'>
+                <span className='inline-block rounded-full bg-slate-100 dark:bg-slate-800 px-3 py-1 text-xs font-bold text-slate-700 dark:text-slate-200 dark:bg-slate-700  mb-1.5'>
                   {category}
                 </span>
                 <h1 className='text-xl font-bold text-slate-900 dark:text-white'>
@@ -194,7 +194,7 @@ const ResourceDetails = memo(() => {
                 </div>
               )}
 
-              <div className='grid grid-cols-2 gap-4 rounded-xl bg-slate-50 p-4 dark:bg-slate-700/40 text-xs'>
+              <div className='grid grid-cols-2 gap-4 rounded-xl bg-slate-50 dark:bg-slate-800 p-4 dark:bg-slate-700/40 text-xs'>
                 <div className='flex items-center gap-3'>
                   <User size={18} className='text-slate-400' />
                   <div>
@@ -223,13 +223,13 @@ const ResourceDetails = memo(() => {
               </button>
               <button
                 onClick={() => setIsPreviewOpen(true)}
-                className='flex items-center gap-2 rounded-xl border border-slate-300 px-5 py-3 text-xs font-bold text-slate-700 hover:bg-slate-100 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700 transition-colors'
+                className='flex items-center gap-2 rounded-xl border border-slate-300 px-5 py-3 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800 dark:border-slate-600   transition-colors'
               >
                 <Eye size={16} /> Preview File
               </button>
               <button
                 onClick={handleShare}
-                className='flex items-center gap-2 rounded-xl border border-slate-300 px-5 py-3 text-xs font-bold text-slate-700 hover:bg-slate-100 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700 transition-colors'
+                className='flex items-center gap-2 rounded-xl border border-slate-300 px-5 py-3 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800 dark:border-slate-600   transition-colors'
               >
                 <Share2 size={16} /> Share Link
               </button>
@@ -239,13 +239,13 @@ const ResourceDetails = memo(() => {
 
         {/* Right Sidebar */}
         <div className='space-y-6'>
-          <div className='rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
+          <div className='rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
             <h3 className='mb-3 text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2'>
               <Eye size={16} className='text-indigo-600' /> Quick Preview
             </h3>
             <div
               onClick={() => setIsPreviewOpen(true)}
-              className='flex h-48 cursor-pointer flex-col items-center justify-center rounded-xl bg-slate-50 border border-dashed border-slate-300 hover:border-indigo-400 dark:bg-slate-700/50 dark:border-slate-600 transition-all group'
+              className='flex h-48 cursor-pointer flex-col items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 border border-dashed border-slate-300 hover:border-indigo-400 dark:bg-slate-700/50 dark:border-slate-600 transition-all group'
             >
               <FileText size={40} className='mb-2 text-indigo-500 group-hover:scale-110 transition-transform' />
               <p className='text-xs font-bold text-slate-800 dark:text-white'>Click to Open Preview</p>
@@ -254,7 +254,7 @@ const ResourceDetails = memo(() => {
           </div>
 
           {relatedResources.length > 0 && (
-            <div className='rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
+            <div className='rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
               <h3 className='mb-3 text-sm font-bold text-slate-900 dark:text-white'>
                 Related Assets
               </h3>
@@ -263,7 +263,7 @@ const ResourceDetails = memo(() => {
                   <div
                     key={item._id}
                     onClick={() => navigate(`/resources/${item._id}`)}
-                    className='flex items-center gap-3 rounded-xl p-2.5 hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700'
+                    className='flex items-center gap-3 rounded-xl p-2.5 hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700/50 cursor-pointer transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700'
                   >
                     <div className='flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-900/40 dark:text-indigo-300 shrink-0'>
                       <FileText size={16} />

@@ -39,7 +39,7 @@ const GroupCard = memo(({ group }) => {
           </h3>
           <div className='flex items-center gap-2 mt-1.5'>
             <StatusBadge status={group.status || 'assigned'} />
-            <span className='text-[10px] font-bold uppercase text-gray-400'>
+            <span className='text-[10px] font-bold uppercase text-gray-400 dark:text-gray-500'>
               {group.progress || 0}% PROGRESS
             </span>
           </div>
@@ -59,13 +59,13 @@ const GroupCard = memo(({ group }) => {
 
       <div className='space-y-2 border-t border-gray-100 pt-3 dark:border-slate-700/60 text-xs'>
         <div className='flex items-center gap-2 text-gray-600 dark:text-gray-300'>
-          <UserCheck size={15} className='text-indigo-500 shrink-0' />
+          <UserCheck size={15} className='text-indigo-500 dark:text-indigo-400 shrink-0' />
           <span className='truncate'>
             <strong className='font-semibold text-gray-800 dark:text-gray-200'>Guide:</strong> {guideName}
           </span>
         </div>
         <div className='flex items-center gap-2 text-gray-600 dark:text-gray-300'>
-          <Users size={15} className='text-indigo-500 shrink-0' />
+          <Users size={15} className='text-indigo-500 dark:text-indigo-400 shrink-0' />
           <span className='truncate'>
             <strong className='font-semibold text-gray-800 dark:text-gray-200'>Team:</strong> {membersList}
           </span>
@@ -75,7 +75,7 @@ const GroupCard = memo(({ group }) => {
       <div className='border-t border-gray-100 pt-3 dark:border-slate-700'>
         <div className='h-1.5 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-slate-900'>
           <div
-            className='h-full bg-indigo-500 transition-all duration-700 rounded-full'
+            className='h-full bg-indigo-500 dark:bg-indigo-600 dark:bg-indigo-500 transition-all duration-700 rounded-full'
             style={{ width: `${group.progress || 0}%` }}
           />
         </div>
@@ -107,7 +107,7 @@ const ProjectGroupsList = memo(() => {
   }, []);
 
   return (
-    <div className='space-y-6 p-4 md:p-6 animate-fade-in'>
+    <div className='space-y-6 pt-0 pb-6 animate-fade-in'>
       <PageHeader
         title='Project Groups'
         subtitle='Management for collaborative ventures'

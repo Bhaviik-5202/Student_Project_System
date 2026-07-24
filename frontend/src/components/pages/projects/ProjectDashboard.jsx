@@ -56,7 +56,7 @@ const ProjectDashboard = () => {
       title: 'Total Projects',
       value: stats?.totalProjects || 0,
       icon: FolderKanban,
-      textColor: 'text-indigo-600 dark:text-indigo-400',
+      textColor: 'text-indigo-600 dark:text-indigo-400 dark:text-indigo-300',
       bgColor: 'bg-indigo-50 dark:bg-indigo-900/30',
       link: '/projects',
     },
@@ -72,7 +72,7 @@ const ProjectDashboard = () => {
       title: 'Under Review',
       value: stats?.underReviewProjects || 0,
       icon: AlertCircle,
-      textColor: 'text-amber-600 dark:text-amber-400',
+      textColor: 'text-amber-600 dark:text-amber-400 dark:text-amber-500',
       bgColor: 'bg-amber-50 dark:bg-amber-900/30',
       link: '/projects?status=under_review',
     },
@@ -87,7 +87,7 @@ const ProjectDashboard = () => {
   ];
 
   return (
-    <div className='space-y-6 p-4 md:p-6 animate-fade-in'>
+    <div className='space-y-6 pt-0 pb-6 animate-fade-in'>
       {/* Header Banner */}
       <PageHeader
         title='Project Governance Dashboard'
@@ -149,7 +149,7 @@ const ProjectDashboard = () => {
                     </div>
                     <div className='h-2.5 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-slate-900'>
                       <div
-                        className='h-full bg-indigo-600 transition-all duration-500 rounded-full'
+                        className='h-full bg-indigo-600 dark:bg-indigo-500 transition-all duration-500 rounded-full'
                         style={{ width: `${pct}%` }}
                       />
                     </div>
@@ -179,7 +179,7 @@ const ProjectDashboard = () => {
               stats.categoryBreakdown.map((cat, idx) => (
                 <div
                   key={idx}
-                  className='flex items-center justify-between rounded-xl border border-gray-100 bg-gray-50/50 p-3 dark:border-slate-700 dark:bg-slate-900/50'
+                  className='flex items-center justify-between rounded-xl border border-gray-100 bg-gray-50 dark:bg-gray-800/50 p-3 dark:border-slate-700 dark:bg-slate-900/50'
                 >
                   <span className='text-xs font-bold text-gray-800 dark:text-gray-200'>
                     {cat.category}

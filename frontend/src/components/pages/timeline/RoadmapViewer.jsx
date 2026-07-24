@@ -104,7 +104,7 @@ const RoadmapViewer = memo(() => {
     },
     upcoming: {
       indicator: 'bg-slate-300 dark:bg-slate-600',
-      card: 'border-slate-100 bg-white dark:border-slate-800 dark:bg-slate-800/40',
+      card: 'border-slate-100 bg-white dark:bg-slate-900 dark:border-slate-800 dark:bg-slate-800/40',
       text: 'text-slate-500 dark:text-slate-400',
       bullet: 'text-slate-400',
     },
@@ -118,7 +118,7 @@ const RoadmapViewer = memo(() => {
   );
 
   return (
-    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+    <div className='space-y-6 animate-fade-in pt-0 pb-6'>
       <PageHeader
         title={projectData ? projectData.title : 'Project Roadmap'}
         subtitle={projectData ? projectData.description : 'Select a project to visualize its strategic trajectory and milestones'}
@@ -128,7 +128,7 @@ const RoadmapViewer = memo(() => {
           <div className='flex items-center gap-3'>
             <button
               onClick={() => handleNavigate('/timeline')}
-              className='flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-xs font-bold text-gray-700 shadow-sm hover:bg-gray-50 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-200 transition-all'
+              className='flex items-center gap-2 rounded-xl border border-gray-200 bg-white dark:bg-slate-900 px-4 py-2.5 text-xs font-bold text-gray-700 dark:text-gray-200 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-800 dark:border-slate-700 dark:bg-slate-800  transition-all'
             >
               <ArrowLeft size={16} />
               Overview
@@ -136,7 +136,7 @@ const RoadmapViewer = memo(() => {
             <select
               value={selectedProjectId}
               onChange={handleProjectChange}
-              className='rounded-xl border border-gray-200 bg-white px-3 py-2 text-xs font-bold text-indigo-600 shadow-sm transition-all focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-indigo-400'
+              className='rounded-xl border border-gray-200 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-bold text-indigo-600 shadow-sm transition-all focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-indigo-400'
             >
               <option value='' disabled>
                 Select Venture
@@ -145,7 +145,7 @@ const RoadmapViewer = memo(() => {
                 <option
                   key={p._id || p.id}
                   value={p._id || p.id}
-                  className='bg-white text-xs text-gray-900 dark:bg-slate-800 dark:text-white'
+                  className='bg-white dark:bg-slate-900 text-xs text-gray-900 dark:text-white dark:bg-slate-800 '
                 >
                   {p.title}
                 </option>
@@ -163,18 +163,18 @@ const RoadmapViewer = memo(() => {
             </span>
           </div>
         ) : !projectData ? (
-          <div className='rounded-3xl border border-dashed border-slate-200 bg-white p-20 text-center dark:border-slate-700 dark:bg-slate-800'>
+          <div className='rounded-3xl border border-dashed border-slate-200 bg-white dark:bg-slate-900 p-20 text-center dark:border-slate-700 dark:bg-slate-800'>
             <h3 className='mb-2 text-xl font-black italic tracking-tight text-slate-900 dark:text-white'>
               No Strategic Data
             </h3>
-            <p className='mx-auto max-w-xs text-xs font-bold text-slate-500'>
+            <p className='mx-auto max-w-xs text-xs font-bold text-slate-500 dark:text-slate-400'>
               This project hasn't established its long-term milestones yet.
               Switch ventures or initialize a timeline.
             </p>
           </div>
         ) : (
           <div className='animate-in fade-in slide-in-from-bottom-4 duration-700'>
-            <div className='relative mb-12 overflow-hidden rounded-[2.5rem] border border-gray-100 bg-white p-10 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
+            <div className='relative mb-12 overflow-hidden rounded-[2.5rem] border border-gray-100 bg-white dark:bg-slate-900 p-10 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
               <div className='relative z-10'>
                 {/* Visual Connector Line */}
                 <div className='absolute left-[34px] right-0 top-[2.1rem] hidden h-px bg-slate-100 dark:bg-slate-700 lg:block'></div>
@@ -200,12 +200,12 @@ const RoadmapViewer = memo(() => {
                             <h3 className='text-xl font-black italic leading-tight tracking-tighter text-slate-900 dark:text-white'>
                               {phase.name}
                             </h3>
-                            <span className='rounded-lg border border-gray-50 bg-white/50 px-3 py-1 text-[10px] font-black tracking-widest dark:border-slate-700 dark:bg-slate-900/50'>
+                            <span className='rounded-lg border border-gray-50 bg-white dark:bg-slate-900/50 px-3 py-1 text-[10px] font-black tracking-widest dark:border-slate-700 '>
                               {phase.quarter}
                             </span>
                           </div>
                           <div
-                            className={`mt-3 inline-block w-fit rounded px-2 py-0.5 text-[10px] font-black tracking-[0.2em] ${statusStyles[phase.status].text || 'bg-gray-100 text-gray-500'}`}
+                            className={`mt-3 inline-block w-fit rounded px-2 py-0.5 text-[10px] font-black tracking-[0.2em] ${statusStyles[phase.status].text || 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400'}`}
                           >
                             {phase.status.charAt(0).toUpperCase() +
                               phase.status.slice(1).replace('-', ' ')}
@@ -253,7 +253,7 @@ const RoadmapViewer = memo(() => {
             </div>
 
             {/* Legend Component */}
-            <div className='flex flex-col items-center justify-between gap-6 rounded-3xl border border-gray-100 bg-white p-8 shadow-sm dark:border-slate-700 dark:bg-slate-800 md:flex-row'>
+            <div className='flex flex-col items-center justify-between gap-6 rounded-3xl border border-gray-100 bg-white dark:bg-slate-900 p-8 shadow-sm dark:border-slate-700 dark:bg-slate-800 md:flex-row'>
               <div className='flex flex-col'>
                 <h4 className='mb-1 text-xs font-black tracking-widest text-slate-900 dark:text-white'>
                   Strategic Legend

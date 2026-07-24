@@ -150,50 +150,50 @@ const TopNav = memo(
                   prev === item.title ? null : item.title
                 )
               }
-              className={`group relative inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-semibold tracking-wide transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${isActive
+              className={`group relative inline-flex items-center gap-2.5 rounded-xl px-3.5 py-2 text-sm font-semibold tracking-wide transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${isActive
                 ? 'bg-indigo-50 text-indigo-600 shadow-xs dark:bg-indigo-950/60 dark:text-indigo-400'
-                : 'text-slate-600 hover:bg-slate-100/80 hover:text-indigo-600 dark:text-slate-300 dark:hover:bg-slate-800/80 dark:hover:text-indigo-400'
+                : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800/80 hover:text-indigo-600  dark:hover:bg-slate-800/80 dark:hover:text-indigo-400'
                 }`}
             >
               <i
-                className={`fas fa-${item.icon} text-xs transition-transform duration-200 ${isActive ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 group-hover:text-indigo-500'
+                className={`fas fa-${item.icon} text-sm transition-transform duration-200 group-hover:scale-110 ${isActive ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 group-hover:text-indigo-500'
                   }`}
               />
               <span>{item.title}</span>
               <i
-                className={`fas fa-chevron-down text-[9px] opacity-70 transition-transform duration-200 ${isOpen ? 'rotate-180 text-indigo-600' : ''
+                className={`fas fa-chevron-down text-xs opacity-70 transition-transform duration-200 ${isOpen ? 'rotate-180 text-indigo-600 dark:text-indigo-400' : ''
                   }`}
               />
               {isActive && (
-                <span className='absolute bottom-0 left-3 right-3 h-0.5 rounded-full bg-indigo-600 dark:bg-indigo-400' />
+                <span className='absolute bottom-0 left-3 right-3 h-[2.5px] rounded-full bg-indigo-600 dark:bg-indigo-400' />
               )}
             </button>
           ) : (
             <NavLink
               to={item.path}
-              className={`group relative inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-semibold tracking-wide transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${isActive
+              className={`group relative inline-flex items-center gap-2.5 rounded-xl px-3.5 py-2 text-sm font-semibold tracking-wide transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${isActive
                 ? 'bg-indigo-50 text-indigo-600 shadow-xs dark:bg-indigo-950/60 dark:text-indigo-400'
-                : 'text-slate-600 hover:bg-slate-100/80 hover:text-indigo-600 dark:text-slate-300 dark:hover:bg-slate-800/80 dark:hover:text-indigo-400'
+                : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800/80 hover:text-indigo-600  dark:hover:bg-slate-800/80 dark:hover:text-indigo-400'
                 }`}
             >
               <i
-                className={`fas fa-${item.icon} text-xs transition-transform duration-200 ${isActive ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 group-hover:text-indigo-500'
+                className={`fas fa-${item.icon} text-sm transition-transform duration-200 group-hover:scale-110 ${isActive ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 group-hover:text-indigo-500'
                   }`}
               />
               <span>{item.title}</span>
               {isActive && (
-                <span className='absolute bottom-0 left-3 right-3 h-0.5 rounded-full bg-indigo-600 dark:bg-indigo-400' />
+                <span className='absolute bottom-0 left-3 right-3 h-[2.5px] rounded-full bg-indigo-600 dark:bg-indigo-400' />
               )}
             </NavLink>
           )}
 
           {/* Submenu Dropdown Popover */}
           {hasSubmenu && isOpen && visibleSubmenu.length > 0 && (
-            <div className='animate-in fade-in slide-in-from-top-1 duration-150 absolute left-0 top-full z-[9999] min-w-[220px] pt-1.5'>
-              <div className='rounded-2xl border border-slate-200/90 bg-white/95 p-1.5 shadow-xl backdrop-blur-md dark:border-slate-800 dark:bg-slate-900/95'>
-                <div className='mb-1 px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 border-b border-slate-100 dark:border-slate-800/80 flex items-center justify-between'>
+            <div className='animate-in fade-in slide-in-from-top-1 duration-150 absolute left-0 top-full z-[9999] min-w-[230px] pt-1.5'>
+              <div className='rounded-2xl border border-slate-200/90 bg-white dark:bg-slate-900/95 p-1.5 shadow-xl backdrop-blur-md dark:border-slate-800 '>
+                <div className='mb-1 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-800/80 flex items-center justify-between'>
                   <span>{item.title} Options</span>
-                  <span className='rounded-full bg-indigo-50 px-1.5 py-0.5 text-[9px] font-bold text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400'>
+                  <span className='rounded-full bg-indigo-50 px-2 py-0.5 text-[10px] font-bold text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400'>
                     {visibleSubmenu.length}
                   </span>
                 </div>
@@ -207,14 +207,14 @@ const TopNav = memo(
                       <NavLink
                         key={`${item.title}-${idx}`}
                         to={subItem.path}
-                        className={`flex items-center justify-between gap-3 rounded-xl px-3 py-2 text-xs font-medium transition-all duration-150 ${subIsActive
+                        className={`flex items-center justify-between gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all duration-150 ${subIsActive
                           ? 'bg-indigo-50/90 text-indigo-600 font-semibold dark:bg-indigo-950/70 dark:text-indigo-400'
-                          : 'text-slate-700 hover:bg-slate-100/80 hover:text-indigo-600 dark:text-slate-300 dark:hover:bg-slate-800/80 dark:hover:text-indigo-400'
+                          : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800/80 hover:text-indigo-600 dark:text-slate-300 dark:hover:bg-slate-800/80 dark:hover:text-indigo-400'
                           }`}
                       >
                         <div className='flex items-center gap-2.5'>
                           <i
-                            className={`fas fa-${subIcon} text-[11px] w-4 text-center ${subIsActive
+                            className={`fas fa-${subIcon} text-xs w-4 text-center ${subIsActive
                               ? 'text-indigo-600 dark:text-indigo-400'
                               : 'text-slate-400 group-hover:text-indigo-500'
                               }`}
@@ -240,8 +240,8 @@ const TopNav = memo(
         ref={navRef}
         aria-label='Secondary Navigation'
         className={`fixed left-0 right-0 top-16 z-40 border-b transition-all duration-200 ${isScrolled
-          ? 'border-slate-200/90 bg-white/95 shadow-xs backdrop-blur-md dark:border-slate-800/90 dark:bg-slate-900/95'
-          : 'border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900'
+          ? 'border-slate-200/90 bg-white dark:bg-slate-900/95 shadow-xs backdrop-blur-md dark:border-slate-800/90 '
+          : 'border-slate-200 bg-white dark:bg-slate-900 dark:border-slate-800 '
           }`}
       >
         <div className='mx-auto max-w-7xl px-4 lg:px-8'>
@@ -253,15 +253,15 @@ const TopNav = memo(
 
             {/* Active Route / Section Indicator Badge */}
             {currentActiveItem && (
-              <div className='flex items-center gap-2 rounded-full border border-slate-200/80 bg-slate-50/80 px-3 py-1 text-[11px] font-semibold text-slate-600 shadow-2xs dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-300'>
+              <div className='flex shrink-0 whitespace-nowrap items-center gap-2 rounded-full border border-slate-200/80 bg-slate-50/90 px-3.5 py-1.5 text-xs font-bold text-slate-700 shadow-xs backdrop-blur-sm dark:border-slate-700/80 dark:bg-slate-800/90 dark:text-slate-200'>
                 <i
-                  className={`fas fa-${currentActiveItem.icon} text-indigo-500 dark:text-indigo-400`}
+                  className={`fas fa-${currentActiveItem.icon} text-xs text-indigo-500 dark:text-indigo-400`}
                 />
                 <span>{currentActiveItem.title}</span>
                 {currentActiveSubTitle && (
                   <>
-                    <i className='fas fa-chevron-right text-[8px] text-slate-400' />
-                    <span className='text-indigo-600 dark:text-indigo-400 font-bold'>
+                    <i className='fas fa-chevron-right text-[9px] text-slate-400' />
+                    <span className='font-extrabold text-indigo-600 dark:text-indigo-400'>
                       {currentActiveSubTitle}
                     </span>
                   </>
@@ -275,17 +275,17 @@ const TopNav = memo(
             <button
               type='button'
               onClick={onMobileMenuToggle}
-              className='inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700'
+              className='inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 dark:bg-slate-800 px-3.5 py-1.5 text-sm font-bold text-slate-700 dark:text-slate-200 transition hover:bg-slate-100 dark:hover:bg-slate-700  dark:border-slate-700   '
             >
               <i
                 className={`fas ${isMobileMenuOpen ? 'fa-times' : 'fa-bars'
-                  } text-indigo-600 dark:text-indigo-400`}
+                  } text-sm text-indigo-600 dark:text-indigo-400`}
               />
               <span>Navigation</span>
             </button>
 
             {currentActiveItem && (
-              <div className='truncate text-xs font-bold text-indigo-600 dark:text-indigo-400'>
+              <div className='truncate text-sm font-bold text-indigo-600 dark:text-indigo-400'>
                 {currentActiveItem.title}
                 {currentActiveSubTitle ? ` › ${currentActiveSubTitle}` : ''}
               </div>
@@ -295,7 +295,7 @@ const TopNav = memo(
 
         {/* Mobile Navigation Dropdown Drawer */}
         {isMobileMenuOpen && (
-          <div className='border-t border-slate-200 bg-white/95 px-4 py-3 shadow-2xl backdrop-blur-md dark:border-slate-800 dark:bg-slate-900/95 lg:hidden max-h-[75vh] overflow-y-auto animate-in fade-in duration-150'>
+          <div className='border-t border-slate-200 bg-white dark:bg-slate-900/95 px-4 py-3 shadow-2xl backdrop-blur-md dark:border-slate-800  lg:hidden max-h-[75vh] overflow-y-auto animate-in fade-in duration-150'>
             <div className='space-y-1'>
               {filteredItems.map((item) => {
                 const hasSubmenu = item.submenu && item.submenu.length > 0;
@@ -317,14 +317,14 @@ const TopNav = memo(
                         <button
                           type='button'
                           onClick={() => toggleMobileSubmenu(item.title)}
-                          className={`flex w-full items-center justify-between rounded-xl px-3.5 py-2.5 text-xs font-semibold transition ${isActive
+                          className={`flex w-full items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-semibold transition ${isActive
                             ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400'
-                            : 'text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800'
+                            : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800  dark:hover:bg-slate-800'
                             }`}
                         >
                           <div className='flex items-center gap-2.5'>
                             <i
-                              className={`fas fa-${item.icon} text-sm ${isActive
+                              className={`fas fa-${item.icon} text-base ${isActive
                                 ? 'text-indigo-600 dark:text-indigo-400'
                                 : 'text-slate-400'
                                 }`}
@@ -332,7 +332,7 @@ const TopNav = memo(
                             <span>{item.title}</span>
                           </div>
                           <i
-                            className={`fas fa-chevron-down text-[10px] transition-transform ${isExpanded ? 'rotate-180 text-indigo-600' : ''
+                            className={`fas fa-chevron-down text-xs transition-transform ${isExpanded ? 'rotate-180 text-indigo-600' : ''
                               }`}
                           />
                         </button>
@@ -350,13 +350,13 @@ const TopNav = memo(
                                   key={`mob-${item.title}-${idx}`}
                                   to={subItem.path}
                                   onClick={onCloseMobileMenu}
-                                  className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium transition ${subIsActive
+                                  className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition ${subIsActive
                                     ? 'bg-indigo-50/90 text-indigo-600 font-semibold dark:bg-indigo-950/70 dark:text-indigo-400'
-                                    : 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800'
+                                    : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800  dark:hover:bg-slate-800'
                                     }`}
                                 >
                                   <i
-                                    className={`fas fa-${subIcon} text-[10px] w-3 text-center ${subIsActive
+                                    className={`fas fa-${subIcon} text-xs w-3.5 text-center ${subIsActive
                                       ? 'text-indigo-600 dark:text-indigo-400'
                                       : 'text-slate-400'
                                       }`}
@@ -372,13 +372,13 @@ const TopNav = memo(
                       <NavLink
                         to={item.path}
                         onClick={onCloseMobileMenu}
-                        className={`flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-xs font-semibold transition ${isActive
+                        className={`flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition ${isActive
                           ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400'
-                          : 'text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800'
+                          : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800  dark:hover:bg-slate-800'
                           }`}
                       >
                         <i
-                          className={`fas fa-${item.icon} text-sm ${isActive
+                          className={`fas fa-${item.icon} text-base ${isActive
                             ? 'text-indigo-600 dark:text-indigo-400'
                             : 'text-slate-400'
                             }`}

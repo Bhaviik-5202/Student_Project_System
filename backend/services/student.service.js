@@ -4,6 +4,8 @@
  */
 const studentRepository = require('../repositories/student.repository');
 const projectRepository = require('../repositories/project.repository');
+const userRepository = require('../repositories/user.repository');
+const { normalizeDepartment } = require('../utils/idGenerator');
 
 /**
  * Standardized response helper for services
@@ -29,35 +31,6 @@ exports.getProjects = async (studentId) => {
       null,
       err.message || 'Failed to fetch student projects'
     );
-  }
-};
-
-/**
- * Create student profile
- * @param {Object} data - Student attribute data
- * @returns {Promise<Object>} Formatted service response with newly created profile
- */
-const userRepository = require('../repositories/user.repository');
-const { generateRollNumber, normalizeDepartment } = require('../utils/idGenerator');
-
-exports.create = async (data) => {
-  try {
-    const cleanDepartment = normalizeDepartment(data.department);
-    const rollNumber = data.rollNumber || (await generateRollNumber());
-    const enrollmentNumber = data.enrollmentNumber || `EN${new Date().getFullYear()}${Math.floor(100000 + Math.random() * 900000)}`;
-
-    const studentData = {
-      ...data,
-      rollNumber,
-      enrollmentNumber,
-      department: cleanDepartment,
-      status: data.status || 'Active',
-    };
-
-    const student = await studentRepository.create(studentData);
-    return response(false, student, 'Student created successfully');
-  } catch (err) {
-    return response(true, null, err.message || 'Failed to create student');
   }
 };
 

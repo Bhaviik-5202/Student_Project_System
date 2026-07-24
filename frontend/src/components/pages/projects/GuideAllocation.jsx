@@ -52,7 +52,7 @@ const GuideAllocation = () => {
   const unassignedProjects = projects.filter((p) => !p.guide);
 
   return (
-    <div className='space-y-6 p-4 md:p-6 animate-fade-in'>
+    <div className='space-y-6 pt-0 pb-6 animate-fade-in'>
       <PageHeader
         title='Faculty Guide Allocation & Workload'
         subtitle='Manage faculty mentor assignments across student project groups'
@@ -92,7 +92,7 @@ const GuideAllocation = () => {
                   setSelectedProject(proj);
                   setIsModalOpen(true);
                 }}
-                className='inline-flex items-center gap-2 rounded-xl border border-amber-300/80 bg-white px-3 py-1.5 text-xs font-semibold text-amber-900 shadow-2xs transition hover:bg-amber-100/60 hover:shadow-xs dark:border-amber-800 dark:bg-slate-900 dark:text-amber-200 dark:hover:bg-amber-900/40'
+                className='inline-flex items-center gap-2 rounded-xl border border-amber-300/80 bg-white dark:bg-slate-900 px-3 py-1.5 text-xs font-semibold text-amber-900 shadow-2xs transition hover:bg-amber-100/60 hover:shadow-xs dark:border-amber-800  dark:text-amber-200 dark:hover:bg-amber-900/40'
               >
                 <span>{proj.title}</span>
                 <span className='rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-bold text-amber-800 dark:bg-amber-900/60 dark:text-amber-300'>
@@ -101,7 +101,7 @@ const GuideAllocation = () => {
               </button>
             ))}
             {unassignedProjects.length > 5 && (
-              <span className='self-center text-xs font-medium text-amber-700 dark:text-amber-400'>
+              <span className='self-center text-xs font-medium text-amber-700 dark:text-amber-400 dark:text-amber-500'>
                 +{unassignedProjects.length - 5} more
               </span>
             )}
@@ -114,7 +114,7 @@ const GuideAllocation = () => {
         <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
           <h2 className='text-base font-bold text-gray-900 dark:text-white flex items-center gap-2'>
             <span>Faculty Mentors & Workload</span>
-            <span className='rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-400'>
+            <span className='rounded-full bg-slate-100 dark:bg-slate-800 px-2.5 py-0.5 text-xs font-bold text-slate-600 dark:text-slate-300  dark:text-slate-400'>
               {facultyList.length} Faculty
             </span>
           </h2>
@@ -152,13 +152,13 @@ const GuideAllocation = () => {
                   : projectCount <= 2
                   ? { label: 'Light Workload', variant: 'sky', bg: 'bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950/40 dark:text-sky-400 dark:border-sky-800' }
                   : projectCount <= 4
-                  ? { label: 'Moderate', variant: 'amber', bg: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800' }
+                  ? { label: 'Moderate', variant: 'amber', bg: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:text-amber-500 dark:border-amber-800' }
                   : { label: 'High Workload', variant: 'rose', bg: 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-800' };
 
               return (
                 <Card
                   key={facId}
-                  className='flex flex-col justify-between space-y-4 rounded-2xl border border-gray-200/80 bg-white p-5 shadow-sm transition-all duration-200 hover:border-indigo-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-800/90 dark:hover:border-slate-700'
+                  className='flex flex-col justify-between space-y-4 rounded-2xl border border-gray-200/80 bg-white dark:bg-slate-900 p-5 shadow-sm transition-all duration-200 hover:border-indigo-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-800/90 dark:hover:border-slate-700'
                 >
                   <div className='space-y-4'>
                     {/* Faculty Profile Info */}
@@ -171,10 +171,10 @@ const GuideAllocation = () => {
                           <h3 className='truncate text-sm font-bold text-gray-900 dark:text-white' title={faculty.name}>
                             {faculty.name}
                           </h3>
-                          <p className='truncate text-xs font-medium text-gray-500 dark:text-gray-400'>
+                          <p className='truncate text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500'>
                             {faculty.designation || 'Faculty'}
                           </p>
-                          <p className='truncate text-[11px] text-gray-400 dark:text-gray-500'>
+                          <p className='truncate text-[11px] text-gray-400 dark:text-gray-500 dark:text-gray-400 dark:text-gray-500'>
                             {faculty.department || 'Department'}
                           </p>
                         </div>
@@ -185,13 +185,13 @@ const GuideAllocation = () => {
                     </div>
 
                     {/* Guided Projects Header & List */}
-                    <div className='space-y-2.5 rounded-xl border border-gray-100 bg-slate-50/60 p-3.5 dark:border-slate-700/60 dark:bg-slate-900/40'>
+                    <div className='space-y-2.5 rounded-xl border border-gray-100 bg-slate-50 dark:bg-slate-800/60 p-3.5 dark:border-slate-700/60 dark:bg-slate-900/40'>
                       <div className='flex items-center justify-between text-xs font-bold text-gray-600 dark:text-gray-300'>
                         <span className='flex items-center gap-1.5'>
-                          <Award size={14} className='text-indigo-600 dark:text-indigo-400' />
+                          <Award size={14} className='text-indigo-600 dark:text-indigo-400 dark:text-indigo-300' />
                           <span>Guided Projects</span>
                         </span>
-                        <span className='rounded-md bg-indigo-50 px-2 py-0.5 font-extrabold text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400'>
+                        <span className='rounded-md bg-indigo-50 px-2 py-0.5 font-extrabold text-indigo-600 dark:text-indigo-400 dark:bg-indigo-950/60 dark:text-indigo-400 dark:text-indigo-300'>
                           {projectCount} {projectCount === 1 ? 'Project' : 'Projects'}
                         </span>
                       </div>
@@ -199,7 +199,7 @@ const GuideAllocation = () => {
                       <div className='space-y-2 max-h-48 overflow-y-auto pr-1 custom-scrollbar'>
                         {guidedProjects.length === 0 ? (
                           <div className='py-4 text-center'>
-                            <p className='text-xs text-gray-400 dark:text-gray-500 italic'>
+                            <p className='text-xs text-gray-400 dark:text-gray-500 dark:text-gray-400 dark:text-gray-500 italic'>
                               No projects currently assigned to this guide.
                             </p>
                           </div>
@@ -208,10 +208,10 @@ const GuideAllocation = () => {
                             <div
                               key={proj._id || proj.id}
                               onClick={() => navigate(`/projects/${proj.slug || proj._id || proj.id}`)}
-                              className='group flex items-center justify-between gap-2 rounded-lg border border-transparent bg-white p-2.5 text-xs shadow-2xs transition-all hover:border-indigo-300 hover:bg-indigo-50/40 hover:shadow-xs dark:bg-slate-800 dark:hover:border-indigo-700 dark:hover:bg-indigo-950/30 cursor-pointer'
+                              className='group flex items-center justify-between gap-2 rounded-lg border border-transparent bg-white dark:bg-slate-900 p-2.5 text-xs shadow-2xs transition-all hover:border-indigo-300 hover:bg-indigo-50/40 hover:shadow-xs dark:bg-slate-800 dark:hover:border-indigo-700 dark:hover:bg-indigo-950/30 cursor-pointer'
                             >
                               <div className='min-w-0 flex-1'>
-                                <p className='truncate font-semibold text-gray-800 group-hover:text-indigo-600 dark:text-gray-200 dark:group-hover:text-indigo-400'>
+                                <p className='truncate font-semibold text-gray-800 dark:text-gray-100 group-hover:text-indigo-600 dark:hover:text-indigo-400 dark:text-gray-200 dark:group-hover:text-indigo-400 dark:hover:text-indigo-300 dark:text-indigo-300'>
                                   {proj.title}
                                 </p>
                               </div>

@@ -32,7 +32,7 @@ export const Modal = ({
                 </h3>
               )}
               {subtitle && (
-                <p className='text-xs text-gray-500 dark:text-gray-400'>
+                <p className='text-xs text-gray-500 dark:text-slate-400'>
                   {subtitle}
                 </p>
               )}
@@ -41,7 +41,7 @@ export const Modal = ({
           <button
             onClick={onClose}
             type='button'
-            className='rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-slate-700 dark:hover:text-gray-200'
+            className='rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-200 transition-colors'
           >
             <X size={18} />
           </button>

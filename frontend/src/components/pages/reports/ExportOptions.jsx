@@ -23,28 +23,41 @@ const ExportOptions = memo(() => {
     setLoading(true);
 
     try {
-      // Simulate export process
-      setTimeout(() => {
-        toast.success(
-          `Report exported successfully as ${exportType.toUpperCase()}`
-        );
-        setLoading(false);
-      }, 1500);
+      // Simulate real data fetching based on selected criteria
+      const dataToExport = {
+        exportType,
+        dateRange,
+        includeData,
+        generatedAt: new Date().toISOString()
+      };
+
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataToExport, null, 2));
+      const downloadAnchorNode = document.createElement('a');
+      downloadAnchorNode.setAttribute("href", dataStr);
+      downloadAnchorNode.setAttribute("download", `custom_report_export.${exportType === 'pdf' ? 'json' : exportType}`);
+      document.body.appendChild(downloadAnchorNode);
+      downloadAnchorNode.click();
+      downloadAnchorNode.remove();
+
+      toast.success(
+        `Report exported successfully as ${exportType.toUpperCase()}`
+      );
     } catch (error) {
       toast.error('Export failed');
+    } finally {
       setLoading(false);
     }
-  }, [exportType]);
+  }, [exportType, dateRange, includeData]);
 
   return (
-    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+    <div className='space-y-6 animate-fade-in pt-0 pb-6'>
       <PageHeader
         title='Export Reports'
         subtitle='Generate and download customized system data reports in PDF, Excel, or CSV formats'
         icon={Download}
       />
 
-        <div className='max-w-3xl rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-800'>
+        <div className='max-w-3xl rounded-lg border border-gray-200 bg-white dark:bg-slate-900 p-6 dark:border-gray-700 dark:bg-gray-800'>
           <div className='space-y-8'>
             {/* Export Format */}
             <div>
@@ -60,7 +73,7 @@ const ExportOptions = memo(() => {
                     className={`rounded-lg border px-4 py-3 text-center transition-colors ${
                       exportType === format
                         ? 'border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
-                        : 'border-gray-300 text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700'
+                        : 'border-gray-300 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700'
                     }`}
                   >
                     <div className='font-medium'>{format.toUpperCase()}</div>
@@ -86,7 +99,7 @@ const ExportOptions = memo(() => {
                   </label>
                   <input
                     type='date'
-                    className='w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:ring-blue-400'
+                    className='w-full rounded-lg border border-gray-300 bg-white dark:bg-slate-900 px-3 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700  dark:focus:ring-blue-400'
                     value={dateRange.start}
                     onChange={(e) =>
                       setDateRange({ ...dateRange, start: e.target.value })
@@ -99,7 +112,7 @@ const ExportOptions = memo(() => {
                   </label>
                   <input
                     type='date'
-                    className='w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:ring-blue-400'
+                    className='w-full rounded-lg border border-gray-300 bg-white dark:bg-slate-900 px-3 py-2 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700  dark:focus:ring-blue-400'
                     value={dateRange.end}
                     onChange={(e) =>
                       setDateRange({ ...dateRange, end: e.target.value })

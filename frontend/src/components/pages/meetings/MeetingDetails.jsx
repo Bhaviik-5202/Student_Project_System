@@ -215,7 +215,7 @@ const MeetingDetails = memo(() => {
             <>
               <button
                 onClick={() => navigate('/meetings/list')}
-                className='flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-xs font-bold text-gray-700 shadow-sm hover:bg-gray-50 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-200 transition-all'
+                className='flex items-center gap-2 rounded-xl border border-gray-200 bg-white dark:bg-slate-900 px-4 py-2.5 text-xs font-bold text-gray-700 dark:text-gray-200 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-800 dark:border-slate-700 dark:bg-slate-800  transition-all'
               >
                 <ArrowLeft size={16} />
                 Back to Meeting Management
@@ -233,7 +233,7 @@ const MeetingDetails = memo(() => {
               {canManage && (
                 <button
                   onClick={() => navigate(`/meetings/${id}/edit`)}
-                  className='rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-xs font-bold text-gray-700 shadow-sm hover:bg-gray-50 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-200 transition-all'
+                  className='rounded-xl border border-gray-200 bg-white dark:bg-slate-900 px-4 py-2.5 text-xs font-bold text-gray-700 dark:text-gray-200 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-800 dark:border-slate-700 dark:bg-slate-800  transition-all'
                 >
                   Edit
                 </button>
@@ -471,7 +471,7 @@ const MeetingDetails = memo(() => {
                         key={participant._id || index}
                         className='flex items-center gap-3'
                       >
-                        <div className='flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 text-xs font-bold text-gray-500 dark:bg-slate-900'>
+                        <div className='flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800 text-xs font-bold text-gray-500 dark:text-gray-400 dark:bg-slate-900'>
                           {participant.name?.charAt(0) || 'U'}
                         </div>
                         <div>

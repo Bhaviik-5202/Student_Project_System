@@ -55,7 +55,7 @@ export const CardContent = ({ children, className = '', ...props }) => {
 export const CardFooter = ({ children, className = '', ...props }) => {
   return (
     <div
-      className={`px-6 py-4 bg-slate-50/50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between ${className}`}
+      className={`px-6 py-4 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between ${className}`}
       {...props}
     >
       {children}

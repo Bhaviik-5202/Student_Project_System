@@ -31,7 +31,7 @@ const KnowledgeBase = memo(() => {
   const [searchTerm, setSearchTerm] = useState('');
 
   return (
-    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+    <div className='space-y-6 animate-fade-in pt-0 pb-6'>
       <PageHeader
         title='Knowledge Base'
         subtitle='Find detailed guides, tutorials, and documentation for all system features'
@@ -44,18 +44,18 @@ const KnowledgeBase = memo(() => {
             <input
               type='text'
               placeholder='Search knowledge base...'
-              className='w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-800 dark:text-white dark:focus:ring-blue-400'
+              className='w-full rounded-lg border border-slate-300 bg-white dark:bg-slate-900 px-4 py-3 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-800  dark:focus:ring-blue-400'
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <button className='absolute right-3 top-3 text-slate-400 dark:text-slate-500'>
+            <button className='absolute right-3 top-3 text-slate-400 dark:text-slate-500 dark:text-slate-400'>
               🔍
             </button>
           </div>
         </div>
 
         {loading ? (
-          <div className='py-12 text-center text-slate-500'>
+          <div className='py-12 text-center text-slate-500 dark:text-slate-400'>
             Loading knowledge base...
           </div>
         ) : (
@@ -65,7 +65,7 @@ const KnowledgeBase = memo(() => {
               {categories.map((category) => (
                 <div
                   key={category.id || category._id}
-                  className='rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800'
+                  className='rounded-lg border border-slate-200 bg-white dark:bg-slate-900 p-6 dark:border-slate-700 dark:bg-slate-800'
                 >
                   <h3 className='mb-4 text-lg font-semibold text-slate-900 dark:text-white'>
                     {category.name}
@@ -77,7 +77,7 @@ const KnowledgeBase = memo(() => {
                         onClick={() =>
                           navigate(`/help?article=${article.id || article._id}`)
                         }
-                        className='block w-full cursor-pointer rounded-lg border border-slate-200 p-3 text-left transition-colors hover:bg-slate-50 dark:border-slate-600 dark:hover:bg-slate-700'
+                        className='block w-full cursor-pointer rounded-lg border border-slate-200 p-3 text-left transition-colors hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 dark:border-slate-600 dark:hover:bg-slate-700'
                       >
                         <div className='font-medium text-slate-900 dark:text-white'>
                           {article.title}
@@ -93,7 +93,7 @@ const KnowledgeBase = memo(() => {
             </div>
 
             {/* Popular Articles */}
-            <div className='rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800'>
+            <div className='rounded-lg border border-slate-200 bg-white dark:bg-slate-900 p-6 dark:border-slate-700 dark:bg-slate-800'>
               <h3 className='mb-4 text-lg font-semibold text-slate-900 dark:text-white'>
                 Popular Articles
               </h3>

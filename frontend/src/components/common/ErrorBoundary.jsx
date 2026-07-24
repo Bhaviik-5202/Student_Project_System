@@ -254,7 +254,7 @@ class ErrorBoundary extends Component {
                 )}
               </pre>
               {retryCount > 0 && (
-                <p className="mt-2 text-xs text-gray-500 dark:text-gray-500">
+                <p className="mt-2 text-xs text-gray-500 dark:text-gray-500 dark:text-gray-400">
                   Retry attempt: {retryCount}
                 </p>
               )}
@@ -275,7 +275,7 @@ class ErrorBoundary extends Component {
 
             <button
               onClick={this.handleRefresh}
-              className="rounded-lg bg-gray-200 px-6 py-2.5 font-medium text-gray-700 shadow-md transition-all duration-200 hover:bg-gray-300 hover:shadow-lg dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+              className="rounded-lg bg-gray-200 dark:bg-gray-700 px-6 py-2.5 font-medium text-gray-700 dark:text-gray-200 shadow-md transition-all duration-200 hover:bg-gray-300 hover:shadow-lg   dark:hover:bg-gray-600 focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
               aria-label="Refresh page"
             >
               {this.props.refreshLabel || 'Refresh Page'}
@@ -284,7 +284,7 @@ class ErrorBoundary extends Component {
             {this.props.showResetButton && (
               <button
                 onClick={this.resetErrorState}
-                className="rounded-lg border border-gray-300 px-6 py-2.5 font-medium text-gray-600 transition-all duration-200 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-800"
+                className="rounded-lg border border-gray-300 px-6 py-2.5 font-medium text-gray-600 dark:text-gray-300 transition-all duration-200 hover:bg-gray-100 dark:hover:bg-gray-700 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400 dark:hover:bg-gray-800"
                 aria-label="Reset error state"
               >
                 {this.props.resetLabel || 'Dismiss'}
@@ -294,7 +294,7 @@ class ErrorBoundary extends Component {
 
           {/* Support message */}
           {this.props.showSupportLink && (
-            <p className="mt-4 text-sm text-gray-500 dark:text-gray-500">
+            <p className="mt-4 text-sm text-gray-500 dark:text-gray-500 dark:text-gray-400">
               If the problem persists, please{' '}
               <a
                 href={this.props.supportLink || '#'}

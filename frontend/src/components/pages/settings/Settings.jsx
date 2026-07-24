@@ -207,7 +207,7 @@ const Settings = memo(() => {
   const themeIconClass = {
     light: 'text-yellow-500',
     dark: 'text-slate-300',
-    auto: 'text-slate-500',
+    auto: 'text-slate-500 dark:text-slate-400',
   };
 
   const renderGeneralSettings = () => (
@@ -225,7 +225,7 @@ const Settings = memo(() => {
               name='language'
               value={settings.language}
               onChange={handleChange}
-              className='w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100'
+              className='w-full rounded-lg border border-slate-300 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100'
             >
               <option>English</option>
               <option>Spanish</option>
@@ -241,7 +241,7 @@ const Settings = memo(() => {
               name='timezone'
               value={settings.timezone}
               onChange={handleChange}
-              className='w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100'
+              className='w-full rounded-lg border border-slate-300 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100'
             >
               <option>UTC-05:00 (Eastern Time)</option>
               <option>UTC-06:00 (Central Time)</option>
@@ -258,7 +258,7 @@ const Settings = memo(() => {
               name='dateFormat'
               value={settings.dateFormat}
               onChange={handleChange}
-              className='w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100'
+              className='w-full rounded-lg border border-slate-300 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100'
             >
               <option>MM/DD/YYYY</option>
               <option>DD/MM/YYYY</option>
@@ -279,7 +279,7 @@ const Settings = memo(() => {
         {notificationItems.map((item) => (
           <div
             key={item.name}
-            className='flex items-center justify-between rounded-lg border border-slate-200 p-4 hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800'
+            className='flex items-center justify-between rounded-lg border border-slate-200 p-4 hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 dark:border-slate-700 '
           >
             <div>
               <p className='font-medium text-slate-900 dark:text-slate-100'>
@@ -297,7 +297,7 @@ const Settings = memo(() => {
                 onChange={handleChange}
                 className='peer sr-only'
               />
-              <div className="peer h-6 w-11 rounded-full bg-slate-300 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:bg-slate-600"></div>
+              <div className="peer h-6 w-11 rounded-full bg-slate-300 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:bg-white dark:bg-slate-900 after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:bg-slate-600"></div>
             </label>
           </div>
         ))}
@@ -315,7 +315,7 @@ const Settings = memo(() => {
           {privacyOptions.map((option) => (
             <label
               key={option.value}
-              className='flex cursor-pointer items-center rounded-lg border border-slate-200 p-4 hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800'
+              className='flex cursor-pointer items-center rounded-lg border border-slate-200 p-4 hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 dark:border-slate-700 '
             >
               <input
                 type='radio'
@@ -343,7 +343,7 @@ const Settings = memo(() => {
           Contact Information
         </h4>
         <div className='space-y-4'>
-          <label className='flex items-center justify-between rounded-lg border border-slate-200 p-4 hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800'>
+          <label className='flex items-center justify-between rounded-lg border border-slate-200 p-4 hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 dark:border-slate-700 '>
             <div>
               <p className='font-medium text-slate-900 dark:text-slate-100'>
                 Show Email Address
@@ -360,7 +360,7 @@ const Settings = memo(() => {
               className='h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 dark:border-slate-600'
             />
           </label>
-          <label className='flex items-center justify-between rounded-lg border border-slate-200 p-4 hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800'>
+          <label className='flex items-center justify-between rounded-lg border border-slate-200 p-4 hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 dark:border-slate-700 '>
             <div>
               <p className='font-medium text-slate-900 dark:text-slate-100'>
                 Show Phone Number
@@ -430,7 +430,7 @@ const Settings = memo(() => {
             name='fontSize'
             value={settings.fontSize}
             onChange={handleChange}
-            className='w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100'
+            className='w-full rounded-lg border border-slate-300 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100'
           >
             <option value='small'>Small</option>
             <option value='medium'>Medium</option>
@@ -445,7 +445,7 @@ const Settings = memo(() => {
             name='density'
             value={settings.density}
             onChange={handleChange}
-            className='w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100'
+            className='w-full rounded-lg border border-slate-300 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100'
           >
             <option value='compact'>Compact</option>
             <option value='comfortable'>Comfortable</option>
@@ -507,14 +507,14 @@ const Settings = memo(() => {
   );
 
   return (
-    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+    <div className='space-y-6 animate-fade-in pt-0 pb-6'>
       <PageHeader
         title='Application Settings'
         subtitle='Customize your regional settings, notifications, privacy controls, and theme preferences'
         icon={Sliders}
       />
 
-      <div className='overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900'>
+      <div className='overflow-hidden rounded-xl border border-slate-200 bg-white dark:bg-slate-900 shadow-sm dark:border-slate-700 '>
         {/* Settings Tabs */}
         <div className='border-b border-slate-200 dark:border-slate-700'>
           <div className='flex overflow-x-auto'>
@@ -525,7 +525,7 @@ const Settings = memo(() => {
                 className={`flex items-center whitespace-nowrap border-b-2 px-6 py-4 text-sm font-medium transition duration-150 ${
                   activeTab === tab.id
                     ? 'border-blue-500 text-blue-600 dark:text-blue-300'
-                    : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700 dark:text-slate-400 dark:hover:border-slate-600 dark:hover:text-slate-200'
+                    : 'border-transparent text-slate-500 dark:text-slate-400 hover:border-slate-300 hover:text-slate-700  dark:hover:border-slate-600 dark:hover:text-slate-200'
                 }`}
               >
                 <i className={`fas ${tab.icon} mr-2`}></i>
@@ -545,18 +545,18 @@ const Settings = memo(() => {
         </div>
 
         {/* Action Buttons */}
-        <div className='border-t border-slate-200 bg-slate-50 px-6 py-4 dark:border-slate-700 dark:bg-slate-800'>
+        <div className='border-t border-slate-200 bg-slate-50 dark:bg-slate-800 px-6 py-4 dark:border-slate-700 '>
           <div className='flex justify-between'>
             <button
               onClick={handleReset}
-              className='rounded-lg border border-slate-300 px-4 py-2 text-slate-700 transition duration-150 hover:bg-slate-100 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700'
+              className='rounded-lg border border-slate-300 px-4 py-2 text-slate-700 dark:text-slate-200 transition duration-150 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800 dark:border-slate-600  '
             >
               Reset to Default
             </button>
             <div className='space-x-3'>
               <button
                 onClick={() => setActiveTab('general')}
-                className='rounded-lg border border-slate-300 px-4 py-2 text-slate-700 transition duration-150 hover:bg-slate-100 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700'
+                className='rounded-lg border border-slate-300 px-4 py-2 text-slate-700 dark:text-slate-200 transition duration-150 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800 dark:border-slate-600  '
               >
                 Cancel
               </button>

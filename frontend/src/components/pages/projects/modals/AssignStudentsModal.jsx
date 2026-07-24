@@ -131,7 +131,7 @@ const AssignStudentsModal = ({ isOpen, onClose, project, onSuccess }) => {
                   <div
                     className={`flex h-6 w-6 items-center justify-center rounded-full border ${
                       isSelected
-                        ? 'border-indigo-600 bg-indigo-600 text-white'
+                        ? 'border-indigo-600 bg-indigo-600 dark:bg-indigo-500 text-white'
                         : 'border-gray-300 dark:border-slate-600'
                     }`}
                   >

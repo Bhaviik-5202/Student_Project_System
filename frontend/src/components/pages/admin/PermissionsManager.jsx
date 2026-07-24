@@ -104,7 +104,7 @@ const PermissionsManager = memo(() => {
   }, [selectedRole]);
 
   return (
-    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+    <div className='space-y-6 animate-fade-in pt-0 pb-6'>
       <PageHeader
         title='Permissions Manager'
         subtitle='Configure role-based access control and system permissions'
@@ -122,17 +122,17 @@ const PermissionsManager = memo(() => {
         <div className='grid grid-cols-1 gap-6 lg:grid-cols-4'>
           {/* Roles List */}
           <div className='lg:col-span-1'>
-            <div className='rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800'>
+            <div className='rounded-lg border border-slate-200 bg-white dark:bg-slate-900 p-6 dark:border-slate-700 dark:bg-slate-800'>
               <h3 className='mb-4 text-lg font-semibold text-slate-900 dark:text-white'>
                 Roles
               </h3>
               <div className='space-y-3'>
                 {loading ? (
-                  <div className='py-4 text-center text-slate-500'>
+                  <div className='py-4 text-center text-slate-500 dark:text-slate-400'>
                     Loading roles...
                   </div>
                 ) : roles.length === 0 ? (
-                  <div className='py-4 text-center text-slate-500'>
+                  <div className='py-4 text-center text-slate-500 dark:text-slate-400'>
                     No roles defined.
                   </div>
                 ) : (
@@ -143,7 +143,7 @@ const PermissionsManager = memo(() => {
                       className={`w-full rounded-lg p-4 text-left transition-colors ${
                         selectedRole === role.name.toLowerCase()
                           ? 'border border-blue-200 bg-blue-50 dark:border-blue-700 dark:bg-blue-900/20'
-                          : 'border border-slate-200 hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-700'
+                          : 'border border-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 dark:border-slate-700 dark:hover:bg-slate-700'
                       }`}
                     >
                       <div className='font-medium text-slate-900 dark:text-white'>
@@ -164,7 +164,7 @@ const PermissionsManager = memo(() => {
 
           {/* Permissions Table */}
           <div className='lg:col-span-3'>
-            <div className='rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800'>
+            <div className='rounded-lg border border-slate-200 bg-white dark:bg-slate-900 p-6 dark:border-slate-700 dark:bg-slate-800'>
               <div className='mb-6'>
                 <h3 className='mb-2 text-lg font-semibold capitalize text-slate-900 dark:text-white'>
                   {selectedRole} Permissions
@@ -197,7 +197,7 @@ const PermissionsManager = memo(() => {
                       <tr>
                         <td
                           colSpan='3'
-                          className='px-6 py-4 text-center text-slate-500'
+                          className='px-6 py-4 text-center text-slate-500 dark:text-slate-400'
                         >
                           Loading permissions...
                         </td>
@@ -213,7 +213,7 @@ const PermissionsManager = memo(() => {
                       }).map(([key, description]) => (
                         <tr
                           key={key}
-                          className='hover:bg-slate-50 dark:hover:bg-slate-700'
+                          className='hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700'
                         >
                           <td className='whitespace-nowrap px-6 py-4'>
                             <div className='font-medium text-slate-900 dark:text-white'>
@@ -237,7 +237,7 @@ const PermissionsManager = memo(() => {
                               }`}
                             >
                               <span
-                                className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
+                                className={`inline-block h-4 w-4 transform rounded-full bg-white dark:bg-slate-900 transition ${
                                   permissions[key]
                                     ? 'translate-x-6'
                                     : 'translate-x-1'

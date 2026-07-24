@@ -34,7 +34,7 @@ const NotificationMenu = ({
             <Link
               to='/notifications'
               onClick={onClose}
-              className='text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'
+              className='text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700  dark:hover:text-gray-300'
             >
               View all
             </Link>
@@ -47,7 +47,7 @@ const NotificationMenu = ({
           notifications.slice(0, 5).map((notification) => (
             <div
               key={notification.id}
-              className={`cursor-pointer border-l-4 px-4 py-3 transition-colors hover:bg-gray-50 dark:hover:bg-gray-700/50 ${
+              className={`cursor-pointer border-l-4 px-4 py-3 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-800 dark:hover:bg-gray-700/50 ${
                 notification.read
                   ? 'border-transparent'
                   : 'border-blue-500 bg-blue-50/50 dark:bg-blue-900/10'
@@ -85,7 +85,7 @@ const NotificationMenu = ({
           <div className='px-4 py-8 text-center'>
             <HeaderIcon
               name='bell-slash'
-              className='mb-2 text-gray-300 dark:text-gray-600'
+              className='mb-2 text-gray-300 dark:text-gray-600 dark:text-gray-300'
               size='text-3xl'
             />
             <p className='text-sm text-gray-500 dark:text-gray-400'>

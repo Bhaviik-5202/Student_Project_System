@@ -51,7 +51,7 @@ export const SecondaryButton = ({
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white font-bold text-gray-700 shadow-sm transition-all hover:bg-gray-50 hover:border-gray-300 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-200 dark:hover:bg-slate-700 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none ${sizeClasses[size]} ${className}`}
+      className={`flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white font-bold text-gray-700 shadow-sm transition-all hover:bg-gray-50 hover:border-gray-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none ${sizeClasses[size]} ${className}`}
       {...props}
     >
       {Icon && <Icon size={size === 'sm' ? 14 : size === 'lg' ? 18 : 16} />}
@@ -131,13 +131,13 @@ export const IconButton = ({
   ...props
 }) => {
   const variantClasses = {
-    default: 'text-gray-400 hover:bg-gray-100 hover:text-indigo-600 dark:hover:bg-slate-700/60 dark:hover:text-indigo-400',
-    indigo: 'text-gray-400 hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-900/30 dark:hover:text-indigo-400',
-    purple: 'text-gray-400 hover:bg-purple-50 hover:text-purple-600 dark:hover:bg-purple-900/30 dark:hover:text-purple-400',
-    blue: 'text-gray-400 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-900/30 dark:hover:text-blue-400',
-    emerald: 'text-gray-400 hover:bg-emerald-50 hover:text-emerald-600 dark:hover:bg-emerald-900/30 dark:hover:text-emerald-400',
-    amber: 'text-gray-400 hover:bg-amber-50 hover:text-amber-600 dark:hover:bg-amber-900/30 dark:hover:text-amber-400',
-    danger: 'text-gray-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/30 dark:hover:text-red-400',
+    default: 'text-gray-400 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-slate-700 hover:text-indigo-600 dark:hover:text-indigo-400',
+    indigo: 'text-gray-400 dark:text-slate-400 hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-900/30 dark:hover:text-indigo-400',
+    purple: 'text-gray-400 dark:text-slate-400 hover:bg-purple-50 hover:text-purple-600 dark:hover:bg-purple-900/30 dark:hover:text-purple-400',
+    blue: 'text-gray-400 dark:text-slate-400 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-900/30 dark:hover:text-blue-400',
+    emerald: 'text-gray-400 dark:text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 dark:hover:bg-emerald-900/30 dark:hover:text-emerald-400',
+    amber: 'text-gray-400 dark:text-slate-400 hover:bg-amber-50 hover:text-amber-600 dark:hover:bg-amber-900/30 dark:hover:text-amber-400',
+    danger: 'text-gray-400 dark:text-slate-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/30 dark:hover:text-red-400',
   };
 
   const iconSizes = {

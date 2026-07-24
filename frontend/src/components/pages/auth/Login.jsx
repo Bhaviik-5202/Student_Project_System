@@ -301,7 +301,7 @@ const Login = memo(() => {
           <motion.div variants={itemVariants} className='group'>
             <label className='auth-label'>Email Address</label>
             <div className='relative'>
-              <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 transition-colors group-focus-within:text-indigo-600 dark:text-slate-500 dark:group-focus-within:text-indigo-400'>
+              <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 transition-colors group-focus-within:text-indigo-600 dark:text-slate-500 dark:text-slate-400 dark:group-focus-within:text-indigo-400'>
                 <Mail className='h-5 w-5' />
               </div>
               <input
@@ -327,7 +327,7 @@ const Login = memo(() => {
               </Link>
             </div>
             <div className='relative'>
-              <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 transition-colors group-focus-within:text-indigo-600 dark:text-slate-500 dark:group-focus-within:text-indigo-400'>
+              <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 transition-colors group-focus-within:text-indigo-600 dark:text-slate-500 dark:text-slate-400 dark:group-focus-within:text-indigo-400'>
                 <Lock className='h-5 w-5' />
               </div>
               <input
@@ -341,7 +341,7 @@ const Login = memo(() => {
               <button
                 type='button'
                 onClick={() => setShowPassword(!showPassword)}
-                className='dark:text-slate-505 dark:hover:text-slate-205 absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 transition-colors hover:text-slate-600'
+                className='dark:text-slate-505 dark:hover:text-slate-205 absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 transition-colors hover:text-slate-600 dark:text-slate-300'
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? (
@@ -361,7 +361,7 @@ const Login = memo(() => {
               type='checkbox'
               checked={rememberMe}
               onChange={(e) => setRememberMe(e.target.checked)}
-              className='h-4.5 w-4.5 border-slate-350 text-indigo-650 dark:focus:ring-indigo-550/30 rounded bg-white focus:ring-indigo-500/30 dark:border-slate-800 dark:bg-slate-900/60'
+              className='h-4.5 w-4.5 border-slate-350 text-indigo-650 dark:focus:ring-indigo-550/30 rounded bg-white dark:bg-slate-900 focus:ring-indigo-500/30 dark:border-slate-800 /60'
             />
             <label
               htmlFor='remember-me'

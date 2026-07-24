@@ -173,11 +173,11 @@ const ResourceUpload = memo(() => {
         : '/resources';
 
   return (
-    <div className='space-y-6 animate-fade-in p-4 md:p-6 max-w-5xl mx-auto'>
+    <div className='space-y-6 animate-fade-in pt-0 pb-6 max-w-5xl mx-auto'>
       <div className='flex items-center justify-between'>
         <button
           onClick={() => navigate(backDestination)}
-          className='inline-flex items-center gap-2 text-xs font-semibold text-slate-600 hover:text-indigo-600 dark:text-slate-300 dark:hover:text-indigo-400 transition-colors'
+          className='inline-flex items-center gap-2 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-indigo-600  dark:hover:text-indigo-400 transition-colors'
         >
           <ArrowLeft size={16} /> Back to Library
         </button>
@@ -192,7 +192,7 @@ const ResourceUpload = memo(() => {
       <form onSubmit={handleSubmit} className='grid grid-cols-1 gap-8 lg:grid-cols-3'>
         {/* Left 2 Columns - Main Form */}
         <div className='lg:col-span-2 space-y-6'>
-          <div className='rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700/80 dark:bg-slate-800 space-y-5'>
+          <div className='rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-sm dark:border-slate-700/80 dark:bg-slate-800 space-y-5'>
             <h3 className='text-sm font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2'>
               <FileText size={16} className='text-indigo-500' /> Basic Details
             </h3>
@@ -208,7 +208,7 @@ const ResourceUpload = memo(() => {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder='e.g., Senior Project SRS Formatting Standard Guidelines v2'
-                className='w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs font-medium text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:bg-white focus:outline-none dark:border-slate-700 dark:bg-slate-900/50 dark:text-white'
+                className='w-full rounded-xl border border-slate-200 bg-slate-50 dark:bg-slate-800 p-3 text-xs font-medium text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:border-indigo-500 focus:bg-white dark:bg-slate-900 focus:outline-none dark:border-slate-700 /50 dark:text-white'
               />
             </div>
 
@@ -221,7 +221,7 @@ const ResourceUpload = memo(() => {
                 <select
                   value={type}
                   onChange={(e) => setType(e.target.value)}
-                  className='w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs font-semibold text-slate-800 focus:border-indigo-500 focus:bg-white focus:outline-none dark:border-slate-700 dark:bg-slate-900/50 dark:text-white'
+                  className='w-full rounded-xl border border-slate-200 bg-slate-50 dark:bg-slate-800 p-3 text-xs font-semibold text-slate-800 dark:text-slate-100 focus:border-indigo-500 focus:bg-white dark:bg-slate-900 focus:outline-none dark:border-slate-700 /50 dark:text-white'
                 >
                   <option value='document'>Document (PDF, Word, Text)</option>
                   <option value='template'>Template (Docx, PPTX)</option>
@@ -236,7 +236,7 @@ const ResourceUpload = memo(() => {
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className='w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs font-semibold text-slate-800 focus:border-indigo-500 focus:bg-white focus:outline-none dark:border-slate-700 dark:bg-slate-900/50 dark:text-white'
+                  className='w-full rounded-xl border border-slate-200 bg-slate-50 dark:bg-slate-800 p-3 text-xs font-semibold text-slate-800 dark:text-slate-100 focus:border-indigo-500 focus:bg-white dark:bg-slate-900 focus:outline-none dark:border-slate-700 /50 dark:text-white'
                 >
                   <option value='Project Documentation'>Project Documentation</option>
                   <option value='Guidelines'>Guidelines & Policies</option>
@@ -258,7 +258,7 @@ const ResourceUpload = memo(() => {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder='Provide a concise overview of what this resource contains...'
-                className='w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs font-medium text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:bg-white focus:outline-none dark:border-slate-700 dark:bg-slate-900/50 dark:text-white'
+                className='w-full rounded-xl border border-slate-200 bg-slate-50 dark:bg-slate-800 p-3 text-xs font-medium text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:border-indigo-500 focus:bg-white dark:bg-slate-900 focus:outline-none dark:border-slate-700 /50 dark:text-white'
               />
             </div>
 
@@ -272,13 +272,13 @@ const ResourceUpload = memo(() => {
                 value={tagsInput}
                 onChange={(e) => setTagsInput(e.target.value)}
                 placeholder='e.g., IEEE, SRS, Format, Presentation, Final Report'
-                className='w-full rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs font-medium text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:bg-white focus:outline-none dark:border-slate-700 dark:bg-slate-900/50 dark:text-white'
+                className='w-full rounded-xl border border-slate-200 bg-slate-50 dark:bg-slate-800 p-3 text-xs font-medium text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:border-indigo-500 focus:bg-white dark:bg-slate-900 focus:outline-none dark:border-slate-700 /50 dark:text-white'
               />
             </div>
           </div>
 
           {/* File Upload Box */}
-          <div className='rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700/80 dark:bg-slate-800 space-y-4'>
+          <div className='rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-sm dark:border-slate-700/80 dark:bg-slate-800 space-y-4'>
             <h3 className='text-sm font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2'>
               <Upload size={16} className='text-indigo-500' /> Attachment File <span className='text-red-500'>*</span>
             </h3>
@@ -286,7 +286,7 @@ const ResourceUpload = memo(() => {
             <div
               onDrop={handleDrop}
               onDragOver={handleDragOver}
-              className='relative rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 p-8 text-center transition-colors hover:border-indigo-500 dark:border-slate-700 dark:bg-slate-900/40 dark:hover:border-indigo-400 cursor-pointer'
+              className='relative rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 dark:bg-slate-800 p-8 text-center transition-colors hover:border-indigo-500 dark:border-slate-700 dark:bg-slate-900/40 dark:hover:border-indigo-400 cursor-pointer'
             >
               <input
                 type='file'
@@ -345,7 +345,7 @@ const ResourceUpload = memo(() => {
 
         {/* Right Sidebar - Config & Guidelines */}
         <div className='space-y-6'>
-          <div className='rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700/80 dark:bg-slate-800 space-y-4'>
+          <div className='rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-sm dark:border-slate-700/80 dark:bg-slate-800 space-y-4'>
             <h3 className='text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5'>
               <Shield size={14} /> Settings & Visibility
             </h3>
@@ -357,7 +357,7 @@ const ResourceUpload = memo(() => {
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value)}
-                className='w-full rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-xs font-semibold text-slate-800 focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-900/50 dark:text-white'
+                className='w-full rounded-xl border border-slate-200 bg-slate-50 dark:bg-slate-800 p-2.5 text-xs font-semibold text-slate-800 dark:text-slate-100 focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-900/50 dark:text-white'
               >
                 <option value='active'>Active / Published</option>
                 <option value='draft'>Draft Mode</option>
@@ -372,7 +372,7 @@ const ResourceUpload = memo(() => {
               <select
                 value={visibility}
                 onChange={(e) => setVisibility(e.target.value)}
-                className='w-full rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-xs font-semibold text-slate-800 focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-900/50 dark:text-white'
+                className='w-full rounded-xl border border-slate-200 bg-slate-50 dark:bg-slate-800 p-2.5 text-xs font-semibold text-slate-800 dark:text-slate-100 focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-900/50 dark:text-white'
               >
                 <option value='public'>Public (All Students & Faculty)</option>
                 <option value='faculty_only'>Faculty Only</option>
@@ -398,7 +398,7 @@ const ResourceUpload = memo(() => {
           </div>
 
           {/* Guidelines */}
-          <div className='rounded-2xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-700/80 dark:bg-slate-800/60 text-xs space-y-3'>
+          <div className='rounded-2xl border border-slate-200 bg-slate-50 dark:bg-slate-800 p-5 dark:border-slate-700/80 /60 text-xs space-y-3'>
             <h4 className='font-bold text-slate-900 dark:text-white flex items-center gap-1.5'>
               <CheckCircle size={15} className='text-emerald-500' /> Upload Requirements
             </h4>

@@ -394,7 +394,7 @@ const Register = memo(() => {
             <button
               type='button'
               onClick={() => setShowPassword(!showPassword)}
-              className='dark:text-slate-505 dark:hover:text-slate-205 absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 transition-colors hover:text-slate-600'
+              className='dark:text-slate-505 dark:hover:text-slate-205 absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 transition-colors hover:text-slate-600 dark:text-slate-300'
               aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
               {showPassword ? (
@@ -423,7 +423,7 @@ const Register = memo(() => {
             <button
               type='button'
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className='dark:text-slate-505 dark:hover:text-slate-205 absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 transition-colors hover:text-slate-600'
+              className='dark:text-slate-505 dark:hover:text-slate-205 absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 transition-colors hover:text-slate-600 dark:text-slate-300'
               aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
             >
               {showConfirmPassword ? (
@@ -447,7 +447,7 @@ const Register = memo(() => {
             >
               <div className='space-y-2 pt-1'>
                 <div className='flex items-center justify-between'>
-                  <span className='text-[10px] font-extrabold uppercase tracking-wider text-slate-500'>
+                  <span className='text-[10px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400'>
                     Password Strength:{' '}
                     <span
                       className={
@@ -477,7 +477,7 @@ const Register = memo(() => {
                 </div>
 
                 {/* Checklist items in a single horizontal row */}
-                <div className='text-slate-450 flex flex-wrap gap-x-4 gap-y-1 pt-1 text-[11px] font-bold dark:text-slate-500'>
+                <div className='text-slate-450 flex flex-wrap gap-x-4 gap-y-1 pt-1 text-[11px] font-bold dark:text-slate-500 dark:text-slate-400'>
                   <span
                     className={`transition-colors ${passwordChecks.length ? 'text-emerald-600 dark:text-emerald-400' : ''}`}
                   >

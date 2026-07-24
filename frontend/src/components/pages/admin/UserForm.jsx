@@ -157,7 +157,7 @@ const UserForm = () => {
   };
 
   return (
-    <div className='animate-fade-in space-y-6 p-4 md:p-6 max-w-4xl mx-auto'>
+    <div className='animate-fade-in space-y-6 pt-0 pb-6 max-w-4xl mx-auto'>
       <PageHeader
         title={isEditMode ? 'Edit User Profile' : 'Add New User'}
         subtitle={
@@ -170,7 +170,7 @@ const UserForm = () => {
           <button
             type='button'
             onClick={() => navigate('/user-management')}
-            className='flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 shadow-sm hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 transition-all'
+            className='flex items-center gap-2 rounded-xl border border-slate-200 bg-white dark:bg-slate-900 px-4 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 shadow-sm hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 dark:border-slate-700   transition-all'
           >
             <ArrowLeft size={16} />
             <span>Back to User Management</span>
@@ -179,14 +179,14 @@ const UserForm = () => {
       />
 
       {loading ? (
-        <div className='flex flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white p-12 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
+        <div className='flex flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-12 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
           <Loader2 className='h-8 w-8 animate-spin text-indigo-600' />
           <p className='mt-3 text-sm font-medium text-slate-500 dark:text-slate-400'>
             Loading user profile details...
           </p>
         </div>
       ) : (
-        <div className='rounded-2xl border border-slate-200 bg-white p-6 md:p-8 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
+        <div className='rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-6 md:p-8 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
           <form onSubmit={handleSubmit} className='space-y-6'>
             {/* Primary Details */}
             <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
@@ -340,7 +340,7 @@ const UserForm = () => {
               <button
                 type='button'
                 onClick={() => navigate('/user-management')}
-                className='rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200 transition-colors'
+                className='rounded-xl border border-slate-200 bg-white dark:bg-slate-900 px-5 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 dark:border-slate-600 dark:bg-slate-700  transition-colors'
               >
                 Cancel
               </button>

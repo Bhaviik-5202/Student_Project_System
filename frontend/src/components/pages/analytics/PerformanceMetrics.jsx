@@ -9,16 +9,18 @@ import {
   RefreshCw,
   BarChart2,
 } from 'lucide-react';
-import PageHeader from '../../ui/PageHeader';
+import PageHeader from '../../common/PageHeader';
 import StatisticsCard from '../../ui/StatisticsCard';
 import Select from '../../ui/Select';
 import Button from '../../ui/Button';
 import LoadingSpinner from '../../ui/LoadingSpinner';
 import ErrorState from '../../ui/ErrorState';
 import analyticsService from '../../../services/analyticsService';
+import api from '../../../utils/api';
 
 export const PerformanceMetrics = () => {
   const [metrics, setMetrics] = useState({});
+  const [progressData, setProgressData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [timeRange, setTimeRange] = useState('month');
@@ -27,11 +29,19 @@ export const PerformanceMetrics = () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await analyticsService.getPerformanceMetrics();
-      if (res.success || res.data) {
-        setMetrics(res.data || {});
+      const [perfRes, progRes] = await Promise.all([
+        analyticsService.getPerformanceMetrics(),
+        api.get('/analytics/progress').catch(() => ({ data: { data: [] } }))
+      ]);
+
+      if (perfRes.success || perfRes.data) {
+        setMetrics(perfRes.data || {});
       } else {
-        setError(res.message || 'Failed to fetch performance metrics.');
+        setError(perfRes.message || 'Failed to fetch performance metrics.');
+      }
+
+      if (progRes.data?.success || progRes.data?.data) {
+        setProgressData(progRes.data?.data || []);
       }
     } catch (err) {
       setError('Error connecting to performance service.');
@@ -46,55 +56,46 @@ export const PerformanceMetrics = () => {
 
   const defaultKpis = [
     {
-      title: 'Project Completion Speed',
-      value: metrics.completionRate?.current ? `${metrics.completionRate.current}%` : '88%',
+      title: 'Project Completion Rate',
+      value: metrics.completionRate || '0%',
       target: '90% Target',
       icon: CheckCircle,
       color: 'emerald',
       trend: { direction: 'up', text: '+3.2% this month' },
     },
     {
-      title: 'On-Time Milestone Rate',
-      value: metrics.milestoneRate?.current ? `${metrics.milestoneRate.current}%` : '92%',
+      title: 'Student Submission Rate',
+      value: metrics.submissionRate || '0%',
       target: '85% Target',
       icon: Clock,
       color: 'indigo',
       trend: { direction: 'up', text: 'Above target' },
     },
     {
-      title: 'Faculty Mentorship Hours',
-      value: '340 Hrs',
-      target: '300 Hrs Goal',
-      icon: Users,
+      title: 'Total Projects',
+      value: metrics.totalProjects || 0,
+      target: 'Active & Completed',
+      icon: Target,
       color: 'blue',
-      trend: { direction: 'up', text: '14.2 hrs/student' },
+      trend: { direction: 'up', text: 'System load' },
     },
     {
-      title: 'Average Evaluation Score',
-      value: '84.5 / 100',
-      target: '80.0 Benchmark',
-      icon: Award,
+      title: 'Faculty Engagement',
+      value: metrics.totalFaculty || 0,
+      target: 'Active Mentors',
+      icon: Users,
       color: 'amber',
-      trend: { direction: 'up', text: '+2.1 pts' },
+      trend: { direction: 'up', text: 'Participation' },
     },
-  ];
-
-  const departmentPerformance = [
-    { department: 'Computer Science', activeProjects: 45, onTimeRate: '94%', avgGrade: 'A-', codeQuality: '92%' },
-    { department: 'Information Technology', activeProjects: 38, onTimeRate: '91%', avgGrade: 'B+', codeQuality: '88%' },
-    { department: 'Software Engineering', activeProjects: 30, onTimeRate: '96%', avgGrade: 'A', codeQuality: '95%' },
-    { department: 'Data Science', activeProjects: 24, onTimeRate: '89%', avgGrade: 'B+', codeQuality: '90%' },
-    { department: 'Cyber Security', activeProjects: 20, onTimeRate: '87%', avgGrade: 'B', codeQuality: '86%' },
   ];
 
   return (
     <div className="space-y-6 pb-12">
       <PageHeader
         title="Performance Metrics"
-        description="Quantitative key performance indicators (KPIs), milestone adherence, and evaluation scores."
+        subtitle="Quantitative key performance indicators (KPIs), milestone adherence, and evaluation scores."
         icon={TrendingUp}
-        badgeText="Academic Quality"
-        badgeVariant="success"
+        badge="Academic Quality"
         actions={
           <div className="flex items-center gap-2">
             <Select
@@ -145,50 +146,65 @@ export const PerformanceMetrics = () => {
             ))}
           </div>
 
-          {/* Department Performance Table */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+          {/* Project Progress Trackers Table */}
+          <div className="rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-xs dark:border-slate-800 ">
             <div className="mb-4 flex items-center justify-between">
               <div>
                 <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                  Departmental Performance Breakdown
+                  Active Project Progress Trackers
                 </h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Cross-departmental comparison of milestone timeliness, code quality, and average student grades.
+                  Real-time health check of ongoing student projects and completion timelines.
                 </p>
               </div>
             </div>
 
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm text-slate-600 dark:text-slate-400">
-                <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase text-slate-500 dark:border-slate-800 dark:bg-slate-800/50 dark:text-slate-400">
+                <thead className="border-b border-slate-200 bg-slate-50 dark:bg-slate-800 text-xs uppercase text-slate-500 dark:text-slate-400 dark:border-slate-800 /50 ">
                   <tr>
-                    <th className="px-6 py-3.5 font-semibold">Department</th>
-                    <th className="px-6 py-3.5 font-semibold">Active Projects</th>
-                    <th className="px-6 py-3.5 font-semibold">On-Time Milestone Rate</th>
-                    <th className="px-6 py-3.5 font-semibold">Code Quality Score</th>
-                    <th className="px-6 py-3.5 font-semibold">Average Grade</th>
+                    <th className="px-6 py-3.5 font-semibold">Project Title</th>
+                    <th className="px-6 py-3.5 font-semibold">Team Size</th>
+                    <th className="px-6 py-3.5 font-semibold">Completion %</th>
+                    <th className="px-6 py-3.5 font-semibold">Timeline Status</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                  {departmentPerformance.map((dept, idx) => (
-                    <tr key={idx} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
-                      <td className="px-6 py-4 font-bold text-slate-900 dark:text-white">
-                        {dept.department}
-                      </td>
-                      <td className="px-6 py-4 font-semibold text-slate-700 dark:text-slate-300">
-                        {dept.activeProjects}
-                      </td>
-                      <td className="px-6 py-4 font-bold text-emerald-600 dark:text-emerald-400">
-                        {dept.onTimeRate}
-                      </td>
-                      <td className="px-6 py-4 font-semibold text-indigo-600 dark:text-indigo-400">
-                        {dept.codeQuality}
-                      </td>
-                      <td className="px-6 py-4 font-bold text-amber-600 dark:text-amber-400">
-                        {dept.avgGrade}
+                  {progressData.length === 0 ? (
+                    <tr>
+                      <td colSpan="4" className="px-6 py-8 text-center text-slate-500 dark:text-slate-400">
+                        No active project data available.
                       </td>
                     </tr>
-                  ))}
+                  ) : (
+                    progressData.map((project, idx) => (
+                      <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800/50 /50">
+                        <td className="px-6 py-4 font-bold text-slate-900 dark:text-white">
+                          {project.title}
+                        </td>
+                        <td className="px-6 py-4 font-semibold text-slate-700 dark:text-slate-300">
+                          {project.teamSize} Member(s)
+                        </td>
+                        <td className="px-6 py-4 font-semibold text-indigo-600 dark:text-indigo-400">
+                          <div className="flex items-center gap-2">
+                            <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 max-w-[100px]">
+                              <div className="bg-indigo-600 h-2 rounded-full" style={{ width: `${project.progress}%` }}></div>
+                            </div>
+                            <span>{project.progress}%</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                           <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                              project.timeline === 'On Track' || project.timeline === 'Ahead' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400' :
+                              project.timeline === 'Behind Schedule' ? 'bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400' :
+                              'bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400'
+                           }`}>
+                             {project.timeline}
+                           </span>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>

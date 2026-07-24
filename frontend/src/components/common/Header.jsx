@@ -164,8 +164,6 @@ const Header = memo(
         if (user?.role === 'faculty') {
           // Faculty cannot create meetings
           if (action.path === '/meetings/new') return false;
-          // Faculty cannot add students (already handled by the if above, but good for clarity)
-          if (action.path === '/students/new') return false;
         }
         return true;
       });
@@ -183,7 +181,7 @@ const Header = memo(
       if (!isOpen) return null;
       return (
         <div
-          className={`dropdown-enter absolute right-0 top-full z-[9999] mt-2 w-72 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-gray-700 dark:bg-gray-800 sm:w-80 ${className}`}
+          className={`dropdown-enter absolute right-0 top-full z-[9999] mt-2 w-72 overflow-hidden rounded-2xl border border-gray-200 bg-white dark:bg-slate-900 shadow-2xl dark:border-gray-700 dark:bg-gray-800 sm:w-80 ${className}`}
         >
           {children}
         </div>
@@ -193,7 +191,7 @@ const Header = memo(
     return (
       <>
         <header
-          className={`sticky top-0 z-[100] h-16 w-full bg-white/95 backdrop-blur-md transition-all duration-300 dark:bg-gray-900/95 ${isScrolled ? 'shadow-lg dark:shadow-gray-800/50' : 'border-b border-gray-200/80 dark:border-gray-700/80'}`}
+          className={`sticky top-0 z-[100] h-16 w-full bg-white dark:bg-slate-900/95 backdrop-blur-md transition-all duration-300 dark:bg-gray-900/95 ${isScrolled ? 'shadow-lg dark:shadow-gray-800/50' : 'border-b border-gray-200/80 dark:border-gray-700/80'}`}
         >
           <div className='h-full w-full px-4 lg:px-6'>
             <div className='flex h-full items-center justify-between gap-4'>
@@ -201,7 +199,7 @@ const Header = memo(
               <div className='flex items-center gap-3'>
                 <button
                   onClick={onMobileMenuToggle}
-                  className='rounded-xl p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 lg:hidden'
+                  className='rounded-xl p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:bg-gray-800  dark:hover:bg-gray-800 lg:hidden'
                   aria-label='Toggle mobile menu'
                 >
                   <HeaderIcon
@@ -233,7 +231,7 @@ const Header = memo(
               <div className='flex items-center gap-1 sm:gap-2'>
                 <button
                   onClick={() => setShowSearch(true)}
-                  className='rounded-xl p-2.5 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 lg:hidden'
+                  className='rounded-xl p-2.5 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:bg-gray-800  dark:hover:bg-gray-800 lg:hidden'
                   aria-label='Search'
                 >
                   <HeaderIcon name='magnifying-glass' size='text-lg' />
@@ -245,7 +243,7 @@ const Header = memo(
                       closeAllDropdowns();
                       setShowQuickAdd(!showQuickAdd);
                     }}
-                    className={`rounded-xl p-2.5 transition-all ${showQuickAdd ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/40' : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'}`}
+                    className={`rounded-xl p-2.5 transition-all ${showQuickAdd ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/40' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:bg-gray-800  dark:hover:bg-gray-800'}`}
                     aria-label='Quick Actions'
                   >
                     <HeaderIcon name='plus' size='text-lg' />
@@ -264,7 +262,7 @@ const Header = memo(
                       closeAllDropdowns();
                       setShowCalendar(!showCalendar);
                     }}
-                    className={`rounded-xl p-2.5 transition-all ${showCalendar ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/40' : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'}`}
+                    className={`rounded-xl p-2.5 transition-all ${showCalendar ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/40' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:bg-gray-800  dark:hover:bg-gray-800'}`}
                     aria-label='Calendar'
                   >
                     <HeaderIcon name='calendar-days' size='text-lg' />
@@ -282,10 +280,10 @@ const Header = memo(
                     </div>
                   )}
                 </div>
-
+                  
                 <button
                   onClick={toggleTheme}
-                  className='hidden rounded-xl p-2.5 text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 sm:flex'
+                  className='flex rounded-xl p-2.5 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:bg-gray-800  dark:hover:bg-gray-800'
                   aria-label='Toggle theme'
                 >
                   <HeaderIcon
@@ -300,7 +298,7 @@ const Header = memo(
                       closeAllDropdowns();
                       setShowNotifications(!showNotifications);
                     }}
-                    className={`relative rounded-xl p-2.5 transition-all ${showNotifications ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/40' : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'}`}
+                    className={`relative rounded-xl p-2.5 transition-all ${showNotifications ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/40' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:bg-gray-800  dark:hover:bg-gray-800'}`}
                     aria-label='Notifications'
                   >
                     <HeaderIcon name='bell' size='text-lg' />
@@ -331,7 +329,7 @@ const Header = memo(
                       closeAllDropdowns();
                       setShowUserMenu(!showUserMenu);
                     }}
-                    className='flex items-center gap-3 rounded-xl p-1.5 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500/50 dark:hover:bg-gray-800'
+                    className='flex items-center gap-3 rounded-xl p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 dark:bg-gray-800 focus:ring-2 focus:ring-blue-500/50 dark:hover:bg-gray-800'
                   >
                     <div className='flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg sm:h-10 sm:w-10'>
                       <span className='text-sm font-bold text-white'>
@@ -368,7 +366,7 @@ const Header = memo(
               e.target === e.currentTarget && setShowSearch(false)
             }
           >
-            <div className='animate-dropdown w-full max-w-lg rounded-2xl border border-gray-100 bg-white p-4 shadow-2xl dark:border-gray-700 dark:bg-gray-800'>
+            <div className='animate-dropdown w-full max-w-lg rounded-2xl border border-gray-100 bg-white dark:bg-slate-900 p-4 shadow-2xl dark:border-gray-700 dark:bg-gray-800'>
               <div className='mb-4 flex items-center justify-between'>
                 <h3 className='flex items-center gap-2 font-semibold text-gray-900 dark:text-white'>
                   <HeaderIcon
@@ -380,7 +378,7 @@ const Header = memo(
                 </h3>
                 <button
                   onClick={() => setShowSearch(false)}
-                  className='rounded-xl p-2 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  className='rounded-xl p-2 hover:bg-gray-100 dark:hover:bg-gray-700 dark:bg-gray-800 '
                 >
                   <HeaderIcon name='xmark' size='text-lg' />
                 </button>

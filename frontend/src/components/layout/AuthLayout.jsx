@@ -213,7 +213,7 @@ const AuthLayout = ({ children }) => {
   ];
 
   return (
-    <div className='font-sans-custom relative flex min-h-screen overflow-hidden bg-slate-50 text-slate-900 transition-colors duration-350 dark:bg-slate-900 dark:text-slate-100 lg:flex-row'>
+    <div className='font-sans-custom relative flex min-h-screen overflow-hidden bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white transition-colors duration-350 dark:bg-slate-900 dark:text-slate-100 lg:flex-row'>
       {/* Import Pairing Fonts dynamically via style block */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
@@ -255,7 +255,7 @@ const AuthLayout = ({ children }) => {
       <div className='pointer-events-none absolute -right-20 -top-20 -z-10 h-80 w-80 rounded-full bg-cyan-500/5 blur-[90px]' />
 
       {/* Left Side - Showcase Panel (Hidden on mobile) */}
-      <div className='relative hidden w-1/2 flex-col justify-center overflow-hidden border-r border-slate-200 bg-transparent p-12 text-slate-900 dark:border-slate-900 dark:text-white lg:flex xl:p-20'>
+      <div className='relative hidden w-1/2 flex-col justify-center overflow-hidden border-r border-slate-200 bg-transparent p-12 text-slate-900 dark:text-white dark:border-slate-900  lg:flex xl:p-20'>
         <div className='z-10 mx-auto flex h-full w-full max-w-lg flex-col justify-center space-y-12'>
           <Link to='/' className='group inline-flex items-center space-x-3'>
             <div className='from-blue-650 flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-tr to-indigo-600 shadow-md shadow-blue-500/20 transition-all duration-300 group-hover:scale-105'>
@@ -285,13 +285,13 @@ const AuthLayout = ({ children }) => {
             {features.map((feature, index) => (
               <div
                 key={index}
-                className='dark:hover:border-indigo-550/20 group flex items-start space-x-4 rounded-2xl border border-slate-200 bg-white/60 p-5 shadow-sm transition-all duration-300 hover:border-indigo-500/20 hover:bg-white dark:border-slate-800/80 dark:bg-slate-900/15 dark:shadow-none dark:hover:bg-slate-900/40'
+                className='dark:hover:border-indigo-550/20 group flex items-start space-x-4 rounded-2xl border border-slate-200 bg-white dark:bg-slate-900/60 p-5 shadow-sm transition-all duration-300 hover:border-indigo-500/20 hover:bg-white dark:bg-slate-900 dark:border-slate-800/80 /15 dark:shadow-none dark:hover:bg-slate-900/40'
               >
                 <div className='flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-indigo-100 bg-indigo-50 text-indigo-600 transition-colors group-hover:border-indigo-500/40 dark:border-indigo-900/30 dark:bg-indigo-950/45 dark:text-indigo-400'>
                   {feature.icon}
                 </div>
                 <div>
-                  <h4 className='font-display text-sm font-bold text-slate-800 transition-colors group-hover:text-indigo-600 dark:text-slate-200 dark:group-hover:text-indigo-400'>
+                  <h4 className='font-display text-sm font-bold text-slate-800 dark:text-slate-100 transition-colors group-hover:text-indigo-600 dark:text-slate-200 dark:group-hover:text-indigo-400'>
                     {feature.title}
                   </h4>
                   <p className='mt-1.5 text-[11px] font-semibold leading-relaxed text-slate-500 dark:text-slate-400'>

@@ -19,7 +19,7 @@ import {
   Cell,
   Legend,
 } from 'recharts';
-import PageHeader from '../../ui/PageHeader';
+import PageHeader from '../../common/PageHeader';
 import StatisticsCard from '../../ui/StatisticsCard';
 import Select from '../../ui/Select';
 import Button from '../../ui/Button';
@@ -98,10 +98,9 @@ export const GradeDistribution = () => {
     <div className="space-y-6 pb-12">
       <PageHeader
         title="Grade Distribution Analytics"
-        description="Comprehensive grade spectrums, class averages, and GPA distributions across project courses."
+        subtitle="Comprehensive grade spectrums, class averages, and GPA distributions across project courses."
         icon={PieIcon}
-        badgeText="Evaluation Telemetry"
-        badgeVariant="info"
+        badge="Evaluation Telemetry"
         actions={
           <div className="flex items-center gap-2">
             <Select
@@ -174,7 +173,7 @@ export const GradeDistribution = () => {
           {/* Visual Charts Row */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {/* Overall Grade Distribution Pie Chart */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+            <div className="rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-xs dark:border-slate-800 ">
               <h3 className="text-base font-bold text-slate-900 dark:text-white">
                 System-wide Grade Proportion
               </h3>
@@ -213,7 +212,7 @@ export const GradeDistribution = () => {
             </div>
 
             {/* Course Grade Comparison Bar Chart */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+            <div className="rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-xs dark:border-slate-800 ">
               <h3 className="text-base font-bold text-slate-900 dark:text-white">
                 Course Grade Breakdown
               </h3>
@@ -245,13 +244,13 @@ export const GradeDistribution = () => {
           </div>
 
           {/* Detailed Course Table */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+          <div className="rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-xs dark:border-slate-800 ">
             <h3 className="text-base font-bold text-slate-900 dark:text-white">
               Course Grade Distribution Details
             </h3>
             <div className="mt-4 overflow-x-auto">
               <table className="w-full text-left text-sm text-slate-600 dark:text-slate-400">
-                <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase text-slate-500 dark:border-slate-800 dark:bg-slate-800/50 dark:text-slate-400">
+                <thead className="border-b border-slate-200 bg-slate-50 dark:bg-slate-800 text-xs uppercase text-slate-500 dark:text-slate-400 dark:border-slate-800 /50 ">
                   <tr>
                     <th className="px-6 py-3.5 font-semibold">Course Name</th>
                     <th className="px-6 py-3.5 font-semibold">Avg Grade</th>
@@ -263,7 +262,7 @@ export const GradeDistribution = () => {
                 </thead>
                 <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                   {courses.map((course) => (
-                    <tr key={course.id || course._id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
+                    <tr key={course.id || course._id} className="hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800/50 /50">
                       <td className="px-6 py-4 font-bold text-slate-900 dark:text-white">
                         {course.courseName || course.name}
                       </td>

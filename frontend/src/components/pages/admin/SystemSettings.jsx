@@ -10,7 +10,7 @@ import {
   RefreshCw,
   CheckCircle,
 } from 'lucide-react';
-import PageHeader from '../../ui/PageHeader';
+import PageHeader from '../../common/PageHeader';
 import SectionHeader from '../../ui/SectionHeader';
 import Select from '../../ui/Select';
 import Button from '../../ui/Button';
@@ -91,10 +91,9 @@ export const SystemSettings = () => {
     <div className="space-y-6 pb-12">
       <PageHeader
         title="System Configuration"
-        description="Global system parameters, academic policies, security thresholds, and automated backup rules."
+        subtitle="Global system parameters, academic policies, security thresholds, and automated backup rules."
         icon={SettingsIcon}
-        badgeText="Admin Controls"
-        badgeVariant="warning"
+        badge="Admin Controls"
         actions={
           <div className="flex items-center gap-2">
             <Button
@@ -122,7 +121,7 @@ export const SystemSettings = () => {
         {/* Left 2 Columns - Settings Groups */}
         <div className="space-y-6 lg:col-span-2">
           {/* General Platform Settings */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+          <div className="rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-xs dark:border-slate-800 ">
             <SectionHeader
               title="General Identity & Term"
               description="Basic platform naming and academic term identifiers."
@@ -163,7 +162,7 @@ export const SystemSettings = () => {
           </div>
 
           {/* Uploads & Media Constraints */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+          <div className="rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-xs dark:border-slate-800 ">
             <SectionHeader
               title="Storage & Attachment Rules"
               description="Configure upload size limits and allowed file extensions."
@@ -204,14 +203,14 @@ export const SystemSettings = () => {
           </div>
 
           {/* Toggles & Automation */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+          <div className="rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-xs dark:border-slate-800 ">
             <SectionHeader
               title="System Policies & Toggles"
               description="Control platform availability, automated emails, and guide assignments."
             />
 
             <div className="mt-4 space-y-3">
-              <div className="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-800/50">
+              <div className="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50 dark:bg-slate-800 p-4 dark:border-slate-800 /50">
                 <div>
                   <p className="font-semibold text-slate-900 dark:text-white">Maintenance Mode</p>
                   <p className="text-xs text-slate-500 dark:text-slate-400">Temporarily restrict access for scheduled maintenance.</p>
@@ -223,13 +222,13 @@ export const SystemSettings = () => {
                     }`}
                 >
                   <span
-                    className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-xs transition-transform ${settings.maintenanceMode ? 'translate-x-5' : 'translate-x-0.5'
+                    className={`inline-block h-5 w-5 transform rounded-full bg-white dark:bg-slate-900 shadow-xs transition-transform ${settings.maintenanceMode ? 'translate-x-5' : 'translate-x-0.5'
                       } my-0.5`}
                   />
                 </button>
               </div>
 
-              <div className="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-800/50">
+              <div className="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50 dark:bg-slate-800 p-4 dark:border-slate-800 /50">
                 <div>
                   <p className="font-semibold text-slate-900 dark:text-white">Email Notifications</p>
                   <p className="text-xs text-slate-500 dark:text-slate-400">Send automatic status updates & submission alerts.</p>
@@ -241,13 +240,13 @@ export const SystemSettings = () => {
                     }`}
                 >
                   <span
-                    className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-xs transition-transform ${settings.emailNotifications ? 'translate-x-5' : 'translate-x-0.5'
+                    className={`inline-block h-5 w-5 transform rounded-full bg-white dark:bg-slate-900 shadow-xs transition-transform ${settings.emailNotifications ? 'translate-x-5' : 'translate-x-0.5'
                       } my-0.5`}
                   />
                 </button>
               </div>
 
-              <div className="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-800/50">
+              <div className="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50 dark:bg-slate-800 p-4 dark:border-slate-800 /50">
                 <div>
                   <p className="font-semibold text-slate-900 dark:text-white">Auto-Assign Faculty Guides</p>
                   <p className="text-xs text-slate-500 dark:text-slate-400">Automatically assign guides based on topic tags.</p>
@@ -259,7 +258,7 @@ export const SystemSettings = () => {
                     }`}
                 >
                   <span
-                    className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-xs transition-transform ${settings.autoAssignGuides ? 'translate-x-5' : 'translate-x-0.5'
+                    className={`inline-block h-5 w-5 transform rounded-full bg-white dark:bg-slate-900 shadow-xs transition-transform ${settings.autoAssignGuides ? 'translate-x-5' : 'translate-x-0.5'
                       } my-0.5`}
                   />
                 </button>
@@ -270,7 +269,7 @@ export const SystemSettings = () => {
 
         {/* Right Sidebar - Backup Schedule & Info */}
         <div className="space-y-6">
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+          <div className="rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-xs dark:border-slate-800 ">
             <SectionHeader
               title="Automated Backups"
               description="Schedule database snapshots."
@@ -301,7 +300,7 @@ export const SystemSettings = () => {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+          <div className="rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-xs dark:border-slate-800 ">
             <SectionHeader
               title="System Status"
               description="Platform summary"

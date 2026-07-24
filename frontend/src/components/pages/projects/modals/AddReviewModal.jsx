@@ -77,12 +77,12 @@ const AddReviewModal = ({ isOpen, onClose, project, onSuccess }) => {
                 key={star}
                 type='button'
                 onClick={() => setRating(star)}
-                className='p-1 text-amber-400 transition-transform hover:scale-125 focus:outline-none'
+                className='p-1 text-amber-400 dark:text-amber-400 transition-transform hover:scale-125 focus:outline-none'
               >
                 <Star
                   size={26}
                   fill={star <= rating ? 'currentColor' : 'none'}
-                  className={star <= rating ? 'text-amber-400' : 'text-gray-300 dark:text-slate-600'}
+                  className={star <= rating ? 'text-amber-400 dark:text-amber-400' : 'text-gray-300 dark:text-slate-600'}
                 />
               </button>
             ))}

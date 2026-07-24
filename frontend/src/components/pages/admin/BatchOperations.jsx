@@ -80,7 +80,7 @@ const BatchOperations = memo(() => {
   );
 
   return (
-    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+    <div className='space-y-6 animate-fade-in pt-0 pb-6'>
       <PageHeader
         title='Batch Operations'
         subtitle='Perform bulk operations on multiple user accounts at once'
@@ -90,7 +90,7 @@ const BatchOperations = memo(() => {
         <div className='grid grid-cols-1 gap-6 lg:grid-cols-3'>
           {/* Operation Settings */}
           <div className='lg:col-span-2'>
-            <div className='mb-6 rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800'>
+            <div className='mb-6 rounded-lg border border-slate-200 bg-white dark:bg-slate-900 p-6 dark:border-slate-700 dark:bg-slate-800'>
               <h3 className='mb-4 text-lg font-semibold text-slate-900 dark:text-white'>
                 Operation Settings
               </h3>
@@ -116,7 +116,7 @@ const BatchOperations = memo(() => {
                       className={`rounded-lg border px-4 py-3 text-center transition-colors ${
                         operation === op.id
                           ? 'border-blue-500 bg-blue-50 text-blue-700 dark:border-blue-700 dark:bg-blue-900/20 dark:text-blue-300'
-                          : 'border-slate-300 hover:bg-slate-50 dark:border-slate-600 dark:hover:bg-slate-700'
+                          : 'border-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 dark:border-slate-600 dark:hover:bg-slate-700'
                       }`}
                     >
                       <div className='mb-2 text-xl'>{op.icon}</div>
@@ -140,7 +140,7 @@ const BatchOperations = memo(() => {
                       <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300'>
                         Format
                       </label>
-                      <select className='w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white dark:focus:ring-blue-600'>
+                      <select className='w-full rounded-lg border border-slate-300 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-700  dark:focus:ring-blue-600'>
                         <option>CSV</option>
                         <option>Excel</option>
                         <option>PDF</option>
@@ -174,7 +174,7 @@ const BatchOperations = memo(() => {
                 ) : (
                   <textarea
                     rows='6'
-                    className='w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white dark:focus:ring-blue-600'
+                    className='w-full rounded-lg border border-slate-300 bg-white dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-700  dark:focus:ring-blue-600'
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     placeholder={`Enter your ${
@@ -188,7 +188,7 @@ const BatchOperations = memo(() => {
 
           {/* User Selection */}
           <div>
-            <div className='rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800'>
+            <div className='rounded-lg border border-slate-200 bg-white dark:bg-slate-900 p-6 dark:border-slate-700 dark:bg-slate-800'>
               <div className='mb-4 flex items-center justify-between'>
                 <h3 className='text-lg font-semibold text-slate-900 dark:text-white'>
                   Select Users
@@ -205,11 +205,11 @@ const BatchOperations = memo(() => {
 
               <div className='max-h-96 space-y-3 overflow-y-auto'>
                 {usersLoading ? (
-                  <div className='py-4 text-center text-slate-500'>
+                  <div className='py-4 text-center text-slate-500 dark:text-slate-400'>
                     Loading users...
                   </div>
                 ) : users.length === 0 ? (
-                  <div className='py-4 text-center text-slate-500'>
+                  <div className='py-4 text-center text-slate-500 dark:text-slate-400'>
                     No users found.
                   </div>
                 ) : (

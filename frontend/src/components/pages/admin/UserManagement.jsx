@@ -73,7 +73,7 @@ const UserManagement = memo(() => {
   };
 
   return (
-    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+    <div className='space-y-6 animate-fade-in pt-0 pb-6'>
       <PageHeader
         title='User Management'
         subtitle='Manage system users, roles, and access permissions'
@@ -84,7 +84,7 @@ const UserManagement = memo(() => {
             <button
               onClick={fetchUsers}
               disabled={loading}
-              className='flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-xs font-bold text-gray-700 shadow-sm hover:bg-gray-50 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-200 transition-all disabled:opacity-50'
+              className='flex items-center gap-2 rounded-xl border border-gray-200 bg-white dark:bg-slate-900 px-3.5 py-2.5 text-xs font-bold text-gray-700 dark:text-gray-200 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-800 dark:border-slate-700 dark:bg-slate-800  transition-all disabled:opacity-50'
               title='Refresh list'
             >
               <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
@@ -101,7 +101,7 @@ const UserManagement = memo(() => {
         }
       />
 
-      <div className='admin-table-container rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
+      <div className='admin-table-container rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
         <table className='admin-table'>
           <thead>
             <tr>

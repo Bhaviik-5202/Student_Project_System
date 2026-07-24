@@ -84,7 +84,7 @@ function SpinnerSVG({ config }) {
         cx={half} cy={half} r={rOuter}
         stroke='currentColor'
         strokeWidth={strokeOuter}
-        className='text-slate-200 dark:text-slate-800'
+        className='text-slate-200 dark:text-slate-800 dark:text-slate-100'
         opacity={0.5}
       />
 
@@ -108,7 +108,7 @@ function SpinnerSVG({ config }) {
         cx={half} cy={half} r={rInner}
         stroke='currentColor'
         strokeWidth={strokeInner}
-        className='text-slate-200 dark:text-slate-800'
+        className='text-slate-200 dark:text-slate-800 dark:text-slate-100'
         opacity={0.35}
       />
 
@@ -192,12 +192,12 @@ const LoadingSpinner = ({
   if (fullPage) {
     return (
       <div
-        className='fixed inset-0 z-[9999] flex items-center justify-center bg-white/70 backdrop-blur-md dark:bg-slate-950/75'
+        className='fixed inset-0 z-[9999] flex items-center justify-center bg-white dark:bg-slate-900/70 backdrop-blur-md dark:bg-slate-950/75'
         role='dialog'
         aria-modal='true'
         aria-label='Loading'
       >
-        <div className='flex flex-col items-center gap-5 rounded-2xl border border-slate-200/60 bg-white/90 px-10 py-8 shadow-2xl shadow-slate-300/30 dark:border-slate-700/60 dark:bg-slate-900/90 dark:shadow-black/40'>
+        <div className='flex flex-col items-center gap-5 rounded-2xl border border-slate-200/60 bg-white dark:bg-slate-900/90 px-10 py-8 shadow-2xl shadow-slate-300/30 dark:border-slate-700/60  dark:shadow-black/40'>
           {spinner}
         </div>
       </div>

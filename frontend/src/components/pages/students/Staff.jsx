@@ -18,7 +18,7 @@ import staffService from '../../../services/staffService';
 import { toast } from 'react-hot-toast';
 
 const StaffRow = memo(({ staff, onEdit, onDelete }) => (
-  <tr className='group transition-colors hover:bg-gray-50 dark:hover:bg-slate-900/50'>
+  <tr className='group transition-colors hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-800 dark:hover:bg-slate-900/50'>
     {/* Faculty ID */}
     <td className='whitespace-nowrap px-6 py-4'>
       <span className='rounded-lg bg-purple-50 px-2.5 py-1 font-mono text-xs font-bold text-purple-700 dark:bg-purple-900/30 dark:text-purple-400 border border-purple-100 dark:border-purple-800'>
@@ -30,14 +30,14 @@ const StaffRow = memo(({ staff, onEdit, onDelete }) => (
     <td className='whitespace-nowrap px-6 py-4'>
       <div className='flex items-center gap-3'>
         {staff.avatar ? (
-          <img src={staff.avatar} alt={staff.name} className='h-9 w-9 rounded-xl object-cover border border-gray-200' />
+          <img src={staff.avatar} alt={staff.name} className='h-9 w-9 rounded-xl object-cover border border-gray-200 dark:border-gray-700' />
         ) : (
           <div className='flex h-9 w-9 items-center justify-center rounded-xl border border-purple-100 bg-purple-50 font-bold text-purple-600 dark:border-purple-800/30 dark:bg-purple-900/20 dark:text-purple-400'>
             {staff.name ? staff.name.charAt(0).toUpperCase() : 'F'}
           </div>
         )}
         <div>
-          <div className='text-sm font-bold text-gray-900 transition-colors group-hover:text-purple-600 dark:text-white'>
+          <div className='text-sm font-bold text-gray-900 dark:text-white transition-colors group-hover:text-purple-600 '>
             {staff.name}
           </div>
           <div className='text-xs text-gray-500 dark:text-slate-400'>
@@ -223,7 +223,7 @@ const Staff = memo(() => {
   }, [filteredStaff]);
 
   return (
-    <div className='animate-fade-in space-y-6 p-4 md:p-6'>
+    <div className='animate-fade-in space-y-6 pt-0 pb-6'>
       <PageHeader
         title='Staff Management'
         subtitle='Manage university faculty and administrative staff'
@@ -233,7 +233,7 @@ const Staff = memo(() => {
           <div className='flex items-center gap-3'>
             <button
               onClick={() => handleExport()}
-              className='rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-xs font-bold text-gray-700 shadow-sm transition hover:bg-gray-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200'
+              className='rounded-xl border border-gray-200 bg-white dark:bg-slate-900 px-4 py-2.5 text-xs font-bold text-gray-700 dark:text-gray-200 shadow-sm transition hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-800 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200'
             >
               Export Staff CSV
             </button>
@@ -259,7 +259,7 @@ const Staff = memo(() => {
             <div className='absolute left-12 top-1/2 z-10 h-5 w-[1px] -translate-y-1/2 bg-gray-200 dark:bg-slate-700' />
             <input
               type='text'
-              className='form-control border-gray-100 bg-gray-50/50 pl-16 text-sm transition-all focus:bg-white dark:border-slate-800 dark:bg-slate-900/50'
+              className='form-control border-gray-100 bg-gray-50 dark:bg-gray-800/50 pl-16 text-sm transition-all focus:bg-white dark:bg-slate-900 dark:border-slate-800 /50'
               placeholder='Search by name, ID or email...'
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -272,7 +272,7 @@ const Staff = memo(() => {
       <div className='table-container shadow-md'>
         <table className='table'>
           <thead>
-            <tr className='bg-gray-50/50 dark:bg-slate-900/50'>
+            <tr className='bg-gray-50 dark:bg-gray-800/50 dark:bg-slate-900/50'>
               <th className='w-32 px-6 py-4 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400'>
                 Faculty ID
               </th>

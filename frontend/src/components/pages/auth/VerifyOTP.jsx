@@ -166,7 +166,7 @@ const VerifyOTP = memo(() => {
               value={digit}
               onChange={(e) => handleChange(index, e.target.value)}
               onKeyDown={(e) => handleKeyDown(index, e)}
-              className='h-14 w-12 rounded-xl border border-slate-200 bg-slate-50 text-center text-xl font-bold transition-all focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-900 dark:text-white'
+              className='h-14 w-12 rounded-xl border border-slate-200 bg-slate-50 dark:bg-slate-800 text-center text-xl font-bold transition-all focus:border-blue-500 focus:bg-white dark:bg-slate-900 focus:outline-none focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700  dark:text-white'
             />
           ))}
         </div>
@@ -215,7 +215,7 @@ const VerifyOTP = memo(() => {
         <div className='pt-2 text-center'>
           <Link
             to='/register'
-            className='inline-flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200'
+            className='inline-flex items-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100 dark:text-slate-400 dark:hover:text-slate-200'
           >
             <ArrowLeft className='h-4 w-4' />
             <span>Back to Sign Up</span>

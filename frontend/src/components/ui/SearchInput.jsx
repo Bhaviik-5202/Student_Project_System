@@ -29,7 +29,7 @@ const SearchInput = ({
                         if (onClear) onClear();
                         else onChange('');
                     }}
-                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 dark:text-slate-300 dark:hover:text-slate-200"
                 >
                     <X className="h-4 w-4" />
                 </button>

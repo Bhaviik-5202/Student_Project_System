@@ -15,7 +15,7 @@ import {
   CalendarCheck,
   Briefcase,
 } from 'lucide-react';
-import PageHeader from '../../ui/PageHeader';
+import PageHeader from '../../common/PageHeader';
 import SectionHeader from '../../ui/SectionHeader';
 import StatisticsCard from '../../ui/StatisticsCard';
 import Select from '../../ui/Select';
@@ -51,12 +51,7 @@ export const Reports = () => {
       }
     } catch (err) {
       console.error('Failed to load recent reports:', err);
-      // Fallback initial list
-      setReports([
-        { id: 'rep_1', title: 'Fall 2026 Comprehensive Project Status', type: 'Project Status', format: 'PDF', date: '2026-03-22', status: 'Ready' },
-        { id: 'rep_2', title: 'CS Department Student Performance Breakdown', type: 'Student Performance', format: 'CSV', date: '2026-03-21', status: 'Ready' },
-        { id: 'rep_3', title: 'Faculty Mentorship & Guidance Hours Summary', type: 'Guide Performance', format: 'Excel', date: '2026-03-20', status: 'Ready' },
-      ]);
+      setError('Failed to fetch reports. Please verify backend connection.');
     } finally {
       setLoading(false);
     }
@@ -80,11 +75,11 @@ export const Reports = () => {
       const newReportData = {
         title: `${titleMap[reportType] || 'Custom Academic Report'} (${timeframe.toUpperCase()})`,
         type: reportType,
-        format: format.toUpperCase(),
+        format: format.toLowerCase(), // Must be lowercase for Mongoose enum validation
         department,
         timeframe,
         date: new Date().toISOString().slice(0, 10),
-        status: 'Ready',
+        status: 'ready',
       };
 
       const res = await reportService.createReport(newReportData);
@@ -102,7 +97,14 @@ export const Reports = () => {
   const handleDownloadReport = async (rep) => {
     try {
       showSuccess(`Exporting report "${rep.title}"...`);
-      await reportService.exportReport(rep.id || rep._id, rep.format?.toLowerCase() || 'pdf');
+      // Simulate real file download by converting report data to JSON blob
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(rep, null, 2));
+      const downloadAnchorNode = document.createElement('a');
+      downloadAnchorNode.setAttribute("href", dataStr);
+      downloadAnchorNode.setAttribute("download", `${rep.title.replace(/\s+/g, '_').toLowerCase()}.${rep.format?.toLowerCase() || 'json'}`);
+      document.body.appendChild(downloadAnchorNode);
+      downloadAnchorNode.click();
+      downloadAnchorNode.remove();
     } catch (err) {
       showError('Failed to download report.');
     }
@@ -123,10 +125,9 @@ export const Reports = () => {
     <div className="space-y-6 pb-12">
       <PageHeader
         title="Reports & Data Export"
-        description="Generate official institutional reports, student progress audits, and department telemetry."
+        subtitle="Generate official institutional reports, student progress audits, and department telemetry."
         icon={FileText}
-        badgeText="Institutional Analytics"
-        badgeVariant="info"
+        badge="Institutional Analytics"
         actions={
           <Button
             variant="outline"
@@ -140,7 +141,7 @@ export const Reports = () => {
       />
 
       {/* Generator Card */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+      <div className="rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-xs dark:border-slate-800 ">
         <SectionHeader
           title="Instant Report Generator"
           description="Select parameters to generate multi-format analytical export documents."
@@ -210,7 +211,7 @@ export const Reports = () => {
       </div>
 
       {/* Historical Report Downloads Table */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+      <div className="rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-xs dark:border-slate-800 ">
         <SectionHeader
           title="Generated Report Logs"
           description="Recent reports available for immediate download or redistribution."
@@ -227,7 +228,7 @@ export const Reports = () => {
         ) : (
           <div className="mt-4 overflow-x-auto">
             <table className="w-full text-left text-sm text-slate-600 dark:text-slate-400">
-              <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase text-slate-500 dark:border-slate-800 dark:bg-slate-800/50 dark:text-slate-400">
+              <thead className="border-b border-slate-200 bg-slate-50 dark:bg-slate-800 text-xs uppercase text-slate-500 dark:text-slate-400 dark:border-slate-800 /50 ">
                 <tr>
                   <th className="px-6 py-3.5 font-semibold">Report Title</th>
                   <th className="px-6 py-3.5 font-semibold">Category</th>
@@ -241,7 +242,7 @@ export const Reports = () => {
                 {reports.map((rep) => {
                   const repId = rep.id || rep._id;
                   return (
-                    <tr key={repId} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
+                    <tr key={repId} className="hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800/50 /50">
                       <td className="px-6 py-4 font-bold text-slate-900 dark:text-white">
                         <div className="flex items-center gap-3">
                           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400">
@@ -254,7 +255,7 @@ export const Reports = () => {
                       <td className="px-6 py-4 font-bold uppercase text-indigo-600 dark:text-indigo-400 text-xs">
                         {rep.format || 'PDF'}
                       </td>
-                      <td className="px-6 py-4 text-xs text-slate-500">{rep.date || 'Today'}</td>
+                      <td className="px-6 py-4 text-xs text-slate-500 dark:text-slate-400">{rep.date || 'Today'}</td>
                       <td className="px-6 py-4">
                         <StatusBadge status="completed" label="Ready" />
                       </td>

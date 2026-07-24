@@ -65,7 +65,7 @@ const StatisticsCard = ({
                 {change && (
                     <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${changeType === 'positive' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400' :
                             changeType === 'negative' ? 'bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400' :
-                                'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'
+                                'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200  dark:text-slate-300'
                         }`}>
                         {change}
                     </span>

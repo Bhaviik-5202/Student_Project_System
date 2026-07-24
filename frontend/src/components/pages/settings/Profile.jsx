@@ -188,11 +188,11 @@ const Profile = memo(() => {
   };
 
   const inputBase =
-    'w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150';
+    'w-full rounded-xl px-3.5 py-2.5 text-sm outline-none transition-all duration-200';
   const inputEnabled =
-    'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100';
+    'border border-slate-200/80 bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-white focus:border-indigo-500 focus:bg-white dark:bg-slate-900 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-800 dark:bg-slate-950/50  dark:focus:border-indigo-500/40 dark:focus:bg-slate-950';
   const inputDisabled =
-    'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400';
+    'border border-slate-200/60 bg-slate-100 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 dark:border-slate-800/60 dark:bg-slate-800/40  cursor-not-allowed';
 
   if (!user) {
     return (
@@ -203,7 +203,7 @@ const Profile = memo(() => {
   }
 
   return (
-    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+    <div className='space-y-6 animate-fade-in pt-0 pb-6'>
       <PageHeader
         title='Profile Settings'
         subtitle='Manage your account information, security credentials, and preferences'
@@ -224,11 +224,11 @@ const Profile = memo(() => {
       <div className='grid grid-cols-1 gap-8 lg:grid-cols-3'>
         {/* Profile Card */}
         <div className='lg:col-span-1'>
-          <div className='overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900'>
+          <div className='overflow-hidden rounded-xl border border-slate-200 bg-white dark:bg-slate-900 shadow-sm dark:border-slate-800 '>
             <div className='h-24 bg-gradient-to-r from-blue-500 to-indigo-600'></div>
             <div className='px-6 pb-6'>
               <div className='relative -mt-12 mb-4'>
-                <div className='h-24 w-24 overflow-hidden rounded-xl border-4 border-white bg-slate-100 shadow-md dark:border-slate-900 dark:bg-slate-800'>
+                <div className='h-24 w-24 overflow-hidden rounded-xl border-4 border-white bg-slate-100 dark:bg-slate-800 shadow-md dark:border-slate-900 '>
                   {formData.avatar ? (
                     <img
                       src={formData.avatar}
@@ -242,7 +242,7 @@ const Profile = memo(() => {
                   )}
                 </div>
                 {isEditing && (
-                  <label className='absolute bottom-0 right-[-10px] cursor-pointer rounded-lg border border-slate-200 bg-white p-2 shadow-md transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700'>
+                  <label className='absolute bottom-0 right-[-10px] cursor-pointer rounded-lg border border-slate-200 bg-white dark:bg-slate-900 p-2 shadow-md transition-colors hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 dark:border-slate-700  dark:hover:bg-slate-700'>
                     <Camera className='h-4 w-4 text-slate-600 dark:text-slate-400' />
                     <input
                       type='file'
@@ -273,7 +273,7 @@ const Profile = memo(() => {
             </h3>
             <button
               onClick={() => navigate('/dashboard')}
-              className='flex w-full items-center rounded-lg px-4 py-2 text-slate-700 transition-colors hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800'
+              className='flex w-full items-center rounded-lg px-4 py-2 text-slate-700 dark:text-slate-200 transition-colors hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-800'
             >
               Back to Dashboard
             </button>
@@ -288,7 +288,7 @@ const Profile = memo(() => {
 
         {/* Edit Form */}
         <div className='space-y-8 lg:col-span-2'>
-          <div className='rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900'>
+          <div className='rounded-xl border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-sm dark:border-slate-800 '>
             <h3 className='mb-6 text-lg font-bold text-slate-900 dark:text-white'>
               Personal Information
             </h3>
@@ -384,7 +384,7 @@ const Profile = memo(() => {
                     type='button'
                     onClick={handleCancel}
                     disabled={isLoading}
-                    className='rounded-lg border border-slate-300 px-4 py-2 text-slate-700 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800'
+                    className='rounded-lg border border-slate-300 px-4 py-2 text-slate-700 dark:text-slate-200 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 '
                   >
                     Cancel
                   </button>
@@ -405,7 +405,7 @@ const Profile = memo(() => {
             </form>
           </div>
 
-          <div className='rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900'>
+          <div className='rounded-xl border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-sm dark:border-slate-800 '>
             <h3 className='mb-6 text-lg font-bold text-slate-900 dark:text-white'>
               Security
             </h3>
@@ -459,7 +459,7 @@ const Profile = memo(() => {
                 <button
                   type='submit'
                   disabled={securityLoading}
-                  className='inline-flex items-center rounded-lg bg-slate-900 px-4 py-2 text-white transition-colors hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200'
+                  className='inline-flex items-center rounded-lg bg-slate-900 px-4 py-2 text-white transition-colors hover:bg-slate-800 dark:bg-slate-100 dark:bg-slate-800 dark:text-slate-900 dark:text-white dark:hover:bg-slate-200 dark:hover:bg-slate-600 dark:bg-slate-700'
                 >
                   {securityLoading ? (
                     <Loader2 className='mr-2 h-4 w-4 animate-spin' />

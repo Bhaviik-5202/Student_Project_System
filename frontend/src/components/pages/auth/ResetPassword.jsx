@@ -76,7 +76,7 @@ function RequirementRow({ met, label }) {
       {met ? (
         <CheckCircle2 className='h-4 w-4 shrink-0 text-emerald-500' />
       ) : (
-        <XCircle className='h-4 w-4 shrink-0 text-slate-300 dark:text-slate-700' />
+        <XCircle className='h-4 w-4 shrink-0 text-slate-300 dark:text-slate-700 dark:text-slate-200' />
       )}
       <span
         className={
@@ -245,7 +245,7 @@ const ResetPassword = memo(() => {
         </Link>
         <Link
           to='/login'
-          className='inline-flex items-center gap-1.5 text-sm font-bold text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
+          className='inline-flex items-center gap-1.5 text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-slate-700  dark:hover:text-slate-200'
         >
           <ArrowLeft className='h-4 w-4' />
           Back to Sign In
@@ -314,7 +314,7 @@ const ResetPassword = memo(() => {
               onChange={(e) => setPassword(e.target.value)}
               onFocus={() => setShowRequirements(true)}
               autoComplete='new-password'
-              className='w-full rounded-xl border border-slate-200 bg-slate-50 py-3.5 pl-11 pr-12 text-sm transition-all focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:focus:border-blue-500/30'
+              className='w-full rounded-xl border border-slate-200 bg-slate-50 dark:bg-slate-800 py-3.5 pl-11 pr-12 text-sm transition-all focus:border-blue-500 focus:bg-white dark:bg-slate-900 focus:outline-none focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700  dark:text-white dark:focus:border-blue-500/30'
               placeholder='••••••••'
             />
             <button
@@ -322,7 +322,7 @@ const ResetPassword = memo(() => {
               id='toggle-new-password'
               onClick={() => setShowPassword((v) => !v)}
               tabIndex={-1}
-              className='absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 transition-colors hover:text-slate-600 dark:hover:text-slate-300'
+              className='absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 transition-colors hover:text-slate-600 dark:text-slate-300 dark:hover:text-slate-300'
               aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
               {showPassword ? (
@@ -374,7 +374,7 @@ const ResetPassword = memo(() => {
                   ? passwordsMatch
                     ? 'border-emerald-400 bg-emerald-50/50 focus:border-emerald-500 focus:ring-emerald-500/10 dark:border-emerald-700 dark:bg-emerald-900/10'
                     : 'border-red-400 bg-red-50/50 focus:border-red-500 focus:ring-red-500/10 dark:border-red-700 dark:bg-red-900/10'
-                  : 'border-slate-200 bg-slate-50 focus:border-blue-500 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-900'
+                  : 'border-slate-200 bg-slate-50 dark:bg-slate-800 focus:border-blue-500 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-900'
               } dark:text-white`}
               placeholder='••••••••'
             />
@@ -383,7 +383,7 @@ const ResetPassword = memo(() => {
               id='toggle-confirm-password'
               onClick={() => setShowConfirm((v) => !v)}
               tabIndex={-1}
-              className='absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 transition-colors hover:text-slate-600 dark:hover:text-slate-300'
+              className='absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 transition-colors hover:text-slate-600 dark:text-slate-300 dark:hover:text-slate-300'
               aria-label={showConfirm ? 'Hide password' : 'Show password'}
             >
               {showConfirm ? (
@@ -411,8 +411,8 @@ const ResetPassword = memo(() => {
 
         {/* Requirements panel */}
         {showRequirements && (
-          <div className='space-y-2 rounded-xl border border-slate-100 bg-slate-50/50 p-4 transition-all duration-300 dark:border-slate-800 dark:bg-slate-900/30'>
-            <p className='mb-2 text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500'>
+          <div className='space-y-2 rounded-xl border border-slate-100 bg-slate-50 dark:bg-slate-800/50 p-4 transition-all duration-300 dark:border-slate-800 dark:bg-slate-900/30'>
+            <p className='mb-2 text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 dark:text-slate-400'>
               Password Requirements
             </p>
             <div className='grid grid-cols-1 gap-2 text-xs font-medium sm:grid-cols-2'>
@@ -460,7 +460,7 @@ const ResetPassword = memo(() => {
         <div className='pt-1 text-center'>
           <Link
             to='/login'
-            className='inline-flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200'
+            className='inline-flex items-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100 dark:text-slate-400 dark:hover:text-slate-200'
           >
             <ArrowLeft className='h-4 w-4' />
             Back to Sign In

@@ -307,6 +307,7 @@ exports.update = async (id, data) => {
 
     return response(false, user, 'User updated successfully');
   } catch (err) {
+    logger.error('Update user error', { err: err.message, stack: err.stack });
     return response(true, null, err.message || 'Failed to update user');
   }
 };

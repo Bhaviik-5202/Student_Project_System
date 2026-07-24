@@ -24,7 +24,7 @@ import {
   Cell,
   Legend,
 } from 'recharts';
-import PageHeader from '../../ui/PageHeader';
+import PageHeader from '../../common/PageHeader';
 import StatisticsCard from '../../ui/StatisticsCard';
 import Select from '../../ui/Select';
 import Button from '../../ui/Button';
@@ -73,37 +73,58 @@ export const AnalyticsDashboard = () => {
 
   // Chart Data Processing
   const statusPieData = useMemo(() => {
-    const defaultData = [
-      { name: 'Completed', value: stats.completedProjects || 42 },
-      { name: 'In Progress', value: stats.activeProjects || 68 },
-      { name: 'Under Review', value: stats.underReviewProjects || 18 },
-      { name: 'Proposed', value: stats.proposedProjects || 12 },
+    if (stats.activityData && stats.activityData.length > 0) {
+      return stats.activityData.map(item => ({
+        name: item.label,
+        value: item.count
+      }));
+    }
+    return [
+      { name: 'Completed', value: stats.completedProjects || 0 },
+      { name: 'In Progress', value: stats.activeProjects || 0 },
+      { name: 'Under Review', value: stats.pendingApprovals || 0 },
+      { name: 'Proposed', value: 0 },
     ];
-    return defaultData;
   }, [stats]);
 
   const departmentBarData = useMemo(() => {
-    return [
-      { dept: 'Computer Science', total: 45, completed: 32 },
-      { dept: 'Information Tech', total: 38, completed: 28 },
-      { dept: 'Software Eng', total: 30, completed: 22 },
-      { dept: 'Data Science', total: 24, completed: 18 },
-      { dept: 'Cyber Security', total: 20, completed: 15 },
-    ];
-  }, []);
+    if (stats.performanceData && stats.performanceData.length > 0) {
+      return stats.performanceData.map(item => ({
+        dept: item.month, // Reuse the X-Axis for months to show timeline
+        total: item.submissions,
+        completed: item.completions
+      }));
+    }
+    return [];
+  }, [stats]);
 
   const handleExport = () => {
-    showSuccess('Exporting analytics dashboard summary to CSV...');
+    if (!stats) {
+      setError('No data to export.');
+      return;
+    }
+    try {
+      showSuccess('Exporting analytics dashboard summary to JSON...');
+      // Simple JSON export for the dashboard data
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(stats, null, 2));
+      const downloadAnchorNode = document.createElement('a');
+      downloadAnchorNode.setAttribute("href", dataStr);
+      downloadAnchorNode.setAttribute("download", "analytics_dashboard_export.json");
+      document.body.appendChild(downloadAnchorNode);
+      downloadAnchorNode.click();
+      downloadAnchorNode.remove();
+    } catch (e) {
+      setError('Failed to export data');
+    }
   };
 
   return (
     <div className="space-y-6 pb-12">
       <PageHeader
         title="Analytics Dashboard"
-        description="Real-time academic performance intelligence, project completion velocity, and department trends."
+        subtitle="Real-time academic performance intelligence, project completion velocity, and department trends."
         icon={BarChart2}
-        badgeText="Real-time Telemetry"
-        badgeVariant="info"
+        badge="Real-time Telemetry"
         actions={
           <div className="flex items-center gap-2">
             <Select
@@ -150,7 +171,7 @@ export const AnalyticsDashboard = () => {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <StatisticsCard
               title="Total Students"
-              value={stats.totalStudents || stats.studentsCount || 142}
+              value={stats.totalStudents || 0}
               icon={GraduationCap}
               color="indigo"
               trend={{ direction: 'up', text: '+12% this term' }}
@@ -158,7 +179,7 @@ export const AnalyticsDashboard = () => {
             />
             <StatisticsCard
               title="Active Projects"
-              value={stats.activeProjects || stats.projectsCount || 68}
+              value={stats.activeProjects || 0}
               icon={FolderKanban}
               color="blue"
               trend={{ direction: 'up', text: 'On track' }}
@@ -166,7 +187,7 @@ export const AnalyticsDashboard = () => {
             />
             <StatisticsCard
               title="Completion Rate"
-              value={`${stats.completionRate || 88}%`}
+              value={`${stats.completionRate || 0}%`}
               icon={TrendingUp}
               color="emerald"
               trend={{ direction: 'up', text: '+4.2% vs last year' }}
@@ -174,7 +195,7 @@ export const AnalyticsDashboard = () => {
             />
             <StatisticsCard
               title="Faculty Guides"
-              value={stats.facultyCount || stats.totalFaculty || 24}
+              value={stats.activeFaculty || 0}
               icon={Users}
               color="amber"
               description="Active project mentors"
@@ -184,7 +205,7 @@ export const AnalyticsDashboard = () => {
           {/* Charts Row 1: Status Distribution & Department Performance */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {/* Pie Chart */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+            <div className="rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-xs dark:border-slate-800 ">
               <h3 className="text-base font-bold text-slate-900 dark:text-white">
                 Project Status Distribution
               </h3>
@@ -222,13 +243,13 @@ export const AnalyticsDashboard = () => {
               </div>
             </div>
 
-            {/* Department Comparison Bar Chart */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+            {/* Submission vs Completion Timeline Chart */}
+            <div className="rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-xs dark:border-slate-800 ">
               <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                Department Performance Comparison
+                Project Success Timeline (Last 6 Months)
               </h3>
               <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-                Total assigned vs successfully completed projects by department.
+                Historical comparison of project submissions and successful completions.
               </p>
 
               <div className="mt-4 h-72 w-full">
@@ -245,8 +266,8 @@ export const AnalyticsDashboard = () => {
                         color: '#ffffff',
                       }}
                     />
-                    <Bar dataKey="total" name="Total Projects" fill="#6366f1" radius={[6, 6, 0, 0]} />
-                    <Bar dataKey="completed" name="Completed" fill="#10b981" radius={[6, 6, 0, 0]} />
+                    <Bar dataKey="total" name="Submissions" fill="#6366f1" radius={[6, 6, 0, 0]} />
+                    <Bar dataKey="completed" name="Completions" fill="#10b981" radius={[6, 6, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -259,4 +280,3 @@ export const AnalyticsDashboard = () => {
 };
 
 export default AnalyticsDashboard;
-  

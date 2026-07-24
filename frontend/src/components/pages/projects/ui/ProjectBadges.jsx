@@ -8,7 +8,7 @@ export const Badge = ({ children, variant = 'indigo', className = '' }) => {
     amber: 'bg-amber-50 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 border-amber-100 dark:border-amber-800/40',
     purple: 'bg-purple-50 text-purple-700 dark:bg-purple-900/40 dark:text-purple-400 border-purple-100 dark:border-purple-800/40',
     red: 'bg-red-50 text-red-700 dark:bg-red-900/40 dark:text-red-400 border-red-100 dark:border-red-800/40',
-    gray: 'bg-gray-100 text-gray-700 dark:bg-slate-700 dark:text-gray-300 border-gray-200 dark:border-slate-600',
+    gray: 'bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-slate-700',
   };
 
   return (

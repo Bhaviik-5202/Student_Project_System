@@ -264,14 +264,6 @@ const AppRoutes = () => {
           }
         />
         <Route
-          path='students/new'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
-              <StudentForm />
-            </ProtectedRoute>
-          }
-        />
-        <Route
           path='students/:id/edit'
           element={
             <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>

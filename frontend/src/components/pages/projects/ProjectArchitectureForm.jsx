@@ -104,7 +104,7 @@ const ProjectArchitectureForm = memo(() => {
   }
 
   return (
-    <div className='space-y-6 p-4 md:p-6 animate-fade-in'>
+    <div className='space-y-6 pt-0 pb-6 animate-fade-in'>
       <PageHeader
         title={isEditing ? 'Edit Architecture' : 'New Architecture'}
         subtitle='Define the blueprint for project classification'

@@ -184,7 +184,7 @@ const ProjectProposal = () => {
   }
 
   return (
-    <div className='space-y-6 p-4 md:p-6 animate-fade-in'>
+    <div className='space-y-6 pt-0 pb-6 animate-fade-in'>
       {/* Page Header */}
       <PageHeader
         title={isEditing ? 'Edit Project Specification' : 'Submit Project Proposal'}

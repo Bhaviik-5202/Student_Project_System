@@ -43,7 +43,7 @@ const MainLayout = () => {
   );
 
   return (
-    <div className='flex min-h-screen flex-col bg-gray-50 font-sans transition-colors duration-200 dark:bg-slate-900'>
+    <div className='flex min-h-screen flex-col bg-gray-50 dark:bg-gray-800 font-sans transition-colors duration-200 dark:bg-slate-900'>
       <Header
         isScrolled={isScrolled}
         onMobileMenuToggle={handleMobileMenuToggle}
@@ -57,11 +57,11 @@ const MainLayout = () => {
         onCloseMobileMenu={handleCloseMobileMenu}
       />
 
-      <div className='mt-30 flex flex-1'>
+      <div className='mt-18 flex flex-1'>
         <div className='relative flex w-full min-w-0 flex-1 flex-col'>
           <main
             id='main-content'
-            className='relative z-10 flex-1 px-4 py-4 pb-6 md:px-6'
+            className='relative z-10 flex-1 px-4 pb-6 md:px-6'
           >
             <ErrorBoundary>
               <Suspense

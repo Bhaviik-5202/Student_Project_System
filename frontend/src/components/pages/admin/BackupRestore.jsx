@@ -11,7 +11,7 @@ import {
   CheckCircle,
   Clock,
 } from 'lucide-react';
-import PageHeader from '../../ui/PageHeader';
+import PageHeader from '../../common/PageHeader';
 import SectionHeader from '../../ui/SectionHeader';
 import StatisticsCard from '../../ui/StatisticsCard';
 import Select from '../../ui/Select';
@@ -115,10 +115,9 @@ export const BackupRestore = () => {
     <div className="space-y-6 pb-12">
       <PageHeader
         title="Backup & System Recovery"
-        description="Trigger database snapshots, automated disaster recovery, and point-in-time system restoration."
+        subtitle="Trigger database snapshots, automated disaster recovery, and point-in-time system restoration."
         icon={Database}
-        badgeText="Disaster Recovery"
-        badgeVariant="warning"
+        badge="Disaster Recovery"
         actions={
           <Button
             variant="outline"
@@ -157,7 +156,7 @@ export const BackupRestore = () => {
       </div>
 
       {/* Create Backup Action Box */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+      <div className="rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-xs dark:border-slate-800 ">
         <SectionHeader
           title="Manual Snapshot Trigger"
           description="Create a manual backup before performing major administrative updates."
@@ -189,7 +188,7 @@ export const BackupRestore = () => {
       </div>
 
       {/* Historical Backups Table */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+      <div className="rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-xs dark:border-slate-800 ">
         <SectionHeader
           title="System Backup History"
           description="List of available snapshots ready for download or system restore."
@@ -214,7 +213,7 @@ export const BackupRestore = () => {
         ) : (
           <div className="mt-4 overflow-x-auto">
             <table className="w-full text-left text-sm text-slate-600 dark:text-slate-400">
-              <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase text-slate-500 dark:border-slate-800 dark:bg-slate-800/50 dark:text-slate-400">
+              <thead className="border-b border-slate-200 bg-slate-50 dark:bg-slate-800 text-xs uppercase text-slate-500 dark:text-slate-400 dark:border-slate-800 /50 ">
                 <tr>
                   <th className="px-6 py-3.5 font-semibold">Snapshot Name</th>
                   <th className="px-6 py-3.5 font-semibold">Type</th>
@@ -230,7 +229,7 @@ export const BackupRestore = () => {
                   const isRestoring = restoringId === bId;
 
                   return (
-                    <tr key={bId} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
+                    <tr key={bId} className="hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800/50 /50">
                       <td className="px-6 py-4 font-bold text-slate-900 dark:text-white">
                         <div className="flex items-center gap-3">
                           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400">
@@ -245,7 +244,7 @@ export const BackupRestore = () => {
                       <td className="px-6 py-4 font-semibold text-slate-700 dark:text-slate-300">
                         {b.size || '12.4MB'}
                       </td>
-                      <td className="px-6 py-4 text-xs text-slate-500">{b.date || 'Today'}</td>
+                      <td className="px-6 py-4 text-xs text-slate-500 dark:text-slate-400">{b.date || 'Today'}</td>
                       <td className="px-6 py-4">
                         <StatusBadge status="completed" label="Completed" />
                       </td>
@@ -282,4 +281,3 @@ export const BackupRestore = () => {
 };
 
 export default BackupRestore;
-  

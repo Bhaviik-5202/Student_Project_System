@@ -183,10 +183,10 @@ const TimelineEditor = memo(() => {
   );
 
   const inputClass =
-    'w-full px-4 py-3 bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-700 rounded-2xl text-sm font-bold text-slate-900 dark:text-white placeholder:text-slate-300 dark:placeholder:text-slate-600 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all';
+    'w-full px-4 py-3 bg-white dark:bg-slate-900 border border-gray-100 dark:border-slate-700 rounded-2xl text-sm font-bold text-slate-900 dark:text-white placeholder:text-slate-300 dark:placeholder:text-slate-600 dark:text-slate-300 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all';
 
   return (
-    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+    <div className='space-y-6 animate-fade-in pt-0 pb-6'>
       <PageHeader
         title='Timeline Editor'
         subtitle='Configure milestones, deadlines, and project phase trajectories'
@@ -195,7 +195,7 @@ const TimelineEditor = memo(() => {
           <div className='flex items-center gap-3'>
             <button
               onClick={() => handleNavigate('/timeline')}
-              className='flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-xs font-bold text-gray-700 shadow-sm hover:bg-gray-50 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-200 transition-all'
+              className='flex items-center gap-2 rounded-xl border border-gray-200 bg-white dark:bg-slate-900 px-4 py-2.5 text-xs font-bold text-gray-700 dark:text-gray-200 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-800 dark:border-slate-700 dark:bg-slate-800  transition-all'
             >
               <ArrowLeft size={16} />
               Overview
@@ -203,7 +203,7 @@ const TimelineEditor = memo(() => {
             <select
               value={selectedProjectId}
               onChange={handleProjectChange}
-              className='rounded-xl border border-gray-200 bg-white px-3 py-2 text-xs font-bold text-indigo-600 shadow-sm transition-all focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-indigo-400'
+              className='rounded-xl border border-gray-200 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-bold text-indigo-600 shadow-sm transition-all focus:border-indigo-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-indigo-400'
             >
               <option value='' disabled>
                 Select Project
@@ -212,7 +212,7 @@ const TimelineEditor = memo(() => {
                 <option
                   key={p._id || p.id}
                   value={p._id || p.id}
-                  className='bg-white text-xs text-gray-900 dark:bg-slate-800 dark:text-white'
+                  className='bg-white dark:bg-slate-900 text-xs text-gray-900 dark:text-white dark:bg-slate-800 '
                 >
                   {p.title}
                 </option>
@@ -231,7 +231,7 @@ const TimelineEditor = memo(() => {
       />
 
       {fetching ? (
-        <div className='rounded-xl border border-gray-200 bg-white p-20 text-center shadow-sm dark:border-slate-700 dark:bg-slate-800'>
+        <div className='rounded-xl border border-gray-200 bg-white dark:bg-slate-900 p-20 text-center shadow-sm dark:border-slate-700 dark:bg-slate-800'>
           <div className='mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-b-2 border-indigo-600'></div>
           <p className='text-sm italic text-gray-400'>
             Accessing timeline archives...
@@ -241,8 +241,8 @@ const TimelineEditor = memo(() => {
         <div className='grid grid-cols-1 gap-6 lg:grid-cols-3'>
           {/* Configuration Panel */}
           <div className='space-y-6 lg:col-span-1'>
-            <div className='rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
-              <h3 className='mb-6 border-b border-gray-50 pb-2 text-sm font-bold tracking-widest text-gray-900 dark:border-slate-700 dark:text-white'>
+            <div className='rounded-xl border border-gray-200 bg-white dark:bg-slate-900 p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
+              <h3 className='mb-6 border-b border-gray-50 pb-2 text-sm font-bold tracking-widest text-gray-900 dark:text-white dark:border-slate-700 '>
                 New Milestone
               </h3>
               <div className='space-y-4'>
@@ -254,7 +254,7 @@ const TimelineEditor = memo(() => {
                     type='text'
                     name='title'
                     placeholder='e.g. Beta Launch'
-                    className='w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm font-medium outline-none transition-all placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-800 dark:bg-slate-900'
+                    className='w-full rounded-lg border border-gray-200 bg-gray-50 dark:bg-gray-800 px-3 py-2 text-sm font-medium outline-none transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-800 dark:bg-slate-900'
                     value={newMilestone.title}
                     onChange={handleNewMilestoneChange}
                   />
@@ -266,7 +266,7 @@ const TimelineEditor = memo(() => {
                   <input
                     type='date'
                     name='dueDate'
-                    className='w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm font-medium outline-none transition-all focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-800 dark:bg-slate-900'
+                    className='w-full rounded-lg border border-gray-200 bg-gray-50 dark:bg-gray-800 px-3 py-2 text-sm font-medium outline-none transition-all focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-800 dark:bg-slate-900'
                     value={newMilestone.dueDate}
                     onChange={handleNewMilestoneChange}
                   />
@@ -279,7 +279,7 @@ const TimelineEditor = memo(() => {
                     name='description'
                     rows='3'
                     placeholder='What must be achieved?'
-                    className='w-full resize-none rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm font-medium outline-none transition-all placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-800 dark:bg-slate-900'
+                    className='w-full resize-none rounded-lg border border-gray-200 bg-gray-50 dark:bg-gray-800 px-3 py-2 text-sm font-medium outline-none transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-800 dark:bg-slate-900'
                     value={newMilestone.description}
                     onChange={handleNewMilestoneChange}
                   ></textarea>
@@ -306,7 +306,7 @@ const TimelineEditor = memo(() => {
 
           {/* Trajectory Manifest */}
           <div className='space-y-6 lg:col-span-2'>
-            <div className='min-h-[500px] rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
+            <div className='min-h-[500px] rounded-xl border border-gray-200 bg-white dark:bg-slate-900 p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
               <div className='mb-6 flex items-center justify-between'>
                 <h3 className='text-sm font-bold tracking-widest text-gray-900 dark:text-white'>
                   Phase Manifest ({timeline.milestones.length})
@@ -330,7 +330,7 @@ const TimelineEditor = memo(() => {
                   {timeline.milestones.map((m, i) => (
                     <div
                       key={m._id || m.id}
-                      className='rounded-xl border border-gray-100 bg-gray-50/50 p-6 transition-all hover:border-indigo-500/30 dark:border-slate-700/50 dark:bg-slate-900/40'
+                      className='rounded-xl border border-gray-100 bg-gray-50 dark:bg-gray-800/50 p-6 transition-all hover:border-indigo-500/30 dark:border-slate-700/50 dark:bg-slate-900/40'
                     >
                       <div className='flex items-start justify-between gap-4'>
                         <div className='flex flex-1 items-center gap-4'>
@@ -366,7 +366,7 @@ const TimelineEditor = memo(() => {
                               </span>
                             </div>
                             {m.description && (
-                              <p className='mt-3 border-l-2 border-gray-100 pl-4 text-xs italic leading-relaxed text-gray-500 dark:border-slate-800'>
+                              <p className='mt-3 border-l-2 border-gray-100 pl-4 text-xs italic leading-relaxed text-gray-500 dark:text-gray-400 dark:border-slate-800'>
                                 {m.description}
                               </p>
                             )}

@@ -87,7 +87,7 @@ const MeetingCalendar = memo(() => {
   };
 
   return (
-    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+    <div className='space-y-6 animate-fade-in pt-0 pb-6'>
       <PageHeader
         title='Meeting Calendar'
         subtitle='Track and schedule project review sessions'
@@ -138,7 +138,7 @@ const MeetingCalendar = memo(() => {
           {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
             <div
               key={day}
-              className='bg-gray-50 p-4 text-center dark:bg-slate-900/50'
+              className='bg-gray-50 dark:bg-gray-800 p-4 text-center dark:bg-slate-900/50'
             >
               <span className='text-[10px] font-bold uppercase tracking-widest text-gray-400'>
                 {day}
@@ -158,7 +158,7 @@ const MeetingCalendar = memo(() => {
               >
                 <div className='mb-2 flex items-start justify-between'>
                   <span
-                    className={`text-sm font-bold ${isToday ? 'text-indigo-600' : 'text-gray-500'}`}
+                    className={`text-sm font-bold ${isToday ? 'text-indigo-600' : 'text-gray-500 dark:text-gray-400'}`}
                   >
                     {item.day}
                   </span>

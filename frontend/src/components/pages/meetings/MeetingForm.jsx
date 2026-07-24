@@ -249,7 +249,7 @@ const MeetingForm = memo(() => {
   const todayStr = new Date().toISOString().split('T')[0];
 
   return (
-    <div className='animate-fade-in space-y-6 p-4 md:p-6 max-w-4xl mx-auto'>
+    <div className='animate-fade-in space-y-6 pt-0 pb-6 max-w-4xl mx-auto'>
       <PageHeader
         variant='small'
         title={isViewing ? 'Meeting Details' : isEditing ? 'Edit Meeting' : 'Schedule Meeting'}
@@ -259,7 +259,7 @@ const MeetingForm = memo(() => {
           <button
             type='button'
             onClick={handleClose}
-            className='flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 shadow-sm hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 transition-all'
+            className='flex items-center gap-2 rounded-xl border border-slate-200 bg-white dark:bg-slate-900 px-4 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 shadow-sm hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 dark:border-slate-700   transition-all'
           >
             <ArrowLeft size={16} />
             <span>Back</span>
@@ -268,14 +268,14 @@ const MeetingForm = memo(() => {
       />
 
       {initialLoading ? (
-        <div className='flex flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white p-12 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
+        <div className='flex flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-12 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
           <Loader2 className='h-8 w-8 animate-spin text-indigo-600' />
           <p className='mt-3 text-sm font-medium text-slate-500 dark:text-slate-400'>
             Loading meeting form & resources...
           </p>
         </div>
       ) : (
-        <div className='rounded-2xl border border-slate-200 bg-white p-6 md:p-8 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
+        <div className='rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-6 md:p-8 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
           <form onSubmit={handleSubmit} className='space-y-6'>
             {/* Title & Type */}
             <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
@@ -436,7 +436,7 @@ const MeetingForm = memo(() => {
                 <label className='mb-2 block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300'>
                   Select Student Participants ({formData.participants.length} selected)
                 </label>
-                <div className='max-h-48 overflow-y-auto rounded-lg border border-slate-200 dark:border-slate-700 p-3 bg-slate-50/50 dark:bg-slate-900/50 space-y-2'>
+                <div className='max-h-48 overflow-y-auto rounded-lg border border-slate-200 dark:border-slate-700 p-3 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900/50 space-y-2'>
                   {students.map((student) => {
                     const isSelected = formData.participants.includes(student.id);
                     return (
@@ -446,7 +446,7 @@ const MeetingForm = memo(() => {
                         className={`flex items-center justify-between p-2.5 rounded-lg border cursor-pointer transition-all ${
                           isSelected
                             ? 'border-indigo-500 bg-indigo-50/80 dark:bg-indigo-900/30 text-indigo-900 dark:text-indigo-200'
-                            : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/50'
+                            : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700  /50'
                         }`}
                       >
                         <div className='flex items-center gap-2.5'>
@@ -472,7 +472,7 @@ const MeetingForm = memo(() => {
                 <button
                   type='button'
                   onClick={handleClose}
-                  className='rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-200 transition-colors'
+                  className='rounded-xl border border-slate-200 bg-white dark:bg-slate-900 px-5 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 dark:border-slate-600 dark:bg-slate-700  transition-colors'
                 >
                   Cancel
                 </button>

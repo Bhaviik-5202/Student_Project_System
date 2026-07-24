@@ -133,7 +133,7 @@ const UserGuide = memo(() => {
   }, []);
 
   return (
-    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+    <div className='space-y-6 animate-fade-in pt-0 pb-6'>
       <PageHeader
         title='System User Guide'
         subtitle='Complete user manual and technical documentation for the Student Project Management System'
@@ -143,13 +143,13 @@ const UserGuide = memo(() => {
         <div className='grid grid-cols-1 gap-6 lg:grid-cols-4'>
           {/* Chapters Navigation */}
           <div className='lg:col-span-1'>
-            <div className='rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800'>
+            <div className='rounded-lg border border-slate-200 bg-white dark:bg-slate-900 p-6 dark:border-slate-700 dark:bg-slate-800'>
               <h3 className='mb-4 text-lg font-semibold text-slate-900 dark:text-white'>
                 Chapters
               </h3>
               <div className='space-y-2'>
                 {loading ? (
-                  <div className='text-sm text-slate-500'>
+                  <div className='text-sm text-slate-500 dark:text-slate-400'>
                     Loading chapters...
                   </div>
                 ) : (
@@ -160,7 +160,7 @@ const UserGuide = memo(() => {
                       className={`w-full rounded-lg p-3 text-left transition-colors ${
                         activeChapter === (chapter.id || idx + 1)
                           ? 'border border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-800 dark:bg-blue-900/30 dark:text-blue-300'
-                          : 'text-slate-700 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-700'
+                          : 'text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
                       }`}
                     >
                       <div className='font-medium'>{chapter.title}</div>
@@ -173,7 +173,7 @@ const UserGuide = memo(() => {
 
           {/* Chapter Content */}
           <div className='lg:col-span-3'>
-            <div className='rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800'>
+            <div className='rounded-lg border border-slate-200 bg-white dark:bg-slate-900 p-6 dark:border-slate-700 dark:bg-slate-800'>
               {chapters.find(
                 (ch, idx) => (ch.id || idx + 1) === activeChapter
               ) && (
@@ -217,7 +217,7 @@ const UserGuide = memo(() => {
                         onClick={() =>
                           handleChapterChange(Math.max(1, activeChapter - 1))
                         }
-                        className='rounded-lg border border-slate-300 px-4 py-2 text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700'
+                        className='rounded-lg border border-slate-300 px-4 py-2 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700'
                         disabled={activeChapter === 1}
                       >
                         ← Previous Chapter

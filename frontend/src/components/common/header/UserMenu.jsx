@@ -43,12 +43,12 @@ const UserMenu = ({ user, initials, onLogout, onClose }) => {
             key={item.path}
             to={item.path}
             onClick={onClose}
-            className='group flex items-center px-4 py-2.5 text-sm text-gray-700 transition-colors hover:bg-gray-50 hover:text-blue-600 dark:text-gray-300 dark:hover:bg-gray-700/50 dark:hover:text-blue-400'
+            className='group flex items-center px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-800 hover:text-blue-600 dark:text-gray-300 dark:hover:bg-gray-700/50 dark:hover:text-blue-400'
           >
-            <div className='mr-3 flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 transition-colors group-hover:bg-blue-100 dark:bg-gray-700 dark:group-hover:bg-blue-900/40'>
+            <div className='mr-3 flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800 transition-colors group-hover:bg-blue-100 dark:bg-gray-700 dark:group-hover:bg-blue-900/40'>
               <HeaderIcon
                 name={item.icon}
-                className='text-gray-500 group-hover:text-blue-600 dark:text-gray-400 dark:group-hover:text-blue-400'
+                className='text-gray-500 dark:text-gray-400 group-hover:text-blue-600  dark:group-hover:text-blue-400'
                 size='text-sm'
               />
             </div>
@@ -60,12 +60,12 @@ const UserMenu = ({ user, initials, onLogout, onClose }) => {
           <Link
             to='/admin-dashboard'
             onClick={onClose}
-            className='group flex items-center px-4 py-2.5 text-sm text-gray-700 transition-colors hover:bg-gray-50 hover:text-blue-600 dark:text-gray-300 dark:hover:bg-gray-700/50 dark:hover:text-blue-400'
+            className='group flex items-center px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-800 hover:text-blue-600 dark:text-gray-300 dark:hover:bg-gray-700/50 dark:hover:text-blue-400'
           >
-            <div className='mr-3 flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 transition-colors group-hover:bg-blue-100 dark:bg-gray-700 dark:group-hover:bg-blue-900/40'>
+            <div className='mr-3 flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800 transition-colors group-hover:bg-blue-100 dark:bg-gray-700 dark:group-hover:bg-blue-900/40'>
               <HeaderIcon
                 name='shield-halved'
-                className='text-gray-500 group-hover:text-blue-600 dark:text-gray-400 dark:group-hover:text-blue-400'
+                className='text-gray-500 dark:text-gray-400 group-hover:text-blue-600  dark:group-hover:text-blue-400'
                 size='text-sm'
               />
             </div>

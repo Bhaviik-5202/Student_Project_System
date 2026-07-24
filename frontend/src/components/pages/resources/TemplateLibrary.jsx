@@ -16,7 +16,7 @@ import {
   Sparkles,
   RefreshCw,
 } from 'lucide-react';
-import PageHeader from '../../ui/PageHeader';
+import PageHeader from '../../common/PageHeader';
 import StatisticsCard from '../../ui/StatisticsCard';
 import SearchInput from '../../ui/SearchInput';
 import Select from '../../ui/Select';
@@ -133,7 +133,7 @@ export const TemplateLibrary = () => {
       formData.append('category', uploadCategory);
       formData.append('type', 'template');
       formData.append('description', uploadDescription);
-      if (uploadFile) formData.append('file', uploadFile);
+      if (uploadFile) formData.append('files', uploadFile);
 
       const res = await resourceService.upload(formData);
       if (res.success) {
@@ -157,10 +157,9 @@ export const TemplateLibrary = () => {
     <div className="space-y-6 pb-12">
       <PageHeader
         title="Project Template Library"
-        description="Standardized project report skeletons, slide decks, IEEE documents, and code boilerplates."
+        subtitle="Standardized project report skeletons, slide decks, IEEE documents, and code boilerplates."
         icon={Layout}
-        badgeText="Standard Skeletons"
-        badgeVariant="info"
+        badge={`${templates.length} Templates`}
         actions={
           <div className="flex items-center gap-2">
             <Button
@@ -207,7 +206,7 @@ export const TemplateLibrary = () => {
         />
       </div>
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-4 shadow-sm dark:border-slate-800 ">
         <div className="flex flex-1 items-center gap-3">
           <SearchInput
             value={searchTerm}
@@ -255,23 +254,23 @@ export const TemplateLibrary = () => {
             return (
               <div
                 key={tplId}
-                className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-xs transition-all hover:-translate-y-1 hover:border-indigo-300 hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
+                className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-5 shadow-xs transition-all hover:-translate-y-1 hover:border-indigo-300 hover:shadow-md dark:border-slate-800 "
               >
                 <div>
                   <div className="mb-3 flex items-start justify-between">
                     <div className="flex items-center gap-3">
                       <div
                         className={`flex h-11 w-11 items-center justify-center rounded-xl ${isPptx
-                            ? 'bg-amber-50 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400'
-                            : isDocx
-                              ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400'
-                              : 'bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400'
+                          ? 'bg-amber-50 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400'
+                          : isDocx
+                            ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400'
+                            : 'bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400'
                           }`}
                       >
                         {isPptx ? <Presentation className="h-6 w-6" /> : isDocx ? <FileCode className="h-6 w-6" /> : <FileText className="h-6 w-6" />}
                       </div>
                       <div>
-                        <span className="inline-block rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                        <span className="inline-block rounded-full bg-slate-100 dark:bg-slate-800 px-2.5 py-0.5 text-xs font-semibold text-slate-700 dark:text-slate-200  dark:text-slate-300">
                           {tpl.category || 'Academic Template'}
                         </span>
                         <p className="mt-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">
@@ -338,7 +337,7 @@ export const TemplateLibrary = () => {
       {/* Upload Modal */}
       {isUploadOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4 backdrop-blur-xs">
-          <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-xl dark:border-slate-800 dark:bg-slate-900">
+          <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-xl dark:border-slate-800 ">
             <h3 className="text-lg font-bold text-slate-900 dark:text-white">Upload Template</h3>
             <form onSubmit={handleUpload} className="mt-4 space-y-4">
               <div>
@@ -373,7 +372,7 @@ export const TemplateLibrary = () => {
                 <input
                   type="file"
                   onChange={(e) => setUploadFile(e.target.files[0])}
-                  className="mt-1 w-full text-xs text-slate-500 file:mr-3 file:rounded-xl file:border-0 file:bg-indigo-50 file:px-3 file:py-2 file:text-xs file:font-semibold file:text-indigo-600 dark:file:bg-indigo-950/60 dark:file:text-indigo-300"
+                  className="mt-1 w-full text-xs text-slate-500 dark:text-slate-400 file:mr-3 file:rounded-xl file:border-0 file:bg-indigo-50 file:px-3 file:py-2 file:text-xs file:font-semibold file:text-indigo-600 dark:file:bg-indigo-950/60 dark:file:text-indigo-300"
                 />
               </div>
               <div className="flex justify-end gap-3 pt-2">

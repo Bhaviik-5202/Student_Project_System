@@ -40,7 +40,7 @@ const SystemMetrics = memo(({ stats = {} }) => {
   ];
 
   return (
-    <div className='rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800'>
+    <div className='rounded-2xl border border-gray-100 bg-white dark:bg-slate-900 p-6 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800'>
       <div className='mb-6 flex items-center justify-between'>
         <div>
           <h3 className='text-lg font-bold text-slate-900 dark:text-white'>
@@ -100,7 +100,7 @@ const SystemMetrics = memo(({ stats = {} }) => {
             })}
           </div>
         </div>
-        <i className='fas fa-microchip text-2xl text-slate-200 dark:text-slate-700'></i>
+        <i className='fas fa-microchip text-2xl text-slate-200 dark:text-slate-700 dark:text-slate-200'></i>
       </div>
     </div>
   );

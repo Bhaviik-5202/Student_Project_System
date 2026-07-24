@@ -41,7 +41,7 @@ const ActivityItem = memo(({ activity, isLast }) => {
 
   const colorClass = colorStyles[activity.color] || colorStyles.blue;
   const itemContent = (
-    <div className='relative z-10 flex items-start gap-4 rounded-xl p-3 transition-colors hover:bg-gray-50 dark:hover:bg-slate-700'>
+    <div className='relative z-10 flex items-start gap-4 rounded-xl p-3 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-800 dark:hover:bg-slate-700'>
       <div
         className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg border border-transparent ${colorClass}`}
       >
@@ -53,7 +53,7 @@ const ActivityItem = memo(({ activity, isLast }) => {
           <h4 className='truncate pr-4 text-sm font-semibold text-gray-900 dark:text-white'>
             {activity.title}
           </h4>
-          <div className='flex items-center gap-1.5 whitespace-nowrap text-[10px] font-medium uppercase tracking-wider text-gray-400 dark:text-gray-500'>
+          <div className='flex items-center gap-1.5 whitespace-nowrap text-[10px] font-medium uppercase tracking-wider text-gray-400 dark:text-gray-500 dark:text-gray-400'>
             <i className='far fa-clock'></i>
             {activity.time || timeAgo(activity.updatedAt)}
           </div>
@@ -129,8 +129,8 @@ const RecentActivity = memo(({ activities = [] }) => {
             ))
         ) : (
           <div className='py-10 text-center opacity-60'>
-            <i className='fas fa-history mb-3 text-3xl text-gray-300 dark:text-gray-600'></i>
-            <p className='text-sm italic text-gray-500'>
+            <i className='fas fa-history mb-3 text-3xl text-gray-300 dark:text-gray-600 dark:text-gray-300'></i>
+            <p className='text-sm italic text-gray-500 dark:text-gray-400'>
               No recent activity recorded.
             </p>
           </div>

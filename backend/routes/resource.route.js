@@ -23,7 +23,7 @@ router.post(
   '/',
   authMiddleware,
   roleMiddleware(['admin', 'faculty']),
-  upload.array('files'),
+  upload.any(),
   resourceController.createResource
 );
 

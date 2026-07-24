@@ -13,7 +13,7 @@ export const Table = ({ children, className = '' }) => {
 
 export const TableHeader = ({ children, className = '' }) => {
   return (
-    <thead className={`border-b border-gray-100 bg-gray-50 text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:border-slate-700 dark:bg-slate-900 ${className}`}>
+    <thead className={`border-b border-gray-100 bg-gray-50 text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400 ${className}`}>
       {children}
     </thead>
   );
@@ -23,7 +23,7 @@ export const TableRow = ({ children, className = '', onClick }) => {
   return (
     <tr
       onClick={onClick}
-      className={`transition-colors hover:bg-gray-50/70 dark:hover:bg-slate-700/40 ${
+      className={`transition-colors hover:bg-gray-50 dark:hover:bg-slate-700/50 ${
         onClick ? 'cursor-pointer' : ''
       } ${className}`}
     >
@@ -68,21 +68,21 @@ export const Pagination = ({
 
   return (
     <div className={`flex items-center justify-between border-t border-gray-200 pt-4 dark:border-slate-700 ${className}`}>
-      <p className='text-xs font-semibold text-gray-500 dark:text-gray-400'>
+      <p className='text-xs font-semibold text-gray-500 dark:text-slate-400'>
         Page {page} of {totalPages}
       </p>
       <div className='flex gap-2'>
         <button
           disabled={page <= 1}
           onClick={() => onPageChange(page - 1)}
-          className='flex items-center gap-1 rounded-xl border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-600 hover:bg-gray-50 disabled:opacity-40 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-300 dark:hover:bg-slate-700 transition-all'
+          className='flex items-center gap-1 rounded-xl border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-600 hover:bg-gray-50 disabled:opacity-40 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 transition-all'
         >
           <ChevronLeft size={14} /> Previous
         </button>
         <button
           disabled={page >= totalPages}
           onClick={() => onPageChange(page + 1)}
-          className='flex items-center gap-1 rounded-xl border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-600 hover:bg-gray-50 disabled:opacity-40 dark:border-slate-700 dark:bg-slate-800 dark:text-gray-300 dark:hover:bg-slate-700 transition-all'
+          className='flex items-center gap-1 rounded-xl border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-600 hover:bg-gray-50 disabled:opacity-40 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 transition-all'
         >
           Next <ChevronRight size={14} />
         </button>

@@ -442,7 +442,7 @@ exports.updateProfile = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? 'Update failed'
+          ? result.message || 'Update failed'
           : 'Profile updated successfully',
         data: result.data || null,
         error: result.error || null,
@@ -534,7 +534,7 @@ exports.updateSettings = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? 'Failed to update settings'
+          ? result.message || 'Failed to update settings'
           : 'Settings updated successfully',
         data: result.data ? result.data.settings : null,
         error: result.error || null,

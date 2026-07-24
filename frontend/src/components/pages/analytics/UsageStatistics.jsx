@@ -48,7 +48,7 @@ const UsageStatistics = memo(() => {
   ];
 
   return (
-    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+    <div className='space-y-6 animate-fade-in pt-0 pb-6'>
       <PageHeader
         title='Usage Statistics'
         subtitle='System usage, user activity peak hours, and engagement metrics'
@@ -62,11 +62,11 @@ const UsageStatistics = memo(() => {
       />
 
         {loading ? (
-          <div className='p-8 text-center text-slate-500'>
+          <div className='p-8 text-center text-slate-500 dark:text-slate-400'>
             Loading usage statistics...
           </div>
         ) : Object.keys(stats).length === 0 ? (
-          <div className='p-8 text-center text-slate-500'>
+          <div className='p-8 text-center text-slate-500 dark:text-slate-400'>
             No usage data available.
           </div>
         ) : (
@@ -74,7 +74,7 @@ const UsageStatistics = memo(() => {
             {Object.entries(stats).map(([key, metric]) => (
               <div
                 key={key}
-                className='rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800'
+                className='rounded-lg border border-slate-200 bg-white dark:bg-slate-900 p-6 dark:border-slate-700 dark:bg-slate-800'
               >
                 <div className='mb-2 text-sm uppercase tracking-wider text-slate-500 dark:text-slate-300'>
                   {formatLabel(key)}
@@ -93,7 +93,7 @@ const UsageStatistics = memo(() => {
         )}
 
         {/* Usage by Feature */}
-        <div className='mb-8 rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800'>
+        <div className='mb-8 rounded-lg border border-slate-200 bg-white dark:bg-slate-900 p-6 dark:border-slate-700 dark:bg-slate-800'>
           <h3 className='mb-6 text-lg font-semibold text-slate-900 dark:text-white'>
             Feature Usage Distribution
           </h3>
@@ -127,7 +127,7 @@ const UsageStatistics = memo(() => {
 
         {/* Usage Trends */}
         <div className='grid grid-cols-1 gap-6 lg:grid-cols-2'>
-          <div className='rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800'>
+          <div className='rounded-lg border border-slate-200 bg-white dark:bg-slate-900 p-6 dark:border-slate-700 dark:bg-slate-800'>
             <h3 className='mb-4 text-lg font-semibold text-slate-900 dark:text-white'>
               Daily Active Users
             </h3>
@@ -162,7 +162,7 @@ const UsageStatistics = memo(() => {
             </div>
           </div>
 
-          <div className='rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800'>
+          <div className='rounded-lg border border-slate-200 bg-white dark:bg-slate-900 p-6 dark:border-slate-700 dark:bg-slate-800'>
             <h3 className='mb-4 text-lg font-semibold text-slate-900 dark:text-white'>
               Peak Usage Hours
             </h3>

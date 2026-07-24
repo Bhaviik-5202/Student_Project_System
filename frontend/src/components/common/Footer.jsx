@@ -55,7 +55,7 @@ const SocialLink = memo(({ href, icon: Icon, label }) => (
     target="_blank"
     rel="noopener noreferrer"
     aria-label={label}
-    className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/5 text-slate-400 transition-all duration-300 hover:bg-indigo-500 hover:text-white hover:scale-110 hover:shadow-lg hover:shadow-indigo-500/25 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-slate-900"
+    className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white dark:bg-slate-900/5 text-slate-400 transition-all duration-300 hover:bg-indigo-500 hover:text-white hover:scale-110 hover:shadow-lg hover:shadow-indigo-500/25 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-slate-900"
   >
     <Icon size={16} aria-hidden="true" />
   </a>
@@ -91,7 +91,7 @@ FooterLink.propTypes = {
 };
 
 const FeatureBadge = memo(({ icon: Icon, text }) => (
-  <div className="flex items-center gap-2 rounded-full bg-white/5 px-3 py-1.5 backdrop-blur-sm border border-white/5">
+  <div className="flex items-center gap-2 rounded-full bg-white dark:bg-slate-900/5 px-3 py-1.5 backdrop-blur-sm border border-white/5">
     <Icon size={14} className="text-indigo-400" aria-hidden="true" />
     <span className="text-xs text-slate-300">{text}</span>
   </div>
@@ -229,7 +229,7 @@ const Footer = memo(({ variant = 'minimal' }) => {
               Platform Status
             </h3>
 
-            <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm p-4 space-y-3">
+            <div className="rounded-2xl border border-white/10 bg-white dark:bg-slate-900/5 backdrop-blur-sm p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="relative">
@@ -250,7 +250,7 @@ const Footer = memo(({ variant = 'minimal' }) => {
                   <span>Active projects</span>
                   <span className="font-semibold text-white">1,247</span>
                 </div>
-                <div className="w-px h-4 bg-white/10" aria-hidden="true" />
+                <div className="w-px h-4 bg-white dark:bg-slate-900/10" aria-hidden="true" />
                 <div className="flex items-center gap-1.5">
                   <Users size={12} className="text-indigo-400" aria-hidden="true" />
                   <span>Students</span>
@@ -259,7 +259,7 @@ const Footer = memo(({ variant = 'minimal' }) => {
               </div>
             </div>
 
-            <div className="flex items-center gap-3 text-xs text-slate-500">
+            <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
               <span className="flex items-center gap-1.5">
                 <Heart size={12} className="text-rose-400 fill-rose-400" aria-hidden="true" />
                 Made with passion
@@ -272,10 +272,10 @@ const Footer = memo(({ variant = 'minimal' }) => {
 
         {/* Bottom Bar */}
         <div className="mt-12 pt-6 border-t border-white/5 flex flex-col items-center justify-between gap-4 sm:flex-row">
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-slate-500 dark:text-slate-400">
             © {currentYear} Student Project System. All rights reserved.
           </p>
-          <div className="flex items-center gap-6 text-xs text-slate-500">
+          <div className="flex items-center gap-6 text-xs text-slate-500 dark:text-slate-400">
             <Link to="/privacy" className="hover:text-white transition-colors focus:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-md px-1">
               Privacy Policy
             </Link>

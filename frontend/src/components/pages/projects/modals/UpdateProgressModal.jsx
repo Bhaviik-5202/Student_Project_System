@@ -72,7 +72,7 @@ const UpdateProgressModal = ({ isOpen, onClose, project, onSuccess }) => {
               setProgress(val);
               if (val === 100) setStatus('completed');
             }}
-            className='h-2.5 w-full cursor-pointer rounded-lg bg-gray-200 accent-blue-600 dark:bg-slate-700'
+            className='h-2.5 w-full cursor-pointer rounded-lg bg-gray-200 dark:bg-slate-700 accent-blue-600'
           />
         </FormGroup>
 

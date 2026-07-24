@@ -6,41 +6,6 @@ const sendResponse = require('../utils/response');
  * Manages comprehensive student profile data, academic records, and student-specific project associations.
  */
 
-/**
- * Create a new student profile
- * @route   POST /api/students
- * @desc    Register a detailed student record and academic data
- * @access  Admin
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- */
-exports.createStudent = async (req, res) => {
-  try {
-    const result = await studentService.create(req.body);
-
-    sendResponse(
-      res,
-      {
-        success: !result.error,
-        message: result.error ? result.message : 'Student created successfully',
-        data: result.data || null,
-        error: result.error || null,
-      },
-      result.error ? 400 : 201
-    );
-  } catch (error) {
-    sendResponse(
-      res,
-      {
-        success: false,
-        message: 'Internal server error',
-        data: null,
-        error: error.message,
-      },
-      500
-    );
-  }
-};
 
 /**
  * Fetch all student profiles

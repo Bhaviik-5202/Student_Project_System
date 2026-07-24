@@ -49,7 +49,7 @@ const MeetingRow = memo(
           );
         default:
           return (
-            <span className='inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-700 dark:bg-slate-800 dark:text-slate-300'>
+            <span className='inline-flex items-center rounded-full bg-slate-100 dark:bg-slate-800 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200  dark:text-slate-300'>
               {status || 'Scheduled'}
             </span>
           );
@@ -59,7 +59,7 @@ const MeetingRow = memo(
     const isActive = meeting.isActive !== false && meeting.status !== 'cancelled';
 
     return (
-      <tr className='hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors'>
+      <tr className='hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800/80 /40 transition-colors'>
         {/* Title & Type */}
         <td className='py-4 px-4'>
           <div className='font-bold text-slate-900 dark:text-white text-sm'>
@@ -84,7 +84,7 @@ const MeetingRow = memo(
             <span>{meeting.organizer?.name || 'Faculty Guide'}</span>
           </div>
           {meeting.organizer?.email && (
-            <div className='text-[10px] text-slate-400 dark:text-slate-500'>
+            <div className='text-[10px] text-slate-400 dark:text-slate-500 dark:text-slate-400'>
               {meeting.organizer.email}
             </div>
           )}
@@ -139,7 +139,7 @@ const MeetingRow = memo(
           <div className='flex items-center justify-end gap-1.5'>
             <button
               onClick={() => onView(meeting.id)}
-              className='rounded-lg p-1.5 text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors'
+              className='rounded-lg p-1.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800   transition-colors'
               title='View Details'
             >
               <Eye size={16} />
@@ -231,7 +231,7 @@ const MeetingList = () => {
   const canCreate = user?.role === 'admin' || user?.role === 'faculty';
 
   return (
-    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+    <div className='space-y-6 animate-fade-in pt-0 pb-6'>
       <PageHeader
         title='Meeting Management'
         subtitle='Control, organize, and monitor project synchronization sessions'
@@ -250,7 +250,7 @@ const MeetingList = () => {
         }
       />
 
-      <div className='rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
+      <div className='rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
         <div className='mb-6 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between'>
           <div>
             <h2 className='text-lg font-bold text-slate-900 dark:text-white'>
@@ -278,7 +278,7 @@ const MeetingList = () => {
           ) : (
             <table className='w-full text-left border-collapse'>
               <thead>
-                <tr className='border-b border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50 text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400'>
+                <tr className='border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900/50 text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400'>
                   <th className='py-3 px-4'>Title & Type</th>
                   <th className='py-3 px-4'>Project</th>
                   <th className='py-3 px-4'>Organizer</th>

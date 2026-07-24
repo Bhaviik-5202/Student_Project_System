@@ -553,7 +553,7 @@ const Dashboard = () => {
   // Loading state with Skeleton Loader
   if (authLoading || isLoading) {
     return (
-      <div className='min-h-screen space-y-6 p-4 md:p-6'>
+      <div className='space-y-6 pt-0 px-0 pb-6'>
         <DashboardSkeleton />
       </div>
     );
@@ -561,9 +561,9 @@ const Dashboard = () => {
 
   // --- Render ---
   return (
-    <div className='min-h-screen animate-fade-in space-y-6 p-4 md:p-6'>
+    <div className='animate-fade-in space-y-6 pt-0 px-0 pb-6'>
       {/* Dashboard Header with Welcome - Enhanced with animations */}
-      <div className='rounded-2xl border border-gray-200 bg-white p-6 shadow-lg dark:border-slate-700 dark:bg-slate-800 md:p-8'>
+      <div className='rounded-2xl border border-gray-200 bg-white dark:bg-slate-900 p-6 shadow-lg dark:border-slate-700 dark:bg-slate-800 md:p-8'>
         <div className='flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-center'>
           <div className='flex-1'>
             <div className='flex flex-col justify-between gap-4 md:flex-row md:items-center'>
@@ -607,7 +607,7 @@ const Dashboard = () => {
               <button
                 onClick={handleRefresh}
                 disabled={isLoading}
-                className='group relative inline-flex items-center overflow-hidden rounded-xl border border-gray-300 px-5 py-2.5 font-medium text-gray-700 transition-all duration-300 hover:border-transparent hover:shadow-lg disabled:opacity-50 dark:border-slate-600 dark:text-gray-300'
+                className='group relative inline-flex items-center overflow-hidden rounded-xl border border-gray-300 px-5 py-2.5 font-medium text-gray-700 dark:text-gray-200 transition-all duration-300 hover:border-transparent hover:shadow-lg disabled:opacity-50 dark:border-slate-600 dark:text-gray-300'
               >
                 <div className='absolute inset-0 bg-gradient-to-r from-gray-100 to-gray-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-slate-700 dark:to-slate-600' />
                 <div className='relative z-10 flex items-center'>
@@ -650,7 +650,7 @@ const Dashboard = () => {
                     toast.error('Failed to generate report');
                   }
                 }}
-                className='group relative inline-flex items-center overflow-hidden rounded-xl border border-gray-300 px-5 py-2.5 font-medium text-gray-700 transition-all duration-300 hover:border-transparent hover:shadow-lg dark:border-slate-600 dark:text-gray-300'
+                className='group relative inline-flex items-center overflow-hidden rounded-xl border border-gray-300 px-5 py-2.5 font-medium text-gray-700 dark:text-gray-200 transition-all duration-300 hover:border-transparent hover:shadow-lg dark:border-slate-600 dark:text-gray-300'
               >
                 <div className='absolute inset-0 bg-gradient-to-r from-gray-100 to-gray-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-slate-700 dark:to-slate-600' />
                 <div className='relative z-10 flex items-center'>
@@ -738,7 +738,7 @@ const Dashboard = () => {
       <div className='grid grid-cols-1 gap-8 lg:grid-cols-3'>
         {/* Left Column - 2/3 width */}
         <div className='space-y-8 lg:col-span-2'>
-          <div className='rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800'>
+          <div className='rounded-2xl border border-gray-100 bg-white dark:bg-slate-900 p-6 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800'>
             <RecentActivity
               activities={recentActivities}
               userRole={user?.role}
@@ -746,7 +746,7 @@ const Dashboard = () => {
           </div>
 
           {/* Upcoming Deadlines */}
-          <div className='rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800'>
+          <div className='rounded-2xl border border-gray-100 bg-white dark:bg-slate-900 p-6 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800'>
             <div className='mb-8 flex items-center justify-between'>
               <div className='flex items-center'>
                 <div className='mr-3 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-orange-50 to-orange-100/50 dark:from-orange-900/30 dark:to-orange-800/20'>
@@ -772,7 +772,7 @@ const Dashboard = () => {
 
             <div className='space-y-4'>
               {upcomingDeadlines.length === 0 ? (
-                <div className='rounded-xl border border-dashed border-slate-200 py-8 text-center text-slate-500 dark:border-slate-700 dark:text-slate-400'>
+                <div className='rounded-xl border border-dashed border-slate-200 py-8 text-center text-slate-500 dark:text-slate-400 dark:border-slate-700 '>
                   No upcoming deadlines found.
                 </div>
               ) : (
@@ -819,7 +819,7 @@ const Dashboard = () => {
         {/* Right Column - 1/3 width */}
         <div className='space-y-8'>
           {/* Notification Center */}
-          <div className='rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800'>
+          <div className='rounded-2xl border border-gray-100 bg-white dark:bg-slate-900 p-6 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800'>
             <div className='mb-8 flex items-center justify-between'>
               <div className='flex items-center'>
                 <div className='mr-3 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/30 dark:to-blue-800/20'>
@@ -847,7 +847,7 @@ const Dashboard = () => {
                 <div
                   key={notification.id}
                   className={`cursor-pointer rounded-xl border p-4 transition-all duration-300 hover:shadow-sm ${notification.read
-                    ? 'border-gray-200 bg-white dark:border-slate-700 dark:bg-slate-800'
+                    ? 'border-gray-200 bg-white dark:bg-slate-900 dark:border-slate-700 dark:bg-slate-800'
                     : 'border-blue-200 bg-gradient-to-r from-blue-50 to-blue-100/50 dark:border-blue-800 dark:from-blue-900/30 dark:to-blue-800/20'
                     }`}
                   onClick={() => handleNotificationClick(notification.id)}
@@ -861,7 +861,7 @@ const Dashboard = () => {
                             : 'bg-blue-500'
                             }`}
                         ></span>
-                        <span className='rounded bg-gray-100 px-2 py-1 text-xs font-semibold text-gray-700 dark:bg-slate-700 dark:text-gray-300'>
+                        <span className='rounded bg-gray-100 dark:bg-gray-800 px-2 py-1 text-xs font-semibold text-gray-700 dark:text-gray-200 dark:bg-slate-700 dark:text-gray-300'>
                           {notification.type.toUpperCase()}
                         </span>
                         <span className='ml-2 text-xs text-gray-500 dark:text-gray-400'>
@@ -885,7 +885,7 @@ const Dashboard = () => {
 
           {/* Today's Meetings */}
           {todayMeetings.length > 0 && (
-            <div className='rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
+            <div className='rounded-2xl border border-gray-200 bg-white dark:bg-slate-900 p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
               <UpcomingMeetings
                 meetings={todayMeetings}
                 userRole={user?.role}
@@ -894,7 +894,7 @@ const Dashboard = () => {
           )}
 
           {/* Quick Resources */}
-          <div className='rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800'>
+          <div className='rounded-2xl border border-gray-100 bg-white dark:bg-slate-900 p-6 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800'>
             <div className='mb-8 flex items-center justify-between'>
               <div className='flex items-center'>
                 <div className='mr-3 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-900/30 dark:to-green-800/20'>
@@ -924,7 +924,7 @@ const Dashboard = () => {
                   icon: CalendarDaysIcon,
                   label: 'Calendar',
                   color: 'purple',
-                  path: '/meetings',
+                  path: '/meetings/calendar',
                 },
                 {
                   icon: ChartBarSquareIcon,
@@ -972,7 +972,7 @@ const Dashboard = () => {
                       >
                         <resource.icon className='h-7 w-7' aria-hidden='true' />
                       </div>
-                      <div className='font-semibold text-gray-900 transition-colors dark:text-white'>
+                      <div className='font-semibold text-gray-900 dark:text-white transition-colors '>
                         {resource.label}
                       </div>
                     </div>
@@ -987,7 +987,7 @@ const Dashboard = () => {
       {/* Bottom Section */}
       <div className='grid grid-cols-1 gap-8 lg:grid-cols-2'>
         {/* Project Progress */}
-        <div className='rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800'>
+        <div className='rounded-2xl border border-gray-100 bg-white dark:bg-slate-900 p-6 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800'>
           <div className='mb-8 flex items-center justify-between'>
             <div className='flex items-center'>
               <div className='mr-3 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-50 to-indigo-100/50 dark:from-indigo-900/30 dark:to-indigo-800/20'>
