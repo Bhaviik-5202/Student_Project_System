@@ -102,7 +102,10 @@ app.use((req, res, next) => {
 app.use(
   rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: process.env.NODE_ENV === 'test' ? 10000 : Number(process.env.RATE_LIMIT_MAX) || 2000,
+    max:
+      process.env.NODE_ENV === 'test'
+        ? 10000
+        : Number(process.env.RATE_LIMIT_MAX) || 2000,
     standardHeaders: true,
     legacyHeaders: false,
     handler: (req, res) => {
@@ -136,8 +139,8 @@ app.use('/api/v1', apiRoutes);
 // Static files for uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-//  404 Handler
-app.use((req, res) => {
+// 404 Handler for API endpoints
+app.use('/api', (req, res) => {
   sendResponse(
     res,
     {
@@ -167,7 +170,8 @@ const startServer = async () => {
         logger.banner({
           port: PORT,
           env: ENV,
-          dbStatus: mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected',
+          dbStatus:
+            mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected',
         });
       });
 

@@ -50,6 +50,20 @@ router.get('/backups', adminController.getBackups);
 router.post('/backups', adminController.createBackup);
 
 /**
+ * @route   POST /api/v1/admin/backups/:id/restore
+ * @desc    Restore a system backup
+ * @access  Private (Admin Only)
+ */
+router.post('/backups/:id/restore', adminController.restoreBackup);
+
+/**
+ * @route   DELETE /api/v1/admin/backups/:id
+ * @desc    Delete a system backup
+ * @access  Private (Admin Only)
+ */
+router.delete('/backups/:id', adminController.deleteBackup);
+
+/**
  * @route   POST /api/v1/admin/batch-operation
  * @desc    Perform a batch operation
  * @access  Private (Admin Only)

@@ -151,8 +151,8 @@ const TopNav = memo(
                 )
               }
               className={`group relative inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-semibold tracking-wide transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${isActive
-                  ? 'bg-indigo-50 text-indigo-600 shadow-xs dark:bg-indigo-950/60 dark:text-indigo-400'
-                  : 'text-slate-600 hover:bg-slate-100/80 hover:text-indigo-600 dark:text-slate-300 dark:hover:bg-slate-800/80 dark:hover:text-indigo-400'
+                ? 'bg-indigo-50 text-indigo-600 shadow-xs dark:bg-indigo-950/60 dark:text-indigo-400'
+                : 'text-slate-600 hover:bg-slate-100/80 hover:text-indigo-600 dark:text-slate-300 dark:hover:bg-slate-800/80 dark:hover:text-indigo-400'
                 }`}
             >
               <i
@@ -172,8 +172,8 @@ const TopNav = memo(
             <NavLink
               to={item.path}
               className={`group relative inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-semibold tracking-wide transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${isActive
-                  ? 'bg-indigo-50 text-indigo-600 shadow-xs dark:bg-indigo-950/60 dark:text-indigo-400'
-                  : 'text-slate-600 hover:bg-slate-100/80 hover:text-indigo-600 dark:text-slate-300 dark:hover:bg-slate-800/80 dark:hover:text-indigo-400'
+                ? 'bg-indigo-50 text-indigo-600 shadow-xs dark:bg-indigo-950/60 dark:text-indigo-400'
+                : 'text-slate-600 hover:bg-slate-100/80 hover:text-indigo-600 dark:text-slate-300 dark:hover:bg-slate-800/80 dark:hover:text-indigo-400'
                 }`}
             >
               <i
@@ -208,15 +208,15 @@ const TopNav = memo(
                         key={`${item.title}-${idx}`}
                         to={subItem.path}
                         className={`flex items-center justify-between gap-3 rounded-xl px-3 py-2 text-xs font-medium transition-all duration-150 ${subIsActive
-                            ? 'bg-indigo-50/90 text-indigo-600 font-semibold dark:bg-indigo-950/70 dark:text-indigo-400'
-                            : 'text-slate-700 hover:bg-slate-100/80 hover:text-indigo-600 dark:text-slate-300 dark:hover:bg-slate-800/80 dark:hover:text-indigo-400'
+                          ? 'bg-indigo-50/90 text-indigo-600 font-semibold dark:bg-indigo-950/70 dark:text-indigo-400'
+                          : 'text-slate-700 hover:bg-slate-100/80 hover:text-indigo-600 dark:text-slate-300 dark:hover:bg-slate-800/80 dark:hover:text-indigo-400'
                           }`}
                       >
                         <div className='flex items-center gap-2.5'>
                           <i
                             className={`fas fa-${subIcon} text-[11px] w-4 text-center ${subIsActive
-                                ? 'text-indigo-600 dark:text-indigo-400'
-                                : 'text-slate-400 group-hover:text-indigo-500'
+                              ? 'text-indigo-600 dark:text-indigo-400'
+                              : 'text-slate-400 group-hover:text-indigo-500'
                               }`}
                           />
                           <span>{subItem.title}</span>
@@ -240,8 +240,8 @@ const TopNav = memo(
         ref={navRef}
         aria-label='Secondary Navigation'
         className={`fixed left-0 right-0 top-16 z-40 border-b transition-all duration-200 ${isScrolled
-            ? 'border-slate-200/90 bg-white/95 shadow-xs backdrop-blur-md dark:border-slate-800/90 dark:bg-slate-900/95'
-            : 'border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900'
+          ? 'border-slate-200/90 bg-white/95 shadow-xs backdrop-blur-md dark:border-slate-800/90 dark:bg-slate-900/95'
+          : 'border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900'
           }`}
       >
         <div className='mx-auto max-w-7xl px-4 lg:px-8'>
@@ -318,15 +318,15 @@ const TopNav = memo(
                           type='button'
                           onClick={() => toggleMobileSubmenu(item.title)}
                           className={`flex w-full items-center justify-between rounded-xl px-3.5 py-2.5 text-xs font-semibold transition ${isActive
-                              ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400'
-                              : 'text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800'
+                            ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400'
+                            : 'text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800'
                             }`}
                         >
                           <div className='flex items-center gap-2.5'>
                             <i
                               className={`fas fa-${item.icon} text-sm ${isActive
-                                  ? 'text-indigo-600 dark:text-indigo-400'
-                                  : 'text-slate-400'
+                                ? 'text-indigo-600 dark:text-indigo-400'
+                                : 'text-slate-400'
                                 }`}
                             />
                             <span>{item.title}</span>
@@ -351,14 +351,14 @@ const TopNav = memo(
                                   to={subItem.path}
                                   onClick={onCloseMobileMenu}
                                   className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium transition ${subIsActive
-                                      ? 'bg-indigo-50/90 text-indigo-600 font-semibold dark:bg-indigo-950/70 dark:text-indigo-400'
-                                      : 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800'
+                                    ? 'bg-indigo-50/90 text-indigo-600 font-semibold dark:bg-indigo-950/70 dark:text-indigo-400'
+                                    : 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800'
                                     }`}
                                 >
                                   <i
                                     className={`fas fa-${subIcon} text-[10px] w-3 text-center ${subIsActive
-                                        ? 'text-indigo-600 dark:text-indigo-400'
-                                        : 'text-slate-400'
+                                      ? 'text-indigo-600 dark:text-indigo-400'
+                                      : 'text-slate-400'
                                       }`}
                                   />
                                   <span>{subItem.title}</span>
@@ -373,14 +373,14 @@ const TopNav = memo(
                         to={item.path}
                         onClick={onCloseMobileMenu}
                         className={`flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-xs font-semibold transition ${isActive
-                            ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400'
-                            : 'text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800'
+                          ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400'
+                          : 'text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800'
                           }`}
                       >
                         <i
                           className={`fas fa-${item.icon} text-sm ${isActive
-                              ? 'text-indigo-600 dark:text-indigo-400'
-                              : 'text-slate-400'
+                            ? 'text-indigo-600 dark:text-indigo-400'
+                            : 'text-slate-400'
                             }`}
                         />
                         <span>{item.title}</span>

@@ -1,6 +1,4 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import {
   FileText,
   Upload,
@@ -15,14 +13,19 @@ import {
   List,
   Filter,
   RefreshCw,
-  ChevronLeft,
-  ChevronRight,
   HardDrive,
   Calendar,
   User,
-  CheckCircle,
+  Plus,
 } from 'lucide-react';
-import PageHeader from '../../common/PageHeader';
+import PageHeader from '../../ui/PageHeader';
+import StatisticsCard from '../../ui/StatisticsCard';
+import SearchInput from '../../ui/SearchInput';
+import Select from '../../ui/Select';
+import Button from '../../ui/Button';
+import LoadingSpinner from '../../ui/LoadingSpinner';
+import EmptyState from '../../ui/EmptyState';
+import ErrorState from '../../ui/ErrorState';
 import resourceService from '../../../services/resourceService';
 import useNotification from '../../../hooks/useNotification';
 import {
@@ -31,30 +34,30 @@ import {
   EditModal,
 } from './ResourceModals';
 
-const DocumentLibrary = () => {
-  const navigate = useNavigate();
+export const DocumentLibrary = () => {
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   // Search & Filters
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState('all');
+  const [categoryFilter, setCategoryFilter] = useState('all');
   const [formatFilter, setFormatFilter] = useState('all');
-  const [sortBy, setSortBy] = useState('latest');
   const [viewMode, setViewMode] = useState('table');
-
-  // Pagination
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
-  const [totalPages, setTotalPages] = useState(1);
-  const [totalCount, setTotalCount] = useState(0);
 
   // Modals
   const [selectedDoc, setSelectedDoc] = useState(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isUploadOpen, setIsUploadOpen] = useState(false);
+
+  // Upload state
+  const [uploadTitle, setUploadTitle] = useState('');
+  const [uploadCategory, setUploadCategory] = useState('Guidelines');
+  const [uploadDescription, setUploadDescription] = useState('');
+  const [uploadFile, setUploadFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
   const { showSuccess, showError } = useNotification();
 
@@ -62,409 +65,407 @@ const DocumentLibrary = () => {
     setLoading(true);
     setError(null);
     try {
-      const params = {
+      const res = await resourceService.getAll({
         type: 'document',
-        page,
-        limit,
-        sort: activeTab === 'popular' ? 'popular' : sortBy,
         q: searchTerm,
-        category:
-          activeTab !== 'all' && activeTab !== 'popular'
-            ? activeTab
-            : undefined,
-      };
+      });
 
-      const res = await resourceService.getAll(params);
-      if (res.success || !res.error) {
-        let items = res.data || [];
-        if (formatFilter !== 'all') {
-          items = items.filter(
-            (d) => (d.fileType || '').toLowerCase() === formatFilter.toLowerCase()
-          );
-        }
-        setDocuments(items);
-        if (res.pagination) {
-          setTotalCount(res.pagination.total);
-          setTotalPages(res.pagination.totalPages || 1);
-        } else {
-          setTotalCount(items.length);
-          setTotalPages(1);
-        }
+      if (res.success && Array.isArray(res.data)) {
+        setDocuments(res.data);
       } else {
-        setError(res.message || 'Failed to fetch documents');
+        setDocuments(res.data?.resources || []);
       }
     } catch (err) {
-      setError('Failed to fetch documents from server.');
+      setError('Unable to fetch document library from server.');
     } finally {
       setLoading(false);
     }
-  }, [page, limit, sortBy, searchTerm, activeTab, formatFilter]);
+  }, [searchTerm]);
 
   useEffect(() => {
     fetchDocuments();
   }, [fetchDocuments]);
 
-  // Actions
-  const handleDownload = useCallback(
-    async (doc) => {
+  const filteredDocs = useMemo(() => {
+    return documents.filter((doc) => {
+      const matchesSearch =
+        !searchTerm ||
+        doc.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        doc.description?.toLowerCase().includes(searchTerm.toLowerCase());
+
+      const matchesCat =
+        categoryFilter === 'all' ||
+        doc.category?.toLowerCase() === categoryFilter.toLowerCase();
+
+      const matchesFormat =
+        formatFilter === 'all' ||
+        doc.fileType?.toLowerCase() === formatFilter.toLowerCase();
+
+      return matchesSearch && matchesCat && matchesFormat;
+    });
+  }, [documents, searchTerm, categoryFilter, formatFilter]);
+
+  const handleDownload = async (doc) => {
+    try {
       showSuccess(`Downloading ${doc.title}...`);
-      await resourceService.download(doc._id, `${doc.title}.${doc.fileType || 'pdf'}`);
-    },
-    [showSuccess]
-  );
+      await resourceService.download(doc._id || doc.id, doc.title);
+    } catch (err) {
+      showError('Failed to download document.');
+    }
+  };
 
-  const handlePreview = useCallback((doc) => {
-    setSelectedDoc(doc);
-    setIsPreviewOpen(true);
-  }, []);
-
-  const handleDetails = useCallback((doc) => {
-    setSelectedDoc(doc);
-    setIsDetailsOpen(true);
-  }, []);
-
-  const handleEdit = useCallback((doc) => {
-    setSelectedDoc(doc);
-    setIsEditOpen(true);
-  }, []);
-
-  const handleDelete = useCallback(
-    async (doc) => {
-      if (window.confirm(`Delete document "${doc.title}"?`)) {
-        const res = await resourceService.delete(doc._id);
-        if (res.success || !res.error) {
-          showSuccess('Document deleted successfully');
-          fetchDocuments();
-        } else {
-          showError(res.message || 'Failed to delete document');
-        }
+  const handleDelete = async (doc) => {
+    if (!window.confirm(`Delete document "${doc.title}"?`)) return;
+    try {
+      const res = await resourceService.delete(doc._id || doc.id);
+      if (res.success) {
+        showSuccess('Document deleted.');
+        setDocuments((prev) => prev.filter((d) => (d._id || d.id) !== (doc._id || doc.id)));
+      } else {
+        showError(res.message || 'Failed to delete.');
       }
-    },
-    [fetchDocuments, showError, showSuccess]
-  );
+    } catch (err) {
+      showError('Error deleting document.');
+    }
+  };
 
-  const handleShare = useCallback(
-    (doc) => {
-      const url = `${window.location.origin}/documents?id=${doc._id}`;
-      navigator.clipboard.writeText(url);
-      showSuccess('Document link copied to clipboard!');
-    },
-    [showSuccess]
-  );
+  const handleUpload = async (e) => {
+    e.preventDefault();
+    if (!uploadTitle.trim()) {
+      showError('Please enter a document title.');
+      return;
+    }
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('title', uploadTitle);
+      formData.append('category', uploadCategory);
+      formData.append('type', 'document');
+      formData.append('description', uploadDescription);
+      if (uploadFile) formData.append('file', uploadFile);
 
-  const tabs = [
-    { id: 'all', label: 'All Documents' },
-    { id: 'Guidelines', label: 'Guidelines & Policies' },
-    { id: 'Documentation', label: 'Formatting & Standards' },
-    { id: 'Reports', label: 'Evaluation & Rubrics' },
-    { id: 'popular', label: 'Most Popular' },
-  ];
+      const res = await resourceService.upload(formData);
+      if (res.success) {
+        showSuccess('Document uploaded successfully!');
+        setIsUploadOpen(false);
+        setUploadTitle('');
+        setUploadDescription('');
+        setUploadFile(null);
+        fetchDocuments();
+      } else {
+        showError(res.message || 'Upload failed.');
+      }
+    } catch (err) {
+      showError('Upload error.');
+    } finally {
+      setUploading(false);
+    }
+  };
 
   return (
-    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+    <div className="space-y-6 pb-12">
       <PageHeader
-        title='Document Library'
-        subtitle='Access official senior project guidelines, academic policies, IEEE templates, and evaluation rubrics'
+        title="Document Library"
+        description="Official academic guidelines, project rubrics, policy documents, and user manuals."
         icon={FileText}
-        badge={`${totalCount} Official Documents`}
+        badgeText="Official Specs"
+        badgeVariant="info"
         actions={
-          <button
-            onClick={() => navigate('/documents/upload')}
-            className='flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-100 hover:bg-indigo-700 transition-all dark:shadow-none active:scale-[0.98]'
-          >
-            <Upload size={16} />
-            Upload Document
-          </button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              icon={RefreshCw}
+              onClick={fetchDocuments}
+            >
+              Refresh
+            </Button>
+            <Button
+              variant="primary"
+              size="sm"
+              icon={Plus}
+              onClick={() => setIsUploadOpen(true)}
+            >
+              Upload Document
+            </Button>
+          </div>
         }
       />
 
-      {/* Tabs Bar */}
-      <div className='flex items-center gap-2 overflow-x-auto border-b border-slate-200 pb-2 dark:border-slate-700 scrollbar-none'>
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => {
-              setActiveTab(tab.id);
-              setPage(1);
-            }}
-            className={`whitespace-nowrap rounded-xl px-4 py-2 text-xs font-bold transition-all ${activeTab === tab.id
-                ? 'bg-indigo-600 text-white shadow'
-                : 'bg-white text-slate-600 hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
-              }`}
-          >
-            {tab.label}
-          </button>
-        ))}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <StatisticsCard
+          title="Total Documents"
+          value={documents.length}
+          icon={FileText}
+          color="indigo"
+          description="Uploaded guidelines & manuals"
+        />
+        <StatisticsCard
+          title="PDF Specs"
+          value={documents.filter((d) => d.fileType === 'pdf').length}
+          icon={FileText}
+          color="blue"
+          description="Read-only policy documents"
+        />
+        <StatisticsCard
+          title="Editable Guides"
+          value={documents.filter((d) => ['docx', 'doc'].includes(d.fileType)).length}
+          icon={FileText}
+          color="emerald"
+          description="Word & template files"
+        />
       </div>
 
-      {/* Toolbar Controls */}
-      <div className='flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
-        {/* Search */}
-        <div className='relative flex-1'>
-          <Search size={18} className='absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400' />
-          <input
-            type='text'
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <div className="flex flex-1 items-center gap-3">
+          <SearchInput
             value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              setPage(1);
-            }}
-            placeholder='Search documents by title, tags, or description...'
-            className='w-full rounded-xl border border-slate-200 bg-slate-50 py-2 pl-10 pr-4 text-xs font-medium text-slate-800 focus:border-indigo-500 focus:bg-white focus:outline-none dark:border-slate-700 dark:bg-slate-900/50 dark:text-white'
+            onChange={setSearchTerm}
+            placeholder="Search document title or keywords..."
+            className="max-w-md"
+          />
+          <Select
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+            options={[
+              { value: 'all', label: 'All Categories' },
+              { value: 'Guidelines', label: 'Guidelines' },
+              { value: 'Policies', label: 'Policies' },
+              { value: 'User Guides', label: 'User Guides' },
+              { value: 'Templates', label: 'Templates' },
+            ]}
+            className="w-44"
+          />
+          <Select
+            value={formatFilter}
+            onChange={(e) => setFormatFilter(e.target.value)}
+            options={[
+              { value: 'all', label: 'All Formats' },
+              { value: 'pdf', label: 'PDF' },
+              { value: 'docx', label: 'DOCX' },
+            ]}
+            className="w-36"
           />
         </div>
 
-        {/* Filters */}
-        <div className='flex items-center gap-2 text-xs'>
-          <select
-            value={formatFilter}
-            onChange={(e) => setFormatFilter(e.target.value)}
-            className='rounded-xl border border-slate-200 bg-slate-50 p-2 font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-900/50 dark:text-slate-200'
+        <div className="flex items-center gap-1 rounded-xl border border-slate-200 p-1 dark:border-slate-800">
+          <button
+            onClick={() => setViewMode('table')}
+            className={`rounded-lg p-2 text-xs font-semibold transition-all ${viewMode === 'table'
+                ? 'bg-indigo-600 text-white'
+                : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+              }`}
           >
-            <option value='all'>All Formats</option>
-            <option value='pdf'>PDF Documents</option>
-            <option value='docx'>Word Documents (.docx)</option>
-            <option value='txt'>Text Files</option>
-          </select>
-
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className='rounded-xl border border-slate-200 bg-slate-50 p-2 font-semibold text-slate-700 dark:border-slate-700 dark:bg-slate-900/50 dark:text-slate-200'
+            <List className="h-4 w-4" />
+          </button>
+          <button
+            onClick={() => setViewMode('grid')}
+            className={`rounded-lg p-2 text-xs font-semibold transition-all ${viewMode === 'grid'
+                ? 'bg-indigo-600 text-white'
+                : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+              }`}
           >
-            <option value='latest'>Newest First</option>
-            <option value='popular'>Most Downloaded</option>
-            <option value='a-z'>Alphabetical A-Z</option>
-          </select>
-
-          <div className='flex items-center rounded-xl border border-slate-200 bg-slate-50 p-1 dark:border-slate-700 dark:bg-slate-900/50'>
-            <button
-              onClick={() => setViewMode('table')}
-              className={`flex h-7 w-7 items-center justify-center rounded-lg transition-colors ${viewMode === 'table'
-                  ? 'bg-white text-indigo-600 shadow-sm dark:bg-slate-800 dark:text-indigo-400'
-                  : 'text-slate-400'
-                }`}
-            >
-              <List size={15} />
-            </button>
-            <button
-              onClick={() => setViewMode('grid')}
-              className={`flex h-7 w-7 items-center justify-center rounded-lg transition-colors ${viewMode === 'grid'
-                  ? 'bg-white text-indigo-600 shadow-sm dark:bg-slate-800 dark:text-indigo-400'
-                  : 'text-slate-400'
-                }`}
-            >
-              <Grid size={15} />
-            </button>
-          </div>
+            <Grid className="h-4 w-4" />
+          </button>
         </div>
       </div>
 
-      {/* Main Content */}
       {loading ? (
-        <div className='p-12 text-center text-slate-500 dark:text-slate-400'>
-          Loading documents...
-        </div>
+        <LoadingSpinner message="Fetching documents..." />
       ) : error ? (
-        <div className='rounded-2xl border border-red-200 bg-red-50 p-8 text-center text-red-600 dark:border-red-900/40 dark:bg-red-950/20'>
-          {error}
-        </div>
-      ) : documents.length === 0 ? (
-        <div className='rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center dark:border-slate-700 dark:bg-slate-800'>
-          <FileText size={48} className='mx-auto mb-3 text-slate-300 dark:text-slate-600' />
-          <h3 className='text-base font-bold text-slate-800 dark:text-white mb-1'>
-            No documents found
-          </h3>
-          <p className='text-xs text-slate-500 dark:text-slate-400'>
-            There are no documents matching your selected tab or search query.
-          </p>
-        </div>
+        <ErrorState
+          title="Error Loading Documents"
+          message={error}
+          onRetry={fetchDocuments}
+        />
+      ) : filteredDocs.length === 0 ? (
+        <EmptyState
+          title="No Documents Found"
+          description="There are currently no documents matching your search filters."
+          icon={FileText}
+          actionText="Upload Document"
+          onAction={() => setIsUploadOpen(true)}
+        />
       ) : viewMode === 'table' ? (
-        /* Table View */
-        <div className='overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800'>
-          <div className='overflow-x-auto'>
-            <table className='w-full text-left text-xs'>
-              <thead className='bg-slate-50 text-slate-500 dark:bg-slate-700/50 dark:text-slate-400 font-semibold uppercase tracking-wider border-b border-slate-200 dark:border-slate-700'>
-                <tr>
-                  <th className='p-4 px-6'>Document Title</th>
-                  <th className='p-4'>Category</th>
-                  <th className='p-4'>Uploaded By</th>
-                  <th className='p-4'>Date</th>
-                  <th className='p-4'>Size</th>
-                  <th className='p-4'>Downloads</th>
-                  <th className='p-4 text-right px-6'>Actions</th>
-                </tr>
-              </thead>
-              <tbody className='divide-y divide-slate-100 dark:divide-slate-700/60 font-medium text-slate-700 dark:text-slate-200'>
-                {documents.map((doc) => (
-                  <tr
-                    key={doc._id}
-                    className='hover:bg-slate-50/80 dark:hover:bg-slate-700/30 transition-colors'
-                  >
-                    <td className='p-4 px-6'>
-                      <div className='flex items-center gap-3'>
-                        <div className='flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-900/40 dark:text-blue-400'>
-                          <FileText size={18} />
+        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs dark:border-slate-800 dark:bg-slate-900">
+          <table className="w-full text-left text-sm text-slate-600 dark:text-slate-400">
+            <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase text-slate-500 dark:border-slate-800 dark:bg-slate-800/50 dark:text-slate-400">
+              <tr>
+                <th className="px-6 py-3.5 font-semibold">Document Title</th>
+                <th className="px-6 py-3.5 font-semibold">Category</th>
+                <th className="px-6 py-3.5 font-semibold">Format</th>
+                <th className="px-6 py-3.5 font-semibold">Downloads</th>
+                <th className="px-6 py-3.5 font-semibold text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              {filteredDocs.map((doc) => {
+                const docId = doc._id || doc.id;
+                return (
+                  <tr key={docId} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
+                    <td className="px-6 py-4 font-medium text-slate-900 dark:text-white">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400">
+                          <FileText className="h-5 w-5" />
                         </div>
                         <div>
-                          <span
-                            onClick={() => handleDetails(doc)}
-                            className='font-bold text-slate-900 hover:text-indigo-600 dark:text-white dark:hover:text-indigo-400 cursor-pointer block truncate max-w-xs'
-                          >
-                            {doc.title}
-                          </span>
-                          <span className='text-[10px] text-slate-400 block truncate max-w-xs'>
-                            {doc.description || 'Official Document'}
-                          </span>
+                          <p className="font-semibold">{doc.title}</p>
+                          <p className="line-clamp-1 text-xs text-slate-400">{doc.description || 'No description'}</p>
                         </div>
                       </div>
                     </td>
-                    <td className='p-4 whitespace-nowrap'>
-                      <span className='rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold text-slate-700 dark:bg-slate-700 dark:text-slate-300'>
-                        {doc.category || 'Guidelines'}
+                    <td className="px-6 py-4">
+                      <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                        {doc.category || 'General'}
                       </span>
                     </td>
-                    <td className='p-4 whitespace-nowrap'>
-                      {doc.uploadedBy?.name || 'Academic Faculty'}
+                    <td className="px-6 py-4 uppercase text-xs font-bold text-indigo-600 dark:text-indigo-400">
+                      {doc.fileType || 'PDF'}
                     </td>
-                    <td className='p-4 whitespace-nowrap text-slate-500'>
-                      {doc.createdAt ? new Date(doc.createdAt).toLocaleDateString() : 'N/A'}
+                    <td className="px-6 py-4 font-semibold text-slate-700 dark:text-slate-300">
+                      {doc.downloadsCount || doc.downloads || 0}
                     </td>
-                    <td className='p-4 whitespace-nowrap text-slate-500'>
-                      {doc.fileSize || '1.0 MB'}
-                    </td>
-                    <td className='p-4 whitespace-nowrap font-bold text-slate-800 dark:text-white'>
-                      {doc.downloadsCount || 0}
-                    </td>
-                    <td className='p-4 text-right px-6 whitespace-nowrap'>
-                      <div className='flex items-center justify-end gap-1.5'>
-                        <button
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          icon={Eye}
+                          onClick={() => {
+                            setSelectedDoc(doc);
+                            setIsPreviewOpen(true);
+                          }}
+                        >
+                          Preview
+                        </Button>
+                        <Button
+                          variant="primary"
+                          size="sm"
+                          icon={Download}
                           onClick={() => handleDownload(doc)}
-                          className='rounded-lg bg-indigo-50 p-2 text-indigo-600 hover:bg-indigo-100 dark:bg-indigo-900/30 dark:text-indigo-400 transition-colors'
-                          title='Download'
                         >
-                          <Download size={14} />
-                        </button>
-                        <button
-                          onClick={() => handlePreview(doc)}
-                          className='rounded-lg p-2 text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-700'
-                          title='Preview'
-                        >
-                          <Eye size={14} />
-                        </button>
-                        <button
-                          onClick={() => handleDetails(doc)}
-                          className='rounded-lg p-2 text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-700'
-                          title='Details'
-                        >
-                          <Info size={14} />
-                        </button>
-                        <button
-                          onClick={() => handleEdit(doc)}
-                          className='rounded-lg p-2 text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-700'
-                          title='Edit'
-                        >
-                          <Edit size={14} />
-                        </button>
+                          Download
+                        </Button>
                         <button
                           onClick={() => handleDelete(doc)}
-                          className='rounded-lg p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20'
-                          title='Delete'
+                          className="rounded-lg p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40"
+                          title="Delete"
                         >
-                          <Trash2 size={14} />
+                          <Trash2 className="h-4 w-4" />
                         </button>
                       </div>
                     </td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       ) : (
-        /* Grid View */
-        <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
-          {documents.map((doc) => (
-            <div
-              key={doc._id}
-              className='flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-800 hover:border-indigo-300 dark:hover:border-indigo-500/50 transition-all'
-            >
-              <div>
-                <div className='mb-3 flex items-center justify-between'>
-                  <span className='rounded-full bg-blue-50 px-2.5 py-0.5 text-[11px] font-bold text-blue-600 dark:bg-blue-900/40 dark:text-blue-300'>
-                    {doc.category || 'Guidelines'}
-                  </span>
-                  <span className='text-[10px] font-bold uppercase text-slate-400'>
-                    {doc.fileType || 'PDF'}
-                  </span>
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredDocs.map((doc) => {
+            const docId = doc._id || doc.id;
+            return (
+              <div
+                key={docId}
+                className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-xs transition-all hover:border-indigo-300 dark:border-slate-800 dark:bg-slate-900"
+              >
+                <div>
+                  <div className="flex items-center justify-between">
+                    <span className="rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-semibold text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-300">
+                      {doc.category || 'General'}
+                    </span>
+                    <span className="text-xs font-bold uppercase text-slate-400">
+                      {doc.fileType || 'PDF'}
+                    </span>
+                  </div>
+                  <h3 className="mt-3 font-bold text-slate-900 dark:text-white">{doc.title}</h3>
+                  <p className="mt-1 line-clamp-2 text-xs text-slate-500 dark:text-slate-400">
+                    {doc.description || 'No description provided.'}
+                  </p>
                 </div>
-                <h3
-                  onClick={() => handleDetails(doc)}
-                  className='mb-2 text-base font-bold text-slate-900 dark:text-white cursor-pointer hover:text-indigo-600 line-clamp-1'
-                >
-                  {doc.title}
-                </h3>
-                <p className='mb-4 text-xs text-slate-600 dark:text-slate-300 line-clamp-2 min-h-[32px]'>
-                  {doc.description || 'Official academic document.'}
-                </p>
-              </div>
-
-              <div>
-                <div className='mb-4 flex items-center justify-between text-xs text-slate-500 border-t border-slate-100 pt-3 dark:border-slate-700'>
-                  <span>{doc.fileSize || '1.2 MB'}</span>
-                  <span className='font-bold text-slate-700 dark:text-slate-200'>
-                    {doc.downloadsCount || 0} downloads
+                <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-3 dark:border-slate-800">
+                  <span className="text-xs text-slate-400">
+                    Downloads: {doc.downloadsCount || doc.downloads || 0}
                   </span>
-                </div>
-                <div className='flex items-center gap-2'>
-                  <button
-                    onClick={() => handleDownload(doc)}
-                    className='flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-indigo-600 py-2 text-xs font-bold text-white shadow hover:bg-indigo-700'
-                  >
-                    <Download size={14} /> Download
-                  </button>
-                  <button
-                    onClick={() => handlePreview(doc)}
-                    className='rounded-xl border border-slate-200 p-2 text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300'
-                  >
-                    <Eye size={16} />
-                  </button>
-                  <button
-                    onClick={() => handleDetails(doc)}
-                    className='rounded-xl border border-slate-200 p-2 text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300'
-                  >
-                    <Info size={16} />
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      icon={Eye}
+                      onClick={() => {
+                        setSelectedDoc(doc);
+                        setIsPreviewOpen(true);
+                      }}
+                    >
+                      Preview
+                    </Button>
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      icon={Download}
+                      onClick={() => handleDownload(doc)}
+                    >
+                      Download
+                    </Button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className='flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-4 px-6 dark:border-slate-700 dark:bg-slate-800 text-xs text-slate-600 dark:text-slate-300'>
-          <div>
-            Showing Page <span className='font-bold text-slate-900 dark:text-white'>{page}</span> of{' '}
-            <span className='font-bold text-slate-900 dark:text-white'>{totalPages}</span> ({totalCount} total)
-          </div>
-
-          <div className='flex items-center gap-2'>
-            <button
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-              disabled={page === 1}
-              className='flex items-center gap-1 rounded-xl border border-slate-300 px-3 py-1.5 font-semibold text-slate-700 hover:bg-slate-100 disabled:opacity-40 dark:border-slate-600 dark:text-slate-200'
-            >
-              <ChevronLeft size={16} /> Prev
-            </button>
-            <button
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-              disabled={page === totalPages}
-              className='flex items-center gap-1 rounded-xl border border-slate-300 px-3 py-1.5 font-semibold text-slate-700 hover:bg-slate-100 disabled:opacity-40 dark:border-slate-600 dark:text-slate-200'
-            >
-              Next <ChevronRight size={16} />
-            </button>
+      {/* Upload Modal */}
+      {isUploadOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4 backdrop-blur-xs">
+          <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-xl dark:border-slate-800 dark:bg-slate-900">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white">Upload New Document</h3>
+            <form onSubmit={handleUpload} className="mt-4 space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase">Document Title</label>
+                <input
+                  type="text"
+                  required
+                  value={uploadTitle}
+                  onChange={(e) => setUploadTitle(e.target.value)}
+                  placeholder="e.g. Project Evaluation Rubric 2026"
+                  className="mt-1 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-sm text-slate-900 dark:text-white"
+                />
+              </div>
+              <Select
+                label="Category"
+                value={uploadCategory}
+                onChange={(e) => setUploadCategory(e.target.value)}
+                options={['Guidelines', 'Policies', 'User Guides', 'Templates']}
+              />
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase">Description</label>
+                <textarea
+                  rows={3}
+                  value={uploadDescription}
+                  onChange={(e) => setUploadDescription(e.target.value)}
+                  placeholder="Summary of document requirements..."
+                  className="mt-1 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-sm text-slate-900 dark:text-white"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase">File</label>
+                <input
+                  type="file"
+                  onChange={(e) => setUploadFile(e.target.files[0])}
+                  className="mt-1 w-full text-xs text-slate-500 file:mr-3 file:rounded-xl file:border-0 file:bg-indigo-50 file:px-3 file:py-2 file:text-xs file:font-semibold file:text-indigo-600 dark:file:bg-indigo-950/60 dark:file:text-indigo-300"
+                />
+              </div>
+              <div className="flex justify-end gap-3 pt-2">
+                <Button variant="outline" type="button" onClick={() => setIsUploadOpen(false)}>
+                  Cancel
+                </Button>
+                <Button variant="primary" type="submit" loading={uploading}>
+                  Upload Document
+                </Button>
+              </div>
+            </form>
           </div>
         </div>
       )}
@@ -476,28 +477,11 @@ const DocumentLibrary = () => {
         onClose={() => setIsPreviewOpen(false)}
         onDownload={handleDownload}
       />
-
       <DetailsModal
         resource={selectedDoc}
         isOpen={isDetailsOpen}
         onClose={() => setIsDetailsOpen(false)}
         onDownload={handleDownload}
-        onEdit={(doc) => {
-          setIsDetailsOpen(false);
-          handleEdit(doc);
-        }}
-        onDelete={(doc) => {
-          setIsDetailsOpen(false);
-          handleDelete(doc);
-        }}
-        onShare={handleShare}
-      />
-
-      <EditModal
-        resource={selectedDoc}
-        isOpen={isEditOpen}
-        onClose={() => setIsEditOpen(false)}
-        onSaved={fetchDocuments}
       />
     </div>
   );

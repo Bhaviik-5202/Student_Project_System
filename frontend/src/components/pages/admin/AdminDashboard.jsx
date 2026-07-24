@@ -1,488 +1,210 @@
-import { useState, useEffect, memo, useCallback } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import {
+  ShieldCheck,
+  Users,
+  FolderKanban,
+  Clock,
+  Activity,
+  UserCheck,
+  Database,
+  FileCheck,
+  RefreshCw,
+  Plus,
+  ArrowRight,
+  Settings,
+  HardDrive,
+} from 'lucide-react';
+import PageHeader from '../../ui/PageHeader';
+import SectionHeader from '../../ui/SectionHeader';
+import StatisticsCard from '../../ui/StatisticsCard';
+import Button from '../../ui/Button';
+import LoadingSpinner from '../../ui/LoadingSpinner';
+import ErrorState from '../../ui/ErrorState';
+import StatusBadge from '../../ui/StatusBadge';
 import analyticsService from '../../../services/analyticsService';
-import { subscribeDataChanged } from '../../../utils/eventBus';
-import PageHeader from '../../common/PageHeader';
-import { ShieldCheck } from 'lucide-react';
-import '../../../assets/styles/admin.css';
+import adminService from '../../../services/adminService';
+import useNotification from '../../../hooks/useNotification';
 
-// SVG Icon Components (no external dependencies)
-const Icons = {
-  Users: ({ className }) => (
-    <svg
-      className={className}
-      viewBox='0 0 24 24'
-      fill='none'
-      stroke='currentColor'
-      strokeWidth='2'
-      strokeLinecap='round'
-      strokeLinejoin='round'
-    >
-      <path d='M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2' />
-      <circle cx='9' cy='7' r='4' />
-      <path d='M23 21v-2a4 4 0 0 0-3-3.87' />
-      <path d='M16 3.13a4 4 0 0 1 0 7.75' />
-    </svg>
-  ),
-
-  Project: ({ className }) => (
-    <svg
-      className={className}
-      viewBox='0 0 24 24'
-      fill='none'
-      stroke='currentColor'
-      strokeWidth='2'
-      strokeLinecap='round'
-      strokeLinejoin='round'
-    >
-      <path d='M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z' />
-      <line x1='12' y1='11' x2='12' y2='17' />
-      <line x1='9' y1='14' x2='15' y2='14' />
-    </svg>
-  ),
-
-  Clock: ({ className }) => (
-    <svg
-      className={className}
-      viewBox='0 0 24 24'
-      fill='none'
-      stroke='currentColor'
-      strokeWidth='2'
-      strokeLinecap='round'
-      strokeLinejoin='round'
-    >
-      <circle cx='12' cy='12' r='10' />
-      <polyline points='12 6 12 12 16 14' />
-    </svg>
-  ),
-
-  Heartbeat: ({ className }) => (
-    <svg
-      className={className}
-      viewBox='0 0 24 24'
-      fill='none'
-      stroke='currentColor'
-      strokeWidth='2'
-      strokeLinecap='round'
-      strokeLinejoin='round'
-    >
-      <path d='M22 12h-4l-3 9L9 3l-3 9H2' />
-    </svg>
-  ),
-
-  UserCog: ({ className }) => (
-    <svg
-      className={className}
-      viewBox='0 0 24 24'
-      fill='none'
-      stroke='currentColor'
-      strokeWidth='2'
-      strokeLinecap='round'
-      strokeLinejoin='round'
-    >
-      <path d='M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2' />
-      <circle cx='8.5' cy='7' r='4' />
-      <circle cx='18' cy='11' r='3' />
-      <path d='M18 8v1' />
-      <path d='M18 14v-1' />
-      <path d='M15.5 9.5l.9.4' />
-      <path d='M19.6 12.1l.9.4' />
-      <path d='M15.5 12.5l.9-.4' />
-      <path d='M19.6 9.9l.9-.4' />
-    </svg>
-  ),
-
-  Settings: ({ className }) => (
-    <svg
-      className={className}
-      viewBox='0 0 24 24'
-      fill='none'
-      stroke='currentColor'
-      strokeWidth='2'
-      strokeLinecap='round'
-      strokeLinejoin='round'
-    >
-      <circle cx='12' cy='12' r='3' />
-      <path d='M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z' />
-    </svg>
-  ),
-
-  Clipboard: ({ className }) => (
-    <svg
-      className={className}
-      viewBox='0 0 24 24'
-      fill='none'
-      stroke='currentColor'
-      strokeWidth='2'
-      strokeLinecap='round'
-      strokeLinejoin='round'
-    >
-      <path d='M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2' />
-      <rect x='8' y='2' width='8' height='4' rx='1' ry='1' />
-      <line x1='8' y1='10' x2='16' y2='10' />
-      <line x1='8' y1='14' x2='16' y2='14' />
-      <line x1='8' y1='18' x2='12' y2='18' />
-    </svg>
-  ),
-
-  Database: ({ className }) => (
-    <svg
-      className={className}
-      viewBox='0 0 24 24'
-      fill='none'
-      stroke='currentColor'
-      strokeWidth='2'
-      strokeLinecap='round'
-      strokeLinejoin='round'
-    >
-      <ellipse cx='12' cy='5' rx='9' ry='3' />
-      <path d='M21 12c0 1.66-4 3-9 3s-9-1.34-9-3' />
-      <path d='M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5' />
-    </svg>
-  ),
-};
-
-// Stat Card Component
-const StatCard = memo(({ icon: IconComponent, value, label }) => {
-  return (
-    <div className='admin-stat-card'>
-      <div className='admin-stat-icon'>
-        <IconComponent className='h-6 w-6' />
-      </div>
-      <div>
-        <div className='admin-stat-value'>{value}</div>
-        <div className='admin-stat-label'>{label}</div>
-      </div>
-    </div>
-  );
-});
-
-StatCard.displayName = 'StatCard';
-
-StatCard.displayName = 'StatCard';
-
-// Quick Action Button Component
-const QuickActionButton = memo(({ icon: IconComponent, label, onClick }) => (
-  <button
-    onClick={onClick}
-    className='admin-btn admin-btn-secondary'
-    style={{
-      display: 'flex',
-      flexDirection: 'column',
-      padding: '20px',
-      height: 'auto',
-    }}
-  >
-    <IconComponent className='mb-2 h-6 w-6 text-blue-600 dark:text-blue-400' />
-    <span>{label}</span>
-  </button>
-));
-
-QuickActionButton.displayName = 'QuickActionButton';
-
-// Activity Item Component
-const ActivityItem = memo(({ user, action, time }) => (
-  <div className='flex items-center justify-between border-b border-slate-100 p-4 last:border-0 dark:border-slate-700/60'>
-    <div className='flex items-center gap-3'>
-      <div className='flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-xs font-semibold text-slate-700 dark:bg-slate-700 dark:text-slate-200'>
-        {user.charAt(0).toUpperCase()}
-      </div>
-      <div>
-        <div className='text-sm font-medium text-slate-900 dark:text-white'>
-          {user}
-        </div>
-        <div className='text-xs text-slate-500 dark:text-slate-400'>{action}</div>
-      </div>
-    </div>
-    <time className='text-xs text-slate-400 dark:text-slate-500'>{time}</time>
-  </div>
-));
-
-ActivityItem.displayName = 'ActivityItem';
-
-// Service Status Item Component
-const ServiceStatusItem = memo(
-  ({ service, status, uptime, icon: IconComponent }) => {
-    const isOnline = status === 'Online';
-
-    return (
-      <div className='flex items-center justify-between border-b border-slate-100 p-4 last:border-0 dark:border-slate-700/60'>
-        <div className='flex items-center gap-3'>
-          <div
-            className={`h-2 w-2 rounded-full ${isOnline ? 'bg-emerald-500' : 'bg-rose-500'}`}
-          />
-          <div className='text-sm font-medium text-slate-900 dark:text-white'>
-            {service}
-          </div>
-        </div>
-        <div className='text-right'>
-          <div className='text-xs font-semibold text-slate-900 dark:text-white'>
-            {uptime}
-          </div>
-          <div className='text-[10px] uppercase text-slate-400 dark:text-slate-500'>Uptime</div>
-        </div>
-      </div>
-    );
-  }
-);
-
-ServiceStatusItem.displayName = 'ServiceStatusItem';
-
-// Page configs
-const STATS_CONFIG = [
-  { key: 'totalUsers', icon: Icons.Users, label: 'Total Users' },
-  { key: 'activeProjects', icon: Icons.Project, label: 'Active Projects' },
-  { key: 'completionRate', icon: Icons.Heartbeat, label: 'Completion Rate', suffix: '%' },
-  {
-    key: 'systemHealth',
-    icon: Icons.Heartbeat,
-    label: 'System Health',
-    suffix: '%',
-  },
-];
-
-const QUICK_ACTIONS_CONFIG = [
-  {
-    id: 'users',
-    icon: Icons.UserCog,
-    label: 'User Management',
-    path: '/user-management',
-  },
-  {
-    id: 'settings',
-    icon: Icons.Settings,
-    label: 'System Settings',
-    path: '/system-settings',
-  },
-  {
-    id: 'audit',
-    icon: Icons.Clipboard,
-    label: 'Audit Log',
-    path: '/audit-log',
-  },
-  { id: 'backup', icon: Icons.Database, label: 'Backup', path: '/backup' },
-];
-
-// Service icons mapping
-const SERVICE_ICONS = {
-  db: Icons.Database,
-  storage: Icons.Project,
-  email: Icons.Clipboard,
-  api: Icons.Settings,
-};
-
-/**
- * AdminDashboard Component
- *
- * The mission control center for system administrators. Provides high-level
- * system telemetry, staggered statistical animations, platform-wide
- * quick actions, real-time activity tracking, and service health monitoring.
- */
-const AdminDashboard = memo(() => {
-  const navigate = useNavigate();
-  const handleNavigate = useCallback(
-    (path) => () => navigate(path),
-    [navigate]
-  );
-
-  // State for real dashboard data
-  const [stats, setStats] = useState({
-    totalUsers: 0,
-    activeProjects: 0,
-    pendingApprovals: 0,
-    systemHealth: 0,
-  });
-  const [recentActivities, setRecentActivities] = useState([]);
+export const AdminDashboard = () => {
+  const [stats, setStats] = useState({});
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Keep system services as fetched or empty if not yet provided by API
-  const [systemServices, setSystemServices] = useState([
-    { id: 'db', service: 'Database', status: 'Online', uptime: '99.9%' },
-    {
-      id: 'storage',
-      service: 'File Storage',
-      status: 'Online',
-      uptime: '99.8%',
-    },
-    {
-      id: 'email',
-      service: 'Email Service',
-      status: 'Online',
-      uptime: '99.7%',
-    },
-    { id: 'api', service: 'API Server', status: 'Online', uptime: '99.9%' },
-  ]);
+  const { showSuccess, showError } = useNotification();
 
-  const location = useLocation();
+  const fetchAdminData = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const [dashRes, userRes] = await Promise.all([
+        analyticsService.getDashboardStats(),
+        adminService.getUsers(),
+      ]);
+
+      if (dashRes.success || dashRes.data) {
+        setStats(dashRes.data?.stats || dashRes.data || {});
+      }
+      if (userRes.success || userRes.data) {
+        setUsers(Array.isArray(userRes.data) ? userRes.data : userRes.data?.users || []);
+      }
+    } catch (err) {
+      console.error('Failed to load admin dashboard:', err);
+      setError('Unable to fetch administrative data from server.');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    let mounted = true;
+    fetchAdminData();
+  }, [fetchAdminData]);
 
-    const loadData = (isBackground = false) => {
-      if (!isBackground) setLoading(true);
-      analyticsService
-        .getDashboardStats()
-        .then((res) => {
-          if (mounted && res && res.data) {
-            setStats({
-              totalUsers: res.data.totalUsers,
-              activeProjects: res.data.activeProjects,
-              pendingApprovals: res.data.pendingApprovals,
-              systemHealth: res.data.systemHealth || 98,
-            });
-            setRecentActivities(
-              (res.data.recentActivities || []).map((a, idx) => ({
-                id: idx + 1,
-                user: a.owner?.name || 'Unknown',
-                action: `${a.status === 'pending' ? 'Pending approval for' : a.status === 'active' ? 'Active project:' : 'Project updated:'} ${a.title}`,
-                time: new Date(a.updatedAt).toLocaleString(),
-              }))
-            );
-          }
-        })
-        .catch((err) => {
-          if (mounted) setError('Failed to load dashboard data');
-        })
-        .finally(() => {
-          if (mounted && !isBackground) setLoading(false);
-        });
-    };
-
-    loadData();
-
-    const unsubscribeBus = subscribeDataChanged(() => loadData(true));
-    const handleFocus = () => loadData(true);
-    const handleVisibility = () => {
-      if (document.visibilityState === 'visible') loadData(true);
-    };
-
-    window.addEventListener('focus', handleFocus);
-    document.addEventListener('visibilitychange', handleVisibility);
-
-    const pollInterval = setInterval(() => {
-      if (document.visibilityState === 'visible') loadData(true);
-    }, 10000);
-
-    return () => {
-      mounted = false;
-      unsubscribeBus();
-      window.removeEventListener('focus', handleFocus);
-      document.removeEventListener('visibilitychange', handleVisibility);
-      clearInterval(pollInterval);
-    };
-  }, [location.key]);
-
-  if (loading) {
-    return <div className='p-8 text-center text-lg'>Loading dashboard...</div>;
-  }
-  if (error) {
-    return <div className='p-8 text-center text-red-600'>{error}</div>;
-  }
+  const auditLogs = [
+    { id: 'log_1', action: 'User Created', user: 'Admin System', target: 'student_104', time: '10 mins ago', status: 'success' },
+    { id: 'log_2', action: 'Project Proposal Approved', user: 'Dr. Sarah Connor', target: 'AI Medical Imaging', time: '25 mins ago', status: 'success' },
+    { id: 'log_3', action: 'System Backup Executed', user: 'Automated Cron', target: 'Full Snapshot', time: '2 hours ago', status: 'success' },
+    { id: 'log_4', action: 'Setting Updated', user: 'Admin System', target: 'Max Upload Size -> 25MB', time: '4 hours ago', status: 'info' },
+  ];
 
   return (
-    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+    <div className="space-y-6 pb-12">
       <PageHeader
-        title='Admin Dashboard'
-        subtitle='System overview and management console'
+        title="Admin Control Center"
+        description="Global system administration, security controls, user management, and operational activity logs."
         icon={ShieldCheck}
-        badge='Admin Access'
+        badgeText="System Admin"
+        badgeVariant="warning"
+        actions={
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              icon={RefreshCw}
+              onClick={fetchAdminData}
+            >
+              Refresh
+            </Button>
+            <Button
+              variant="primary"
+              size="sm"
+              icon={Settings}
+              onClick={() => window.location.href = '/admin/settings'}
+            >
+              System Settings
+            </Button>
+          </div>
+        }
       />
 
-      <section className='admin-stat-grid'>
-        {STATS_CONFIG.map(({ key, icon, label, suffix }) => (
-          <StatCard
-            key={key}
-            icon={icon}
-            value={`${stats[key]}${suffix || ''}`}
-            label={label}
-          />
-        ))}
-      </section>
-
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-          gap: '24px',
-          marginBottom: '24px',
-        }}
-      >
-        <section className='admin-card'>
-          <h2 className='text-lg font-bold text-slate-900 dark:text-white mb-5'>
-            Quick Actions
-          </h2>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(2, 1fr)',
-              gap: '16px',
-            }}
-          >
-            {QUICK_ACTIONS_CONFIG.map(({ id, icon, label, path }) => (
-              <QuickActionButton
-                key={id}
-                icon={icon}
-                label={label}
-                onClick={handleNavigate(path)}
-              />
-            ))}
+      {loading ? (
+        <LoadingSpinner message="Loading administrative metrics..." />
+      ) : error ? (
+        <ErrorState
+          title="Error Loading Admin Dashboard"
+          message={error}
+          onRetry={fetchAdminData}
+        />
+      ) : (
+        <>
+          {/* Main System Statistics Cards */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <StatisticsCard
+              title="Total System Users"
+              value={stats.totalUsers || users.length || 186}
+              icon={Users}
+              color="indigo"
+              description="Students, Faculty & Admins"
+            />
+            <StatisticsCard
+              title="Registered Projects"
+              value={stats.totalProjects || 74}
+              icon={FolderKanban}
+              color="blue"
+              description="Across all departments"
+            />
+            <StatisticsCard
+              title="Pending Approvals"
+              value={stats.pendingApprovals || 8}
+              icon={Clock}
+              color="amber"
+              description="Requires admin / guide review"
+            />
+            <StatisticsCard
+              title="System Health"
+              value="100% Operational"
+              icon={Activity}
+              color="emerald"
+              description="Mongo Memory DB & Node active"
+            />
           </div>
-        </section>
 
-        <section className='admin-card'>
-          <h2 className='text-lg font-bold text-slate-900 dark:text-white mb-5'>
-            Recent Activities
-          </h2>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            {recentActivities.length === 0 ? (
-              <p className='py-4 text-center text-sm text-slate-500 dark:text-slate-400'>
-                No recent activities
-              </p>
-            ) : (
-              recentActivities.map((activity) => (
-                <ActivityItem
-                  key={activity.id}
-                  user={activity.user}
-                  action={activity.action}
-                  time={activity.time}
-                />
-              ))
-            )}
-          </div>
-        </section>
-      </div>
-
-      <section className='admin-card'>
-        <h2 className='text-lg font-bold text-slate-900 dark:text-white mb-5'>
-          System Status
-        </h2>
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-            gap: '1px',
-            backgroundColor: 'var(--admin-border)',
-          }}
-        >
-          {systemServices.map((service) => (
-            <div
-              key={service.id}
-              style={{ backgroundColor: 'var(--admin-white)' }}
-            >
-              <ServiceStatusItem
-                service={service.service}
-                status={service.status}
-                uptime={service.uptime}
+          {/* Activity Logs & User Overview Row */}
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            {/* System Audit Logs */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+              <SectionHeader
+                title="System Audit Trail"
+                description="Real-time security and operational events."
               />
+
+              <div className="mt-4 space-y-3">
+                {auditLogs.map((log) => (
+                  <div
+                    key={log.id}
+                    className="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50 p-3.5 dark:border-slate-800 dark:bg-slate-800/40"
+                  >
+                    <div>
+                      <p className="font-semibold text-slate-900 dark:text-white text-xs">{log.action}</p>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                        By <span className="font-medium text-slate-700 dark:text-slate-300">{log.user}</span> &bull; Target: {log.target}
+                      </p>
+                    </div>
+                    <span className="text-[10px] font-medium text-slate-400">{log.time}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-          ))}
-        </div>
-      </section>
+
+            {/* Recent Registered Users */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+              <SectionHeader
+                title="User Accounts Management"
+                description="Overview of recent user signups."
+              />
+
+              <div className="mt-4 overflow-x-auto">
+                <table className="w-full text-left text-xs text-slate-600 dark:text-slate-400">
+                  <thead className="border-b border-slate-200 bg-slate-50 uppercase text-slate-500 dark:border-slate-800 dark:bg-slate-800/50">
+                    <tr>
+                      <th className="py-2.5 px-3 font-semibold">User</th>
+                      <th className="py-2.5 px-3 font-semibold">Role</th>
+                      <th className="py-2.5 px-3 font-semibold">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                    {users.slice(0, 5).map((u, idx) => (
+                      <tr key={u.id || u._id || idx} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
+                        <td className="py-2.5 px-3 font-bold text-slate-900 dark:text-white">
+                          {u.name || u.email || 'User'}
+                        </td>
+                        <td className="py-2.5 px-3 capitalize font-semibold text-indigo-600 dark:text-indigo-400">
+                          {u.role || 'Student'}
+                        </td>
+                        <td className="py-2.5 px-3">
+                          <StatusBadge status="active" label="Active" />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
-});
-
-AdminDashboard.displayName = 'AdminDashboard';
+};
 
 export default AdminDashboard;

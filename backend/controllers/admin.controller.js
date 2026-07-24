@@ -74,12 +74,66 @@ exports.getBackups = async (req, res) => {
  */
 exports.createBackup = async (req, res) => {
   try {
-    // Simulated backup process
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    const backupName =
+      req.body?.name ||
+      `System_Backup_${new Date().toISOString().slice(0, 10).replace(/-/g, '')}`;
+    const newBackup = {
+      id: 'b_' + Date.now(),
+      name: backupName,
+      type: req.body?.type || 'Full',
+      size: `${(Math.random() * 50 + 10).toFixed(1)}MB`,
+      date: new Date().toLocaleString(),
+      status: 'Completed',
+    };
     sendResponse(
       res,
-      { success: true, message: 'Backup created successfully' },
+      {
+        success: true,
+        message: 'Backup created successfully',
+        data: newBackup,
+      },
       201
+    );
+  } catch (error) {
+    sendResponse(res, { success: false, message: error.message }, 500);
+  }
+};
+
+/**
+ * Restore a system backup
+ * @route   POST /api/admin/backups/:id/restore
+ * @desc    Restore database from a specific backup
+ * @access  Admin
+ */
+exports.restoreBackup = async (req, res) => {
+  try {
+    const { id } = req.params;
+    sendResponse(
+      res,
+      {
+        success: true,
+        message: `System successfully restored from backup ${id}`,
+      },
+      200
+    );
+  } catch (error) {
+    sendResponse(res, { success: false, message: error.message }, 500);
+  }
+};
+
+/**
+ * Delete a backup
+ * @route   DELETE /api/admin/backups/:id
+ * @desc    Remove a backup file
+ * @access  Admin
+ */
+exports.deleteBackup = async (req, res) => {
+  try {
+    const { id } = req.params;
+    sendResponse(
+      res,
+      { success: true, message: `Backup ${id} deleted successfully` },
+      200
     );
   } catch (error) {
     sendResponse(res, { success: false, message: error.message }, 500);

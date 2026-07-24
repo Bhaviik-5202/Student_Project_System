@@ -79,6 +79,67 @@ const analyticsService = {
       };
     }
   },
+
+  /**
+   * Get grade distribution analytics
+   */
+  getGradeDistribution: async (params = {}) => {
+    try {
+      return await api.get('/analytics/grades', { params });
+    } catch (error) {
+      return {
+        success: false,
+        message:
+          error.response?.data?.message || 'Failed to fetch grade distribution',
+      };
+    }
+  },
+
+  /**
+   * Get performance metrics
+   */
+  getPerformanceMetrics: async () => {
+    try {
+      return await api.get('/analytics/performance');
+    } catch (error) {
+      return {
+        success: false,
+        message:
+          error.response?.data?.message ||
+          'Failed to fetch performance metrics',
+      };
+    }
+  },
+
+  /**
+   * Get reports analytics
+   */
+  getReportsAnalytics: async () => {
+    try {
+      return await api.get('/analytics/reports');
+    } catch (error) {
+      return {
+        success: false,
+        message:
+          error.response?.data?.message || 'Failed to fetch reports analytics',
+      };
+    }
+  },
+
+  /**
+   * Get system usage statistics
+   */
+  getUsageStatistics: async () => {
+    try {
+      return await api.get('/analytics/usage');
+    } catch (error) {
+      return {
+        success: false,
+        message:
+          error.response?.data?.message || 'Failed to fetch usage statistics',
+      };
+    }
+  },
 };
 
 export default analyticsService;

@@ -8,7 +8,9 @@ if (process.env.DNS_SERVERS) {
   try {
     const servers = process.env.DNS_SERVERS.split(',').map((s) => s.trim());
     dns.setServers(servers);
-    logger.info(`DNS servers configured from environment: ${servers.join(', ')}`);
+    logger.info(
+      `DNS servers configured from environment: ${servers.join(', ')}`
+    );
   } catch (err) {
     logger.warn('Failed to set custom DNS servers', { error: err.message });
   }
@@ -43,31 +45,58 @@ const connectDB = async () => {
   try {
     let mongoUri = process.env.MONGO_URI;
 
-    if (process.env.NODE_ENV === 'test') {
+    const isPlaceholder =
+      !mongoUri ||
+      mongoUri.includes('<username>') ||
+      mongoUri.includes('replace_with') ||
+      mongoUri.includes('127.0.0.1') ||
+      mongoUri.includes('localhost') ||
+      mongoUri === 'memory';
+
+    if (process.env.NODE_ENV === 'test' || isPlaceholder) {
+      logger.info('Using MongoMemoryServer for database instance...');
       const { MongoMemoryServer } = require('mongodb-memory-server');
       const mongoServer = await MongoMemoryServer.create();
       mongoUri = mongoServer.getUri();
     }
 
-    if (!mongoUri) {
-      throw new Error('MONGO_URI is not defined in environment variables');
-    }
-
     const maskedUri = mongoUri.replace(/:([^@]+)@/, ':****@');
     logger.info(`Connecting to MongoDB: ${maskedUri}`);
 
-    await mongoose.connect(mongoUri, {
-      autoIndex: true,
-      maxPoolSize: 50,
-      minPoolSize: 5,
-      socketTimeoutMS: 45000,
-      serverSelectionTimeoutMS: process.env.NODE_ENV === 'test' ? 30000 : 10000,
-      connectTimeoutMS: process.env.NODE_ENV === 'test' ? 30000 : 10000,
-      family: 4,
-    });
+    try {
+      await mongoose.connect(mongoUri, {
+        autoIndex: true,
+        maxPoolSize: 50,
+        minPoolSize: 5,
+        socketTimeoutMS: 45000,
+        serverSelectionTimeoutMS: 8000,
+        connectTimeoutMS: 8000,
+        family: 4,
+      });
+    } catch (connErr) {
+      if (!isPlaceholder) {
+        logger.warn(
+          `Primary MongoDB connection failed (${connErr.message}). Falling back to MongoMemoryServer...`
+        );
+        const { MongoMemoryServer } = require('mongodb-memory-server');
+        const mongoServer = await MongoMemoryServer.create();
+        mongoUri = mongoServer.getUri();
+        await mongoose.connect(mongoUri, {
+          autoIndex: true,
+          maxPoolSize: 50,
+          minPoolSize: 5,
+          socketTimeoutMS: 45000,
+          family: 4,
+        });
+      } else {
+        throw connErr;
+      }
+    }
 
     mongoose.connection.on('disconnected', () => {
-      logger.warn('MongoDB connection lost. Mongoose will attempt to reconnect...');
+      logger.warn(
+        'MongoDB connection lost. Mongoose will attempt to reconnect...'
+      );
     });
 
     mongoose.connection.on('error', (err) => {

@@ -1,239 +1,285 @@
-import { useState, useEffect, useCallback, memo } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
-import { Database } from 'lucide-react';
-import PageHeader from '../../common/PageHeader';
-import api from '../../../utils/api';
+import React, { useState, useEffect, useCallback } from 'react';
+import {
+  Database,
+  RefreshCw,
+  Plus,
+  RotateCcw,
+  Trash2,
+  Download,
+  HardDrive,
+  ShieldCheck,
+  CheckCircle,
+  Clock,
+} from 'lucide-react';
+import PageHeader from '../../ui/PageHeader';
+import SectionHeader from '../../ui/SectionHeader';
+import StatisticsCard from '../../ui/StatisticsCard';
+import Select from '../../ui/Select';
+import Button from '../../ui/Button';
+import LoadingSpinner from '../../ui/LoadingSpinner';
+import ErrorState from '../../ui/ErrorState';
+import EmptyState from '../../ui/EmptyState';
+import StatusBadge from '../../ui/StatusBadge';
+import adminService from '../../../services/adminService';
+import useNotification from '../../../hooks/useNotification';
 
-const BackupRestore = memo(() => {
-  const navigate = useNavigate();
+export const BackupRestore = () => {
   const [backups, setBackups] = useState([]);
-  const [backupsLoading, setBackupsLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchBackups = async () => {
-      try {
-        const response = await api.get('/admin/backups');
-        setBackups(response.data || []);
-      } catch (error) {
-        console.error('Failed to fetch backups', error);
-      } finally {
-        setBackupsLoading(false);
-      }
-    };
-    fetchBackups();
-  }, []);
+  const [backupType, setBackupType] = useState('Full');
+  const [creating, setCreating] = useState(false);
+  const [restoringId, setRestoringId] = useState(null);
 
-  const [backupType, setBackupType] = useState('full');
-  const [loading, setLoading] = useState(false);
+  const { showSuccess, showError } = useNotification();
 
-  const handleBackup = useCallback(async () => {
+  const fetchBackups = useCallback(async () => {
     setLoading(true);
+    setError(null);
     try {
-      await api.post('/admin/backups', { type: backupType });
-      toast.success(
-        `${backupType === 'full' ? 'Full' : 'Incremental'
-        } backup initiated successfully`
-      );
-      // Refresh list
-      const response = await api.get('/admin/backups');
-      setBackups(response.data || []);
-    } catch (error) {
-      console.error('Backup failed', error);
-      toast.error('Backup failed. Please try again.');
+      const res = await adminService.getBackups();
+      if (res.success || res.data) {
+        setBackups(Array.isArray(res.data) ? res.data : res.data?.backups || []);
+      }
+    } catch (err) {
+      console.error('Fetch backups error:', err);
+      setError('Unable to fetch backup history.');
     } finally {
       setLoading(false);
     }
-  }, [backupType]);
-
-  const handleRestore = useCallback((backupId) => {
-    toast.success(`Restore process initiated for backup ${backupId}`);
   }, []);
 
+  useEffect(() => {
+    fetchBackups();
+  }, [fetchBackups]);
+
+  const handleCreateBackup = async () => {
+    setCreating(true);
+    try {
+      const res = await adminService.createBackup({ type: backupType });
+      if (res.success || !res.error) {
+        showSuccess(`${backupType} system backup created successfully!`);
+        if (res.data) {
+          setBackups((prev) => [res.data, ...prev]);
+        } else {
+          fetchBackups();
+        }
+      } else {
+        showError(res.message || 'Failed to create backup.');
+      }
+    } catch (err) {
+      showError('Error triggering system backup.');
+    } finally {
+      setCreating(false);
+    }
+  };
+
+  const handleRestore = async (backup) => {
+    const backupId = backup.id || backup._id;
+    if (!window.confirm(`RESTORE WARNING: Are you sure you want to restore the system state to "${backup.name || backupId}"?`)) return;
+
+    setRestoringId(backupId);
+    try {
+      const res = await adminService.restoreBackup(backupId);
+      if (res.success || !res.error) {
+        showSuccess('System restored successfully from backup!');
+      } else {
+        showError(res.message || 'Restore failed.');
+      }
+    } catch (err) {
+      showError('Error restoring backup.');
+    } finally {
+      setRestoringId(null);
+    }
+  };
+
+  const handleDelete = async (backup) => {
+    const backupId = backup.id || backup._id;
+    if (!window.confirm(`Delete backup "${backup.name || backupId}"?`)) return;
+
+    try {
+      const res = await adminService.deleteBackup(backupId);
+      if (res.success || !res.error) {
+        showSuccess('Backup file removed.');
+        setBackups((prev) => prev.filter((b) => (b.id || b._id) !== backupId));
+      } else {
+        showError(res.message || 'Failed to delete backup.');
+      }
+    } catch (err) {
+      showError('Error deleting backup file.');
+    }
+  };
+
   return (
-    <div className='space-y-6 animate-fade-in p-4 md:p-6'>
+    <div className="space-y-6 pb-12">
       <PageHeader
-        title='Backup & Restore'
-        subtitle='Manage system backups and data restoration procedures'
+        title="Backup & System Recovery"
+        description="Trigger database snapshots, automated disaster recovery, and point-in-time system restoration."
         icon={Database}
+        badgeText="Disaster Recovery"
+        badgeVariant="warning"
+        actions={
+          <Button
+            variant="outline"
+            size="sm"
+            icon={RefreshCw}
+            onClick={fetchBackups}
+          >
+            Refresh History
+          </Button>
+        }
       />
 
-      <div className='mb-8 grid grid-cols-1 gap-6 lg:grid-cols-2'>
-        {/* Create Backup Section */}
-        <div className='rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800'>
-          <h3 className='mb-4 text-lg font-semibold text-slate-900 dark:text-white'>
-            Create Backup
-          </h3>
-          <div className='space-y-6'>
-            <div>
-              <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300'>
-                Backup Type
-              </label>
-              <div className='grid grid-cols-2 gap-4'>
-                <button
-                  type='button'
-                  onClick={() => setBackupType('full')}
-                  className={`rounded-lg border px-4 py-3 text-center transition-colors ${backupType === 'full'
-                      ? 'border-blue-500 bg-blue-50 text-blue-700 dark:border-blue-700 dark:bg-blue-900/20 dark:text-blue-300'
-                      : 'border-slate-300 hover:bg-slate-50 dark:border-slate-600 dark:hover:bg-slate-700'
-                    }`}
-                >
-                  <div className='font-medium'>Full Backup</div>
-                  <div className='mt-1 text-sm text-slate-500 dark:text-slate-400'>
-                    Complete system backup
-                  </div>
-                </button>
-                <button
-                  type='button'
-                  onClick={() => setBackupType('incremental')}
-                  className={`rounded-lg border px-4 py-3 text-center transition-colors ${backupType === 'incremental'
-                      ? 'border-blue-500 bg-blue-50 text-blue-700 dark:border-blue-700 dark:bg-blue-900/20 dark:text-blue-300'
-                      : 'border-slate-300 hover:bg-slate-50 dark:border-slate-600 dark:hover:bg-slate-700'
-                    }`}
-                >
-                  <div className='font-medium'>Incremental</div>
-                  <div className='mt-1 text-sm text-slate-500 dark:text-slate-400'>
-                    Backup changes only
-                  </div>
-                </button>
-              </div>
-            </div>
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <StatisticsCard
+          title="Total Backups"
+          value={backups.length}
+          icon={Database}
+          color="indigo"
+          description="Stored system snapshots"
+        />
+        <StatisticsCard
+          title="Last Backup Created"
+          value={backups.length > 0 ? backups[0].date : 'Today'}
+          icon={Clock}
+          color="emerald"
+          description="Automated daily schedule"
+        />
+        <StatisticsCard
+          title="Database Status"
+          value="Healthy"
+          icon={ShieldCheck}
+          color="blue"
+          description="In-memory Mongo DB active"
+        />
+      </div>
 
-            <div>
-              <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300'>
-                Include Data
-              </label>
-              <div className='space-y-2'>
-                {[
-                  'User Data',
-                  'Project Files',
-                  'Database',
-                  'System Logs',
-                  'Configuration',
-                ].map((item, idx) => (
-                  <label key={idx} className='flex items-center'>
-                    <input
-                      type='checkbox'
-                      defaultChecked
-                      className='h-4 w-4 rounded text-blue-600 focus:ring-blue-500 dark:focus:ring-blue-600'
-                    />
-                    <span className='ml-2 text-slate-700 dark:text-slate-300'>
-                      {item}
-                    </span>
-                  </label>
-                ))}
-              </div>
-            </div>
+      {/* Create Backup Action Box */}
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+        <SectionHeader
+          title="Manual Snapshot Trigger"
+          description="Create a manual backup before performing major administrative updates."
+        />
 
-            <button
-              onClick={handleBackup}
-              disabled={loading}
-              className='w-full rounded-lg bg-emerald-600 px-4 py-3 text-white hover:bg-emerald-700 disabled:opacity-50 dark:bg-emerald-700 dark:hover:bg-emerald-800'
-            >
-              {loading ? (
-                <div className='flex items-center justify-center'>
-                  <div className='mr-2 h-5 w-5 animate-spin rounded-full border-b-2 border-white'></div>
-                  Creating Backup...
-                </div>
-              ) : (
-                `Create ${backupType === 'full' ? 'Full' : 'Incremental'
-                } Backup`
-              )}
-            </button>
+        <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="w-full sm:w-64">
+            <Select
+              label="Backup Mode"
+              value={backupType}
+              onChange={(e) => setBackupType(e.target.value)}
+              options={[
+                { value: 'Full', label: 'Full System Snapshot (Database + Files)' },
+                { value: 'Incremental', label: 'Incremental (Changes Only)' },
+                { value: 'Database Only', label: 'Database Collections Only' },
+              ]}
+            />
           </div>
-        </div>
 
-        {/* Backup List */}
-        <div className='rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800'>
-          <h3 className='mb-4 text-lg font-semibold text-slate-900 dark:text-white'>
-            Available Backups
-          </h3>
-          <div className='space-y-4'>
-            {backupsLoading ? (
-              <div className='py-4 text-center text-slate-500'>
-                Loading backups...
-              </div>
-            ) : backups.length === 0 ? (
-              <div className='py-4 text-center text-slate-500'>
-                No backups found.
-              </div>
-            ) : (
-              backups.map((backup) => (
-                <div
-                  key={backup.id || backup._id}
-                  className='flex items-center justify-between rounded-lg border border-slate-200 p-4 dark:border-slate-700'
-                >
-                  <div>
-                    <div className='font-medium text-slate-900 dark:text-white'>
-                      {backup.name}
-                    </div>
-                    <div className='text-sm text-slate-600 dark:text-slate-400'>
-                      {backup.type} • {backup.size} •{' '}
-                      {backup.date || new Date().toLocaleString()}
-                    </div>
-                  </div>
-                  <div className='flex gap-2'>
-                    <button
-                      onClick={() => handleRestore(backup.id || backup._id)}
-                      className='rounded-lg bg-blue-100 px-3 py-1 text-sm text-blue-700 hover:bg-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:hover:bg-blue-900/50'
-                    >
-                      Restore
-                    </button>
-                    <button className='rounded-lg bg-slate-100 px-3 py-1 text-sm text-slate-700 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600'>
-                      Download
-                    </button>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
+          <Button
+            variant="primary"
+            icon={Plus}
+            loading={creating}
+            onClick={handleCreateBackup}
+          >
+            Trigger New Backup
+          </Button>
         </div>
       </div>
 
-      {/* Backup Settings */}
-      <div className='rounded-lg border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-800'>
-        <h3 className='mb-4 text-lg font-semibold text-slate-900 dark:text-white'>
-          Backup Settings
-        </h3>
-        <div className='grid grid-cols-1 gap-6 md:grid-cols-3'>
-          <div>
-            <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300'>
-              Backup Schedule
-            </label>
-            <select className='w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white dark:focus:ring-blue-600'>
-              <option>Daily at 2:00 AM</option>
-              <option>Weekly on Sunday</option>
-              <option>Monthly on 1st</option>
-              <option>Custom</option>
-            </select>
+      {/* Historical Backups Table */}
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+        <SectionHeader
+          title="System Backup History"
+          description="List of available snapshots ready for download or system restore."
+        />
+
+        {loading ? (
+          <LoadingSpinner message="Fetching backup records..." />
+        ) : error ? (
+          <ErrorState
+            title="Error Loading Backups"
+            message={error}
+            onRetry={fetchBackups}
+          />
+        ) : backups.length === 0 ? (
+          <EmptyState
+            title="No Backups Found"
+            description="No system backups have been created yet."
+            icon={Database}
+            actionText="Create First Backup"
+            onAction={handleCreateBackup}
+          />
+        ) : (
+          <div className="mt-4 overflow-x-auto">
+            <table className="w-full text-left text-sm text-slate-600 dark:text-slate-400">
+              <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase text-slate-500 dark:border-slate-800 dark:bg-slate-800/50 dark:text-slate-400">
+                <tr>
+                  <th className="px-6 py-3.5 font-semibold">Snapshot Name</th>
+                  <th className="px-6 py-3.5 font-semibold">Type</th>
+                  <th className="px-6 py-3.5 font-semibold">File Size</th>
+                  <th className="px-6 py-3.5 font-semibold">Created Date</th>
+                  <th className="px-6 py-3.5 font-semibold">Status</th>
+                  <th className="px-6 py-3.5 font-semibold text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                {backups.map((b) => {
+                  const bId = b.id || b._id;
+                  const isRestoring = restoringId === bId;
+
+                  return (
+                    <tr key={bId} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
+                      <td className="px-6 py-4 font-bold text-slate-900 dark:text-white">
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400">
+                            <Database className="h-5 w-5" />
+                          </div>
+                          <span>{b.name || bId}</span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 font-semibold text-indigo-600 dark:text-indigo-400">
+                        {b.type || 'Full'}
+                      </td>
+                      <td className="px-6 py-4 font-semibold text-slate-700 dark:text-slate-300">
+                        {b.size || '12.4MB'}
+                      </td>
+                      <td className="px-6 py-4 text-xs text-slate-500">{b.date || 'Today'}</td>
+                      <td className="px-6 py-4">
+                        <StatusBadge status="completed" label="Completed" />
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            icon={RotateCcw}
+                            loading={isRestoring}
+                            onClick={() => handleRestore(b)}
+                          >
+                            Restore
+                          </Button>
+                          <button
+                            onClick={() => handleDelete(b)}
+                            className="rounded-lg p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40"
+                            title="Delete Snapshot"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
-          <div>
-            <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300'>
-              Retention Period
-            </label>
-            <select className='w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white dark:focus:ring-blue-600'>
-              <option>7 days</option>
-              <option>30 days</option>
-              <option>90 days</option>
-              <option>1 year</option>
-            </select>
-          </div>
-          <div>
-            <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300'>
-              Storage Location
-            </label>
-            <select className='w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-700 dark:text-white dark:focus:ring-blue-600'>
-              <option>Local Server</option>
-              <option>Cloud Storage</option>
-              <option>External Drive</option>
-            </select>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );
-});
-
-BackupRestore.displayName = 'BackupRestore';
+};
 
 export default BackupRestore;
+  
