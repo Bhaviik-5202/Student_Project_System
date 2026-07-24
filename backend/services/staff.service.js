@@ -19,7 +19,10 @@ const response = (error, data, message) => ({ error, data, message });
  * @returns {Promise<Object>} Formatted service response with onboarded staff data
  */
 const userRepository = require('../repositories/user.repository');
-const { generateFacultyId, normalizeDepartment } = require('../utils/idGenerator');
+const {
+  generateFacultyId,
+  normalizeDepartment,
+} = require('../utils/idGenerator');
 
 exports.create = async (data) => {
   try {
@@ -49,14 +52,20 @@ exports.create = async (data) => {
 exports.getAll = async () => {
   try {
     const [facultyUsers, legacyStaff] = await Promise.all([
-      userRepository.findAll({ role: { $in: ['faculty', 'admin'] } }, { select: '-password', lean: true }),
+      userRepository.findAll(
+        { role: { $in: ['faculty', 'admin'] } },
+        { select: '-password', lean: true }
+      ),
       staffRepository.findAll(),
     ]);
 
     const staffMap = new Map();
 
     (facultyUsers || []).forEach((u) => {
-      const facId = u.facultyId || u.staffId || `FAC${new Date().getFullYear()}${u._id.toString().slice(-4).toUpperCase()}`;
+      const facId =
+        u.facultyId ||
+        u.staffId ||
+        `FAC${new Date().getFullYear()}${u._id.toString().slice(-4).toUpperCase()}`;
       staffMap.set(u.email.toLowerCase(), {
         _id: u._id,
         id: u._id,
@@ -66,7 +75,9 @@ exports.getAll = async () => {
         name: u.name,
         email: u.email,
         role: u.role === 'admin' ? 'Administrator' : 'Faculty',
-        designation: u.designation || (u.role === 'admin' ? 'Head of Department' : 'Assistant Professor'),
+        designation:
+          u.designation ||
+          (u.role === 'admin' ? 'Head of Department' : 'Assistant Professor'),
         department: normalizeDepartment(u.department),
         phone: u.phone || '',
         status: u.status === 'inactive' ? 'Inactive' : 'Active',
@@ -77,7 +88,10 @@ exports.getAll = async () => {
 
     (legacyStaff || []).forEach((s) => {
       const email = s.email?.toLowerCase();
-      const facId = s.facultyId || s.staffId || `FAC${new Date().getFullYear()}${s._id.toString().slice(-4).toUpperCase()}`;
+      const facId =
+        s.facultyId ||
+        s.staffId ||
+        `FAC${new Date().getFullYear()}${s._id.toString().slice(-4).toUpperCase()}`;
       if (email && staffMap.has(email)) {
         const existing = staffMap.get(email);
         staffMap.set(email, {

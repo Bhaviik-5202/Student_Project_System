@@ -1,12 +1,20 @@
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
 
-export const Card = ({ children, className = '', onClick, hover = false, ...props }) => {
+export const Card = ({
+  children,
+  className = '',
+  onClick,
+  hover = false,
+  ...props
+}) => {
   return (
     <div
       onClick={onClick}
       className={`rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800 ${
-        hover ? 'cursor-pointer transition-all hover:-translate-y-0.5 hover:shadow-md' : ''
+        hover
+          ? 'cursor-pointer transition-all hover:-translate-y-0.5 hover:shadow-md'
+          : ''
       } ${className}`}
       {...props}
     >
@@ -26,12 +34,22 @@ export const PageCard = ({ children, className = '', ...props }) => {
   );
 };
 
-export const InfoCard = ({ title, children, icon: Icon, className = '', action }) => {
+export const InfoCard = ({
+  title,
+  children,
+  icon: Icon,
+  className = '',
+  action,
+}) => {
   return (
-    <div className={`rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800 space-y-3 ${className}`}>
+    <div
+      className={`rounded-2xl border border-gray-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800 space-y-3 ${className}`}
+    >
       <div className='flex items-center justify-between'>
         <div className='flex items-center gap-2'>
-          {Icon && <Icon size={18} className='text-indigo-600 dark:text-indigo-400' />}
+          {Icon && (
+            <Icon size={18} className='text-indigo-600 dark:text-indigo-400' />
+          )}
           <h3 className='text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500'>
             {title}
           </h3>
@@ -67,7 +85,9 @@ export const StatsCard = ({
           </p>
         </div>
         {Icon && (
-          <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${bgColor} ${textColor}`}>
+          <div
+            className={`flex h-12 w-12 items-center justify-center rounded-2xl ${bgColor} ${textColor}`}
+          >
             <Icon size={24} />
           </div>
         )}
@@ -75,7 +95,10 @@ export const StatsCard = ({
       {onClick && (
         <div className='mt-4 flex items-center justify-between text-xs font-semibold text-gray-500 dark:text-gray-400'>
           <span>{linkText}</span>
-          <ArrowRight size={14} className='transition-transform group-hover:translate-x-1' />
+          <ArrowRight
+            size={14}
+            className='transition-transform group-hover:translate-x-1'
+          />
         </div>
       )}
     </div>

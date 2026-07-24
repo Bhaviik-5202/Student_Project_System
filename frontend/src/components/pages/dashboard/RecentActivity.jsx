@@ -74,12 +74,25 @@ const ActivityItem = memo(({ activity, isLast }) => {
     if (type === 'project' && (activity.id || activity._id)) {
       return `/projects/${activity.id || activity._id}`;
     }
-    if (type.includes('meeting') || title.includes('meeting')) return '/meetings';
-    if (type.includes('resource') || title.includes('resource') || title.includes('document')) return '/resources';
-    if (type.includes('student') || title.includes('student')) return '/students';
-    if (type.includes('staff') || title.includes('faculty') || title.includes('guide')) return '/staff';
+    if (type.includes('meeting') || title.includes('meeting'))
+      return '/meetings';
+    if (
+      type.includes('resource') ||
+      title.includes('resource') ||
+      title.includes('document')
+    )
+      return '/resources';
+    if (type.includes('student') || title.includes('student'))
+      return '/students';
+    if (
+      type.includes('staff') ||
+      title.includes('faculty') ||
+      title.includes('guide')
+    )
+      return '/staff';
     // Generic project fallback with ID if available
-    if (activity.id || activity._id) return `/projects/${activity.id || activity._id}`;
+    if (activity.id || activity._id)
+      return `/projects/${activity.id || activity._id}`;
     return '/projects';
   };
 

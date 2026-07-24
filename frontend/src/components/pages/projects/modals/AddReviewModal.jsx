@@ -64,7 +64,9 @@ const AddReviewModal = ({ isOpen, onClose, project, onSuccess }) => {
           >
             <option value='Proposal Review'>Proposal Review</option>
             <option value='Mid-Term Review'>Mid-Term Review</option>
-            <option value='Pre-Final Presentation'>Pre-Final Presentation</option>
+            <option value='Pre-Final Presentation'>
+              Pre-Final Presentation
+            </option>
             <option value='Final Viva Evaluation'>Final Viva Evaluation</option>
             <option value='General Feedback'>General Feedback</option>
           </Select>
@@ -82,7 +84,11 @@ const AddReviewModal = ({ isOpen, onClose, project, onSuccess }) => {
                 <Star
                   size={26}
                   fill={star <= rating ? 'currentColor' : 'none'}
-                  className={star <= rating ? 'text-amber-400 dark:text-amber-400' : 'text-gray-300 dark:text-slate-600'}
+                  className={
+                    star <= rating
+                      ? 'text-amber-400 dark:text-amber-400'
+                      : 'text-gray-300 dark:text-slate-600'
+                  }
                 />
               </button>
             ))}

@@ -21,31 +21,36 @@ const ToastItem = ({ t, handlers }) => {
       case 'success':
         return {
           border: 'border-emerald-500/40 dark:border-emerald-500/40',
-          iconBg: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400',
+          iconBg:
+            'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400',
           icon: <CheckCircle2 className='h-5 w-5' />,
         };
       case 'error':
         return {
           border: 'border-rose-500/40 dark:border-rose-500/40',
-          iconBg: 'bg-rose-50 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400',
+          iconBg:
+            'bg-rose-50 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400',
           icon: <AlertCircle className='h-5 w-5' />,
         };
       case 'warning':
         return {
           border: 'border-amber-500/40 dark:border-amber-500/40',
-          iconBg: 'bg-amber-50 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400',
+          iconBg:
+            'bg-amber-50 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400',
           icon: <AlertTriangle className='h-5 w-5' />,
         };
       case 'loading':
         return {
           border: 'border-indigo-500/40 dark:border-indigo-500/40',
-          iconBg: 'bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400',
+          iconBg:
+            'bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400',
           icon: <Loader2 className='h-5 w-5 animate-spin' />,
         };
       default:
         return {
           border: 'border-blue-500/40 dark:border-blue-500/40',
-          iconBg: 'bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400',
+          iconBg:
+            'bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400',
           icon: <Info className='h-5 w-5' />,
         };
     }
@@ -75,7 +80,9 @@ const ToastItem = ({ t, handlers }) => {
       role='alert'
     >
       {/* Type Icon */}
-      <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${config.iconBg}`}>
+      <div
+        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${config.iconBg}`}
+      >
         {t.icon || config.icon}
       </div>
 

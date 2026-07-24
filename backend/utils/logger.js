@@ -214,7 +214,12 @@ const logger = {
     const st = statusText(status);
 
     const durationNum = parseFloat(duration);
-    const durationColor = durationNum > 2000 ? C.brightRed : durationNum > 500 ? C.brightYellow : C.brightGreen;
+    const durationColor =
+      durationNum > 2000
+        ? C.brightRed
+        : durationNum > 500
+          ? C.brightYellow
+          : C.brightGreen;
 
     const lines = [
       DIVIDER,
@@ -286,7 +291,10 @@ const logger = {
     console.log(lines.join('\n'));
 
     const level = isSuccess ? 'info' : 'warn';
-    winstonLogger[level]({ type: 'auth', event, name, email, role, ip, status }, 'AUTH');
+    winstonLogger[level](
+      { type: 'auth', event, name, email, role, ip, status },
+      'AUTH'
+    );
     authFileTransport.log &&
       authFileTransport.log(
         {

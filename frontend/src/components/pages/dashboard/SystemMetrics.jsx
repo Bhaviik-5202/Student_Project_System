@@ -1,6 +1,14 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts';
 
 /**
  * SystemMetrics Component
@@ -40,42 +48,85 @@ const SystemMetrics = memo(({ stats = {} }) => {
       </div>
 
       <div className='flex-1 min-h-[250px] w-full'>
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width='100%' height='100%'>
           <AreaChart
             data={data}
             margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
           >
             <defs>
-              <linearGradient id="colorPerformance" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+              <linearGradient id='colorPerformance' x1='0' y1='0' x2='0' y2='1'>
+                <stop offset='5%' stopColor='#3b82f6' stopOpacity={0.3} />
+                <stop offset='95%' stopColor='#3b82f6' stopOpacity={0} />
               </linearGradient>
-              <linearGradient id="colorUsers" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+              <linearGradient id='colorUsers' x1='0' y1='0' x2='0' y2='1'>
+                <stop offset='5%' stopColor='#10b981' stopOpacity={0.3} />
+                <stop offset='95%' stopColor='#10b981' stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" opacity={0.5} />
-            <XAxis dataKey="time" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} dy={10} />
-            <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#64748b' }} />
+            <CartesianGrid
+              strokeDasharray='3 3'
+              vertical={false}
+              stroke='#e2e8f0'
+              opacity={0.5}
+            />
+            <XAxis
+              dataKey='time'
+              axisLine={false}
+              tickLine={false}
+              tick={{ fontSize: 12, fill: '#64748b' }}
+              dy={10}
+            />
+            <YAxis
+              axisLine={false}
+              tickLine={false}
+              tick={{ fontSize: 12, fill: '#64748b' }}
+            />
             <Tooltip
-              contentStyle={{ borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+              contentStyle={{
+                borderRadius: '12px',
+                border: '1px solid #e2e8f0',
+                boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+              }}
               itemStyle={{ fontSize: '14px', fontWeight: 'bold' }}
             />
-            <Area type="monotone" dataKey="performance" name="Performance (%)" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorPerformance)" />
-            <Area type="monotone" dataKey="users" name="Active Users" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorUsers)" />
+            <Area
+              type='monotone'
+              dataKey='performance'
+              name='Performance (%)'
+              stroke='#3b82f6'
+              strokeWidth={3}
+              fillOpacity={1}
+              fill='url(#colorPerformance)'
+            />
+            <Area
+              type='monotone'
+              dataKey='users'
+              name='Active Users'
+              stroke='#10b981'
+              strokeWidth={3}
+              fillOpacity={1}
+              fill='url(#colorUsers)'
+            />
           </AreaChart>
         </ResponsiveContainer>
       </div>
 
       <div className='mt-6 grid grid-cols-2 gap-4 border-t border-slate-100 pt-4 dark:border-slate-700'>
-        <div className="flex flex-col">
-          <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Avg Performance</span>
-          <span className="text-xl font-bold text-blue-600 dark:text-blue-400">{stats.systemPerformance || 92.4}%</span>
+        <div className='flex flex-col'>
+          <span className='text-[10px] font-semibold text-slate-500 uppercase tracking-wider'>
+            Avg Performance
+          </span>
+          <span className='text-xl font-bold text-blue-600 dark:text-blue-400'>
+            {stats.systemPerformance || 92.4}%
+          </span>
         </div>
-        <div className="flex flex-col items-end">
-          <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Active Users</span>
-          <span className="text-xl font-bold text-emerald-600 dark:text-emerald-400">{stats.activeUsers || 175}</span>
+        <div className='flex flex-col items-end'>
+          <span className='text-[10px] font-semibold text-slate-500 uppercase tracking-wider'>
+            Active Users
+          </span>
+          <span className='text-xl font-bold text-emerald-600 dark:text-emerald-400'>
+            {stats.activeUsers || 175}
+          </span>
         </div>
       </div>
     </div>

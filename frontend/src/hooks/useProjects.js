@@ -9,7 +9,12 @@ import { subscribeDataChanged } from '../utils/eventBus';
 
 export const useProjects = (initialParams = {}) => {
   const [projects, setProjects] = useState([]);
-  const [pagination, setPagination] = useState({ total: 0, page: 1, limit: 10, totalPages: 1 });
+  const [pagination, setPagination] = useState({
+    total: 0,
+    page: 1,
+    limit: 10,
+    totalPages: 1,
+  });
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -35,7 +40,9 @@ export const useProjects = (initialParams = {}) => {
       setError(null);
       const res = await projectService.getAllProjects(filters);
       setProjects(res.projects || []);
-      setPagination(res.pagination || { total: 0, page: 1, limit: 10, totalPages: 1 });
+      setPagination(
+        res.pagination || { total: 0, page: 1, limit: 10, totalPages: 1 }
+      );
     } catch (err) {
       console.error('Failed to fetch projects', err);
       setError('Could not load projects');

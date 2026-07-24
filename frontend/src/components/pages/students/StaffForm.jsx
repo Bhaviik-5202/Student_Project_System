@@ -64,7 +64,8 @@ const StaffForm = () => {
           phone: staffData.phone || '',
           role: staffData.role || 'Faculty',
           department: staffData.department || 'Computer Engineering',
-          staffId: staffData.staffId || staffData.facultyId || staffData.id || '',
+          staffId:
+            staffData.staffId || staffData.facultyId || staffData.id || '',
           status: staffData.status || 'Active',
         });
       } else {
@@ -123,7 +124,9 @@ const StaffForm = () => {
 
       if (res && res.success !== false) {
         toast.success(
-          isEditMode ? 'Staff profile updated successfully!' : 'Staff member enrolled successfully!'
+          isEditMode
+            ? 'Staff profile updated successfully!'
+            : 'Staff member enrolled successfully!'
         );
         navigate('/staff', { state: { refresh: true } });
       } else {
@@ -236,8 +239,12 @@ const StaffForm = () => {
                     onChange={handleChange}
                   >
                     <option value='Faculty'>Faculty</option>
-                    <option value='Assistant Professor'>Assistant Professor</option>
-                    <option value='Associate Professor'>Associate Professor</option>
+                    <option value='Assistant Professor'>
+                      Assistant Professor
+                    </option>
+                    <option value='Associate Professor'>
+                      Associate Professor
+                    </option>
                     <option value='HOD'>HOD</option>
                     <option value='Admin Staff'>Admin Staff</option>
                   </select>
@@ -259,10 +266,18 @@ const StaffForm = () => {
                     value={formData.department}
                     onChange={handleChange}
                   >
-                    <option value='Computer Engineering'>Computer Engineering</option>
-                    <option value='Information Technology'>Information Technology</option>
-                    <option value='Electronics & Communication'>Electronics & Communication</option>
-                    <option value='Mechanical Engineering'>Mechanical Engineering</option>
+                    <option value='Computer Engineering'>
+                      Computer Engineering
+                    </option>
+                    <option value='Information Technology'>
+                      Information Technology
+                    </option>
+                    <option value='Electronics & Communication'>
+                      Electronics & Communication
+                    </option>
+                    <option value='Mechanical Engineering'>
+                      Mechanical Engineering
+                    </option>
                     <option value='Civil Engineering'>Civil Engineering</option>
                   </select>
                 </div>
@@ -312,7 +327,9 @@ const StaffForm = () => {
                 ) : (
                   <>
                     <Save size={18} />
-                    <span>{isEditMode ? 'Update Profile' : 'Enroll Staff'}</span>
+                    <span>
+                      {isEditMode ? 'Update Profile' : 'Enroll Staff'}
+                    </span>
                   </>
                 )}
               </button>

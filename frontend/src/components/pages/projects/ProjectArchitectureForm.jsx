@@ -126,7 +126,7 @@ const ProjectArchitectureForm = memo(() => {
         <div className='space-y-6 lg:col-span-2'>
           <Card className='space-y-4'>
             <SectionHeader title='General Information' />
-            
+
             <FormGroup label='Architecture Name' required>
               <Input
                 type='text'
@@ -209,7 +209,11 @@ const ProjectArchitectureForm = memo(() => {
               icon={Save}
               className='w-full !py-3.5 mt-2'
             >
-              {isSubmitting ? 'Saving...' : isEditing ? 'Update Architecture' : 'Create Architecture'}
+              {isSubmitting
+                ? 'Saving...'
+                : isEditing
+                  ? 'Update Architecture'
+                  : 'Create Architecture'}
             </PrimaryButton>
           </Card>
         </div>

@@ -30,7 +30,11 @@ const StaffRow = memo(({ staff, onEdit, onDelete }) => (
     <td className='whitespace-nowrap px-6 py-4'>
       <div className='flex items-center gap-3'>
         {staff.avatar ? (
-          <img src={staff.avatar} alt={staff.name} className='h-9 w-9 rounded-xl object-cover border border-gray-200 dark:border-gray-700' />
+          <img
+            src={staff.avatar}
+            alt={staff.name}
+            className='h-9 w-9 rounded-xl object-cover border border-gray-200 dark:border-gray-700'
+          />
         ) : (
           <div className='flex h-9 w-9 items-center justify-center rounded-xl border border-purple-100 bg-purple-50 font-bold text-purple-600 dark:border-purple-800/30 dark:bg-purple-900/20 dark:text-purple-400'>
             {staff.name ? staff.name.charAt(0).toUpperCase() : 'F'}
@@ -66,13 +70,22 @@ const StaffRow = memo(({ staff, onEdit, onDelete }) => (
 
     {/* Contact Number */}
     <td className='whitespace-nowrap px-6 py-4 text-xs font-medium text-gray-600 dark:text-gray-400'>
-      {staff.phone && staff.phone !== 'N/A' ? staff.phone : <span className='italic text-gray-400'>+91 (0288) 2211401</span>}
+      {staff.phone && staff.phone !== 'N/A' ? (
+        staff.phone
+      ) : (
+        <span className='italic text-gray-400'>+91 (0288) 2211401</span>
+      )}
     </td>
 
     {/* Status */}
     <td className='whitespace-nowrap px-6 py-4'>
-      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${staff.status === 'Active' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-        }`}>
+      <span
+        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
+          staff.status === 'Active'
+            ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
+            : 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+        }`}
+      >
         <UserCheck size={12} className='mr-1' />
         {staff.status || 'Active'}
       </span>
@@ -80,7 +93,9 @@ const StaffRow = memo(({ staff, onEdit, onDelete }) => (
 
     {/* Joining Date */}
     <td className='whitespace-nowrap px-6 py-4 text-xs text-gray-500 dark:text-slate-400'>
-      {new Date(staff.joiningDate || staff.createdAt || Date.now()).toLocaleDateString(undefined, { dateStyle: 'medium' })}
+      {new Date(
+        staff.joiningDate || staff.createdAt || Date.now()
+      ).toLocaleDateString(undefined, { dateStyle: 'medium' })}
     </td>
 
     {/* Actions */}

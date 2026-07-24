@@ -28,11 +28,7 @@ import EmptyState from '../../ui/EmptyState';
 import ErrorState from '../../ui/ErrorState';
 import resourceService from '../../../services/resourceService';
 import useNotification from '../../../hooks/useNotification';
-import {
-  PreviewModal,
-  DetailsModal,
-  EditModal,
-} from './ResourceModals';
+import { PreviewModal, DetailsModal, EditModal } from './ResourceModals';
 
 export const DocumentLibrary = () => {
   const [documents, setDocuments] = useState([]);
@@ -120,7 +116,9 @@ export const DocumentLibrary = () => {
       const res = await resourceService.delete(doc._id || doc.id);
       if (res.success) {
         showSuccess('Document deleted.');
-        setDocuments((prev) => prev.filter((d) => (d._id || d.id) !== (doc._id || doc.id)));
+        setDocuments((prev) =>
+          prev.filter((d) => (d._id || d.id) !== (doc._id || doc.id))
+        );
       } else {
         showError(res.message || 'Failed to delete.');
       }
@@ -163,25 +161,25 @@ export const DocumentLibrary = () => {
   };
 
   return (
-    <div className="space-y-6 pb-12">
+    <div className='space-y-6 pb-12'>
       <PageHeader
-        title="Document Library"
-        subtitle="Official academic guidelines, project rubrics, policy documents, and user manuals."
+        title='Document Library'
+        subtitle='Official academic guidelines, project rubrics, policy documents, and user manuals.'
         icon={FileText}
         badge={`${documents.length} Docs`}
         actions={
-          <div className="flex items-center gap-2">
+          <div className='flex items-center gap-2'>
             <Button
-              variant="outline"
-              size="sm"
+              variant='outline'
+              size='sm'
               icon={RefreshCw}
               onClick={fetchDocuments}
             >
               Refresh
             </Button>
             <Button
-              variant="primary"
-              size="sm"
+              variant='primary'
+              size='sm'
               icon={Plus}
               onClick={() => setIsUploadOpen(true)}
             >
@@ -191,37 +189,39 @@ export const DocumentLibrary = () => {
         }
       />
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className='grid grid-cols-1 gap-4 sm:grid-cols-3'>
         <StatisticsCard
-          title="Total Documents"
+          title='Total Documents'
           value={documents.length}
           icon={FileText}
-          color="indigo"
-          description="Uploaded guidelines & manuals"
+          color='indigo'
+          description='Uploaded guidelines & manuals'
         />
         <StatisticsCard
-          title="PDF Specs"
+          title='PDF Specs'
           value={documents.filter((d) => d.fileType === 'pdf').length}
           icon={FileText}
-          color="blue"
-          description="Read-only policy documents"
+          color='blue'
+          description='Read-only policy documents'
         />
         <StatisticsCard
-          title="Editable Guides"
-          value={documents.filter((d) => ['docx', 'doc'].includes(d.fileType)).length}
+          title='Editable Guides'
+          value={
+            documents.filter((d) => ['docx', 'doc'].includes(d.fileType)).length
+          }
           icon={FileText}
-          color="emerald"
-          description="Word & template files"
+          color='emerald'
+          description='Word & template files'
         />
       </div>
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-4 shadow-sm dark:border-slate-800 ">
-        <div className="flex flex-1 items-center gap-3">
+      <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-4 shadow-sm dark:border-slate-800 '>
+        <div className='flex flex-1 items-center gap-3'>
           <SearchInput
             value={searchTerm}
             onChange={setSearchTerm}
-            placeholder="Search document title or keywords..."
-            className="max-w-md"
+            placeholder='Search document title or keywords...'
+            className='max-w-md'
           />
           <Select
             value={categoryFilter}
@@ -233,7 +233,7 @@ export const DocumentLibrary = () => {
               { value: 'User Guides', label: 'User Guides' },
               { value: 'Templates', label: 'Templates' },
             ]}
-            className="w-44"
+            className='w-44'
           />
           <Select
             value={formatFilter}
@@ -243,92 +243,101 @@ export const DocumentLibrary = () => {
               { value: 'pdf', label: 'PDF' },
               { value: 'docx', label: 'DOCX' },
             ]}
-            className="w-36"
+            className='w-36'
           />
         </div>
 
-        <div className="flex items-center gap-1 rounded-xl border border-slate-200 p-1 dark:border-slate-800">
+        <div className='flex items-center gap-1 rounded-xl border border-slate-200 p-1 dark:border-slate-800'>
           <button
             onClick={() => setViewMode('table')}
-            className={`rounded-lg p-2 text-xs font-semibold transition-all ${viewMode === 'table'
-              ? 'bg-indigo-600 text-white'
-              : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white dark:text-white '
-              }`}
+            className={`rounded-lg p-2 text-xs font-semibold transition-all ${
+              viewMode === 'table'
+                ? 'bg-indigo-600 text-white'
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white dark:text-white '
+            }`}
           >
-            <List className="h-4 w-4" />
+            <List className='h-4 w-4' />
           </button>
           <button
             onClick={() => setViewMode('grid')}
-            className={`rounded-lg p-2 text-xs font-semibold transition-all ${viewMode === 'grid'
-              ? 'bg-indigo-600 text-white'
-              : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white dark:text-white '
-              }`}
+            className={`rounded-lg p-2 text-xs font-semibold transition-all ${
+              viewMode === 'grid'
+                ? 'bg-indigo-600 text-white'
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white dark:text-white '
+            }`}
           >
-            <Grid className="h-4 w-4" />
+            <Grid className='h-4 w-4' />
           </button>
         </div>
       </div>
 
       {loading ? (
-        <LoadingSpinner message="Fetching documents..." />
+        <LoadingSpinner message='Fetching documents...' />
       ) : error ? (
         <ErrorState
-          title="Error Loading Documents"
+          title='Error Loading Documents'
           message={error}
           onRetry={fetchDocuments}
         />
       ) : filteredDocs.length === 0 ? (
         <EmptyState
-          title="No Documents Found"
-          description="There are currently no documents matching your search filters."
+          title='No Documents Found'
+          description='There are currently no documents matching your search filters.'
           icon={FileText}
-          actionText="Upload Document"
+          actionText='Upload Document'
           onAction={() => setIsUploadOpen(true)}
         />
       ) : viewMode === 'table' ? (
-        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 shadow-xs dark:border-slate-800 ">
-          <table className="w-full text-left text-sm text-slate-600 dark:text-slate-400">
-            <thead className="border-b border-slate-200 bg-slate-50 dark:bg-slate-800 text-xs uppercase text-slate-500 dark:text-slate-400 dark:border-slate-800 /50 ">
+        <div className='overflow-hidden rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 shadow-xs dark:border-slate-800 '>
+          <table className='w-full text-left text-sm text-slate-600 dark:text-slate-400'>
+            <thead className='border-b border-slate-200 bg-slate-50 dark:bg-slate-800 text-xs uppercase text-slate-500 dark:text-slate-400 dark:border-slate-800 /50 '>
               <tr>
-                <th className="px-6 py-3.5 font-semibold">Document Title</th>
-                <th className="px-6 py-3.5 font-semibold">Category</th>
-                <th className="px-6 py-3.5 font-semibold">Format</th>
-                <th className="px-6 py-3.5 font-semibold">Downloads</th>
-                <th className="px-6 py-3.5 font-semibold text-right">Actions</th>
+                <th className='px-6 py-3.5 font-semibold'>Document Title</th>
+                <th className='px-6 py-3.5 font-semibold'>Category</th>
+                <th className='px-6 py-3.5 font-semibold'>Format</th>
+                <th className='px-6 py-3.5 font-semibold'>Downloads</th>
+                <th className='px-6 py-3.5 font-semibold text-right'>
+                  Actions
+                </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+            <tbody className='divide-y divide-slate-100 dark:divide-slate-800'>
               {filteredDocs.map((doc) => {
                 const docId = doc._id || doc.id;
                 return (
-                  <tr key={docId} className="hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800/50 /50">
-                    <td className="px-6 py-4 font-medium text-slate-900 dark:text-white">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400">
-                          <FileText className="h-5 w-5" />
+                  <tr
+                    key={docId}
+                    className='hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800/50 /50'
+                  >
+                    <td className='px-6 py-4 font-medium text-slate-900 dark:text-white'>
+                      <div className='flex items-center gap-3'>
+                        <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400'>
+                          <FileText className='h-5 w-5' />
                         </div>
                         <div>
-                          <p className="font-semibold">{doc.title}</p>
-                          <p className="line-clamp-1 text-xs text-slate-400">{doc.description || 'No description'}</p>
+                          <p className='font-semibold'>{doc.title}</p>
+                          <p className='line-clamp-1 text-xs text-slate-400'>
+                            {doc.description || 'No description'}
+                          </p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <span className="rounded-full bg-slate-100 dark:bg-slate-800 px-2.5 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200  dark:text-slate-300">
+                    <td className='px-6 py-4'>
+                      <span className='rounded-full bg-slate-100 dark:bg-slate-800 px-2.5 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200  dark:text-slate-300'>
                         {doc.category || 'General'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 uppercase text-xs font-bold text-indigo-600 dark:text-indigo-400">
+                    <td className='px-6 py-4 uppercase text-xs font-bold text-indigo-600 dark:text-indigo-400'>
                       {doc.fileType || 'PDF'}
                     </td>
-                    <td className="px-6 py-4 font-semibold text-slate-700 dark:text-slate-300">
+                    <td className='px-6 py-4 font-semibold text-slate-700 dark:text-slate-300'>
                       {doc.downloadsCount || doc.downloads || 0}
                     </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
+                    <td className='px-6 py-4 text-right'>
+                      <div className='flex items-center justify-end gap-2'>
                         <Button
-                          variant="outline"
-                          size="sm"
+                          variant='outline'
+                          size='sm'
                           icon={Eye}
                           onClick={() => {
                             setSelectedDoc(doc);
@@ -338,8 +347,8 @@ export const DocumentLibrary = () => {
                           Preview
                         </Button>
                         <Button
-                          variant="primary"
-                          size="sm"
+                          variant='primary'
+                          size='sm'
                           icon={Download}
                           onClick={() => handleDownload(doc)}
                         >
@@ -347,10 +356,10 @@ export const DocumentLibrary = () => {
                         </Button>
                         <button
                           onClick={() => handleDelete(doc)}
-                          className="rounded-lg p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40"
-                          title="Delete"
+                          className='rounded-lg p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40'
+                          title='Delete'
                         >
-                          <Trash2 className="h-4 w-4" />
+                          <Trash2 className='h-4 w-4' />
                         </button>
                       </div>
                     </td>
@@ -361,36 +370,38 @@ export const DocumentLibrary = () => {
           </table>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className='grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3'>
           {filteredDocs.map((doc) => {
             const docId = doc._id || doc.id;
             return (
               <div
                 key={docId}
-                className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-5 shadow-xs transition-all hover:border-indigo-300 dark:border-slate-800 "
+                className='flex flex-col justify-between rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-5 shadow-xs transition-all hover:border-indigo-300 dark:border-slate-800 '
               >
                 <div>
-                  <div className="flex items-center justify-between">
-                    <span className="rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-semibold text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-300">
+                  <div className='flex items-center justify-between'>
+                    <span className='rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-semibold text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-300'>
                       {doc.category || 'General'}
                     </span>
-                    <span className="text-xs font-bold uppercase text-slate-400">
+                    <span className='text-xs font-bold uppercase text-slate-400'>
                       {doc.fileType || 'PDF'}
                     </span>
                   </div>
-                  <h3 className="mt-3 font-bold text-slate-900 dark:text-white">{doc.title}</h3>
-                  <p className="mt-1 line-clamp-2 text-xs text-slate-500 dark:text-slate-400">
+                  <h3 className='mt-3 font-bold text-slate-900 dark:text-white'>
+                    {doc.title}
+                  </h3>
+                  <p className='mt-1 line-clamp-2 text-xs text-slate-500 dark:text-slate-400'>
                     {doc.description || 'No description provided.'}
                   </p>
                 </div>
-                <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-3 dark:border-slate-800">
-                  <span className="text-xs text-slate-400">
+                <div className='mt-5 flex items-center justify-between border-t border-slate-100 pt-3 dark:border-slate-800'>
+                  <span className='text-xs text-slate-400'>
                     Downloads: {doc.downloadsCount || doc.downloads || 0}
                   </span>
-                  <div className="flex items-center gap-2">
+                  <div className='flex items-center gap-2'>
                     <Button
-                      variant="outline"
-                      size="sm"
+                      variant='outline'
+                      size='sm'
                       icon={Eye}
                       onClick={() => {
                         setSelectedDoc(doc);
@@ -400,8 +411,8 @@ export const DocumentLibrary = () => {
                       Preview
                     </Button>
                     <Button
-                      variant="primary"
-                      size="sm"
+                      variant='primary'
+                      size='sm'
                       icon={Download}
                       onClick={() => handleDownload(doc)}
                     >
@@ -417,50 +428,62 @@ export const DocumentLibrary = () => {
 
       {/* Upload Modal */}
       {isUploadOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4 backdrop-blur-xs">
-          <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-xl dark:border-slate-800 ">
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white">Upload New Document</h3>
-            <form onSubmit={handleUpload} className="mt-4 space-y-4">
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4 backdrop-blur-xs'>
+          <div className='w-full max-w-lg rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-xl dark:border-slate-800 '>
+            <h3 className='text-lg font-bold text-slate-900 dark:text-white'>
+              Upload New Document
+            </h3>
+            <form onSubmit={handleUpload} className='mt-4 space-y-4'>
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase">Document Title</label>
+                <label className='block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase'>
+                  Document Title
+                </label>
                 <input
-                  type="text"
+                  type='text'
                   required
                   value={uploadTitle}
                   onChange={(e) => setUploadTitle(e.target.value)}
-                  placeholder="e.g. Project Evaluation Rubric 2026"
-                  className="mt-1 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-sm text-slate-900 dark:text-white"
+                  placeholder='e.g. Project Evaluation Rubric 2026'
+                  className='mt-1 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-sm text-slate-900 dark:text-white'
                 />
               </div>
               <Select
-                label="Category"
+                label='Category'
                 value={uploadCategory}
                 onChange={(e) => setUploadCategory(e.target.value)}
                 options={['Guidelines', 'Policies', 'User Guides', 'Templates']}
               />
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase">Description</label>
+                <label className='block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase'>
+                  Description
+                </label>
                 <textarea
                   rows={3}
                   value={uploadDescription}
                   onChange={(e) => setUploadDescription(e.target.value)}
-                  placeholder="Summary of document requirements..."
-                  className="mt-1 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-sm text-slate-900 dark:text-white"
+                  placeholder='Summary of document requirements...'
+                  className='mt-1 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-sm text-slate-900 dark:text-white'
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase">File</label>
+                <label className='block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase'>
+                  File
+                </label>
                 <input
-                  type="file"
+                  type='file'
                   onChange={(e) => setUploadFile(e.target.files[0])}
-                  className="mt-1 w-full text-xs text-slate-500 dark:text-slate-400 file:mr-3 file:rounded-xl file:border-0 file:bg-indigo-50 file:px-3 file:py-2 file:text-xs file:font-semibold file:text-indigo-600 dark:file:bg-indigo-950/60 dark:file:text-indigo-300"
+                  className='mt-1 w-full text-xs text-slate-500 dark:text-slate-400 file:mr-3 file:rounded-xl file:border-0 file:bg-indigo-50 file:px-3 file:py-2 file:text-xs file:font-semibold file:text-indigo-600 dark:file:bg-indigo-950/60 dark:file:text-indigo-300'
                 />
               </div>
-              <div className="flex justify-end gap-3 pt-2">
-                <Button variant="outline" type="button" onClick={() => setIsUploadOpen(false)}>
+              <div className='flex justify-end gap-3 pt-2'>
+                <Button
+                  variant='outline'
+                  type='button'
+                  onClick={() => setIsUploadOpen(false)}
+                >
                   Cancel
                 </Button>
-                <Button variant="primary" type="submit" loading={uploading}>
+                <Button variant='primary' type='submit' loading={uploading}>
                   Upload Document
                 </Button>
               </div>

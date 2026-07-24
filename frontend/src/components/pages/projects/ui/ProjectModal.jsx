@@ -16,12 +16,16 @@ export const Modal = ({
 
   return (
     <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm animate-fade-in'>
-      <div className={`w-full ${maxWidth} overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-slate-800 border border-gray-100 dark:border-slate-700`}>
+      <div
+        className={`w-full ${maxWidth} overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-slate-800 border border-gray-100 dark:border-slate-700`}
+      >
         {/* Modal Header */}
         <div className='flex items-center justify-between border-b border-gray-100 p-6 dark:border-slate-700'>
           <div className='flex items-center gap-3'>
             {Icon && (
-              <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${iconColor}`}>
+              <div
+                className={`flex h-10 w-10 items-center justify-center rounded-xl ${iconColor}`}
+              >
                 <Icon size={20} />
               </div>
             )}

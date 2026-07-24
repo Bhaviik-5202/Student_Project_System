@@ -206,7 +206,7 @@ const ProgressAnalytics = memo(() => {
       </div>
     </div>
   );
-  });
+});
 
 ProgressAnalytics.displayName = 'ProgressAnalytics';
 

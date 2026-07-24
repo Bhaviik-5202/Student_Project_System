@@ -35,7 +35,9 @@ describe('Authentication API', function () {
       role: 'admin',
       bypassOTP: true,
     };
-    const res = await request(app).post('/api/v1/auth/register').send(adminUser);
+    const res = await request(app)
+      .post('/api/v1/auth/register')
+      .send(adminUser);
 
     expect(res.statusCode).to.equal(201);
     expect(res.body.success).to.be.true;
@@ -50,7 +52,9 @@ describe('Authentication API', function () {
       role: 'faculty',
       bypassOTP: true,
     };
-    const res = await request(app).post('/api/v1/auth/register').send(facultyUser);
+    const res = await request(app)
+      .post('/api/v1/auth/register')
+      .send(facultyUser);
 
     expect(res.statusCode).to.equal(201);
     expect(res.body.success).to.be.true;
@@ -91,7 +95,9 @@ describe('Authentication API', function () {
 
     expect(res.statusCode).to.equal(200);
     expect(res.body.success).to.be.true;
-    expect(res.body.message).to.equal('If that email is registered, a password reset link has been sent.');
+    expect(res.body.message).to.equal(
+      'If that email is registered, a password reset link has been sent.'
+    );
   });
 
   it('should fail password reset with invalid token', async function () {
@@ -101,6 +107,8 @@ describe('Authentication API', function () {
 
     expect(res.statusCode).to.equal(400);
     expect(res.body.success).to.be.false;
-    expect(res.body.message).to.equal('Reset link is invalid or has expired. Please request a new one.');
+    expect(res.body.message).to.equal(
+      'Reset link is invalid or has expired. Please request a new one.'
+    );
   });
 });

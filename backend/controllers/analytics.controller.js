@@ -279,7 +279,8 @@ exports.getSystemHealth = async (req, res) => {
  */
 exports.getReportsAnalytics = async (req, res) => {
   try {
-    const { error, data, message } = await analyticsService.getReportsAnalytics();
+    const { error, data, message } =
+      await analyticsService.getReportsAnalytics();
     if (error) throw new Error(message);
     sendResponse(res, { success: true, message, data }, 200);
   } catch (error) {

@@ -55,7 +55,10 @@ const ProjectArchitectureCard = memo(({ architecture, onEdit, onDelete }) => (
     <div>
       <div className='grid grid-cols-2 gap-4 border-t border-gray-100 pt-3 dark:border-slate-700'>
         <div className='flex items-center gap-2'>
-          <CalendarIcon size={14} className='text-gray-400 dark:text-gray-500 shrink-0' />
+          <CalendarIcon
+            size={14}
+            className='text-gray-400 dark:text-gray-500 shrink-0'
+          />
           <div className='flex flex-col'>
             <span className='text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500'>
               Timeline
@@ -67,7 +70,10 @@ const ProjectArchitectureCard = memo(({ architecture, onEdit, onDelete }) => (
         </div>
 
         <div className='flex items-center gap-2'>
-          <UsersIcon size={14} className='text-gray-400 dark:text-gray-500 shrink-0' />
+          <UsersIcon
+            size={14}
+            className='text-gray-400 dark:text-gray-500 shrink-0'
+          />
           <div className='flex flex-col'>
             <span className='text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-gray-500'>
               Team Size
@@ -102,12 +108,66 @@ const ProjectArchitecturesList = memo(() => {
   const [architectureToDelete, setArchitectureToDelete] = useState(null);
 
   const DEFAULT_ARCHITECTURES = [
-    { _id: '1', name: 'Web Application', category: 'Software Development', description: 'Full stack responsive web platform architecture using modern frameworks.', duration: '16 Weeks', maxStudents: 4, status: 'Active' },
-    { _id: '2', name: 'Mobile Application', category: 'Software Development', description: 'Native and cross-platform mobile apps for iOS and Android devices.', duration: '14 Weeks', maxStudents: 3, status: 'Active' },
-    { _id: '3', name: 'AI / Machine Learning', category: 'Data Science', description: 'Deep learning models, predictive analysis, and intelligent automation systems.', duration: '20 Weeks', maxStudents: 2, status: 'Active' },
-    { _id: '4', name: 'Cyber Security', category: 'Security & Networks', description: 'Vulnerability assessment, penetration testing, and security auditing framework.', duration: '12 Weeks', maxStudents: 3, status: 'Active' },
-    { _id: '5', name: 'Cloud & DevOps', category: 'Infrastructure', description: 'Microservices architecture, CI/CD pipelines, and cloud containerization.', duration: '16 Weeks', maxStudents: 4, status: 'Active' },
-    { _id: '6', name: 'IoT & Embedded Systems', category: 'Hardware & Systems', description: 'Smart hardware integration, microcontrollers, and sensor telemetry.', duration: '18 Weeks', maxStudents: 4, status: 'Active' },
+    {
+      _id: '1',
+      name: 'Web Application',
+      category: 'Software Development',
+      description:
+        'Full stack responsive web platform architecture using modern frameworks.',
+      duration: '16 Weeks',
+      maxStudents: 4,
+      status: 'Active',
+    },
+    {
+      _id: '2',
+      name: 'Mobile Application',
+      category: 'Software Development',
+      description:
+        'Native and cross-platform mobile apps for iOS and Android devices.',
+      duration: '14 Weeks',
+      maxStudents: 3,
+      status: 'Active',
+    },
+    {
+      _id: '3',
+      name: 'AI / Machine Learning',
+      category: 'Data Science',
+      description:
+        'Deep learning models, predictive analysis, and intelligent automation systems.',
+      duration: '20 Weeks',
+      maxStudents: 2,
+      status: 'Active',
+    },
+    {
+      _id: '4',
+      name: 'Cyber Security',
+      category: 'Security & Networks',
+      description:
+        'Vulnerability assessment, penetration testing, and security auditing framework.',
+      duration: '12 Weeks',
+      maxStudents: 3,
+      status: 'Active',
+    },
+    {
+      _id: '5',
+      name: 'Cloud & DevOps',
+      category: 'Infrastructure',
+      description:
+        'Microservices architecture, CI/CD pipelines, and cloud containerization.',
+      duration: '16 Weeks',
+      maxStudents: 4,
+      status: 'Active',
+    },
+    {
+      _id: '6',
+      name: 'IoT & Embedded Systems',
+      category: 'Hardware & Systems',
+      description:
+        'Smart hardware integration, microcontrollers, and sensor telemetry.',
+      duration: '18 Weeks',
+      maxStudents: 4,
+      status: 'Active',
+    },
   ];
 
   const fetchArchitectures = useCallback(async () => {
@@ -121,9 +181,14 @@ const ProjectArchitecturesList = memo(() => {
           ? rawData.data
           : [];
 
-      setArchitectures(typesList.length > 0 ? typesList : DEFAULT_ARCHITECTURES);
+      setArchitectures(
+        typesList.length > 0 ? typesList : DEFAULT_ARCHITECTURES
+      );
     } catch (error) {
-      console.warn('Could not fetch project types API, using standard templates:', error);
+      console.warn(
+        'Could not fetch project types API, using standard templates:',
+        error
+      );
       setArchitectures(DEFAULT_ARCHITECTURES);
     } finally {
       setLoading(false);
@@ -162,26 +227,23 @@ const ProjectArchitecturesList = memo(() => {
     [navigate]
   );
 
-  const confirmDelete = useCallback(
-    async () => {
-      if (!architectureToDelete) return;
-      const toastId = toast.loading('Processing deletion...');
-      try {
-        const res = await api.delete(`/projects/types/${architectureToDelete}`);
-        if (res.success) {
-          toast.success('Architecture deleted', { id: toastId });
-          fetchArchitectures();
-        } else {
-          toast.error(res.message || 'Deletion failed', { id: toastId });
-        }
-      } catch (error) {
-        toast.error('Error occurred', { id: toastId });
-      } finally {
-        setArchitectureToDelete(null);
+  const confirmDelete = useCallback(async () => {
+    if (!architectureToDelete) return;
+    const toastId = toast.loading('Processing deletion...');
+    try {
+      const res = await api.delete(`/projects/types/${architectureToDelete}`);
+      if (res.success) {
+        toast.success('Architecture deleted', { id: toastId });
+        fetchArchitectures();
+      } else {
+        toast.error(res.message || 'Deletion failed', { id: toastId });
       }
-    },
-    [architectureToDelete, fetchArchitectures]
-  );
+    } catch (error) {
+      toast.error('Error occurred', { id: toastId });
+    } finally {
+      setArchitectureToDelete(null);
+    }
+  }, [architectureToDelete, fetchArchitectures]);
 
   return (
     <div className='space-y-6 pt-0 pb-6 animate-fade-in'>

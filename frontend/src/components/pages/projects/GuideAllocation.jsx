@@ -71,14 +71,16 @@ const GuideAllocation = () => {
               <div>
                 <div className='flex items-center gap-2'>
                   <h3 className='text-sm font-bold text-amber-900 dark:text-amber-200'>
-                    {unassignedProjects.length} Projects Pending Guide Allocation
+                    {unassignedProjects.length} Projects Pending Guide
+                    Allocation
                   </h3>
                   <span className='inline-flex items-center rounded-full bg-amber-200/60 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wide text-amber-800 dark:bg-amber-900/60 dark:text-amber-300'>
                     Action Required
                   </span>
                 </div>
                 <p className='mt-0.5 text-xs text-amber-700 dark:text-amber-300/90'>
-                  The following project teams require an assigned faculty mentor:
+                  The following project teams require an assigned faculty
+                  mentor:
                 </p>
               </div>
             </div>
@@ -141,19 +143,38 @@ const GuideAllocation = () => {
               const facId = faculty._id || faculty.id;
               const guidedProjects = projects.filter((p) => {
                 if (!p.guide) return false;
-                const gId = typeof p.guide === 'object' ? p.guide._id || p.guide.id : p.guide;
+                const gId =
+                  typeof p.guide === 'object'
+                    ? p.guide._id || p.guide.id
+                    : p.guide;
                 return gId === facId;
               });
 
               const projectCount = guidedProjects.length;
               const workloadBadge =
                 projectCount === 0
-                  ? { label: 'Available', variant: 'emerald', bg: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800' }
+                  ? {
+                      label: 'Available',
+                      variant: 'emerald',
+                      bg: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800',
+                    }
                   : projectCount <= 2
-                  ? { label: 'Light Workload', variant: 'sky', bg: 'bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950/40 dark:text-sky-400 dark:border-sky-800' }
-                  : projectCount <= 4
-                  ? { label: 'Moderate', variant: 'amber', bg: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:text-amber-500 dark:border-amber-800' }
-                  : { label: 'High Workload', variant: 'rose', bg: 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-800' };
+                    ? {
+                        label: 'Light Workload',
+                        variant: 'sky',
+                        bg: 'bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950/40 dark:text-sky-400 dark:border-sky-800',
+                      }
+                    : projectCount <= 4
+                      ? {
+                          label: 'Moderate',
+                          variant: 'amber',
+                          bg: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:text-amber-500 dark:border-amber-800',
+                        }
+                      : {
+                          label: 'High Workload',
+                          variant: 'rose',
+                          bg: 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-800',
+                        };
 
               return (
                 <Card
@@ -165,10 +186,15 @@ const GuideAllocation = () => {
                     <div className='flex items-start justify-between gap-3'>
                       <div className='flex items-center gap-3.5 min-w-0'>
                         <div className='flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 font-black text-white shadow-sm text-base'>
-                          {faculty.name ? faculty.name.charAt(0).toUpperCase() : 'F'}
+                          {faculty.name
+                            ? faculty.name.charAt(0).toUpperCase()
+                            : 'F'}
                         </div>
                         <div className='min-w-0 flex-1'>
-                          <h3 className='truncate text-sm font-bold text-gray-900 dark:text-white' title={faculty.name}>
+                          <h3
+                            className='truncate text-sm font-bold text-gray-900 dark:text-white'
+                            title={faculty.name}
+                          >
                             {faculty.name}
                           </h3>
                           <p className='truncate text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-500'>
@@ -179,7 +205,9 @@ const GuideAllocation = () => {
                           </p>
                         </div>
                       </div>
-                      <span className={`inline-flex shrink-0 items-center rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${workloadBadge.bg}`}>
+                      <span
+                        className={`inline-flex shrink-0 items-center rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${workloadBadge.bg}`}
+                      >
                         {workloadBadge.label}
                       </span>
                     </div>
@@ -188,11 +216,15 @@ const GuideAllocation = () => {
                     <div className='space-y-2.5 rounded-xl border border-gray-100 bg-slate-50 dark:bg-slate-800/60 p-3.5 dark:border-slate-700/60 dark:bg-slate-900/40'>
                       <div className='flex items-center justify-between text-xs font-bold text-gray-600 dark:text-gray-300'>
                         <span className='flex items-center gap-1.5'>
-                          <Award size={14} className='text-indigo-600 dark:text-indigo-400 dark:text-indigo-300' />
+                          <Award
+                            size={14}
+                            className='text-indigo-600 dark:text-indigo-400 dark:text-indigo-300'
+                          />
                           <span>Guided Projects</span>
                         </span>
                         <span className='rounded-md bg-indigo-50 px-2 py-0.5 font-extrabold text-indigo-600 dark:text-indigo-400 dark:bg-indigo-950/60 dark:text-indigo-400 dark:text-indigo-300'>
-                          {projectCount} {projectCount === 1 ? 'Project' : 'Projects'}
+                          {projectCount}{' '}
+                          {projectCount === 1 ? 'Project' : 'Projects'}
                         </span>
                       </div>
 
@@ -207,7 +239,11 @@ const GuideAllocation = () => {
                           guidedProjects.map((proj) => (
                             <div
                               key={proj._id || proj.id}
-                              onClick={() => navigate(`/projects/${proj.slug || proj._id || proj.id}`)}
+                              onClick={() =>
+                                navigate(
+                                  `/projects/${proj.slug || proj._id || proj.id}`
+                                )
+                              }
                               className='group flex items-center justify-between gap-2 rounded-lg border border-transparent bg-white dark:bg-slate-900 p-2.5 text-xs shadow-2xs transition-all hover:border-indigo-300 hover:bg-indigo-50/40 hover:shadow-xs dark:bg-slate-800 dark:hover:border-indigo-700 dark:hover:bg-indigo-950/30 cursor-pointer'
                             >
                               <div className='min-w-0 flex-1'>
@@ -215,7 +251,10 @@ const GuideAllocation = () => {
                                   {proj.title}
                                 </p>
                               </div>
-                              <Badge variant='purple' className='shrink-0 text-[10px] font-bold'>
+                              <Badge
+                                variant='purple'
+                                className='shrink-0 text-[10px] font-bold'
+                              >
                                 {proj.code || 'PRJ'}
                               </Badge>
                             </div>

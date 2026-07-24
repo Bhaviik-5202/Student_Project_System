@@ -31,15 +31,11 @@ const StudentsList = lazy(
 const StaffManagement = lazy(
   () => import('../components/pages/students/Staff')
 );
-const StaffForm = lazy(
-  () => import('../components/pages/students/StaffForm')
-);
+const StaffForm = lazy(() => import('../components/pages/students/StaffForm'));
 const UserManagement = lazy(
   () => import('../components/pages/admin/UserManagement')
 );
-const UserForm = lazy(
-  () => import('../components/pages/admin/UserForm')
-);
+const UserForm = lazy(() => import('../components/pages/admin/UserForm'));
 const PermissionsManager = lazy(
   () => import('../components/pages/admin/PermissionsManager')
 );

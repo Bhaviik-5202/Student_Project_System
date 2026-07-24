@@ -32,22 +32,22 @@ export const Input = ({
   return (
     <div className={`w-full ${containerClassName}`}>
       {label && (
-        <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+        <label className='block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5'>
           {label}
-          {props.required && <span className="text-red-500 ml-0.5">*</span>}
+          {props.required && <span className='text-red-500 ml-0.5'>*</span>}
         </label>
       )}
 
-      <div className="relative rounded-lg shadow-sm">
+      <div className='relative rounded-lg shadow-sm'>
         {Icon && type !== 'search' && (
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500 dark:text-slate-400">
-            <Icon className="w-4 h-4" />
+          <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500 dark:text-slate-400'>
+            <Icon className='w-4 h-4' />
           </div>
         )}
 
         {type === 'search' && (
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500 dark:text-slate-400">
-            <Search className="w-4 h-4" />
+          <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500 dark:text-slate-400'>
+            <Search className='w-4 h-4' />
           </div>
         )}
 
@@ -80,19 +80,27 @@ export const Input = ({
 
         {isPassword && (
           <button
-            type="button"
+            type='button'
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:text-slate-300 dark:hover:text-slate-200"
+            className='absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:text-slate-300 dark:hover:text-slate-200'
           >
-            {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            {showPassword ? (
+              <EyeOff className='w-4 h-4' />
+            ) : (
+              <Eye className='w-4 h-4' />
+            )}
           </button>
         )}
       </div>
 
       {error ? (
-        <p className="mt-1 text-xs text-red-600 dark:text-red-400 font-medium">{error}</p>
+        <p className='mt-1 text-xs text-red-600 dark:text-red-400 font-medium'>
+          {error}
+        </p>
       ) : helperText ? (
-        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{helperText}</p>
+        <p className='mt-1 text-xs text-slate-500 dark:text-slate-400'>
+          {helperText}
+        </p>
       ) : null}
     </div>
   );

@@ -98,7 +98,10 @@ const ProjectDashboard = () => {
             <SecondaryButton onClick={() => navigate('/projects')}>
               Project Catalog
             </SecondaryButton>
-            <PrimaryButton icon={Plus} onClick={() => navigate('/projects/new')}>
+            <PrimaryButton
+              icon={Plus}
+              onClick={() => navigate('/projects/new')}
+            >
               Create Project
             </PrimaryButton>
           </>
@@ -131,7 +134,8 @@ const ProjectDashboard = () => {
           />
 
           <div className='space-y-4 mt-6'>
-            {!stats?.departmentBreakdown || stats.departmentBreakdown.length === 0 ? (
+            {!stats?.departmentBreakdown ||
+            stats.departmentBreakdown.length === 0 ? (
               <EmptyState
                 title='No Department Data'
                 description='No department distribution records available.'
@@ -145,7 +149,9 @@ const ProjectDashboard = () => {
                   <div key={idx} className='space-y-1.5'>
                     <div className='flex justify-between text-xs font-bold text-gray-700 dark:text-gray-300'>
                       <span>{dept.department}</span>
-                      <span>{dept.count} Projects ({pct}%)</span>
+                      <span>
+                        {dept.count} Projects ({pct}%)
+                      </span>
                     </div>
                     <div className='h-2.5 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-slate-900'>
                       <div
@@ -169,7 +175,8 @@ const ProjectDashboard = () => {
           />
 
           <div className='space-y-3 mt-6'>
-            {!stats?.categoryBreakdown || stats.categoryBreakdown.length === 0 ? (
+            {!stats?.categoryBreakdown ||
+            stats.categoryBreakdown.length === 0 ? (
               <EmptyState
                 title='No Category Data'
                 description='No domain category records available.'

@@ -17,7 +17,11 @@ const FAQ = memo(() => {
         const response = await api.get('/help/overview');
         if (response.success && response.data) {
           const rawFaqs = response.data.faqs || response.data.groupedFaqs || [];
-          if (Array.isArray(rawFaqs) && rawFaqs.length > 0 && rawFaqs[0].question) {
+          if (
+            Array.isArray(rawFaqs) &&
+            rawFaqs.length > 0 &&
+            rawFaqs[0].question
+          ) {
             const grouped = Object.values(
               rawFaqs.reduce((acc, curr) => {
                 const cat = curr.category || 'General';

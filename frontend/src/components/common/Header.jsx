@@ -20,7 +20,7 @@ import QuickAddMenu from './header/QuickAddMenu';
 const Header = memo(
   ({
     isScrolled = false,
-    clearNotifications = () => { },
+    clearNotifications = () => {},
     onMobileMenuToggle,
     isMobileMenuOpen = false,
   }) => {
@@ -158,7 +158,6 @@ const Header = memo(
         },
       ];
 
-
       // Filter actions based on role requirements
       return baseActions.filter((action) => {
         if (user?.role === 'faculty') {
@@ -226,7 +225,6 @@ const Header = memo(
                 </Link>
               </div>
 
-
               {/* Action Buttons */}
               <div className='flex items-center gap-1 sm:gap-2'>
                 <button
@@ -280,7 +278,7 @@ const Header = memo(
                     </div>
                   )}
                 </div>
-                  
+
                 <button
                   onClick={toggleTheme}
                   className='flex rounded-xl p-2.5 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:bg-gray-800  dark:hover:bg-gray-800'

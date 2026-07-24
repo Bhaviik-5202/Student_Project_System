@@ -5,12 +5,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
-import {
-  FolderPlus,
-  ChevronLeft,
-  Save,
-  Users,
-} from 'lucide-react';
+import { FolderPlus, ChevronLeft, Save, Users } from 'lucide-react';
 import projectService from '../../../services/projectService';
 import { useAuth } from '../../../hooks/useAuth';
 import {
@@ -95,13 +90,17 @@ const ProjectProposal = () => {
                   : project.guide
                 : '',
               members: Array.isArray(project.members)
-                ? project.members.map((m) => (typeof m === 'object' ? m._id || m.id : m))
+                ? project.members.map((m) =>
+                    typeof m === 'object' ? m._id || m.id : m
+                  )
                 : [],
               startDate: project.startDate
                 ? new Date(project.startDate).toISOString().split('T')[0]
                 : '',
               expectedCompletionDate: project.expectedCompletionDate
-                ? new Date(project.expectedCompletionDate).toISOString().split('T')[0]
+                ? new Date(project.expectedCompletionDate)
+                    .toISOString()
+                    .split('T')[0]
                 : '',
               progress: project.progress || 0,
               status: project.status || 'assigned',
@@ -168,7 +167,9 @@ const ProjectProposal = () => {
         toast.success('Project updated successfully!', { id: toastId });
       } else {
         await projectService.createProject(payload);
-        toast.success('Project proposal created successfully!', { id: toastId });
+        toast.success('Project proposal created successfully!', {
+          id: toastId,
+        });
       }
 
       navigate('/projects');
@@ -187,8 +188,14 @@ const ProjectProposal = () => {
     <div className='space-y-6 pt-0 pb-6 animate-fade-in'>
       {/* Page Header */}
       <PageHeader
-        title={isEditing ? 'Edit Project Specification' : 'Submit Project Proposal'}
-        subtitle={isEditing ? 'Update architecture and parameters' : 'Define initial proposal parameters for governance review'}
+        title={
+          isEditing ? 'Edit Project Specification' : 'Submit Project Proposal'
+        }
+        subtitle={
+          isEditing
+            ? 'Update architecture and parameters'
+            : 'Define initial proposal parameters for governance review'
+        }
         icon={FolderPlus}
         actions={
           <SecondaryButton
@@ -200,7 +207,10 @@ const ProjectProposal = () => {
         }
       />
 
-      <form onSubmit={handleSubmit} className='grid grid-cols-1 gap-6 lg:grid-cols-3'>
+      <form
+        onSubmit={handleSubmit}
+        className='grid grid-cols-1 gap-6 lg:grid-cols-3'
+      >
         {/* Left Column - Core Info */}
         <div className='space-y-6 lg:col-span-2'>
           {/* General Information */}
@@ -237,7 +247,9 @@ const ProjectProposal = () => {
                   onChange={handleChange}
                 >
                   <option value='Computer Science'>Computer Science</option>
-                  <option value='Information Technology'>Information Technology</option>
+                  <option value='Information Technology'>
+                    Information Technology
+                  </option>
                   <option value='Electronics'>Electronics</option>
                   <option value='Mechanical'>Mechanical</option>
                   <option value='Civil'>Civil</option>
@@ -370,9 +382,13 @@ const ProjectProposal = () => {
                 onChange={handleChange}
               >
                 <option value='Web Development'>Web Development</option>
-                <option value='AI / Machine Learning'>AI / Machine Learning</option>
+                <option value='AI / Machine Learning'>
+                  AI / Machine Learning
+                </option>
                 <option value='Cloud Computing'>Cloud Computing</option>
-                <option value='IoT & Embedded Systems'>IoT & Embedded Systems</option>
+                <option value='IoT & Embedded Systems'>
+                  IoT & Embedded Systems
+                </option>
                 <option value='Cyber Security'>Cyber Security</option>
                 <option value='Mobile Application'>Mobile Application</option>
                 <option value='Data Science'>Data Science</option>
@@ -408,7 +424,11 @@ const ProjectProposal = () => {
               icon={Save}
               className='w-full !py-3.5 mt-2'
             >
-              {submitting ? 'Saving...' : isEditing ? 'Update Project' : 'Submit Project Proposal'}
+              {submitting
+                ? 'Saving...'
+                : isEditing
+                  ? 'Update Project'
+                  : 'Submit Project Proposal'}
             </PrimaryButton>
           </Card>
         </div>

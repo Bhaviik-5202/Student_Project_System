@@ -5,28 +5,28 @@ const BADGE_CONFIGS = {
   info: {
     bg: 'bg-indigo-50 dark:bg-indigo-950/60',
     text: 'text-indigo-700 dark:text-indigo-300',
-    border: 'border-indigo-200/80 dark:border-indigo-800/50'
+    border: 'border-indigo-200/80 dark:border-indigo-800/50',
   },
   success: {
     bg: 'bg-emerald-50 dark:bg-emerald-950/60',
     text: 'text-emerald-700 dark:text-emerald-300',
-    border: 'border-emerald-200/80 dark:border-emerald-800/50'
+    border: 'border-emerald-200/80 dark:border-emerald-800/50',
   },
   warning: {
     bg: 'bg-amber-50 dark:bg-amber-950/60',
     text: 'text-amber-700 dark:text-amber-300',
-    border: 'border-amber-200/80 dark:border-amber-800/50'
+    border: 'border-amber-200/80 dark:border-amber-800/50',
   },
   danger: {
     bg: 'bg-rose-50 dark:bg-rose-950/60',
     text: 'text-rose-700 dark:text-rose-300',
-    border: 'border-rose-200/80 dark:border-rose-800/50'
+    border: 'border-rose-200/80 dark:border-rose-800/50',
   },
   neutral: {
     bg: 'bg-slate-50 dark:bg-slate-800/60',
     text: 'text-slate-700 dark:text-slate-300',
-    border: 'border-slate-200/80 dark:border-slate-700/50'
-  }
+    border: 'border-slate-200/80 dark:border-slate-700/50',
+  },
 };
 
 const VARIANT_STYLES = {
@@ -35,22 +35,22 @@ const VARIANT_STYLES = {
     icon: 'h-14 w-14 rounded-2xl',
     iconSize: 28,
     title: 'text-xl sm:text-2xl',
-    subtitle: 'text-sm'
+    subtitle: 'text-sm',
   },
   small: {
     wrapper: 'px-4 py-4 sm:px-5 sm:py-4.5 min-h-[72px]',
     icon: 'h-11 w-11 rounded-xl',
     iconSize: 22,
     title: 'text-lg',
-    subtitle: 'text-xs'
+    subtitle: 'text-xs',
   },
   compact: {
     wrapper: 'px-3 py-3 sm:px-4 sm:py-3.5 min-h-[60px]',
     icon: 'h-9 w-9 rounded-lg',
     iconSize: 18,
     title: 'text-base sm:text-lg',
-    subtitle: 'text-xs'
-  }
+    subtitle: 'text-xs',
+  },
 };
 
 /**
@@ -76,14 +76,15 @@ export const PageHeader = ({
   className = '',
   id,
   testId,
-  onAction
+  onAction,
 }) => {
   // Determine effective variant (small prop takes precedence over variant)
   const effectiveVariant = small ? 'small' : variant;
   const styles = VARIANT_STYLES[effectiveVariant] || VARIANT_STYLES.default;
 
   const subContent = subtitle || description;
-  const displayBadgeText = badgeText || (typeof badge === 'string' ? badge : null);
+  const displayBadgeText =
+    badgeText || (typeof badge === 'string' ? badge : null);
   const badgeStyles = BADGE_CONFIGS[badgeVariant] || BADGE_CONFIGS.info;
 
   // Handle icon rendering
@@ -96,11 +97,13 @@ export const PageHeader = ({
       return React.cloneElement(Icon, {
         size: finalIconSize,
         className: iconColor,
-        'aria-hidden': true
+        'aria-hidden': true,
       });
     }
 
-    return <Icon size={finalIconSize} className={iconColor} aria-hidden="true" />;
+    return (
+      <Icon size={finalIconSize} className={iconColor} aria-hidden='true' />
+    );
   };
 
   return (
@@ -116,9 +119,9 @@ export const PageHeader = ({
       `}
       id={id}
       data-testid={testId}
-      role="banner"
+      role='banner'
     >
-      <div className="flex items-center gap-4 min-w-0">
+      <div className='flex items-center gap-4 min-w-0'>
         {Icon && (
           <div
             className={`
@@ -127,25 +130,27 @@ export const PageHeader = ({
               ${iconBg}
               shrink-0 transition-transform duration-200 hover:scale-105
             `}
-            aria-hidden="true"
+            aria-hidden='true'
           >
             {renderIcon()}
           </div>
         )}
 
-        <div className="min-w-0 flex-1">
+        <div className='min-w-0 flex-1'>
           {breadcrumbs && (
-            <div className="mb-1.5" aria-label="Breadcrumb navigation">
+            <div className='mb-1.5' aria-label='Breadcrumb navigation'>
               {breadcrumbs}
             </div>
           )}
 
-          <div className="flex items-center gap-2.5 flex-wrap">
-            <h1 className={`
+          <div className='flex items-center gap-2.5 flex-wrap'>
+            <h1
+              className={`
               font-bold text-slate-900 dark:text-white
               tracking-tight flex items-center gap-2
               ${styles.title}
-            `}>
+            `}
+            >
               {title}
             </h1>
 
@@ -158,7 +163,7 @@ export const PageHeader = ({
                   ${badgeStyles.text}
                   ${badgeStyles.border}
                 `}
-                role="status"
+                role='status'
                 aria-label={`Status: ${displayBadgeText}`}
               >
                 {displayBadgeText}
@@ -169,11 +174,13 @@ export const PageHeader = ({
           </div>
 
           {subContent && (
-            <p className={`
+            <p
+              className={`
               mt-1 text-slate-500 dark:text-slate-400
               font-medium leading-relaxed
               ${styles.subtitle}
-            `}>
+            `}
+            >
               {subContent}
             </p>
           )}
@@ -181,11 +188,13 @@ export const PageHeader = ({
       </div>
 
       {actions && (
-        <div className={`
+        <div
+          className={`
           flex flex-wrap items-center gap-3 shrink-0
           pt-2 md:pt-0
           ${effectiveVariant !== 'compact' ? 'border-t border-slate-100 dark:border-slate-700/50 md:border-t-0' : ''}
-        `}>
+        `}
+        >
           {actions}
         </div>
       )}

@@ -48,7 +48,10 @@ class ProjectController {
    */
   async getProjectById(req, res, next) {
     try {
-      const project = await projectService.getProjectById(req.params.id, req.user);
+      const project = await projectService.getProjectById(
+        req.params.id,
+        req.user
+      );
       return sendResponse(res, {
         success: true,
         message: 'Project details retrieved',

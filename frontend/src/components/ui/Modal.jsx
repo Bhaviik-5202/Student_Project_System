@@ -35,10 +35,10 @@ const Modal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
+    <div className='fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto'>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity duration-300 animate-fadeIn"
+        className='fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity duration-300 animate-fadeIn'
         onClick={onClose}
       />
 
@@ -48,33 +48,33 @@ const Modal = ({
       >
         {/* Header */}
         {(title || showClose) && (
-          <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800">
+          <div className='flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800'>
             <div>
               {title && (
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                <h3 className='text-lg font-semibold text-slate-900 dark:text-slate-100'>
                   {title}
                 </h3>
               )}
               {subtitle && (
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                <p className='text-xs text-slate-500 dark:text-slate-400 mt-0.5'>
                   {subtitle}
                 </p>
               )}
             </div>
             {showClose && (
               <button
-                type="button"
+                type='button'
                 onClick={onClose}
-                className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-colors"
+                className='p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-colors'
               >
-                <X className="w-5 h-5" />
+                <X className='w-5 h-5' />
               </button>
             )}
           </div>
         )}
 
         {/* Content */}
-        <div className="px-6 py-4">{children}</div>
+        <div className='px-6 py-4'>{children}</div>
       </div>
     </div>
   );

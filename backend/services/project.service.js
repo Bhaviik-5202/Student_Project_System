@@ -39,7 +39,9 @@ class ProjectService {
     }
 
     // Set project leader
-    const leaderId = projectData.leader || (memberIds.length > 0 ? memberIds[0] : currentUser._id);
+    const leaderId =
+      projectData.leader ||
+      (memberIds.length > 0 ? memberIds[0] : currentUser._id);
 
     // Initial activity timeline
     const initialTimeline = [
@@ -117,7 +119,8 @@ class ProjectService {
     if (projectType && projectType !== 'All') filter.projectType = projectType;
     if (department && department !== 'All') filter.department = department;
     if (semester && semester !== 'All') filter.semester = semester;
-    if (academicYear && academicYear !== 'All') filter.academicYear = academicYear;
+    if (academicYear && academicYear !== 'All')
+      filter.academicYear = academicYear;
     if (guide) filter.guide = guide;
     if (student) filter.members = student;
 
@@ -178,7 +181,10 @@ class ProjectService {
     }
 
     // Check code conflict if code is modified
-    if (updateData.code && updateData.code.trim().toUpperCase() !== existing.code) {
+    if (
+      updateData.code &&
+      updateData.code.trim().toUpperCase() !== existing.code
+    ) {
       const codeCheck = await projectRepository.findOne({
         code: updateData.code.trim().toUpperCase(),
         _id: { $ne: existing._id },
@@ -291,7 +297,9 @@ class ProjectService {
       });
 
       if (validStudents.length !== uniqueStudentIds.length) {
-        throw new Error('One or more selected students are invalid or inactive');
+        throw new Error(
+          'One or more selected students are invalid or inactive'
+        );
       }
     }
 
@@ -336,7 +344,9 @@ class ProjectService {
       $push: {
         activityTimeline: {
           action: 'Guide Assigned',
-          details: guideId ? 'Faculty mentor allocated' : 'Faculty mentor unassigned',
+          details: guideId
+            ? 'Faculty mentor allocated'
+            : 'Faculty mentor unassigned',
           performedBy: currentUser._id || currentUser.id,
           timestamp: new Date(),
         },

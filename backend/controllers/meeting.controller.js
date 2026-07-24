@@ -16,7 +16,10 @@ const sendResponse = require('../utils/response');
  */
 exports.createMeeting = async (req, res) => {
   try {
-    if (req.body.date && new Date(req.body.date) < new Date(Date.now() - 60000)) {
+    if (
+      req.body.date &&
+      new Date(req.body.date) < new Date(Date.now() - 60000)
+    ) {
       return sendResponse(
         res,
         {

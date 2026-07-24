@@ -1,12 +1,6 @@
 import React, { memo, useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  Search,
-  X,
-  BookOpen,
-  HelpCircle,
-  Loader2,
-} from 'lucide-react';
+import { Search, X, BookOpen, HelpCircle, Loader2 } from 'lucide-react';
 import api from '../../../utils/api';
 import PageHeader from '../../common/PageHeader';
 
@@ -141,10 +135,11 @@ const HelpCenter = memo(() => {
           <button
             key={category}
             onClick={() => handleCategoryChange(category)}
-            className={`rounded border px-4 py-1.5 text-sm font-medium transition-all ${selectedCategory === category
+            className={`rounded border px-4 py-1.5 text-sm font-medium transition-all ${
+              selectedCategory === category
                 ? 'border-blue-600 bg-blue-600 text-white'
                 : 'border-slate-200 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:border-blue-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400'
-              }`}
+            }`}
           >
             {category}
           </button>

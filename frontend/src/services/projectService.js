@@ -23,20 +23,32 @@ export const projectService = {
     if (params.page) query.append('page', params.page);
     if (params.limit) query.append('limit', params.limit);
     if (params.search) query.append('search', params.search);
-    if (params.status && params.status !== 'All') query.append('status', params.status);
-    if (params.category && params.category !== 'All') query.append('category', params.category);
-    if (params.projectType && params.projectType !== 'All') query.append('projectType', params.projectType);
-    if (params.department && params.department !== 'All') query.append('department', params.department);
-    if (params.semester && params.semester !== 'All') query.append('semester', params.semester);
-    if (params.academicYear && params.academicYear !== 'All') query.append('academicYear', params.academicYear);
-    if (params.isArchived !== undefined) query.append('isArchived', params.isArchived);
+    if (params.status && params.status !== 'All')
+      query.append('status', params.status);
+    if (params.category && params.category !== 'All')
+      query.append('category', params.category);
+    if (params.projectType && params.projectType !== 'All')
+      query.append('projectType', params.projectType);
+    if (params.department && params.department !== 'All')
+      query.append('department', params.department);
+    if (params.semester && params.semester !== 'All')
+      query.append('semester', params.semester);
+    if (params.academicYear && params.academicYear !== 'All')
+      query.append('academicYear', params.academicYear);
+    if (params.isArchived !== undefined)
+      query.append('isArchived', params.isArchived);
     if (params.sort) query.append('sort', params.sort);
     if (params.guide) query.append('guide', params.guide);
 
     const res = await api.get(`/projects?${query.toString()}`);
     return {
       projects: res.data || [],
-      pagination: res.pagination || { total: 0, page: 1, limit: 10, totalPages: 1 },
+      pagination: res.pagination || {
+        total: 0,
+        page: 1,
+        limit: 10,
+        totalPages: 1,
+      },
     };
   },
 
@@ -155,7 +167,9 @@ export const projectService = {
    * Query active students for dropdown assignment selector
    */
   getActiveStudents: async (search = '') => {
-    const res = await api.get(`/projects/students/active?search=${encodeURIComponent(search)}`);
+    const res = await api.get(
+      `/projects/students/active?search=${encodeURIComponent(search)}`
+    );
     return res.data || [];
   },
 
@@ -163,7 +177,9 @@ export const projectService = {
    * Query active faculty guides for guide selector
    */
   getActiveFaculty: async (search = '') => {
-    const res = await api.get(`/projects/faculty/active?search=${encodeURIComponent(search)}`);
+    const res = await api.get(
+      `/projects/faculty/active?search=${encodeURIComponent(search)}`
+    );
     return res.data || [];
   },
 };

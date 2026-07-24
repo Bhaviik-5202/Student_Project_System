@@ -1,6 +1,12 @@
 import React, { memo, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FolderKanban, Plus, UserCheck, Users, ExternalLink } from 'lucide-react';
+import {
+  FolderKanban,
+  Plus,
+  UserCheck,
+  Users,
+  ExternalLink,
+} from 'lucide-react';
 import api from '../../../utils/api';
 import {
   PageHeader,
@@ -59,15 +65,27 @@ const GroupCard = memo(({ group }) => {
 
       <div className='space-y-2 border-t border-gray-100 pt-3 dark:border-slate-700/60 text-xs'>
         <div className='flex items-center gap-2 text-gray-600 dark:text-gray-300'>
-          <UserCheck size={15} className='text-indigo-500 dark:text-indigo-400 shrink-0' />
+          <UserCheck
+            size={15}
+            className='text-indigo-500 dark:text-indigo-400 shrink-0'
+          />
           <span className='truncate'>
-            <strong className='font-semibold text-gray-800 dark:text-gray-200'>Guide:</strong> {guideName}
+            <strong className='font-semibold text-gray-800 dark:text-gray-200'>
+              Guide:
+            </strong>{' '}
+            {guideName}
           </span>
         </div>
         <div className='flex items-center gap-2 text-gray-600 dark:text-gray-300'>
-          <Users size={15} className='text-indigo-500 dark:text-indigo-400 shrink-0' />
+          <Users
+            size={15}
+            className='text-indigo-500 dark:text-indigo-400 shrink-0'
+          />
           <span className='truncate'>
-            <strong className='font-semibold text-gray-800 dark:text-gray-200'>Team:</strong> {membersList}
+            <strong className='font-semibold text-gray-800 dark:text-gray-200'>
+              Team:
+            </strong>{' '}
+            {membersList}
           </span>
         </div>
       </div>
@@ -113,10 +131,7 @@ const ProjectGroupsList = memo(() => {
         subtitle='Management for collaborative ventures'
         icon={FolderKanban}
         actions={
-          <PrimaryButton
-            icon={Plus}
-            onClick={() => navigate('/projects/new')}
-          >
+          <PrimaryButton icon={Plus} onClick={() => navigate('/projects/new')}>
             Create Group
           </PrimaryButton>
         }

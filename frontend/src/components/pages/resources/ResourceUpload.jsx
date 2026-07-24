@@ -68,29 +68,35 @@ const ResourceUpload = memo(() => {
     }
   }, [pathname, typeParam]);
 
-  const handleFileSelect = useCallback((e) => {
-    const selectedFiles = Array.from(e.target.files);
-    if (selectedFiles.length > 0) {
-      setFiles(selectedFiles);
-      if (!title) {
-        // Auto-fill title from file name without extension
-        const fileName = selectedFiles[0].name.replace(/\.[^/.]+$/, '');
-        setTitle(fileName);
+  const handleFileSelect = useCallback(
+    (e) => {
+      const selectedFiles = Array.from(e.target.files);
+      if (selectedFiles.length > 0) {
+        setFiles(selectedFiles);
+        if (!title) {
+          // Auto-fill title from file name without extension
+          const fileName = selectedFiles[0].name.replace(/\.[^/.]+$/, '');
+          setTitle(fileName);
+        }
       }
-    }
-  }, [title]);
+    },
+    [title]
+  );
 
-  const handleDrop = useCallback((e) => {
-    e.preventDefault();
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      const droppedFiles = Array.from(e.dataTransfer.files);
-      setFiles(droppedFiles);
-      if (!title) {
-        const fileName = droppedFiles[0].name.replace(/\.[^/.]+$/, '');
-        setTitle(fileName);
+  const handleDrop = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        const droppedFiles = Array.from(e.dataTransfer.files);
+        setFiles(droppedFiles);
+        if (!title) {
+          const fileName = droppedFiles[0].name.replace(/\.[^/.]+$/, '');
+          setTitle(fileName);
+        }
       }
-    }
-  }, [title]);
+    },
+    [title]
+  );
 
   const handleDragOver = useCallback((e) => {
     e.preventDefault();
@@ -189,7 +195,10 @@ const ResourceUpload = memo(() => {
         icon={Upload}
       />
 
-      <form onSubmit={handleSubmit} className='grid grid-cols-1 gap-8 lg:grid-cols-3'>
+      <form
+        onSubmit={handleSubmit}
+        className='grid grid-cols-1 gap-8 lg:grid-cols-3'
+      >
         {/* Left 2 Columns - Main Form */}
         <div className='lg:col-span-2 space-y-6'>
           <div className='rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-sm dark:border-slate-700/80 dark:bg-slate-800 space-y-5'>
@@ -238,7 +247,9 @@ const ResourceUpload = memo(() => {
                   onChange={(e) => setCategory(e.target.value)}
                   className='w-full rounded-xl border border-slate-200 bg-slate-50 dark:bg-slate-800 p-3 text-xs font-semibold text-slate-800 dark:text-slate-100 focus:border-indigo-500 focus:bg-white dark:bg-slate-900 focus:outline-none dark:border-slate-700 /50 dark:text-white'
                 >
-                  <option value='Project Documentation'>Project Documentation</option>
+                  <option value='Project Documentation'>
+                    Project Documentation
+                  </option>
                   <option value='Guidelines'>Guidelines & Policies</option>
                   <option value='Academic Templates'>Academic Templates</option>
                   <option value='Reports'>Reports & Rubrics</option>
@@ -265,7 +276,8 @@ const ResourceUpload = memo(() => {
             {/* Tags */}
             <div>
               <label className='block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5'>
-                <Tag size={14} className='text-slate-400' /> Tags (Optional, comma-separated)
+                <Tag size={14} className='text-slate-400' /> Tags (Optional,
+                comma-separated)
               </label>
               <input
                 type='text'
@@ -280,7 +292,8 @@ const ResourceUpload = memo(() => {
           {/* File Upload Box */}
           <div className='rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-sm dark:border-slate-700/80 dark:bg-slate-800 space-y-4'>
             <h3 className='text-sm font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2'>
-              <Upload size={16} className='text-indigo-500' /> Attachment File <span className='text-red-500'>*</span>
+              <Upload size={16} className='text-indigo-500' /> Attachment File{' '}
+              <span className='text-red-500'>*</span>
             </h3>
 
             <div
@@ -294,16 +307,23 @@ const ResourceUpload = memo(() => {
                 id='dedicated-file-upload'
                 className='hidden'
               />
-              <label htmlFor='dedicated-file-upload' className='cursor-pointer block space-y-3'>
+              <label
+                htmlFor='dedicated-file-upload'
+                className='cursor-pointer block space-y-3'
+              >
                 <div className='mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-400 shadow-sm'>
                   <Upload size={28} />
                 </div>
                 <div>
                   <p className='text-sm font-bold text-slate-800 dark:text-white'>
-                    Drag & drop file here or <span className='text-indigo-600 dark:text-indigo-400 underline'>click to browse</span>
+                    Drag & drop file here or{' '}
+                    <span className='text-indigo-600 dark:text-indigo-400 underline'>
+                      click to browse
+                    </span>
                   </p>
                   <p className='text-xs text-slate-500 dark:text-slate-400 mt-1'>
-                    Supports PDF, DOCX, PPTX, XLSX, MP4, WEBM (Max file size: 50MB)
+                    Supports PDF, DOCX, PPTX, XLSX, MP4, WEBM (Max file size:
+                    50MB)
                   </p>
                 </div>
               </label>
@@ -312,7 +332,9 @@ const ResourceUpload = memo(() => {
             {/* Selected File List */}
             {files.length > 0 && (
               <div className='space-y-2 pt-2'>
-                <p className='text-xs font-bold text-slate-700 dark:text-slate-300'>Attached File:</p>
+                <p className='text-xs font-bold text-slate-700 dark:text-slate-300'>
+                  Attached File:
+                </p>
                 {files.map((file, idx) => (
                   <div
                     key={idx}
@@ -323,9 +345,12 @@ const ResourceUpload = memo(() => {
                         <FileText size={18} />
                       </div>
                       <div className='truncate text-xs'>
-                        <p className='truncate font-bold text-slate-900 dark:text-white'>{file.name}</p>
+                        <p className='truncate font-bold text-slate-900 dark:text-white'>
+                          {file.name}
+                        </p>
                         <p className='text-[10px] text-slate-500 dark:text-slate-400'>
-                          {(file.size / 1024 / 1024).toFixed(2)} MB &bull; {file.type || 'Unknown Format'}
+                          {(file.size / 1024 / 1024).toFixed(2)} MB &bull;{' '}
+                          {file.type || 'Unknown Format'}
                         </p>
                       </div>
                     </div>
@@ -400,12 +425,22 @@ const ResourceUpload = memo(() => {
           {/* Guidelines */}
           <div className='rounded-2xl border border-slate-200 bg-slate-50 dark:bg-slate-800 p-5 dark:border-slate-700/80 /60 text-xs space-y-3'>
             <h4 className='font-bold text-slate-900 dark:text-white flex items-center gap-1.5'>
-              <CheckCircle size={15} className='text-emerald-500' /> Upload Requirements
+              <CheckCircle size={15} className='text-emerald-500' /> Upload
+              Requirements
             </h4>
             <ul className='space-y-2 text-slate-600 dark:text-slate-300 leading-relaxed text-[11px]'>
-              <li>&bull; Ensure documents follow official university formatting standards.</li>
-              <li>&bull; Include clear descriptions to help students discover relevant assets.</li>
-              <li>&bull; PDF format is recommended for guidelines and evaluation rubrics.</li>
+              <li>
+                &bull; Ensure documents follow official university formatting
+                standards.
+              </li>
+              <li>
+                &bull; Include clear descriptions to help students discover
+                relevant assets.
+              </li>
+              <li>
+                &bull; PDF format is recommended for guidelines and evaluation
+                rubrics.
+              </li>
             </ul>
           </div>
         </div>

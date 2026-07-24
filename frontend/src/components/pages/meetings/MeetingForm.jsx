@@ -71,7 +71,9 @@ const MeetingForm = memo(() => {
               id: p._id || p.id,
               title: p.title || p.name || 'Untitled Project',
               guideId: p.guide?._id || p.guide || null,
-              studentIds: (p.students || []).map((s) => (typeof s === 'object' ? s._id || s.id : s)),
+              studentIds: (p.students || []).map((s) =>
+                typeof s === 'object' ? s._id || s.id : s
+              ),
             }))
           );
         }
@@ -124,7 +126,9 @@ const MeetingForm = memo(() => {
         const res = await meetingService.getMeetingById(id);
         if (res.success && res.data) {
           const m = res.data;
-          const formattedDate = m.date ? new Date(m.date).toISOString().split('T')[0] : '';
+          const formattedDate = m.date
+            ? new Date(m.date).toISOString().split('T')[0]
+            : '';
           const formattedTime =
             m.time ||
             (m.date
@@ -144,7 +148,9 @@ const MeetingForm = memo(() => {
             description: m.description || '',
             project: m.project?._id || m.project || '',
             organizer: m.organizer?._id || m.organizer || '',
-            participants: (m.participants || []).map((p) => (typeof p === 'object' ? p._id || p.id : p)),
+            participants: (m.participants || []).map((p) =>
+              typeof p === 'object' ? p._id || p.id : p
+            ),
           });
         } else {
           toast.error('Failed to load meeting details');
@@ -166,12 +172,17 @@ const MeetingForm = memo(() => {
     const selectedProjectId = e.target.value;
     setFormData((prev) => {
       const updated = { ...prev, project: selectedProjectId };
-      const matchedProject = projects.find((p) => String(p.id) === String(selectedProjectId));
+      const matchedProject = projects.find(
+        (p) => String(p.id) === String(selectedProjectId)
+      );
       if (matchedProject) {
         if (matchedProject.guideId && !prev.organizer) {
           updated.organizer = matchedProject.guideId;
         }
-        if (Array.isArray(matchedProject.studentIds) && matchedProject.studentIds.length > 0) {
+        if (
+          Array.isArray(matchedProject.studentIds) &&
+          matchedProject.studentIds.length > 0
+        ) {
           updated.participants = Array.from(
             new Set([...prev.participants, ...matchedProject.studentIds])
           );
@@ -200,8 +211,15 @@ const MeetingForm = memo(() => {
     async (e) => {
       e.preventDefault();
 
-      if (!formData.title.trim() || !formData.date || !formData.time || !formData.location.trim()) {
-        toast.error('Please complete all required fields (Title, Date, Time, Location)');
+      if (
+        !formData.title.trim() ||
+        !formData.date ||
+        !formData.time ||
+        !formData.location.trim()
+      ) {
+        toast.error(
+          'Please complete all required fields (Title, Date, Time, Location)'
+        );
         return;
       }
 
@@ -232,10 +250,15 @@ const MeetingForm = memo(() => {
           : await meetingService.createMeeting(meetingPayload);
 
         if (res.success) {
-          toast.success(`Meeting ${isEditing ? 'updated' : 'scheduled'} successfully!`);
+          toast.success(
+            `Meeting ${isEditing ? 'updated' : 'scheduled'} successfully!`
+          );
           handleClose();
         } else {
-          toast.error(res.message || `Failed to ${isEditing ? 'update' : 'schedule'} meeting`);
+          toast.error(
+            res.message ||
+              `Failed to ${isEditing ? 'update' : 'schedule'} meeting`
+          );
         }
       } catch (error) {
         toast.error('An unexpected error occurred while saving meeting');
@@ -252,7 +275,13 @@ const MeetingForm = memo(() => {
     <div className='animate-fade-in space-y-6 pt-0 pb-6 max-w-4xl mx-auto'>
       <PageHeader
         variant='small'
-        title={isViewing ? 'Meeting Details' : isEditing ? 'Edit Meeting' : 'Schedule Meeting'}
+        title={
+          isViewing
+            ? 'Meeting Details'
+            : isEditing
+              ? 'Edit Meeting'
+              : 'Schedule Meeting'
+        }
         subtitle='Project synchronization and academic review session'
         icon={CalendarIcon}
         actions={
@@ -434,11 +463,14 @@ const MeetingForm = memo(() => {
             {students.length > 0 && (
               <div>
                 <label className='mb-2 block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300'>
-                  Select Student Participants ({formData.participants.length} selected)
+                  Select Student Participants ({formData.participants.length}{' '}
+                  selected)
                 </label>
                 <div className='max-h-48 overflow-y-auto rounded-lg border border-slate-200 dark:border-slate-700 p-3 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900/50 space-y-2'>
                   {students.map((student) => {
-                    const isSelected = formData.participants.includes(student.id);
+                    const isSelected = formData.participants.includes(
+                      student.id
+                    );
                     return (
                       <div
                         key={student.id}
@@ -450,7 +482,12 @@ const MeetingForm = memo(() => {
                         }`}
                       >
                         <div className='flex items-center gap-2.5'>
-                          <Users size={16} className={isSelected ? 'text-indigo-600' : 'text-slate-400'} />
+                          <Users
+                            size={16}
+                            className={
+                              isSelected ? 'text-indigo-600' : 'text-slate-400'
+                            }
+                          />
                           <div>
                             <p className='text-xs font-bold'>{student.name}</p>
                             <p className='text-[10px] text-slate-500 dark:text-slate-400'>
@@ -458,7 +495,12 @@ const MeetingForm = memo(() => {
                             </p>
                           </div>
                         </div>
-                        {isSelected && <CheckCircle2 size={16} className='text-indigo-600 dark:text-indigo-400' />}
+                        {isSelected && (
+                          <CheckCircle2
+                            size={16}
+                            className='text-indigo-600 dark:text-indigo-400'
+                          />
+                        )}
                       </div>
                     );
                   })}
@@ -489,7 +531,9 @@ const MeetingForm = memo(() => {
                   ) : (
                     <>
                       <Save size={18} />
-                      <span>{isEditing ? 'Update Meeting' : 'Schedule Meeting'}</span>
+                      <span>
+                        {isEditing ? 'Update Meeting' : 'Schedule Meeting'}
+                      </span>
                     </>
                   )}
                 </button>

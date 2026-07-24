@@ -59,7 +59,8 @@ const formatTime = (date, time) => {
   });
 };
 
-const isReviewMeeting = (type) => type === 'review' || type === MEETING_TYPES.PROJECT;
+const isReviewMeeting = (type) =>
+  type === 'review' || type === MEETING_TYPES.PROJECT;
 
 const MeetingDetails = memo(() => {
   const { id } = useParams();
@@ -150,7 +151,8 @@ const MeetingDetails = memo(() => {
   }, [meetingLink, canJoin, id]);
 
   const handleDelete = useCallback(async () => {
-    if (!window.confirm('Are you sure you want to cancel this meeting?')) return;
+    if (!window.confirm('Are you sure you want to cancel this meeting?'))
+      return;
     const res = await meetingService.deleteMeeting(id);
     if (res.success) {
       toast.success('Meeting cancelled successfully');
@@ -194,9 +196,7 @@ const MeetingDetails = memo(() => {
   if (!meeting) return null;
 
   const typeLabel =
-    TYPE_LABELS[meeting.type] ||
-    meeting.type?.replace(/_/g, ' ') ||
-    'Meeting';
+    TYPE_LABELS[meeting.type] || meeting.type?.replace(/_/g, ' ') || 'Meeting';
   const participants = Array.isArray(meeting.participants)
     ? meeting.participants
     : [];
@@ -266,12 +266,15 @@ const MeetingDetails = memo(() => {
                       </span>
                       <p className='text-sm font-bold text-gray-900 dark:text-white'>
                         {meeting.date
-                          ? new Date(meeting.date).toLocaleDateString(undefined, {
-                            weekday: 'long',
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                          })
+                          ? new Date(meeting.date).toLocaleDateString(
+                              undefined,
+                              {
+                                weekday: 'long',
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                              }
+                            )
                           : 'N/A'}
                       </p>
                     </div>
@@ -346,7 +349,7 @@ const MeetingDetails = memo(() => {
               <div className='meeting-card-body'>
                 <h2 className='meeting-subtitle mb-4'>Attachments</h2>
                 {Array.isArray(meeting.attachments) &&
-                  meeting.attachments.length > 0 ? (
+                meeting.attachments.length > 0 ? (
                   <ul className='space-y-2'>
                     {meeting.attachments.map((file, index) => (
                       <li key={index}>
@@ -423,9 +426,7 @@ const MeetingDetails = memo(() => {
                       {project._id && (
                         <button
                           onClick={() =>
-                            navigate(
-                              `/projects/${project.slug || project._id}`
-                            )
+                            navigate(`/projects/${project.slug || project._id}`)
                           }
                           className='text-[10px] font-bold uppercase text-indigo-600 hover:underline dark:text-indigo-400'
                         >

@@ -20,7 +20,13 @@ import projectService from '../../../services/projectService';
 import { useAuth } from '../../../hooks/useAuth';
 
 /* ─── Milestone Form Modal ────────────────────────────────────── */
-const MilestoneModal = ({ isOpen, onClose, onSave, milestone = null, saving }) => {
+const MilestoneModal = ({
+  isOpen,
+  onClose,
+  onSave,
+  milestone = null,
+  saving,
+}) => {
   const [form, setForm] = useState({ title: '', description: '', dueDate: '' });
 
   useEffect(() => {
@@ -39,14 +45,19 @@ const MilestoneModal = ({ isOpen, onClose, onSave, milestone = null, saving }) =
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!form.title.trim()) { toast.error('Milestone title is required'); return; }
+    if (!form.title.trim()) {
+      toast.error('Milestone title is required');
+      return;
+    }
     onSave(form);
   };
 
   return (
     <div
       className='fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm'
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
     >
       <div className='w-full max-w-lg rounded-2xl bg-white dark:bg-slate-900 shadow-2xl dark:bg-slate-800'>
         {/* Header */}
@@ -55,7 +66,11 @@ const MilestoneModal = ({ isOpen, onClose, onSave, milestone = null, saving }) =
             <Flag size={16} />
             {milestone ? 'Edit Milestone' : 'New Milestone'}
           </h3>
-          <button onClick={onClose} type='button' className='text-white/80 hover:text-white'>
+          <button
+            onClick={onClose}
+            type='button'
+            className='text-white/80 hover:text-white'
+          >
             <X size={20} />
           </button>
         </div>
@@ -84,7 +99,9 @@ const MilestoneModal = ({ isOpen, onClose, onSave, milestone = null, saving }) =
               className='w-full rounded-xl border border-slate-200 bg-slate-50 dark:bg-slate-800 px-4 py-2.5 text-sm text-slate-900 dark:text-white outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 dark:border-slate-600 dark:bg-slate-700 '
               placeholder='Brief description of this milestone...'
               value={form.description}
-              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              onChange={(e) =>
+                setForm({ ...form, description: e.target.value })
+              }
             />
           </div>
 
@@ -113,7 +130,11 @@ const MilestoneModal = ({ isOpen, onClose, onSave, milestone = null, saving }) =
               disabled={saving}
               className='flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 disabled:opacity-60'
             >
-              {saving ? <RefreshCw size={14} className='animate-spin' /> : <Save size={14} />}
+              {saving ? (
+                <RefreshCw size={14} className='animate-spin' />
+              ) : (
+                <Save size={14} />
+              )}
               {milestone ? 'Update' : 'Create'}
             </button>
           </div>
@@ -129,15 +150,20 @@ const DeleteModal = ({ isOpen, onClose, onConfirm, saving }) => {
   return (
     <div
       className='fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm'
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
     >
       <div className='w-full max-w-sm rounded-2xl bg-white dark:bg-slate-900 p-6 shadow-2xl dark:bg-slate-800'>
         <div className='mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-rose-100 dark:bg-rose-900/30'>
           <AlertCircle size={24} className='text-rose-600 dark:text-rose-400' />
         </div>
-        <h3 className='mb-2 text-base font-bold text-slate-900 dark:text-white'>Delete Milestone?</h3>
+        <h3 className='mb-2 text-base font-bold text-slate-900 dark:text-white'>
+          Delete Milestone?
+        </h3>
         <p className='mb-6 text-sm text-slate-500 dark:text-slate-400'>
-          This action cannot be undone. The milestone will be permanently removed.
+          This action cannot be undone. The milestone will be permanently
+          removed.
         </p>
         <div className='flex justify-end gap-3'>
           <button
@@ -186,15 +212,22 @@ const MilestoneTracker = memo(() => {
     const fetchProjects = async () => {
       try {
         const res = await projectService.getAllProjects();
-        const list = res?.success ? (res.data || []) : [];
+        const list = res?.success ? res.data || [] : [];
         setProjects(list);
 
-        if (list.length === 0) { setLoading(false); return; }
+        if (list.length === 0) {
+          setLoading(false);
+          return;
+        }
 
         // Resolve initial project from URL param or first in list
         if (id) {
-          const found = list.find((p) => (p._id || p.id) === id || p.slug === id);
-          setSelectedProjectId(found ? (found._id || found.id) : (list[0]._id || list[0].id));
+          const found = list.find(
+            (p) => (p._id || p.id) === id || p.slug === id
+          );
+          setSelectedProjectId(
+            found ? found._id || found.id : list[0]._id || list[0].id
+          );
         } else {
           setSelectedProjectId(list[0]._id || list[0].id);
         }
@@ -221,13 +254,19 @@ const MilestoneTracker = memo(() => {
       if (dataArr.length > 0) {
         const timeline = dataArr[0];
         setTimelineId(timeline._id || timeline.id);
-        const mapped = (Array.isArray(timeline.milestones) ? timeline.milestones : []).map((m) => ({
+        const mapped = (
+          Array.isArray(timeline.milestones) ? timeline.milestones : []
+        ).map((m) => ({
           id: m._id || m.id,
           name: m.title,
           description: m.description || '',
           rawDueDate: m.dueDate || null,
           dueDate: m.dueDate
-            ? new Date(m.dueDate).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
+            ? new Date(m.dueDate).toLocaleDateString(undefined, {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+              })
             : 'TBD',
           completed: !!m.completed,
         }));
@@ -250,92 +289,135 @@ const MilestoneTracker = memo(() => {
   }, [selectedProjectId, fetchMilestones]);
 
   /* ── Dropdown change ─────────────────────────────────────────── */
-  const handleProjectChange = useCallback((e) => {
-    const newId = e.target.value;
-    setSelectedProjectId(newId);
-    const project = projects.find((p) => (p._id || p.id) === newId);
-    if (project) navigate(`/milestones/${project.slug || newId}`, { replace: true });
-  }, [projects, navigate]);
+  const handleProjectChange = useCallback(
+    (e) => {
+      const newId = e.target.value;
+      setSelectedProjectId(newId);
+      const project = projects.find((p) => (p._id || p.id) === newId);
+      if (project)
+        navigate(`/milestones/${project.slug || newId}`, { replace: true });
+    },
+    [projects, navigate]
+  );
 
   /* ── Save milestones array to backend ────────────────────────── */
-  const persistMilestones = useCallback(async (updatedMilestones) => {
-    // Build payload matching schema: array of { title, description, dueDate, completed }
-    const payload = updatedMilestones.map((m) => ({
-      ...(m.id ? { _id: m.id } : {}),
-      title: m.name,
-      description: m.description || '',
-      dueDate: m.rawDueDate || null,
-      completed: !!m.completed,
-    }));
+  const persistMilestones = useCallback(
+    async (updatedMilestones) => {
+      // Build payload matching schema: array of { title, description, dueDate, completed }
+      const payload = updatedMilestones.map((m) => ({
+        ...(m.id ? { _id: m.id } : {}),
+        title: m.name,
+        description: m.description || '',
+        dueDate: m.rawDueDate || null,
+        completed: !!m.completed,
+      }));
 
-    if (timelineId) {
-      // Update existing timeline
-      const res = await timelineService.update(timelineId, { milestones: payload });
-      if (!res?.success) throw new Error(res?.message || 'Update failed');
-      return res;
-    } else {
-      // Create new timeline
-      const res = await timelineService.create({ project: selectedProjectId, milestones: payload });
-      if (!res?.success) throw new Error(res?.message || 'Create failed');
-      return res;
-    }
-  }, [timelineId, selectedProjectId]);
+      if (timelineId) {
+        // Update existing timeline
+        const res = await timelineService.update(timelineId, {
+          milestones: payload,
+        });
+        if (!res?.success) throw new Error(res?.message || 'Update failed');
+        return res;
+      } else {
+        // Create new timeline
+        const res = await timelineService.create({
+          project: selectedProjectId,
+          milestones: payload,
+        });
+        if (!res?.success) throw new Error(res?.message || 'Create failed');
+        return res;
+      }
+    },
+    [timelineId, selectedProjectId]
+  );
 
   /* ── Create / Edit milestone ─────────────────────────────────── */
-  const handleSaveMilestone = useCallback(async (form) => {
-    setSaving(true);
-    try {
-      let updated;
-      if (editingMilestone) {
-        // Edit existing
-        updated = milestones.map((m) =>
-          m.id === editingMilestone.id
-            ? { ...m, name: form.title, description: form.description, rawDueDate: form.dueDate || null,
-                dueDate: form.dueDate ? new Date(form.dueDate).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : 'TBD' }
-            : m
-        );
-      } else {
-        // Add new (temporary id will be replaced after refetch)
-        const newItem = {
-          id: null,
-          name: form.title,
-          description: form.description,
-          rawDueDate: form.dueDate || null,
-          dueDate: form.dueDate ? new Date(form.dueDate).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : 'TBD',
-          completed: false,
-        };
-        updated = [...milestones, newItem];
-      }
+  const handleSaveMilestone = useCallback(
+    async (form) => {
+      setSaving(true);
+      try {
+        let updated;
+        if (editingMilestone) {
+          // Edit existing
+          updated = milestones.map((m) =>
+            m.id === editingMilestone.id
+              ? {
+                  ...m,
+                  name: form.title,
+                  description: form.description,
+                  rawDueDate: form.dueDate || null,
+                  dueDate: form.dueDate
+                    ? new Date(form.dueDate).toLocaleDateString(undefined, {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                      })
+                    : 'TBD',
+                }
+              : m
+          );
+        } else {
+          // Add new (temporary id will be replaced after refetch)
+          const newItem = {
+            id: null,
+            name: form.title,
+            description: form.description,
+            rawDueDate: form.dueDate || null,
+            dueDate: form.dueDate
+              ? new Date(form.dueDate).toLocaleDateString(undefined, {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric',
+                })
+              : 'TBD',
+            completed: false,
+          };
+          updated = [...milestones, newItem];
+        }
 
-      await persistMilestones(updated);
-      toast.success(editingMilestone ? 'Milestone updated' : 'Milestone created');
-      setShowModal(false);
-      setEditingMilestone(null);
-      // Refetch to get real DB ids
-      await fetchMilestones(selectedProjectId);
-    } catch (err) {
-      console.error(err);
-      toast.error(err.message || 'Failed to save milestone');
-    } finally {
-      setSaving(false);
-    }
-  }, [editingMilestone, milestones, persistMilestones, fetchMilestones, selectedProjectId]);
+        await persistMilestones(updated);
+        toast.success(
+          editingMilestone ? 'Milestone updated' : 'Milestone created'
+        );
+        setShowModal(false);
+        setEditingMilestone(null);
+        // Refetch to get real DB ids
+        await fetchMilestones(selectedProjectId);
+      } catch (err) {
+        console.error(err);
+        toast.error(err.message || 'Failed to save milestone');
+      } finally {
+        setSaving(false);
+      }
+    },
+    [
+      editingMilestone,
+      milestones,
+      persistMilestones,
+      fetchMilestones,
+      selectedProjectId,
+    ]
+  );
 
   /* ── Toggle complete ─────────────────────────────────────────── */
-  const handleToggleComplete = useCallback(async (milestoneId) => {
-    const updated = milestones.map((m) =>
-      m.id === milestoneId ? { ...m, completed: !m.completed } : m
-    );
-    setMilestones(updated);
-    try {
-      await persistMilestones(updated);
-      toast.success('Status updated');
-    } catch (err) {
-      console.error(err);
-      toast.error('Failed to update status');
-      setMilestones(milestones); // revert
-    }
-  }, [milestones, persistMilestones]);
+  const handleToggleComplete = useCallback(
+    async (milestoneId) => {
+      const updated = milestones.map((m) =>
+        m.id === milestoneId ? { ...m, completed: !m.completed } : m
+      );
+      setMilestones(updated);
+      try {
+        await persistMilestones(updated);
+        toast.success('Status updated');
+      } catch (err) {
+        console.error(err);
+        toast.error('Failed to update status');
+        setMilestones(milestones); // revert
+      }
+    },
+    [milestones, persistMilestones]
+  );
 
   /* ── Delete milestone ────────────────────────────────────────── */
   const handleDeleteConfirm = useCallback(async () => {
@@ -359,7 +441,10 @@ const MilestoneTracker = memo(() => {
   const stats = useMemo(() => {
     const completed = milestones.filter((m) => m.completed).length;
     const pending = milestones.length - completed;
-    const pct = milestones.length > 0 ? Math.round((completed / milestones.length) * 100) : 0;
+    const pct =
+      milestones.length > 0
+        ? Math.round((completed / milestones.length) * 100)
+        : 0;
     return { completed, pending, total: milestones.length, pct };
   }, [milestones]);
 
@@ -375,12 +460,18 @@ const MilestoneTracker = memo(() => {
         title='Milestone Tracker'
         subtitle='Track and evaluate key project deliverables and target deadlines'
         icon={Flag}
-        badge={milestones.length > 0 ? `${stats.completed}/${stats.total} Done` : undefined}
+        badge={
+          milestones.length > 0
+            ? `${stats.completed}/${stats.total} Done`
+            : undefined
+        }
         actions={
           <div className='flex flex-wrap items-center gap-3'>
             {/* Project Selector */}
             <div className='flex items-center gap-2'>
-              <span className='hidden text-xs font-semibold text-slate-500 dark:text-slate-400 sm:block'>Project:</span>
+              <span className='hidden text-xs font-semibold text-slate-500 dark:text-slate-400 sm:block'>
+                Project:
+              </span>
               <div className='relative'>
                 <select
                   value={selectedProjectId}
@@ -398,14 +489,20 @@ const MilestoneTracker = memo(() => {
                     ))
                   )}
                 </select>
-                <ChevronDown size={14} className='pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400' />
+                <ChevronDown
+                  size={14}
+                  className='pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400'
+                />
               </div>
             </div>
 
             {/* New Milestone button (staff only) */}
             {isStaff && selectedProjectId && (
               <button
-                onClick={() => { setEditingMilestone(null); setShowModal(true); }}
+                onClick={() => {
+                  setEditingMilestone(null);
+                  setShowModal(true);
+                }}
                 className='flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-bold text-white shadow-md shadow-indigo-100 hover:bg-indigo-700 transition-all dark:shadow-none'
               >
                 <Plus size={15} />
@@ -420,8 +517,12 @@ const MilestoneTracker = memo(() => {
       {milestones.length > 0 && (
         <div className='rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
           <div className='mb-2 flex items-center justify-between'>
-            <span className='text-xs font-semibold text-slate-500 dark:text-slate-400'>Overall Progress</span>
-            <span className='text-xs font-bold text-indigo-600 dark:text-indigo-400'>{stats.pct}%</span>
+            <span className='text-xs font-semibold text-slate-500 dark:text-slate-400'>
+              Overall Progress
+            </span>
+            <span className='text-xs font-bold text-indigo-600 dark:text-indigo-400'>
+              {stats.pct}%
+            </span>
           </div>
           <div className='h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-900'>
             <div
@@ -431,10 +532,12 @@ const MilestoneTracker = memo(() => {
           </div>
           <div className='mt-3 flex gap-4 text-xs text-slate-500 dark:text-slate-400'>
             <span className='flex items-center gap-1'>
-              <CheckCircle2 size={12} className='text-emerald-500' /> {stats.completed} completed
+              <CheckCircle2 size={12} className='text-emerald-500' />{' '}
+              {stats.completed} completed
             </span>
             <span className='flex items-center gap-1'>
-              <Clock size={12} className='text-amber-500' /> {stats.pending} pending
+              <Clock size={12} className='text-amber-500' /> {stats.pending}{' '}
+              pending
             </span>
           </div>
         </div>
@@ -444,12 +547,16 @@ const MilestoneTracker = memo(() => {
       {loading ? (
         <div className='flex flex-col items-center gap-3 rounded-2xl border border-gray-200 bg-white dark:bg-slate-900 p-20 text-center shadow-sm dark:border-slate-700 dark:bg-slate-800'>
           <RefreshCw className='h-8 w-8 animate-spin text-indigo-500' />
-          <p className='text-sm italic text-gray-400'>Synchronizing milestone archives...</p>
+          <p className='text-sm italic text-gray-400'>
+            Synchronizing milestone archives...
+          </p>
         </div>
       ) : error ? (
         <div className='flex flex-col items-center gap-3 rounded-2xl border border-rose-200 bg-rose-50 p-20 text-center dark:border-rose-900/30 dark:bg-rose-900/10'>
           <AlertCircle className='h-8 w-8 text-rose-500' />
-          <p className='text-sm font-medium text-rose-600 dark:text-rose-400'>{error}</p>
+          <p className='text-sm font-medium text-rose-600 dark:text-rose-400'>
+            {error}
+          </p>
           <button
             onClick={() => fetchMilestones(selectedProjectId)}
             className='rounded-xl bg-rose-600 px-4 py-2 text-xs font-bold text-white hover:bg-rose-700'
@@ -464,7 +571,9 @@ const MilestoneTracker = memo(() => {
           </div>
           <div>
             <h3 className='mb-1 text-base font-bold text-gray-900 dark:text-white'>
-              {projects.length === 0 ? 'No Projects Found' : 'No Milestones Yet'}
+              {projects.length === 0
+                ? 'No Projects Found'
+                : 'No Milestones Yet'}
             </h3>
             <p className='text-sm text-gray-500 dark:text-slate-400'>
               {projects.length === 0
@@ -476,7 +585,10 @@ const MilestoneTracker = memo(() => {
           </div>
           {isStaff && projects.length > 0 && (
             <button
-              onClick={() => { setEditingMilestone(null); setShowModal(true); }}
+              onClick={() => {
+                setEditingMilestone(null);
+                setShowModal(true);
+              }}
               className='flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-indigo-700'
             >
               <Plus size={16} /> Create First Milestone
@@ -497,7 +609,9 @@ const MilestoneTracker = memo(() => {
               {/* Status stripe */}
               <div
                 className={`absolute left-0 top-0 h-full w-1 rounded-l-2xl ${
-                  milestone.completed ? 'bg-emerald-400' : 'bg-slate-300 dark:bg-slate-600'
+                  milestone.completed
+                    ? 'bg-emerald-400'
+                    : 'bg-slate-300 dark:bg-slate-600'
                 }`}
               />
 
@@ -519,7 +633,9 @@ const MilestoneTracker = memo(() => {
                     </span>
                   </div>
 
-                  <h3 className='text-base font-bold text-gray-900 dark:text-white'>{milestone.name}</h3>
+                  <h3 className='text-base font-bold text-gray-900 dark:text-white'>
+                    {milestone.name}
+                  </h3>
 
                   {milestone.description && (
                     <p className='mt-1.5 text-sm leading-relaxed text-slate-500 dark:text-slate-400'>
@@ -529,7 +645,12 @@ const MilestoneTracker = memo(() => {
 
                   <div className='mt-3 flex items-center gap-1.5 text-xs text-slate-400'>
                     <Clock size={12} />
-                    <span>Due: <span className='font-semibold text-slate-700 dark:text-slate-300'>{milestone.dueDate}</span></span>
+                    <span>
+                      Due:{' '}
+                      <span className='font-semibold text-slate-700 dark:text-slate-300'>
+                        {milestone.dueDate}
+                      </span>
+                    </span>
                   </div>
                 </div>
 
@@ -537,7 +658,11 @@ const MilestoneTracker = memo(() => {
                 <div className='flex shrink-0 items-center gap-2'>
                   {/* View Project */}
                   <button
-                    onClick={() => navigate(`/projects/${selectedProject?.slug || selectedProjectId}`)}
+                    onClick={() =>
+                      navigate(
+                        `/projects/${selectedProject?.slug || selectedProjectId}`
+                      )
+                    }
                     className='rounded-xl border border-slate-200 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 dark:border-slate-600 dark:bg-slate-700 '
                   >
                     View Project
@@ -548,7 +673,11 @@ const MilestoneTracker = memo(() => {
                       {/* Toggle complete */}
                       <button
                         onClick={() => handleToggleComplete(milestone.id)}
-                        title={milestone.completed ? 'Mark as Pending' : 'Mark as Complete'}
+                        title={
+                          milestone.completed
+                            ? 'Mark as Pending'
+                            : 'Mark as Complete'
+                        }
                         className={`rounded-xl p-2 transition-colors ${
                           milestone.completed
                             ? 'bg-emerald-100 text-emerald-600 hover:bg-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400'
@@ -560,7 +689,10 @@ const MilestoneTracker = memo(() => {
 
                       {/* Edit */}
                       <button
-                        onClick={() => { setEditingMilestone(milestone); setShowModal(true); }}
+                        onClick={() => {
+                          setEditingMilestone(milestone);
+                          setShowModal(true);
+                        }}
                         title='Edit milestone'
                         className='rounded-xl border border-slate-200 bg-white dark:bg-slate-900 p-2 text-slate-500 dark:text-slate-400 hover:border-indigo-300 hover:text-indigo-600 dark:border-slate-600 dark:bg-slate-700 '
                       >
@@ -587,7 +719,10 @@ const MilestoneTracker = memo(() => {
       {/* Modals */}
       <MilestoneModal
         isOpen={showModal}
-        onClose={() => { setShowModal(false); setEditingMilestone(null); }}
+        onClose={() => {
+          setShowModal(false);
+          setEditingMilestone(null);
+        }}
         onSave={handleSaveMilestone}
         milestone={editingMilestone}
         saving={saving}

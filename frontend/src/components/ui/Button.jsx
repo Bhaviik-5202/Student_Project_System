@@ -53,14 +53,14 @@ const Button = ({
     >
       {isLoading ? (
         <>
-          <Loader2 className="w-4 h-4 animate-spin" />
+          <Loader2 className='w-4 h-4 animate-spin' />
           <span>Processing...</span>
         </>
       ) : (
         <>
-          {Icon && iconPosition === 'left' && <Icon className="w-4 h-4" />}
+          {Icon && iconPosition === 'left' && <Icon className='w-4 h-4' />}
           <span>{children}</span>
-          {Icon && iconPosition === 'right' && <Icon className="w-4 h-4" />}
+          {Icon && iconPosition === 'right' && <Icon className='w-4 h-4' />}
         </>
       )}
     </button>

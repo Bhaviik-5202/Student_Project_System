@@ -44,7 +44,9 @@ const UpdateProgressModal = ({ isOpen, onClose, project, onSuccess }) => {
       if (onSuccess) onSuccess();
       onClose();
     } catch (error) {
-      toast.error(error?.response?.data?.message || 'Failed to update progress');
+      toast.error(
+        error?.response?.data?.message || 'Failed to update progress'
+      );
     } finally {
       setSubmitting(false);
     }
@@ -78,10 +80,7 @@ const UpdateProgressModal = ({ isOpen, onClose, project, onSuccess }) => {
 
         {/* Status Picker */}
         <FormGroup label='Project Status'>
-          <Select
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-          >
+          <Select value={status} onChange={(e) => setStatus(e.target.value)}>
             <option value='assigned'>Assigned</option>
             <option value='planning'>Planning</option>
             <option value='in_progress'>In Progress</option>

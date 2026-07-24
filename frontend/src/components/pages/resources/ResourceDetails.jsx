@@ -112,7 +112,8 @@ const ResourceDetails = memo(() => {
   const fileSize = resource.fileSize || resource.size || '1.0 MB';
   const downloads = resource.downloadsCount || resource.downloads || 0;
   const tags = Array.isArray(resource.tags) ? resource.tags : [];
-  const uploaderName = resource.uploadedBy?.name || resource.uploadedBy || 'Academic Faculty';
+  const uploaderName =
+    resource.uploadedBy?.name || resource.uploadedBy || 'Academic Faculty';
 
   return (
     <div className='pt-0 pb-6 space-y-6 animate-fade-in'>
@@ -160,7 +161,8 @@ const ResourceDetails = memo(() => {
                     <HardDrive size={14} /> {fileSize}
                   </span>
                   <span className='flex items-center gap-1 font-semibold text-slate-700 dark:text-slate-300'>
-                    <Download size={14} className='text-indigo-500' /> {downloads} downloads
+                    <Download size={14} className='text-indigo-500' />{' '}
+                    {downloads} downloads
                   </span>
                 </div>
               </div>
@@ -172,7 +174,8 @@ const ResourceDetails = memo(() => {
                   Description
                 </h3>
                 <p className='text-sm leading-relaxed text-slate-700 dark:text-slate-300'>
-                  {resource.description || 'No additional description provided.'}
+                  {resource.description ||
+                    'No additional description provided.'}
                 </p>
               </div>
 
@@ -198,16 +201,24 @@ const ResourceDetails = memo(() => {
                 <div className='flex items-center gap-3'>
                   <User size={18} className='text-slate-400' />
                   <div>
-                    <p className='text-[10px] uppercase font-bold text-slate-400'>Uploaded By</p>
-                    <p className='font-bold text-slate-800 dark:text-slate-200'>{uploaderName}</p>
+                    <p className='text-[10px] uppercase font-bold text-slate-400'>
+                      Uploaded By
+                    </p>
+                    <p className='font-bold text-slate-800 dark:text-slate-200'>
+                      {uploaderName}
+                    </p>
                   </div>
                 </div>
                 <div className='flex items-center gap-3'>
                   <Calendar size={18} className='text-slate-400' />
                   <div>
-                    <p className='text-[10px] uppercase font-bold text-slate-400'>Date Uploaded</p>
+                    <p className='text-[10px] uppercase font-bold text-slate-400'>
+                      Date Uploaded
+                    </p>
                     <p className='font-bold text-slate-800 dark:text-slate-200'>
-                      {resource.createdAt ? new Date(resource.createdAt).toLocaleDateString() : 'N/A'}
+                      {resource.createdAt
+                        ? new Date(resource.createdAt).toLocaleDateString()
+                        : 'N/A'}
                     </p>
                   </div>
                 </div>
@@ -247,9 +258,16 @@ const ResourceDetails = memo(() => {
               onClick={() => setIsPreviewOpen(true)}
               className='flex h-48 cursor-pointer flex-col items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 border border-dashed border-slate-300 hover:border-indigo-400 dark:bg-slate-700/50 dark:border-slate-600 transition-all group'
             >
-              <FileText size={40} className='mb-2 text-indigo-500 group-hover:scale-110 transition-transform' />
-              <p className='text-xs font-bold text-slate-800 dark:text-white'>Click to Open Preview</p>
-              <p className='text-[10px] text-slate-400 mt-1'>PDF, Doc, Image, or Video viewer</p>
+              <FileText
+                size={40}
+                className='mb-2 text-indigo-500 group-hover:scale-110 transition-transform'
+              />
+              <p className='text-xs font-bold text-slate-800 dark:text-white'>
+                Click to Open Preview
+              </p>
+              <p className='text-[10px] text-slate-400 mt-1'>
+                PDF, Doc, Image, or Video viewer
+              </p>
             </div>
           </div>
 
@@ -273,7 +291,8 @@ const ResourceDetails = memo(() => {
                         {item.title || item.name}
                       </p>
                       <p className='text-[10px] text-slate-400'>
-                        {item.category || 'Resource'} &bull; {item.fileSize || '1.0 MB'}
+                        {item.category || 'Resource'} &bull;{' '}
+                        {item.fileSize || '1.0 MB'}
                       </p>
                     </div>
                   </div>

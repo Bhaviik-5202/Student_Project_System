@@ -83,19 +83,16 @@ const StudentForm = memo(() => {
     }
   }, [id, navigate]);
 
-  const handleChange = useCallback(
-    (e) => {
-      const { name, value } = e.target;
-      if (name === 'department') {
-        setShowCustomDept(value === 'Other');
-      }
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    },
-    []
-  );
+  const handleChange = useCallback((e) => {
+    const { name, value } = e.target;
+    if (name === 'department') {
+      setShowCustomDept(value === 'Other');
+    }
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  }, []);
 
   const handleSubmit = useCallback(
     async (e) => {
@@ -114,10 +111,9 @@ const StudentForm = memo(() => {
         const res = await studentService.updateStudent(id, payload);
 
         if (res.success) {
-          toast.success(
-            'Student profile updated successfully!',
-            { id: toastId }
-          );
+          toast.success('Student profile updated successfully!', {
+            id: toastId,
+          });
           navigate('/students');
         } else {
           toast.error(res.message || 'Failed to save record', { id: toastId });
@@ -344,7 +340,9 @@ const StudentForm = memo(() => {
                         Information Technology
                       </option>
                       <option value='Electronics'>Electronics</option>
-                      <option value='Other'>Other (Specify Custom Department)</option>
+                      <option value='Other'>
+                        Other (Specify Custom Department)
+                      </option>
                     </select>
                   </div>
                 </div>
@@ -353,7 +351,8 @@ const StudentForm = memo(() => {
                 {showCustomDept && (
                   <div className='animate-in fade-in md:col-span-2 space-y-1.5'>
                     <label className='block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400'>
-                      Custom Department Name <span className='text-rose-500'>*</span>
+                      Custom Department Name{' '}
+                      <span className='text-rose-500'>*</span>
                     </label>
                     <div className='group relative flex items-center'>
                       <DeptIcon

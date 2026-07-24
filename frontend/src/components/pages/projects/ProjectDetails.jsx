@@ -78,7 +78,10 @@ const ProjectDetails = () => {
     if (!fileToRemove) return;
     try {
       const toastId = toast.loading('Removing file...');
-      await projectService.removeProjectFile(project._id || project.id, fileToRemove._id);
+      await projectService.removeProjectFile(
+        project._id || project.id,
+        fileToRemove._id
+      );
       toast.success('File removed', { id: toastId });
       fetchProjectDetails();
     } catch (err) {
@@ -111,7 +114,9 @@ const ProjectDetails = () => {
 
         <SecondaryButton
           icon={Edit}
-          onClick={() => navigate(`/projects/${project._id || project.id}/edit`)}
+          onClick={() =>
+            navigate(`/projects/${project._id || project.id}/edit`)
+          }
         >
           Edit Project
         </SecondaryButton>
@@ -156,8 +161,14 @@ const ProjectDetails = () => {
             { id: 'overview', label: 'Overview' },
             { id: 'team', label: `Team & Guide (${membersList.length})` },
             { id: 'progress', label: 'Progress & Status' },
-            { id: 'files', label: `Files & Docs (${project.files?.length || 0})` },
-            { id: 'reviews', label: `Reviews (${project.reviews?.length || 0})` },
+            {
+              id: 'files',
+              label: `Files & Docs (${project.files?.length || 0})`,
+            },
+            {
+              id: 'reviews',
+              label: `Reviews (${project.reviews?.length || 0})`,
+            },
             { id: 'timeline', label: 'Activity Log' },
           ].map((tab) => (
             <button
@@ -214,14 +225,21 @@ const ProjectDetails = () => {
             <Card className='space-y-3'>
               <SectionHeader title='Technology Stack' />
               <div className='flex flex-wrap gap-2 mt-2'>
-                {Array.isArray(project.technologies) && project.technologies.length > 0 ? (
+                {Array.isArray(project.technologies) &&
+                project.technologies.length > 0 ? (
                   project.technologies.map((tech, i) => (
-                    <Badge key={i} variant='indigo' className='!px-3 !py-1 !text-xs'>
+                    <Badge
+                      key={i}
+                      variant='indigo'
+                      className='!px-3 !py-1 !text-xs'
+                    >
                       {tech}
                     </Badge>
                   ))
                 ) : (
-                  <p className='text-xs text-gray-400 dark:text-gray-500 italic'>No technologies defined</p>
+                  <p className='text-xs text-gray-400 dark:text-gray-500 italic'>
+                    No technologies defined
+                  </p>
                 )}
               </div>
             </Card>
@@ -236,27 +254,49 @@ const ProjectDetails = () => {
 
               <div className='space-y-3 text-xs'>
                 <div className='flex justify-between py-1.5 border-b border-gray-100 dark:border-slate-700'>
-                  <span className='text-gray-400 dark:text-gray-500'>Category:</span>
-                  <span className='font-bold text-gray-800 dark:text-gray-200'>{project.category}</span>
-                </div>
-                <div className='flex justify-between py-1.5 border-b border-gray-100 dark:border-slate-700'>
-                  <span className='text-gray-400 dark:text-gray-500'>Semester:</span>
-                  <span className='font-bold text-gray-800 dark:text-gray-200'>{project.semester}</span>
-                </div>
-                <div className='flex justify-between py-1.5 border-b border-gray-100 dark:border-slate-700'>
-                  <span className='text-gray-400 dark:text-gray-500'>Academic Year:</span>
-                  <span className='font-bold text-gray-800 dark:text-gray-200'>{project.academicYear}</span>
-                </div>
-                <div className='flex justify-between py-1.5 border-b border-gray-100 dark:border-slate-700'>
-                  <span className='text-gray-400 dark:text-gray-500'>Start Date:</span>
+                  <span className='text-gray-400 dark:text-gray-500'>
+                    Category:
+                  </span>
                   <span className='font-bold text-gray-800 dark:text-gray-200'>
-                    {project.startDate ? new Date(project.startDate).toLocaleDateString() : 'N/A'}
+                    {project.category}
+                  </span>
+                </div>
+                <div className='flex justify-between py-1.5 border-b border-gray-100 dark:border-slate-700'>
+                  <span className='text-gray-400 dark:text-gray-500'>
+                    Semester:
+                  </span>
+                  <span className='font-bold text-gray-800 dark:text-gray-200'>
+                    {project.semester}
+                  </span>
+                </div>
+                <div className='flex justify-between py-1.5 border-b border-gray-100 dark:border-slate-700'>
+                  <span className='text-gray-400 dark:text-gray-500'>
+                    Academic Year:
+                  </span>
+                  <span className='font-bold text-gray-800 dark:text-gray-200'>
+                    {project.academicYear}
+                  </span>
+                </div>
+                <div className='flex justify-between py-1.5 border-b border-gray-100 dark:border-slate-700'>
+                  <span className='text-gray-400 dark:text-gray-500'>
+                    Start Date:
+                  </span>
+                  <span className='font-bold text-gray-800 dark:text-gray-200'>
+                    {project.startDate
+                      ? new Date(project.startDate).toLocaleDateString()
+                      : 'N/A'}
                   </span>
                 </div>
                 <div className='flex justify-between py-1.5'>
-                  <span className='text-gray-400 dark:text-gray-500'>Expected Completion:</span>
+                  <span className='text-gray-400 dark:text-gray-500'>
+                    Expected Completion:
+                  </span>
                   <span className='font-bold text-gray-800 dark:text-gray-200'>
-                    {project.expectedCompletionDate ? new Date(project.expectedCompletionDate).toLocaleDateString() : 'N/A'}
+                    {project.expectedCompletionDate
+                      ? new Date(
+                          project.expectedCompletionDate
+                        ).toLocaleDateString()
+                      : 'N/A'}
                   </span>
                 </div>
               </div>
@@ -289,7 +329,9 @@ const ProjectDetails = () => {
                   </a>
                 )}
                 {!project.githubUrl && !project.demoUrl && (
-                  <p className='text-xs text-gray-400 dark:text-gray-500 italic'>No external links attached</p>
+                  <p className='text-xs text-gray-400 dark:text-gray-500 italic'>
+                    No external links attached
+                  </p>
                 )}
               </div>
             </Card>
@@ -306,7 +348,10 @@ const ProjectDetails = () => {
               title='Faculty Mentor / Guide'
               icon={Award}
               action={
-                <SecondaryButton size='sm' onClick={() => setActiveModal('guide')}>
+                <SecondaryButton
+                  size='sm'
+                  onClick={() => setActiveModal('guide')}
+                >
                   Change Guide
                 </SecondaryButton>
               }
@@ -322,7 +367,9 @@ const ProjectDetails = () => {
                     {guideObj.name}
                   </h4>
                   <p className='text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500'>
-                    {guideObj.designation || 'Faculty Member'} • {guideObj.department || project.department} • {guideObj.email}
+                    {guideObj.designation || 'Faculty Member'} •{' '}
+                    {guideObj.department || project.department} •{' '}
+                    {guideObj.email}
                   </p>
                 </div>
               </div>
@@ -339,7 +386,10 @@ const ProjectDetails = () => {
               title='Assigned Team Members'
               icon={UserCheck}
               action={
-                <PrimaryButton size='sm' onClick={() => setActiveModal('students')}>
+                <PrimaryButton
+                  size='sm'
+                  onClick={() => setActiveModal('students')}
+                >
                   Manage Team Members
                 </PrimaryButton>
               }
@@ -356,7 +406,10 @@ const ProjectDetails = () => {
                   const name = isObj ? member.name : 'Student Member';
                   const email = isObj ? member.email : '';
                   const studentId = isObj ? member.studentId : '';
-                  const isLeader = leaderObj && (leaderObj._id || leaderObj.id) === (isObj ? member._id || member.id : member);
+                  const isLeader =
+                    leaderObj &&
+                    (leaderObj._id || leaderObj.id) ===
+                      (isObj ? member._id || member.id : member);
 
                   return (
                     <div
@@ -378,7 +431,8 @@ const ProjectDetails = () => {
                           )}
                         </div>
                         <p className='text-[10px] text-gray-500 dark:text-gray-400 dark:text-gray-500 truncate mt-0.5'>
-                          {studentId ? `ID: ${studentId} • ` : ''}{email}
+                          {studentId ? `ID: ${studentId} • ` : ''}
+                          {email}
                         </p>
                       </div>
                     </div>
@@ -410,7 +464,9 @@ const ProjectDetails = () => {
 
           <div className='p-6 rounded-2xl bg-gray-50 dark:bg-slate-900 space-y-4'>
             <div className='flex justify-between items-center'>
-              <span className='text-xs font-bold uppercase text-gray-500 dark:text-gray-400 dark:text-gray-500'>Overall Completion</span>
+              <span className='text-xs font-bold uppercase text-gray-500 dark:text-gray-400 dark:text-gray-500'>
+                Overall Completion
+              </span>
               <span className='text-2xl font-extrabold text-blue-600 dark:text-blue-400'>
                 {project.progress || 0}%
               </span>
@@ -443,14 +499,17 @@ const ProjectDetails = () => {
             }
           />
 
-          {(!project.files || project.files.length === 0) ? (
+          {!project.files || project.files.length === 0 ? (
             <p className='py-12 text-center text-xs text-gray-400 dark:text-gray-500 italic'>
               No documents or links attached to this project yet.
             </p>
           ) : (
             <div className='divide-y divide-gray-100 dark:divide-slate-700'>
               {project.files.map((file) => (
-                <div key={file._id} className='flex items-center justify-between py-3.5'>
+                <div
+                  key={file._id}
+                  className='flex items-center justify-between py-3.5'
+                >
                   <div className='flex items-center gap-3'>
                     <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 shrink-0'>
                       <FileText size={20} />
@@ -465,7 +524,10 @@ const ProjectDetails = () => {
                         {file.name} <ExternalLink size={12} />
                       </a>
                       <p className='text-[10px] text-gray-400 dark:text-gray-500 mt-0.5'>
-                        {file.fileType} • Uploaded {file.uploadedAt ? new Date(file.uploadedAt).toLocaleDateString() : 'recently'}
+                        {file.fileType} • Uploaded{' '}
+                        {file.uploadedAt
+                          ? new Date(file.uploadedAt).toLocaleDateString()
+                          : 'recently'}
                       </p>
                     </div>
                   </div>
@@ -501,16 +563,21 @@ const ProjectDetails = () => {
             }
           />
 
-          {(!project.reviews || project.reviews.length === 0) ? (
+          {!project.reviews || project.reviews.length === 0 ? (
             <p className='py-12 text-center text-xs text-gray-400 dark:text-gray-500 italic'>
               No faculty reviews recorded yet.
             </p>
           ) : (
             <div className='space-y-4'>
               {project.reviews.map((rev) => (
-                <div key={rev._id} className='rounded-xl border border-gray-100 bg-gray-50 dark:bg-gray-800/50 p-4 dark:border-slate-700 dark:bg-slate-900/50 space-y-2'>
+                <div
+                  key={rev._id}
+                  className='rounded-xl border border-gray-100 bg-gray-50 dark:bg-gray-800/50 p-4 dark:border-slate-700 dark:bg-slate-900/50 space-y-2'
+                >
                   <div className='flex items-center justify-between'>
-                    <Badge variant='amber'>{rev.milestone || 'Evaluation'}</Badge>
+                    <Badge variant='amber'>
+                      {rev.milestone || 'Evaluation'}
+                    </Badge>
                     <div className='flex items-center text-amber-400 dark:text-amber-500'>
                       {[...Array(rev.rating || 5)].map((_, i) => (
                         <Star key={i} size={14} fill='currentColor' />
@@ -523,7 +590,8 @@ const ProjectDetails = () => {
                   </p>
 
                   <div className='text-[10px] text-gray-400 dark:text-gray-500 pt-1'>
-                    Reviewed on {rev.date ? new Date(rev.date).toLocaleDateString() : 'N/A'}
+                    Reviewed on{' '}
+                    {rev.date ? new Date(rev.date).toLocaleDateString() : 'N/A'}
                   </div>
                 </div>
               ))}
@@ -537,7 +605,8 @@ const ProjectDetails = () => {
         <Card className='space-y-6'>
           <SectionHeader title='Audit Trail & History' icon={History} />
 
-          {(!project.activityTimeline || project.activityTimeline.length === 0) ? (
+          {!project.activityTimeline ||
+          project.activityTimeline.length === 0 ? (
             <p className='py-8 text-center text-xs text-gray-400 dark:text-gray-500 italic'>
               No activity logs recorded.
             </p>
@@ -553,7 +622,9 @@ const ProjectDetails = () => {
                     {item.details}
                   </div>
                   <div className='text-[10px] text-gray-400 dark:text-gray-500'>
-                    {item.timestamp ? new Date(item.timestamp).toLocaleString() : ''}
+                    {item.timestamp
+                      ? new Date(item.timestamp).toLocaleString()
+                      : ''}
                   </div>
                 </div>
               ))}

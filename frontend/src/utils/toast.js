@@ -1,5 +1,11 @@
 import toast from 'react-hot-toast';
-import { X, CheckCircle2, AlertCircle, AlertTriangle, Info } from 'lucide-react';
+import {
+  X,
+  CheckCircle2,
+  AlertCircle,
+  AlertTriangle,
+  Info,
+} from 'lucide-react';
 
 /**
  * Custom Toast Notifications System
@@ -13,9 +19,12 @@ import { X, CheckCircle2, AlertCircle, AlertTriangle, Info } from 'lucide-react'
 
 const renderToast = (t, type, message, icon) => {
   const styles = {
-    success: 'bg-slate-900/95 border-emerald-500/40 text-slate-100 shadow-xl shadow-emerald-950/20 dark:bg-slate-900/95 dark:border-emerald-500/40',
-    error: 'bg-slate-900/95 border-rose-500/40 text-slate-100 shadow-xl shadow-rose-950/20 dark:bg-slate-900/95 dark:border-rose-500/40',
-    warning: 'bg-slate-900/95 border-amber-500/40 text-slate-100 shadow-xl shadow-amber-950/20 dark:bg-slate-900/95 dark:border-amber-500/40',
+    success:
+      'bg-slate-900/95 border-emerald-500/40 text-slate-100 shadow-xl shadow-emerald-950/20 dark:bg-slate-900/95 dark:border-emerald-500/40',
+    error:
+      'bg-slate-900/95 border-rose-500/40 text-slate-100 shadow-xl shadow-rose-950/20 dark:bg-slate-900/95 dark:border-rose-500/40',
+    warning:
+      'bg-slate-900/95 border-amber-500/40 text-slate-100 shadow-xl shadow-amber-950/20 dark:bg-slate-900/95 dark:border-amber-500/40',
     info: 'bg-slate-900/95 border-blue-500/40 text-slate-100 shadow-xl shadow-blue-950/20 dark:bg-slate-900/95 dark:border-blue-500/40',
   };
 
@@ -29,7 +38,9 @@ const renderToast = (t, type, message, icon) => {
   return (
     <div
       className={`${
-        t.visible ? 'animate-enter opacity-100 scale-100' : 'animate-leave opacity-0 scale-95'
+        t.visible
+          ? 'animate-enter opacity-100 scale-100'
+          : 'animate-leave opacity-0 scale-95'
       } flex max-w-md w-full items-start gap-3 p-4 rounded-xl border backdrop-blur-md shadow-2xl transition-all duration-200 pointer-events-auto ${
         styles[type] || styles.info
       }`}

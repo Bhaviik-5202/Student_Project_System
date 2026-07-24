@@ -23,7 +23,11 @@ const UserManagement = memo(() => {
         userList = response;
       } else if (response && Array.isArray(response.data)) {
         userList = response.data;
-      } else if (response && response.data && Array.isArray(response.data.data)) {
+      } else if (
+        response &&
+        response.data &&
+        Array.isArray(response.data.data)
+      ) {
         userList = response.data.data;
       } else if (response && response.users && Array.isArray(response.users)) {
         userList = response.users;
@@ -31,7 +35,11 @@ const UserManagement = memo(() => {
       setUsers(userList);
     } catch (err) {
       console.error('Failed to fetch users', err);
-      setError(err.response?.data?.message || err.message || 'Failed to load user records');
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          'Failed to load user records'
+      );
       setUsers([]);
     } finally {
       setLoading(false);
@@ -122,7 +130,9 @@ const UserManagement = memo(() => {
                 >
                   <div className='flex flex-col items-center gap-2'>
                     <RefreshCw className='h-6 w-6 animate-spin text-indigo-600' />
-                    <p className='text-slate-500 dark:text-slate-400'>Loading user database...</p>
+                    <p className='text-slate-500 dark:text-slate-400'>
+                      Loading user database...
+                    </p>
                   </div>
                 </td>
               </tr>
@@ -159,17 +169,22 @@ const UserManagement = memo(() => {
               users.map((user) => (
                 <tr key={user.id || user._id}>
                   <td>
-                    <div className='font-semibold text-slate-900 dark:text-white'>{user.name}</div>
+                    <div className='font-semibold text-slate-900 dark:text-white'>
+                      {user.name}
+                    </div>
                   </td>
-                  <td className='text-slate-700 dark:text-slate-300'>{user.email}</td>
+                  <td className='text-slate-700 dark:text-slate-300'>
+                    {user.email}
+                  </td>
                   <td>
                     <span
-                      className={`admin-badge ${user.role === 'admin'
+                      className={`admin-badge ${
+                        user.role === 'admin'
                           ? 'admin-badge-blue'
                           : user.role === 'faculty'
                             ? 'admin-badge-success'
                             : 'admin-badge-gray'
-                        }`}
+                      }`}
                     >
                       {user.role}
                     </span>

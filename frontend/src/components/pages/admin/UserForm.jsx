@@ -221,12 +221,18 @@ const UserForm = () => {
                 type='password'
                 icon={Lock}
                 placeholder={
-                  isEditMode ? '•••••••• (Leave blank to keep unchanged)' : 'At least 6 characters'
+                  isEditMode
+                    ? '•••••••• (Leave blank to keep unchanged)'
+                    : 'At least 6 characters'
                 }
                 value={formData.password}
                 onChange={handleChange}
                 required={!isEditMode}
-                helperText={isEditMode ? 'Leave blank to keep password unchanged' : undefined}
+                helperText={
+                  isEditMode
+                    ? 'Leave blank to keep password unchanged'
+                    : undefined
+                }
               />
 
               <Input
@@ -280,10 +286,18 @@ const UserForm = () => {
                     value={formData.department}
                     onChange={handleChange}
                   >
-                    <option value='Computer Engineering'>Computer Engineering</option>
-                    <option value='Information Technology'>Information Technology</option>
-                    <option value='Electronics & Communication'>Electronics & Communication</option>
-                    <option value='Mechanical Engineering'>Mechanical Engineering</option>
+                    <option value='Computer Engineering'>
+                      Computer Engineering
+                    </option>
+                    <option value='Information Technology'>
+                      Information Technology
+                    </option>
+                    <option value='Electronics & Communication'>
+                      Electronics & Communication
+                    </option>
+                    <option value='Mechanical Engineering'>
+                      Mechanical Engineering
+                    </option>
                     <option value='Civil Engineering'>Civil Engineering</option>
                   </select>
                 </div>

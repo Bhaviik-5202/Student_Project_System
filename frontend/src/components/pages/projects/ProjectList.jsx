@@ -64,7 +64,11 @@ const ProjectList = () => {
   const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'table'
   const [selectedProjectForModal, setSelectedProjectForModal] = useState(null);
   const [activeModal, setActiveModal] = useState(null); // 'students' | 'guide' | 'progress' | null
-  const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, type: '', project: null });
+  const [confirmDialog, setConfirmDialog] = useState({
+    isOpen: false,
+    type: '',
+    project: null,
+  });
 
   const handleArchive = (project) => {
     setConfirmDialog({
@@ -134,19 +138,21 @@ const ProjectList = () => {
             <div className='flex rounded-xl bg-gray-100 dark:bg-gray-800 p-1 dark:bg-slate-800'>
               <button
                 onClick={() => setFilter('isArchived', false)}
-                className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-all ${!filters.isArchived
-                  ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow dark:bg-slate-700 dark:text-indigo-400 dark:text-indigo-300'
-                  : 'text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 '
-                  }`}
+                className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-all ${
+                  !filters.isArchived
+                    ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow dark:bg-slate-700 dark:text-indigo-400 dark:text-indigo-300'
+                    : 'text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 '
+                }`}
               >
                 Active
               </button>
               <button
                 onClick={() => setFilter('isArchived', true)}
-                className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-all ${filters.isArchived
-                  ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow dark:bg-slate-700 dark:text-indigo-400 dark:text-indigo-300'
-                  : 'text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 '
-                  }`}
+                className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-all ${
+                  filters.isArchived
+                    ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow dark:bg-slate-700 dark:text-indigo-400 dark:text-indigo-300'
+                    : 'text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 '
+                }`}
               >
                 Archived
               </button>
@@ -168,7 +174,10 @@ const ProjectList = () => {
               />
             </div>
 
-            <PrimaryButton icon={Plus} onClick={() => navigate('/projects/new')}>
+            <PrimaryButton
+              icon={Plus}
+              onClick={() => navigate('/projects/new')}
+            >
               New Project
             </PrimaryButton>
           </>
@@ -193,7 +202,9 @@ const ProjectList = () => {
           >
             <option value='All'>All Departments</option>
             <option value='Computer Science'>Computer Science</option>
-            <option value='Information Technology'>Information Technology</option>
+            <option value='Information Technology'>
+              Information Technology
+            </option>
             <option value='Electronics'>Electronics</option>
             <option value='Mechanical'>Mechanical</option>
             <option value='Civil'>Civil</option>
@@ -269,7 +280,11 @@ const ProjectList = () => {
 
                 {/* Title */}
                 <h3
-                  onClick={() => navigate(`/projects/${project.slug || project._id || project.id}`)}
+                  onClick={() =>
+                    navigate(
+                      `/projects/${project.slug || project._id || project.id}`
+                    )
+                  }
                   className='text-base font-bold text-gray-900 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400 dark:text-indigo-400  cursor-pointer line-clamp-2 transition-colors'
                 >
                   {project.title}
@@ -283,7 +298,9 @@ const ProjectList = () => {
                 {/* Guide & Team info */}
                 <div className='mt-4 space-y-2 border-t border-gray-100 pt-3 dark:border-slate-700/60'>
                   <div className='flex items-center justify-between text-xs'>
-                    <span className='text-gray-400 dark:text-gray-500 font-medium'>Guide:</span>
+                    <span className='text-gray-400 dark:text-gray-500 font-medium'>
+                      Guide:
+                    </span>
                     <span className='font-bold text-gray-800 dark:text-gray-200'>
                       {project.guide
                         ? typeof project.guide === 'object'
@@ -293,9 +310,13 @@ const ProjectList = () => {
                     </span>
                   </div>
                   <div className='flex items-center justify-between text-xs'>
-                    <span className='text-gray-400 dark:text-gray-500 font-medium'>Team:</span>
+                    <span className='text-gray-400 dark:text-gray-500 font-medium'>
+                      Team:
+                    </span>
                     <span className='font-semibold text-gray-700 dark:text-gray-300'>
-                      {Array.isArray(project.members) ? `${project.members.length} Students` : '0 Members'}
+                      {Array.isArray(project.members)
+                        ? `${project.members.length} Students`
+                        : '0 Members'}
                     </span>
                   </div>
                 </div>
@@ -371,7 +392,11 @@ const ProjectList = () => {
                 <SecondaryButton
                   size='sm'
                   icon={ExternalLink}
-                  onClick={() => navigate(`/projects/${project.slug || project._id || project.id}`)}
+                  onClick={() =>
+                    navigate(
+                      `/projects/${project.slug || project._id || project.id}`
+                    )
+                  }
                 >
                   Details
                 </SecondaryButton>
@@ -401,7 +426,11 @@ const ProjectList = () => {
                 </TableCell>
                 <TableCell className='font-bold text-gray-900 dark:text-white max-w-xs truncate'>
                   <span
-                    onClick={() => navigate(`/projects/${project.slug || project._id || project.id}`)}
+                    onClick={() =>
+                      navigate(
+                        `/projects/${project.slug || project._id || project.id}`
+                      )
+                    }
                     className='cursor-pointer hover:underline hover:text-indigo-600 dark:hover:text-indigo-400 dark:text-indigo-400 transition-colors'
                   >
                     {project.title}
@@ -439,13 +468,19 @@ const ProjectList = () => {
                       icon={ExternalLink}
                       variant='indigo'
                       title='View Details'
-                      onClick={() => navigate(`/projects/${project.slug || project._id || project.id}`)}
+                      onClick={() =>
+                        navigate(
+                          `/projects/${project.slug || project._id || project.id}`
+                        )
+                      }
                     />
                     <IconButton
                       icon={Edit}
                       variant='indigo'
                       title='Edit Project'
-                      onClick={() => navigate(`/projects/${project._id || project.id}/edit`)}
+                      onClick={() =>
+                        navigate(`/projects/${project._id || project.id}/edit`)
+                      }
                     />
                   </div>
                 </TableCell>
@@ -485,7 +520,9 @@ const ProjectList = () => {
       {/* Confirmation Modal for Delete/Archive */}
       <ConfirmationModal
         isOpen={confirmDialog.isOpen}
-        onClose={() => setConfirmDialog({ isOpen: false, type: '', project: null })}
+        onClose={() =>
+          setConfirmDialog({ isOpen: false, type: '', project: null })
+        }
         onConfirm={executeConfirmAction}
         title={confirmDialog.title}
         message={confirmDialog.message}

@@ -38,7 +38,14 @@ const {
   normalizeDepartment,
 } = require('../utils/idGenerator');
 
-exports.register = async ({ name, email, password, role = 'student', department, phone }) => {
+exports.register = async ({
+  name,
+  email,
+  password,
+  role = 'student',
+  department,
+  phone,
+}) => {
   try {
     const validRoles = ['student', 'faculty', 'admin'];
     const finalRole = validRoles.includes(role) ? role : 'student';
@@ -216,7 +223,10 @@ exports.create = async (data) => {
     if (userData.role === 'student' && !userData.rollNumber) {
       userData.rollNumber = await generateRollNumber();
       userData.enrollmentNumber = `EN${new Date().getFullYear()}${Math.floor(100000 + Math.random() * 900000)}`;
-    } else if ((userData.role === 'faculty' || userData.role === 'admin') && !userData.facultyId) {
+    } else if (
+      (userData.role === 'faculty' || userData.role === 'admin') &&
+      !userData.facultyId
+    ) {
       userData.facultyId = await generateFacultyId();
     }
 
@@ -267,7 +277,10 @@ exports.update = async (id, data) => {
 
     if (updatePayload.password && updatePayload.password.trim() !== '') {
       const saltRounds = Number(process.env.BCRYPT_SALT_ROUNDS) || 12;
-      updatePayload.password = await bcrypt.hash(updatePayload.password, saltRounds);
+      updatePayload.password = await bcrypt.hash(
+        updatePayload.password,
+        saltRounds
+      );
     } else {
       delete updatePayload.password;
     }
@@ -287,7 +300,10 @@ exports.update = async (id, data) => {
           email: user.email,
           department: user.department,
           phone: user.phone || '',
-          status: user.status === 'active' || user.status === 'Active' ? 'Active' : 'Inactive',
+          status:
+            user.status === 'active' || user.status === 'Active'
+              ? 'Active'
+              : 'Inactive',
         });
       }
     } else if (user.role === 'faculty' || user.role === 'admin') {
@@ -299,7 +315,10 @@ exports.update = async (id, data) => {
           email: user.email,
           department: user.department,
           phone: user.phone || '',
-          status: user.status === 'active' || user.status === 'Active' ? 'Active' : 'Inactive',
+          status:
+            user.status === 'active' || user.status === 'Active'
+              ? 'Active'
+              : 'Inactive',
           role: user.role,
         });
       }
@@ -334,7 +353,8 @@ exports.remove = async (id) => {
  */
 exports.forgotPassword = async (email) => {
   // Generic message to prevent email enumeration attacks
-  const GENERIC_MSG = 'If that email is registered, a password reset link has been sent.';
+  const GENERIC_MSG =
+    'If that email is registered, a password reset link has been sent.';
 
   try {
     const user = await userRepository.findByEmail(email);
@@ -343,15 +363,16 @@ exports.forgotPassword = async (email) => {
     }
 
     // --- Rate-limit: block if a valid token was generated within the last 60 seconds ---
-    const existingUser = await User.findById(user._id)
-      .select('+resetPasswordToken +resetPasswordExpires');
+    const existingUser = await User.findById(user._id).select(
+      '+resetPasswordToken +resetPasswordExpires'
+    );
 
     if (
       existingUser.resetPasswordToken &&
       existingUser.resetPasswordExpires &&
-      existingUser.resetPasswordExpires > Date.now() + (
-        (Number(process.env.RESET_TOKEN_EXPIRES_MS) || 1800000) - 60000
-      )
+      existingUser.resetPasswordExpires >
+        Date.now() +
+          ((Number(process.env.RESET_TOKEN_EXPIRES_MS) || 1800000) - 60000)
     ) {
       return response(false, null, GENERIC_MSG);
     }
@@ -371,7 +392,9 @@ exports.forgotPassword = async (email) => {
     });
 
     // --- Build reset URL ---
-    const frontendUrl = (process.env.FRONTEND_URL || 'http://localhost:5173').replace(/\/$/, '');
+    const frontendUrl = (
+      process.env.FRONTEND_URL || 'http://localhost:5173'
+    ).replace(/\/$/, '');
     const resetUrl = `${frontendUrl}/reset-password/${resetToken}`;
     const expiryMinutes = Math.round(expiresMs / 60000);
 
@@ -428,7 +451,11 @@ exports.resetPassword = async (token, newPassword) => {
     }).select('+password +resetPasswordToken +resetPasswordExpires');
 
     if (!user) {
-      return response(true, null, 'Reset link is invalid or has expired. Please request a new one.');
+      return response(
+        true,
+        null,
+        'Reset link is invalid or has expired. Please request a new one.'
+      );
     }
 
     // Update password (pre-save hook will hash it)
@@ -438,7 +465,11 @@ exports.resetPassword = async (token, newPassword) => {
     user.resetPasswordExpires = undefined;
     await user.save();
 
-    return response(false, null, 'Your password has been reset successfully. You can now log in.');
+    return response(
+      false,
+      null,
+      'Your password has been reset successfully. You can now log in.'
+    );
   } catch (err) {
     logger.error('Reset password error', { err });
     return response(true, null, err.message || 'Failed to reset password');

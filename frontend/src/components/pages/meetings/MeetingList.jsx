@@ -3,7 +3,18 @@ import { useNavigate, Outlet } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import meetingService from '../../../services/meetingService';
 import { useAuth } from '../../../hooks/useAuth';
-import { List, Plus, Calendar, Clock, MapPin, Users, User, Eye, Edit2, Trash2 } from 'lucide-react';
+import {
+  List,
+  Plus,
+  Calendar,
+  Clock,
+  MapPin,
+  Users,
+  User,
+  Eye,
+  Edit2,
+  Trash2,
+} from 'lucide-react';
 import PageHeader from '../../common/PageHeader';
 import '../../../assets/styles/meetings.css';
 
@@ -18,7 +29,8 @@ const TYPE_LABELS = {
 
 const MeetingRow = memo(
   ({ meeting, onView, onEdit, onDelete, currentUser }) => {
-    const canManage = currentUser?.role === 'admin' || currentUser?.role === 'faculty';
+    const canManage =
+      currentUser?.role === 'admin' || currentUser?.role === 'faculty';
 
     const getStatusBadge = (status) => {
       switch (status) {
@@ -56,7 +68,8 @@ const MeetingRow = memo(
       }
     };
 
-    const isActive = meeting.isActive !== false && meeting.status !== 'cancelled';
+    const isActive =
+      meeting.isActive !== false && meeting.status !== 'cancelled';
 
     return (
       <tr className='hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800/80 /40 transition-colors'>
@@ -73,7 +86,11 @@ const MeetingRow = memo(
         {/* Project */}
         <td className='py-4 px-4'>
           <div className='text-xs font-semibold text-slate-800 dark:text-slate-200'>
-            {meeting.project?.title || <span className='text-slate-400 italic'>General (No Project)</span>}
+            {meeting.project?.title || (
+              <span className='text-slate-400 italic'>
+                General (No Project)
+              </span>
+            )}
           </div>
         </td>
 
@@ -95,7 +112,10 @@ const MeetingRow = memo(
           <div className='flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-400'>
             <Users size={14} className='text-indigo-500' />
             <span className='font-semibold text-slate-800 dark:text-slate-200'>
-              {Array.isArray(meeting.participants) ? meeting.participants.length : 0} Members
+              {Array.isArray(meeting.participants)
+                ? meeting.participants.length
+                : 0}{' '}
+              Members
             </span>
           </div>
         </td>
@@ -103,7 +123,11 @@ const MeetingRow = memo(
         {/* Date & Time */}
         <td className='py-4 px-4 whitespace-nowrap'>
           <div className='text-xs font-bold text-slate-900 dark:text-white'>
-            {meeting.date ? new Date(meeting.date).toLocaleDateString(undefined, { dateStyle: 'medium' }) : 'N/A'}
+            {meeting.date
+              ? new Date(meeting.date).toLocaleDateString(undefined, {
+                  dateStyle: 'medium',
+                })
+              : 'N/A'}
           </div>
           <div className='text-[11px] font-medium text-slate-500 dark:text-slate-400'>
             {meeting.time || '10:00 AM'}
@@ -119,7 +143,8 @@ const MeetingRow = memo(
         <td className='py-4 px-4 whitespace-nowrap'>
           {isActive ? (
             <span className='inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800'>
-              <span className='h-2 w-2 rounded-full bg-emerald-500 animate-pulse' /> Active
+              <span className='h-2 w-2 rounded-full bg-emerald-500 animate-pulse' />{' '}
+              Active
             </span>
           ) : (
             <span className='inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-2.5 py-1 text-[11px] font-bold text-rose-700 dark:bg-rose-900/30 dark:text-rose-400 border border-rose-200 dark:border-rose-800'>
@@ -130,8 +155,18 @@ const MeetingRow = memo(
 
         {/* Created & Updated */}
         <td className='py-4 px-4 text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap'>
-          <div>Created: {meeting.createdAt ? new Date(meeting.createdAt).toLocaleDateString() : 'N/A'}</div>
-          <div className='text-[10px] text-slate-400'>Updated: {meeting.updatedAt ? new Date(meeting.updatedAt).toLocaleDateString() : 'N/A'}</div>
+          <div>
+            Created:{' '}
+            {meeting.createdAt
+              ? new Date(meeting.createdAt).toLocaleDateString()
+              : 'N/A'}
+          </div>
+          <div className='text-[10px] text-slate-400'>
+            Updated:{' '}
+            {meeting.updatedAt
+              ? new Date(meeting.updatedAt).toLocaleDateString()
+              : 'N/A'}
+          </div>
         </td>
 
         {/* Actions */}

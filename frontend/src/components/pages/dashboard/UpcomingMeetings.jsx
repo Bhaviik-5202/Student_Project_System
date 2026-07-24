@@ -17,16 +17,14 @@ const TYPE_CONFIG = {
     label: 'Project Review',
     cardClass:
       'border-blue-200 bg-blue-50 dark:border-blue-700 dark:bg-blue-900/30',
-    badgeClass:
-      'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+    badgeClass: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
     isReview: true,
   },
   [MEETING_TYPES.PROJECT]: {
     label: 'Project Review',
     cardClass:
       'border-blue-200 bg-blue-50 dark:border-blue-700 dark:bg-blue-900/30',
-    badgeClass:
-      'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+    badgeClass: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
     isReview: true,
   },
   faculty: {

@@ -6,7 +6,7 @@
 /**
  * Generates the base HTML template for emails, including standard head,
  * responsive styles, branding header (Student Project System), and footer.
- * 
+ *
  * @param {Object} params
  * @param {string} params.title - Title used in the header and document title
  * @param {string} params.preheader - Visually hidden preview text for email clients
@@ -220,7 +220,7 @@ function getBaseEmailTemplate({ title, preheader, contentHtml, subtitle }) {
 
 /**
  * Returns the HTML for a Password Reset email
- * 
+ *
  * @param {string} userName - Name of the user receiving the email
  * @param {string} resetUrl - Complete password reset URL
  * @param {number} expiryMinutes - Token expiry time in minutes
@@ -228,7 +228,8 @@ function getBaseEmailTemplate({ title, preheader, contentHtml, subtitle }) {
  */
 function getPasswordResetEmail(userName, resetUrl, expiryMinutes) {
   const title = 'Reset Your Password';
-  const preheader = 'Use this link to securely reset your password for the Student Project System.';
+  const preheader =
+    'Use this link to securely reset your password for the Student Project System.';
 
   const contentHtml = `
     <p class="text-title" style="margin: 0 0 16px 0; font-size: 16px; font-weight: 600; color: #0f172a;">
@@ -297,14 +298,19 @@ function getPasswordResetEmail(userName, resetUrl, expiryMinutes) {
 
 /**
  * Returns the HTML for an OTP verification email (Sign Up or Resend code)
- * 
+ *
  * @param {string} userName - Name of the user receiving the email
  * @param {string} otp - 6-digit verification code
  * @param {boolean} isResend - True if this is a resubmitted code email
  * @param {number} [resendCount] - Resend attempt number (e.g. 2 of 3)
  * @returns {string} Final email HTML
  */
-function getVerificationEmail(userName, otp, isResend = false, resendCount = null) {
+function getVerificationEmail(
+  userName,
+  otp,
+  isResend = false,
+  resendCount = null
+) {
   const title = isResend ? 'New Verification Code' : 'Verify Your Account';
   const preheader = isResend
     ? 'Use your new verification code to complete your signup.'
@@ -315,9 +321,11 @@ function getVerificationEmail(userName, otp, isResend = false, resendCount = nul
       Hello ${userName},
     </p>
     <p class="text-body" style="margin: 0 0 24px 0; font-size: 15px; color: #475569; line-height: 1.6;">
-      ${isResend
-      ? 'Here is your new 6-digit verification code to complete your registration.'
-      : 'Thank you for registering with the Student Project System. Use the verification code below to complete your registration and verify your email address:'}
+      ${
+        isResend
+          ? 'Here is your new 6-digit verification code to complete your registration.'
+          : 'Thank you for registering with the Student Project System. Use the verification code below to complete your registration and verify your email address:'
+      }
     </p>
 
     <!-- Code Block -->
@@ -368,5 +376,5 @@ function getVerificationEmail(userName, otp, isResend = false, resendCount = nul
 
 module.exports = {
   getPasswordResetEmail,
-  getVerificationEmail
+  getVerificationEmail,
 };

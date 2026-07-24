@@ -6,7 +6,6 @@ const sendResponse = require('../utils/response');
  * Manages comprehensive student profile data, academic records, and student-specific project associations.
  */
 
-
 /**
  * Fetch all student profiles
  * @route   GET /api/students

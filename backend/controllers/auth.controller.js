@@ -60,7 +60,9 @@ async function isEmailDeliverable(email) {
     const mx = await dns.resolveMx(domain);
     return mx && mx.length > 0;
   } catch (err) {
-    logger.warn(`MX record check failed for domain ${domain}`, { error: err.message });
+    logger.warn(`MX record check failed for domain ${domain}`, {
+      error: err.message,
+    });
     return false;
   }
 }
@@ -883,7 +885,12 @@ exports.resendOtp = async (req, res) => {
       to: email,
       subject: 'Your New Student Project System Verification Code',
       text: `Hello ${pending.name},\n\nYour new 6-digit verification code is: ${newOtp}\n\nThis code will expire in 5 minutes.`,
-      html: getVerificationEmail(pending.name, newOtp, true, pending.resendCount),
+      html: getVerificationEmail(
+        pending.name,
+        newOtp,
+        true,
+        pending.resendCount
+      ),
     });
 
     sendResponse(

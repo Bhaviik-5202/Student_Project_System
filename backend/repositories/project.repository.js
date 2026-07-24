@@ -13,7 +13,9 @@ class ProjectRepository {
    */
   async findByIdOrSlug(idOrSlug, options = {}) {
     const { populate = true } = options;
-    const strId = String(idOrSlug?._id || idOrSlug?.id || idOrSlug || '').trim();
+    const strId = String(
+      idOrSlug?._id || idOrSlug?.id || idOrSlug || ''
+    ).trim();
     const isObjectId = Boolean(strId && strId.match(/^[0-9a-fA-F]{24}$/));
     const query = isObjectId ? { _id: strId } : { slug: strId };
 
@@ -21,9 +23,18 @@ class ProjectRepository {
 
     if (populate) {
       req = req
-        .populate('leader', 'name email avatar studentId department rollNumber role status')
-        .populate('members', 'name email avatar studentId department rollNumber role status')
-        .populate('guide', 'name email avatar designation department role status')
+        .populate(
+          'leader',
+          'name email avatar studentId department rollNumber role status'
+        )
+        .populate(
+          'members',
+          'name email avatar studentId department rollNumber role status'
+        )
+        .populate(
+          'guide',
+          'name email avatar designation department role status'
+        )
         .populate('createdBy', 'name email role')
         .populate('reviews.reviewer', 'name email role designation avatar')
         .populate('files.uploadedBy', 'name email role')
@@ -64,10 +75,7 @@ class ProjectRepository {
 
     const skip = (Math.max(1, page) - 1) * limit;
 
-    let req = Project.find(filter)
-      .sort(sort)
-      .skip(skip)
-      .limit(limit);
+    let req = Project.find(filter).sort(sort).skip(skip).limit(limit);
 
     if (populate) {
       req = req
@@ -110,7 +118,9 @@ class ProjectRepository {
    * Update existing project
    */
   async update(idOrSlug, updateData = {}) {
-    const strId = String(idOrSlug?._id || idOrSlug?.id || idOrSlug || '').trim();
+    const strId = String(
+      idOrSlug?._id || idOrSlug?.id || idOrSlug || ''
+    ).trim();
     const isObjectId = Boolean(strId && strId.match(/^[0-9a-fA-F]{24}$/));
     const filter = isObjectId ? { _id: strId } : { slug: strId };
 
@@ -149,7 +159,9 @@ class ProjectRepository {
    * Delete project by ID
    */
   async delete(idOrSlug) {
-    const strId = String(idOrSlug?._id || idOrSlug?.id || idOrSlug || '').trim();
+    const strId = String(
+      idOrSlug?._id || idOrSlug?.id || idOrSlug || ''
+    ).trim();
     const isObjectId = Boolean(strId && strId.match(/^[0-9a-fA-F]{24}$/));
     const filter = isObjectId ? { _id: strId } : { slug: strId };
     return await Project.findOneAndDelete(filter);

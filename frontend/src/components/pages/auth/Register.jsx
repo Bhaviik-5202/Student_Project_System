@@ -365,10 +365,11 @@ const Register = memo(() => {
                   key={role.id}
                   type='button'
                   onClick={() => selectRole(role.id)}
-                  className={`flex-1 rounded-xl px-4 py-2.5 text-xs font-bold transition-all duration-200 ${isSelected
-                    ? 'border border-indigo-500/35 bg-indigo-500/20 text-indigo-300 shadow-sm'
-                    : 'border border-transparent bg-transparent text-slate-400 hover:text-slate-200'
-                    }`}
+                  className={`flex-1 rounded-xl px-4 py-2.5 text-xs font-bold transition-all duration-200 ${
+                    isSelected
+                      ? 'border border-indigo-500/35 bg-indigo-500/20 text-indigo-300 shadow-sm'
+                      : 'border border-transparent bg-transparent text-slate-400 hover:text-slate-200'
+                  }`}
                 >
                   {role.label}
                 </button>
@@ -424,7 +425,9 @@ const Register = memo(() => {
               type='button'
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               className='dark:text-slate-505 dark:hover:text-slate-205 absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 transition-colors hover:text-slate-600 dark:text-slate-300'
-              aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+              aria-label={
+                showConfirmPassword ? 'Hide password' : 'Show password'
+              }
             >
               {showConfirmPassword ? (
                 <EyeOff className='h-5 w-5' />
@@ -468,10 +471,11 @@ const Register = memo(() => {
                   {[1, 2, 3].map((index) => (
                     <div
                       key={index}
-                      className={`h-full flex-1 rounded-full transition-colors duration-300 ${passwordStrength >= index
-                        ? strengthColor
-                        : 'bg-slate-200 dark:bg-slate-900/60'
-                        }`}
+                      className={`h-full flex-1 rounded-full transition-colors duration-300 ${
+                        passwordStrength >= index
+                          ? strengthColor
+                          : 'bg-slate-200 dark:bg-slate-900/60'
+                      }`}
                     />
                   ))}
                 </div>

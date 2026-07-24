@@ -137,7 +137,10 @@ const AuditLog = memo(() => {
               className='flex items-center gap-2 rounded-xl border border-gray-200 bg-white dark:bg-slate-900 p-2.5 text-xs font-bold text-gray-700 dark:text-gray-200 shadow-sm hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-800 dark:border-slate-700 dark:bg-slate-800  transition-all disabled:opacity-50'
               title='Refresh logs'
             >
-              <RefreshCw size={16} className={refreshing ? 'animate-spin' : ''} />
+              <RefreshCw
+                size={16}
+                className={refreshing ? 'animate-spin' : ''}
+              />
             </button>
             <button
               onClick={handleExportLogs}
@@ -165,11 +168,36 @@ const AuditLog = memo(() => {
                 setFilters({ ...filters, action: e.target.value })
               }
             >
-              <option value='' className='bg-white dark:bg-slate-800 text-slate-900 dark:text-white'>All Actions</option>
-              <option value='User Login' className='bg-white dark:bg-slate-800 text-slate-900 dark:text-white'>Login Events</option>
-              <option value='User Registration' className='bg-white dark:bg-slate-800 text-slate-900 dark:text-white'>Registrations</option>
-              <option value='User Creation' className='bg-white dark:bg-slate-800 text-slate-900 dark:text-white'>User Creation</option>
-              <option value='User Management' className='bg-white dark:bg-slate-800 text-slate-900 dark:text-white'>User Management</option>
+              <option
+                value=''
+                className='bg-white dark:bg-slate-800 text-slate-900 dark:text-white'
+              >
+                All Actions
+              </option>
+              <option
+                value='User Login'
+                className='bg-white dark:bg-slate-800 text-slate-900 dark:text-white'
+              >
+                Login Events
+              </option>
+              <option
+                value='User Registration'
+                className='bg-white dark:bg-slate-800 text-slate-900 dark:text-white'
+              >
+                Registrations
+              </option>
+              <option
+                value='User Creation'
+                className='bg-white dark:bg-slate-800 text-slate-900 dark:text-white'
+              >
+                User Creation
+              </option>
+              <option
+                value='User Management'
+                className='bg-white dark:bg-slate-800 text-slate-900 dark:text-white'
+              >
+                User Management
+              </option>
             </select>
           </div>
           <div className='admin-form-group mb-0'>
@@ -184,10 +212,30 @@ const AuditLog = memo(() => {
                 setFilters({ ...filters, status: e.target.value })
               }
             >
-              <option value='' className='bg-white dark:bg-slate-800 text-slate-900 dark:text-white'>All Status</option>
-              <option value='Success' className='bg-white dark:bg-slate-800 text-slate-900 dark:text-white'>Success</option>
-              <option value='Failed' className='bg-white dark:bg-slate-800 text-slate-900 dark:text-white'>Failed</option>
-              <option value='Warning' className='bg-white dark:bg-slate-800 text-slate-900 dark:text-white'>Warning</option>
+              <option
+                value=''
+                className='bg-white dark:bg-slate-800 text-slate-900 dark:text-white'
+              >
+                All Status
+              </option>
+              <option
+                value='Success'
+                className='bg-white dark:bg-slate-800 text-slate-900 dark:text-white'
+              >
+                Success
+              </option>
+              <option
+                value='Failed'
+                className='bg-white dark:bg-slate-800 text-slate-900 dark:text-white'
+              >
+                Failed
+              </option>
+              <option
+                value='Warning'
+                className='bg-white dark:bg-slate-800 text-slate-900 dark:text-white'
+              >
+                Warning
+              </option>
             </select>
           </div>
           <div className='admin-form-group mb-0'>
@@ -199,9 +247,7 @@ const AuditLog = memo(() => {
               type='date'
               className='admin-input dark:[color-scheme:dark]'
               value={filters.date}
-              onChange={(e) =>
-                setFilters({ ...filters, date: e.target.value })
-              }
+              onChange={(e) => setFilters({ ...filters, date: e.target.value })}
             />
           </div>
           <div className='admin-form-group mb-0'>
@@ -225,9 +271,7 @@ const AuditLog = memo(() => {
               <th style={{ width: '250px' }}>User Entity</th>
               <th>Operation</th>
               <th style={{ width: '150px', textAlign: 'center' }}>IP Node</th>
-              <th style={{ width: '120px', textAlign: 'center' }}>
-                Response
-              </th>
+              <th style={{ width: '120px', textAlign: 'center' }}>Response</th>
             </tr>
           </thead>
           <tbody>
@@ -299,12 +343,13 @@ const AuditLog = memo(() => {
                   </td>
                   <td className='text-center'>
                     <span
-                      className={`admin-badge ${log.status === 'Success'
-                        ? 'admin-badge-success'
-                        : log.status === 'Warning'
-                          ? 'admin-badge-warning'
-                          : 'admin-badge-danger'
-                        }`}
+                      className={`admin-badge ${
+                        log.status === 'Success'
+                          ? 'admin-badge-success'
+                          : log.status === 'Warning'
+                            ? 'admin-badge-warning'
+                            : 'admin-badge-danger'
+                      }`}
                     >
                       {log.status || 'Unknown'}
                     </span>

@@ -66,7 +66,8 @@ exports.create = (data) => User.create(data);
  * @returns {Promise<Object|null>} Updated user document
  */
 exports.update = (id, data) => {
-  const updateOp = data.$set || data.$addToSet || data.$unset ? data : { $set: data };
+  const updateOp =
+    data.$set || data.$addToSet || data.$unset ? data : { $set: data };
   return User.findByIdAndUpdate(id, updateOp, {
     returnDocument: 'after',
     runValidators: true,

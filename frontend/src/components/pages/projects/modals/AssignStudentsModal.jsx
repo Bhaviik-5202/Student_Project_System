@@ -64,8 +64,13 @@ const AssignStudentsModal = ({ isOpen, onClose, project, onSuccess }) => {
     try {
       setSubmitting(true);
       const toastId = toast.loading('Updating team assignments...');
-      await projectService.assignStudents(project._id || project.id, selectedIds);
-      toast.success('Project team members updated successfully!', { id: toastId });
+      await projectService.assignStudents(
+        project._id || project.id,
+        selectedIds
+      );
+      toast.success('Project team members updated successfully!', {
+        id: toastId,
+      });
       if (onSuccess) onSuccess();
       onClose();
     } catch (error) {
@@ -116,7 +121,9 @@ const AssignStudentsModal = ({ isOpen, onClose, project, onSuccess }) => {
                 >
                   <div className='flex items-center gap-3'>
                     <div className='flex h-9 w-9 items-center justify-center rounded-full bg-indigo-100 font-bold text-xs text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300'>
-                      {student.name ? student.name.charAt(0).toUpperCase() : 'S'}
+                      {student.name
+                        ? student.name.charAt(0).toUpperCase()
+                        : 'S'}
                     </div>
                     <div>
                       <div className='text-sm font-semibold text-gray-900 dark:text-white'>

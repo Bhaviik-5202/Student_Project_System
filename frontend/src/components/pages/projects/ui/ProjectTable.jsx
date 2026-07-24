@@ -3,17 +3,19 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 export const Table = ({ children, className = '' }) => {
   return (
-    <div className={`overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800 ${className}`}>
-      <table className='w-full text-left text-xs'>
-        {children}
-      </table>
+    <div
+      className={`overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800 ${className}`}
+    >
+      <table className='w-full text-left text-xs'>{children}</table>
     </div>
   );
 };
 
 export const TableHeader = ({ children, className = '' }) => {
   return (
-    <thead className={`border-b border-gray-100 bg-gray-50 text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400 ${className}`}>
+    <thead
+      className={`border-b border-gray-100 bg-gray-50 text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400 ${className}`}
+    >
       {children}
     </thead>
   );
@@ -33,29 +35,35 @@ export const TableRow = ({ children, className = '', onClick }) => {
 };
 
 export const TableHead = ({ children, className = '', align = 'left' }) => {
-  const alignClass = align === 'right' ? 'text-right' : align === 'center' ? 'text-center' : 'text-left';
+  const alignClass =
+    align === 'right'
+      ? 'text-right'
+      : align === 'center'
+        ? 'text-center'
+        : 'text-left';
   return (
-    <th className={`p-4 font-bold ${alignClass} ${className}`}>
-      {children}
-    </th>
+    <th className={`p-4 font-bold ${alignClass} ${className}`}>{children}</th>
   );
 };
 
 export const TableBody = ({ children, className = '' }) => {
   return (
-    <tbody className={`divide-y divide-gray-100 dark:divide-slate-700 ${className}`}>
+    <tbody
+      className={`divide-y divide-gray-100 dark:divide-slate-700 ${className}`}
+    >
       {children}
     </tbody>
   );
 };
 
 export const TableCell = ({ children, className = '', align = 'left' }) => {
-  const alignClass = align === 'right' ? 'text-right' : align === 'center' ? 'text-center' : 'text-left';
-  return (
-    <td className={`p-4 ${alignClass} ${className}`}>
-      {children}
-    </td>
-  );
+  const alignClass =
+    align === 'right'
+      ? 'text-right'
+      : align === 'center'
+        ? 'text-center'
+        : 'text-left';
+  return <td className={`p-4 ${alignClass} ${className}`}>{children}</td>;
 };
 
 export const Pagination = ({
@@ -67,7 +75,9 @@ export const Pagination = ({
   if (totalPages <= 1) return null;
 
   return (
-    <div className={`flex items-center justify-between border-t border-gray-200 pt-4 dark:border-slate-700 ${className}`}>
+    <div
+      className={`flex items-center justify-between border-t border-gray-200 pt-4 dark:border-slate-700 ${className}`}
+    >
       <p className='text-xs font-semibold text-gray-500 dark:text-slate-400'>
         Page {page} of {totalPages}
       </p>

@@ -13,7 +13,6 @@ const authMiddleware = require('../middleware/auth.middleware');
 const roleMiddleware = require('../middleware/roleMiddleware');
 const validateRequest = require('../middleware/validateRequest');
 
-
 /**
  * @route   GET /api/v1/students
  * @desc    Retrieve all students

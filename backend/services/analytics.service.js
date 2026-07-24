@@ -75,7 +75,11 @@ exports.getDashboardStats = async () => {
   try {
     const nowTime = Date.now();
     if (dashboardCache && nowTime - dashboardCacheTime < CACHE_TTL_MS) {
-      return response(false, dashboardCache, 'Dashboard statistics fetched successfully');
+      return response(
+        false,
+        dashboardCache,
+        'Dashboard statistics fetched successfully'
+      );
     }
 
     const Project = require('../models/project.model');
@@ -131,7 +135,11 @@ exports.getDashboardStats = async () => {
 
     const activeProjects = statusMap['in_progress'] || statusMap['active'] || 0;
     const completedProjects = statusMap['completed'] || 0;
-    const pendingApprovals = statusMap['planning'] || statusMap['proposed'] || statusMap['pending'] || 0;
+    const pendingApprovals =
+      statusMap['planning'] ||
+      statusMap['proposed'] ||
+      statusMap['pending'] ||
+      0;
 
     let totalUsers = 0;
     let activeUsers = 0;
@@ -156,9 +164,25 @@ exports.getDashboardStats = async () => {
       }
     });
 
-    const completionRate = totalProjects > 0 ? Math.round((completedProjects / totalProjects) * 100) : 0;
+    const completionRate =
+      totalProjects > 0
+        ? Math.round((completedProjects / totalProjects) * 100)
+        : 0;
 
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
     const currentMonth = new Date().getMonth();
     const performanceData = Array.from({ length: 6 }, (_, idx) => {
       const mIdx = (currentMonth - (5 - idx) + 12) % 12;
@@ -176,24 +200,42 @@ exports.getDashboardStats = async () => {
         label: 'Active',
         status: 'Active',
         count: activeProjects,
-        value: totalProjects > 0 ? Math.round((activeProjects / totalProjects) * 100) : 0,
-        percentage: totalProjects > 0 ? Math.round((activeProjects / totalProjects) * 100) : 0,
+        value:
+          totalProjects > 0
+            ? Math.round((activeProjects / totalProjects) * 100)
+            : 0,
+        percentage:
+          totalProjects > 0
+            ? Math.round((activeProjects / totalProjects) * 100)
+            : 0,
         color: 'bg-green-500',
       },
       {
         label: 'Completed',
         status: 'Completed',
         count: completedProjects,
-        value: totalProjects > 0 ? Math.round((completedProjects / totalProjects) * 100) : 0,
-        percentage: totalProjects > 0 ? Math.round((completedProjects / totalProjects) * 100) : 0,
+        value:
+          totalProjects > 0
+            ? Math.round((completedProjects / totalProjects) * 100)
+            : 0,
+        percentage:
+          totalProjects > 0
+            ? Math.round((completedProjects / totalProjects) * 100)
+            : 0,
         color: 'bg-blue-500',
       },
       {
         label: 'Planning',
         status: 'Pending',
         count: pendingApprovals,
-        value: totalProjects > 0 ? Math.round((pendingApprovals / totalProjects) * 100) : 0,
-        percentage: totalProjects > 0 ? Math.round((pendingApprovals / totalProjects) * 100) : 0,
+        value:
+          totalProjects > 0
+            ? Math.round((pendingApprovals / totalProjects) * 100)
+            : 0,
+        percentage:
+          totalProjects > 0
+            ? Math.round((pendingApprovals / totalProjects) * 100)
+            : 0,
         color: 'bg-yellow-500',
       },
     ];
@@ -203,7 +245,10 @@ exports.getDashboardStats = async () => {
       title: p.title,
       date: p.endDate,
       status: p.status,
-      daysLeft: Math.max(0, Math.ceil((new Date(p.endDate) - new Date()) / (1000 * 60 * 60 * 24))),
+      daysLeft: Math.max(
+        0,
+        Math.ceil((new Date(p.endDate) - new Date()) / (1000 * 60 * 60 * 24))
+      ),
     }));
 
     const resultPayload = {
@@ -226,7 +271,14 @@ exports.getDashboardStats = async () => {
         id: m._id,
         title: m.title,
         date: m.date,
-        time: m.time || (m.date ? new Date(m.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : null),
+        time:
+          m.time ||
+          (m.date
+            ? new Date(m.date).toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+              })
+            : null),
         location: m.location,
         type: m.type,
         participants: m.participants?.length || 0,
@@ -239,8 +291,18 @@ exports.getDashboardStats = async () => {
         updatedAt: p.updatedAt,
         owner: p.createdBy ? { name: p.createdBy.name } : null,
         status: p.status,
-        icon: p.status === 'completed' ? 'check-circle' : p.status === 'in_progress' ? 'bolt' : 'file-text',
-        color: p.status === 'completed' ? 'green' : p.status === 'in_progress' ? 'blue' : 'yellow',
+        icon:
+          p.status === 'completed'
+            ? 'check-circle'
+            : p.status === 'in_progress'
+              ? 'bolt'
+              : 'file-text',
+        color:
+          p.status === 'completed'
+            ? 'green'
+            : p.status === 'in_progress'
+              ? 'blue'
+              : 'yellow',
         description: `"${p.title}" was recently updated${p.createdBy ? ` by ${p.createdBy.name}` : ''}.`,
       })),
       stats: {
@@ -258,7 +320,12 @@ exports.getDashboardStats = async () => {
         name: p.title,
         progress: p.progress || 0,
         status: p.status,
-        color: p.status === 'completed' ? 'green' : (p.progress || 0) > 50 ? 'blue' : 'yellow',
+        color:
+          p.status === 'completed'
+            ? 'green'
+            : (p.progress || 0) > 50
+              ? 'blue'
+              : 'yellow',
         students: p.members?.length || 0,
       })),
     };
@@ -266,9 +333,17 @@ exports.getDashboardStats = async () => {
     dashboardCache = resultPayload;
     dashboardCacheTime = nowTime;
 
-    return response(false, resultPayload, 'Dashboard statistics fetched successfully');
+    return response(
+      false,
+      resultPayload,
+      'Dashboard statistics fetched successfully'
+    );
   } catch (err) {
-    return response(true, null, err.message || 'Failed to fetch dashboard statistics');
+    return response(
+      true,
+      null,
+      err.message || 'Failed to fetch dashboard statistics'
+    );
   }
 };
 
@@ -321,9 +396,17 @@ exports.getReportsAnalytics = async () => {
       generatedAt: new Date().toISOString(),
     };
 
-    return response(false, reportData, 'Reports analytics generated successfully');
+    return response(
+      false,
+      reportData,
+      'Reports analytics generated successfully'
+    );
   } catch (err) {
-    return response(true, null, err.message || 'Failed to generate reports analytics');
+    return response(
+      true,
+      null,
+      err.message || 'Failed to generate reports analytics'
+    );
   }
 };
 
@@ -333,14 +416,26 @@ exports.getReportsAnalytics = async () => {
 exports.getPerformanceMetrics = async () => {
   try {
     const totalProjects = await projectRepository.count();
-    const completedProjects = await projectRepository.count({ status: 'completed' });
-    const activeProjects = await projectRepository.count({ status: 'in_progress' });
-    const pendingApprovals = await projectRepository.count({ status: 'planning' });
+    const completedProjects = await projectRepository.count({
+      status: 'completed',
+    });
+    const activeProjects = await projectRepository.count({
+      status: 'in_progress',
+    });
+    const pendingApprovals = await projectRepository.count({
+      status: 'planning',
+    });
     const totalStudents = await userRepository.count({ role: 'student' });
     const totalFaculty = await userRepository.count({ role: 'faculty' });
 
-    const completionRate = totalProjects > 0 ? ((completedProjects / totalProjects) * 100).toFixed(1) : '100.0';
-    const submissionRate = totalStudents > 0 ? ((totalProjects / totalStudents) * 100).toFixed(1) : '100.0';
+    const completionRate =
+      totalProjects > 0
+        ? ((completedProjects / totalProjects) * 100).toFixed(1)
+        : '100.0';
+    const submissionRate =
+      totalStudents > 0
+        ? ((totalProjects / totalStudents) * 100).toFixed(1)
+        : '100.0';
 
     return response(
       false,
@@ -354,15 +449,27 @@ exports.getPerformanceMetrics = async () => {
         completionRate: `${completionRate}%`,
         submissionRate: `${submissionRate}%`,
         metricsList: [
-          { name: 'Project Completion Rate', value: `${completionRate}%`, change: '+4.2%' },
-          { name: 'Student Submission Rate', value: `${submissionRate}%`, change: '+2.1%' },
+          {
+            name: 'Project Completion Rate',
+            value: `${completionRate}%`,
+            change: '+4.2%',
+          },
+          {
+            name: 'Student Submission Rate',
+            value: `${submissionRate}%`,
+            change: '+2.1%',
+          },
           { name: 'Faculty Guidance Rate', value: '98.5%', change: '+1.5%' },
         ],
       },
       'Performance metrics calculated successfully'
     );
   } catch (err) {
-    return response(true, null, err.message || 'Failed to fetch performance metrics');
+    return response(
+      true,
+      null,
+      err.message || 'Failed to fetch performance metrics'
+    );
   }
 };
 
@@ -735,7 +842,8 @@ exports.getFacultyDashboardStats = async (userId) => {
           id: m._id,
           title: m.title,
           date: m.date,
-          time: m.time ||
+          time:
+            m.time ||
             (m.date
               ? new Date(m.date).toLocaleTimeString([], {
                   hour: '2-digit',
@@ -830,7 +938,8 @@ exports.getStudentDashboardStats = async (studentId) => {
           id: m._id,
           title: m.title,
           date: m.date,
-          time: m.time ||
+          time:
+            m.time ||
             (m.date
               ? new Date(m.date).toLocaleTimeString([], {
                   hour: '2-digit',

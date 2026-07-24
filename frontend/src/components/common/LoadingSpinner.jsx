@@ -81,7 +81,9 @@ function SpinnerSVG({ config }) {
 
       {/* ── Track ring (outer) ── */}
       <circle
-        cx={half} cy={half} r={rOuter}
+        cx={half}
+        cy={half}
+        r={rOuter}
         stroke='currentColor'
         strokeWidth={strokeOuter}
         className='text-slate-200 dark:text-slate-800 dark:text-slate-100'
@@ -91,7 +93,9 @@ function SpinnerSVG({ config }) {
       {/* ── Outer spinning arc (clockwise) ── */}
       <g style={{ transformOrigin: `${half}px ${half}px` }} className='sps-cw'>
         <circle
-          cx={half} cy={half} r={rOuter}
+          cx={half}
+          cy={half}
+          r={rOuter}
           stroke='url(#sps-grad-outer)'
           strokeWidth={strokeOuter}
           strokeLinecap='round'
@@ -105,7 +109,9 @@ function SpinnerSVG({ config }) {
 
       {/* ── Track ring (inner) ── */}
       <circle
-        cx={half} cy={half} r={rInner}
+        cx={half}
+        cy={half}
+        r={rInner}
         stroke='currentColor'
         strokeWidth={strokeInner}
         className='text-slate-200 dark:text-slate-800 dark:text-slate-100'
@@ -115,7 +121,9 @@ function SpinnerSVG({ config }) {
       {/* ── Inner spinning arc (counter-clockwise) ── */}
       <g style={{ transformOrigin: `${half}px ${half}px` }} className='sps-ccw'>
         <circle
-          cx={half} cy={half} r={rInner}
+          cx={half}
+          cy={half}
+          r={rInner}
           stroke='url(#sps-grad-inner)'
           strokeWidth={strokeInner}
           strokeLinecap='round'
@@ -129,7 +137,9 @@ function SpinnerSVG({ config }) {
 
       {/* ── Pulsing centre orb ── */}
       <circle
-        cx={half} cy={half} r={orb}
+        cx={half}
+        cy={half}
+        r={orb}
         fill='url(#sps-grad-orb)'
         className='sps-orb'
         style={{ transformOrigin: `${half}px ${half}px` }}
@@ -176,9 +186,7 @@ const LoadingSpinner = ({
 
         {/* Optional message */}
         {message && (
-          <p
-            className='sps-msg max-w-[180px] text-center text-sm font-semibold leading-snug text-slate-500 dark:text-slate-400'
-          >
+          <p className='sps-msg max-w-[180px] text-center text-sm font-semibold leading-snug text-slate-500 dark:text-slate-400'>
             {message}
           </p>
         )}

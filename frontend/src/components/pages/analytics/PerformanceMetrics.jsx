@@ -31,7 +31,7 @@ export const PerformanceMetrics = () => {
     try {
       const [perfRes, progRes] = await Promise.all([
         analyticsService.getPerformanceMetrics(),
-        api.get('/analytics/progress').catch(() => ({ data: { data: [] } }))
+        api.get('/analytics/progress').catch(() => ({ data: { data: [] } })),
       ]);
 
       if (perfRes.success || perfRes.data) {
@@ -90,14 +90,14 @@ export const PerformanceMetrics = () => {
   ];
 
   return (
-    <div className="space-y-6 pb-12">
+    <div className='space-y-6 pb-12'>
       <PageHeader
-        title="Performance Metrics"
-        subtitle="Quantitative key performance indicators (KPIs), milestone adherence, and evaluation scores."
+        title='Performance Metrics'
+        subtitle='Quantitative key performance indicators (KPIs), milestone adherence, and evaluation scores.'
         icon={TrendingUp}
-        badge="Academic Quality"
+        badge='Academic Quality'
         actions={
-          <div className="flex items-center gap-2">
+          <div className='flex items-center gap-2'>
             <Select
               value={timeRange}
               onChange={(e) => setTimeRange(e.target.value)}
@@ -107,11 +107,11 @@ export const PerformanceMetrics = () => {
                 { value: 'quarter', label: 'This Quarter' },
                 { value: 'year', label: 'Academic Year' },
               ]}
-              className="w-36"
+              className='w-36'
             />
             <Button
-              variant="outline"
-              size="sm"
+              variant='outline'
+              size='sm'
               icon={RefreshCw}
               onClick={fetchPerformance}
             >
@@ -122,17 +122,17 @@ export const PerformanceMetrics = () => {
       />
 
       {loading ? (
-        <LoadingSpinner message="Calculating performance indicators..." />
+        <LoadingSpinner message='Calculating performance indicators...' />
       ) : error ? (
         <ErrorState
-          title="Failed to Load Performance Metrics"
+          title='Failed to Load Performance Metrics'
           message={error}
           onRetry={fetchPerformance}
         />
       ) : (
         <>
           {/* Top KPI Cards */}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4'>
             {defaultKpis.map((kpi, idx) => (
               <StatisticsCard
                 key={idx}
@@ -147,60 +147,77 @@ export const PerformanceMetrics = () => {
           </div>
 
           {/* Project Progress Trackers Table */}
-          <div className="rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-xs dark:border-slate-800 ">
-            <div className="mb-4 flex items-center justify-between">
+          <div className='rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-xs dark:border-slate-800 '>
+            <div className='mb-4 flex items-center justify-between'>
               <div>
-                <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                <h3 className='text-base font-bold text-slate-900 dark:text-white'>
                   Active Project Progress Trackers
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Real-time health check of ongoing student projects and completion timelines.
+                <p className='text-xs text-slate-500 dark:text-slate-400'>
+                  Real-time health check of ongoing student projects and
+                  completion timelines.
                 </p>
               </div>
             </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm text-slate-600 dark:text-slate-400">
-                <thead className="border-b border-slate-200 bg-slate-50 dark:bg-slate-800 text-xs uppercase text-slate-500 dark:text-slate-400 dark:border-slate-800 /50 ">
+            <div className='overflow-x-auto'>
+              <table className='w-full text-left text-sm text-slate-600 dark:text-slate-400'>
+                <thead className='border-b border-slate-200 bg-slate-50 dark:bg-slate-800 text-xs uppercase text-slate-500 dark:text-slate-400 dark:border-slate-800 /50 '>
                   <tr>
-                    <th className="px-6 py-3.5 font-semibold">Project Title</th>
-                    <th className="px-6 py-3.5 font-semibold">Team Size</th>
-                    <th className="px-6 py-3.5 font-semibold">Completion %</th>
-                    <th className="px-6 py-3.5 font-semibold">Timeline Status</th>
+                    <th className='px-6 py-3.5 font-semibold'>Project Title</th>
+                    <th className='px-6 py-3.5 font-semibold'>Team Size</th>
+                    <th className='px-6 py-3.5 font-semibold'>Completion %</th>
+                    <th className='px-6 py-3.5 font-semibold'>
+                      Timeline Status
+                    </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                <tbody className='divide-y divide-slate-100 dark:divide-slate-800'>
                   {progressData.length === 0 ? (
                     <tr>
-                      <td colSpan="4" className="px-6 py-8 text-center text-slate-500 dark:text-slate-400">
+                      <td
+                        colSpan='4'
+                        className='px-6 py-8 text-center text-slate-500 dark:text-slate-400'
+                      >
                         No active project data available.
                       </td>
                     </tr>
                   ) : (
                     progressData.map((project, idx) => (
-                      <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800/50 /50">
-                        <td className="px-6 py-4 font-bold text-slate-900 dark:text-white">
+                      <tr
+                        key={idx}
+                        className='hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800/50 /50'
+                      >
+                        <td className='px-6 py-4 font-bold text-slate-900 dark:text-white'>
                           {project.title}
                         </td>
-                        <td className="px-6 py-4 font-semibold text-slate-700 dark:text-slate-300">
+                        <td className='px-6 py-4 font-semibold text-slate-700 dark:text-slate-300'>
                           {project.teamSize} Member(s)
                         </td>
-                        <td className="px-6 py-4 font-semibold text-indigo-600 dark:text-indigo-400">
-                          <div className="flex items-center gap-2">
-                            <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 max-w-[100px]">
-                              <div className="bg-indigo-600 h-2 rounded-full" style={{ width: `${project.progress}%` }}></div>
+                        <td className='px-6 py-4 font-semibold text-indigo-600 dark:text-indigo-400'>
+                          <div className='flex items-center gap-2'>
+                            <div className='w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 max-w-[100px]'>
+                              <div
+                                className='bg-indigo-600 h-2 rounded-full'
+                                style={{ width: `${project.progress}%` }}
+                              ></div>
                             </div>
                             <span>{project.progress}%</span>
                           </div>
                         </td>
-                        <td className="px-6 py-4">
-                           <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                              project.timeline === 'On Track' || project.timeline === 'Ahead' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400' :
-                              project.timeline === 'Behind Schedule' ? 'bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400' :
-                              'bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400'
-                           }`}>
-                             {project.timeline}
-                           </span>
+                        <td className='px-6 py-4'>
+                          <span
+                            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                              project.timeline === 'On Track' ||
+                              project.timeline === 'Ahead'
+                                ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400'
+                                : project.timeline === 'Behind Schedule'
+                                  ? 'bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400'
+                                  : 'bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400'
+                            }`}
+                          >
+                            {project.timeline}
+                          </span>
                         </td>
                       </tr>
                     ))

@@ -123,7 +123,8 @@ const SplashScreen = memo(() => {
         {/* Branding & Platform Title */}
         <div className='space-y-1.5'>
           <h1 className='font-display text-2xl font-black tracking-tight text-white'>
-            Student<span className='text-indigo-400'>.</span>Project<span className='text-blue-400'>.</span>System
+            Student<span className='text-indigo-400'>.</span>Project
+            <span className='text-blue-400'>.</span>System
           </h1>
           <p className='text-xs font-semibold text-slate-400 tracking-wide'>
             Academic Excellence Portal

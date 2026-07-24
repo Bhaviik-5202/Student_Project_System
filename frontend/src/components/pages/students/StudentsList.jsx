@@ -37,10 +37,18 @@ const StudentRow = memo(({ student, onEdit, onDelete, userRole }) => (
     <td className='whitespace-nowrap px-6 py-4'>
       <div className='flex items-center gap-3'>
         {student.avatar ? (
-          <img src={student.avatar} alt={student.name} className='h-9 w-9 rounded-xl object-cover border border-slate-200 dark:border-slate-700' />
+          <img
+            src={student.avatar}
+            alt={student.name}
+            className='h-9 w-9 rounded-xl object-cover border border-slate-200 dark:border-slate-700'
+          />
         ) : (
           <div className='flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl border border-indigo-100 bg-gradient-to-br from-indigo-50 to-indigo-100/50 font-bold text-indigo-600 dark:border-indigo-800/40 dark:from-indigo-950/60 dark:to-indigo-900/40 dark:text-indigo-400'>
-            {student.name ? student.name.charAt(0).toUpperCase() : <UserIcon size={16} />}
+            {student.name ? (
+              student.name.charAt(0).toUpperCase()
+            ) : (
+              <UserIcon size={16} />
+            )}
           </div>
         )}
         <div>
@@ -69,7 +77,11 @@ const StudentRow = memo(({ student, onEdit, onDelete, userRole }) => (
     <td className='whitespace-nowrap px-6 py-4'>
       <div className='flex flex-col gap-0.5'>
         <span className='text-xs font-bold text-slate-800 dark:text-slate-200'>
-          {student.semester ? (student.semester.startsWith('Sem') ? student.semester : `Sem ${student.semester}`) : 'Sem 1'}
+          {student.semester
+            ? student.semester.startsWith('Sem')
+              ? student.semester
+              : `Sem ${student.semester}`
+            : 'Sem 1'}
         </span>
         <span className='text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 dark:text-slate-400'>
           Year {student.year || 1}
@@ -80,17 +92,22 @@ const StudentRow = memo(({ student, onEdit, onDelete, userRole }) => (
     {/* Contact Number */}
     <td className='whitespace-nowrap px-6 py-4'>
       <span className='text-xs text-slate-600 dark:text-slate-400'>
-        {student.phone && student.phone !== 'N/A' ? student.phone : <span className='italic text-slate-400'>—</span>}
+        {student.phone && student.phone !== 'N/A' ? (
+          student.phone
+        ) : (
+          <span className='italic text-slate-400'>—</span>
+        )}
       </span>
     </td>
 
     {/* Status */}
     <td className='whitespace-nowrap px-6 py-4'>
       <span
-        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider border ${student.status === 'Active'
-          ? 'bg-emerald-50 text-emerald-700 border-emerald-200/80 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800/50'
-          : 'bg-rose-50 text-rose-700 border-rose-200/80 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800/50'
-          }`}
+        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider border ${
+          student.status === 'Active'
+            ? 'bg-emerald-50 text-emerald-700 border-emerald-200/80 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800/50'
+            : 'bg-rose-50 text-rose-700 border-rose-200/80 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800/50'
+        }`}
       >
         {student.status || 'Active'}
       </span>
@@ -98,7 +115,9 @@ const StudentRow = memo(({ student, onEdit, onDelete, userRole }) => (
 
     {/* Registration Date */}
     <td className='whitespace-nowrap px-6 py-4 text-xs font-medium text-slate-500 dark:text-slate-400'>
-      {new Date(student.registrationDate || student.createdAt || Date.now()).toLocaleDateString(undefined, { dateStyle: 'medium' })}
+      {new Date(
+        student.registrationDate || student.createdAt || Date.now()
+      ).toLocaleDateString(undefined, { dateStyle: 'medium' })}
     </td>
 
     {/* Actions */}
@@ -265,9 +284,15 @@ const StudentsList = memo(() => {
             >
               <option value=''>All Departments</option>
               <option value='Computer Engineering'>Computer Engineering</option>
-              <option value='Information Technology'>Information Technology</option>
-              <option value='Electronics & Communication'>Electronics & Communication</option>
-              <option value='Mechanical Engineering'>Mechanical Engineering</option>
+              <option value='Information Technology'>
+                Information Technology
+              </option>
+              <option value='Electronics & Communication'>
+                Electronics & Communication
+              </option>
+              <option value='Mechanical Engineering'>
+                Mechanical Engineering
+              </option>
               <option value='Civil Engineering'>Civil Engineering</option>
             </select>
           </div>
@@ -371,7 +396,9 @@ const StudentsList = memo(() => {
                         <span>Accessing student directory...</span>
                       </div>
                     ) : error ? (
-                      <span className='text-rose-500 font-semibold'>{error}</span>
+                      <span className='text-rose-500 font-semibold'>
+                        {error}
+                      </span>
                     ) : (
                       'No matching records found in the directory.'
                     )}

@@ -9,7 +9,7 @@ export default defineConfig({
   server: {
     port: 3000,
     strictPort: true, // Fail if port 3000 is already in use (no auto-increment)
-    open: true,       // Auto-open browser on start
+    open: true, // Auto-open browser on start
   },
 
   // Preview (production build) server configuration

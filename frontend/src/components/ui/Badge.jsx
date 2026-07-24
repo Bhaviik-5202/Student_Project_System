@@ -3,12 +3,7 @@ import React from 'react';
 /**
  * Reusable Badge Component for statuses, roles, and tags
  */
-const Badge = ({
-  children,
-  variant = 'info',
-  size = 'md',
-  className = '',
-}) => {
+const Badge = ({ children, variant = 'info', size = 'md', className = '' }) => {
   const baseStyles =
     'inline-flex items-center font-medium rounded-full tracking-wide capitalize';
 

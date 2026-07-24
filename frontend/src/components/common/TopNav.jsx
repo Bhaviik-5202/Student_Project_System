@@ -14,25 +14,25 @@ const SUBMENU_ICONS = {
   'Project Proposal': 'plus-circle',
   'Project Groups': 'users',
   'Guide Allocation': 'user-tag',
-  'Timeline': 'stream',
-  'Milestones': 'flag-checkered',
+  Timeline: 'stream',
+  Milestones: 'flag-checkered',
   'Student List': 'user-graduate',
-  'Calendar': 'calendar-alt',
+  Calendar: 'calendar-alt',
   'Meeting List': 'list-ul',
   'Schedule Meeting': 'plus',
   'Browse Resources': 'folder-open',
   'Document Library': 'file-alt',
-  'Templates': 'copy',
+  Templates: 'copy',
   'Admin Dashboard': 'chart-pie',
   'User Management': 'user-cog',
   'Staff Management': 'id-badge',
   'System Settings': 'sliders-h',
   'Audit Log': 'shield-alt',
-  'Dashboard': 'chart-line',
-  'Performance': 'tachometer-alt',
-  'Reports': 'file-invoice',
+  Dashboard: 'chart-line',
+  Performance: 'tachometer-alt',
+  Reports: 'file-invoice',
   'Help Center': 'life-ring',
-  'FAQ': 'question-circle',
+  FAQ: 'question-circle',
 };
 
 /**
@@ -150,19 +150,26 @@ const TopNav = memo(
                   prev === item.title ? null : item.title
                 )
               }
-              className={`group relative inline-flex items-center gap-2.5 rounded-xl px-3.5 py-2 text-sm font-semibold tracking-wide transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${isActive
-                ? 'bg-indigo-50 text-indigo-600 shadow-xs dark:bg-indigo-950/60 dark:text-indigo-400'
-                : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800/80 hover:text-indigo-600  dark:hover:bg-slate-800/80 dark:hover:text-indigo-400'
-                }`}
+              className={`group relative inline-flex items-center gap-2.5 rounded-xl px-3.5 py-2 text-sm font-semibold tracking-wide transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${
+                isActive
+                  ? 'bg-indigo-50 text-indigo-600 shadow-xs dark:bg-indigo-950/60 dark:text-indigo-400'
+                  : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800/80 hover:text-indigo-600  dark:hover:bg-slate-800/80 dark:hover:text-indigo-400'
+              }`}
             >
               <i
-                className={`fas fa-${item.icon} text-sm transition-transform duration-200 group-hover:scale-110 ${isActive ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 group-hover:text-indigo-500'
-                  }`}
+                className={`fas fa-${item.icon} text-sm transition-transform duration-200 group-hover:scale-110 ${
+                  isActive
+                    ? 'text-indigo-600 dark:text-indigo-400'
+                    : 'text-slate-400 group-hover:text-indigo-500'
+                }`}
               />
               <span>{item.title}</span>
               <i
-                className={`fas fa-chevron-down text-xs opacity-70 transition-transform duration-200 ${isOpen ? 'rotate-180 text-indigo-600 dark:text-indigo-400' : ''
-                  }`}
+                className={`fas fa-chevron-down text-xs opacity-70 transition-transform duration-200 ${
+                  isOpen
+                    ? 'rotate-180 text-indigo-600 dark:text-indigo-400'
+                    : ''
+                }`}
               />
               {isActive && (
                 <span className='absolute bottom-0 left-3 right-3 h-[2.5px] rounded-full bg-indigo-600 dark:bg-indigo-400' />
@@ -171,14 +178,18 @@ const TopNav = memo(
           ) : (
             <NavLink
               to={item.path}
-              className={`group relative inline-flex items-center gap-2.5 rounded-xl px-3.5 py-2 text-sm font-semibold tracking-wide transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${isActive
-                ? 'bg-indigo-50 text-indigo-600 shadow-xs dark:bg-indigo-950/60 dark:text-indigo-400'
-                : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800/80 hover:text-indigo-600  dark:hover:bg-slate-800/80 dark:hover:text-indigo-400'
-                }`}
+              className={`group relative inline-flex items-center gap-2.5 rounded-xl px-3.5 py-2 text-sm font-semibold tracking-wide transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${
+                isActive
+                  ? 'bg-indigo-50 text-indigo-600 shadow-xs dark:bg-indigo-950/60 dark:text-indigo-400'
+                  : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800/80 hover:text-indigo-600  dark:hover:bg-slate-800/80 dark:hover:text-indigo-400'
+              }`}
             >
               <i
-                className={`fas fa-${item.icon} text-sm transition-transform duration-200 group-hover:scale-110 ${isActive ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400 group-hover:text-indigo-500'
-                  }`}
+                className={`fas fa-${item.icon} text-sm transition-transform duration-200 group-hover:scale-110 ${
+                  isActive
+                    ? 'text-indigo-600 dark:text-indigo-400'
+                    : 'text-slate-400 group-hover:text-indigo-500'
+                }`}
               />
               <span>{item.title}</span>
               {isActive && (
@@ -207,17 +218,19 @@ const TopNav = memo(
                       <NavLink
                         key={`${item.title}-${idx}`}
                         to={subItem.path}
-                        className={`flex items-center justify-between gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all duration-150 ${subIsActive
-                          ? 'bg-indigo-50/90 text-indigo-600 font-semibold dark:bg-indigo-950/70 dark:text-indigo-400'
-                          : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800/80 hover:text-indigo-600 dark:text-slate-300 dark:hover:bg-slate-800/80 dark:hover:text-indigo-400'
-                          }`}
+                        className={`flex items-center justify-between gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all duration-150 ${
+                          subIsActive
+                            ? 'bg-indigo-50/90 text-indigo-600 font-semibold dark:bg-indigo-950/70 dark:text-indigo-400'
+                            : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800/80 hover:text-indigo-600 dark:text-slate-300 dark:hover:bg-slate-800/80 dark:hover:text-indigo-400'
+                        }`}
                       >
                         <div className='flex items-center gap-2.5'>
                           <i
-                            className={`fas fa-${subIcon} text-xs w-4 text-center ${subIsActive
-                              ? 'text-indigo-600 dark:text-indigo-400'
-                              : 'text-slate-400 group-hover:text-indigo-500'
-                              }`}
+                            className={`fas fa-${subIcon} text-xs w-4 text-center ${
+                              subIsActive
+                                ? 'text-indigo-600 dark:text-indigo-400'
+                                : 'text-slate-400 group-hover:text-indigo-500'
+                            }`}
                           />
                           <span>{subItem.title}</span>
                         </div>
@@ -239,10 +252,11 @@ const TopNav = memo(
       <nav
         ref={navRef}
         aria-label='Secondary Navigation'
-        className={`fixed left-0 right-0 top-16 z-40 border-b transition-all duration-200 ${isScrolled
-          ? 'border-slate-200/90 bg-white dark:bg-slate-900/95 shadow-xs backdrop-blur-md dark:border-slate-800/90 '
-          : 'border-slate-200 bg-white dark:bg-slate-900 dark:border-slate-800 '
-          }`}
+        className={`fixed left-0 right-0 top-16 z-40 border-b transition-all duration-200 ${
+          isScrolled
+            ? 'border-slate-200/90 bg-white dark:bg-slate-900/95 shadow-xs backdrop-blur-md dark:border-slate-800/90 '
+            : 'border-slate-200 bg-white dark:bg-slate-900 dark:border-slate-800 '
+        }`}
       >
         <div className='mx-auto max-w-7xl px-4 lg:px-8'>
           {/* Desktop Top Navigation Bar */}
@@ -278,8 +292,9 @@ const TopNav = memo(
               className='inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 dark:bg-slate-800 px-3.5 py-1.5 text-sm font-bold text-slate-700 dark:text-slate-200 transition hover:bg-slate-100 dark:hover:bg-slate-700  dark:border-slate-700   '
             >
               <i
-                className={`fas ${isMobileMenuOpen ? 'fa-times' : 'fa-bars'
-                  } text-sm text-indigo-600 dark:text-indigo-400`}
+                className={`fas ${
+                  isMobileMenuOpen ? 'fa-times' : 'fa-bars'
+                } text-sm text-indigo-600 dark:text-indigo-400`}
               />
               <span>Navigation</span>
             </button>
@@ -302,9 +317,7 @@ const TopNav = memo(
                 const isActive =
                   location.pathname === item.path ||
                   (hasSubmenu &&
-                    item.submenu.some(
-                      (sub) => location.pathname === sub.path
-                    ));
+                    item.submenu.some((sub) => location.pathname === sub.path));
                 const isExpanded = expandedMobileItem === item.title;
                 const visibleSubmenu = hasSubmenu
                   ? item.submenu.filter((sub) => sub.roles.includes(userRole))
@@ -317,23 +330,26 @@ const TopNav = memo(
                         <button
                           type='button'
                           onClick={() => toggleMobileSubmenu(item.title)}
-                          className={`flex w-full items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-semibold transition ${isActive
-                            ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400'
-                            : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800  dark:hover:bg-slate-800'
-                            }`}
+                          className={`flex w-full items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-semibold transition ${
+                            isActive
+                              ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400'
+                              : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800  dark:hover:bg-slate-800'
+                          }`}
                         >
                           <div className='flex items-center gap-2.5'>
                             <i
-                              className={`fas fa-${item.icon} text-base ${isActive
-                                ? 'text-indigo-600 dark:text-indigo-400'
-                                : 'text-slate-400'
-                                }`}
+                              className={`fas fa-${item.icon} text-base ${
+                                isActive
+                                  ? 'text-indigo-600 dark:text-indigo-400'
+                                  : 'text-slate-400'
+                              }`}
                             />
                             <span>{item.title}</span>
                           </div>
                           <i
-                            className={`fas fa-chevron-down text-xs transition-transform ${isExpanded ? 'rotate-180 text-indigo-600' : ''
-                              }`}
+                            className={`fas fa-chevron-down text-xs transition-transform ${
+                              isExpanded ? 'rotate-180 text-indigo-600' : ''
+                            }`}
                           />
                         </button>
 
@@ -350,16 +366,18 @@ const TopNav = memo(
                                   key={`mob-${item.title}-${idx}`}
                                   to={subItem.path}
                                   onClick={onCloseMobileMenu}
-                                  className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition ${subIsActive
-                                    ? 'bg-indigo-50/90 text-indigo-600 font-semibold dark:bg-indigo-950/70 dark:text-indigo-400'
-                                    : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800  dark:hover:bg-slate-800'
-                                    }`}
+                                  className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition ${
+                                    subIsActive
+                                      ? 'bg-indigo-50/90 text-indigo-600 font-semibold dark:bg-indigo-950/70 dark:text-indigo-400'
+                                      : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800  dark:hover:bg-slate-800'
+                                  }`}
                                 >
                                   <i
-                                    className={`fas fa-${subIcon} text-xs w-3.5 text-center ${subIsActive
-                                      ? 'text-indigo-600 dark:text-indigo-400'
-                                      : 'text-slate-400'
-                                      }`}
+                                    className={`fas fa-${subIcon} text-xs w-3.5 text-center ${
+                                      subIsActive
+                                        ? 'text-indigo-600 dark:text-indigo-400'
+                                        : 'text-slate-400'
+                                    }`}
                                   />
                                   <span>{subItem.title}</span>
                                 </NavLink>
@@ -372,16 +390,18 @@ const TopNav = memo(
                       <NavLink
                         to={item.path}
                         onClick={onCloseMobileMenu}
-                        className={`flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition ${isActive
-                          ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400'
-                          : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800  dark:hover:bg-slate-800'
-                          }`}
+                        className={`flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition ${
+                          isActive
+                            ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400'
+                            : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800  dark:hover:bg-slate-800'
+                        }`}
                       >
                         <i
-                          className={`fas fa-${item.icon} text-base ${isActive
-                            ? 'text-indigo-600 dark:text-indigo-400'
-                            : 'text-slate-400'
-                            }`}
+                          className={`fas fa-${item.icon} text-base ${
+                            isActive
+                              ? 'text-indigo-600 dark:text-indigo-400'
+                              : 'text-slate-400'
+                          }`}
                         />
                         <span>{item.title}</span>
                       </NavLink>

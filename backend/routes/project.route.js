@@ -15,19 +15,37 @@ router.use(authMiddleware);
 /**
  * Project Types Management Routes
  */
-router.get('/types', (req, res, next) => projectTypeController.getAllProjectTypes(req, res, next));
-router.get('/types/:id', (req, res, next) => projectTypeController.getProjectTypeById(req, res, next));
-router.post('/types', roleMiddleware(['admin']), (req, res, next) => projectTypeController.createProjectType(req, res, next));
-router.put('/types/:id', roleMiddleware(['admin']), (req, res, next) => projectTypeController.updateProjectType(req, res, next));
-router.delete('/types/:id', roleMiddleware(['admin']), (req, res, next) => projectTypeController.deleteProjectType(req, res, next));
+router.get('/types', (req, res, next) =>
+  projectTypeController.getAllProjectTypes(req, res, next)
+);
+router.get('/types/:id', (req, res, next) =>
+  projectTypeController.getProjectTypeById(req, res, next)
+);
+router.post('/types', roleMiddleware(['admin']), (req, res, next) =>
+  projectTypeController.createProjectType(req, res, next)
+);
+router.put('/types/:id', roleMiddleware(['admin']), (req, res, next) =>
+  projectTypeController.updateProjectType(req, res, next)
+);
+router.delete('/types/:id', roleMiddleware(['admin']), (req, res, next) =>
+  projectTypeController.deleteProjectType(req, res, next)
+);
 
 /**
  * Stats & Dropdown Selector Routes
  */
-router.get('/stats', (req, res, next) => projectController.getDashboardStats(req, res, next));
-router.get('/students/active', (req, res, next) => projectController.getActiveStudents(req, res, next));
-router.get('/faculty/active', (req, res, next) => projectController.getActiveFaculty(req, res, next));
-router.get('/groups', (req, res, next) => projectController.getProjectGroups(req, res, next));
+router.get('/stats', (req, res, next) =>
+  projectController.getDashboardStats(req, res, next)
+);
+router.get('/students/active', (req, res, next) =>
+  projectController.getActiveStudents(req, res, next)
+);
+router.get('/faculty/active', (req, res, next) =>
+  projectController.getActiveFaculty(req, res, next)
+);
+router.get('/groups', (req, res, next) =>
+  projectController.getProjectGroups(req, res, next)
+);
 
 /**
  * Main Project Collection Endpoints
@@ -49,29 +67,47 @@ router
 /**
  * Archival Controls
  */
-router.patch('/:id/archive', (req, res, next) => projectController.archiveProject(req, res, next));
-router.patch('/:id/restore', (req, res, next) => projectController.restoreProject(req, res, next));
+router.patch('/:id/archive', (req, res, next) =>
+  projectController.archiveProject(req, res, next)
+);
+router.patch('/:id/restore', (req, res, next) =>
+  projectController.restoreProject(req, res, next)
+);
 
 /**
  * Assignments (Students / Guide)
  */
-router.put('/:id/students', (req, res, next) => projectController.assignStudents(req, res, next));
-router.put('/:id/guide', (req, res, next) => projectController.assignGuide(req, res, next));
+router.put('/:id/students', (req, res, next) =>
+  projectController.assignStudents(req, res, next)
+);
+router.put('/:id/guide', (req, res, next) =>
+  projectController.assignGuide(req, res, next)
+);
 
 /**
  * Progress & Status Lifecycle
  */
-router.patch('/:id/progress', (req, res, next) => projectController.updateProgress(req, res, next));
+router.patch('/:id/progress', (req, res, next) =>
+  projectController.updateProgress(req, res, next)
+);
 
 /**
  * Files & Resources
  */
-router.post('/:id/files', (req, res, next) => projectController.addProjectFile(req, res, next));
-router.delete('/:id/files/:fileId', (req, res, next) => projectController.removeProjectFile(req, res, next));
+router.post('/:id/files', (req, res, next) =>
+  projectController.addProjectFile(req, res, next)
+);
+router.delete('/:id/files/:fileId', (req, res, next) =>
+  projectController.removeProjectFile(req, res, next)
+);
 
 /**
  * Faculty Evaluation & Reviews
  */
-router.post('/:id/reviews', roleMiddleware(['faculty', 'admin']), (req, res, next) => projectController.addProjectReview(req, res, next));
+router.post(
+  '/:id/reviews',
+  roleMiddleware(['faculty', 'admin']),
+  (req, res, next) => projectController.addProjectReview(req, res, next)
+);
 
 module.exports = router;

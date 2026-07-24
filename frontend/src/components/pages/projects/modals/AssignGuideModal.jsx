@@ -113,14 +113,17 @@ const AssignGuideModal = ({ isOpen, onClose, project, onSuccess }) => {
                 >
                   <div className='flex items-center gap-3'>
                     <div className='flex h-9 w-9 items-center justify-center rounded-full bg-purple-100 font-bold text-xs text-purple-700 dark:bg-purple-900/50 dark:text-purple-300'>
-                      {faculty.name ? faculty.name.charAt(0).toUpperCase() : 'F'}
+                      {faculty.name
+                        ? faculty.name.charAt(0).toUpperCase()
+                        : 'F'}
                     </div>
                     <div>
                       <div className='text-sm font-semibold text-gray-900 dark:text-white'>
                         {faculty.name}
                       </div>
                       <div className='text-xs text-gray-500 dark:text-gray-400'>
-                        {faculty.designation || 'Faculty Guide'} • {faculty.department || 'Department'}
+                        {faculty.designation || 'Faculty Guide'} •{' '}
+                        {faculty.department || 'Department'}
                       </div>
                     </div>
                   </div>

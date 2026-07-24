@@ -41,7 +41,10 @@ exports.getProjects = async (studentId) => {
 exports.getAll = async () => {
   try {
     const [studentUsers, legacyStudents] = await Promise.all([
-      userRepository.findAll({ role: 'student' }, { select: '-password', lean: true }),
+      userRepository.findAll(
+        { role: 'student' },
+        { select: '-password', lean: true }
+      ),
       studentRepository.findAll(),
     ]);
 
@@ -53,8 +56,12 @@ exports.getAll = async () => {
         id: u._id,
         name: u.name,
         email: u.email,
-        rollNumber: u.rollNumber || `STU${new Date().getFullYear()}${u._id.toString().slice(-4).toUpperCase()}`,
-        enrollmentNumber: u.enrollmentNumber || `EN${new Date().getFullYear()}${u._id.toString().slice(-6).toUpperCase()}`,
+        rollNumber:
+          u.rollNumber ||
+          `STU${new Date().getFullYear()}${u._id.toString().slice(-4).toUpperCase()}`,
+        enrollmentNumber:
+          u.enrollmentNumber ||
+          `EN${new Date().getFullYear()}${u._id.toString().slice(-6).toUpperCase()}`,
         department: normalizeDepartment(u.department),
         semester: u.semester || 'Sem 1',
         year: u.year || '1',
@@ -86,8 +93,12 @@ exports.getAll = async () => {
           id: s._id,
           name: s.name,
           email: s.email,
-          rollNumber: s.rollNumber || `STU${new Date().getFullYear()}${s._id.toString().slice(-4).toUpperCase()}`,
-          enrollmentNumber: s.enrollmentNumber || `EN${new Date().getFullYear()}${s._id.toString().slice(-6).toUpperCase()}`,
+          rollNumber:
+            s.rollNumber ||
+            `STU${new Date().getFullYear()}${s._id.toString().slice(-4).toUpperCase()}`,
+          enrollmentNumber:
+            s.enrollmentNumber ||
+            `EN${new Date().getFullYear()}${s._id.toString().slice(-6).toUpperCase()}`,
           department: normalizeDepartment(s.department),
           semester: s.semester || 'Sem 1',
           year: s.year || '1',
@@ -115,7 +126,10 @@ exports.getById = async (id) => {
   try {
     let student = await studentRepository.findById(id);
     if (!student) {
-      const user = await userRepository.findById(id, { select: '-password', lean: true });
+      const user = await userRepository.findById(id, {
+        select: '-password',
+        lean: true,
+      });
       if (user && (user.role === 'student' || !user.role)) {
         const existingStudent = await studentRepository.findByEmail(user.email);
         if (existingStudent) {
@@ -126,8 +140,12 @@ exports.getById = async (id) => {
             id: user._id,
             name: user.name,
             email: user.email,
-            rollNumber: user.rollNumber || `STU${new Date().getFullYear()}${user._id.toString().slice(-4).toUpperCase()}`,
-            enrollmentNumber: user.enrollmentNumber || `EN${new Date().getFullYear()}${user._id.toString().slice(-6).toUpperCase()}`,
+            rollNumber:
+              user.rollNumber ||
+              `STU${new Date().getFullYear()}${user._id.toString().slice(-4).toUpperCase()}`,
+            enrollmentNumber:
+              user.enrollmentNumber ||
+              `EN${new Date().getFullYear()}${user._id.toString().slice(-6).toUpperCase()}`,
             department: normalizeDepartment(user.department),
             semester: user.semester || 'Sem 1',
             year: user.year || 1,
@@ -153,7 +171,9 @@ exports.getById = async (id) => {
  */
 exports.update = async (id, data) => {
   try {
-    const cleanDepartment = data.department ? normalizeDepartment(data.department) : undefined;
+    const cleanDepartment = data.department
+      ? normalizeDepartment(data.department)
+      : undefined;
     const updateData = { ...data };
     if (cleanDepartment) updateData.department = cleanDepartment;
 
@@ -185,12 +205,18 @@ exports.update = async (id, data) => {
         });
         let studentRecord = await studentRepository.findByEmail(user.email);
         if (studentRecord) {
-          student = await studentRepository.update(studentRecord._id, updateData);
+          student = await studentRepository.update(
+            studentRecord._id,
+            updateData
+          );
         } else {
           student = await studentRepository.create({
             name: user.name,
             email: user.email,
-            rollNumber: data.rollNumber || user.rollNumber || `STU${new Date().getFullYear()}${user._id.toString().slice(-4).toUpperCase()}`,
+            rollNumber:
+              data.rollNumber ||
+              user.rollNumber ||
+              `STU${new Date().getFullYear()}${user._id.toString().slice(-4).toUpperCase()}`,
             department: cleanDepartment || user.department,
             year: Number(data.year) || 1,
             phone: data.phone || '',

@@ -2,7 +2,7 @@ import React from 'react';
 
 export const Table = ({ children, className = '', ...props }) => {
   return (
-    <div className="w-full overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
+    <div className='w-full overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800'>
       <table
         className={`w-full text-left text-sm text-slate-700 dark:text-slate-300 ${className}`}
         {...props}
@@ -45,7 +45,10 @@ export const TableHead = ({ children, className = '', ...props }) => {
 
 export const TableBody = ({ children, className = '', ...props }) => {
   return (
-    <tbody className={`divide-y divide-slate-100 dark:divide-slate-800 ${className}`} {...props}>
+    <tbody
+      className={`divide-y divide-slate-100 dark:divide-slate-800 ${className}`}
+      {...props}
+    >
       {children}
     </tbody>
   );
@@ -66,26 +69,28 @@ export const Pagination = ({
   totalItems,
 }) => {
   return (
-    <div className="flex items-center justify-between px-6 py-3.5 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400">
+    <div className='flex items-center justify-between px-6 py-3.5 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400'>
       <div>
         {totalItems !== undefined && (
-          <span>Showing page {currentPage} of {totalPages} ({totalItems} total)</span>
+          <span>
+            Showing page {currentPage} of {totalPages} ({totalItems} total)
+          </span>
         )}
       </div>
-      <div className="flex items-center space-x-2">
+      <div className='flex items-center space-x-2'>
         <button
-          type="button"
+          type='button'
           disabled={currentPage <= 1}
           onClick={() => onPageChange(currentPage - 1)}
-          className="px-3 py-1.5 rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800  dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className='px-3 py-1.5 rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800  dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors'
         >
           Previous
         </button>
         <button
-          type="button"
+          type='button'
           disabled={currentPage >= totalPages}
           onClick={() => onPageChange(currentPage + 1)}
-          className="px-3 py-1.5 rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800  dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className='px-3 py-1.5 rounded-md border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800  dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors'
         >
           Next
         </button>

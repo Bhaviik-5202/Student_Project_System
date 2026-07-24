@@ -320,8 +320,8 @@ const AuthLayout = ({ children }) => {
           </Suspense>
 
           <p className='mt-8 text-center text-xs font-semibold text-slate-500 dark:text-slate-400'>
-            &copy; {new Date().getFullYear()} Student Project System.
-            All rights reserved.
+            &copy; {new Date().getFullYear()} Student Project System. All rights
+            reserved.
           </p>
         </div>
       </div>
