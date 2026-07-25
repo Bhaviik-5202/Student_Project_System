@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { useAuth } from '../../hooks/useAuth';
 import { useTheme } from '../../hooks/useTheme';
+import { useNotificationsContext } from '../../context/NotificationContext';
 import Calendar from '../ui/Calendar';
 import HeaderIcon from './header/HeaderIcon';
 import SearchBar from './header/SearchBar';
@@ -42,12 +43,8 @@ const Header = memo(
     const quickAddRef = useRef(null);
     const calendarRef = useRef(null);
 
-    // Mock notifications data (should ideally come from a hook/context)
-    const notifications = useMemo(() => [], []);
-    const unreadCount = useMemo(
-      () => notifications.filter((n) => !n.read).length,
-      [notifications]
-    );
+    // Global notifications context
+    const { notifications, unreadCount, markAllAsRead, deleteNotification } = useNotificationsContext();
 
     const closeAllDropdowns = useCallback(() => {
       setShowUserMenu(false);
@@ -313,10 +310,11 @@ const Header = memo(
                       notifications={notifications}
                       unreadCount={unreadCount}
                       onMarkAllAsRead={() => {
-                        clearNotifications();
+                        markAllAsRead();
                         setShowNotifications(false);
                       }}
                       onClose={() => setShowNotifications(false)}
+                      onDelete={deleteNotification}
                     />
                   </Dropdown>
                 </div>

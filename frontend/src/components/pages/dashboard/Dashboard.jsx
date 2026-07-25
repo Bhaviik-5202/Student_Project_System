@@ -9,6 +9,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../../hooks/useAuth';
+import { useNotificationsContext } from '../../../context/NotificationContext';
 import { toast } from 'react-hot-toast';
 import RecentActivity from './RecentActivity';
 import UpcomingMeetings from './UpcomingMeetings';
@@ -59,6 +60,7 @@ import {
   TrendingUp as ChartLineIcon,
   SlidersHorizontal as AdjustmentsIcon,
   BarChart2 as ChartBarSquareIcon,
+  Trash2 as TrashIcon,
 } from 'lucide-react';
 
 // --- Custom Hooks ---
@@ -102,51 +104,98 @@ const AnimatedStatCard = ({ stat, index, onClick }) => {
     return () => clearTimeout(timer);
   }, [index]);
 
-  const bgColor =
-    stat.color === 'blue'
-      ? 'bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/30 dark:to-blue-800/20'
-      : stat.color === 'green'
-        ? 'bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-900/30 dark:to-green-800/20'
-        : stat.color === 'yellow'
-          ? 'bg-gradient-to-br from-yellow-50 to-yellow-100/50 dark:from-yellow-900/30 dark:to-yellow-800/20'
-          : 'bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-900/30 dark:to-purple-800/20';
-  const iconColor =
-    stat.color === 'blue'
-      ? 'text-blue-600 dark:text-blue-400'
-      : stat.color === 'green'
-        ? 'text-green-600 dark:text-green-400'
-        : stat.color === 'yellow'
-          ? 'text-yellow-600 dark:text-yellow-400'
-          : 'text-purple-600 dark:text-purple-400';
-  const borderColor =
-    stat.color === 'blue'
-      ? 'border-blue-100 dark:border-blue-800'
-      : stat.color === 'green'
-        ? 'border-green-100 dark:border-green-800'
-        : stat.color === 'yellow'
-          ? 'border-yellow-100 dark:border-yellow-800'
-          : 'border-purple-100 dark:border-purple-800';
-  const progressColor =
-    stat.color === 'blue'
-      ? 'bg-blue-500 dark:bg-blue-400'
-      : stat.color === 'green'
-        ? 'bg-green-500 dark:bg-green-400'
-        : stat.color === 'yellow'
-          ? 'bg-yellow-500 dark:bg-yellow-400'
-          : 'bg-purple-500 dark:bg-purple-400';
+  const colorMap = {
+    blue: {
+      bg: 'bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/30 dark:to-blue-800/20',
+      hoverBg: 'bg-blue-50/50 dark:bg-blue-900/10',
+      icon: 'text-blue-600 dark:text-blue-400',
+      border: 'border-blue-100 dark:border-blue-800',
+      progress: 'bg-blue-500 dark:bg-blue-400',
+    },
+    green: {
+      bg: 'bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-900/30 dark:to-green-800/20',
+      hoverBg: 'bg-green-50/50 dark:bg-green-900/10',
+      icon: 'text-green-600 dark:text-green-400',
+      border: 'border-green-100 dark:border-green-800',
+      progress: 'bg-green-500 dark:bg-green-400',
+    },
+    yellow: {
+      bg: 'bg-gradient-to-br from-yellow-50 to-yellow-100/50 dark:from-yellow-900/30 dark:to-yellow-800/20',
+      hoverBg: 'bg-yellow-50/50 dark:bg-yellow-900/10',
+      icon: 'text-yellow-600 dark:text-yellow-400',
+      border: 'border-yellow-100 dark:border-yellow-800',
+      progress: 'bg-yellow-500 dark:bg-yellow-400',
+    },
+    purple: {
+      bg: 'bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-900/30 dark:to-purple-800/20',
+      hoverBg: 'bg-purple-50/50 dark:bg-purple-900/10',
+      icon: 'text-purple-600 dark:text-purple-400',
+      border: 'border-purple-100 dark:border-purple-800',
+      progress: 'bg-purple-500 dark:bg-purple-400',
+    },
+    emerald: {
+      bg: 'bg-gradient-to-br from-emerald-50 to-emerald-100/50 dark:from-emerald-900/30 dark:to-emerald-800/20',
+      hoverBg: 'bg-emerald-50/50 dark:bg-emerald-900/10',
+      icon: 'text-emerald-600 dark:text-emerald-400',
+      border: 'border-emerald-100 dark:border-emerald-800',
+      progress: 'bg-emerald-500 dark:bg-emerald-400',
+    },
+    orange: {
+      bg: 'bg-gradient-to-br from-orange-50 to-orange-100/50 dark:from-orange-900/30 dark:to-orange-800/20',
+      hoverBg: 'bg-orange-50/50 dark:bg-orange-900/10',
+      icon: 'text-orange-600 dark:text-orange-400',
+      border: 'border-orange-100 dark:border-orange-800',
+      progress: 'bg-orange-500 dark:bg-orange-400',
+    },
+    cyan: {
+      bg: 'bg-gradient-to-br from-cyan-50 to-cyan-100/50 dark:from-cyan-900/30 dark:to-cyan-800/20',
+      hoverBg: 'bg-cyan-50/50 dark:bg-cyan-900/10',
+      icon: 'text-cyan-600 dark:text-cyan-400',
+      border: 'border-cyan-100 dark:border-cyan-800',
+      progress: 'bg-cyan-500 dark:bg-cyan-400',
+    },
+    rose: {
+      bg: 'bg-gradient-to-br from-rose-50 to-rose-100/50 dark:from-rose-900/30 dark:to-rose-800/20',
+      hoverBg: 'bg-rose-50/50 dark:bg-rose-900/10',
+      icon: 'text-rose-600 dark:text-rose-400',
+      border: 'border-rose-100 dark:border-rose-800',
+      progress: 'bg-rose-500 dark:bg-rose-400',
+    },
+    indigo: {
+      bg: 'bg-gradient-to-br from-indigo-50 to-indigo-100/50 dark:from-indigo-900/30 dark:to-indigo-800/20',
+      hoverBg: 'bg-indigo-50/50 dark:bg-indigo-900/10',
+      icon: 'text-indigo-600 dark:text-indigo-400',
+      border: 'border-indigo-100 dark:border-indigo-800',
+      progress: 'bg-indigo-500 dark:bg-indigo-400',
+    },
+    amber: {
+      bg: 'bg-gradient-to-br from-amber-50 to-amber-100/50 dark:from-amber-900/30 dark:to-amber-800/20',
+      hoverBg: 'bg-amber-50/50 dark:bg-amber-900/10',
+      icon: 'text-amber-600 dark:text-amber-400',
+      border: 'border-amber-100 dark:border-amber-800',
+      progress: 'bg-amber-500 dark:bg-amber-400',
+    }
+  };
+
+  const currentColors = colorMap[stat.color] || colorMap.purple; // fallback
+
+  const bgColor = currentColors.bg;
+  const hoverBg = currentColors.hoverBg;
+  const iconColor = currentColors.icon;
+  const borderColor = currentColors.border;
+  const progressColor = currentColors.progress;
 
   return (
     <div
-      className={`group relative rounded-2xl border bg-white dark:bg-slate-800 ${borderColor} cursor-pointer overflow-hidden p-6 transition-all duration-300 ${
-        isVisible
-          ? 'translate-y-0 opacity-100 hover:border-transparent hover:shadow-lg dark:hover:shadow-slate-700/30'
-          : 'translate-y-4 opacity-0'
-      }`}
+      className={`group relative rounded-2xl border bg-white dark:bg-slate-800 ${borderColor} cursor-pointer overflow-hidden p-6 transition-all duration-300 ${isVisible
+        ? 'translate-y-0 opacity-100 hover:border-transparent hover:shadow-lg dark:hover:shadow-slate-700/30'
+        : 'translate-y-4 opacity-0'
+        }`}
       onClick={onClick}
     >
       {/* Background overlay - same as Quick Access */}
       <div
-        className={`absolute inset-0 ${bgColor} opacity-0 transition-opacity duration-300 group-hover:opacity-100`}
+        className={`absolute inset-0 ${hoverBg} opacity-0 transition-opacity duration-300 group-hover:opacity-100`}
       />
 
       <div className='relative z-10'>
@@ -159,13 +208,12 @@ const AnimatedStatCard = ({ stat, index, onClick }) => {
             />
           </div>
           <span
-            className={`rounded-full px-3 py-1.5 text-xs font-semibold ${
-              stat.trend === 'up'
-                ? 'border border-green-200 bg-gradient-to-r from-green-100 to-green-50 text-green-700 dark:border-green-800 dark:from-green-900/40 dark:to-green-800/30 dark:text-green-400'
-                : stat.trend === 'attention'
-                  ? 'border border-yellow-200 bg-gradient-to-r from-yellow-100 to-yellow-50 text-yellow-700 dark:border-yellow-800 dark:from-yellow-900/40 dark:to-yellow-800/30 dark:text-yellow-400'
-                  : 'border border-blue-200 bg-gradient-to-r from-blue-100 to-blue-50 text-blue-700 dark:border-blue-800 dark:from-blue-900/40 dark:to-blue-800/30 dark:text-blue-400'
-            }`}
+            className={`rounded-full px-3 py-1.5 text-xs font-semibold ${stat.trend === 'up'
+              ? 'border border-green-200 bg-gradient-to-r from-green-100 to-green-50 text-green-700 dark:border-green-800 dark:from-green-900/40 dark:to-green-800/30 dark:text-green-400'
+              : stat.trend === 'attention'
+                ? 'border border-yellow-200 bg-gradient-to-r from-yellow-100 to-yellow-50 text-yellow-700 dark:border-yellow-800 dark:from-yellow-900/40 dark:to-yellow-800/30 dark:text-yellow-400'
+                : 'border border-blue-200 bg-gradient-to-r from-blue-100 to-blue-50 text-blue-700 dark:border-blue-800 dark:from-blue-900/40 dark:to-blue-800/30 dark:text-blue-400'
+              }`}
           >
             {stat.change}
           </span>
@@ -207,7 +255,7 @@ const Dashboard = () => {
   });
 
   // New state for enhanced features
-  const [notifications, setNotifications] = useState([]);
+  const { notifications, unreadCount, markAsRead, markAllAsRead, deleteNotification } = useNotificationsContext();
   const [upcomingDeadlines, setUpcomingDeadlines] = useState([]);
   const [todayMeetings, setTodayMeetings] = useState([]);
   const [performanceData, setPerformanceData] = useState([]);
@@ -247,54 +295,35 @@ const Dashboard = () => {
       const greetings =
         user?.role === 'student'
           ? [
-              'Welcome back! Track your project milestones, deadlines, assigned guide, and meeting schedules.',
-              'Great to see you! Review your team project progress and upcoming deadlines.',
-              'Ready to achieve your project goals today?',
-            ]
+            'Welcome back! Track your project milestones, deadlines, assigned guide, and meeting schedules.',
+            'Great to see you! Review your team project progress and upcoming deadlines.',
+            'Ready to achieve your project goals today?',
+          ]
           : user?.role === 'faculty'
             ? [
-                'Welcome back! Review student proposals, manage assigned projects, and conduct sync meetings.',
-                "Ready to evaluate today's project submissions and provide guidance?",
-                'Great to have you back in the faculty workspace.',
-              ]
+              'Welcome back! Review student proposals, manage assigned projects, and conduct sync meetings.',
+              "Ready to evaluate today's project submissions and provide guidance?",
+              'Great to have you back in the faculty workspace.',
+            ]
             : [
-                'Welcome to System Oversight. Manage operations, users, faculty guides, and project governance.',
-                'Administrator Console ready. System status and analytics are up to date.',
-                'Ready to optimize organizational project workflow?',
-              ];
+              'Welcome to System Oversight. Manage operations, users, faculty guides, and project governance.',
+              'Administrator Console ready. System status and analytics are up to date.',
+              'Ready to optimize organizational project workflow?',
+            ];
       setGreeting(greetings[Math.floor(Math.random() * greetings.length)]);
 
-      // Fetch dashboard data and notifications concurrently from API
-      const [statsResult, notifResult] = await Promise.allSettled([
+      // Fetch dashboard data
+      const [statsResult] = await Promise.allSettled([
         user.role === 'admin'
           ? analyticsService.getDashboardStats()
           : user.role === 'faculty'
             ? analyticsService.getFacultyDashboardStats()
-            : analyticsService.getStudentDashboardStats(),
-        api.get('/notifications'),
+            : analyticsService.getStudentDashboardStats()
       ]);
 
       const apiData =
         statsResult.status === 'fulfilled' ? statsResult.value : { data: {} };
       const statsData = apiData?.data || apiData || {};
-
-      let apiNotifications = [];
-      if (notifResult.status === 'fulfilled') {
-        const rawNotifs = notifResult.value;
-        apiNotifications = rawNotifs?.data || rawNotifs || [];
-      }
-
-      const mappedNotifications = (
-        statsData.notifications ||
-        apiNotifications ||
-        []
-      ).map((n) => ({
-        id: n._id || n.id,
-        type: n.type || 'info',
-        read: n.read || false,
-        message: n.message || '',
-        time: n.createdAt ? timeAgo(n.createdAt) : n.time || 'Just now',
-      }));
 
       // Create role-specific dashboard data using the fresh statsData
       let data = null;
@@ -312,7 +341,7 @@ const Dashboard = () => {
                 title: 'Total Projects',
                 value: statsData.totalProjects || 0,
                 icon: ChartBarIcon,
-                color: 'blue',
+                color: 'orange',
                 change: statsData.projectGrowth || '+0%',
                 trend: 'up',
                 onClick: () => navigate('/projects'),
@@ -321,7 +350,7 @@ const Dashboard = () => {
                 title: 'Active Students',
                 value: statsData.activeStudents || statsData.totalStudents || 0,
                 icon: UserGroupIcon,
-                color: 'green',
+                color: 'emerald',
                 change: 'Active enrolled',
                 trend: 'up',
                 onClick: () => navigate('/students'),
@@ -339,7 +368,7 @@ const Dashboard = () => {
                 title: 'Upcoming Meetings',
                 value: freshMeetings.length || 0,
                 icon: CalendarIcon,
-                color: 'emerald',
+                color: 'rose',
                 change:
                   freshMeetings.length > 0
                     ? `Next: ${freshMeetings[0].time}`
@@ -365,7 +394,7 @@ const Dashboard = () => {
                   statsData.totalProjects ||
                   0,
                 icon: ChartBarIcon,
-                color: 'blue',
+                color: 'cyan',
                 change: 'Under your guidance',
                 trend: 'info',
                 onClick: () => navigate('/projects'),
@@ -374,7 +403,7 @@ const Dashboard = () => {
                 title: 'Students Under Guidance',
                 value: statsData.activeStudents || 0,
                 icon: UserGroupIcon,
-                color: 'green',
+                color: 'emerald',
                 change: 'Active group members',
                 trend: 'info',
                 onClick: () => navigate('/students'),
@@ -384,7 +413,7 @@ const Dashboard = () => {
                 value:
                   statsData.pendingReviews || statsData.pendingApprovals || 0,
                 icon: ClipboardIcon,
-                color: 'yellow',
+                color: 'amber',
                 change: 'Awaiting feedback',
                 trend: 'attention',
                 onClick: () => navigate('/projects'),
@@ -393,7 +422,7 @@ const Dashboard = () => {
                 title: 'Upcoming Meetings',
                 value: freshMeetings.length || 0,
                 icon: CalendarIcon,
-                color: 'purple',
+                color: 'rose',
                 change:
                   freshMeetings.length > 0
                     ? `Next: ${freshMeetings[0].time}`
@@ -416,7 +445,7 @@ const Dashboard = () => {
                 title: 'My Project',
                 value: statsData.myProjects || 1,
                 icon: ChartBarIcon,
-                color: 'blue',
+                color: 'indigo',
                 change: statsData.projectStatus || 'In Progress',
                 trend: 'info',
                 onClick: () => navigate('/projects'),
@@ -425,7 +454,7 @@ const Dashboard = () => {
                 title: 'Project Status',
                 value: statsData.projectStatus || 'Active',
                 icon: CheckCircleIcon,
-                color: 'green',
+                color: 'emerald',
                 change: 'On Schedule',
                 trend: 'up',
                 onClick: () => navigate('/projects'),
@@ -434,7 +463,7 @@ const Dashboard = () => {
                 title: 'Upcoming Meetings',
                 value: freshMeetings.length || 0,
                 icon: CalendarIcon,
-                color: 'purple',
+                color: 'rose',
                 change:
                   freshMeetings.length > 0
                     ? `Next: ${freshMeetings[0].time}`
@@ -446,7 +475,7 @@ const Dashboard = () => {
                 title: 'Deadlines',
                 value: freshDeadlines.length || 0,
                 icon: ClipboardListIcon,
-                color: 'yellow',
+                color: 'amber',
                 change: 'Upcoming milestones',
                 trend: 'attention',
                 onClick: () => navigate('/projects'),
@@ -466,7 +495,6 @@ const Dashboard = () => {
 
       if (data && data.title) {
         setDashboardData(data);
-        setNotifications(mappedNotifications);
         setUpcomingDeadlines(freshDeadlines);
         setTodayMeetings(freshMeetings);
         setPerformanceData(statsData.performanceData || []);
@@ -545,12 +573,7 @@ const Dashboard = () => {
   // Handle notification actions
   const handleNotificationClick = async (notificationId) => {
     try {
-      await api.patch(`/notifications/${notificationId}/read`);
-      setNotifications(
-        notifications.map((notif) =>
-          notif.id === notificationId ? { ...notif, read: true } : notif
-        )
-      );
+      await markAsRead(notificationId);
     } catch (error) {
       console.error('Failed to mark notification as read:', error);
     }
@@ -558,10 +581,7 @@ const Dashboard = () => {
 
   const markAllNotificationsAsRead = async () => {
     try {
-      await api.patch('/notifications/mark-all-read');
-      setNotifications(
-        notifications.map((notif) => ({ ...notif, read: true }))
-      );
+      await markAllAsRead();
       toast.success('All notifications marked as read');
     } catch (error) {
       console.error('Failed to mark all notifications as read:', error);
@@ -685,59 +705,59 @@ const Dashboard = () => {
       {/* Urgent Alert Section */}
       {(upcomingDeadlines?.filter((d) => d.priority === 'high')?.length || 0) >
         0 && (
-        <div className='rounded-2xl border border-red-200 bg-gradient-to-r from-red-50 to-red-100/50 p-6 shadow-sm dark:border-red-800 dark:from-red-900/30 dark:to-red-800/20'>
-          <div className='flex flex-col md:flex-row md:items-center'>
-            <div className='flex items-start md:items-center'>
-              <div className='flex-shrink-0'>
-                <ExclamationTriangleIcon className='h-6 w-6 text-red-600 dark:text-red-400' />
+          <div className='rounded-2xl border border-red-200 bg-gradient-to-r from-red-50 to-red-100/50 p-6 shadow-sm dark:border-red-800 dark:from-red-900/30 dark:to-red-800/20'>
+            <div className='flex flex-col md:flex-row md:items-center'>
+              <div className='flex items-start md:items-center'>
+                <div className='flex-shrink-0'>
+                  <ExclamationTriangleIcon className='h-6 w-6 text-red-600 dark:text-red-400' />
+                </div>
+                <div className='ml-4 flex-1'>
+                  <h3 className='mb-1 text-lg font-bold text-gray-900 dark:text-white'>
+                    ⚠️ Urgent Action Required
+                  </h3>
+                  <p className='text-gray-700 dark:text-gray-300'>
+                    {
+                      upcomingDeadlines?.filter((d) => d.priority === 'high')[0]
+                        ?.title
+                    }{' '}
+                    due{' '}
+                    <span className='font-semibold'>
+                      {
+                        upcomingDeadlines?.filter((d) => d.priority === 'high')[0]
+                          ?.due
+                      }
+                    </span>{' '}
+                    at{' '}
+                    <span className='font-semibold'>
+                      {
+                        upcomingDeadlines?.filter((d) => d.priority === 'high')[0]
+                          ?.time
+                      }
+                    </span>
+                  </p>
+                </div>
               </div>
-              <div className='ml-4 flex-1'>
-                <h3 className='mb-1 text-lg font-bold text-gray-900 dark:text-white'>
-                  ⚠️ Urgent Action Required
-                </h3>
-                <p className='text-gray-700 dark:text-gray-300'>
-                  {
-                    upcomingDeadlines?.filter((d) => d.priority === 'high')[0]
-                      ?.title
-                  }{' '}
-                  due{' '}
-                  <span className='font-semibold'>
-                    {
-                      upcomingDeadlines?.filter((d) => d.priority === 'high')[0]
-                        ?.due
-                    }
-                  </span>{' '}
-                  at{' '}
-                  <span className='font-semibold'>
-                    {
-                      upcomingDeadlines?.filter((d) => d.priority === 'high')[0]
-                        ?.time
-                    }
+              <div className='mt-4 flex gap-3 md:ml-6 md:mt-0'>
+                <button
+                  onClick={() => navigate('/assignments')}
+                  className='group relative overflow-hidden rounded-xl bg-gradient-to-r from-red-600 to-red-500 px-5 py-2.5 font-medium text-white shadow-md transition-all duration-300 hover:shadow-xl'
+                >
+                  <div className='absolute inset-0 bg-gradient-to-r from-red-700 to-red-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
+                  <span className='relative z-10 inline-block transition-transform duration-300 group-hover:scale-105'>
+                    Start Now
                   </span>
-                </p>
+                </button>
+                <button
+                  onClick={() => toast.info('Extension requested')}
+                  className='group relative overflow-hidden rounded-xl border border-red-300 px-5 py-2.5 font-medium text-red-700 transition-all duration-300 hover:border-transparent hover:shadow-lg dark:border-red-700 dark:text-red-400'
+                >
+                  <div className='absolute inset-0 bg-red-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:bg-red-900/30' />
+                  <span className='relative z-10'>Request Extension</span>
+                </button>
               </div>
-            </div>
-            <div className='mt-4 flex gap-3 md:ml-6 md:mt-0'>
-              <button
-                onClick={() => navigate('/assignments')}
-                className='group relative overflow-hidden rounded-xl bg-gradient-to-r from-red-600 to-red-500 px-5 py-2.5 font-medium text-white shadow-md transition-all duration-300 hover:shadow-xl'
-              >
-                <div className='absolute inset-0 bg-gradient-to-r from-red-700 to-red-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
-                <span className='relative z-10 inline-block transition-transform duration-300 group-hover:scale-105'>
-                  Start Now
-                </span>
-              </button>
-              <button
-                onClick={() => toast.info('Extension requested')}
-                className='group relative overflow-hidden rounded-xl border border-red-300 px-5 py-2.5 font-medium text-red-700 transition-all duration-300 hover:border-transparent hover:shadow-lg dark:border-red-700 dark:text-red-400'
-              >
-                <div className='absolute inset-0 bg-red-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:bg-red-900/30' />
-                <span className='relative z-10'>Request Extension</span>
-              </button>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
       {/* Stats Grid - Role Specific with Animations */}
       {dashboardData.stats.length > 0 && (
@@ -756,7 +776,7 @@ const Dashboard = () => {
       {/* Main Content Grid */}
       <div className='grid grid-cols-1 gap-8 lg:grid-cols-3'>
         {/* Left Column - 2/3 width */}
-        <div className='space-y-8 lg:col-span-2'>
+        <div className='flex flex-col space-y-8 lg:col-span-2'>
           <div className='rounded-2xl border border-gray-100 bg-white dark:bg-slate-900 p-6 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800'>
             <RecentActivity
               activities={recentActivities}
@@ -765,7 +785,7 @@ const Dashboard = () => {
           </div>
 
           {/* Upcoming Deadlines */}
-          <div className='rounded-2xl border border-gray-100 bg-white dark:bg-slate-900 p-6 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800'>
+          <div className='flex-1 flex flex-col rounded-2xl border border-gray-100 bg-white dark:bg-slate-900 p-6 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800'>
             <div className='mb-8 flex items-center justify-between'>
               <div className='flex items-center'>
                 <div className='mr-3 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-orange-50 to-orange-100/50 dark:from-orange-900/30 dark:to-orange-800/20'>
@@ -789,48 +809,59 @@ const Dashboard = () => {
               </button>
             </div>
 
-            <div className='space-y-4'>
+            <div className='flex-1 flex flex-col space-y-4'>
               {upcomingDeadlines.length === 0 ? (
-                <div className='rounded-xl border border-dashed border-slate-200 py-8 text-center text-slate-500 dark:text-slate-400 dark:border-slate-700 '>
-                  No upcoming deadlines found.
+                <div className='flex flex-1 flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50/50 py-12 text-center dark:border-slate-700/50 dark:bg-slate-800/30'>
+                  <div className='mb-4 rounded-full bg-slate-100 p-4 dark:bg-slate-800'>
+                    <CalendarDaysIcon className='h-8 w-8 text-slate-400 dark:text-slate-500' />
+                  </div>
+                  <h4 className='text-base font-semibold text-slate-700 dark:text-slate-300'>No Upcoming Deadlines</h4>
+                  <p className='mt-1 text-sm text-slate-500 dark:text-slate-400'>You're all caught up on your tasks!</p>
                 </div>
               ) : (
                 upcomingDeadlines.map((deadline) => (
                   <div
                     key={deadline.id}
-                    className={`flex items-center justify-between rounded-xl border p-5 transition-all duration-300 hover:shadow-md ${
-                      deadline.priority === 'high'
-                        ? 'border-red-200 bg-gradient-to-r from-red-50 to-red-100/50 dark:border-red-800 dark:from-red-900/30 dark:to-red-800/20'
-                        : 'border-yellow-200 bg-gradient-to-r from-yellow-50 to-yellow-100/50 dark:border-yellow-800 dark:from-yellow-900/30 dark:to-yellow-800/20'
-                    }`}
+                    className={`group flex items-center justify-between rounded-2xl border p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${deadline.priority === 'high'
+                      ? 'border-red-100 bg-gradient-to-r from-red-50 to-white dark:border-red-900/30 dark:from-red-900/10 dark:to-slate-800/80 hover:border-red-200'
+                      : 'border-slate-100 bg-white dark:border-slate-700/50 dark:bg-slate-800/80 hover:border-blue-100 hover:bg-blue-50/50 dark:hover:border-blue-900/30 dark:hover:bg-slate-800'
+                      }`}
                   >
-                    <div className='flex items-center'>
+                    <div className='flex items-center gap-5'>
                       <div
-                        className={`mr-4 h-3 w-3 rounded-full ${
-                          deadline.priority === 'high'
-                            ? 'bg-red-500'
-                            : 'bg-yellow-500'
-                        }`}
-                      ></div>
-                      <div>
-                        <div className='font-bold text-gray-900 dark:text-white'>
+                        className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl transition-colors duration-300 ${deadline.priority === 'high'
+                          ? 'bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400'
+                          : 'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400 group-hover:bg-blue-100 group-hover:text-blue-600 dark:group-hover:bg-blue-900/40 dark:group-hover:text-blue-400'
+                          }`}
+                      >
+                        <CalendarDaysIcon className='h-6 w-6' />
+                      </div>
+                      <div className='flex flex-col justify-center'>
+                        <h4 className='text-base font-bold text-gray-900 transition-colors duration-300 group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400'>
                           {deadline.title}
-                        </div>
-                        <div className='mt-1 text-sm text-gray-600 dark:text-gray-400'>
-                          <ClockIcon className='mr-1 inline h-3 w-3' />
-                          Due {deadline.due} • {deadline.time}
+                        </h4>
+                        <div className='mt-1.5 flex flex-wrap items-center gap-4 text-sm font-medium text-gray-500 dark:text-gray-400'>
+                          <span className='flex items-center gap-1.5'>
+                            <ClockIcon className='h-4 w-4' />
+                            {deadline.time}
+                          </span>
+                          <span className='flex items-center gap-1.5'>
+                            <CalendarDaysIcon className='h-4 w-4' />
+                            {deadline.due}
+                          </span>
                         </div>
                       </div>
                     </div>
-                    <span
-                      className={`rounded-full px-4 py-1.5 text-xs font-bold ${
-                        deadline.priority === 'high'
-                          ? 'border border-red-200 bg-gradient-to-r from-red-100 to-red-50 text-red-700 dark:border-red-800 dark:from-red-900/40 dark:to-red-800/30 dark:text-red-400'
-                          : 'border border-yellow-200 bg-gradient-to-r from-yellow-100 to-yellow-50 text-yellow-700 dark:border-yellow-800 dark:from-yellow-900/40 dark:to-yellow-800/30 dark:text-yellow-400'
-                      }`}
-                    >
-                      {deadline.priority === 'high' ? 'URGENT' : 'UPCOMING'}
-                    </span>
+                    <div className='ml-4 shrink-0'>
+                      <span
+                        className={`inline-flex items-center rounded-full px-3.5 py-1.5 text-xs font-bold tracking-wide uppercase shadow-sm ${deadline.priority === 'high'
+                          ? 'border border-red-200 bg-gradient-to-r from-red-100 to-red-50 text-red-700 dark:border-red-800 dark:from-red-900/50 dark:to-red-800/30 dark:text-red-300'
+                          : 'border border-slate-200 bg-gradient-to-r from-slate-100 to-slate-50 text-slate-700 dark:border-slate-700 dark:from-slate-800 dark:to-slate-700/50 dark:text-slate-300'
+                          }`}
+                      >
+                        {deadline.priority === 'high' ? 'URGENT' : 'UPCOMING'}
+                      </span>
+                    </div>
                   </div>
                 ))
               )}
@@ -839,7 +870,7 @@ const Dashboard = () => {
         </div>
 
         {/* Right Column - 1/3 width */}
-        <div className='space-y-8'>
+        <div className='flex flex-col space-y-8 h-full'>
           {/* Notification Center */}
           <div className='rounded-2xl border border-gray-100 bg-white dark:bg-slate-900 p-6 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800'>
             <div className='mb-8 flex items-center justify-between'>
@@ -865,61 +896,72 @@ const Dashboard = () => {
             </div>
 
             <div className='max-h-96 space-y-4 overflow-y-auto pr-2'>
-              {notifications.map((notification) => (
-                <div
-                  key={notification.id}
-                  className={`cursor-pointer rounded-xl border p-4 transition-all duration-300 hover:shadow-sm ${
-                    notification.read
+              {notifications.length === 0 ? (
+                <div className='flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-200 py-10 text-center dark:border-slate-700'>
+                  <BellIcon className='mb-3 h-10 w-10 text-slate-300 dark:text-slate-600' />
+                  <p className='text-sm font-semibold text-slate-600 dark:text-slate-300'>No new notifications.</p>
+                  <p className='text-xs text-slate-500 dark:text-slate-400 mt-1'>You're all caught up!</p>
+                </div>
+              ) : (
+                notifications.map((notification) => (
+                  <div
+                    key={notification._id || notification.id}
+                    className={`cursor-pointer rounded-xl border p-4 transition-all duration-300 hover:shadow-sm ${notification.read
                       ? 'border-gray-200 bg-white dark:bg-slate-900 dark:border-slate-700 dark:bg-slate-800'
                       : 'border-blue-200 bg-gradient-to-r from-blue-50 to-blue-100/50 dark:border-blue-800 dark:from-blue-900/30 dark:to-blue-800/20'
-                  }`}
-                  onClick={() => handleNotificationClick(notification.id)}
-                >
-                  <div className='flex items-start justify-between'>
-                    <div className='flex-1'>
-                      <div className='mb-2 flex items-center'>
-                        <span
-                          className={`mr-2 h-2 w-2 rounded-full ${
-                            notification.read
+                      }`}
+                    onClick={() => handleNotificationClick(notification._id || notification.id)}
+                  >
+                    <div className='flex items-start justify-between group/notif'>
+                      <div className='flex-1 pr-4' onClick={(e) => { e.stopPropagation(); handleNotificationClick(notification._id || notification.id); }}>
+                        <div className='mb-2 flex items-center'>
+                          <span
+                            className={`mr-2 h-2 w-2 rounded-full ${notification.read
                               ? 'bg-gray-300 dark:bg-gray-600'
                               : 'bg-blue-500'
-                          }`}
-                        ></span>
-                        <span className='rounded bg-gray-100 dark:bg-gray-800 px-2 py-1 text-xs font-semibold text-gray-700 dark:text-gray-200 dark:bg-slate-700 dark:text-gray-300'>
-                          {notification.type.toUpperCase()}
-                        </span>
-                        <span className='ml-2 text-xs text-gray-500 dark:text-gray-400'>
-                          {notification.time}
-                        </span>
-                      </div>
-                      <p
-                        className={`font-medium ${
-                          notification.read
+                              }`}
+                          ></span>
+                          <span className='rounded bg-gray-100 dark:bg-gray-800 px-2 py-1 text-xs font-semibold text-gray-700 dark:text-gray-200 dark:bg-slate-700 dark:text-gray-300'>
+                            {notification.type?.toUpperCase()}
+                          </span>
+                          <span className='ml-2 text-xs text-gray-500 dark:text-gray-400'>
+                            {notification.time || (notification.createdAt ? timeAgo(notification.createdAt) : 'Just now')}
+                          </span>
+                        </div>
+                        <p
+                          className={`font-medium ${notification.read
                             ? 'text-gray-700 dark:text-gray-300'
                             : 'text-gray-900 dark:text-white'
-                        }`}
+                            }`}
+                        >
+                          {notification.message}
+                        </p>
+                      </div>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); deleteNotification(notification._id || notification.id); }}
+                        className='text-gray-400 opacity-0 transition-opacity hover:text-red-500 group-hover/notif:opacity-100 dark:text-gray-500 dark:hover:text-red-400'
+                        title="Delete notification"
                       >
-                        {notification.message}
-                      </p>
+                        <TrashIcon className='h-4 w-4' />
+                      </button>
                     </div>
                   </div>
-                </div>
-              ))}
+                )))}
             </div>
           </div>
 
           {/* Today's Meetings */}
-          {todayMeetings.length > 0 && (
-            <div className='rounded-2xl border border-gray-200 bg-white dark:bg-slate-900 p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
-              <UpcomingMeetings
-                meetings={todayMeetings}
-                userRole={user?.role}
-              />
-            </div>
-          )}
+          <div className='rounded-2xl border border-gray-200 bg-white dark:bg-slate-900 p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800'>
+            <UpcomingMeetings
+              meetings={todayMeetings}
+              userRole={user?.role}
+              title="Today's Meetings"
+              emptyMessage="No meetings scheduled for today."
+            />
+          </div>
 
           {/* Quick Resources */}
-          <div className='rounded-2xl border border-gray-100 bg-white dark:bg-slate-900 p-6 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800'>
+          <div className='flex-1 flex flex-col justify-between rounded-2xl border border-gray-100 bg-white dark:bg-slate-900 p-6 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800'>
             <div className='mb-8 flex items-center justify-between'>
               <div className='flex items-center'>
                 <div className='mr-3 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-900/30 dark:to-green-800/20'>

@@ -69,7 +69,7 @@ const formatMeetingTime = (meeting) => {
   return 'TBD';
 };
 
-const UpcomingMeetings = ({ meetings = [], userRole }) => {
+const UpcomingMeetings = ({ meetings = [], userRole, title, emptyMessage }) => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -121,7 +121,7 @@ const UpcomingMeetings = ({ meetings = [], userRole }) => {
       <div className='mb-6 flex items-center justify-between'>
         <div>
           <h3 className='text-lg font-semibold text-slate-900 dark:text-white'>
-            Upcoming Meetings
+            {title || 'Upcoming Meetings'}
           </h3>
         </div>
         {userRole !== 'faculty' && (
@@ -199,8 +199,22 @@ const UpcomingMeetings = ({ meetings = [], userRole }) => {
             );
           })
         ) : (
-          <div className='rounded-lg border border-dashed border-slate-200 py-8 text-center text-slate-500 dark:text-slate-400 dark:border-slate-700 '>
-            No upcoming meetings found.
+          <div className='flex flex-col items-center justify-center rounded-lg border border-dashed border-slate-200 py-10 text-center dark:border-slate-700'>
+            <CalendarIcon className='mb-3 h-10 w-10 text-slate-300 dark:text-slate-600' />
+            <p className='text-sm font-semibold text-slate-600 dark:text-slate-300'>
+              {emptyMessage || 'No upcoming meetings.'}
+            </p>
+            <p className='text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4'>
+              There are no meetings on your calendar.
+            </p>
+            {userRole !== 'faculty' && (
+              <button
+                onClick={() => navigate('/meetings/new')}
+                className='rounded-lg bg-blue-50 px-4 py-2 text-sm font-medium text-blue-600 transition-colors hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-900/50'
+              >
+                Schedule Meeting
+              </button>
+            )}
           </div>
         )}
       </div>

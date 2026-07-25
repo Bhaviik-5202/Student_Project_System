@@ -4,6 +4,7 @@
  */
 const projectRepository = require('../repositories/project.repository');
 const User = require('../models/user.model');
+const notificationService = require('./notification.service');
 
 class ProjectService {
   /**
@@ -65,7 +66,22 @@ class ProjectService {
       progress: Number(projectData.progress) || 0,
     };
 
-    return await projectRepository.create(payload);
+    const newProject = await projectRepository.create(payload);
+
+    if (memberIds.length > 0) {
+      memberIds.forEach(memberId => {
+        if (memberId.toString() !== (currentUser._id || currentUser.id).toString()) {
+          notificationService.create({
+            user: memberId,
+            message: `You have been added to a new project: ${projectData.title}`,
+            type: 'info',
+            metadata: { type: 'project', projectId: newProject._id, link: `/projects/${newProject._id}` }
+          }).catch(err => console.error('Notification failed:', err));
+        }
+      });
+    }
+
+    return newProject;
   }
 
   /**
@@ -209,7 +225,24 @@ class ProjectService {
       $push: { activityTimeline: newTimelineEntry },
     };
 
-    return await projectRepository.update(existing._id, payload);
+    const updatedProject = await projectRepository.update(existing._id, payload);
+
+    const membersToNotify = [
+      ...(updatedProject.members || []),
+      ...(updatedProject.guide ? [updatedProject.guide] : [])
+    ];
+    membersToNotify.forEach(userId => {
+      if (userId && userId.toString() !== (currentUser._id || currentUser.id).toString()) {
+        notificationService.create({
+          user: userId,
+          message: `Project '${updatedProject.title}' has been updated`,
+          type: 'info',
+          metadata: { type: 'project', projectId: updatedProject._id, link: `/projects/${updatedProject._id}` }
+        }).catch(err => console.error('Notification failed:', err));
+      }
+    });
+
+    return updatedProject;
   }
 
   /**
@@ -317,7 +350,20 @@ class ProjectService {
       },
     };
 
-    return await projectRepository.update(project._id, payload);
+    const updatedProject = await projectRepository.update(project._id, payload);
+
+    uniqueStudentIds.forEach(studentId => {
+      if (studentId.toString() !== (currentUser._id || currentUser.id).toString()) {
+        notificationService.create({
+          user: studentId,
+          message: `You have been assigned to project: ${updatedProject.title}`,
+          type: 'info',
+          metadata: { type: 'project', projectId: updatedProject._id, link: `/projects/${updatedProject._id}` }
+        }).catch(console.error);
+      }
+    });
+
+    return updatedProject;
   }
 
   /**
@@ -353,7 +399,28 @@ class ProjectService {
       },
     };
 
-    return await projectRepository.update(project._id, payload);
+    const updatedProject = await projectRepository.update(project._id, payload);
+
+    if (guideId) {
+      notificationService.create({
+        user: guideId,
+        message: `You have been allocated as guide for project: ${updatedProject.title}`,
+        type: 'info',
+        metadata: { type: 'project', projectId: updatedProject._id, link: `/projects/${updatedProject._id}` }
+      }).catch(console.error);
+    }
+    if (updatedProject.members) {
+      updatedProject.members.forEach(memberId => {
+        notificationService.create({
+          user: memberId,
+          message: guideId ? `A faculty guide has been allocated to your project: ${updatedProject.title}` : `Faculty guide has been unassigned from project: ${updatedProject.title}`,
+          type: 'info',
+          metadata: { type: 'project', projectId: updatedProject._id, link: `/projects/${updatedProject._id}` }
+        }).catch(console.error);
+      });
+    }
+
+    return updatedProject;
   }
 
   /**
@@ -388,7 +455,24 @@ class ProjectService {
       payload.completionDate = new Date();
     }
 
-    return await projectRepository.update(project._id, payload);
+    const updatedProject = await projectRepository.update(project._id, payload);
+
+    const notifyUsers = [
+      ...(updatedProject.members || []),
+      ...(updatedProject.guide ? [updatedProject.guide] : [])
+    ];
+    notifyUsers.forEach(userId => {
+      if (userId && userId.toString() !== (currentUser._id || currentUser.id).toString()) {
+        notificationService.create({
+          user: userId,
+          message: `Project '${updatedProject.title}' progress updated to ${newProgress}%`,
+          type: newProgress === 100 ? 'success' : 'info',
+          metadata: { type: 'project', projectId: updatedProject._id, link: `/projects/${updatedProject._id}` }
+        }).catch(console.error);
+      }
+    });
+
+    return updatedProject;
   }
 
   /**
@@ -420,7 +504,24 @@ class ProjectService {
       lastUpdatedBy: currentUser._id || currentUser.id,
     };
 
-    return await projectRepository.update(project._id, payload);
+    const updatedProject = await projectRepository.update(project._id, payload);
+
+    const notifyUsers = [
+      ...(updatedProject.members || []),
+      ...(updatedProject.guide ? [updatedProject.guide] : [])
+    ];
+    notifyUsers.forEach(userId => {
+      if (userId && userId.toString() !== (currentUser._id || currentUser.id).toString()) {
+        notificationService.create({
+          user: userId,
+          message: `New file '${fileData.name}' uploaded to project '${updatedProject.title}'`,
+          type: 'info',
+          metadata: { type: 'project', projectId: updatedProject._id, link: `/projects/${updatedProject._id}` }
+        }).catch(console.error);
+      }
+    });
+
+    return updatedProject;
   }
 
   /**
@@ -474,7 +575,20 @@ class ProjectService {
       lastUpdatedBy: currentUser._id || currentUser.id,
     };
 
-    return await projectRepository.update(project._id, payload);
+    const updatedProject = await projectRepository.update(project._id, payload);
+
+    if (updatedProject.members) {
+      updatedProject.members.forEach(memberId => {
+        notificationService.create({
+          user: memberId,
+          message: `New faculty review added to your project '${updatedProject.title}'`,
+          type: 'info',
+          metadata: { type: 'project', projectId: updatedProject._id, link: `/projects/${updatedProject._id}` }
+        }).catch(console.error);
+      });
+    }
+
+    return updatedProject;
   }
 
   /**

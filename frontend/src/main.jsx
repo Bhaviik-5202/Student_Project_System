@@ -5,6 +5,7 @@ import CustomToaster from './components/common/CustomToaster';
 import App from './App.jsx';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { NotificationProvider } from './context/NotificationContext';
 import './index.css';
 
 // Error Boundary Component
@@ -97,8 +98,10 @@ ReactDOM.createRoot(rootElement).render(
     <ErrorBoundary>
       <ThemeProvider>
         <AuthProvider>
-          <App />
-          <CustomToaster />
+          <NotificationProvider>
+            <App />
+            <CustomToaster />
+          </NotificationProvider>
         </AuthProvider>
       </ThemeProvider>
     </ErrorBoundary>

@@ -3,6 +3,8 @@
  * Business logic layer for educational resource and file management.
  */
 const resourceRepository = require('../repositories/resource.repository');
+const notificationService = require('./notification.service');
+const userRepository = require('../repositories/user.repository');
 
 /**
  * Standardized response helper for services
@@ -21,6 +23,19 @@ const response = (error, data, message) => ({ error, data, message });
 exports.create = async (data) => {
   try {
     const resource = await resourceRepository.create(data);
+
+    // Notify all active students about the new resource
+    userRepository.findAll({ role: 'student', status: 'Active' }).then(students => {
+      students.forEach(student => {
+        notificationService.create({
+          user: student._id,
+          message: `New resource uploaded: ${resource.title}`,
+          type: 'info',
+          metadata: { type: 'resource', resourceId: resource._id, link: `/resources` }
+        }).catch(console.error);
+      });
+    }).catch(console.error);
+
     return response(false, resource, 'Resource created successfully');
   } catch (err) {
     return response(true, null, err.message || 'Failed to create resource');

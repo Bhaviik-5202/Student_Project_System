@@ -3,6 +3,7 @@
  * Business logic layer for scheduling and managing project consultations.
  */
 const meetingRepository = require('../repositories/meeting.repository');
+const notificationService = require('./notification.service');
 
 /**
  * Standardized response helper for services
@@ -37,6 +38,20 @@ exports.create = async (data, user) => {
     }
     meetingData.isActive = meetingData.status !== 'cancelled';
     const meeting = await meetingRepository.create(meetingData);
+
+    if (meeting.participants && meeting.participants.length > 0) {
+      meeting.participants.forEach(participantId => {
+        if (user && participantId.toString() !== (user.id || user._id).toString()) {
+          notificationService.create({
+            user: participantId,
+            message: `You have been invited to a meeting: ${meeting.title}`,
+            type: 'info',
+            metadata: { type: 'meeting', meetingId: meeting._id, link: `/meetings` }
+          }).catch(console.error);
+        }
+      });
+    }
+
     return response(false, meeting, 'Meeting created successfully');
   } catch (err) {
     return response(true, null, err.message || 'Failed to create meeting');
@@ -138,6 +153,18 @@ exports.update = async (id, data) => {
     }
     const meeting = await meetingRepository.update(id, updateData);
     if (!meeting) return response(true, null, 'Meeting not found');
+
+    if (meeting.participants && meeting.participants.length > 0) {
+      meeting.participants.forEach(participantId => {
+        notificationService.create({
+          user: participantId,
+          message: `Meeting '${meeting.title}' has been updated`,
+          type: 'info',
+          metadata: { type: 'meeting', meetingId: meeting._id, link: `/meetings` }
+        }).catch(console.error);
+      });
+    }
+
     return response(false, meeting, 'Meeting updated successfully');
   } catch (err) {
     return response(true, null, err.message || 'Failed to update meeting');
@@ -153,6 +180,18 @@ exports.remove = async (id) => {
   try {
     const meeting = await meetingRepository.remove(id);
     if (!meeting) return response(true, null, 'Meeting not found');
+
+    if (meeting.participants && meeting.participants.length > 0) {
+      meeting.participants.forEach(participantId => {
+        notificationService.create({
+          user: participantId,
+          message: `Meeting '${meeting.title}' has been cancelled`,
+          type: 'warning',
+          metadata: { type: 'meeting', meetingId: meeting._id, link: `/meetings` }
+        }).catch(console.error);
+      });
+    }
+
     return response(false, null, 'Meeting deleted successfully');
   } catch (err) {
     return response(true, null, err.message || 'Failed to delete meeting');

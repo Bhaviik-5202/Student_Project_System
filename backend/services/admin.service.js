@@ -4,6 +4,7 @@
  */
 const userRepository = require('../repositories/user.repository');
 const auditLogService = require('./auditlog.service');
+const notificationService = require('./notification.service');
 const adminService = {
   /**
    * Get system roles
@@ -118,8 +119,17 @@ const adminService = {
   processBatchOperation: async (operationData) => {
     const { operation, selectedUsers, message } = operationData;
     try {
-      // Logic for sending emails/notifications would go here
-      // For now, we'll log it in the Audit Log
+      if (operation === 'Notification' || operation === 'Message' || operation === 'Email') {
+        selectedUsers.forEach(userId => {
+          notificationService.create({
+            user: userId,
+            message: message || `System Announcement from Administrator`,
+            type: 'info',
+            metadata: { type: 'system', link: '/' }
+          }).catch(console.error);
+        });
+      }
+
       await auditLogService.create({
         action: `Batch ${operation}`,
         description: `${operation} sent to ${selectedUsers.length} users`,

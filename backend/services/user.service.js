@@ -13,6 +13,7 @@ const TOKEN_EXPIRES_IN = process.env.TOKEN_EXPIRES_IN;
 const crypto = require('crypto');
 const sendEmail = require('../utils/email');
 const { getPasswordResetEmail } = require('../utils/emailTemplates');
+const notificationService = require('./notification.service');
 
 /**
  * Standardized response helper for services
@@ -97,6 +98,24 @@ exports.register = async ({
         role: finalRole,
       });
     }
+
+    notificationService.create({
+      user: user._id,
+      message: `Welcome to Student Project System, ${user.name}!`,
+      type: 'success',
+      metadata: { type: 'system', link: '/profile' }
+    }).catch(console.error);
+
+    userRepository.findAll({ role: 'admin' }).then(admins => {
+      admins.forEach(admin => {
+        notificationService.create({
+          user: admin._id,
+          message: `New ${finalRole} registered: ${user.name}`,
+          type: 'info',
+          metadata: { type: 'system', link: '/users' }
+        }).catch(console.error);
+      });
+    }).catch(console.error);
 
     return response(false, user, 'User registered successfully');
   } catch (err) {
@@ -258,6 +277,13 @@ exports.create = async (data) => {
         avatar: user.avatar || null,
       });
     }
+
+    notificationService.create({
+      user: user._id,
+      message: `Your account has been created by an administrator. Welcome, ${user.name}!`,
+      type: 'success',
+      metadata: { type: 'system', link: '/profile' }
+    }).catch(console.error);
 
     return response(false, user, 'User created successfully');
   } catch (err) {

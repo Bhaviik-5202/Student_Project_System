@@ -141,11 +141,20 @@ const RecentActivity = memo(({ activities = [] }) => {
               />
             ))
         ) : (
-          <div className='py-10 text-center opacity-60'>
-            <i className='fas fa-history mb-3 text-3xl text-gray-300 dark:text-gray-600 dark:text-gray-300'></i>
-            <p className='text-sm italic text-gray-500 dark:text-gray-400'>
-              No recent activity recorded.
+          <div className='flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-200 py-10 text-center dark:border-slate-700'>
+            <i className='fas fa-history mb-3 text-4xl text-slate-300 dark:text-slate-600'></i>
+            <p className='text-sm font-semibold text-slate-600 dark:text-slate-300'>
+              No recent activities available.
             </p>
+            <p className='text-xs text-slate-500 dark:text-slate-400 mt-1 mb-4'>
+              Your workspace history will appear here.
+            </p>
+            <Link
+              to={viewAllPath}
+              className='rounded-lg bg-gray-50 px-4 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 dark:bg-slate-800 dark:text-gray-300 dark:hover:bg-slate-700'
+            >
+              View History
+            </Link>
           </div>
         )}
       </div>
