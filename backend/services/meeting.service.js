@@ -52,6 +52,12 @@ exports.create = async (data, user) => {
       });
     }
 
+    notificationService.notifyAdmins({
+      message: `New meeting scheduled: ${meeting.title}`,
+      type: 'info',
+      metadata: { type: 'meeting', meetingId: meeting._id, link: `/meetings` }
+    });
+
     return response(false, meeting, 'Meeting created successfully');
   } catch (err) {
     return response(true, null, err.message || 'Failed to create meeting');
@@ -62,10 +68,19 @@ exports.create = async (data, user) => {
  * Get all meetings
  * @returns {Promise<Object>} Formatted service response with global meeting schedule
  */
-exports.getAll = async () => {
+exports.getAll = async (params = {}, currentUser = null) => {
   try {
+    const queryFilter = {};
+    if (currentUser && currentUser.role !== 'admin') {
+      const userId = currentUser._id || currentUser.id;
+      queryFilter.$or = [
+        { organizer: userId },
+        { participants: userId },
+      ];
+    }
+
     const meetings = await meetingRepository.findAll(
-      {},
+      queryFilter,
       {
         populate: [
           { path: 'organizer', select: 'name email role avatar' },
@@ -164,6 +179,12 @@ exports.update = async (id, data) => {
         }).catch(console.error);
       });
     }
+
+    notificationService.notifyAdmins({
+      message: `Meeting '${meeting.title}' has been updated`,
+      type: 'info',
+      metadata: { type: 'meeting', meetingId: meeting._id, link: `/meetings` }
+    });
 
     return response(false, meeting, 'Meeting updated successfully');
   } catch (err) {

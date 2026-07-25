@@ -122,7 +122,7 @@ const StudentRow = memo(({ student, onEdit, onDelete, userRole }) => (
 
     {/* Actions */}
     <td className='whitespace-nowrap px-6 py-4 text-right text-sm'>
-      {userRole !== 'faculty' && (
+      {userRole === 'admin' && (
         <div className='flex justify-end gap-1.5 opacity-0 transition-opacity group-hover:opacity-100'>
           <button
             onClick={() => onEdit(student.id)}
@@ -146,6 +146,7 @@ const StudentRow = memo(({ student, onEdit, onDelete, userRole }) => (
 
 const StudentsList = memo(() => {
   const { user } = useAuth();
+  const userRole = user?.role;
   const navigate = useNavigate();
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -240,6 +241,16 @@ const StudentsList = memo(() => {
         subtitle='Manage active student profiles and academic records'
         icon={UsersIcon}
         badge={`${filteredStudents.length} Records`}
+        actions={
+          userRole === 'admin' && (
+            <button
+              onClick={() => navigate('/user-management/new')}
+              className='inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-bold text-white shadow-md hover:bg-indigo-700 transition'
+            >
+              <PlusIcon size={16} /> Add User / Student
+            </button>
+          )
+        }
       />
 
       {/* Enhanced Filter Toolbar */}

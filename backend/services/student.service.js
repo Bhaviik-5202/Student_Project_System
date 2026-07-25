@@ -38,8 +38,27 @@ exports.getProjects = async (studentId) => {
  * Fetch all students
  * @returns {Promise<Object>} Formatted service response with global student list
  */
-exports.getAll = async () => {
+exports.getAll = async (currentUser = null) => {
   try {
+    let allowedStudentIds = null;
+    if (currentUser && currentUser.role === 'faculty') {
+      const facultyId = currentUser._id || currentUser.id;
+      const facultyProjects = await projectRepository.findAll({
+        $or: [{ guide: facultyId }, { coGuide: facultyId }],
+      });
+      allowedStudentIds = new Set();
+      (facultyProjects || []).forEach((p) => {
+        if (p.leader) {
+          allowedStudentIds.add((p.leader._id || p.leader).toString());
+          if (p.leader.email) allowedStudentIds.add(p.leader.email.toLowerCase());
+        }
+        (p.members || []).forEach((m) => {
+          allowedStudentIds.add((m._id || m).toString());
+          if (m.email) allowedStudentIds.add(m.email.toLowerCase());
+        });
+      });
+    }
+
     const [studentUsers, legacyStudents] = await Promise.all([
       userRepository.findAll(
         { role: 'student' },
@@ -87,31 +106,33 @@ exports.getAll = async () => {
           status: s.status || existing.status,
           avatar: s.avatar || existing.avatar,
         });
-      } else if (email) {
-        studentMap.set(email, {
+      } else if (s._id) {
+        studentMap.set(s._id.toString(), {
           _id: s._id,
           id: s._id,
           name: s.name,
-          email: s.email,
-          rollNumber:
-            s.rollNumber ||
-            `STU${new Date().getFullYear()}${s._id.toString().slice(-4).toUpperCase()}`,
-          enrollmentNumber:
-            s.enrollmentNumber ||
-            `EN${new Date().getFullYear()}${s._id.toString().slice(-6).toUpperCase()}`,
+          email: s.email || '',
+          rollNumber: s.rollNumber || '',
+          enrollmentNumber: s.enrollmentNumber || '',
           department: normalizeDepartment(s.department),
           semester: s.semester || 'Sem 1',
           year: s.year || '1',
           phone: s.phone || '',
           status: s.status || 'Active',
-          avatar: s.avatar || null,
           registrationDate: s.createdAt || new Date(),
         });
       }
     });
 
-    const studentList = Array.from(studentMap.values());
-    return response(false, studentList, 'Students fetched successfully');
+    let resultList = Array.from(studentMap.values());
+    if (allowedStudentIds) {
+      resultList = resultList.filter((s) =>
+        allowedStudentIds.has((s._id || s.id).toString()) ||
+        (s.email && allowedStudentIds.has(s.email.toLowerCase()))
+      );
+    }
+
+    return response(false, resultList, 'Students fetched successfully');
   } catch (err) {
     return response(true, null, err.message || 'Failed to fetch students');
   }

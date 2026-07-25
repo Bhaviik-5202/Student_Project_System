@@ -36,6 +36,12 @@ exports.create = async (data) => {
       });
     }).catch(console.error);
 
+    notificationService.notifyAdmins({
+      message: `New resource uploaded: ${resource.title}`,
+      type: 'info',
+      metadata: { type: 'resource', resourceId: resource._id, link: `/resources` }
+    });
+
     return response(false, resource, 'Resource created successfully');
   } catch (err) {
     return response(true, null, err.message || 'Failed to create resource');

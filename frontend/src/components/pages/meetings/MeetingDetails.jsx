@@ -113,7 +113,7 @@ const MeetingDetails = memo(() => {
     [meeting?.date]
   );
 
-  const canManage = user?.role === 'admin' || user?.role === 'faculty';
+  const canManage = user?.role === 'admin';
 
   const canJoin = useMemo(() => {
     if (!user || !meeting) return false;

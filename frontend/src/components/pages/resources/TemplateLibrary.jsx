@@ -28,7 +28,11 @@ import resourceService from '../../../services/resourceService';
 import useNotification from '../../../hooks/useNotification';
 import { PreviewModal, DetailsModal, EditModal } from './ResourceModals';
 
+import { useAuth } from '../../../hooks/useAuth';
+
 export const TemplateLibrary = () => {
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
   const [templates, setTemplates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -168,14 +172,16 @@ export const TemplateLibrary = () => {
             >
               Refresh
             </Button>
-            <Button
-              variant='primary'
-              size='sm'
-              icon={Plus}
-              onClick={() => setIsUploadOpen(true)}
-            >
-              Upload Template
-            </Button>
+            {isAdmin && (
+              <Button
+                variant='primary'
+                size='sm'
+                icon={Plus}
+                onClick={() => setIsUploadOpen(true)}
+              >
+                Upload Template
+              </Button>
+            )}
           </div>
         }
       />
@@ -340,13 +346,15 @@ export const TemplateLibrary = () => {
                     >
                       Download
                     </Button>
-                    <button
-                      onClick={() => handleDelete(tpl)}
-                      className='rounded-lg p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40'
-                      title='Delete'
-                    >
-                      <Trash2 className='h-4 w-4' />
-                    </button>
+                        {isAdmin && (
+                          <button
+                            onClick={() => handleDelete(tpl)}
+                            className='rounded-lg p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40'
+                            title='Delete'
+                          >
+                            <Trash2 className='h-4 w-4' />
+                          </button>
+                        )}
                   </div>
                 </div>
               </div>

@@ -30,6 +30,17 @@ exports.findById = (id, options = {}) =>
     .select(options.select || '');
 
 /**
+ * Locate a single staff member by filter criteria
+ * @param {Object} filter - Mongoose filter object
+ * @param {Object} options - Query options (populate, select)
+ * @returns {Promise<Object|null>} Staff document or null
+ */
+exports.findOne = (filter = {}, options = {}) =>
+  Staff.findOne(filter)
+    .populate(options.populate || '')
+    .select(options.select || '');
+
+/**
  * Persist a new staff record to the database
  * @param {Object} data - Staff data object
  * @returns {Promise<Object>} Created staff document

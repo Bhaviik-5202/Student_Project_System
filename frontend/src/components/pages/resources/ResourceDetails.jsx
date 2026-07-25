@@ -18,9 +18,13 @@ import useNotification from '../../../hooks/useNotification';
 import resourceService from '../../../services/resourceService';
 import { PreviewModal, EditModal } from './ResourceModals';
 
+import { useAuth } from '../../../hooks/useAuth';
+
 const ResourceDetails = memo(() => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
   const [resource, setResource] = useState(null);
   const [relatedResources, setRelatedResources] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -125,20 +129,22 @@ const ResourceDetails = memo(() => {
         >
           <ArrowLeft size={16} /> Back to Resource Browser
         </button>
-        <div className='flex items-center gap-2'>
-          <button
-            onClick={() => setIsEditOpen(true)}
-            className='flex items-center gap-1.5 rounded-xl border border-slate-300 px-3.5 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800 dark:border-slate-600   transition-colors'
-          >
-            <Edit size={14} /> Edit
-          </button>
-          <button
-            onClick={handleDelete}
-            className='flex items-center gap-1.5 rounded-xl border border-red-200 bg-red-50 px-3.5 py-2 text-xs font-semibold text-red-600 hover:bg-red-100 dark:border-red-900/40 dark:bg-red-950/30 dark:text-red-400 transition-colors'
-          >
-            <Trash2 size={14} /> Delete
-          </button>
-        </div>
+        {isAdmin && (
+          <div className='flex items-center gap-2'>
+            <button
+              onClick={() => setIsEditOpen(true)}
+              className='flex items-center gap-1.5 rounded-xl border border-slate-300 px-3.5 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800 dark:border-slate-600   transition-colors'
+            >
+              <Edit size={14} /> Edit
+            </button>
+            <button
+              onClick={handleDelete}
+              className='flex items-center gap-1.5 rounded-xl border border-red-200 bg-red-50 px-3.5 py-2 text-xs font-semibold text-red-600 hover:bg-red-100 dark:border-red-900/40 dark:bg-red-950/30 dark:text-red-400 transition-colors'
+            >
+              <Trash2 size={14} /> Delete
+            </button>
+          </div>
+        )}
       </div>
 
       <div className='grid grid-cols-1 gap-6 lg:grid-cols-3'>

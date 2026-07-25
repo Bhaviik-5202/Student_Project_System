@@ -376,7 +376,7 @@ const AppRoutes = () => {
         <Route
           path='projects/new'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <ProjectProposal />
             </ProtectedRoute>
           }
@@ -396,7 +396,7 @@ const AppRoutes = () => {
         <Route
           path='projects/:id/edit'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <ProjectProposal />
             </ProtectedRoute>
           }
@@ -428,7 +428,7 @@ const AppRoutes = () => {
         <Route
           path='project-groups'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <ProjectGroups />
             </ProtectedRoute>
           }
@@ -470,7 +470,7 @@ const AppRoutes = () => {
         <Route
           path='meetings/new'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <MeetingForm />
             </ProtectedRoute>
           }
@@ -478,7 +478,7 @@ const AppRoutes = () => {
         <Route
           path='meetings/:id/edit'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <MeetingForm />
             </ProtectedRoute>
           }
@@ -520,7 +520,7 @@ const AppRoutes = () => {
         <Route
           path='resource-upload'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <ResourceUpload />
             </ProtectedRoute>
           }
@@ -546,7 +546,7 @@ const AppRoutes = () => {
         <Route
           path='analytics'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <AnalyticsDashboard />
             </ProtectedRoute>
           }
@@ -554,7 +554,7 @@ const AppRoutes = () => {
         <Route
           path='analytics/performance'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <PerformanceMetrics />
             </ProtectedRoute>
           }
@@ -562,7 +562,7 @@ const AppRoutes = () => {
         <Route
           path='analytics/progress'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <ProgressAnalytics />
             </ProtectedRoute>
           }
@@ -570,7 +570,7 @@ const AppRoutes = () => {
         <Route
           path='analytics/usage'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <UsageStatistics />
             </ProtectedRoute>
           }
@@ -578,7 +578,7 @@ const AppRoutes = () => {
         <Route
           path='analytics/visualizations'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <Visualizations />
             </ProtectedRoute>
           }
@@ -586,7 +586,7 @@ const AppRoutes = () => {
         <Route
           path='grade'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <GradeDistribution />
             </ProtectedRoute>
           }
@@ -594,7 +594,7 @@ const AppRoutes = () => {
         <Route
           path='analytics/grades'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <GradeDistribution />
             </ProtectedRoute>
           }
@@ -612,7 +612,7 @@ const AppRoutes = () => {
         <Route
           path='gantt'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <GanttChart />
             </ProtectedRoute>
           }
@@ -628,7 +628,7 @@ const AppRoutes = () => {
         <Route
           path='roadmap'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <RoadmapViewer />
             </ProtectedRoute>
           }
@@ -636,7 +636,7 @@ const AppRoutes = () => {
         <Route
           path='sprint-planner'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <SprintPlanner />
             </ProtectedRoute>
           }
@@ -644,7 +644,7 @@ const AppRoutes = () => {
         <Route
           path='timeline-editor/:id?'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <TimelineEditor />
             </ProtectedRoute>
           }
@@ -666,7 +666,7 @@ const AppRoutes = () => {
         <Route
           path='export'
           element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_FACULTY}>
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
               <ExportOptions />
             </ProtectedRoute>
           }

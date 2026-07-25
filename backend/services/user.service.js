@@ -106,16 +106,11 @@ exports.register = async ({
       metadata: { type: 'system', link: '/profile' }
     }).catch(console.error);
 
-    userRepository.findAll({ role: 'admin' }).then(admins => {
-      admins.forEach(admin => {
-        notificationService.create({
-          user: admin._id,
-          message: `New ${finalRole} registered: ${user.name}`,
-          type: 'info',
-          metadata: { type: 'system', link: '/users' }
-        }).catch(console.error);
-      });
-    }).catch(console.error);
+    notificationService.notifyAdmins({
+      message: `New ${finalRole} registered: ${user.name}`,
+      type: 'info',
+      metadata: { type: 'system', link: '/user-management' }
+    });
 
     return response(false, user, 'User registered successfully');
   } catch (err) {
@@ -154,16 +149,16 @@ exports.login = async ({ email, password }) => {
       { expiresIn }
     );
 
+    const userObj = user.toObject ? user.toObject() : { ...user };
+    delete userObj.password;
+    delete userObj.resetPasswordToken;
+    delete userObj.resetPasswordExpires;
+
     return response(
       false,
       {
         token,
-        user: {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-        },
+        user: userObj,
       },
       'Login successful'
     );
@@ -285,6 +280,12 @@ exports.create = async (data) => {
       metadata: { type: 'system', link: '/profile' }
     }).catch(console.error);
 
+    notificationService.notifyAdmins({
+      message: `New user account created: ${user.name} (${user.role})`,
+      type: 'info',
+      metadata: { type: 'system', link: '/user-management' }
+    });
+
     return response(false, user, 'User created successfully');
   } catch (err) {
     return response(true, null, err.message || 'Failed to create user');
@@ -350,7 +351,12 @@ exports.update = async (id, data) => {
       }
     }
 
-    return response(false, user, 'User updated successfully');
+    const updatedUserObj = user.toObject ? user.toObject() : { ...user };
+    delete updatedUserObj.password;
+    delete updatedUserObj.resetPasswordToken;
+    delete updatedUserObj.resetPasswordExpires;
+
+    return response(false, updatedUserObj, 'User updated successfully');
   } catch (err) {
     logger.error('Update user error', { err: err.message, stack: err.stack });
     return response(true, null, err.message || 'Failed to update user');

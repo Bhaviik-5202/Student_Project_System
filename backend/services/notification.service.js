@@ -28,6 +28,31 @@ exports.create = async (data) => {
 };
 
 /**
+ * Notify all Admin users
+ * @param {Object} payload - { message, type, metadata }
+ */
+exports.notifyAdmins = async ({ message, type = 'info', metadata = null }) => {
+  try {
+    const userRepository = require('../repositories/user.repository');
+    const admins = await userRepository.findAll({ role: 'admin' });
+    if (!admins || admins.length === 0) return;
+
+    await Promise.all(
+      admins.map((admin) =>
+        notificationRepository.create({
+          user: admin._id,
+          message,
+          type,
+          metadata,
+        })
+      )
+    );
+  } catch (err) {
+    console.error('Failed to notify admins:', err);
+  }
+};
+
+/**
  * Get user notifications
  * @param {string} userId - Target user identifier
  * @param {number} page - Current page number

@@ -29,8 +29,7 @@ const TYPE_LABELS = {
 
 const MeetingRow = memo(
   ({ meeting, onView, onEdit, onDelete, currentUser }) => {
-    const canManage =
-      currentUser?.role === 'admin' || currentUser?.role === 'faculty';
+    const canManage = currentUser?.role === 'admin';
 
     const getStatusBadge = (status) => {
       switch (status) {
@@ -263,7 +262,7 @@ const MeetingList = () => {
     }
   }, []);
 
-  const canCreate = user?.role === 'admin' || user?.role === 'faculty';
+  const canCreate = user?.role === 'admin';
 
   return (
     <div className='space-y-6 animate-fade-in pt-0 pb-6'>

@@ -796,8 +796,10 @@ exports.getFacultyDashboardStats = async (userId) => {
     });
 
     const myProjects = await projectRepository.findAll({
-      guide: { $in: facultyIds },
+      $or: [{ guide: { $in: facultyIds } }, { coGuide: { $in: facultyIds } }],
     });
+    const assignedProjectIds = myProjects.map((p) => p._id);
+
     const studentIds = new Set();
     myProjects.forEach((p) => {
       if (Array.isArray(p.members)) {
@@ -810,12 +812,52 @@ exports.getFacultyDashboardStats = async (userId) => {
       guide: { $in: facultyIds },
       status: 'planning',
     });
-    const todayMeetingsCount = await meetingRepository.count({
-      guide: { $in: facultyIds },
-      date: {
-        $gte: new Date().setHours(0, 0, 0, 0),
-        $lte: new Date().setHours(23, 59, 59, 999),
-      },
+
+    const todayMeetings = await getTodayMeetings({
+      $or: [
+        { organizer: { $in: facultyIds } },
+        { participants: { $in: facultyIds } },
+        { project: { $in: assignedProjectIds } },
+      ],
+    });
+
+    const upcomingDeadlines = [];
+    (myProjects || []).forEach((p) => {
+      const targetDate = p.endDate || (p.createdAt ? new Date(new Date(p.createdAt).getTime() + 90 * 24 * 60 * 60 * 1000) : new Date(Date.now() + 14 * 24 * 60 * 60 * 1000));
+      if (p.status !== 'completed' && p.status !== 'cancelled') {
+        const dueDateObj = new Date(targetDate);
+        const daysLeft = Math.max(0, Math.ceil((dueDateObj - new Date()) / (1000 * 60 * 60 * 24)));
+        upcomingDeadlines.push({
+          id: p._id.toString(),
+          title: `${p.title} - Progress Review`,
+          projectTitle: p.title,
+          date: targetDate,
+          due: dueDateObj.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }),
+          time: '05:00 PM',
+          daysLeft,
+          priority: daysLeft <= 5 ? 'high' : 'normal',
+          status: p.status,
+        });
+      }
+      if (Array.isArray(p.milestones)) {
+        p.milestones.forEach((m) => {
+          if (m.dueDate && m.status !== 'completed') {
+            const dueDateObj = new Date(m.dueDate);
+            const daysLeft = Math.max(0, Math.ceil((dueDateObj - new Date()) / (1000 * 60 * 60 * 24)));
+            upcomingDeadlines.push({
+              id: (m._id || `${p._id}-${m.title}`).toString(),
+              title: `${p.title}: ${m.title}`,
+              projectTitle: p.title,
+              date: m.dueDate,
+              due: dueDateObj.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }),
+              time: '11:59 PM',
+              daysLeft,
+              priority: daysLeft <= 3 ? 'high' : 'normal',
+              status: m.status || 'pending',
+            });
+          }
+        });
+      }
     });
 
     const recentProjects = await projectRepository.findAll(
@@ -827,10 +869,6 @@ exports.getFacultyDashboardStats = async (userId) => {
       }
     );
 
-    const todayMeetings = await getTodayMeetings({
-      guide: { $in: facultyIds },
-    });
-
     return response(
       false,
       {
@@ -838,6 +876,7 @@ exports.getFacultyDashboardStats = async (userId) => {
         myProjects: myProjectsCount,
         activeStudents: assignedStudentsCount,
         pendingReviews: pendingReviewsCount,
+        upcomingDeadlines,
         todayMeetings: todayMeetings.map((m) => ({
           id: m._id,
           title: m.title,

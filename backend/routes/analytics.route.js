@@ -50,72 +50,72 @@ router.get(
 /**
  * @route   GET /api/v1/analytics/grades
  * @desc    Retrieve grade distribution analytics
- * @access  Private (Admin/Faculty)
+ * @access  Private (Admin Only)
  */
 router.get(
   '/grades',
   authMiddleware,
-  roleMiddleware(['admin', 'faculty']),
+  roleMiddleware(['admin']),
   analyticsController.getGradeDistribution
 );
 
 /**
  * @route   GET /api/v1/analytics/reports
  * @desc    Retrieve dynamic reports analytics
- * @access  Private (Admin/Faculty)
+ * @access  Private (Admin Only)
  */
 router.get(
   '/reports',
   authMiddleware,
-  roleMiddleware(['admin', 'faculty']),
+  roleMiddleware(['admin']),
   analyticsController.getReportsAnalytics
 );
 
 /**
  * @route   GET /api/v1/analytics/performance
  * @desc    Retrieve performance metrics
- * @access  Private (Admin/Faculty)
+ * @access  Private (Admin Only)
  */
 router.get(
   '/performance',
   authMiddleware,
-  roleMiddleware(['admin', 'faculty']),
+  roleMiddleware(['admin']),
   analyticsController.getPerformanceMetrics
 );
 
 /**
  * @route   GET /api/v1/analytics/progress
  * @desc    Retrieve progress analytics
- * @access  Private (Admin/Faculty)
+ * @access  Private (Admin Only)
  */
 router.get(
   '/progress',
   authMiddleware,
-  roleMiddleware(['admin', 'faculty']),
+  roleMiddleware(['admin']),
   analyticsController.getProgressAnalytics
 );
 
 /**
  * @route   GET /api/v1/analytics/usage
  * @desc    Retrieve system usage statistics
- * @access  Private (Admin/Faculty)
+ * @access  Private (Admin Only)
  */
 router.get(
   '/usage',
   authMiddleware,
-  roleMiddleware(['admin', 'faculty']),
+  roleMiddleware(['admin']),
   analyticsController.getUsageStatistics
 );
 
 /**
  * @route   GET /api/v1/analytics/projects
  * @desc    Retrieve project analytics
- * @access  Private (Admin/Faculty)
+ * @access  Private (Admin Only)
  */
 router.get(
   '/projects',
   authMiddleware,
-  roleMiddleware(['admin', 'faculty']),
+  roleMiddleware(['admin']),
   analyticsController.getProjectAnalytics
 );
 

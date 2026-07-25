@@ -210,6 +210,28 @@ const authService = {
   },
 
   /**
+   * Get user profile from backend
+   * @returns {Promise<Object>} Profile response
+   */
+  getProfile: async () => {
+    try {
+      const response = await api.get('/auth/profile');
+      if (response.success && response.data) {
+        localStorage.setItem(
+          LOCAL_STORAGE_KEYS.USER,
+          JSON.stringify(response.data)
+        );
+      }
+      return response;
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Failed to fetch profile',
+      };
+    }
+  },
+
+  /**
    * Update user profile
    * @param {Object} userData - Updated user data
    * @returns {Promise<Object>} Update response

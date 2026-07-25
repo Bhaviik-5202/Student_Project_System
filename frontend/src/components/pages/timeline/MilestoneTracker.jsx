@@ -205,7 +205,7 @@ const MilestoneTracker = memo(() => {
   const [editingMilestone, setEditingMilestone] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
 
-  const isStaff = user?.role === 'admin' || user?.role === 'faculty';
+  const isStaff = user?.role === 'admin';
 
   /* ── Load all projects ───────────────────────────────────────── */
   useEffect(() => {

@@ -789,6 +789,9 @@ exports.verifyOtp = async (req, res) => {
       expiresIn: process.env.TOKEN_EXPIRES_IN || '1d',
     });
 
+    const newUserObj = newUser.toObject ? newUser.toObject() : { ...newUser };
+    delete newUserObj.password;
+
     sendResponse(
       res,
       {
@@ -796,12 +799,7 @@ exports.verifyOtp = async (req, res) => {
         message: 'Account created and verified successfully!',
         data: {
           token,
-          user: {
-            id: newUser._id || newUser.id,
-            name: newUser.name,
-            email: newUser.email,
-            role: newUser.role,
-          },
+          user: newUserObj,
         },
       },
       201

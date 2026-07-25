@@ -28,16 +28,26 @@ router.post(
 /**
  * @route   GET /api/v1/settings
  * @desc    Retrieve all settings
- * @access  Private (Authenticated Users)
+ * @access  Private (Admin Only)
  */
-router.get('/', authMiddleware, settingController.getAllSettings);
+router.get(
+  '/',
+  authMiddleware,
+  roleMiddleware(['admin']),
+  settingController.getAllSettings
+);
 
 /**
  * @route   GET /api/v1/settings/:id
  * @desc    Retrieve a specific setting by ID
- * @access  Private (Authenticated Users)
+ * @access  Private (Admin Only)
  */
-router.get('/:id', authMiddleware, settingController.getSettingById);
+router.get(
+  '/:id',
+  authMiddleware,
+  roleMiddleware(['admin']),
+  settingController.getSettingById
+);
 
 /**
  * @route   PUT /api/v1/settings

@@ -66,7 +66,7 @@ const ProjectTimeline = memo(() => {
         icon={Clock}
         badge={`${projects.length} Active Timelines`}
         actions={
-          user?.role !== 'student' && (
+          user?.role === 'admin' && (
             <button
               onClick={() => navigate('/projects/new')}
               className='flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-100 hover:bg-indigo-700 transition-all dark:shadow-none'

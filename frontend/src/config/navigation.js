@@ -28,12 +28,12 @@ export const navigationItems = [
       {
         title: 'Project Proposal',
         path: '/projects/new',
-        roles: ROLE_COMBINATIONS.ADMIN_FACULTY,
+        roles: ROLE_COMBINATIONS.ADMIN_ONLY,
       },
       {
         title: 'Project Groups',
         path: '/project-groups',
-        roles: ROLE_COMBINATIONS.ADMIN_FACULTY,
+        roles: ROLE_COMBINATIONS.ADMIN_ONLY,
       },
       {
         title: 'Guide Allocation',
@@ -80,7 +80,7 @@ export const navigationItems = [
       {
         title: 'Schedule Meeting',
         path: '/meetings/new',
-        roles: ROLE_COMBINATIONS.ADMIN_FACULTY,
+        roles: ROLE_COMBINATIONS.ADMIN_ONLY,
       },
     ],
   },
@@ -140,22 +140,22 @@ export const navigationItems = [
     title: 'Analytics',
     icon: 'chart-bar',
     path: '/analytics',
-    roles: ROLE_COMBINATIONS.ADMIN_FACULTY,
+    roles: ROLE_COMBINATIONS.ADMIN_ONLY,
     submenu: [
       {
         title: 'Dashboard',
         path: '/analytics',
-        roles: ROLE_COMBINATIONS.ADMIN_FACULTY,
+        roles: ROLE_COMBINATIONS.ADMIN_ONLY,
       },
       {
         title: 'Performance',
         path: '/analytics/performance',
-        roles: ROLE_COMBINATIONS.ADMIN_FACULTY,
+        roles: ROLE_COMBINATIONS.ADMIN_ONLY,
       },
       {
         title: 'Reports',
         path: '/reports',
-        roles: ROLE_COMBINATIONS.ADMIN_FACULTY,
+        roles: ROLE_COMBINATIONS.ADMIN_ONLY,
       },
     ],
   },

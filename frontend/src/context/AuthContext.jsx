@@ -140,6 +140,17 @@ export const AuthProvider = ({ children }) => {
             if (timeRemaining <= TOKEN_REFRESH_WARNING) {
               setSessionExpiringSoon(true);
             }
+
+            // Sync with latest database state to prevent stale user profile info
+            authService.getProfile().then((res) => {
+              if (res && res.success && res.data) {
+                setUser(res.data);
+                safeLocalStorage.setItem(
+                  STORAGE_KEYS.USER,
+                  JSON.stringify(res.data)
+                );
+              }
+            }).catch(err => console.error('Failed to sync user profile:', err));
           }
         } else if (!isAuthPage) {
           clearAuthData();
@@ -153,6 +164,23 @@ export const AuthProvider = ({ children }) => {
     };
     initAuth();
   }, [clearAuthData, isTokenExpired, safeLocalStorage]);
+
+  /**
+   * Fetch latest user profile from server
+   */
+  const fetchProfile = useCallback(async () => {
+    try {
+      const res = await authService.getProfile();
+      if (res && res.success && res.data) {
+        setUser(res.data);
+        safeLocalStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(res.data));
+        return { success: true, user: res.data };
+      }
+      return { success: false };
+    } catch (err) {
+      return { success: false, message: err.message };
+    }
+  }, [safeLocalStorage]);
 
   /**
    * Log into the application
@@ -491,6 +519,7 @@ export const AuthProvider = ({ children }) => {
       logout,
       register,
       verifyOTP,
+      fetchProfile,
       updateUser,
       updateProfile,
       changePassword,
@@ -510,6 +539,7 @@ export const AuthProvider = ({ children }) => {
       logout,
       register,
       verifyOTP,
+      fetchProfile,
       updateUser,
       updateProfile,
       changePassword,

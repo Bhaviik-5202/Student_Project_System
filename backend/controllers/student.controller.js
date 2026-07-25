@@ -16,7 +16,7 @@ const sendResponse = require('../utils/response');
  */
 exports.getAllStudents = async (req, res) => {
   try {
-    const result = await studentService.getAll();
+    const result = await studentService.getAll(req.user);
 
     sendResponse(
       res,

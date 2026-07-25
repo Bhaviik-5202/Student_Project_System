@@ -53,7 +53,9 @@ router.get('/groups', (req, res, next) =>
 router
   .route('/')
   .get((req, res, next) => projectController.getAllProjects(req, res, next))
-  .post((req, res, next) => projectController.createProject(req, res, next));
+  .post(roleMiddleware(['admin']), (req, res, next) =>
+    projectController.createProject(req, res, next)
+  );
 
 /**
  * Single Project Specific Operations
@@ -61,26 +63,30 @@ router
 router
   .route('/:id')
   .get((req, res, next) => projectController.getProjectById(req, res, next))
-  .put((req, res, next) => projectController.updateProject(req, res, next))
-  .delete((req, res, next) => projectController.deleteProject(req, res, next));
+  .put(roleMiddleware(['admin']), (req, res, next) =>
+    projectController.updateProject(req, res, next)
+  )
+  .delete(roleMiddleware(['admin']), (req, res, next) =>
+    projectController.deleteProject(req, res, next)
+  );
 
 /**
  * Archival Controls
  */
-router.patch('/:id/archive', (req, res, next) =>
+router.patch('/:id/archive', roleMiddleware(['admin']), (req, res, next) =>
   projectController.archiveProject(req, res, next)
 );
-router.patch('/:id/restore', (req, res, next) =>
+router.patch('/:id/restore', roleMiddleware(['admin']), (req, res, next) =>
   projectController.restoreProject(req, res, next)
 );
 
 /**
  * Assignments (Students / Guide)
  */
-router.put('/:id/students', (req, res, next) =>
+router.put('/:id/students', roleMiddleware(['admin']), (req, res, next) =>
   projectController.assignStudents(req, res, next)
 );
-router.put('/:id/guide', (req, res, next) =>
+router.put('/:id/guide', roleMiddleware(['admin']), (req, res, next) =>
   projectController.assignGuide(req, res, next)
 );
 

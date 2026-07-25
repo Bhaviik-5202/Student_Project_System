@@ -81,6 +81,12 @@ class ProjectService {
       });
     }
 
+    notificationService.notifyAdmins({
+      message: `New project created: ${newProject.title}`,
+      type: 'success',
+      metadata: { type: 'project', projectId: newProject._id, link: `/projects/${newProject._id}` }
+    });
+
     return newProject;
   }
 
@@ -123,10 +129,11 @@ class ProjectService {
         { createdBy: currentUser._id || currentUser.id },
       ];
     } else if (currentUser.role === 'faculty') {
-      // Faculty see projects they guide or all if requested
-      if (queryParams.myProjectsOnly === 'true') {
-        filter.guide = currentUser._id || currentUser.id;
-      }
+      const facultyId = currentUser._id || currentUser.id;
+      filter.$or = [
+        { guide: facultyId },
+        { coGuide: facultyId },
+      ];
     }
 
     // Specific filters
@@ -240,6 +247,12 @@ class ProjectService {
           metadata: { type: 'project', projectId: updatedProject._id, link: `/projects/${updatedProject._id}` }
         }).catch(err => console.error('Notification failed:', err));
       }
+    });
+
+    notificationService.notifyAdmins({
+      message: `Project '${updatedProject.title}' has been updated`,
+      type: 'info',
+      metadata: { type: 'project', projectId: updatedProject._id, link: `/projects/${updatedProject._id}` }
     });
 
     return updatedProject;
@@ -419,6 +432,12 @@ class ProjectService {
         }).catch(console.error);
       });
     }
+
+    notificationService.notifyAdmins({
+      message: guideId ? `Faculty guide allocated to project: ${updatedProject.title}` : `Faculty guide unassigned from project: ${updatedProject.title}`,
+      type: 'info',
+      metadata: { type: 'project', projectId: updatedProject._id, link: `/projects/${updatedProject._id}` }
+    });
 
     return updatedProject;
   }

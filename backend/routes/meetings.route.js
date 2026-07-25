@@ -59,12 +59,12 @@ router.put(
 /**
  * @route   DELETE /api/v1/meetings/:id
  * @desc    Delete a meeting
- * @access  Private (Authenticated Users)
+ * @access  Private (Admin Only)
  */
 router.delete(
   '/:id',
   authMiddleware,
-  roleMiddleware(['admin', 'faculty']),
+  roleMiddleware(['admin']),
   meetingController.deleteMeeting
 );
 

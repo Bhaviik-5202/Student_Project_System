@@ -46,19 +46,14 @@ router.get('/unread', notificationController.getUnreadNotifications);
  */
 router.get('/:id', notificationController.getNotificationById);
 
+router.patch('/mark-all-read', notificationController.markAllAsRead);
+
 /**
  * @route   PATCH /api/v1/notifications/:id/read
  * @desc    Mark notification as read
  * @access  Private (Authenticated Users)
  */
 router.patch('/:id/read', notificationController.markAsRead);
-
-/**
- * @route   PATCH /api/v1/notifications/mark-all-read
- * @desc    Mark all notifications as read
- * @access  Private (Authenticated Users)
- */
-router.patch('/mark-all-read', notificationController.markAllAsRead);
 
 /**
  * @route   DELETE /api/v1/notifications/:id

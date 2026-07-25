@@ -61,6 +61,8 @@ import {
   SlidersHorizontal as AdjustmentsIcon,
   BarChart2 as ChartBarSquareIcon,
   Trash2 as TrashIcon,
+  Flag as FlagIcon,
+  FolderKanban as FolderKanbanIcon,
 } from 'lucide-react';
 
 // --- Custom Hooks ---
@@ -661,42 +663,71 @@ const Dashboard = () => {
                 </div>
               </button>
 
-              <button
-                onClick={() => {
-                  if (user?.role === 'admin') navigate('/project-types');
-                  else navigate('/projects/new');
-                }}
-                className='group relative inline-flex items-center overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 px-5 py-2.5 font-medium text-white shadow-md transition-all duration-300 hover:shadow-xl'
-              >
-                <div className='absolute inset-0 bg-gradient-to-r from-blue-700 to-blue-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
-                <div className='relative z-10 flex items-center'>
-                  <PlusIcon className='mr-2 h-4 w-4 transition-transform duration-300 group-hover:rotate-90 group-hover:scale-125' />
-                  <span>
-                    {user?.role === 'admin' && 'New Project Type'}
-                    {user?.role === 'faculty' && 'New Project'}
-                    {user?.role === 'student' && 'Submit Proposal'}
-                  </span>
-                </div>
-              </button>
+              {user?.role === 'faculty' && (
+                <>
+                  <button
+                    onClick={() => navigate('/meetings')}
+                    className='group relative inline-flex items-center overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 px-5 py-2.5 font-medium text-white shadow-md transition-all duration-300 hover:shadow-xl'
+                  >
+                    <div className='absolute inset-0 bg-gradient-to-r from-blue-700 to-blue-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
+                    <div className='relative z-10 flex items-center'>
+                      <ClockIcon className='mr-2 h-4 w-4 transition-transform duration-300 group-hover:scale-110' />
+                      <span>My Meetings</span>
+                    </div>
+                  </button>
 
-              <button
-                onClick={() => {
-                  try {
-                    exportDashboardToCSV(dashboardData, user?.role || 'user');
-                    toast.success('Report generated successfully!');
-                  } catch (error) {
-                    console.error('Export failed:', error);
-                    toast.error('Failed to generate report');
-                  }
-                }}
-                className='group relative inline-flex items-center overflow-hidden rounded-xl border border-gray-300 px-5 py-2.5 font-medium text-gray-700 dark:text-gray-200 transition-all duration-300 hover:border-transparent hover:shadow-lg dark:border-slate-600 dark:text-gray-300'
-              >
-                <div className='absolute inset-0 bg-gradient-to-r from-gray-100 to-gray-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-slate-700 dark:to-slate-600' />
-                <div className='relative z-10 flex items-center'>
-                  <DownloadIcon className='mr-2 h-4 w-4 transition-transform duration-300 group-hover:translate-y-0.5 group-hover:scale-110' />
-                  <span>Export Report</span>
-                </div>
-              </button>
+                  <button
+                    onClick={() => navigate('/resources')}
+                    className='group relative inline-flex items-center overflow-hidden rounded-xl border border-gray-300 px-5 py-2.5 font-medium text-gray-700 dark:text-gray-200 transition-all duration-300 hover:border-transparent hover:shadow-lg dark:border-slate-600 dark:text-gray-300'
+                  >
+                    <div className='absolute inset-0 bg-gradient-to-r from-gray-100 to-gray-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-slate-700 dark:to-slate-600' />
+                    <div className='relative z-10 flex items-center'>
+                      <BookOpenIcon className='mr-2 h-4 w-4 transition-transform duration-300 group-hover:scale-110 text-emerald-600 dark:text-emerald-400' />
+                      <span>Resource Library</span>
+                    </div>
+                  </button>
+                </>
+              )}
+
+              {(user?.role === 'admin' || user?.role === 'student') && (
+                <button
+                  onClick={() => {
+                    if (user?.role === 'admin') navigate('/project-types');
+                    else navigate('/projects');
+                  }}
+                  className='group relative inline-flex items-center overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 px-5 py-2.5 font-medium text-white shadow-md transition-all duration-300 hover:shadow-xl'
+                >
+                  <div className='absolute inset-0 bg-gradient-to-r from-blue-700 to-blue-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
+                  <div className='relative z-10 flex items-center'>
+                    <PlusIcon className='mr-2 h-4 w-4 transition-transform duration-300 group-hover:rotate-90 group-hover:scale-125' />
+                    <span>
+                      {user?.role === 'admin' && 'New Project Type'}
+                      {user?.role === 'student' && 'My Project'}
+                    </span>
+                  </div>
+                </button>
+              )}
+
+              {user?.role === 'admin' && (
+                <button
+                  onClick={() => {
+                    try {
+                      exportDashboardToCSV(dashboardData, user?.role || 'user');
+                      toast.success('Report generated successfully!');
+                    } catch (error) {
+                      console.error('Export failed:', error);
+                      toast.error('Failed to generate report');
+                    }
+                  }}
+                  className='group relative inline-flex items-center overflow-hidden rounded-xl border border-gray-300 px-5 py-2.5 font-medium text-gray-700 dark:text-gray-200 transition-all duration-300 hover:border-transparent hover:shadow-lg dark:border-slate-600 dark:text-gray-300'
+                >
+                  <div className='absolute inset-0 bg-gradient-to-r from-gray-100 to-gray-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-slate-700 dark:to-slate-600' />
+                  <div className='relative z-10 flex items-center'>
+                    <DownloadIcon className='mr-2 h-4 w-4 transition-transform duration-300 group-hover:translate-y-0.5 group-hover:scale-110' />
+                    <span>Export Report</span>
+                  </div>
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -843,11 +874,11 @@ const Dashboard = () => {
                         <div className='mt-1.5 flex flex-wrap items-center gap-4 text-sm font-medium text-gray-500 dark:text-gray-400'>
                           <span className='flex items-center gap-1.5'>
                             <ClockIcon className='h-4 w-4' />
-                            {deadline.time}
+                            {deadline.time || '05:00 PM'}
                           </span>
                           <span className='flex items-center gap-1.5'>
                             <CalendarDaysIcon className='h-4 w-4' />
-                            {deadline.due}
+                            {deadline.due || (deadline.date ? new Date(deadline.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'Upcoming')}
                           </span>
                         </div>
                       </div>
@@ -983,27 +1014,27 @@ const Dashboard = () => {
               {[
                 {
                   icon: DocumentTextIcon,
-                  label: 'Materials',
+                  label: 'Resource Library',
                   color: 'blue',
                   path: '/resources',
                 },
                 {
                   icon: CalendarDaysIcon,
-                  label: 'Calendar',
+                  label: 'My Schedule',
                   color: 'purple',
                   path: '/meetings/calendar',
                 },
                 {
-                  icon: ChartBarSquareIcon,
-                  label: 'Grades',
+                  icon: user?.role === 'student' ? FlagIcon : user?.role === 'faculty' ? ClockIcon : ChartBarSquareIcon,
+                  label: user?.role === 'student' ? 'Milestones' : user?.role === 'faculty' ? 'My Meetings' : 'Grades',
                   color: 'green',
-                  path: '/analytics/grades',
+                  path: user?.role === 'student' ? '/milestones' : user?.role === 'faculty' ? '/meetings' : '/analytics/grades',
                 },
                 {
                   icon: AdjustmentsIcon,
                   label: 'Settings',
                   color: 'gray',
-                  path: '/settings',
+                  path: user?.role === 'admin' ? '/system-settings' : '/profile-settings',
                 },
               ].map((resource, index) => {
                 const bgColorClass =

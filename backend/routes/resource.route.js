@@ -22,7 +22,7 @@ const upload = require('../utils/upload');
 router.post(
   '/',
   authMiddleware,
-  roleMiddleware(['admin', 'faculty']),
+  roleMiddleware(['admin']),
   upload.any(),
   resourceController.createResource
 );
@@ -62,24 +62,24 @@ router.get('/:id/preview', authMiddleware, resourceController.previewResource);
 /**
  * @route   PUT /api/v1/resources/:id
  * @desc    Update resource metadata
- * @access  Private (Admin / Faculty)
+ * @access  Private (Admin Only)
  */
 router.put(
   '/:id',
   authMiddleware,
-  roleMiddleware(['admin', 'faculty']),
+  roleMiddleware(['admin']),
   resourceController.updateResource
 );
 
 /**
  * @route   DELETE /api/v1/resources/:id
  * @desc    Delete a resource
- * @access  Private (Admin / Faculty)
+ * @access  Private (Admin Only)
  */
 router.delete(
   '/:id',
   authMiddleware,
-  roleMiddleware(['admin', 'faculty']),
+  roleMiddleware(['admin']),
   resourceController.deleteResource
 );
 

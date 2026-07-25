@@ -7,7 +7,7 @@ import authService from '../../../services/authService';
 import { toast } from 'react-hot-toast';
 
 const ProfileSettings = memo(() => {
-  const { user, updateProfile, changePassword } = useAuth();
+  const { user, updateProfile, changePassword, fetchProfile } = useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
@@ -20,6 +20,12 @@ const ProfileSettings = memo(() => {
     confirmPassword: '',
   });
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (fetchProfile) {
+      fetchProfile();
+    }
+  }, [fetchProfile]);
 
   const buildFormData = useCallback((currentUser) => {
     if (!currentUser) {

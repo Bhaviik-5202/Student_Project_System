@@ -112,14 +112,16 @@ const ProjectDetails = () => {
           <ChevronLeft size={16} /> Back to Catalog
         </button>
 
-        <SecondaryButton
-          icon={Edit}
-          onClick={() =>
-            navigate(`/projects/${project._id || project.id}/edit`)
-          }
-        >
-          Edit Project
-        </SecondaryButton>
+        {user?.role === 'admin' && (
+          <SecondaryButton
+            icon={Edit}
+            onClick={() =>
+              navigate(`/projects/${project._id || project.id}/edit`)
+            }
+          >
+            Edit Project
+          </SecondaryButton>
+        )}
       </div>
 
       {/* Hero Header Card */}
@@ -348,12 +350,14 @@ const ProjectDetails = () => {
               title='Faculty Mentor / Guide'
               icon={Award}
               action={
-                <SecondaryButton
-                  size='sm'
-                  onClick={() => setActiveModal('guide')}
-                >
-                  Change Guide
-                </SecondaryButton>
+                user?.role === 'admin' && (
+                  <SecondaryButton
+                    size='sm'
+                    onClick={() => setActiveModal('guide')}
+                  >
+                    Change Guide
+                  </SecondaryButton>
+                )
               }
             />
 
@@ -386,12 +390,14 @@ const ProjectDetails = () => {
               title='Assigned Team Members'
               icon={UserCheck}
               action={
-                <PrimaryButton
-                  size='sm'
-                  onClick={() => setActiveModal('students')}
-                >
-                  Manage Team Members
-                </PrimaryButton>
+                user?.role === 'admin' && (
+                  <PrimaryButton
+                    size='sm'
+                    onClick={() => setActiveModal('students')}
+                  >
+                    Manage Team Members
+                  </PrimaryButton>
+                )
               }
             />
 
@@ -532,12 +538,14 @@ const ProjectDetails = () => {
                     </div>
                   </div>
 
-                  <IconButton
-                    icon={Trash2}
-                    variant='danger'
-                    title='Remove Document'
-                    onClick={() => setFileToRemove(file)}
-                  />
+                  {user?.role === 'admin' && (
+                    <IconButton
+                      icon={Trash2}
+                      variant='danger'
+                      title='Remove Document'
+                      onClick={() => setFileToRemove(file)}
+                    />
+                  )}
                 </div>
               ))}
             </div>
@@ -552,14 +560,16 @@ const ProjectDetails = () => {
             title='Faculty Evaluation & Reviews'
             icon={Star}
             action={
-              <PrimaryButton
-                icon={Star}
-                size='sm'
-                onClick={() => setActiveModal('review')}
-                className='!bg-gradient-to-r !from-amber-600 !to-amber-700 hover:!from-amber-700 hover:!to-amber-800'
-              >
-                Add Review
-              </PrimaryButton>
+              (user?.role === 'admin' || user?.role === 'faculty') && (
+                <PrimaryButton
+                  icon={Star}
+                  size='sm'
+                  onClick={() => setActiveModal('review')}
+                  className='!bg-gradient-to-r !from-amber-600 !to-amber-700 hover:!from-amber-700 hover:!to-amber-800'
+                >
+                  Add Review
+                </PrimaryButton>
+              )
             }
           />
 

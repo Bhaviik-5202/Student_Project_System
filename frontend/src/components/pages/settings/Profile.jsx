@@ -29,12 +29,18 @@ import {
  * Allows users to view and update their profile information and account security.
  */
 const Profile = memo(() => {
-  const { user, updateProfile, changePassword, logout } = useAuth();
+  const { user, updateProfile, changePassword, logout, fetchProfile } = useAuth();
   const navigate = useNavigate();
 
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [securityLoading, setSecurityLoading] = useState(false);
+
+  useEffect(() => {
+    if (fetchProfile) {
+      fetchProfile();
+    }
+  }, [fetchProfile]);
 
   const [formData, setFormData] = useState({
     name: '',

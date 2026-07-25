@@ -21,7 +21,7 @@ import QuickAddMenu from './header/QuickAddMenu';
 const Header = memo(
   ({
     isScrolled = false,
-    clearNotifications = () => {},
+    clearNotifications = () => { },
     onMobileMenuToggle,
     isMobileMenuOpen = false,
   }) => {
@@ -131,38 +131,89 @@ const Header = memo(
     }, [location.pathname]);
 
     const quickAddActions = useMemo(() => {
-      const baseActions = [
+      if (user?.role === 'admin') {
+        return [
+          {
+            icon: 'diagram-project',
+            label: 'New Project Architecture',
+            color: 'text-blue-600',
+            bgColor: 'bg-blue-100 dark:bg-blue-900/40',
+            path: '/project-types',
+          },
+          {
+            icon: 'user-plus',
+            label: 'Add System User',
+            color: 'text-indigo-600',
+            bgColor: 'bg-indigo-100 dark:bg-indigo-900/40',
+            path: '/user-management/new',
+          },
+          {
+            icon: 'calendar-plus',
+            label: 'Schedule Meeting',
+            color: 'text-green-600',
+            bgColor: 'bg-green-100 dark:bg-green-900/40',
+            path: '/meetings/new',
+          },
+          {
+            icon: 'gear',
+            label: 'System Settings',
+            color: 'text-amber-600',
+            bgColor: 'bg-amber-100 dark:bg-amber-900/40',
+            path: '/system-settings',
+          },
+        ];
+      }
+
+      if (user?.role === 'faculty') {
+        return [
+          {
+            icon: 'plus',
+            label: 'New Student Project',
+            color: 'text-blue-600',
+            bgColor: 'bg-blue-100 dark:bg-blue-900/40',
+            path: '/projects/new',
+          },
+          {
+            icon: 'calendar-plus',
+            label: 'Schedule Consultation',
+            color: 'text-green-600',
+            bgColor: 'bg-green-100 dark:bg-green-900/40',
+            path: '/meetings/new',
+          },
+          {
+            icon: 'file-arrow-up',
+            label: 'Upload Resource',
+            color: 'text-emerald-600',
+            bgColor: 'bg-emerald-100 dark:bg-emerald-900/40',
+            path: '/resource-upload',
+          },
+        ];
+      }
+
+      // Student quick links
+      return [
         {
           icon: 'diagram-project',
-          label: user?.role === 'admin' ? 'New Project Type' : 'New Project',
+          label: 'My Assigned Project',
           color: 'text-blue-600',
           bgColor: 'bg-blue-100 dark:bg-blue-900/40',
-          path: user?.role === 'admin' ? '/project-types' : '/project-proposal',
+          path: '/projects',
         },
         {
-          icon: 'calendar-plus',
-          label: 'Schedule Meeting',
-          color: 'text-green-600',
-          bgColor: 'bg-green-100 dark:bg-green-900/40',
-          path: '/meetings/new',
+          icon: 'calendar-days',
+          label: 'My Meetings',
+          color: 'text-indigo-600',
+          bgColor: 'bg-indigo-100 dark:bg-indigo-900/40',
+          path: '/meetings',
         },
         {
-          icon: 'file-lines',
-          label: 'Create Report',
-          color: 'text-purple-600',
-          bgColor: 'bg-purple-100 dark:bg-purple-900/40',
-          path: '/reports',
+          icon: 'folder-open',
+          label: 'Browse Resources',
+          color: 'text-emerald-600',
+          bgColor: 'bg-emerald-100 dark:bg-emerald-900/40',
+          path: '/resources',
         },
       ];
-
-      // Filter actions based on role requirements
-      return baseActions.filter((action) => {
-        if (user?.role === 'faculty') {
-          // Faculty cannot create meetings
-          if (action.path === '/meetings/new') return false;
-        }
-        return true;
-      });
     }, [user?.role]);
 
     const handleQuickAction = useCallback(
@@ -232,24 +283,26 @@ const Header = memo(
                   <HeaderIcon name='magnifying-glass' size='text-lg' />
                 </button>
 
-                <div className='relative hidden md:block' ref={quickAddRef}>
-                  <button
-                    onClick={() => {
-                      closeAllDropdowns();
-                      setShowQuickAdd(!showQuickAdd);
-                    }}
-                    className={`rounded-xl p-2.5 transition-all ${showQuickAdd ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/40' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:bg-gray-800  dark:hover:bg-gray-800'}`}
-                    aria-label='Quick Actions'
-                  >
-                    <HeaderIcon name='plus' size='text-lg' />
-                  </button>
-                  <Dropdown isOpen={showQuickAdd} className='w-60'>
-                    <QuickAddMenu
-                      actions={quickAddActions}
-                      onActionClick={handleQuickAction}
-                    />
-                  </Dropdown>
-                </div>
+                {user?.role === 'admin' && (
+                  <div className='relative hidden md:block' ref={quickAddRef}>
+                    <button
+                      onClick={() => {
+                        closeAllDropdowns();
+                        setShowQuickAdd(!showQuickAdd);
+                      }}
+                      className={`rounded-xl p-2.5 transition-all ${showQuickAdd ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/40' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:bg-gray-800  dark:hover:bg-gray-800'}`}
+                      aria-label='Quick Actions'
+                    >
+                      <HeaderIcon name='plus' size='text-lg' />
+                    </button>
+                    <Dropdown isOpen={showQuickAdd} className='w-60'>
+                      <QuickAddMenu
+                        actions={quickAddActions}
+                        onActionClick={handleQuickAction}
+                      />
+                    </Dropdown>
+                  </div>
+                )}
 
                 <div className='relative hidden md:block' ref={calendarRef}>
                   <button

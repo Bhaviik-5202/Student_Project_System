@@ -21,6 +21,7 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import useProjects from '../../../hooks/useProjects';
+import { useAuth } from '../../../hooks/useAuth';
 import projectService from '../../../services/projectService';
 import {
   PageHeader,
@@ -51,6 +52,13 @@ import UpdateProgressModal from './modals/UpdateProgressModal';
 
 const ProjectList = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
+  const isFaculty = user?.role === 'faculty';
+  const isStudent = user?.role === 'student';
+  const canManageProjects = isAdmin;
+  const canAssignGuide = isAdmin;
+
   const {
     projects,
     pagination,
@@ -174,12 +182,14 @@ const ProjectList = () => {
               />
             </div>
 
-            <PrimaryButton
-              icon={Plus}
-              onClick={() => navigate('/projects/new')}
-            >
-              New Project
-            </PrimaryButton>
+            {canManageProjects && (
+              <PrimaryButton
+                icon={Plus}
+                onClick={() => navigate('/projects/new')}
+              >
+                New Project
+              </PrimaryButton>
+            )}
           </>
         }
       />
@@ -339,24 +349,28 @@ const ProjectList = () => {
               {/* Action buttons footer */}
               <div className='mt-5 flex items-center justify-between border-t border-gray-100 pt-3 dark:border-slate-700'>
                 <div className='flex gap-1'>
-                  <IconButton
-                    icon={UserCheck}
-                    variant='indigo'
-                    title='Assign Students'
-                    onClick={() => {
-                      setSelectedProjectForModal(project);
-                      setActiveModal('students');
-                    }}
-                  />
-                  <IconButton
-                    icon={Award}
-                    variant='purple'
-                    title='Assign Guide'
-                    onClick={() => {
-                      setSelectedProjectForModal(project);
-                      setActiveModal('guide');
-                    }}
-                  />
+                  {canManageProjects && (
+                    <IconButton
+                      icon={UserCheck}
+                      variant='indigo'
+                      title='Assign Students'
+                      onClick={() => {
+                        setSelectedProjectForModal(project);
+                        setActiveModal('students');
+                      }}
+                    />
+                  )}
+                  {canAssignGuide && (
+                    <IconButton
+                      icon={Award}
+                      variant='purple'
+                      title='Assign Guide'
+                      onClick={() => {
+                        setSelectedProjectForModal(project);
+                        setActiveModal('guide');
+                      }}
+                    />
+                  )}
                   <IconButton
                     icon={TrendingUp}
                     variant='blue'
@@ -366,27 +380,31 @@ const ProjectList = () => {
                       setActiveModal('progress');
                     }}
                   />
-                  {filters.isArchived ? (
+                  {canManageProjects && (
+                    filters.isArchived ? (
+                      <IconButton
+                        icon={RotateCcw}
+                        variant='emerald'
+                        title='Restore Project'
+                        onClick={() => handleRestore(project)}
+                      />
+                    ) : (
+                      <IconButton
+                        icon={Archive}
+                        variant='amber'
+                        title='Archive Project'
+                        onClick={() => handleArchive(project)}
+                      />
+                    )
+                  )}
+                  {canManageProjects && (
                     <IconButton
-                      icon={RotateCcw}
-                      variant='emerald'
-                      title='Restore Project'
-                      onClick={() => handleRestore(project)}
-                    />
-                  ) : (
-                    <IconButton
-                      icon={Archive}
-                      variant='amber'
-                      title='Archive Project'
-                      onClick={() => handleArchive(project)}
+                      icon={Trash2}
+                      variant='danger'
+                      title='Delete Project'
+                      onClick={() => handleDelete(project)}
                     />
                   )}
-                  <IconButton
-                    icon={Trash2}
-                    variant='danger'
-                    title='Delete Project'
-                    onClick={() => handleDelete(project)}
-                  />
                 </div>
 
                 <SecondaryButton
@@ -474,14 +492,16 @@ const ProjectList = () => {
                         )
                       }
                     />
-                    <IconButton
-                      icon={Edit}
-                      variant='indigo'
-                      title='Edit Project'
-                      onClick={() =>
-                        navigate(`/projects/${project._id || project.id}/edit`)
-                      }
-                    />
+                    {canManageProjects && (
+                      <IconButton
+                        icon={Edit}
+                        variant='indigo'
+                        title='Edit Project'
+                        onClick={() =>
+                          navigate(`/projects/${project._id || project.id}/edit`)
+                        }
+                      />
+                    )}
                   </div>
                 </TableCell>
               </TableRow>

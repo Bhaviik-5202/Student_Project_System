@@ -77,7 +77,11 @@ const getFormatIcon = (fileType, type) => {
   };
 };
 
+import { useAuth } from '../../../hooks/useAuth';
+
 export const ResourceBrowser = () => {
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
   const { showSuccess, showError } = useNotification();
 
   const [resources, setResources] = useState([]);
@@ -259,14 +263,16 @@ export const ResourceBrowser = () => {
             >
               Refresh
             </Button>
-            <Button
-              variant='primary'
-              size='sm'
-              icon={Plus}
-              onClick={() => setIsUploadOpen(true)}
-            >
-              Upload Resource
-            </Button>
+            {isAdmin && (
+              <Button
+                variant='primary'
+                size='sm'
+                icon={Plus}
+                onClick={() => setIsUploadOpen(true)}
+              >
+                Upload Resource
+              </Button>
+            )}
           </div>
         }
       />
@@ -336,21 +342,19 @@ export const ResourceBrowser = () => {
         <div className='flex items-center gap-1 rounded-xl border border-slate-200 p-1 dark:border-slate-800'>
           <button
             onClick={() => setViewMode('grid')}
-            className={`rounded-lg p-2 text-xs font-semibold transition-all ${
-              viewMode === 'grid'
+            className={`rounded-lg p-2 text-xs font-semibold transition-all ${viewMode === 'grid'
                 ? 'bg-indigo-600 text-white shadow-xs'
                 : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white dark:text-white '
-            }`}
+              }`}
           >
             <Grid className='h-4 w-4' />
           </button>
           <button
             onClick={() => setViewMode('list')}
-            className={`rounded-lg p-2 text-xs font-semibold transition-all ${
-              viewMode === 'list'
+            className={`rounded-lg p-2 text-xs font-semibold transition-all ${viewMode === 'list'
                 ? 'bg-indigo-600 text-white shadow-xs'
                 : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white dark:text-white '
-            }`}
+              }`}
           >
             <List className='h-4 w-4' />
           </button>
@@ -471,20 +475,24 @@ export const ResourceBrowser = () => {
                           <Share2 className='h-4 w-4' />
                         )}
                       </button>
-                      <button
-                        onClick={() => setEditResource(resource)}
-                        title='Edit'
-                        className='rounded-lg p-1.5 text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-950/40'
-                      >
-                        <Edit className='h-4 w-4' />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(resource)}
-                        title='Delete'
-                        className='rounded-lg p-1.5 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40'
-                      >
-                        <Trash2 className='h-4 w-4' />
-                      </button>
+                      {isAdmin && (
+                        <>
+                          <button
+                            onClick={() => setEditResource(resource)}
+                            title='Edit'
+                            className='rounded-lg p-1.5 text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-950/40'
+                          >
+                            <Edit className='h-4 w-4' />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(resource)}
+                            title='Delete'
+                            className='rounded-lg p-1.5 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40'
+                          >
+                            <Trash2 className='h-4 w-4' />
+                          </button>
+                        </>
+                      )}
                     </div>
 
                     <Button
@@ -565,14 +573,16 @@ export const ResourceBrowser = () => {
                         >
                           Preview
                         </Button>
-                        <Button
-                          variant='outline'
-                          size='sm'
-                          icon={Edit}
-                          onClick={() => setEditResource(resource)}
-                        >
-                          Edit
-                        </Button>
+                        {isAdmin && (
+                          <Button
+                            variant='outline'
+                            size='sm'
+                            icon={Edit}
+                            onClick={() => setEditResource(resource)}
+                          >
+                            Edit
+                          </Button>
+                        )}
                         <Button
                           variant='primary'
                           size='sm'
