@@ -22,12 +22,6 @@ class ErrorBoundary extends React.Component {
   componentDidCatch(error, errorInfo) {
     this.setState({ error, errorInfo });
     console.error('Application Error:', error, errorInfo);
-
-    // Log to error reporting service in production
-    if (import.meta.env.PROD) {
-      // TODO: Send error to monitoring service (e.g., Sentry, LogRocket)
-      // logErrorToService(error, errorInfo);
-    }
   }
 
   render() {

@@ -7,174 +7,144 @@
 ![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge)
 
-A full-stack enterprise-grade application designed for universities and colleges to seamlessly manage academic student projects, guide allocations, project lifecycles, progress tracking, and administrative controls. Built with modern web technologies: **React 18**, **Node.js/Express**, and **MongoDB**.
+A full-stack, enterprise-grade application designed for universities and colleges to seamlessly manage academic student projects, guide allocations, project lifecycles, progress tracking, and administrative controls. Built with modern web technologies: **React 18**, **Node.js/Express**, and **MongoDB**.
 
 ---
 
-## 🌟 Features by Module
+## 🌟 Overview & Key Modules
+
+The Student Project Management System facilitates collaboration between Students, Faculty Supervisors (Guides), and System Administrators:
 
 ### 🛡️ Admin Module
-- **Dashboard & Analytics**: Comprehensive overview of system statistics, user growth, and project statuses.
-- **User Management**: Add, edit, deactivate, and manage all users (Students, Faculties, Admins) in the system.
-- **System Settings & Audit Logs**: Configure system-wide parameters and monitor sensitive actions via audit trails.
-- **Data Operations**: Batch operations and data backup/restore capabilities.
+- **Dashboard & Analytics**: Comprehensive system-wide metrics, department distributions, and status summaries.
+- **User & Staff Management**: Complete CRUD controls for Student, Faculty, and Admin accounts.
+- **System Settings & Audit Logs**: System configuration parameters and security audit logging.
+- **Batch Operations & Backups**: Administrative batch actions and database snapshot backups.
 
-### 👨‍🏫 Faculty (Supervisor/Guide) Module
-- **Project Mentorship**: Review project proposals, accept/reject requests, and allocate guides.
-- **Milestone Tracking**: Monitor student progress, review submissions, and provide grades/feedback.
-- **Meeting Scheduler**: Plan, schedule, and track meetings with project groups.
-- **Performance Analytics**: View progress analytics and reports of guided student groups.
+### 👨‍🏫 Faculty (Guide) Module
+- **Mentorship Management**: Project proposal evaluation, guide allocation, and student assignment.
+- **Sprint & Milestone Tracking**: Progress monitoring, submission reviews, and feedback grading.
+- **Meeting Scheduler**: Meeting planning and calendar integration.
 
 ### 🎓 Student Module
-- **Project Proposals**: Form groups, draft proposals, and submit them for faculty approval.
-- **Collaboration & Updates**: Submit milestone updates, upload project files, and communicate with guides.
-- **Resource Library**: Access shared templates, reference documents, and tutorial videos.
-- **Meeting Management**: View scheduled meetings and add discussion points.
+- **Project Proposals**: Proposal submission, group formation, and architecture specification.
+- **Collaboration**: Milestone updates, document uploads, and meeting tracking.
+- **Resource Center**: Document libraries, project templates, and tutorial guides.
 
-### ⚙️ Core System Capabilities
-- **Robust JWT Authentication**: Token expiration handling, OTP verification, and secure profile management.
-- **Role-Based Access Control (RBAC)**: Deeply integrated access rules determining what each role can see and do.
-- **Reusable Component System**: Modular UI built from scratch (`Button`, `Input`, `Card`, `Modal`, `Table`, `Badge`) without heavy third-party UI bloat.
+---
+
+## 👥 Default User Roles
+
+1. **Admin (`admin`)**: Complete system access, user management, system configuration, audit logs, and reports.
+2. **Faculty (`faculty`)**: Mentorship tools, project reviews, student guide allocations, and meeting management.
+3. **Student (`student`)**: Project creation, proposal tracking, milestone submissions, and resource access.
 
 ---
 
 ## 🛠️ Technology Stack
 
-### **Frontend**
-- **Framework**: React 18 (Bootstrapped with Vite)
-- **Styling**: Vanilla CSS (Custom Design System, CSS Variables, Responsive Layouts)
-- **Routing**: React Router DOM
-- **State Management**: React Context API & Custom Hooks
-- **HTTP Client**: Axios (with centralized interceptors)
-
-### **Backend**
-- **Environment**: Node.js & Express.js
-- **Database**: MongoDB with Mongoose ODM
-- **Security**: JWT for Auth, bcrypt for hashing, express-rate-limit, helmet, express-validator
-- **Testing**: Mocha & Chai (35+ automated integration tests)
+- **Frontend**: React 18, Vite, Vanilla CSS Design System, React Router DOM v7, Axios, Lucide React, Recharts
+- **Backend**: Node.js, Express.js (v5), Mongoose ODM, JWT, bcrypt, helmet, express-validator, Winston
+- **Database**: MongoDB with Mongoose Schema validation & Indexing
 
 ---
 
-## 🚀 Repository Structure
+## 📁 Repository Folder Structure
 
 ```text
 Student Project System/
 ├── backend/                  # Node.js & Express REST API Server
-│   ├── config/               # DB and Swagger configurations
-│   ├── controllers/          # Request handlers & logic orchestration
-│   ├── middleware/           # Auth JWT, Role RBAC, Error Handler, Validator
-│   ├── models/               # Mongoose database schemas
-│   ├── repositories/         # Database access layer
-│   ├── routes/               # Express routes (/api/v1/...)
-│   ├── services/             # Core business logic layer
-│   ├── tests/                # Automated Mocha & Chai integration tests
-│   └── utils/                # Loggers, helpers, response formatters
+│   ├── config/               # Database and Swagger configuration
+│   ├── controllers/          # HTTP Request Controllers
+│   ├── middleware/           # Auth JWT, Role RBAC, Validator, Error Handler
+│   ├── models/               # Mongoose DB Schemas
+│   ├── repositories/         # Data Access Layer
+│   ├── routes/               # Express Route Definitions (/api/v1/...)
+│   ├── services/             # Business Logic Layer
+│   ├── tests/                # Mocha & Chai Integration Tests
+│   └── utils/                # Logger, Response Formatters, Email Helpers
 ├── frontend/                 # React 18 Single Page Application (Vite)
 │   ├── src/
+│   │   ├── assets/           # Global styles and static media
 │   │   ├── components/       # Common, Layout, Pages, and UI Components
-│   │   ├── context/          # AuthContext and Theme management
-│   │   ├── hooks/            # Custom reusable hooks
-│   │   ├── routes/           # Protected and Public routing logic
-│   │   ├── services/         # Axios API service integrations
-│   │   └── assets/           # Global styles and static assets
+│   │   ├── context/          # AuthContext, ThemeContext, NotificationContext
+│   │   ├── hooks/            # Custom Hooks (useProjects, useAuth, etc.)
+│   │   ├── routes/           # Protected and Public Router Configuration
+│   │   ├── services/         # Axios API Services
+│   │   └── utils/            # Toast and Helper utilities
+├── .gitignore                # Global Git Ignore Specification
+├── README.md                 # Project Overview & Quick Start
+├── INSTALL.md                # Local Development Installation Guide
+├── DEPLOYMENT.md             # Production Deployment Guide
+├── CHANGELOG.md              # Version History
+├── CONTRIBUTING.md           # Contribution Guidelines
+└── LICENSE                   # MIT License
 ```
 
 ---
 
-## ⚙️ Environment Variables Configuration
+## 🌐 API Endpoint Overview
 
-### Backend (`backend/.env`)
-
-```env
-PORT=5000
-NODE_ENV=development
-MONGODB_URI=mongodb://localhost:27017/student_project_system
-JWT_SECRET=your_super_secret_jwt_key_32_chars_minimum
-JWT_EXPIRES_IN=24h
-CORS_ORIGIN=http://localhost:3000
-RATE_LIMIT_MAX=100
-BCRYPT_SALT_ROUNDS=12
-
-# Optional SMTP Email Configuration
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=your_email@gmail.com
-SMTP_PASS=your_app_password
-FROM_EMAIL=noreply@studentprojectsystem.com
-```
-
-### Frontend (`frontend/.env`)
-
-```env
-VITE_API_URL=http://localhost:5000/api/v1
-```
+| Base Endpoint | Method | Role Access | Description |
+| :--- | :--- | :--- | :--- |
+| `/api/v1/auth/register` | POST | Public | User Registration |
+| `/api/v1/auth/login` | POST | Public | User Authentication & JWT Issuance |
+| `/api/v1/projects` | GET / POST | Authenticated | List / Create Academic Projects |
+| `/api/v1/projects/:id` | GET / PUT / DELETE | Authenticated | Retrieve / Modify / Delete Project |
+| `/api/v1/students` | GET | Admin, Faculty | List Student Academic Profiles |
+| `/api/v1/staff` | GET / POST | Admin | Manage Faculty & Staff Profiles |
+| `/api/v1/meetings` | GET / POST | Authenticated | Schedule & View Meetings |
+| `/api/v1/resources` | GET / POST | Authenticated | Access Document Library & Templates |
+| `/api/v1/analytics` | GET | Admin | System Analytics & Metrics |
+| `/api/v1/auditlogs` | GET | Admin | System Security Audit Trail |
 
 ---
 
-## ⚡ Quick Start Guide
-
-### Prerequisites
-- Node.js (v18 or higher recommended)
-- MongoDB (running locally on default port 27017 or a MongoDB Atlas URI)
+## ⚡ Quick Start
 
 ### 1. Backend Setup
 
 ```bash
-# Navigate to the backend directory
 cd backend
-
-# Install dependencies
 npm install
-
-# Run automated integration tests (Optional but recommended)
-npm test
-
-# Start the development server
+cp .env.example .env
 npm run dev
-# The server will run on http://localhost:5000
 ```
 
 ### 2. Frontend Setup
 
 ```bash
-# Open a new terminal and navigate to the frontend directory
 cd frontend
-
-# Install dependencies
 npm install
-
-# Start the Vite development server
+cp .env.example .env
 npm run dev
-# The app will run on http://localhost:3000 (or the port Vite specifies)
 ```
 
 ---
 
-## 📊 Database Models & Architecture
+## 🧪 Verification & Build
 
-The system utilizes normalized and well-indexed collections to ensure scalability:
+To run the frontend production build validation:
 
-- **User**: Core authentication model. Email (unique index), Role (`admin`, `faculty`, `student`), Status.
-- **Student / Staff**: Profile extensions linked to the User model. Contains specific fields like Roll Number, Designation, and Department.
-- **Project**: Tracks project lifecycles. Fields include Title, Slug (unique index), Status, Members, Guide, CreatedBy.
-- **Meeting**: Schedules and history. Links to Projects and Users.
-- **Resource**: System-wide or project-specific files, links, and templates.
+```bash
+cd frontend
+npm run lint
+npm run build
+```
 
----
+To run backend integration tests:
 
-## 🧪 Verification & Testing
-
-- **Backend Integration Tests**: Run `npm test` inside the `backend/` directory to execute the Mocha/Chai test suite validating Auth, Projects, Students, Users, and Resources endpoints.
-- **Frontend Production Build**: Run `npm run build` inside the `frontend/` directory to verify Vite bundle compilation without warnings or errors.
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! If you'd like to improve the system, please fork the repository and create a pull request with your proposed changes.
+```bash
+cd backend
+npm test
+```
 
 ---
 
-## 📄 License
+## 📄 License & Documentation
 
-This Student Project Management System is open-sourced software licensed under the [MIT License](LICENSE).
+- [Installation Guide](INSTALL.md)
+- [Deployment Guide](DEPLOYMENT.md)
+- [Changelog](CHANGELOG.md)
+- [Contributing Guidelines](CONTRIBUTING.md)
+- [MIT License](LICENSE)

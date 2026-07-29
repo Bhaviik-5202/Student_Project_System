@@ -14,7 +14,7 @@ module.exports = {
     ecmaFeatures: { jsx: true },
   },
   settings: { react: { version: 'detect' } },
-  plugins: ['react-refresh'],
+
   rules: {
     'react/react-in-jsx-scope': 'off',
     'react/jsx-uses-react': 'off',
@@ -32,9 +32,5 @@ module.exports = {
     'react/display-name': 'off',
     'react-hooks/exhaustive-deps': 'warn',
     'react/prop-types': 'off',
-    'react-refresh/only-export-components': [
-      'warn',
-      { allowConstantExport: true },
-    ],
   },
 };

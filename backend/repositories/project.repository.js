@@ -8,9 +8,6 @@ class ProjectRepository {
   /**
    * Find project by ID or slug with custom populates
    */
-  /**
-   * Find project by ID or slug with custom populates
-   */
   async findByIdOrSlug(idOrSlug, options = {}) {
     const { populate = true } = options;
     const strId = String(
@@ -89,20 +86,20 @@ class ProjectRepository {
       req = req.lean({ virtuals: true });
     }
 
-    const [data, total] = await Promise.all([
+    const [projects, total] = await Promise.all([
       req.exec(),
       Project.countDocuments(filter),
     ]);
 
-    data.projects = data;
-    data.pagination = {
-      total,
-      page: Number(page),
-      limit: Number(limit),
-      totalPages: Math.ceil(total / limit) || 1,
+    return {
+      projects,
+      pagination: {
+        total,
+        page: Number(page),
+        limit: Number(limit),
+        totalPages: Math.ceil(total / limit) || 1,
+      },
     };
-
-    return data;
   }
 
   /**

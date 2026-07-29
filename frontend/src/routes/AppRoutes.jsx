@@ -473,11 +473,7 @@ const AppRoutes = () => {
         />
         <Route
           path='meetings/list'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
-              <MeetingList />
-            </ProtectedRoute>
-          }
+          element={<Navigate to='/meetings' replace />}
         />
         <Route
           path='meetings/calendar'
@@ -631,19 +627,11 @@ const AppRoutes = () => {
         />
         <Route
           path='project-timeline'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
-              <ProjectTimeline />
-            </ProtectedRoute>
-          }
+          element={<Navigate to='/timeline' replace />}
         />
         <Route
           path='project-timelines'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
-              <ProjectTimeline />
-            </ProtectedRoute>
-          }
+          element={<Navigate to='/timeline' replace />}
         />
 
         {/* Notifications Route */}
@@ -839,11 +827,7 @@ const AppRoutes = () => {
         />
         <Route
           path='terms-and-conditions'
-          element={
-            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
-              <TermsAndConditions />
-            </ProtectedRoute>
-          }
+          element={<Navigate to='/terms' replace />}
         />
 
         <Route

@@ -33,7 +33,7 @@ const AuditLog = memo(() => {
           createdAt: currentFilters.date || undefined,
         };
 
-        console.log('Fetching logs with filters:', queryParams);
+
 
         const response = await api.get('/auditlogs', { params: queryParams });
 
@@ -62,7 +62,7 @@ const AuditLog = memo(() => {
   }, []);
 
   const handleApplyFilters = () => {
-    console.log('Manual filter apply triggered:', filters);
+
     fetchLogs(filters);
   };
 

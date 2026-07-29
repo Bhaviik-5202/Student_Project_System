@@ -62,10 +62,12 @@ export const useProjects = (initialParams = {}) => {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchProjects();
   }, [fetchProjects]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchStats();
     const unsubscribe = subscribeDataChanged(() => {
       fetchProjects();

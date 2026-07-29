@@ -1,16 +1,37 @@
-# Node
-node_modules
+# Node dependencies
+node_modules/
+frontend/node_modules/
+backend/node_modules/
+
+# Environment configuration
 .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+frontend/.env
+backend/.env
 
-# React
-frontend/node_modules
-frontend/dist
+# Build outputs
+frontend/dist/
+frontend/dist-ssr/
+backend/uploads/*
+!backend/uploads/.gitkeep
 
-# Backend
-backend/node_modules
-
-# Logs
+# Logs & Temp files
 *.log
+logs/
+backend/logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# OS
+# System & IDE files
 .DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
