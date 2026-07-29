@@ -4,6 +4,7 @@ import { toast } from 'react-hot-toast';
 import { Users, UserPlus, RefreshCw, AlertCircle } from 'lucide-react';
 import PageHeader from '../../common/PageHeader';
 import api from '../../../utils/api';
+import { notifyDataChanged, subscribeDataChanged } from '../../../utils/eventBus';
 import '../../../assets/styles/admin.css';
 
 const UserManagement = memo(() => {
@@ -50,6 +51,16 @@ const UserManagement = memo(() => {
     fetchUsers();
   }, [fetchUsers]);
 
+  // Auto-refresh when any user CRUD event fires from anywhere in the app
+  useEffect(() => {
+    const unsubscribe = subscribeDataChanged((detail) => {
+      if (detail?.type === 'user_changed' || detail?.type === 'staff_changed') {
+        fetchUsers();
+      }
+    });
+    return () => unsubscribe();
+  }, [fetchUsers]);
+
   useEffect(() => {
     if (location.state?.refresh) {
       fetchUsers();
@@ -72,6 +83,7 @@ const UserManagement = memo(() => {
       try {
         await api.delete(`/users/${userId}`);
         toast.success('User deleted successfully');
+        notifyDataChanged({ type: 'user_changed', action: 'deleted', id: userId });
         fetchUsers();
       } catch (err) {
         console.error('Failed to delete user', err);

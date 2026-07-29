@@ -39,6 +39,7 @@ import analyticsService from '../../../services/analyticsService';
 import adminService from '../../../services/adminService';
 import auditlogService from '../../../services/auditlogService';
 import useNotification from '../../../hooks/useNotification';
+import { subscribeDataChanged } from '../../../utils/eventBus';
 
 const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6'];
 
@@ -86,6 +87,14 @@ export const AdminDashboard = () => {
 
   useEffect(() => {
     fetchAdminData();
+  }, [fetchAdminData]);
+
+  // Auto-refresh dashboard stats when any user/staff/project CRUD event fires
+  useEffect(() => {
+    const unsubscribe = subscribeDataChanged(() => {
+      fetchAdminData();
+    });
+    return () => unsubscribe();
   }, [fetchAdminData]);
 
   // Fallback data if arrays are empty

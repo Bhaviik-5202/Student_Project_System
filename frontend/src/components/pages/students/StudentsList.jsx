@@ -17,6 +17,7 @@ import {
 import { useNavigate, Outlet } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import studentService from '../../../services/studentService';
+import { subscribeDataChanged } from '../../../utils/eventBus';
 import PageHeader from '../../common/PageHeader';
 
 const StudentRow = memo(({ student, onEdit, onDelete, userRole }) => (
@@ -174,38 +175,53 @@ const StudentsList = memo(() => {
     });
   }, [students, search, department, year]);
 
-  useEffect(() => {
-    const fetchStudents = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const res = await studentService.getAllStudents();
-        if (res.success) {
-          setStudents(
-            (res.data || []).map((student) => ({
-              id: student._id || student.id,
-              name: student.name,
-              rollNumber: student.rollNumber || student.studentId || '',
-              enrollmentNumber: student.enrollmentNumber || '',
-              department: student.department,
-              semester: student.semester || '',
-              year: student.year,
-              email: student.email,
-              phone: student.phone || '',
-              status: student.status || 'Active',
-            }))
-          );
-        } else {
-          setError(res.message || 'Failed to load students');
-        }
-      } catch (err) {
-        setError('An unexpected error occurred while fetching students');
-      } finally {
-        setLoading(false);
+  const fetchStudents = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await studentService.getAllStudents();
+      if (res.success) {
+        setStudents(
+          (res.data || []).map((student) => ({
+            id: student._id || student.id,
+            name: student.name,
+            rollNumber: student.rollNumber || student.studentId || '',
+            enrollmentNumber: student.enrollmentNumber || '',
+            department: student.department,
+            semester: student.semester || '',
+            year: student.year,
+            email: student.email,
+            phone: student.phone || '',
+            status: student.status || 'Active',
+          }))
+        );
+      } else {
+        setError(res.message || 'Failed to load students');
       }
-    };
-    fetchStudents();
+    } catch (err) {
+      setError('An unexpected error occurred while fetching students');
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchStudents();
+  }, [fetchStudents]);
+
+  // Auto-refresh when any student or user CRUD event fires
+  useEffect(() => {
+    const unsubscribe = subscribeDataChanged((detail) => {
+      if (
+        detail?.type === 'student_updated' ||
+        detail?.type === 'student_deleted' ||
+        detail?.type === 'user_changed'
+      ) {
+        fetchStudents();
+      }
+    });
+    return () => unsubscribe();
+  }, [fetchStudents]);
 
   const handleEdit = useCallback(
     (id) => {

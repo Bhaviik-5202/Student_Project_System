@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import PageHeader from '../../common/PageHeader';
 import staffService from '../../../services/staffService';
+import { subscribeDataChanged } from '../../../utils/eventBus';
 import { toast } from 'react-hot-toast';
 
 const StaffRow = memo(({ staff, onEdit, onDelete }) => (
@@ -158,6 +159,16 @@ const Staff = memo(() => {
     fetchStaff();
   }, [fetchStaff]);
 
+  // Auto-refresh when any staff or user CRUD event fires
+  useEffect(() => {
+    const unsubscribe = subscribeDataChanged((detail) => {
+      if (detail?.type === 'staff_changed' || detail?.type === 'user_changed') {
+        fetchStaff();
+      }
+    });
+    return () => unsubscribe();
+  }, [fetchStaff]);
+
   useEffect(() => {
     if (location.state?.refresh) {
       fetchStaff();
@@ -184,11 +195,14 @@ const Staff = memo(() => {
   };
 
   const filteredStaff = useMemo(() => {
+    const q = searchQuery.toLowerCase();
     return staffMembers.filter(
       (s) =>
-        s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        s.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        s.id.toLowerCase().includes(searchQuery.toLowerCase())
+        s.name.toLowerCase().includes(q) ||
+        s.email.toLowerCase().includes(q) ||
+        s.id.toLowerCase().includes(q) ||
+        (s.department || '').toLowerCase().includes(q) ||
+        (s.designation || '').toLowerCase().includes(q)
     );
   }, [staffMembers, searchQuery]);
 
@@ -274,8 +288,8 @@ const Staff = memo(() => {
             <div className='absolute left-12 top-1/2 z-10 h-5 w-[1px] -translate-y-1/2 bg-gray-200 dark:bg-slate-700' />
             <input
               type='text'
-              className='form-control border-gray-100 bg-gray-50 dark:bg-gray-800/50 pl-16 text-sm transition-all focus:bg-white dark:bg-slate-900 dark:border-slate-800 /50'
-              placeholder='Search by name, ID or email...'
+              className='form-control border-gray-100 bg-gray-50 pl-16 text-sm transition-all focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:focus:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500'
+              placeholder='Search by name, ID, email, department...'
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />

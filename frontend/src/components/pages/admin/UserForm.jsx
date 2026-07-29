@@ -19,6 +19,7 @@ import {
 import PageHeader from '../../common/PageHeader';
 import Input from '../../ui/Input';
 import api from '../../../utils/api';
+import { notifyDataChanged } from '../../../utils/eventBus';
 
 const UserForm = () => {
   const { id } = useParams();
@@ -144,6 +145,8 @@ const UserForm = () => {
         toast.success('User created successfully');
       }
 
+      // Broadcast so AdminDashboard, UserManagement, etc. auto-refresh
+      notifyDataChanged({ type: 'user_changed', action: isEditMode ? 'updated' : 'created' });
       navigate('/user-management', { state: { refresh: true } });
     } catch (err) {
       console.error('Failed to save user:', err);
