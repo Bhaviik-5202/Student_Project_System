@@ -1,10 +1,124 @@
 const ProjectType = require('../models/projectType.model');
+const Project = require('../models/project.model');
 const sendResponse = require('../utils/response');
 
 /**
- * ProjectType COntroller
- * Manages project types, including creation, listing, updates, and deletion.
+ * ProjectType Controller
+ * Manages project types, dynamic hierarchy options, and CRUD.
  */
+
+/**
+ * Get dynamic Department -> Category -> ProjectType hierarchy options from MongoDB
+ * @route GET /api/v1/projects/options
+ * @access Authenticated
+ */
+exports.getProjectOptions = async (req, res) => {
+  try {
+    const [projects, projectTypes] = await Promise.all([
+      Project.find({}).select('department category projectType').lean(),
+      ProjectType.find({ status: 'Active' }).lean(),
+    ]);
+
+    const hierarchyMap = {};
+
+    const addMapping = (dept, cat, pType) => {
+      if (!dept || !cat || !pType) return;
+      const cleanDept = dept.trim();
+      const cleanCat = cat.trim();
+      const cleanType = pType.trim();
+
+      if (!hierarchyMap[cleanDept]) {
+        hierarchyMap[cleanDept] = {};
+      }
+      if (!hierarchyMap[cleanDept][cleanCat]) {
+        hierarchyMap[cleanDept][cleanCat] = new Set();
+      }
+      hierarchyMap[cleanDept][cleanCat].add(cleanType);
+    };
+
+    // Aggregate mappings from existing Projects in MongoDB
+    projects.forEach((p) => {
+      addMapping(p.department, p.category, p.projectType);
+    });
+
+    // Aggregate mappings from ProjectType collection in MongoDB
+    projectTypes.forEach((pt) => {
+      const dept = pt.department || 'Computer Science';
+      addMapping(dept, pt.category, pt.name);
+    });
+
+    // Fallback defaults if database has zero project/projectType records yet
+    if (Object.keys(hierarchyMap).length === 0) {
+      const defaultDepts = [
+        'Computer Science',
+        'Information Technology',
+        'Electronics',
+        'Mechanical',
+        'Civil',
+        'Electrical',
+        'AI & DS',
+      ];
+      const defaultCats = [
+        'Web Development',
+        'AI / Machine Learning',
+        'Cloud Computing',
+        'IoT & Embedded Systems',
+        'Cyber Security',
+        'Mobile Application',
+        'Data Science',
+      ];
+      const defaultTypes = [
+        'Major Project',
+        'Minor Project',
+        'Research Project',
+        'UDP',
+        'IDP',
+        'Industry Project',
+      ];
+
+      defaultDepts.forEach((d) => {
+        defaultCats.forEach((c) => {
+          defaultTypes.forEach((t) => {
+            addMapping(d, c, t);
+          });
+        });
+      });
+    }
+
+    // Transform into clean JSON structure
+    const data = Object.keys(hierarchyMap)
+      .sort()
+      .map((deptName) => {
+        const catMap = hierarchyMap[deptName];
+        const categories = Object.keys(catMap)
+          .sort()
+          .map((catName) => ({
+            name: catName,
+            projectTypes: Array.from(catMap[catName]).sort(),
+          }));
+        return {
+          name: deptName,
+          categories,
+        };
+      });
+
+    sendResponse(res, {
+      success: true,
+      message: 'Project hierarchy options fetched successfully',
+      data,
+    });
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: 'Failed to fetch project hierarchy options',
+        error: error.message,
+      },
+      500
+    );
+  }
+};
 
 /**
  * Get all project types

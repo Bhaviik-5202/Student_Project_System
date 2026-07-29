@@ -220,7 +220,7 @@ const MeetingDetails = memo(() => {
                 <ArrowLeft size={16} />
                 Back to Meeting Management
               </button>
-              {isReviewMeeting(meeting.type) && (
+              {(user?.role === 'student' || isReviewMeeting(meeting.type)) && (
                 <button
                   onClick={handleJoin}
                   disabled={joining}

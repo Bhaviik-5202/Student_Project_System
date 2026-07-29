@@ -33,6 +33,11 @@ const projectTypeSchema = new mongoose.Schema(
       required: [true, 'Category is required'],
       trim: true,
     },
+    department: {
+      type: String,
+      default: 'Computer Science',
+      trim: true,
+    },
     status: {
       type: String,
       enum: ['Active', 'Inactive'],

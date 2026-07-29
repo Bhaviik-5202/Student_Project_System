@@ -168,13 +168,33 @@ const TimelineEditor = lazy(
   () => import('../components/pages/timeline/TimelineEditor')
 );
 
-// Help Pages
 const FAQ = lazy(() => import('../components/pages/help/FAQ'));
 const HelpCenter = lazy(() => import('../components/pages/help/HelpCenter'));
 const KnowledgeBase = lazy(
   () => import('../components/pages/help/KnowledgeBase')
 );
 const UserGuide = lazy(() => import('../components/pages/help/UserGuide'));
+const NotificationsPage = lazy(
+  () => import('../components/pages/notifications/NotificationsPage')
+);
+
+// Public & Support Pages
+const AboutUs = lazy(() => import('../components/pages/public/AboutUs'));
+const ContactUs = lazy(() => import('../components/pages/public/ContactUs'));
+const Documentation = lazy(
+  () => import('../components/pages/public/Documentation')
+);
+const SystemStatus = lazy(
+  () => import('../components/pages/public/SystemStatus')
+);
+const PrivacyPolicy = lazy(
+  () => import('../components/pages/public/PrivacyPolicy')
+);
+const TermsAndConditions = lazy(
+  () => import('../components/pages/public/TermsAndConditions')
+);
+
+const Feedback = lazy(() => import('../components/pages/public/Feedback'));
 
 const AppRoutes = () => {
   return (
@@ -610,6 +630,32 @@ const AppRoutes = () => {
           }
         />
         <Route
+          path='project-timeline'
+          element={
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
+              <ProjectTimeline />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='project-timelines'
+          element={
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
+              <ProjectTimeline />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Notifications Route */}
+        <Route
+          path='notifications'
+          element={
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
+              <NotificationsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path='gantt'
           element={
             <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ADMIN_ONLY}>
@@ -698,7 +744,17 @@ const AppRoutes = () => {
           }
         />
 
-        {/* Help Routes */}
+        {/* Teams & Support Routes */}
+        <Route
+          path='teams'
+          element={
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
+              <ProjectGroups />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Help & Support Routes */}
         <Route
           path='help'
           element={
@@ -728,6 +784,73 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
               <UserGuide />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Public & Footer Pages */}
+        <Route
+          path='about'
+          element={
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
+              <AboutUs />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='contact'
+          element={
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
+              <ContactUs />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='docs'
+          element={
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
+              <Documentation />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='status'
+          element={
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
+              <SystemStatus />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='privacy'
+          element={
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
+              <PrivacyPolicy />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='terms'
+          element={
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
+              <TermsAndConditions />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='terms-and-conditions'
+          element={
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
+              <TermsAndConditions />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path='feedback'
+          element={
+            <ProtectedRoute allowedRoles={ROLE_COMBINATIONS.ALL}>
+              <Feedback />
             </ProtectedRoute>
           }
         />

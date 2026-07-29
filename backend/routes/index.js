@@ -25,6 +25,7 @@ const settingRoutes = require('./setting.route');
 const faqRoutes = require('./faq.route');
 const helpRoutes = require('./help.route');
 const reportRoutes = require('./report.route');
+const contactRoutes = require('./contact.route');
 
 /**
  * Mount routes
@@ -47,6 +48,7 @@ router.use('/settings', settingRoutes);
 router.use('/faqs', faqRoutes);
 router.use('/help', helpRoutes);
 router.use('/reports', reportRoutes);
+router.use('/contact', contactRoutes);
 
 /**
  * @route   GET /api/v1

@@ -457,14 +457,16 @@ const ProjectDetails = () => {
             title='Progress & Status Management'
             icon={TrendingUp}
             action={
-              <PrimaryButton
-                icon={TrendingUp}
-                size='sm'
-                onClick={() => setActiveModal('progress')}
-                className='!bg-gradient-to-r !from-blue-600 !to-blue-700 hover:!from-blue-700 hover:!to-blue-800'
-              >
-                Update Progress
-              </PrimaryButton>
+              user?.role !== 'student' && (
+                <PrimaryButton
+                  icon={TrendingUp}
+                  size='sm'
+                  onClick={() => setActiveModal('progress')}
+                  className='!bg-gradient-to-r !from-blue-600 !to-blue-700 hover:!from-blue-700 hover:!to-blue-800'
+                >
+                  Update Progress
+                </PrimaryButton>
+              )
             }
           />
 
@@ -494,14 +496,16 @@ const ProjectDetails = () => {
             title='Project Documents & Resources'
             icon={FilePlus}
             action={
-              <PrimaryButton
-                icon={FilePlus}
-                size='sm'
-                onClick={() => setActiveModal('file')}
-                className='!bg-gradient-to-r !from-emerald-600 !to-emerald-700 hover:!from-emerald-700 hover:!to-emerald-800'
-              >
-                Attach File
-              </PrimaryButton>
+              user?.role !== 'student' && (
+                <PrimaryButton
+                  icon={FilePlus}
+                  size='sm'
+                  onClick={() => setActiveModal('file')}
+                  className='!bg-gradient-to-r !from-emerald-600 !to-emerald-700 hover:!from-emerald-700 hover:!to-emerald-800'
+                >
+                  Attach File
+                </PrimaryButton>
+              )
             }
           />
 

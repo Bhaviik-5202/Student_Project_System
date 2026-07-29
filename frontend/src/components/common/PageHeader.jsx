@@ -109,7 +109,7 @@ export const PageHeader = ({
   return (
     <header
       className={`
-        flex flex-col gap-4 md:flex-row md:items-center md:justify-between
+        flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between
         rounded-2xl border border-slate-200/80
         bg-gradient-to-r from-white via-slate-50/50 to-white
         shadow-sm backdrop-blur-sm transition-all duration-200

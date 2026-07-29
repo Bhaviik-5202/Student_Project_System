@@ -32,16 +32,18 @@ const SOCIAL_LINKS = [
 
 const QUICK_LINKS = [
   { name: 'Dashboard', path: '/dashboard' },
-  { name: 'Projects', path: '/projects' },
-  { name: 'Teams', path: '/teams' },
-  { name: 'Resources', path: '/resources' },
+  { name: 'Projects Catalog', path: '/projects' },
+  { name: 'Teams & Groups', path: '/teams' },
+  { name: 'Resource Library', path: '/resources' },
 ];
 
 const SUPPORT_LINKS = [
   { name: 'Help Center', path: '/help' },
   { name: 'Documentation', path: '/docs' },
-  { name: 'API Status', path: '/status' },
-  { name: 'Contact', path: '/contact' },
+  { name: 'FAQ', path: '/faq' },
+  { name: 'System Status', path: '/status' },
+  { name: 'Contact Us', path: '/contact' },
+  { name: 'Platform Feedback', path: '/feedback' },
 ];
 
 const FEATURES = [
@@ -179,7 +181,7 @@ const Footer = memo(({ variant = 'minimal' }) => {
 
       <div className='relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
         {/* Main Footer Content */}
-        <div className='grid grid-cols-1 gap-12 md:grid-cols-12 lg:gap-8'>
+        <div className='grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-12 lg:gap-8'>
           {/* Brand Section */}
           <div className='md:col-span-4 space-y-6'>
             <Link
@@ -217,7 +219,7 @@ const Footer = memo(({ variant = 'minimal' }) => {
               ))}
             </div>
 
-            <div className='flex gap-3 pt-2'>
+            <div className='flex flex-wrap gap-3 pt-2'>
               {SOCIAL_LINKS.map((link) => (
                 <SocialLink key={link.label} {...link} />
               ))}
@@ -323,6 +325,12 @@ const Footer = memo(({ variant = 'minimal' }) => {
           </p>
           <div className='flex items-center gap-6 text-xs text-slate-500 dark:text-slate-400'>
             <Link
+              to='/about'
+              className='hover:text-indigo-600 dark:hover:text-white transition-colors focus:text-indigo-600 dark:focus:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-md px-1'
+            >
+              About Us
+            </Link>
+            <Link
               to='/privacy'
               className='hover:text-indigo-600 dark:hover:text-white transition-colors focus:text-indigo-600 dark:focus:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-md px-1'
             >
@@ -334,7 +342,7 @@ const Footer = memo(({ variant = 'minimal' }) => {
             >
               Terms of Service
             </Link>
-            <span>🌐 English</span>
+              <span className='text-xs text-slate-500 dark:text-slate-400'>EN</span>
           </div>
         </div>
       </div>

@@ -116,6 +116,7 @@ input[type='time']::-webkit-calendar-picker-indicator {
    ========================================================================== */
 
 @layer base {
+
   *,
   *::before,
   *::after {
@@ -153,6 +154,28 @@ input[type='time']::-webkit-calendar-picker-indicator {
   html {
     scroll-behavior: smooth;
     scroll-padding-top: 4rem;
+  }
+
+  /* 
+  /* ── Responsive Safety Rules ─────────────────────────────
+     Prevent flex/grid children from overflowing their containers.
+     min-width:0 is needed because flex items default to min-width:auto
+     which can cause content to overflow past the container boundary.  */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  /* Prevent media from overflowing their containers */
+  img,
+  svg,
+  video,
+  canvas,
+  iframe {
+    max-width: 100%;
+    height: auto;
   }
 
   /* Better focus styles */
@@ -793,10 +816,8 @@ input[type='time']::-webkit-calendar-picker-indicator {
   }
 
   .bg-gradient-conic {
-    background-image: conic-gradient(
-      from 180deg at 50% 50%,
-      var(--tw-gradient-stops)
-    );
+    background-image: conic-gradient(from 180deg at 50% 50%,
+        var(--tw-gradient-stops));
   }
 
   /* ========== Border Utilities ========== */
@@ -805,32 +826,23 @@ input[type='time']::-webkit-calendar-picker-indicator {
     @apply border-2 border-transparent;
     background:
       linear-gradient(white, white) padding-box,
-      linear-gradient(
-          to right,
-          var(--color-primary-500),
-          var(--color-secondary-500)
-        )
-        border-box;
+      linear-gradient(to right,
+        var(--color-primary-500),
+        var(--color-secondary-500)) border-box;
   }
 
   .gradient-border-primary {
     background:
       linear-gradient(white, white) padding-box,
-      linear-gradient(
-          to right,
-          var(--color-primary-500),
-          var(--color-primary-700)
-        )
-        border-box;
+      linear-gradient(to right,
+        var(--color-primary-500),
+        var(--color-primary-700)) border-box;
   }
 
   .border-gradient {
-    border-image: linear-gradient(
-        to right,
+    border-image: linear-gradient(to right,
         var(--color-primary-500),
-        var(--color-secondary-500)
-      )
-      1;
+        var(--color-secondary-500)) 1;
   }
 
   /* ========== Glass Morphism ========== */
@@ -1077,6 +1089,7 @@ input[type='time']::-webkit-calendar-picker-indicator {
 }
 
 @keyframes pulse {
+
   0%,
   100% {
     opacity: 1;
@@ -1088,6 +1101,7 @@ input[type='time']::-webkit-calendar-picker-indicator {
 }
 
 @keyframes float {
+
   0%,
   100% {
     transform: translateY(0);
@@ -1099,6 +1113,7 @@ input[type='time']::-webkit-calendar-picker-indicator {
 }
 
 @keyframes bounce {
+
   0%,
   100% {
     transform: translateY(0);
@@ -1110,6 +1125,7 @@ input[type='time']::-webkit-calendar-picker-indicator {
 }
 
 @keyframes shake {
+
   0%,
   100% {
     transform: translateX(0);
@@ -1144,6 +1160,7 @@ input[type='time']::-webkit-calendar-picker-indicator {
 }
 
 @keyframes glow {
+
   0%,
   100% {
     box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
@@ -1221,6 +1238,7 @@ input[type='time']::-webkit-calendar-picker-indicator {
 }
 
 @keyframes blink {
+
   0%,
   100% {
     opacity: 1;
@@ -1296,6 +1314,7 @@ input[type='time']::-webkit-calendar-picker-indicator {
    ========================================================================== */
 
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
@@ -1556,41 +1575,41 @@ input[type='time']::-webkit-calendar-picker-indicator {
 }
 
 /* Staggered children animation */
-.stagger-children > * {
+.stagger-children>* {
   opacity: 0;
   transform: translateY(10px);
   animation: staggerFadeIn 0.4s ease-out forwards;
 }
 
-.stagger-children > *:nth-child(1) {
+.stagger-children>*:nth-child(1) {
   animation-delay: 0.05s;
 }
 
-.stagger-children > *:nth-child(2) {
+.stagger-children>*:nth-child(2) {
   animation-delay: 0.1s;
 }
 
-.stagger-children > *:nth-child(3) {
+.stagger-children>*:nth-child(3) {
   animation-delay: 0.15s;
 }
 
-.stagger-children > *:nth-child(4) {
+.stagger-children>*:nth-child(4) {
   animation-delay: 0.2s;
 }
 
-.stagger-children > *:nth-child(5) {
+.stagger-children>*:nth-child(5) {
   animation-delay: 0.25s;
 }
 
-.stagger-children > *:nth-child(6) {
+.stagger-children>*:nth-child(6) {
   animation-delay: 0.3s;
 }
 
-.stagger-children > *:nth-child(7) {
+.stagger-children>*:nth-child(7) {
   animation-delay: 0.35s;
 }
 
-.stagger-children > *:nth-child(8) {
+.stagger-children>*:nth-child(8) {
   animation-delay: 0.4s;
 }
 
@@ -1603,23 +1622,19 @@ input[type='time']::-webkit-calendar-picker-indicator {
 
 /* Skeleton loading shimmer */
 .skeleton-shimmer {
-  background: linear-gradient(
-    90deg,
-    rgba(229, 231, 235, 1) 0%,
-    rgba(243, 244, 246, 1) 50%,
-    rgba(229, 231, 235, 1) 100%
-  );
+  background: linear-gradient(90deg,
+      rgba(229, 231, 235, 1) 0%,
+      rgba(243, 244, 246, 1) 50%,
+      rgba(229, 231, 235, 1) 100%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
 
 .dark .skeleton-shimmer {
-  background: linear-gradient(
-    90deg,
-    rgba(55, 65, 81, 1) 0%,
-    rgba(75, 85, 99, 1) 50%,
-    rgba(55, 65, 81, 1) 100%
-  );
+  background: linear-gradient(90deg,
+      rgba(55, 65, 81, 1) 0%,
+      rgba(75, 85, 99, 1) 50%,
+      rgba(55, 65, 81, 1) 100%);
   background-size: 200% 100%;
 }
 

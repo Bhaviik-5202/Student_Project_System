@@ -919,60 +919,170 @@ exports.getFacultyDashboardStats = async (userId) => {
 };
 
 /**
+ * Helper to build project progress data array for charts & dashboard widgets
+ */
+exports._getProjectProgressData = async (filter = {}) => {
+  try {
+    const result = await projectRepository.findAll(filter, {
+      limit: 10,
+      populate: false,
+    });
+    const projects = result.projects || result || [];
+    const colorList = ['blue', 'green', 'yellow', 'purple', 'indigo'];
+    return (Array.isArray(projects) ? projects : []).map((p, index) => ({
+      name: p.title || 'Untitled Project',
+      progress: typeof p.progress === 'number' ? p.progress : 0,
+      color: colorList[index % colorList.length],
+      status: p.status || 'assigned',
+    }));
+  } catch (err) {
+    return [];
+  }
+};
+
+/**
  * Get student dashboard stats
  */
 exports.getStudentDashboardStats = async (studentId) => {
   try {
-    const totalProjectsCount = await projectRepository.count();
     const user = await userRepository.findById(studentId);
     if (!user) throw new Error('User not found');
 
-    const student = await studentRepository.findByEmail(user.email);
-    if (!student) {
-      return response(
-        false,
-        {
-          totalProjects: await projectRepository.count({
-            $or: [{ createdBy: studentId }, { members: studentId }],
-          }),
-          myProjects: await projectRepository.count({
-            $or: [{ createdBy: studentId }, { members: studentId }],
-          }),
-          upcomingDeadlines: [],
-          todayMeetings: [],
-          currentGrade: 'N/A',
-          recentActivities: [],
-          projectProgress: [],
-        },
-        'Student profile not found'
-      );
+    const studentFilter = {
+      $or: [
+        { members: studentId },
+        { leader: studentId },
+        { createdBy: studentId },
+      ],
+    };
+
+    const myProjectsCount = await projectRepository.count(studentFilter);
+
+    // Fetch student projects list
+    const projectResult = await projectRepository.findAll(studentFilter, {
+      sort: { updatedAt: -1 },
+      limit: 10,
+    });
+    const studentProjects = projectResult.projects || projectResult || [];
+
+    const primaryProject = studentProjects[0] || null;
+    const projectStatus = primaryProject?.status || null;
+    const myMilestones = Array.isArray(primaryProject?.milestones)
+      ? primaryProject.milestones.length
+      : 0;
+
+    // Today's & upcoming meetings strictly limited to meetings student participates in
+    const todayMeetings = await getTodayMeetings({ participants: studentId });
+
+    const upcomingDeadlines = [];
+    const now = new Date();
+
+    // 1. Project target completion deadlines
+    studentProjects.forEach((p) => {
+      if (p.status !== 'completed' && p.status !== 'rejected') {
+        const targetDate =
+          p.expectedCompletionDate ||
+          p.endDate ||
+          (p.createdAt
+            ? new Date(new Date(p.createdAt).getTime() + 90 * 86400000)
+            : null);
+        if (targetDate) {
+          const dueDateObj = new Date(targetDate);
+          const daysLeft = Math.max(
+            0,
+            Math.ceil((dueDateObj - now) / (1000 * 60 * 60 * 24))
+          );
+          upcomingDeadlines.push({
+            id: `proj-${p._id}`,
+            title: `Target Completion: ${p.title}`,
+            projectTitle: p.title,
+            date: targetDate,
+            due: dueDateObj.toLocaleDateString(undefined, {
+              month: 'short',
+              day: 'numeric',
+              year: 'numeric',
+            }),
+            time: '11:59 PM',
+            daysLeft,
+            priority: daysLeft <= 3 ? 'high' : 'normal',
+            status: p.status,
+            type: 'project',
+          });
+        }
+      }
+    });
+
+    // 2. Timeline milestones for student projects
+    try {
+      const Timeline = require('../models/timeline.model');
+      const projectIds = studentProjects.map((p) => p._id);
+      if (projectIds.length > 0) {
+        const timelines = await Timeline.find({ project: { $in: projectIds } }).populate('project');
+        timelines.forEach((tl) => {
+          (tl.milestones || []).forEach((m) => {
+            if (!m.completed && m.dueDate) {
+              const dueDateObj = new Date(m.dueDate);
+              const daysLeft = Math.max(
+                0,
+                Math.ceil((dueDateObj - now) / (1000 * 60 * 60 * 24))
+              );
+              upcomingDeadlines.push({
+                id: `ms-${m._id || m.title}`,
+                title: `${tl.project?.title || 'Project'}: ${m.title}`,
+                projectTitle: tl.project?.title || 'Project',
+                date: m.dueDate,
+                due: dueDateObj.toLocaleDateString(undefined, {
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric',
+                }),
+                time: '11:59 PM',
+                daysLeft,
+                priority: daysLeft <= 3 ? 'high' : 'normal',
+                status: 'pending',
+                type: 'milestone',
+              });
+            }
+          });
+        });
+      }
+    } catch (e) {
+      console.error('Failed to fetch timeline milestones for student:', e);
     }
 
-    const myProjectsCount = await projectRepository.count({
-      $or: [{ createdBy: studentId }, { members: studentId }],
+    // 3. Upcoming meetings
+    (todayMeetings || []).forEach((m) => {
+      upcomingDeadlines.push({
+        id: `meet-${m.id || m._id}`,
+        title: `Meeting: ${m.title}`,
+        projectTitle: m.title,
+        date: m.date,
+        due: m.date
+          ? new Date(m.date).toLocaleDateString(undefined, {
+              month: 'short',
+              day: 'numeric',
+            })
+          : 'Today',
+        time: m.time || '10:00 AM',
+        daysLeft: 0,
+        priority: 'high',
+        status: 'scheduled',
+        type: 'meeting',
+      });
     });
 
-    const recentProjects = await projectRepository.findAll(
-      {
-        $or: [{ createdBy: studentId }, { members: studentId }],
-      },
-      {
-        sort: { updatedAt: -1 },
-        limit: 5,
-      }
+    upcomingDeadlines.sort(
+      (a, b) => new Date(a.date || Date.now()) - new Date(b.date || Date.now())
     );
-
-    const todayMeetings = await getTodayMeetings({
-      $or: [{ participants: studentId }, { guide: { $exists: true } }],
-    });
 
     return response(
       false,
       {
-        totalProjects: totalProjectsCount,
         myProjects: myProjectsCount,
+        projectStatus,
+        myMilestones,
         completedAssignments: 0,
-        upcomingDeadlines: [], // Refactored out assignments
+        upcomingDeadlines,
         todayMeetings: todayMeetings.map((m) => ({
           id: m._id,
           title: m.title,
@@ -990,18 +1100,16 @@ exports.getStudentDashboardStats = async (studentId) => {
           participants: m.participants?.length || 0,
         })),
         currentGrade: 'N/A',
-        recentActivities: recentProjects.map((p) => ({
+        recentActivities: studentProjects.map((p) => ({
           id: p._id,
           title: p.title,
           updatedAt: p.updatedAt,
           status: p.status,
           icon: 'file-text',
           color: 'blue',
-          description: `You updated ${p.title}`,
+          description: `Project: ${p.title}`,
         })),
-        projectProgress: await exports._getProjectProgressData({
-          $or: [{ createdBy: studentId }, { members: studentId }],
-        }),
+        projectProgress: await exports._getProjectProgressData(studentFilter),
       },
       'Student dashboard statistics fetched successfully'
     );

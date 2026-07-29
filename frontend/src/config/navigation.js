@@ -103,6 +103,7 @@ export const navigationItems = [
       { title: 'Templates', path: '/templates', roles: ROLE_COMBINATIONS.ALL },
     ],
   },
+
   {
     title: 'Admin',
     icon: 'cogs',

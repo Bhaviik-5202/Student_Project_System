@@ -58,7 +58,7 @@ const MainLayout = () => {
         onCloseMobileMenu={handleCloseMobileMenu}
       />
 
-      <div className='mt-18 flex flex-1'>
+      <div className='flex flex-1 mt-6'>
         <div className='relative flex w-full min-w-0 flex-1 flex-col'>
           <AnimatedBackground />
           <main

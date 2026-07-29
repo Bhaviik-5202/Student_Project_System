@@ -15,6 +15,9 @@ router.use(authMiddleware);
 /**
  * Project Types Management Routes
  */
+router.get('/options', (req, res, next) =>
+  projectTypeController.getProjectOptions(req, res, next)
+);
 router.get('/types', (req, res, next) =>
   projectTypeController.getAllProjectTypes(req, res, next)
 );
@@ -93,7 +96,7 @@ router.put('/:id/guide', roleMiddleware(['admin']), (req, res, next) =>
 /**
  * Progress & Status Lifecycle
  */
-router.patch('/:id/progress', (req, res, next) =>
+router.patch('/:id/progress', roleMiddleware(['admin', 'faculty']), (req, res, next) =>
   projectController.updateProgress(req, res, next)
 );
 
@@ -103,7 +106,7 @@ router.patch('/:id/progress', (req, res, next) =>
 router.post('/:id/files', (req, res, next) =>
   projectController.addProjectFile(req, res, next)
 );
-router.delete('/:id/files/:fileId', (req, res, next) =>
+router.delete('/:id/files/:fileId', roleMiddleware(['admin', 'faculty']), (req, res, next) =>
   projectController.removeProjectFile(req, res, next)
 );
 

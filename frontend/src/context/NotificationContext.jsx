@@ -114,6 +114,11 @@ export const NotificationProvider = ({ children }) => {
     }
   };
 
+  const clearNotificationsState = useCallback(() => {
+    setNotifications([]);
+    isInitial.current = true;
+  }, []);
+
   const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
@@ -127,6 +132,7 @@ export const NotificationProvider = ({ children }) => {
         markAllAsRead,
         deleteNotification,
         clearAll,
+        clearNotificationsState,
       }}
     >
       {children}

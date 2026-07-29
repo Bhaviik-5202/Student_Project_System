@@ -2,7 +2,7 @@
  * ProjectProposal Component
  * Complete form for submitting new project proposals or editing existing projects.
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { FolderPlus, ChevronLeft, Save, Users } from 'lucide-react';
@@ -33,14 +33,15 @@ const ProjectProposal = () => {
   // Active student & faculty dropdown options
   const [activeStudents, setActiveStudents] = useState([]);
   const [activeFaculty, setActiveFaculty] = useState([]);
+  const [optionsHierarchy, setOptionsHierarchy] = useState([]);
 
   // Form State
   const [formData, setFormData] = useState({
     title: '',
     code: '',
-    department: user?.department || 'Computer Science',
-    projectType: 'Major Project',
-    category: 'Web Development',
+    department: user?.department || '',
+    projectType: '',
+    category: '',
     semester: 'Sem 7',
     academicYear: '2025-2026',
     description: '',
@@ -60,12 +61,14 @@ const ProjectProposal = () => {
   useEffect(() => {
     const initData = async () => {
       try {
-        const [students, faculty] = await Promise.all([
+        const [students, faculty, options] = await Promise.all([
           projectService.getActiveStudents(),
           projectService.getActiveFaculty(),
+          projectService.getProjectOptions(),
         ]);
         setActiveStudents(students || []);
         setActiveFaculty(faculty || []);
+        setOptionsHierarchy(options || []);
 
         if (isEditing) {
           const project = await projectService.getProjectById(id);
@@ -73,9 +76,9 @@ const ProjectProposal = () => {
             setFormData({
               title: project.title || '',
               code: project.code || '',
-              department: project.department || 'Computer Science',
-              projectType: project.projectType || 'Major Project',
-              category: project.category || 'Web Development',
+              department: project.department || '',
+              projectType: project.projectType || '',
+              category: project.category || '',
               semester: project.semester || 'Sem 7',
               academicYear: project.academicYear || '2025-2026',
               description: project.description || '',
@@ -91,16 +94,16 @@ const ProjectProposal = () => {
                 : '',
               members: Array.isArray(project.members)
                 ? project.members.map((m) =>
-                    typeof m === 'object' ? m._id || m.id : m
-                  )
+                  typeof m === 'object' ? m._id || m.id : m
+                )
                 : [],
               startDate: project.startDate
                 ? new Date(project.startDate).toISOString().split('T')[0]
                 : '',
               expectedCompletionDate: project.expectedCompletionDate
                 ? new Date(project.expectedCompletionDate)
-                    .toISOString()
-                    .split('T')[0]
+                  .toISOString()
+                  .split('T')[0]
                 : '',
               progress: project.progress || 0,
               status: project.status || 'assigned',
@@ -120,9 +123,47 @@ const ProjectProposal = () => {
     initData();
   }, [id, isEditing]);
 
+  // Derived dynamic options based on Department -> Category -> ProjectType hierarchy
+  const availableDepartments = useMemo(() => {
+    return optionsHierarchy.map((d) => d.name);
+  }, [optionsHierarchy]);
+
+  const availableCategories = useMemo(() => {
+    if (!formData.department) return [];
+    const deptObj = optionsHierarchy.find((d) => d.name === formData.department);
+    return deptObj ? deptObj.categories.map((c) => c.name) : [];
+  }, [optionsHierarchy, formData.department]);
+
+  const availableProjectTypes = useMemo(() => {
+    if (!formData.department || !formData.category) return [];
+    const deptObj = optionsHierarchy.find((d) => d.name === formData.department);
+    if (!deptObj) return [];
+    const catObj = deptObj.categories.find((c) => c.name === formData.category);
+    return catObj ? catObj.projectTypes : [];
+  }, [optionsHierarchy, formData.department, formData.category]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleDepartmentChange = (e) => {
+    const newDept = e.target.value;
+    setFormData((prev) => ({
+      ...prev,
+      department: newDept,
+      category: '', // Reset Domain Category when Department changes
+      projectType: '', // Reset Project Type when Department changes
+    }));
+  };
+
+  const handleCategoryChange = (e) => {
+    const newCat = e.target.value;
+    setFormData((prev) => ({
+      ...prev,
+      category: newCat,
+      projectType: '', // Reset Project Type when Domain Category changes
+    }));
   };
 
   const handleMemberToggle = (studentId) => {
@@ -240,24 +281,97 @@ const ProjectProposal = () => {
                 />
               </FormGroup>
 
-              <FormGroup label='Department'>
+              <FormGroup label='Department' required>
                 <Select
                   name='department'
                   value={formData.department}
-                  onChange={handleChange}
+                  onChange={handleDepartmentChange}
+                  required
                 >
-                  <option value='Computer Science'>Computer Science</option>
-                  <option value='Information Technology'>
-                    Information Technology
-                  </option>
-                  <option value='Electronics'>Electronics</option>
-                  <option value='Mechanical'>Mechanical</option>
-                  <option value='Civil'>Civil</option>
-                  <option value='Electrical'>Electrical</option>
-                  <option value='AI & DS'>AI & DS</option>
+                  <option value=''>-- Select Department --</option>
+                  {availableDepartments.map((dept) => (
+                    <option key={dept} value={dept}>
+                      {dept}
+                    </option>
+                  ))}
                 </Select>
               </FormGroup>
             </div>
+
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+              <FormGroup label='Domain Category' required>
+                <Select
+                  name='category'
+                  value={formData.category}
+                  onChange={handleCategoryChange}
+                  disabled={!formData.department || availableCategories.length === 0}
+                  required
+                >
+                  <option value=''>
+                    {!formData.department
+                      ? '-- Select Department First --'
+                      : '-- Select Domain Category --'}
+                  </option>
+                  {availableCategories.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </Select>
+              </FormGroup>
+
+              <FormGroup label='Project Type' required>
+                <Select
+                  name='projectType'
+                  value={formData.projectType}
+                  onChange={handleChange}
+                  disabled={!formData.category || availableProjectTypes.length === 0}
+                  required
+                >
+                  <option value=''>
+                    {!formData.category
+                      ? '-- Select Category First --'
+                      : '-- Select Project Type --'}
+                  </option>
+                  {availableProjectTypes.map((type) => (
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
+                  ))}
+                </Select>
+              </FormGroup>
+            </div>
+
+            <FormGroup label='Semester & Academic Year'>
+              <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+                <Select
+                  name='semester'
+                  value={formData.semester}
+                  onChange={handleChange}
+                >
+                  <option value='Sem 1'>Sem 1</option>
+                  <option value='Sem 2'>Sem 2</option>
+                  <option value='Sem 3'>Sem 3</option>
+                  <option value='Sem 4'>Sem 4</option>
+                  <option value='Sem 5'>Sem 5</option>
+                  <option value='Sem 6'>Sem 6</option>
+                  <option value='Sem 7'>Sem 7</option>
+                  <option value='Sem 8'>Sem 8</option>
+                </Select>
+                <Select
+                  name='academicYear'
+                  value={formData.academicYear}
+                  onChange={handleChange}
+                >
+                  <option value='2025-2026'>2025-2026</option>
+                  <option value='2026-2027'>2026-2027</option>
+                  <option value='2027-2028'>2027-2028</option>
+                  <option value='2028-2029'>2028-2029</option>
+                  <option value='2029-2030'>2029-2030</option>
+                  <option value='2030-2031'>2030-2031</option>
+                </Select>
+              </div>
+            </FormGroup>
 
             {/* Scope / Description */}
             <FormGroup label='Abstract / Detailed Description'>
@@ -318,11 +432,10 @@ const ProjectProposal = () => {
                   <div
                     key={sId}
                     onClick={() => handleMemberToggle(sId)}
-                    className={`flex items-center justify-between p-2.5 rounded-xl border cursor-pointer transition-all ${
-                      isSelected
-                        ? 'border-indigo-500 bg-indigo-50/50 dark:border-indigo-500 dark:bg-indigo-900/20'
-                        : 'border-gray-100 hover:border-gray-200 dark:border-slate-700'
-                    }`}
+                    className={`flex items-center justify-between p-2.5 rounded-xl border cursor-pointer transition-all ${isSelected
+                      ? 'border-indigo-500 bg-indigo-50/50 dark:border-indigo-500 dark:bg-indigo-900/20'
+                      : 'border-gray-100 hover:border-gray-200 dark:border-slate-700'
+                      }`}
                   >
                     <span className='text-xs font-bold text-gray-900 dark:text-white'>
                       {s.name} ({s.department || 'Student'})
@@ -343,7 +456,7 @@ const ProjectProposal = () => {
         {/* Right Column - Configurations */}
         <div className='space-y-6'>
           <Card className='space-y-4'>
-            <SectionHeader title='Classification & Faculty' />
+            <SectionHeader title='Faculty & Submission' />
 
             <FormGroup label='Faculty Guide'>
               <Select
@@ -358,64 +471,6 @@ const ProjectProposal = () => {
                   </option>
                 ))}
               </Select>
-            </FormGroup>
-
-            <FormGroup label='Project Type'>
-              <Select
-                name='projectType'
-                value={formData.projectType}
-                onChange={handleChange}
-              >
-                <option value='Major Project'>Major Project</option>
-                <option value='Minor Project'>Minor Project</option>
-                <option value='Research Project'>Research Project</option>
-                <option value='UDP'>UDP</option>
-                <option value='IDP'>IDP</option>
-                <option value='Industry Project'>Industry Project</option>
-              </Select>
-            </FormGroup>
-
-            <FormGroup label='Domain Category'>
-              <Select
-                name='category'
-                value={formData.category}
-                onChange={handleChange}
-              >
-                <option value='Web Development'>Web Development</option>
-                <option value='AI / Machine Learning'>
-                  AI / Machine Learning
-                </option>
-                <option value='Cloud Computing'>Cloud Computing</option>
-                <option value='IoT & Embedded Systems'>
-                  IoT & Embedded Systems
-                </option>
-                <option value='Cyber Security'>Cyber Security</option>
-                <option value='Mobile Application'>Mobile Application</option>
-                <option value='Data Science'>Data Science</option>
-              </Select>
-            </FormGroup>
-
-            <FormGroup label='Semester & Academic Year'>
-              <div className='grid grid-cols-2 gap-2'>
-                <Select
-                  name='semester'
-                  value={formData.semester}
-                  onChange={handleChange}
-                >
-                  <option value='Sem 5'>Sem 5</option>
-                  <option value='Sem 6'>Sem 6</option>
-                  <option value='Sem 7'>Sem 7</option>
-                  <option value='Sem 8'>Sem 8</option>
-                </Select>
-                <Select
-                  name='academicYear'
-                  value={formData.academicYear}
-                  onChange={handleChange}
-                >
-                  <option value='2025-2026'>2025-2026</option>
-                  <option value='2026-2027'>2026-2027</option>
-                </Select>
-              </div>
             </FormGroup>
 
             <PrimaryButton

@@ -149,13 +149,15 @@ class ProjectService {
 
     // Search query
     if (search && search.trim()) {
-      const searchRegex = new RegExp(search.trim(), 'i');
+      const sanitizedSearch = search.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const searchRegex = new RegExp(sanitizedSearch, 'i');
       const searchConditions = [
         { title: searchRegex },
         { code: searchRegex },
         { category: searchRegex },
         { projectType: searchRegex },
         { technologies: searchRegex },
+        { department: searchRegex },
       ];
 
       if (filter.$or) {
@@ -191,6 +193,24 @@ class ProjectService {
     if (!project) {
       throw new Error('Project not found');
     }
+
+    // Students may only view their own project
+    if (currentUser.role === 'student') {
+      const studentId = (currentUser._id || currentUser.id)?.toString();
+      const isMember = Array.isArray(project.members) &&
+        project.members.some((m) => (m?._id || m)?.toString() === studentId);
+      const isLeader = project.leader &&
+        (project.leader?._id || project.leader)?.toString() === studentId;
+      const isCreator = project.createdBy &&
+        (project.createdBy?._id || project.createdBy)?.toString() === studentId;
+
+      if (!isMember && !isLeader && !isCreator) {
+        const err = new Error('Forbidden: you do not have access to this project');
+        err.status = 403;
+        throw err;
+      }
+    }
+
     return project;
   }
 
@@ -203,19 +223,75 @@ class ProjectService {
       throw new Error('Project not found');
     }
 
+    const cleanedData = { ...updateData };
+
+    // Delete transient and non-schema properties
+    delete cleanedData._id;
+    delete cleanedData.id;
+    delete cleanedData.createdAt;
+    delete cleanedData.updatedAt;
+    delete cleanedData.__v;
+    delete cleanedData.technologiesText;
+
     // Check code conflict if code is modified
     if (
-      updateData.code &&
-      updateData.code.trim().toUpperCase() !== existing.code
+      cleanedData.code &&
+      cleanedData.code.trim().toUpperCase() !== existing.code
     ) {
       const codeCheck = await projectRepository.findOne({
-        code: updateData.code.trim().toUpperCase(),
+        code: cleanedData.code.trim().toUpperCase(),
         _id: { $ne: existing._id },
       });
       if (codeCheck) {
-        throw new Error(`Project code '${updateData.code}' is already in use`);
+        throw new Error(`Project code '${cleanedData.code}' is already in use`);
       }
-      updateData.code = updateData.code.trim().toUpperCase();
+      cleanedData.code = cleanedData.code.trim().toUpperCase();
+    }
+
+    // Sanitize Date fields to prevent Mongoose cast/validation errors on empty strings
+    ['startDate', 'expectedCompletionDate', 'completionDate', 'archivedAt'].forEach((field) => {
+      if (field in cleanedData) {
+        if (!cleanedData[field] || cleanedData[field] === '' || cleanedData[field] === 'N/A') {
+          cleanedData[field] = null;
+        } else if (typeof cleanedData[field] === 'string') {
+          const parsed = new Date(cleanedData[field]);
+          cleanedData[field] = isNaN(parsed.getTime()) ? null : parsed;
+        }
+      }
+    });
+
+    // Sanitize ObjectId reference fields
+    ['guide', 'leader', 'createdBy'].forEach((field) => {
+      if (field in cleanedData) {
+        if (!cleanedData[field] || cleanedData[field] === '') {
+          cleanedData[field] = null;
+        } else if (typeof cleanedData[field] === 'object') {
+          cleanedData[field] = cleanedData[field]._id || cleanedData[field].id || null;
+        }
+      }
+    });
+
+    // Sanitize members array
+    if (Array.isArray(cleanedData.members)) {
+      cleanedData.members = cleanedData.members
+        .map((m) => (typeof m === 'object' ? m._id || m.id : m))
+        .filter((m) => m && typeof m === 'string' && m.trim().length > 0);
+    }
+
+    // Sanitize progress
+    if ('progress' in cleanedData) {
+      const progNum = Number(cleanedData.progress);
+      cleanedData.progress = isNaN(progNum) ? 0 : Math.min(100, Math.max(0, progNum));
+    }
+
+    // Sanitize technologies
+    if (typeof updateData.technologiesText === 'string') {
+      cleanedData.technologies = updateData.technologiesText
+        .split(',')
+        .map((t) => t.trim())
+        .filter(Boolean);
+    } else if (Array.isArray(cleanedData.technologies)) {
+      cleanedData.technologies = cleanedData.technologies.filter(Boolean);
     }
 
     // Prepare timeline entry
@@ -227,7 +303,7 @@ class ProjectService {
     };
 
     const payload = {
-      ...updateData,
+      ...cleanedData,
       lastUpdatedBy: currentUser._id || currentUser.id,
       $push: { activityTimeline: newTimelineEntry },
     };

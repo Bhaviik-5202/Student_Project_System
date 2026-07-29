@@ -3,7 +3,7 @@
  * Professional Project Catalog with Grid & Table views, comprehensive search & filtering,
  * pagination, active/archived tabs, and quick action modals.
  */
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import {
@@ -78,6 +78,86 @@ const ProjectList = () => {
     project: null,
   });
 
+  const [allAccessibleProjects, setAllAccessibleProjects] = useState([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    projectService
+      .getAllProjects({ limit: 200 })
+      .then((res) => {
+        if (isMounted && res?.projects) {
+          setAllAccessibleProjects(res.projects);
+        }
+      })
+      .catch(() => {});
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const dynamicDepartments = useMemo(() => {
+    const set = new Set();
+    allAccessibleProjects.forEach((p) => {
+      if (p.department) set.add(p.department);
+    });
+    if (set.size === 0 && isAdmin) {
+      return [
+        'Computer Science',
+        'Information Technology',
+        'Electronics',
+        'Mechanical',
+        'Civil',
+        'Electrical',
+        'AI & DS',
+      ];
+    }
+    return Array.from(set).sort();
+  }, [allAccessibleProjects, isAdmin]);
+
+  const dynamicStatuses = useMemo(() => {
+    const set = new Set();
+    allAccessibleProjects.forEach((p) => {
+      if (p.status) set.add(p.status);
+    });
+    if (set.size === 0) {
+      return [
+        'assigned',
+        'in_progress',
+        'under_review',
+        'completed',
+        'approved',
+        'rejected',
+      ];
+    }
+    return Array.from(set).sort();
+  }, [allAccessibleProjects]);
+
+  const dynamicProjectTypes = useMemo(() => {
+    const set = new Set();
+    allAccessibleProjects.forEach((p) => {
+      if (p.projectType) set.add(p.projectType);
+    });
+    if (set.size === 0) {
+      return [
+        'Major Project',
+        'Minor Project',
+        'Research Project',
+        'UDP',
+        'IDP',
+        'Industry Project',
+      ];
+    }
+    return Array.from(set).sort();
+  }, [allAccessibleProjects]);
+
+  // Lock department filter to student's own department on mount
+  useEffect(() => {
+    if (isStudent && user?.department && filters.department === 'All') {
+      setFilter('department', user.department);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isStudent, user?.department]);
+
   const handleArchive = (project) => {
     setConfirmDialog({
       isOpen: true,
@@ -142,29 +222,31 @@ const ProjectList = () => {
         icon={FolderKanban}
         actions={
           <>
-            {/* Active / Archived Tab Toggle */}
-            <div className='flex rounded-xl bg-gray-100 dark:bg-gray-800 p-1 dark:bg-slate-800'>
-              <button
-                onClick={() => setFilter('isArchived', false)}
-                className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-all ${
-                  !filters.isArchived
-                    ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow dark:bg-slate-700 dark:text-indigo-400 dark:text-indigo-300'
-                    : 'text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 '
-                }`}
-              >
-                Active
-              </button>
-              <button
-                onClick={() => setFilter('isArchived', true)}
-                className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-all ${
-                  filters.isArchived
-                    ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow dark:bg-slate-700 dark:text-indigo-400 dark:text-indigo-300'
-                    : 'text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 '
-                }`}
-              >
-                Archived
-              </button>
-            </div>
+            {/* Active / Archived Tab Toggle – hidden for Students */}
+            {!isStudent && (
+              <div className='flex rounded-xl bg-gray-100 dark:bg-gray-800 p-1 dark:bg-slate-800'>
+                <button
+                  onClick={() => setFilter('isArchived', false)}
+                  className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-all ${
+                    !filters.isArchived
+                      ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow dark:bg-slate-700 dark:text-indigo-400 dark:text-indigo-300'
+                      : 'text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 '
+                  }`}
+                >
+                  Active
+                </button>
+                <button
+                  onClick={() => setFilter('isArchived', true)}
+                  className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-all ${
+                    filters.isArchived
+                      ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow dark:bg-slate-700 dark:text-indigo-400 dark:text-indigo-300'
+                      : 'text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 '
+                  }`}
+                >
+                  Archived
+                </button>
+              </div>
+            )}
 
             {/* Grid vs Table View Mode */}
             <div className='flex rounded-xl border border-gray-200 bg-white dark:bg-slate-900 p-1 dark:border-slate-700 dark:bg-slate-800'>
@@ -205,22 +287,24 @@ const ProjectList = () => {
             className='md:col-span-2'
           />
 
-          {/* Department Filter */}
-          <Select
-            value={filters.department}
-            onChange={(e) => setFilter('department', e.target.value)}
-          >
-            <option value='All'>All Departments</option>
-            <option value='Computer Science'>Computer Science</option>
-            <option value='Information Technology'>
-              Information Technology
-            </option>
-            <option value='Electronics'>Electronics</option>
-            <option value='Mechanical'>Mechanical</option>
-            <option value='Civil'>Civil</option>
-            <option value='Electrical'>Electrical</option>
-            <option value='AI & DS'>AI & DS</option>
-          </Select>
+          {/* Department Filter – locked for Students */}
+          {isStudent ? (
+            <div className='flex items-center gap-2 rounded-lg border border-gray-200 dark:border-slate-600 bg-gray-50 dark:bg-slate-800 px-3 py-2 text-sm text-gray-700 dark:text-gray-300'>
+              <span className='font-medium'>{user?.department || 'My Department'}</span>
+            </div>
+          ) : (
+            <Select
+              value={filters.department}
+              onChange={(e) => setFilter('department', e.target.value)}
+            >
+              <option value='All'>All Departments</option>
+              {dynamicDepartments.map((dept) => (
+                <option key={dept} value={dept}>
+                  {dept}
+                </option>
+              ))}
+            </Select>
+          )}
 
           {/* Status Filter */}
           <Select
@@ -228,12 +312,11 @@ const ProjectList = () => {
             onChange={(e) => setFilter('status', e.target.value)}
           >
             <option value='All'>All Statuses</option>
-            <option value='assigned'>Assigned</option>
-            <option value='in_progress'>In Progress</option>
-            <option value='under_review'>Under Review</option>
-            <option value='completed'>Completed</option>
-            <option value='approved'>Approved</option>
-            <option value='rejected'>Rejected</option>
+            {dynamicStatuses.map((st) => (
+              <option key={st} value={st}>
+                {st.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
+              </option>
+            ))}
           </Select>
 
           {/* Type Filter */}
@@ -242,12 +325,11 @@ const ProjectList = () => {
             onChange={(e) => setFilter('projectType', e.target.value)}
           >
             <option value='All'>All Project Types</option>
-            <option value='Major Project'>Major Project</option>
-            <option value='Minor Project'>Minor Project</option>
-            <option value='Research Project'>Research Project</option>
-            <option value='UDP'>UDP</option>
-            <option value='IDP'>IDP</option>
-            <option value='Industry Project'>Industry Project</option>
+            {dynamicProjectTypes.map((pt) => (
+              <option key={pt} value={pt}>
+                {pt}
+              </option>
+            ))}
           </Select>
 
           {/* Reset Filters */}
@@ -265,8 +347,10 @@ const ProjectList = () => {
           title='No Projects Found'
           description='No projects match the specified search query or filter criteria.'
           icon={FolderKanban}
-          actionText='Create New Project'
-          onAction={() => navigate('/projects/new')}
+          {...(!isStudent && {
+            actionText: 'Create New Project',
+            onAction: () => navigate('/projects/new'),
+          })}
         />
       ) : viewMode === 'grid' ? (
         /* GRID VIEW */
@@ -371,15 +455,18 @@ const ProjectList = () => {
                       }}
                     />
                   )}
-                  <IconButton
-                    icon={TrendingUp}
-                    variant='blue'
-                    title='Update Progress'
-                    onClick={() => {
-                      setSelectedProjectForModal(project);
-                      setActiveModal('progress');
-                    }}
-                  />
+                  {/* Update Progress – Admin/Faculty only */}
+                  {!isStudent && (
+                    <IconButton
+                      icon={TrendingUp}
+                      variant='blue'
+                      title='Update Progress'
+                      onClick={() => {
+                        setSelectedProjectForModal(project);
+                        setActiveModal('progress');
+                      }}
+                    />
+                  )}
                   {canManageProjects && (
                     filters.isArchived ? (
                       <IconButton

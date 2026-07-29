@@ -272,6 +272,22 @@ const Dashboard = () => {
   const [projectProgressData, setProjectProgressData] = useState([]);
   const [statsData, setStatsData] = useState({});
 
+  // Reset scroll position to top whenever Dashboard is loaded or revisited via Back navigation
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+
+    const handlePopState = () => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   // --- Data Loading Logic ---
   const loadDashboardData = useCallback(async () => {
     try {
@@ -437,7 +453,13 @@ const Dashboard = () => {
 
           break;
 
-        case 'student':
+        case 'student': {
+          const formattedStatus = statsData.projectStatus
+            ? statsData.projectStatus
+              .replace(/_/g, ' ')
+              .replace(/\b\w/g, (l) => l.toUpperCase())
+            : 'Not Assigned';
+
           data = {
             title: 'Student Dashboard',
             subtitle:
@@ -445,47 +467,48 @@ const Dashboard = () => {
             stats: [
               {
                 title: 'My Project',
-                value: statsData.myProjects || 1,
+                value: statsData.myProjects ?? 0,
                 icon: ChartBarIcon,
                 color: 'indigo',
-                change: statsData.projectStatus || 'In Progress',
-                trend: 'info',
+                change: statsData.myProjects > 0 ? 'Assigned' : 'No project yet',
+                trend: statsData.myProjects > 0 ? 'up' : 'info',
                 onClick: () => navigate('/projects'),
               },
               {
                 title: 'Project Status',
-                value: statsData.projectStatus || 'Active',
+                value: formattedStatus,
                 icon: CheckCircleIcon,
                 color: 'emerald',
-                change: 'On Schedule',
-                trend: 'up',
+                change: statsData.projectStatus ? 'Active Project' : 'Pending Allocation',
+                trend: statsData.projectStatus ? 'up' : 'info',
                 onClick: () => navigate('/projects'),
               },
               {
-                title: 'Upcoming Meetings',
-                value: freshMeetings.length || 0,
+                title: 'My Meetings',
+                value: freshMeetings.length,
                 icon: CalendarIcon,
                 color: 'rose',
                 change:
                   freshMeetings.length > 0
-                    ? `Next: ${freshMeetings[0].time}`
+                    ? `Next: ${freshMeetings[0].time || 'today'}`
                     : 'None today',
                 trend: 'info',
                 onClick: () => navigate('/meetings'),
               },
               {
-                title: 'Deadlines',
-                value: freshDeadlines.length || 0,
-                icon: ClipboardListIcon,
+                title: 'My Milestones',
+                value: statsData.myMilestones ?? 0,
+                icon: FlagIcon,
                 color: 'amber',
-                change: 'Upcoming milestones',
+                change: 'Timeline milestones',
                 trend: 'attention',
-                onClick: () => navigate('/projects'),
+                onClick: () => navigate('/timeline'),
               },
             ],
           };
 
           break;
+        }
 
         default:
           data = {
@@ -689,21 +712,63 @@ const Dashboard = () => {
                 </>
               )}
 
-              {(user?.role === 'admin' || user?.role === 'student') && (
+              {user?.role === 'student' && (
+                <>
+                  <button
+                    onClick={() => navigate('/meetings')}
+                    className='group relative inline-flex items-center overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 px-5 py-2.5 font-medium text-white shadow-md transition-all duration-300 hover:shadow-xl'
+                  >
+                    <div className='absolute inset-0 bg-gradient-to-r from-blue-700 to-blue-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
+                    <div className='relative z-10 flex items-center'>
+                      <ClockIcon className='mr-2 h-4 w-4 transition-transform duration-300 group-hover:scale-110' />
+                      <span>My Meetings</span>
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => navigate('/resources')}
+                    className='group relative inline-flex items-center overflow-hidden rounded-xl border border-gray-300 px-5 py-2.5 font-medium text-gray-700 dark:text-gray-200 transition-all duration-300 hover:border-transparent hover:shadow-lg dark:border-slate-600 dark:text-gray-300'
+                  >
+                    <div className='absolute inset-0 bg-gradient-to-r from-gray-100 to-gray-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-slate-700 dark:to-slate-600' />
+                    <div className='relative z-10 flex items-center'>
+                      <BookOpenIcon className='mr-2 h-4 w-4 transition-transform duration-300 group-hover:scale-110 text-emerald-600 dark:text-emerald-400' />
+                      <span>Resource Library</span>
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => navigate('/milestones')}
+                    className='group relative inline-flex items-center overflow-hidden rounded-xl border border-gray-300 px-5 py-2.5 font-medium text-gray-700 dark:text-gray-200 transition-all duration-300 hover:border-transparent hover:shadow-lg dark:border-slate-600 dark:text-gray-300'
+                  >
+                    <div className='absolute inset-0 bg-gradient-to-r from-gray-100 to-gray-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-slate-700 dark:to-slate-600' />
+                    <div className='relative z-10 flex items-center'>
+                      <FlagIcon className='mr-2 h-4 w-4 transition-transform duration-300 group-hover:scale-110 text-amber-600 dark:text-amber-400' />
+                      <span>My Milestones</span>
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => navigate('/timeline')}
+                    className='group relative inline-flex items-center overflow-hidden rounded-xl border border-gray-300 px-5 py-2.5 font-medium text-gray-700 dark:text-gray-200 transition-all duration-300 hover:border-transparent hover:shadow-lg dark:border-slate-600 dark:text-gray-300'
+                  >
+                    <div className='absolute inset-0 bg-gradient-to-r from-gray-100 to-gray-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-slate-700 dark:to-slate-600' />
+                    <div className='relative z-10 flex items-center'>
+                      <FolderKanbanIcon className='mr-2 h-4 w-4 transition-transform duration-300 group-hover:scale-110 text-indigo-600 dark:text-indigo-400' />
+                      <span>Project Timeline</span>
+                    </div>
+                  </button>
+                </>
+              )}
+
+              {user?.role === 'admin' && (
                 <button
-                  onClick={() => {
-                    if (user?.role === 'admin') navigate('/project-types');
-                    else navigate('/projects');
-                  }}
+                  onClick={() => navigate('/project-types')}
                   className='group relative inline-flex items-center overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 px-5 py-2.5 font-medium text-white shadow-md transition-all duration-300 hover:shadow-xl'
                 >
                   <div className='absolute inset-0 bg-gradient-to-r from-blue-700 to-blue-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
                   <div className='relative z-10 flex items-center'>
                     <PlusIcon className='mr-2 h-4 w-4 transition-transform duration-300 group-hover:rotate-90 group-hover:scale-125' />
-                    <span>
-                      {user?.role === 'admin' && 'New Project Type'}
-                      {user?.role === 'student' && 'My Project'}
-                    </span>
+                    <span>New Project Type</span>
                   </div>
                 </button>
               )}
@@ -1010,7 +1075,7 @@ const Dashboard = () => {
               <CheckCircleIcon className='h-5 w-5 text-green-500 dark:text-green-400' />
             </div>
 
-            <div className='grid grid-cols-2 gap-4'>
+            <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
               {[
                 {
                   icon: DocumentTextIcon,
@@ -1115,8 +1180,8 @@ const Dashboard = () => {
           />
         </div>
 
-        {/* System Metrics */}
-        <SystemMetrics stats={statsData} />
+        {/* System Metrics – Admin/Faculty only */}
+        {user?.role !== 'student' && <SystemMetrics stats={statsData} />}
       </div>
 
       {/* Role-specific Content */}

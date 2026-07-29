@@ -187,20 +187,44 @@ const HelpCenter = memo(() => {
       </div>
 
       {/* Contact Support */}
-      <div className='rounded-lg border border-slate-200 bg-slate-50 dark:bg-slate-800 p-8 text-center dark:border-slate-700 /50'>
-        <h3 className='mb-2 text-xl font-bold text-slate-900 dark:text-white'>
+      <div className='rounded-xl border border-slate-200 bg-slate-50 dark:bg-slate-800 p-8 text-center dark:border-slate-700 space-y-4'>
+        <h3 className='text-xl font-bold text-slate-900 dark:text-white'>
           Can't find what you're looking for?
         </h3>
-        <p className='mb-6 text-slate-600 dark:text-slate-400'>
-          Our support team is ready to help you with any technical or
-          administrative issues.
+        <p className='text-xs text-slate-600 dark:text-slate-400 max-w-lg mx-auto'>
+          Our institutional support team is ready to assist you with any project or administrative inquiry.
         </p>
-        <button
-          onClick={() => navigate('/support')}
-          className='rounded bg-blue-600 px-6 py-2.5 font-semibold text-white shadow-sm transition-colors hover:bg-blue-700'
-        >
-          Submit Support Ticket
-        </button>
+
+        <div className='flex flex-wrap items-center justify-center gap-6 text-xs font-semibold py-2'>
+          <div className='flex items-center gap-2'>
+            <span className='text-slate-500 dark:text-slate-400'>Email:</span>
+            <a
+              href='mailto:er.bhavik5202@gmail.com'
+              className='text-blue-600 dark:text-blue-400 font-bold hover:underline'
+            >
+              er.bhavik5202@gmail.com
+            </a>
+          </div>
+
+          <div className='flex items-center gap-2'>
+            <span className='text-slate-500 dark:text-slate-400'>Helpline:</span>
+            <a
+              href='tel:6353712057'
+              className='text-slate-900 dark:text-white font-bold hover:text-blue-600'
+            >
+              6353712057
+            </a>
+          </div>
+        </div>
+
+        <div>
+          <button
+            onClick={() => navigate('/contact')}
+            className='rounded-xl bg-blue-600 px-6 py-2.5 text-xs font-bold text-white shadow-md transition-colors hover:bg-blue-700'
+          >
+            Contact Support Form
+          </button>
+        </div>
       </div>
     </div>
   );

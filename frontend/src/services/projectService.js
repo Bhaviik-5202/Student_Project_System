@@ -8,6 +8,14 @@ import { notifyDataChanged } from '../utils/eventBus';
 
 export const projectService = {
   /**
+   * Fetch dynamic department -> category -> projectType hierarchy options from MongoDB
+   */
+  getProjectOptions: async () => {
+    const res = await api.get('/projects/options');
+    return res.data || res;
+  },
+
+  /**
    * Fetch project dashboard metrics
    */
   getDashboardStats: async () => {

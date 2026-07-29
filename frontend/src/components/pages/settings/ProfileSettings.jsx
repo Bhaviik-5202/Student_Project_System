@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { UserCog } from 'lucide-react';
+import { UserCog, Eye, EyeOff } from 'lucide-react';
 import PageHeader from '../../common/PageHeader';
 import { useAuth } from '../../../hooks/useAuth';
 import authService from '../../../services/authService';
@@ -21,11 +21,18 @@ const ProfileSettings = memo(() => {
   });
   const [loading, setLoading] = useState(false);
 
+  // Password visibility toggles
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   useEffect(() => {
     if (fetchProfile) {
       fetchProfile();
     }
   }, [fetchProfile]);
+
+  const isStudent = user?.role?.toLowerCase() === 'student';
 
   const buildFormData = useCallback((currentUser) => {
     if (!currentUser) {
@@ -34,6 +41,7 @@ const ProfileSettings = memo(() => {
         email: '',
         phone: '',
         department: '',
+        academicYear: '',
         bio: '',
         currentPassword: '',
         newPassword: '',
@@ -46,6 +54,7 @@ const ProfileSettings = memo(() => {
       email: currentUser.email || '',
       phone: currentUser.phone || '',
       department: currentUser.department || '',
+      academicYear: currentUser.academicYear || currentUser.year || '2025-2026',
       bio: currentUser.bio || '',
       currentPassword: '',
       newPassword: '',
@@ -113,6 +122,9 @@ const ProfileSettings = memo(() => {
   const inputClass =
     'w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500';
 
+  const eyeBtnClass =
+    'absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 transition-colors';
+
   return (
     <div className='space-y-6 animate-fade-in pt-0 pb-6'>
       <PageHeader
@@ -169,15 +181,47 @@ const ProfileSettings = memo(() => {
               </div>
               <div>
                 <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300'>
-                  Department
+                  Department {isStudent && <span className='text-xs font-normal text-slate-400'>(Locked)</span>}
                 </label>
                 <input
                   type='text'
                   name='department'
-                  className={inputClass}
+                  disabled={isStudent}
+                  className={`${inputClass} ${
+                    isStudent
+                      ? 'bg-slate-100 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 cursor-not-allowed border-slate-200 dark:border-slate-700'
+                      : ''
+                  }`}
                   value={formData.department}
                   onChange={handleChange}
                 />
+                {isStudent && (
+                  <p className='mt-1 text-[11px] text-slate-400 dark:text-slate-500'>
+                    Department is institutionally assigned and cannot be edited.
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300'>
+                  Academic Year {isStudent && <span className='text-xs font-normal text-slate-400'>(Locked)</span>}
+                </label>
+                <input
+                  type='text'
+                  name='academicYear'
+                  disabled={isStudent}
+                  className={`${inputClass} ${
+                    isStudent
+                      ? 'bg-slate-100 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 cursor-not-allowed border-slate-200 dark:border-slate-700'
+                      : ''
+                  }`}
+                  value={formData.academicYear}
+                  onChange={handleChange}
+                />
+                {isStudent && (
+                  <p className='mt-1 text-[11px] text-slate-400 dark:text-slate-500'>
+                    Academic year is institutionally assigned and cannot be edited.
+                  </p>
+                )}
               </div>
             </div>
 
@@ -206,38 +250,80 @@ const ProfileSettings = memo(() => {
                 <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300'>
                   Current Password
                 </label>
-                <input
-                  type='password'
-                  name='currentPassword'
-                  className={inputClass}
-                  value={formData.currentPassword}
-                  onChange={handleChange}
-                />
+                <div className='relative'>
+                  <input
+                    type={showCurrentPassword ? 'text' : 'password'}
+                    name='currentPassword'
+                    className={inputClass + ' pr-10'}
+                    value={formData.currentPassword}
+                    onChange={handleChange}
+                  />
+                  <button
+                    type='button'
+                    onClick={() => setShowCurrentPassword((v) => !v)}
+                    className={eyeBtnClass}
+                    aria-label={showCurrentPassword ? 'Hide current password' : 'Show current password'}
+                  >
+                    {showCurrentPassword ? (
+                      <EyeOff className='h-4 w-4' />
+                    ) : (
+                      <Eye className='h-4 w-4' />
+                    )}
+                  </button>
+                </div>
               </div>
               <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
                 <div>
                   <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300'>
                     New Password
                   </label>
-                  <input
-                    type='password'
-                    name='newPassword'
-                    className={inputClass}
-                    value={formData.newPassword}
-                    onChange={handleChange}
-                  />
+                  <div className='relative'>
+                    <input
+                      type={showNewPassword ? 'text' : 'password'}
+                      name='newPassword'
+                      className={inputClass + ' pr-10'}
+                      value={formData.newPassword}
+                      onChange={handleChange}
+                    />
+                    <button
+                      type='button'
+                      onClick={() => setShowNewPassword((v) => !v)}
+                      className={eyeBtnClass}
+                      aria-label={showNewPassword ? 'Hide new password' : 'Show new password'}
+                    >
+                      {showNewPassword ? (
+                        <EyeOff className='h-4 w-4' />
+                      ) : (
+                        <Eye className='h-4 w-4' />
+                      )}
+                    </button>
+                  </div>
                 </div>
                 <div>
                   <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300'>
                     Confirm New Password
                   </label>
-                  <input
-                    type='password'
-                    name='confirmPassword'
-                    className={inputClass}
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                  />
+                  <div className='relative'>
+                    <input
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      name='confirmPassword'
+                      className={inputClass + ' pr-10'}
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
+                    />
+                    <button
+                      type='button'
+                      onClick={() => setShowConfirmPassword((v) => !v)}
+                      className={eyeBtnClass}
+                      aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
+                    >
+                      {showConfirmPassword ? (
+                        <EyeOff className='h-4 w-4' />
+                      ) : (
+                        <Eye className='h-4 w-4' />
+                      )}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -268,3 +354,4 @@ const ProfileSettings = memo(() => {
 ProfileSettings.displayName = 'ProfileSettings';
 
 export default ProfileSettings;
+

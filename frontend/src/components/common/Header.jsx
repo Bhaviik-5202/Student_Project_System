@@ -44,7 +44,11 @@ const Header = memo(
     const calendarRef = useRef(null);
 
     // Global notifications context
-    const { notifications, unreadCount, markAllAsRead, deleteNotification } = useNotificationsContext();
+    const { notifications, unreadCount, markAllAsRead, deleteNotification, clearNotificationsState } = useNotificationsContext();
+
+    const AUTH_PAGES = ['/', '/login', '/register', '/forgot-password', '/reset-password', '/verify-otp'];
+    const isAuthPage = AUTH_PAGES.includes(location.pathname);
+    const shouldShowNotifications = Boolean(user) && !isAuthPage;
 
     const closeAllDropdowns = useCallback(() => {
       setShowUserMenu(false);
@@ -53,6 +57,17 @@ const Header = memo(
       setShowCalendar(false);
       setShowSearch(false);
     }, []);
+
+    const handleLogout = useCallback(() => {
+      closeAllDropdowns();
+      if (clearNotificationsState) {
+        clearNotificationsState();
+      }
+      if (clearNotifications) {
+        clearNotifications();
+      }
+      logout();
+    }, [closeAllDropdowns, clearNotificationsState, clearNotifications, logout]);
 
     // Outside click handler
     useEffect(() => {
@@ -238,7 +253,10 @@ const Header = memo(
     return (
       <>
         <header
-          className={`sticky top-0 z-[100] h-16 w-full bg-white dark:bg-slate-900/95 backdrop-blur-md transition-all duration-300 dark:bg-gray-900/95 ${isScrolled ? 'shadow-lg dark:shadow-gray-800/50' : 'border-b border-gray-200/80 dark:border-gray-700/80'}`}
+          className={`relative z-[100] h-16 w-full transition-all duration-300 ${isScrolled
+            ? 'bg-white/95 backdrop-blur-md shadow-sm dark:bg-slate-900/95'
+            : 'bg-white border-b border-gray-200/80 dark:bg-slate-900 dark:border-gray-700/80'
+            }`}
         >
           <div className='h-full w-full px-4 lg:px-6'>
             <div className='flex h-full items-center justify-between gap-4'>
@@ -340,37 +358,39 @@ const Header = memo(
                   />
                 </button>
 
-                <div className='relative' ref={notificationsRef}>
-                  <button
-                    onClick={() => {
-                      closeAllDropdowns();
-                      setShowNotifications(!showNotifications);
-                    }}
-                    className={`relative rounded-xl p-2.5 transition-all ${showNotifications ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/40' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:bg-gray-800  dark:hover:bg-gray-800'}`}
-                    aria-label='Notifications'
-                  >
-                    <HeaderIcon name='bell' size='text-lg' />
-                    {unreadCount > 0 && (
-                      <span className='absolute -right-0.5 -top-0.5 flex h-5 w-5'>
-                        <span className='relative inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm'>
-                          {unreadCount > 9 ? '9+' : unreadCount}
-                        </span>
-                      </span>
-                    )}
-                  </button>
-                  <Dropdown isOpen={showNotifications} className='w-80 sm:w-96'>
-                    <NotificationMenu
-                      notifications={notifications}
-                      unreadCount={unreadCount}
-                      onMarkAllAsRead={() => {
-                        markAllAsRead();
-                        setShowNotifications(false);
+                {shouldShowNotifications && (
+                  <div className='relative' ref={notificationsRef}>
+                    <button
+                      onClick={() => {
+                        closeAllDropdowns();
+                        setShowNotifications(!showNotifications);
                       }}
-                      onClose={() => setShowNotifications(false)}
-                      onDelete={deleteNotification}
-                    />
-                  </Dropdown>
-                </div>
+                      className={`relative rounded-xl p-2.5 transition-all ${showNotifications ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/40' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:bg-gray-800  dark:hover:bg-gray-800'}`}
+                      aria-label='Notifications'
+                    >
+                      <HeaderIcon name='bell' size='text-lg' />
+                      {unreadCount > 0 && (
+                        <span className='absolute -right-0.5 -top-0.5 flex h-5 w-5'>
+                          <span className='relative inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm'>
+                            {unreadCount > 9 ? '9+' : unreadCount}
+                          </span>
+                        </span>
+                      )}
+                    </button>
+                    <Dropdown isOpen={showNotifications} className='w-80 sm:w-96'>
+                      <NotificationMenu
+                        notifications={notifications}
+                        unreadCount={unreadCount}
+                        onMarkAllAsRead={() => {
+                          markAllAsRead();
+                          setShowNotifications(false);
+                        }}
+                        onClose={() => setShowNotifications(false)}
+                        onDelete={deleteNotification}
+                      />
+                    </Dropdown>
+                  </div>
+                )}
 
                 <div className='relative' ref={userMenuRef}>
                   <button
@@ -398,7 +418,7 @@ const Header = memo(
                     <UserMenu
                       user={user}
                       initials={getUserInitials()}
-                      onLogout={logout}
+                      onLogout={handleLogout}
                       onClose={() => setShowUserMenu(false)}
                     />
                   </Dropdown>
