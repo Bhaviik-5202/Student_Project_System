@@ -1,15 +1,11 @@
 /**
  * Student Project System - Backend Server
  * ------------------------------------------------------------------
- * Initializes Express application with:
- *  - Security middleware
- *  - Rate limiting
- *  - Compression
- *  - Professional logging (Winston)
- *  - Swagger docs
- *  - API routes
- *  - Error handling
- *  - Graceful shutdown
+ * Configured as a Vercel Serverless Function & Standalone Node Server.
+ *  - Security middleware & rate limiting
+ *  - Compression & Swagger docs
+ *  - Dynamic MongoDB connection assurance for serverless environments
+ *  - API routes & Global Error Handler
  */
 
 require('dotenv').config();
@@ -21,19 +17,12 @@ const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const compression = require('compression');
-
 const path = require('path');
+
 const connectDB = require('./config/db');
 const logger = require('./utils/logger');
-
-const seedAdmin = async () => {
-  try {
-    const seed = require('./utils/seedAdmin');
-    await seed();
-  } catch (err) {
-    logger.error('Failed to seed admin', { err });
-  }
-};
+const seedAdmin = require('./utils/seedAdmin');
+const { backfillMissingIdentifiers } = require('./utils/idGenerator');
 
 const httpLogger = require('./middleware/logger');
 const errorHandler = require('./middleware/errorHandler');
@@ -41,7 +30,7 @@ const sendResponse = require('./utils/response');
 
 const app = express();
 
-// Trust proxy (important for deployment behind reverse proxy)
+// Trust proxy (important for deployment behind Vercel / reverse proxy)
 app.set('trust proxy', 1);
 
 // Enable gzip compression
@@ -98,6 +87,29 @@ app.use((req, res, next) => {
   next();
 });
 
+// Middleware to ensure DB connection & seeding on Vercel Serverless Invocation
+let isDbInitialized = false;
+const ensureDbConnected = async (req, res, next) => {
+  try {
+    if (mongoose.connection.readyState !== 1) {
+      await connectDB();
+    }
+    if (!isDbInitialized) {
+      await seedAdmin();
+      await backfillMissingIdentifiers();
+      isDbInitialized = true;
+    }
+    next();
+  } catch (err) {
+    logger.error('Database connection error in serverless middleware', {
+      err: err.message,
+    });
+    next(err);
+  }
+};
+
+app.use(ensureDbConnected);
+
 // Rate limiting
 app.use(
   rateLimit({
@@ -129,10 +141,20 @@ app.use(express.json());
 // Professional HTTP request logger
 app.use(httpLogger);
 
-//  Swagger Documentation
+// Root health check endpoint for Vercel
+app.get('/', (req, res) => {
+  res.json({
+    status: 'online',
+    message: 'Student Project System Backend API',
+    version: '1.0.0',
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// Swagger Documentation
 require('./config/swagger')(app);
 
-//  API Routes
+// API Routes
 const apiRoutes = require('./routes');
 app.use('/api/v1', apiRoutes);
 
@@ -151,20 +173,20 @@ app.use('/api', (req, res) => {
   );
 });
 
-//  Global Error Handler
+// Global Error Handler
 app.use(errorHandler);
 
-const { backfillMissingIdentifiers } = require('./utils/idGenerator');
+// Standalone Server Initialization (for local development & tests)
+if (require.main === module) {
+  const PORT = process.env.PORT || 5000;
+  const ENV = process.env.NODE_ENV || 'development';
 
-const startServer = async () => {
-  try {
-    await connectDB();
-    await seedAdmin();
-    await backfillMissingIdentifiers();
-
-    if (require.main === module) {
-      const PORT = process.env.PORT || 5000;
-      const ENV = process.env.NODE_ENV || 'development';
+  const startServer = async () => {
+    try {
+      await connectDB();
+      await seedAdmin();
+      await backfillMissingIdentifiers();
+      isDbInitialized = true;
 
       const server = app.listen(PORT, () => {
         logger.banner({
@@ -187,26 +209,16 @@ const startServer = async () => {
 
       process.on('SIGINT', () => shutdown('SIGINT'));
       process.on('SIGTERM', () => shutdown('SIGTERM'));
+    } catch (error) {
+      logger.error('Failed to start server', { err: error });
+      if (process.env.NODE_ENV !== 'test') {
+        process.exit(1);
+      }
     }
-  } catch (error) {
-    logger.error('Failed to start server', { err: error });
-    if (process.env.NODE_ENV !== 'test') {
-      process.exit(1);
-    }
-    throw error; // Re-throw for tests
-  }
-};
+  };
 
-startServer();
+  startServer();
+}
 
-process.on('unhandledRejection', (err) => {
-  logger.error('Unhandled Promise Rejection', { err });
-  process.exit(1);
-});
-
-process.on('uncaughtException', (err) => {
-  logger.error('Uncaught Exception — process will exit', { err });
-  process.exit(1);
-});
-
+// Export Express app as Serverless Function handler
 module.exports = app;
