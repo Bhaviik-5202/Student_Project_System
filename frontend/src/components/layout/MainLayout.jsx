@@ -1,4 +1,4 @@
-import { useState, useEffect, Suspense, useCallback, memo } from 'react';
+import { useState, useEffect, Suspense, useCallback, memo, lazy } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Header from '../common/Header';
 import TopNav from '../common/TopNav';
@@ -9,7 +9,10 @@ import PageTransition from '../common/PageTransition';
 import ErrorBoundary from '../common/ErrorBoundary';
 import Skeleton, { DashboardSkeleton, TableSkeleton } from '../common/Skeleton';
 import useScreenSize from '../../hooks/useScreenSize';
-import AnimatedBackground from './AnimatedBackground';
+
+// Lazy-load Three.js animated background — defers the 888 kB vendor-three chunk
+// until after the main UI is interactive, improving initial load time.
+const AnimatedBackground = lazy(() => import('./AnimatedBackground'));
 
 const MainLayout = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -60,7 +63,10 @@ const MainLayout = () => {
 
       <div className='flex flex-1 mt-6'>
         <div className='relative flex w-full min-w-0 flex-1 flex-col'>
-          <AnimatedBackground />
+          {/* AnimatedBackground is lazy — Three.js loads after main UI is ready */}
+          <Suspense fallback={null}>
+            <AnimatedBackground />
+          </Suspense>
           <main
             id='main-content'
             className='relative z-10 flex-1 px-4 pb-6 md:px-6'
