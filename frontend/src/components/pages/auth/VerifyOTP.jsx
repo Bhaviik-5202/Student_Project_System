@@ -24,6 +24,13 @@ const VerifyOTP = memo(() => {
 
   const inputRefs = useRef([]);
 
+  // Auto-focus first input box on mount
+  useEffect(() => {
+    if (inputRefs.current[0]) {
+      inputRefs.current[0].focus();
+    }
+  }, []);
+
   // Resend Countdown Timer
   useEffect(() => {
     if (timer > 0) {
@@ -56,34 +63,41 @@ const VerifyOTP = memo(() => {
 
       // Auto-focus next input if value entered
       if (value && index < 5) {
-        inputRefs.current[index + 1].focus();
+        inputRefs.current[index + 1]?.focus();
       }
     },
     [otp]
   );
 
-  // Traversal: Handle backspace/delete focus shifting
+  // Traversal: Handle backspace/delete & arrow key focus shifting
   const handleKeyDown = useCallback(
     (index, e) => {
-      if (e.key === 'Backspace' && !otp[index] && index > 0) {
-        inputRefs.current[index - 1].focus();
+      if (e.key === 'Backspace') {
+        if (!otp[index] && index > 0) {
+          inputRefs.current[index - 1]?.focus();
+        }
+      } else if (e.key === 'ArrowLeft' && index > 0) {
+        inputRefs.current[index - 1]?.focus();
+      } else if (e.key === 'ArrowRight' && index < 5) {
+        inputRefs.current[index + 1]?.focus();
       }
     },
     [otp]
   );
 
-  // Paste handler for 6 digits
+  // Paste handler for 6 digits (supports formatted input like 123-456 or 123 456)
   const handlePaste = useCallback((e) => {
     e.preventDefault();
     const pastedData = e.clipboardData.getData('text').trim();
-    if (!/^\d{6}$/.test(pastedData)) {
+    const digitsOnly = pastedData.replace(/\D/g, '');
+    if (digitsOnly.length !== 6) {
       toast.error('Please paste a valid 6-digit code.');
       return;
     }
 
-    const digits = pastedData.split('');
+    const digits = digitsOnly.slice(0, 6).split('');
     setOtp(digits);
-    inputRefs.current[5].focus();
+    inputRefs.current[5]?.focus();
   }, []);
 
   const handleSubmit = useCallback(
@@ -123,7 +137,7 @@ const VerifyOTP = memo(() => {
         setTimer(60);
         setCanResend(false);
         setOtp(['', '', '', '', '', '']);
-        inputRefs.current[0].focus();
+        inputRefs.current[0]?.focus();
       } else {
         toast.error(res.message || 'Failed to resend code');
       }
@@ -135,46 +149,78 @@ const VerifyOTP = memo(() => {
   }, [canResend, email]);
 
   return (
-    <div className='space-y-6'>
-      <div className='text-center'>
-        <div className='mb-4 flex justify-center'>
-          <div className='flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-xl'>
+    <div className='w-full space-y-6'>
+      {/* Header Container */}
+      <div className='text-center space-y-3'>
+        <div className='flex justify-center mb-2'>
+          <div className='flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 shadow-lg shadow-indigo-500/20'>
             <ShieldCheck className='h-8 w-8 text-white' />
           </div>
         </div>
-        <h2 className='text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white'>
+        <h2 className='text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white'>
           Verify Email
         </h2>
-        <p className='mx-auto mt-2.5 max-w-sm text-sm leading-relaxed text-slate-600 dark:text-slate-400'>
-          We've sent a 6-digit verification code to{' '}
-          <span className='font-bold text-slate-900 dark:text-slate-200'>
+        <p className='mx-auto max-w-sm text-sm font-medium leading-relaxed text-slate-600 dark:text-slate-300'>
+          We&apos;ve sent a 6-digit verification code to{' '}
+          <span className='font-bold text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800/80 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-700/60 inline-block mt-0.5 break-all'>
             {email}
           </span>
-          .
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className='space-y-6'>
         {/* OTP Input Grid */}
-        <div className='flex justify-between gap-2.5' onPaste={handlePaste}>
-          {otp.map((digit, index) => (
-            <input
-              key={index}
-              ref={(el) => (inputRefs.current[index] = el)}
-              type='text'
-              maxLength={1}
-              value={digit}
-              onChange={(e) => handleChange(index, e.target.value)}
-              onKeyDown={(e) => handleKeyDown(index, e)}
-              className='h-14 w-12 rounded-xl border border-slate-200 bg-slate-50 dark:bg-slate-800 text-center text-xl font-bold transition-all focus:border-blue-500 focus:bg-white dark:bg-slate-900 focus:outline-none focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700  dark:text-white'
-            />
-          ))}
+        <div
+          className='grid grid-cols-6 gap-2 sm:gap-3 py-2'
+          onPaste={handlePaste}
+        >
+          {otp.map((digit, index) => {
+            const isFilled = Boolean(digit);
+            return (
+              <input
+                key={index}
+                ref={(el) => (inputRefs.current[index] = el)}
+                type='text'
+                inputMode='numeric'
+                pattern='[0-9]*'
+                maxLength={1}
+                value={digit}
+                placeholder='•'
+                aria-label={`Digit ${index + 1}`}
+                onChange={(e) => handleChange(index, e.target.value)}
+                onKeyDown={(e) => handleKeyDown(index, e)}
+                className={`
+                  h-12 sm:h-14 md:h-16 w-full max-w-[56px] mx-auto rounded-xl sm:rounded-2xl
+                  text-center text-xl sm:text-2xl font-extrabold
+                  transition-all duration-200 outline-none
+                  
+                  /* LIGHT MODE STYLING */
+                  bg-white text-slate-900 placeholder:text-slate-300
+                  ${
+                    isFilled
+                      ? 'border-2 border-indigo-600 bg-indigo-50/20 shadow-sm'
+                      : 'border-2 border-slate-300 hover:border-slate-400 bg-white'
+                  }
+                  focus:border-indigo-600 focus:bg-white focus:ring-4 focus:ring-indigo-500/25 focus:-translate-y-0.5 focus:shadow-md
+                  
+                  /* DARK MODE STYLING */
+                  dark:text-white dark:placeholder:text-slate-600
+                  ${
+                    isFilled
+                      ? 'dark:border-indigo-400 dark:bg-indigo-950/30'
+                      : 'dark:border-slate-700 dark:bg-slate-900/90 dark:hover:border-slate-600'
+                  }
+                  dark:focus:border-indigo-400 dark:focus:bg-slate-900 dark:focus:ring-indigo-400/30
+                `}
+              />
+            );
+          })}
         </div>
 
         <button
           type='submit'
-          disabled={loading}
-          className='flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 py-3.5 font-bold text-white shadow-lg shadow-blue-500/15 transition-all hover:brightness-110 active:scale-[0.98] disabled:opacity-50'
+          disabled={loading || otp.join('').length !== 6}
+          className='flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 py-3.5 px-4 font-extrabold text-white shadow-lg shadow-indigo-500/20 transition-all hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none'
         >
           {loading ? (
             <div className='flex items-center gap-2'>
@@ -193,7 +239,7 @@ const VerifyOTP = memo(() => {
               type='button'
               onClick={handleResend}
               disabled={resendLoading}
-              className='flex items-center gap-1.5 font-bold text-blue-600 hover:underline dark:text-blue-400'
+              className='flex items-center gap-1.5 font-bold text-indigo-600 hover:text-indigo-700 hover:underline dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors'
             >
               {resendLoading ? (
                 <Loader2 className='h-4 w-4 animate-spin' />
@@ -205,7 +251,7 @@ const VerifyOTP = memo(() => {
           ) : (
             <p className='text-slate-500 dark:text-slate-400'>
               Resend code in{' '}
-              <span className='font-bold text-slate-800 dark:text-slate-200'>
+              <span className='font-bold text-slate-900 dark:text-slate-100'>
                 {timer}s
               </span>
             </p>
@@ -215,7 +261,7 @@ const VerifyOTP = memo(() => {
         <div className='pt-2 text-center'>
           <Link
             to='/register'
-            className='inline-flex items-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100 dark:text-slate-400 dark:hover:text-slate-200'
+            className='inline-flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200 transition-colors'
           >
             <ArrowLeft className='h-4 w-4' />
             <span>Back to Sign Up</span>
