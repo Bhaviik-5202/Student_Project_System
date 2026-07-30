@@ -1,6 +1,7 @@
 // src/main.jsx
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { BrowserRouter as Router } from 'react-router-dom';
 import CustomToaster from './components/common/CustomToaster';
 import App from './App.jsx';
 import { AuthProvider } from './context/AuthContext';
@@ -91,12 +92,14 @@ ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
     <ErrorBoundary>
       <ThemeProvider>
-        <AuthProvider>
-          <NotificationProvider>
-            <App />
-            <CustomToaster />
-          </NotificationProvider>
-        </AuthProvider>
+        <Router>
+          <AuthProvider>
+            <NotificationProvider>
+              <App />
+              <CustomToaster />
+            </NotificationProvider>
+          </AuthProvider>
+        </Router>
       </ThemeProvider>
     </ErrorBoundary>
   </React.StrictMode>

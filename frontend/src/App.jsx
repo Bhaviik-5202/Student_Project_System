@@ -1,6 +1,5 @@
 // src/App.jsx
 import { useState, useEffect, Suspense } from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
 import AppRoutes from './routes/AppRoutes';
 import SplashScreen from './components/common/SplashScreen';
 import ScrollToTop from './components/common/ScrollToTop';
@@ -27,13 +26,13 @@ function App() {
   }
 
   return (
-    <Router>
+    <>
       <ScrollToTop />
       <RouteProgressBar />
       <Suspense fallback={null}>
         <AppRoutes />
       </Suspense>
-    </Router>
+    </>
   );
 }
 
