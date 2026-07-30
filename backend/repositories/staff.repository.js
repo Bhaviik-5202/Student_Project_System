@@ -72,3 +72,11 @@ exports.remove = (id) => Staff.findByIdAndDelete(id);
  * @returns {Promise<number>} Record count
  */
 exports.count = (filter = {}) => Staff.countDocuments(filter);
+
+/**
+ * Locate a staff member by their email address
+ * @param {string} email - Staff email
+ * @returns {Promise<Object|null>} Staff document or null
+ */
+exports.findByEmail = (email) =>
+  Staff.findOne({ email: email ? email.toLowerCase().trim() : '' });

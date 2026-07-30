@@ -3,19 +3,41 @@ const sendResponse = require('../utils/response');
 
 /**
  * Staff Controller
- * Manages faculty and administrator profiles, departmental assignments, and professional information.
+ * Manages faculty profiles, departmental assignments, and professional information.
  */
 
 /**
  * Register a new staff member
  * @route   POST /api/staff
- * @desc    Onboard a new faculty or admin profile with departmental info
+ * @desc    Onboard a new faculty profile with departmental info
  * @access  Admin
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  */
 exports.createStaff = async (req, res) => {
   try {
+    const superAdminEmail = (
+      process.env.SUPER_ADMIN_EMAIL ||
+      process.env.ADMIN_EMAIL ||
+      'er.bhavik5202@gmail.com'
+    )
+      .toLowerCase()
+      .trim();
+
+    if (
+      req.body?.role === 'admin' ||
+      req.body?.email?.toLowerCase().trim() === superAdminEmail
+    ) {
+      return sendResponse(
+        res,
+        {
+          success: false,
+          message: 'Super Admin account is protected and cannot be modified.',
+        },
+        403
+      );
+    }
+
     const result = await staffService.create(req.body);
 
     sendResponse(
@@ -45,7 +67,7 @@ exports.createStaff = async (req, res) => {
 /**
  * Fetch all staff records
  * @route   GET /api/staff
- * @desc    Retrieve a list of all staff members (Faculty and Admins)
+ * @desc    Retrieve a list of all staff members (Faculty)
  * @access  Admin
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
@@ -128,6 +150,30 @@ exports.getStaffById = async (req, res) => {
  */
 exports.updateStaff = async (req, res) => {
   try {
+    const superAdminEmail = (
+      process.env.SUPER_ADMIN_EMAIL ||
+      process.env.ADMIN_EMAIL ||
+      'er.bhavik5202@gmail.com'
+    )
+      .toLowerCase()
+      .trim();
+
+    const staffResult = await staffService.getById(req.params.id);
+    if (
+      staffResult.data &&
+      (staffResult.data.role === 'admin' ||
+        staffResult.data.email?.toLowerCase().trim() === superAdminEmail)
+    ) {
+      return sendResponse(
+        res,
+        {
+          success: false,
+          message: 'Super Admin account is protected and cannot be modified.',
+        },
+        403
+      );
+    }
+
     const result = await staffService.update(req.params.id, req.body);
 
     sendResponse(
@@ -135,12 +181,12 @@ exports.updateStaff = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? 'Staff member not found'
+          ? result.message || 'Staff member not found'
           : 'Staff member updated successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200
+      result.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(
@@ -166,6 +212,30 @@ exports.updateStaff = async (req, res) => {
  */
 exports.deleteStaff = async (req, res) => {
   try {
+    const superAdminEmail = (
+      process.env.SUPER_ADMIN_EMAIL ||
+      process.env.ADMIN_EMAIL ||
+      'er.bhavik5202@gmail.com'
+    )
+      .toLowerCase()
+      .trim();
+
+    const staffResult = await staffService.getById(req.params.id);
+    if (
+      staffResult.data &&
+      (staffResult.data.role === 'admin' ||
+        staffResult.data.email?.toLowerCase().trim() === superAdminEmail)
+    ) {
+      return sendResponse(
+        res,
+        {
+          success: false,
+          message: 'Super Admin account is protected and cannot be modified.',
+        },
+        403
+      );
+    }
+
     const result = await staffService.remove(req.params.id);
 
     sendResponse(
@@ -173,12 +243,12 @@ exports.deleteStaff = async (req, res) => {
       {
         success: !result.error,
         message: result.error
-          ? 'Staff member not found'
+          ? result.message || 'Staff member not found'
           : 'Staff member deleted successfully',
         data: result.data || null,
         error: result.error || null,
       },
-      result.error ? 404 : 200
+      result.error ? 400 : 200
     );
   } catch (error) {
     sendResponse(

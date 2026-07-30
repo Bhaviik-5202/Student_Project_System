@@ -89,6 +89,18 @@ exports.register = async (req, res) => {
   try {
     const { name, email, password, role = 'student' } = req.body;
 
+    if (role && String(role).toLowerCase().trim() === 'admin') {
+      return sendResponse(
+        res,
+        {
+          success: false,
+          message: 'Admin registration is not allowed.',
+          error: 'Forbidden',
+        },
+        403
+      );
+    }
+
     if (!name || !email || !password) {
       return sendResponse(
         res,
@@ -567,17 +579,24 @@ exports.updateSettings = async (req, res) => {
  */
 exports.deleteAccount = async (req, res) => {
   try {
-    // Protect master admin from self-deletion
+    const superAdminEmail = (
+      process.env.SUPER_ADMIN_EMAIL ||
+      process.env.ADMIN_EMAIL ||
+      'er.bhavik5202@gmail.com'
+    ).toLowerCase().trim();
+
+    // Protect Super Admin from self-deletion
     const userResult = await userService.getById(req.user.id);
     if (
       userResult.data &&
-      userResult.data.email === 'er.bhavik5202@gmail.com'
+      (userResult.data.role === 'admin' ||
+        userResult.data.email.toLowerCase().trim() === superAdminEmail)
     ) {
       return sendResponse(
         res,
         {
           success: false,
-          message: 'Master administrator account cannot be deleted',
+          message: 'Super Admin account cannot be deleted',
         },
         403
       );

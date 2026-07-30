@@ -13,6 +13,8 @@ const authMiddleware = require('../middleware/auth.middleware');
 const validateRequest = require('../middleware/validateRequest');
 const upload = require('../utils/upload');
 
+const { rejectAdminCreation } = require('../middleware/adminGuard');
+
 /**
  * @route   POST /api/v1/auth/register
  * @desc    Register a new user
@@ -20,6 +22,7 @@ const upload = require('../utils/upload');
  */
 router.post(
   '/register',
+  rejectAdminCreation,
   [
     body('name').notEmpty().withMessage('Name is required'),
 
@@ -31,8 +34,8 @@ router.post(
 
     body('role')
       .optional()
-      .isIn(['student', 'faculty', 'admin'])
-      .withMessage('Role must be one of: student, faculty, admin'),
+      .isIn(['student', 'faculty'])
+      .withMessage('Role must be one of: student, faculty'),
   ],
   validateRequest,
   authController.register

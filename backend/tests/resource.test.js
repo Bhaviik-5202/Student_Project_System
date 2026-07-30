@@ -13,21 +13,18 @@ let resourceId;
 before(async function () {
   this.timeout(20000);
 
-  const user = {
-    name: 'Resource User',
-    email: `testuser+resource+${Date.now()}@example.com`,
-    password: 'testpass123',
-    role: 'admin',
-    bypassOTP: true,
-  };
+  const adminEmail =
+    process.env.SUPER_ADMIN_EMAIL ||
+    process.env.ADMIN_EMAIL ||
+    'er.bhavik5202@gmail.com';
+  const adminPassword =
+    process.env.SUPER_ADMIN_PASSWORD ||
+    process.env.ADMIN_PASSWORD ||
+    'Bhaviik@5202StuProject01';
 
-  // Register
-  await request(app).post('/api/v1/auth/register').send(user);
-
-  // Login
   const loginRes = await request(app).post('/api/v1/auth/login').send({
-    email: user.email,
-    password: user.password,
+    email: adminEmail,
+    password: adminPassword,
   });
 
   token = loginRes.body.data.token;

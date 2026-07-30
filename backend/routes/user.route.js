@@ -12,6 +12,7 @@ const userController = require('../controllers/user.controller');
 const authMiddleware = require('../middleware/auth.middleware');
 const roleMiddleware = require('../middleware/roleMiddleware');
 const validateRequest = require('../middleware/validateRequest');
+const { rejectAdminCreation, protectSuperAdmin } = require('../middleware/adminGuard');
 
 /**
  * @route   POST /api/v1/users
@@ -22,6 +23,7 @@ router.post(
   '/',
   authMiddleware,
   roleMiddleware(['admin']),
+  rejectAdminCreation,
   userController.createUser
 );
 
@@ -58,6 +60,8 @@ router.put(
   '/:id',
   authMiddleware,
   roleMiddleware(['admin']),
+  rejectAdminCreation,
+  protectSuperAdmin,
   [
     body('name').optional().notEmpty().withMessage('Name cannot be empty'),
 
@@ -70,8 +74,8 @@ router.put(
 
     body('role')
       .optional()
-      .isIn(['admin', 'faculty', 'student'])
-      .withMessage('Invalid role'),
+      .isIn(['faculty', 'student'])
+      .withMessage('Invalid role - cannot assign Admin role'),
   ],
   validateRequest,
   userController.updateUser
@@ -86,6 +90,7 @@ router.delete(
   '/:id',
   authMiddleware,
   roleMiddleware(['admin']),
+  protectSuperAdmin,
   userController.deleteUser
 );
 

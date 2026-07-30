@@ -159,7 +159,7 @@ exports.getDashboardStats = async () => {
       if (role === 'student') {
         totalStudents += cnt;
         if (status === 'active' || status === 'Active') activeStudents += cnt;
-      } else if (role === 'faculty' || role === 'admin') {
+      } else if (role === 'faculty') {
         if (status === 'active' || status === 'Active') activeFaculty += cnt;
       }
     });

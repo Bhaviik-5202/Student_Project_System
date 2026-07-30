@@ -211,6 +211,26 @@ const AppRoutes = () => {
         }
       />
       <Route
+        path='/super-admin/login'
+        element={
+          <PublicRoute>
+            <AuthLayout>
+              <Login forceAdminMode={true} />
+            </AuthLayout>
+          </PublicRoute>
+        }
+      />
+      <Route
+        path='/admin/login'
+        element={
+          <PublicRoute>
+            <AuthLayout>
+              <Login forceAdminMode={true} />
+            </AuthLayout>
+          </PublicRoute>
+        }
+      />
+      <Route
         path='/register'
         element={
           <PublicRoute>

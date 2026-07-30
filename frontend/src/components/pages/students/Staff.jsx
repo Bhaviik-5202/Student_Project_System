@@ -74,7 +74,7 @@ const StaffRow = memo(({ staff, onEdit, onDelete }) => (
       {staff.phone && staff.phone !== 'N/A' ? (
         staff.phone
       ) : (
-        <span className='italic text-gray-400'>+91 (0288) 2211401</span>
+        <span className='italic text-gray-400'>6353712057</span>
       )}
     </td>
 
@@ -136,8 +136,17 @@ const Staff = memo(() => {
     setError(null);
     const res = await staffService.getAllStaff();
     if (res.success) {
+      const nonAdminStaff = (res.data || []).filter((s) => {
+        const role = (s.role || '').toLowerCase();
+        const email = (s.email || '').toLowerCase().trim();
+        return (
+          role !== 'admin' &&
+          role !== 'administrator' &&
+          email !== 'er.bhavik5202@gmail.com'
+        );
+      });
       setStaffMembers(
-        (res.data || []).map((staff, index) => ({
+        nonAdminStaff.map((staff, index) => ({
           dbId: staff._id || staff.id,
           id: staff.staffId || `STF-${String(index + 1).padStart(3, '0')}`,
           name: staff.name,
@@ -177,11 +186,28 @@ const Staff = memo(() => {
   }, [location.state, fetchStaff, navigate, location.pathname]);
 
   const handleEditStaff = (staff) => {
+    if (
+      staff.role?.toLowerCase() === 'admin' ||
+      staff.email?.toLowerCase().trim() === 'er.bhavik5202@gmail.com'
+    ) {
+      toast.error('Super Admin account is protected and cannot be modified.');
+      return;
+    }
     const targetId = staff.dbId || staff.id;
     navigate(`/staff/${targetId}/edit`);
   };
 
   const handleDeleteStaff = async (id) => {
+    const targetStaff = staffMembers.find((s) => (s.dbId || s.id) === id);
+    if (
+      targetStaff &&
+      (targetStaff.role?.toLowerCase() === 'admin' ||
+        targetStaff.email?.toLowerCase().trim() === 'er.bhavik5202@gmail.com')
+    ) {
+      toast.error('Super Admin account is protected and cannot be modified.');
+      return;
+    }
+
     if (window.confirm('Permanently remove this staff record?')) {
       const toastId = toast.loading('Removing record...');
       const res = await staffService.deleteStaff(id);

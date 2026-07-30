@@ -252,65 +252,35 @@ const ProfileSettings = memo(() => {
           </div>
 
           {/* Change Password */}
-          <div>
-            <h2 className='mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100'>
-              Change Password
-            </h2>
-            <div className='space-y-4'>
-              <div>
-                <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300'>
-                  Current Password
-                </label>
-                <div className='relative'>
-                  <input
-                    type={showCurrentPassword ? 'text' : 'password'}
-                    name='currentPassword'
-                    className={inputClass + ' pr-10'}
-                    value={formData.currentPassword}
-                    onChange={handleChange}
-                  />
-                  <button
-                    type='button'
-                    onClick={() => setShowCurrentPassword((v) => !v)}
-                    className={eyeBtnClass}
-                    aria-label={
-                      showCurrentPassword
-                        ? 'Hide current password'
-                        : 'Show current password'
-                    }
-                  >
-                    {showCurrentPassword ? (
-                      <EyeOff className='h-4 w-4' />
-                    ) : (
-                      <Eye className='h-4 w-4' />
-                    )}
-                  </button>
-                </div>
-              </div>
-              <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+          {user?.role?.toLowerCase() !== 'admin' && (
+            <div>
+              <h2 className='mb-4 text-lg font-semibold text-slate-900 dark:text-slate-100'>
+                Change Password
+              </h2>
+              <div className='space-y-4'>
                 <div>
                   <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300'>
-                    New Password
+                    Current Password
                   </label>
                   <div className='relative'>
                     <input
-                      type={showNewPassword ? 'text' : 'password'}
-                      name='newPassword'
+                      type={showCurrentPassword ? 'text' : 'password'}
+                      name='currentPassword'
                       className={inputClass + ' pr-10'}
-                      value={formData.newPassword}
+                      value={formData.currentPassword}
                       onChange={handleChange}
                     />
                     <button
                       type='button'
-                      onClick={() => setShowNewPassword((v) => !v)}
+                      onClick={() => setShowCurrentPassword((v) => !v)}
                       className={eyeBtnClass}
                       aria-label={
-                        showNewPassword
-                          ? 'Hide new password'
-                          : 'Show new password'
+                        showCurrentPassword
+                          ? 'Hide current password'
+                          : 'Show current password'
                       }
                     >
-                      {showNewPassword ? (
+                      {showCurrentPassword ? (
                         <EyeOff className='h-4 w-4' />
                       ) : (
                         <Eye className='h-4 w-4' />
@@ -318,39 +288,71 @@ const ProfileSettings = memo(() => {
                     </button>
                   </div>
                 </div>
-                <div>
-                  <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300'>
-                    Confirm New Password
-                  </label>
-                  <div className='relative'>
-                    <input
-                      type={showConfirmPassword ? 'text' : 'password'}
-                      name='confirmPassword'
-                      className={inputClass + ' pr-10'}
-                      value={formData.confirmPassword}
-                      onChange={handleChange}
-                    />
-                    <button
-                      type='button'
-                      onClick={() => setShowConfirmPassword((v) => !v)}
-                      className={eyeBtnClass}
-                      aria-label={
-                        showConfirmPassword
-                          ? 'Hide confirm password'
-                          : 'Show confirm password'
-                      }
-                    >
-                      {showConfirmPassword ? (
-                        <EyeOff className='h-4 w-4' />
-                      ) : (
-                        <Eye className='h-4 w-4' />
-                      )}
-                    </button>
+                <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+                  <div>
+                    <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300'>
+                      New Password
+                    </label>
+                    <div className='relative'>
+                      <input
+                        type={showNewPassword ? 'text' : 'password'}
+                        name='newPassword'
+                        className={inputClass + ' pr-10'}
+                        value={formData.newPassword}
+                        onChange={handleChange}
+                      />
+                      <button
+                        type='button'
+                        onClick={() => setShowNewPassword((v) => !v)}
+                        className={eyeBtnClass}
+                        aria-label={
+                          showNewPassword
+                            ? 'Hide new password'
+                            : 'Show new password'
+                        }
+                      >
+                        {showNewPassword ? (
+                          <EyeOff className='h-4 w-4' />
+                        ) : (
+                          <Eye className='h-4 w-4' />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                  <div>
+                    <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300'>
+                      Confirm New Password
+                    </label>
+                    <div className='relative'>
+                      <input
+                        type={showConfirmPassword ? 'text' : 'password'}
+                        name='confirmPassword'
+                        className={inputClass + ' pr-10'}
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                      />
+                      <button
+                        type='button'
+                        onClick={() => setShowConfirmPassword((v) => !v)}
+                        className={eyeBtnClass}
+                        aria-label={
+                          showConfirmPassword
+                            ? 'Hide confirm password'
+                            : 'Show confirm password'
+                        }
+                      >
+                        {showConfirmPassword ? (
+                          <EyeOff className='h-4 w-4' />
+                        ) : (
+                          <Eye className='h-4 w-4' />
+                        )}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
 
           <div className='flex gap-3'>
             <button

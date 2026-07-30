@@ -280,10 +280,7 @@ const Footer = memo(({ variant = 'minimal' }) => {
                     className='text-indigo-500 dark:text-indigo-400'
                     aria-hidden='true'
                   />
-                  <span>Active projects</span>
-                  <span className='font-semibold text-slate-800 dark:text-white'>
-                    1,247
-                  </span>
+                  <span>Secure Management</span>
                 </div>
                 <div
                   className='w-px h-4 bg-slate-200 dark:bg-white/10'
@@ -295,10 +292,7 @@ const Footer = memo(({ variant = 'minimal' }) => {
                     className='text-indigo-500 dark:text-indigo-400'
                     aria-hidden='true'
                   />
-                  <span>Students</span>
-                  <span className='font-semibold text-slate-800 dark:text-white'>
-                    3.2k
-                  </span>
+                  <span>Verified Access</span>
                 </div>
               </div>
             </div>

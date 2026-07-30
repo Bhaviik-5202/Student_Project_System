@@ -22,6 +22,8 @@ import {
   Github,
   Globe,
   Linkedin,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
 
 /**
@@ -58,6 +60,10 @@ const Profile = memo(() => {
     newPassword: '',
     confirmPassword: '',
   });
+
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const buildFormData = useCallback((currentUser) => {
     if (!currentUser) {
@@ -412,72 +418,128 @@ const Profile = memo(() => {
             </form>
           </div>
 
-          <div className='rounded-xl border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-sm dark:border-slate-800 '>
-            <h3 className='mb-6 text-lg font-bold text-slate-900 dark:text-white'>
-              Security
-            </h3>
-            <form onSubmit={handleSecuritySubmit} className='space-y-6'>
-              <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
-                <div>
-                  <label className='mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300'>
-                    Current Password
-                  </label>
-                  <input
-                    type='password'
-                    name='currentPassword'
-                    value={securityData.currentPassword}
-                    onChange={handleSecurityChange}
-                    disabled={securityLoading}
-                    className={`${inputBase} ${inputEnabled}`}
-                    required
-                  />
+          {user?.role?.toLowerCase() !== 'admin' && (
+            <div className='rounded-xl border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-sm dark:border-slate-800 '>
+              <h3 className='mb-6 text-lg font-bold text-slate-900 dark:text-white'>
+                Security
+              </h3>
+              <form onSubmit={handleSecuritySubmit} className='space-y-6'>
+                <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+                  <div>
+                    <label className='mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300'>
+                      Current Password
+                    </label>
+                    <div className='relative'>
+                      <input
+                        type={showCurrentPassword ? 'text' : 'password'}
+                        name='currentPassword'
+                        value={securityData.currentPassword}
+                        onChange={handleSecurityChange}
+                        disabled={securityLoading}
+                        className={`${inputBase} ${inputEnabled} pr-10`}
+                        required
+                      />
+                      <button
+                        type='button'
+                        onClick={() => setShowCurrentPassword((v) => !v)}
+                        className='absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 focus:outline-none'
+                        aria-label={
+                          showCurrentPassword
+                            ? 'Hide current password'
+                            : 'Show current password'
+                        }
+                      >
+                        {showCurrentPassword ? (
+                          <EyeOff className='h-4 w-4' />
+                        ) : (
+                          <Eye className='h-4 w-4' />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                  <div className='hidden md:block'></div>
+                  <div>
+                    <label className='mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300'>
+                      New Password
+                    </label>
+                    <div className='relative'>
+                      <input
+                        type={showNewPassword ? 'text' : 'password'}
+                        name='newPassword'
+                        value={securityData.newPassword}
+                        onChange={handleSecurityChange}
+                        disabled={securityLoading}
+                        className={`${inputBase} ${inputEnabled} pr-10`}
+                        required
+                      />
+                      <button
+                        type='button'
+                        onClick={() => setShowNewPassword((v) => !v)}
+                        className='absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 focus:outline-none'
+                        aria-label={
+                          showNewPassword
+                            ? 'Hide new password'
+                            : 'Show new password'
+                        }
+                      >
+                        {showNewPassword ? (
+                          <EyeOff className='h-4 w-4' />
+                        ) : (
+                          <Eye className='h-4 w-4' />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                  <div>
+                    <label className='mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300'>
+                      Confirm New Password
+                    </label>
+                    <div className='relative'>
+                      <input
+                        type={showConfirmPassword ? 'text' : 'password'}
+                        name='confirmPassword'
+                        value={securityData.confirmPassword}
+                        onChange={handleSecurityChange}
+                        disabled={securityLoading}
+                        className={`${inputBase} ${inputEnabled} pr-10`}
+                        required
+                      />
+                      <button
+                        type='button'
+                        onClick={() => setShowConfirmPassword((v) => !v)}
+                        className='absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300 focus:outline-none'
+                        aria-label={
+                          showConfirmPassword
+                            ? 'Hide confirm password'
+                            : 'Show confirm password'
+                        }
+                      >
+                        {showConfirmPassword ? (
+                          <EyeOff className='h-4 w-4' />
+                        ) : (
+                          <Eye className='h-4 w-4' />
+                        )}
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <div className='hidden md:block'></div>
-                <div>
-                  <label className='mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300'>
-                    New Password
-                  </label>
-                  <input
-                    type='password'
-                    name='newPassword'
-                    value={securityData.newPassword}
-                    onChange={handleSecurityChange}
+                <div className='flex justify-end pt-4'>
+                  <button
+                    type='submit'
                     disabled={securityLoading}
-                    className={`${inputBase} ${inputEnabled}`}
-                    required
-                  />
+                    className='inline-flex items-center rounded-lg bg-slate-900 px-4 py-2 text-white transition-colors hover:bg-slate-800 dark:bg-slate-100 dark:bg-slate-800 dark:text-slate-900 dark:text-white dark:hover:bg-slate-200 dark:hover:bg-slate-600 dark:bg-slate-700'
+                  >
+                    {securityLoading ? (
+                      <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                    ) : (
+                      <Shield className='mr-2 h-4 w-4' />
+                    )}
+                    Update Password
+                  </button>
                 </div>
-                <div>
-                  <label className='mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300'>
-                    Confirm New Password
-                  </label>
-                  <input
-                    type='password'
-                    name='confirmPassword'
-                    value={securityData.confirmPassword}
-                    onChange={handleSecurityChange}
-                    disabled={securityLoading}
-                    className={`${inputBase} ${inputEnabled}`}
-                    required
-                  />
-                </div>
-              </div>
-              <div className='flex justify-end pt-4'>
-                <button
-                  type='submit'
-                  disabled={securityLoading}
-                  className='inline-flex items-center rounded-lg bg-slate-900 px-4 py-2 text-white transition-colors hover:bg-slate-800 dark:bg-slate-100 dark:bg-slate-800 dark:text-slate-900 dark:text-white dark:hover:bg-slate-200 dark:hover:bg-slate-600 dark:bg-slate-700'
-                >
-                  {securityLoading ? (
-                    <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                  ) : (
-                    <Shield className='mr-2 h-4 w-4' />
-                  )}
-                  Update Password
-                </button>
-              </div>
-            </form>
-          </div>
+              </form>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -152,7 +152,7 @@ exports.getUserById = async (req, res) => {
 /**
  * Update user attributes
  * @route   PUT /api/users/:id
- * @desc    Modify existing user details (excluding sensitive credentials)
+ * @desc    Modify existing user details
  * @access  Admin
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
@@ -177,16 +177,25 @@ exports.updateUser = async (req, res) => {
       );
     }
 
+    const superAdminEmail = (
+      process.env.SUPER_ADMIN_EMAIL ||
+      process.env.ADMIN_EMAIL ||
+      'er.bhavik5202@gmail.com'
+    )
+      .toLowerCase()
+      .trim();
+
     const userResult = await userService.getById(req.params.id);
     if (
       userResult.data &&
-      userResult.data.email === 'er.bhavik5202@gmail.com'
+      (userResult.data.role === 'admin' ||
+        userResult.data.email?.toLowerCase().trim() === superAdminEmail)
     ) {
       return sendResponse(
         res,
         {
           success: false,
-          message: 'Master administrator cannot be modified via this endpoint',
+          message: 'Super Admin account is protected and cannot be modified.',
         },
         403
       );
@@ -238,14 +247,26 @@ exports.updateUser = async (req, res) => {
  */
 exports.deleteUser = async (req, res) => {
   try {
+    const superAdminEmail = (
+      process.env.SUPER_ADMIN_EMAIL ||
+      process.env.ADMIN_EMAIL ||
+      'er.bhavik5202@gmail.com'
+    )
+      .toLowerCase()
+      .trim();
+
     const userResult = await userService.getById(req.params.id);
     if (
       userResult.data &&
-      userResult.data.email === 'er.bhavik5202@gmail.com'
+      (userResult.data.role === 'admin' ||
+        userResult.data.email?.toLowerCase().trim() === superAdminEmail)
     ) {
       return sendResponse(
         res,
-        { success: false, message: 'Master administrator cannot be deleted' },
+        {
+          success: false,
+          message: 'Super Admin account is protected and cannot be modified.',
+        },
         403
       );
     }

@@ -16,16 +16,7 @@ import {
  * Displays live system telemetry and performance indicators in an Area Chart.
  */
 const SystemMetrics = memo(({ stats = {} }) => {
-  // Mock data for the chart, ideally this would come from the API (stats.telemetry)
-  const data = [
-    { time: '08:00', performance: 85, users: 120 },
-    { time: '10:00', performance: 88, users: 132 },
-    { time: '12:00', performance: 92, users: 156 },
-    { time: '14:00', performance: 90, users: 145 },
-    { time: '16:00', performance: 95, users: 160 },
-    { time: '18:00', performance: 91, users: 150 },
-    { time: '20:00', performance: 96, users: 175 },
-  ];
+  const data = stats.telemetry || stats.chartData || [];
 
   return (
     <div className='rounded-2xl border border-gray-100 bg-white dark:bg-slate-900 p-6 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800 flex flex-col h-full'>
@@ -47,8 +38,13 @@ const SystemMetrics = memo(({ stats = {} }) => {
         </div>
       </div>
 
-      <div className='flex-1 min-h-[250px] w-full'>
-        <ResponsiveContainer width='100%' height='100%'>
+      <div className='flex-1 min-h-[250px] w-full flex items-center justify-center'>
+        {data.length === 0 ? (
+          <div className='text-center p-6 text-slate-400 dark:text-slate-500 text-sm'>
+            No live telemetry data recorded yet.
+          </div>
+        ) : (
+          <ResponsiveContainer width='100%' height='100%'>
           <AreaChart
             data={data}
             margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
@@ -109,6 +105,7 @@ const SystemMetrics = memo(({ stats = {} }) => {
             />
           </AreaChart>
         </ResponsiveContainer>
+        )}
       </div>
 
       <div className='mt-6 grid grid-cols-2 gap-4 border-t border-slate-100 pt-4 dark:border-slate-700'>
@@ -117,7 +114,7 @@ const SystemMetrics = memo(({ stats = {} }) => {
             Avg Performance
           </span>
           <span className='text-xl font-bold text-blue-600 dark:text-blue-400'>
-            {stats.systemPerformance || 92.4}%
+            {stats.systemPerformance ? `${stats.systemPerformance}%` : 'N/A'}
           </span>
         </div>
         <div className='flex flex-col items-end'>
@@ -125,7 +122,7 @@ const SystemMetrics = memo(({ stats = {} }) => {
             Active Users
           </span>
           <span className='text-xl font-bold text-emerald-600 dark:text-emerald-400'>
-            {stats.activeUsers || 175}
+            {stats.activeUsers !== undefined ? stats.activeUsers : 0}
           </span>
         </div>
       </div>

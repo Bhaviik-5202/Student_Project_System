@@ -2,7 +2,7 @@ import { useState, memo, useCallback, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
-import { ArrowRight, Loader2, Eye, EyeOff } from 'lucide-react';
+import { ArrowRight, Loader2, Eye, EyeOff, GraduationCap, UserCheck } from 'lucide-react';
 import { useAuth } from '../../../hooks/useAuth';
 import { VALIDATION_RULES } from '../../../utils/constants';
 
@@ -25,12 +25,11 @@ const Register = memo(() => {
   const { register, isLoading: loading } = useAuth();
   const navigate = useNavigate();
 
-  // Roles tab configuration
+  // Roles tab configuration (Public registration allows ONLY Student & Faculty)
   const roles = useMemo(
     () => [
-      { id: 'student', label: 'Student' },
-      { id: 'faculty', label: 'Faculty' },
-      { id: 'admin', label: 'Admin' },
+      { id: 'student', label: 'Student', icon: GraduationCap },
+      { id: 'faculty', label: 'Faculty', icon: UserCheck },
     ],
     []
   );
@@ -318,6 +317,67 @@ const Register = memo(() => {
           cursor: not-allowed !important;
           transform: none !important;
         }
+
+        .role-select-container {
+          display: flex !important;
+          gap: 0.5rem !important;
+          padding: 0.375rem !important;
+          border-radius: 16px !important;
+          background: rgba(241, 245, 249, 0.8) !important;
+          border: 1px solid rgba(0, 0, 0, 0.08) !important;
+          transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        .dark .role-select-container {
+          background: rgba(8, 10, 18, 0.6) !important;
+          border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        }
+
+        .role-select-btn {
+          flex: 1 !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          gap: 0.5rem !important;
+          padding: 0.75rem 1rem !important;
+          border-radius: 12px !important;
+          font-size: 0.8125rem !important;
+          font-weight: 700 !important;
+          letter-spacing: 0.025em !important;
+          border: 1px solid transparent !important;
+          background: transparent !important;
+          color: #64748b !important;
+          cursor: pointer !important;
+          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+
+        .dark .role-select-btn {
+          color: #94a3b8 !important;
+        }
+
+        .role-select-btn:hover {
+          color: #1e293b !important;
+          background: rgba(255, 255, 255, 0.6) !important;
+        }
+
+        .dark .role-select-btn:hover {
+          color: #f8fafc !important;
+          background: rgba(255, 255, 255, 0.06) !important;
+        }
+
+        .role-select-btn.active {
+          background: #ffffff !important;
+          color: #4f46e5 !important;
+          border: 1px solid rgba(79, 70, 229, 0.3) !important;
+          box-shadow: 0 4px 12px rgba(79, 70, 229, 0.12), 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+        }
+
+        .dark .role-select-btn.active {
+          background: rgba(79, 70, 229, 0.25) !important;
+          color: #a5b4fc !important;
+          border: 1px solid rgba(129, 140, 248, 0.4) !important;
+          box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3) !important;
+        }
       `}</style>
 
       <motion.div variants={itemVariants} className='text-center'>
@@ -354,24 +414,31 @@ const Register = memo(() => {
           />
         </motion.div>
 
-        {/* Role Segmented tab control — FAQ pill-tab style */}
+        {/* Role Segmented tab control — Theme-aware pill-card style */}
         <motion.div variants={itemVariants} className='group'>
           <label className='auth-label'>Register As</label>
-          <div className='flex flex-wrap gap-2 rounded-2xl border border-slate-800/80 bg-slate-900/60 p-1.5'>
+          <div className='role-select-container'>
             {roles.map((role) => {
               const isSelected = formData.role === role.id;
+              const Icon = role.icon;
               return (
                 <button
                   key={role.id}
                   type='button'
                   onClick={() => selectRole(role.id)}
-                  className={`flex-1 rounded-xl px-4 py-2.5 text-xs font-bold transition-all duration-200 ${
-                    isSelected
-                      ? 'border border-indigo-500/35 bg-indigo-500/20 text-indigo-300 shadow-sm'
-                      : 'border border-transparent bg-transparent text-slate-400 hover:text-slate-200'
-                  }`}
+                  aria-pressed={isSelected}
+                  className={`role-select-btn ${isSelected ? 'active' : ''}`}
                 >
-                  {role.label}
+                  {Icon && (
+                    <Icon
+                      className={`h-4 w-4 transition-colors ${
+                        isSelected
+                          ? 'text-indigo-600 dark:text-indigo-300'
+                          : 'text-slate-400 dark:text-slate-500'
+                      }`}
+                    />
+                  )}
+                  <span>{role.label}</span>
                 </button>
               );
             })}

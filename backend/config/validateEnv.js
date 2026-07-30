@@ -8,6 +8,18 @@ if (!process.env.JWT_SECRET) {
     'dev-secret-key-student-project-management-system-2026';
 }
 
+// Provide defaults for Super Admin credentials
+process.env.SUPER_ADMIN_EMAIL =
+  process.env.SUPER_ADMIN_EMAIL ||
+  process.env.ADMIN_EMAIL ||
+  'er.bhavik5202@gmail.com';
+process.env.SUPER_ADMIN_PASSWORD =
+  process.env.SUPER_ADMIN_PASSWORD ||
+  process.env.ADMIN_PASSWORD ||
+  'Bhaviik@5202StuProject01';
+process.env.ADMIN_EMAIL = process.env.SUPER_ADMIN_EMAIL;
+process.env.ADMIN_PASSWORD = process.env.SUPER_ADMIN_PASSWORD;
+
 // Provide defaults for others if missing (especially for tests/dev)
 process.env.PORT = process.env.PORT || '5000';
 process.env.CORS_ORIGIN = process.env.CORS_ORIGIN || '*';

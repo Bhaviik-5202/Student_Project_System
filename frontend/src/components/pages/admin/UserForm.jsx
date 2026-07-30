@@ -62,6 +62,16 @@ const UserForm = () => {
       }
 
       if (userData) {
+        if (
+          userData.role === 'admin' ||
+          userData.email?.toLowerCase().trim() === 'er.bhavik5202@gmail.com'
+        ) {
+          toast.error(
+            'Super Admin account is protected and cannot be modified.'
+          );
+          navigate('/user-management');
+          return;
+        }
         setFormData({
           name: userData.name || '',
           email: userData.email || '',
@@ -99,6 +109,14 @@ const UserForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (
+      formData.role === 'admin' ||
+      formData.email?.toLowerCase().trim() === 'er.bhavik5202@gmail.com'
+    ) {
+      toast.error('Super Admin account is protected and cannot be modified.');
+      return;
+    }
 
     if (!formData.name.trim() || !formData.email.trim()) {
       toast.error('Please fill in all required fields (Full Name, Email)');
@@ -266,13 +284,19 @@ const UserForm = () => {
                   />
                   <select
                     name='role'
-                    className='w-full appearance-none rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 pl-10 pr-4 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none transition focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500'
+                    className='w-full appearance-none rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 pl-10 pr-4 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none transition focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:opacity-60 disabled:cursor-not-allowed'
                     value={formData.role}
                     onChange={handleChange}
+                    disabled={formData.role === 'admin'}
                   >
-                    <option value='student'>Student</option>
-                    <option value='faculty'>Faculty</option>
-                    <option value='admin'>Admin</option>
+                    {formData.role === 'admin' ? (
+                      <option value='admin'>Admin (System Super Admin)</option>
+                    ) : (
+                      <>
+                        <option value='student'>Student</option>
+                        <option value='faculty'>Faculty</option>
+                      </>
+                    )}
                   </select>
                 </div>
               </div>

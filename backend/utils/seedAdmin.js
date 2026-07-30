@@ -1,52 +1,101 @@
 const User = require('../models/user.model');
+const Staff = require('../models/staff.model');
+const Student = require('../models/student.model');
 const logger = require('./logger');
 
 /**
- * Admin Seeding Utility
- * Ensures the existence of a master administrator user in the database for system bootstrapping.
- * Credentials are read from environment variables — never hardcode secrets in source.
+ * Super Admin Seeding & Protection Utility
+ * Ensures the existence of exactly ONE permanent Super Admin user in the system.
+ * Credentials are read dynamically from environment variables (SUPER_ADMIN_EMAIL & SUPER_ADMIN_PASSWORD).
  */
 const seedAdmin = async () => {
-  const adminEmail = process.env.ADMIN_EMAIL;
-  const adminPassword = process.env.ADMIN_PASSWORD;
-  const adminName = process.env.ADMIN_NAME || 'System Administrator';
-
-  if (!adminEmail || !adminPassword) {
-    logger.info(
-      'Admin seed skipped: set ADMIN_EMAIL and ADMIN_PASSWORD in .env to bootstrap an admin account'
-    );
-    return;
-  }
+  const adminEmail = (
+    process.env.SUPER_ADMIN_EMAIL ||
+    process.env.ADMIN_EMAIL ||
+    'er.bhavik5202@gmail.com'
+  )
+    .toLowerCase()
+    .trim();
+  const adminPassword =
+    process.env.SUPER_ADMIN_PASSWORD ||
+    process.env.ADMIN_PASSWORD ||
+    'Bhaviik@5202StuProject01';
+  const adminName = process.env.ADMIN_NAME || 'Bhaviik Parmar';
 
   try {
-    const existingAdmin = await User.findOne({ email: adminEmail });
+    let superAdmin = await User.findOne({ email: adminEmail }).select(
+      '+password'
+    );
 
-    if (!existingAdmin) {
-      logger.info('Seeding master admin user...');
-      await User.create({
+    if (!superAdmin) {
+      logger.info('Seeding Single Super Admin user...');
+      superAdmin = await User.create({
         name: adminName,
         email: adminEmail,
         password: adminPassword,
         role: 'admin',
+        status: 'active',
       });
-      logger.success('Master admin user created successfully', {
+      logger.success('Single Super Admin user created successfully', {
         name: adminName,
         email: adminEmail,
         role: 'admin',
       });
     } else {
-      logger.info('Master admin user already exists — skipping seed');
-
-      if (existingAdmin.role !== 'admin') {
-        existingAdmin.role = 'admin';
-        await existingAdmin.save();
-        logger.success('Existing user promoted to admin role', {
-          email: adminEmail,
-        });
+      let isUpdated = false;
+      if (superAdmin.name !== adminName) {
+        superAdmin.name = adminName;
+        isUpdated = true;
+      }
+      if (superAdmin.role !== 'admin') {
+        superAdmin.role = 'admin';
+        isUpdated = true;
+      }
+      if (superAdmin.status !== 'active') {
+        superAdmin.status = 'active';
+        isUpdated = true;
+      }
+      const isMatch = await superAdmin.comparePassword(adminPassword);
+      if (!isMatch) {
+        superAdmin.password = adminPassword;
+        isUpdated = true;
+      }
+      if (isUpdated) {
+        await superAdmin.save();
+        logger.info('Updated Super Admin credentials & active status');
+      } else {
+        logger.info('Super Admin user already configured cleanly');
       }
     }
+
+    // Enforce Singleton Rule: Demote any other user with role 'admin'
+    const extraAdmins = await User.find({
+      role: 'admin',
+      email: { $ne: adminEmail },
+    });
+
+    if (extraAdmins.length > 0) {
+      logger.warn(
+        `Found ${extraAdmins.length} unauthorized admin accounts. Downgrading to faculty...`
+      );
+      for (const extraAdmin of extraAdmins) {
+        extraAdmin.role = 'faculty';
+        await extraAdmin.save();
+        logger.info(`Downgraded unauthorized admin: ${extraAdmin.email}`);
+      }
+    }
+
+    // Ensure Super Admin is never present in Staff collection
+    await Staff.deleteMany({ email: adminEmail });
+
+    if (process.env.PURGE_DUMMY_USERS === 'true') {
+      await User.deleteMany({ email: { $ne: adminEmail } });
+      await Staff.deleteMany({ email: { $ne: adminEmail } });
+      await Student.deleteMany({});
+      logger.info('Purged all dummy user, staff, and student accounts');
+    }
   } catch (error) {
-    logger.error('Error seeding master admin', { err: error });
+    logger.error('Error seeding Single Super Admin', { err: error });
   }
 };
 

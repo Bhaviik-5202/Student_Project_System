@@ -10,6 +10,7 @@ const router = express.Router();
 const staffController = require('../controllers/staff.controller');
 const authMiddleware = require('../middleware/auth.middleware');
 const roleMiddleware = require('../middleware/roleMiddleware');
+const { protectSuperAdmin } = require('../middleware/adminGuard');
 
 /**
  * @route   POST /api/v1/staff
@@ -20,6 +21,7 @@ router.post(
   '/',
   authMiddleware,
   roleMiddleware(['admin']),
+  protectSuperAdmin,
   staffController.createStaff
 );
 
@@ -56,6 +58,7 @@ router.put(
   '/:id',
   authMiddleware,
   roleMiddleware(['admin']),
+  protectSuperAdmin,
   staffController.updateStaff
 );
 
@@ -68,6 +71,7 @@ router.delete(
   '/:id',
   authMiddleware,
   roleMiddleware(['admin']),
+  protectSuperAdmin,
   staffController.deleteStaff
 );
 

@@ -74,7 +74,7 @@ export const VALIDATION_RULES = {
 
 export const CONTACT_INFO = {
   EMAIL: 'er.bhavik5202@gmail.com',
-  PHONE: '+91 63537120557',
+  PHONE: '+91 6353712057',
   ADDRESS: 'Dwarka, Gujarat, India',
   SOCIALS: {
     GITHUB: 'https://github.com/Bhaviik-5202',

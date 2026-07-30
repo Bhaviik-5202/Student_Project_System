@@ -5,6 +5,7 @@
 const studentRepository = require('../repositories/student.repository');
 const projectRepository = require('../repositories/project.repository');
 const userRepository = require('../repositories/user.repository');
+const cascadeUserCleanup = require('../utils/cascadeCleanup');
 const { normalizeDepartment } = require('../utils/idGenerator');
 
 /**
@@ -339,8 +340,16 @@ exports.remove = async (id) => {
     }
 
     if (!deletedStudent && !deletedUser) {
-      return response(true, null, 'Student not found');
+      return response(
+        true,
+        null,
+        'Student does not exist or has already been deleted.'
+      );
     }
+
+    const targetEmail = deletedStudent?.email || deletedUser?.email;
+    const targetUserId = deletedUser?._id || deletedStudent?._id;
+    await cascadeUserCleanup(targetUserId, targetEmail);
 
     return response(false, null, 'Student deleted successfully');
   } catch (err) {

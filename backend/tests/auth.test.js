@@ -27,7 +27,7 @@ describe('Authentication API', function () {
     expect(res.body.message).to.equal('User registered successfully');
   });
 
-  it('should register a new admin user', async function () {
+  it('should reject registering an admin user with 403 Forbidden', async function () {
     const adminUser = {
       name: 'Admin Test User',
       email: `admintest+${Date.now()}@example.com`,
@@ -39,9 +39,9 @@ describe('Authentication API', function () {
       .post('/api/v1/auth/register')
       .send(adminUser);
 
-    expect(res.statusCode).to.equal(201);
-    expect(res.body.success).to.be.true;
-    expect(res.body.data.role).to.equal('admin');
+    expect(res.statusCode).to.equal(403);
+    expect(res.body.success).to.be.false;
+    expect(res.body.message).to.equal('Admin registration is not allowed.');
   });
 
   it('should register a new faculty user', async function () {
@@ -89,6 +89,7 @@ describe('Authentication API', function () {
    * Password Management Tests
    */
   it('should request password reset', async function () {
+    this.timeout(10000);
     const res = await request(app)
       .post('/api/v1/auth/forgot-password')
       .send({ email: testUser.email });

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, memo } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 import {
@@ -11,6 +11,7 @@ import {
   Eye,
   EyeOff,
   GraduationCap,
+  Shield,
 } from 'lucide-react';
 import { useAuth } from '../../../hooks/useAuth';
 import { VALIDATION_RULES } from '../../../utils/constants';
@@ -18,8 +19,9 @@ import { VALIDATION_RULES } from '../../../utils/constants';
 /**
  * Login Component
  * Rewritten from scratch with local CSS isolation supporting both Light and Dark mode.
+ * Supports hidden Super Admin login via Ctrl + Shift + A or protected route /super-admin/login.
  */
-const Login = memo(() => {
+const Login = memo(({ forceAdminMode = false }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -29,6 +31,37 @@ const Login = memo(() => {
 
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const [isAdminLoginMode, setIsAdminLoginMode] = useState(
+    forceAdminMode ||
+      location.pathname === '/super-admin/login' ||
+      location.search.includes('admin=true')
+  );
+
+  // Secret keyboard shortcut Ctrl + Shift + A to reveal Super Admin login mode
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (
+        (e.ctrlKey || e.metaKey) &&
+        e.shiftKey &&
+        (e.key === 'A' || e.key === 'a')
+      ) {
+        e.preventDefault();
+        setIsAdminLoginMode((prev) => {
+          const nextState = !prev;
+          if (nextState) {
+            toast.success('Super Admin Login Entry Activated');
+          } else {
+            toast.info('Standard Portal Login View');
+          }
+          return nextState;
+        });
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // Load remembered email
   useEffect(() => {
@@ -278,12 +311,24 @@ const Login = memo(() => {
       <div className='mx-auto max-w-md space-y-8'>
         <motion.div variants={itemVariants} className='text-center'>
           <div className='mb-6 flex justify-center'>
-            <div className='text-indigo-650 flex h-12 w-12 items-center justify-center rounded-xl border border-indigo-100 bg-indigo-50 shadow-md shadow-indigo-500/5 dark:border-indigo-900/30 dark:bg-indigo-950/60 dark:text-indigo-400 dark:shadow-black/10'>
-              <GraduationCap className='h-6 w-6' />
-            </div>
+            {isAdminLoginMode ? (
+              <div className='flex h-12 w-12 items-center justify-center rounded-xl border border-amber-200 bg-amber-50 text-amber-600 shadow-md shadow-amber-500/10 dark:border-amber-900/40 dark:bg-amber-950/60 dark:text-amber-400'>
+                <Shield className='h-6 w-6' />
+              </div>
+            ) : (
+              <div className='text-indigo-650 flex h-12 w-12 items-center justify-center rounded-xl border border-indigo-100 bg-indigo-50 shadow-md shadow-indigo-500/5 dark:border-indigo-900/30 dark:bg-indigo-950/60 dark:text-indigo-400 dark:shadow-black/10'>
+                <GraduationCap className='h-6 w-6' />
+              </div>
+            )}
           </div>
-          <h2 className='auth-title'>Welcome Back</h2>
-          <p className='auth-subtitle'>Sign in to your project portal</p>
+          <h2 className='auth-title'>
+            {isAdminLoginMode ? 'Super Admin Portal' : 'Welcome Back'}
+          </h2>
+          <p className='auth-subtitle'>
+            {isAdminLoginMode
+              ? 'Authorized Administrator Authentication'
+              : 'Sign in to your project portal'}
+          </p>
         </motion.div>
 
         {error && (

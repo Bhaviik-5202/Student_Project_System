@@ -14,6 +14,7 @@ const crypto = require('crypto');
 const sendEmail = require('../utils/email');
 const { getPasswordResetEmail } = require('../utils/emailTemplates');
 const notificationService = require('./notification.service');
+const cascadeUserCleanup = require('../utils/cascadeCleanup');
 
 /**
  * Standardized response helper for services
@@ -48,8 +49,13 @@ exports.register = async ({
   phone,
 }) => {
   try {
-    const validRoles = ['student', 'faculty', 'admin'];
-    const finalRole = validRoles.includes(role) ? role : 'student';
+    const requestedRole = String(role).toLowerCase().trim();
+    if (requestedRole === 'admin') {
+      return response(true, null, 'Admin registration is not allowed.');
+    }
+
+    const validRoles = ['student', 'faculty'];
+    const finalRole = validRoles.includes(requestedRole) ? requestedRole : 'student';
 
     const existing = await userRepository.findByEmail(email);
     if (existing) return response(true, null, 'Email already registered');
@@ -67,7 +73,7 @@ exports.register = async ({
     if (finalRole === 'student') {
       userData.rollNumber = await generateRollNumber();
       userData.enrollmentNumber = `EN${new Date().getFullYear()}${Math.floor(100000 + Math.random() * 900000)}`;
-    } else if (finalRole === 'faculty' || finalRole === 'admin') {
+    } else if (finalRole === 'faculty') {
       userData.facultyId = await generateFacultyId();
     }
 
@@ -85,7 +91,7 @@ exports.register = async ({
         phone: phone || '',
         status: 'Active',
       });
-    } else if (finalRole === 'faculty' || finalRole === 'admin') {
+    } else if (finalRole === 'faculty') {
       const staffRepository = require('../repositories/staff.repository');
       await staffRepository.create({
         name,
@@ -174,20 +180,6 @@ exports.login = async ({ email, password }) => {
  * Fetch all registered users
  * @returns {Promise<Object>} Formatted service response with user list
  */
-exports.getAll = async () => {
-  try {
-    const users = await userRepository.findAll({}, { lean: true });
-    return response(false, users, 'Users fetched successfully');
-  } catch (err) {
-    return response(true, null, err.message || 'Failed to fetch users');
-  }
-};
-
-/**
- * Fetch all users with optional filtering by role and status
- * @param {Object} query - Query parameters (role, status)
- * @returns {Promise<Object>} Formatted service response with users list
- */
 exports.getAll = async (query = {}) => {
   try {
     const filter = {};
@@ -227,6 +219,15 @@ exports.getById = async (id) => {
  */
 exports.create = async (data) => {
   try {
+    const requestedRole = String(data.role || '').toLowerCase().trim();
+    if (requestedRole === 'admin') {
+      return response(
+        true,
+        null,
+        'Admin creation is not allowed. Only one Super Admin exists.'
+      );
+    }
+
     const existing = await userRepository.findByEmail(data.email);
     if (existing) return response(true, null, 'Email already exists');
 
@@ -239,10 +240,7 @@ exports.create = async (data) => {
     if (userData.role === 'student' && !userData.rollNumber) {
       userData.rollNumber = await generateRollNumber();
       userData.enrollmentNumber = `EN${new Date().getFullYear()}${Math.floor(100000 + Math.random() * 900000)}`;
-    } else if (
-      (userData.role === 'faculty' || userData.role === 'admin') &&
-      !userData.facultyId
-    ) {
+    } else if (userData.role === 'faculty' && !userData.facultyId) {
       userData.facultyId = await generateFacultyId();
     }
 
@@ -260,7 +258,7 @@ exports.create = async (data) => {
         status: user.status === 'active' ? 'Active' : 'Inactive',
         avatar: user.avatar || null,
       });
-    } else if (user.role === 'faculty' || user.role === 'admin') {
+    } else if (user.role === 'faculty') {
       const staffRepository = require('../repositories/staff.repository');
       await staffRepository.create({
         name: user.name,
@@ -304,7 +302,42 @@ exports.create = async (data) => {
  */
 exports.update = async (id, data) => {
   try {
+    const superAdminEmail = (
+      process.env.SUPER_ADMIN_EMAIL ||
+      process.env.ADMIN_EMAIL ||
+      'er.bhavik5202@gmail.com'
+    ).toLowerCase().trim();
+
+    const existingUser = await userRepository.findById(id);
+    if (!existingUser) return response(true, null, 'User not found');
+
     const updatePayload = { ...data };
+
+    // Prevent changing any non-super admin role to admin
+    if (
+      updatePayload.role &&
+      updatePayload.role.toLowerCase().trim() === 'admin' &&
+      existingUser.email.toLowerCase().trim() !== superAdminEmail
+    ) {
+      return response(
+        true,
+        null,
+        'Updating user role to Admin is not allowed. Only one Super Admin exists.'
+      );
+    }
+
+    // Protect Super Admin properties from demotion or deactivation
+    if (existingUser.email.toLowerCase().trim() === superAdminEmail) {
+      if (updatePayload.role && updatePayload.role.toLowerCase().trim() !== 'admin') {
+        return response(true, null, 'Super Admin role cannot be modified.');
+      }
+      if (
+        updatePayload.status &&
+        updatePayload.status.toLowerCase().trim() !== 'active'
+      ) {
+        return response(true, null, 'Super Admin account cannot be deactivated.');
+      }
+    }
 
     if (updatePayload.password && updatePayload.password.trim() !== '') {
       const saltRounds = Number(process.env.BCRYPT_SALT_ROUNDS) || 12;
@@ -321,7 +354,6 @@ exports.update = async (id, data) => {
     }
 
     const user = await userRepository.update(id, updatePayload);
-    if (!user) return response(true, null, 'User not found');
 
     if (user.role === 'student') {
       const studentRecord = await studentRepository.findByEmail(user.email);
@@ -374,8 +406,72 @@ exports.update = async (id, data) => {
  */
 exports.remove = async (id) => {
   try {
-    const user = await userRepository.remove(id);
-    if (!user) return response(true, null, 'User not found');
+    const superAdminEmail = (
+      process.env.SUPER_ADMIN_EMAIL ||
+      process.env.ADMIN_EMAIL ||
+      'er.bhavik5202@gmail.com'
+    )
+      .toLowerCase()
+      .trim();
+
+    const staffRepository = require('../repositories/staff.repository');
+
+    let user = await userRepository.findById(id);
+    let staffRecord = null;
+    let studentRecord = null;
+
+    if (!user) {
+      staffRecord = await staffRepository.findById(id);
+      if (staffRecord) {
+        user = await userRepository.findByEmail(staffRecord.email);
+      } else {
+        studentRecord = await studentRepository.findById(id);
+        if (studentRecord) {
+          user = await userRepository.findByEmail(studentRecord.email);
+        }
+      }
+    }
+
+    if (!user && !staffRecord && !studentRecord) {
+      return response(
+        true,
+        null,
+        'User does not exist or has already been deleted.'
+      );
+    }
+
+    if (
+      (user &&
+        (user.role === 'admin' ||
+          user.email.toLowerCase().trim() === superAdminEmail)) ||
+      (staffRecord && staffRecord.role === 'admin')
+    ) {
+      return response(true, null, 'Super Admin account cannot be deleted.');
+    }
+
+    const email = user?.email || staffRecord?.email || studentRecord?.email;
+    const userId = user?._id || id;
+
+    if (user) {
+      await userRepository.remove(user._id);
+    }
+
+    if (staffRecord) {
+      await staffRepository.remove(staffRecord._id);
+    } else if (email) {
+      const s = await staffRepository.findByEmail(email);
+      if (s) await staffRepository.remove(s._id);
+    }
+
+    if (studentRecord) {
+      await studentRepository.remove(studentRecord._id);
+    } else if (email) {
+      const st = await studentRepository.findByEmail(email);
+      if (st) await studentRepository.remove(st._id);
+    }
+
+    await cascadeUserCleanup(userId, email);
+
     return response(false, null, 'User deleted successfully');
   } catch (err) {
     return response(true, null, err.message || 'Failed to delete user');
