@@ -255,11 +255,66 @@ exports.update = async (id, data) => {
 };
 
 /**
+ * Create a new student record
+ * @param {Object} data - Student details
+ * @returns {Promise<Object>} Formatted service response with created student
+ */
+exports.create = async (data) => {
+  try {
+    const cleanDepartment = data.department
+      ? normalizeDepartment(data.department)
+      : 'Computer Engineering';
+
+    let user = await userRepository.findByEmail(data.email);
+    if (!user) {
+      user = await userRepository.create({
+        name: data.name,
+        email: data.email,
+        password: data.password || 'Student@123',
+        role: 'student',
+        department: cleanDepartment,
+        phone: data.phone || '',
+        year: data.year ? String(data.year) : '1',
+        rollNumber: data.rollNumber || '',
+        enrollmentNumber: data.enrollmentNumber || '',
+        status: 'active',
+      });
+    }
+
+    let student = await studentRepository.findByEmail(data.email);
+    if (!student) {
+      student = await studentRepository.create({
+        name: data.name,
+        email: data.email,
+        rollNumber:
+          data.rollNumber ||
+          user.rollNumber ||
+          `STU${new Date().getFullYear()}${user._id.toString().slice(-4).toUpperCase()}`,
+        enrollmentNumber:
+          data.enrollmentNumber ||
+          user.enrollmentNumber ||
+          `EN${new Date().getFullYear()}${user._id.toString().slice(-6).toUpperCase()}`,
+        department: cleanDepartment,
+        year: Number(data.year) || 1,
+        semester: data.semester || 'Sem 1',
+        phone: data.phone || '',
+        status: 'Active',
+      });
+    }
+
+    return response(false, student || user, 'Student created successfully');
+  } catch (err) {
+    return response(true, null, err.message || 'Failed to create student');
+  }
+};
+
+/**
  * Remove student profile
  * @param {string} id - Student ID
  * @returns {Promise<Object>} Formatted service response with deletion status
  */
 exports.remove = async (id) => {
+
   try {
     let deletedStudent = null;
     let deletedUser = null;

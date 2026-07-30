@@ -14,6 +14,23 @@ const roleMiddleware = require('../middleware/roleMiddleware');
 const validateRequest = require('../middleware/validateRequest');
 
 /**
+ * @route   POST /api/v1/students
+ * @desc    Create a new student record
+ * @access  Private (Admin, Faculty)
+ */
+router.post(
+  '/',
+  authMiddleware,
+  roleMiddleware(['admin', 'faculty']),
+  [
+    body('name').notEmpty().withMessage('Name is required'),
+    body('email').isEmail().withMessage('Valid email is required'),
+  ],
+  validateRequest,
+  studentController.createStudent
+);
+
+/**
  * @route   GET /api/v1/students
  * @desc    Retrieve all students
  * @access  Private (Authenticated Users)

@@ -1,17 +1,9 @@
 const jwt = require('jsonwebtoken');
 const sendResponse = require('../utils/response');
 
-const JWT_SECRET = process.env.JWT_SECRET;
-
-/**
- * JWT Authentication Middleware
- * Validates bearer token and attaches decoded payload to req.user.
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- * @param {Function} next - Express next middleware function
- */
 module.exports = function (req, res, next) {
   try {
+    const JWT_SECRET = process.env.JWT_SECRET;
     if (!JWT_SECRET) {
       throw new Error('JWT_SECRET is not defined');
     }

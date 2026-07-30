@@ -7,6 +7,44 @@ const sendResponse = require('../utils/response');
  */
 
 /**
+ * Create a new student profile
+ * @route   POST /api/students
+ * @desc    Create a new student entry
+ * @access  Admin, Faculty
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
+exports.createStudent = async (req, res) => {
+  try {
+    const result = await studentService.create(req.body);
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.error
+          ? 'Failed to create student'
+          : 'Student created successfully',
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 400 : 201
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: 'Internal server error',
+        data: null,
+        error: error.message,
+      },
+      500
+    );
+  }
+};
+
+/**
  * Fetch all student profiles
  * @route   GET /api/students
  * @desc    Retrieve a list of all students with optional filters
