@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Mail, Phone, MapPin, Send, MessageSquare, Clock, CheckCircle2 } from 'lucide-react';
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Send,
+  MessageSquare,
+  Clock,
+  CheckCircle2,
+} from 'lucide-react';
 import PageHeader from '../../common/PageHeader';
 import { toast } from 'react-hot-toast';
 import { useAuth } from '../../../hooks/useAuth';
@@ -83,7 +91,9 @@ const ContactUs = () => {
                   <Mail size={18} />
                 </div>
                 <div>
-                  <p className='font-semibold text-slate-500 dark:text-slate-400'>Support Email</p>
+                  <p className='font-semibold text-slate-500 dark:text-slate-400'>
+                    Support Email
+                  </p>
                   <a
                     href='mailto:er.bhavik5202@gmail.com'
                     className='text-indigo-600 dark:text-indigo-400 font-bold hover:underline break-all'
@@ -98,7 +108,9 @@ const ContactUs = () => {
                   <Phone size={18} />
                 </div>
                 <div>
-                  <p className='font-semibold text-slate-500 dark:text-slate-400'>Helpline</p>
+                  <p className='font-semibold text-slate-500 dark:text-slate-400'>
+                    Helpline
+                  </p>
                   <a
                     href='tel:6353712057'
                     className='text-slate-900 dark:text-white font-bold hover:text-indigo-600 transition-colors'
@@ -113,7 +125,9 @@ const ContactUs = () => {
                   <MapPin size={18} />
                 </div>
                 <div>
-                  <p className='font-semibold text-slate-500 dark:text-slate-400'>Location</p>
+                  <p className='font-semibold text-slate-500 dark:text-slate-400'>
+                    Location
+                  </p>
                   <p className='text-slate-900 dark:text-white font-medium leading-relaxed'>
                     Academic Block 4, Department of CS & Engineering
                   </p>
@@ -125,8 +139,12 @@ const ContactUs = () => {
                   <Clock size={18} />
                 </div>
                 <div>
-                  <p className='font-semibold text-slate-500 dark:text-slate-400'>Working Hours</p>
-                  <p className='text-slate-900 dark:text-white font-medium'>Mon - Fri: 9:00 AM - 5:00 PM</p>
+                  <p className='font-semibold text-slate-500 dark:text-slate-400'>
+                    Working Hours
+                  </p>
+                  <p className='text-slate-900 dark:text-white font-medium'>
+                    Mon - Fri: 9:00 AM - 5:00 PM
+                  </p>
                 </div>
               </div>
             </div>
@@ -140,14 +158,23 @@ const ContactUs = () => {
               <div className='mx-auto h-16 w-16 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400'>
                 <CheckCircle2 size={36} />
               </div>
-              <h3 className='text-2xl font-extrabold text-slate-900 dark:text-white'>Message Received!</h3>
+              <h3 className='text-2xl font-extrabold text-slate-900 dark:text-white'>
+                Message Received!
+              </h3>
               <p className='text-sm text-slate-600 dark:text-slate-400 max-w-md mx-auto'>
-                Thank you for reaching out. Our support team will review your inquiry and respond within 24 hours.
+                Thank you for reaching out. Our support team will review your
+                inquiry and respond within 24 hours.
               </p>
               <button
                 onClick={() => {
                   setSubmitted(false);
-                  setFormData({ name: '', email: '', subject: '', role: 'Student', message: '' });
+                  setFormData({
+                    name: '',
+                    email: '',
+                    subject: '',
+                    role: 'Student',
+                    message: '',
+                  });
                 }}
                 className='inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-6 py-2.5 text-xs font-bold text-white hover:bg-indigo-700 transition-colors shadow-md'
               >
@@ -169,7 +196,9 @@ const ContactUs = () => {
                     type='text'
                     required
                     value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
                     className='w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none'
                     placeholder='e.g. John Doe'
                   />
@@ -183,7 +212,9 @@ const ContactUs = () => {
                     type='email'
                     required
                     value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
                     className='w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none'
                     placeholder='john@studentproject.edu'
                   />
@@ -193,7 +224,10 @@ const ContactUs = () => {
               <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                 <div>
                   <label className='block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5'>
-                    User Role <span className='text-[10px] text-slate-400 font-normal'>(Auto-selected)</span>
+                    User Role{' '}
+                    <span className='text-[10px] text-slate-400 font-normal'>
+                      (Auto-selected)
+                    </span>
                   </label>
                   <input
                     type='text'
@@ -211,7 +245,9 @@ const ContactUs = () => {
                   <input
                     type='text'
                     value={formData.subject}
-                    onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, subject: e.target.value })
+                    }
                     className='w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none'
                     placeholder='Brief topic description'
                   />
@@ -226,7 +262,9 @@ const ContactUs = () => {
                   required
                   rows={5}
                   value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, message: e.target.value })
+                  }
                   className='w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none'
                   placeholder='Describe your inquiry or issue in detail...'
                 />

@@ -26,19 +26,32 @@ export default defineConfig({
       output: {
         manualChunks: (id) => {
           // React core — smallest, cached longest
-          if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/')) {
+          if (
+            id.includes('node_modules/react/') ||
+            id.includes('node_modules/react-dom/')
+          ) {
             return 'vendor-react';
           }
           // React Router
-          if (id.includes('node_modules/react-router') || id.includes('node_modules/@remix-run')) {
+          if (
+            id.includes('node_modules/react-router') ||
+            id.includes('node_modules/@remix-run')
+          ) {
             return 'vendor-router';
           }
           // Recharts and its d3/victory dependencies (large charting library)
-          if (id.includes('node_modules/recharts') || id.includes('node_modules/d3-') || id.includes('node_modules/victory-')) {
+          if (
+            id.includes('node_modules/recharts') ||
+            id.includes('node_modules/d3-') ||
+            id.includes('node_modules/victory-')
+          ) {
             return 'vendor-charts';
           }
           // Three.js and React Three Fiber (3D / animated background)
-          if (id.includes('node_modules/three') || id.includes('node_modules/@react-three')) {
+          if (
+            id.includes('node_modules/three') ||
+            id.includes('node_modules/@react-three')
+          ) {
             return 'vendor-three';
           }
           // Lucide icon set
@@ -53,7 +66,6 @@ export default defineConfig({
       },
     },
   },
-
 
   // Optimize common dependencies for faster dev startup
   optimizeDeps: {

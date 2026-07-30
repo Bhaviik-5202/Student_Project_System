@@ -290,7 +290,9 @@ const ProjectList = () => {
           {/* Department Filter – locked for Students */}
           {isStudent ? (
             <div className='flex items-center gap-2 rounded-lg border border-gray-200 dark:border-slate-600 bg-gray-50 dark:bg-slate-800 px-3 py-2 text-sm text-gray-700 dark:text-gray-300'>
-              <span className='font-medium'>{user?.department || 'My Department'}</span>
+              <span className='font-medium'>
+                {user?.department || 'My Department'}
+              </span>
             </div>
           ) : (
             <Select
@@ -467,8 +469,8 @@ const ProjectList = () => {
                       }}
                     />
                   )}
-                  {canManageProjects && (
-                    filters.isArchived ? (
+                  {canManageProjects &&
+                    (filters.isArchived ? (
                       <IconButton
                         icon={RotateCcw}
                         variant='emerald'
@@ -482,8 +484,7 @@ const ProjectList = () => {
                         title='Archive Project'
                         onClick={() => handleArchive(project)}
                       />
-                    )
-                  )}
+                    ))}
                   {canManageProjects && (
                     <IconButton
                       icon={Trash2}
@@ -585,7 +586,9 @@ const ProjectList = () => {
                         variant='indigo'
                         title='Edit Project'
                         onClick={() =>
-                          navigate(`/projects/${project._id || project.id}/edit`)
+                          navigate(
+                            `/projects/${project._id || project.id}/edit`
+                          )
                         }
                       />
                     )}

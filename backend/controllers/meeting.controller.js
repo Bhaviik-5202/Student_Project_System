@@ -72,7 +72,10 @@ exports.getAllMeetings = async (req, res) => {
   try {
     const { page = 1, limit = 10, ...filters } = req.query;
     delete filters._t;
-    const result = await meetingService.getAll({ page, limit, filters }, req.user);
+    const result = await meetingService.getAll(
+      { page, limit, filters },
+      req.user
+    );
 
     sendResponse(
       res,

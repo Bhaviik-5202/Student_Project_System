@@ -28,7 +28,8 @@ const staffService = {
   createStaff: async (staffData) => {
     try {
       const res = await api.post('/staff', staffData);
-      if (res.success) notifyDataChanged({ type: 'staff_changed', action: 'created' });
+      if (res.success)
+        notifyDataChanged({ type: 'staff_changed', action: 'created' });
       return res;
     } catch (error) {
       return {
@@ -42,7 +43,8 @@ const staffService = {
   updateStaff: async (id, staffData) => {
     try {
       const res = await api.put(`/staff/${id}`, staffData);
-      if (res.success) notifyDataChanged({ type: 'staff_changed', action: 'updated', id });
+      if (res.success)
+        notifyDataChanged({ type: 'staff_changed', action: 'updated', id });
       return res;
     } catch (error) {
       return {
@@ -56,7 +58,8 @@ const staffService = {
   deleteStaff: async (id) => {
     try {
       const res = await api.delete(`/staff/${id}`);
-      if (res.success) notifyDataChanged({ type: 'staff_changed', action: 'deleted', id });
+      if (res.success)
+        notifyDataChanged({ type: 'staff_changed', action: 'deleted', id });
       return res;
     } catch (error) {
       return {

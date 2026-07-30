@@ -181,7 +181,12 @@ const ProfileSettings = memo(() => {
               </div>
               <div>
                 <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300'>
-                  Department {isStudent && <span className='text-xs font-normal text-slate-400'>(Locked)</span>}
+                  Department{' '}
+                  {isStudent && (
+                    <span className='text-xs font-normal text-slate-400'>
+                      (Locked)
+                    </span>
+                  )}
                 </label>
                 <input
                   type='text'
@@ -203,7 +208,12 @@ const ProfileSettings = memo(() => {
               </div>
               <div>
                 <label className='mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300'>
-                  Academic Year {isStudent && <span className='text-xs font-normal text-slate-400'>(Locked)</span>}
+                  Academic Year{' '}
+                  {isStudent && (
+                    <span className='text-xs font-normal text-slate-400'>
+                      (Locked)
+                    </span>
+                  )}
                 </label>
                 <input
                   type='text'
@@ -219,7 +229,8 @@ const ProfileSettings = memo(() => {
                 />
                 {isStudent && (
                   <p className='mt-1 text-[11px] text-slate-400 dark:text-slate-500'>
-                    Academic year is institutionally assigned and cannot be edited.
+                    Academic year is institutionally assigned and cannot be
+                    edited.
                   </p>
                 )}
               </div>
@@ -262,7 +273,11 @@ const ProfileSettings = memo(() => {
                     type='button'
                     onClick={() => setShowCurrentPassword((v) => !v)}
                     className={eyeBtnClass}
-                    aria-label={showCurrentPassword ? 'Hide current password' : 'Show current password'}
+                    aria-label={
+                      showCurrentPassword
+                        ? 'Hide current password'
+                        : 'Show current password'
+                    }
                   >
                     {showCurrentPassword ? (
                       <EyeOff className='h-4 w-4' />
@@ -289,7 +304,11 @@ const ProfileSettings = memo(() => {
                       type='button'
                       onClick={() => setShowNewPassword((v) => !v)}
                       className={eyeBtnClass}
-                      aria-label={showNewPassword ? 'Hide new password' : 'Show new password'}
+                      aria-label={
+                        showNewPassword
+                          ? 'Hide new password'
+                          : 'Show new password'
+                      }
                     >
                       {showNewPassword ? (
                         <EyeOff className='h-4 w-4' />
@@ -315,7 +334,11 @@ const ProfileSettings = memo(() => {
                       type='button'
                       onClick={() => setShowConfirmPassword((v) => !v)}
                       className={eyeBtnClass}
-                      aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
+                      aria-label={
+                        showConfirmPassword
+                          ? 'Hide confirm password'
+                          : 'Show confirm password'
+                      }
                     >
                       {showConfirmPassword ? (
                         <EyeOff className='h-4 w-4' />
@@ -354,4 +377,3 @@ const ProfileSettings = memo(() => {
 ProfileSettings.displayName = 'ProfileSettings';
 
 export default ProfileSettings;
-

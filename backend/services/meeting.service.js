@@ -40,14 +40,23 @@ exports.create = async (data, user) => {
     const meeting = await meetingRepository.create(meetingData);
 
     if (meeting.participants && meeting.participants.length > 0) {
-      meeting.participants.forEach(participantId => {
-        if (user && participantId.toString() !== (user.id || user._id).toString()) {
-          notificationService.create({
-            user: participantId,
-            message: `You have been invited to a meeting: ${meeting.title}`,
-            type: 'info',
-            metadata: { type: 'meeting', meetingId: meeting._id, link: `/meetings` }
-          }).catch(console.error);
+      meeting.participants.forEach((participantId) => {
+        if (
+          user &&
+          participantId.toString() !== (user.id || user._id).toString()
+        ) {
+          notificationService
+            .create({
+              user: participantId,
+              message: `You have been invited to a meeting: ${meeting.title}`,
+              type: 'info',
+              metadata: {
+                type: 'meeting',
+                meetingId: meeting._id,
+                link: `/meetings`,
+              },
+            })
+            .catch(console.error);
         }
       });
     }
@@ -55,7 +64,7 @@ exports.create = async (data, user) => {
     notificationService.notifyAdmins({
       message: `New meeting scheduled: ${meeting.title}`,
       type: 'info',
-      metadata: { type: 'meeting', meetingId: meeting._id, link: `/meetings` }
+      metadata: { type: 'meeting', meetingId: meeting._id, link: `/meetings` },
     });
 
     return response(false, meeting, 'Meeting created successfully');
@@ -73,27 +82,21 @@ exports.getAll = async (params = {}, currentUser = null) => {
     const queryFilter = {};
     if (currentUser && currentUser.role !== 'admin') {
       const userId = currentUser._id || currentUser.id;
-      queryFilter.$or = [
-        { organizer: userId },
-        { participants: userId },
-      ];
+      queryFilter.$or = [{ organizer: userId }, { participants: userId }];
     }
 
-    const meetings = await meetingRepository.findAll(
-      queryFilter,
-      {
-        populate: [
-          { path: 'organizer', select: 'name email role avatar' },
-          { path: 'participants', select: 'name email role avatar' },
-          {
-            path: 'project',
-            select: 'title slug status guide',
-            populate: { path: 'guide', select: 'name email role' },
-          },
-        ],
-        sort: { date: 1 },
-      }
-    );
+    const meetings = await meetingRepository.findAll(queryFilter, {
+      populate: [
+        { path: 'organizer', select: 'name email role avatar' },
+        { path: 'participants', select: 'name email role avatar' },
+        {
+          path: 'project',
+          select: 'title slug status guide',
+          populate: { path: 'guide', select: 'name email role' },
+        },
+      ],
+      sort: { date: 1 },
+    });
 
     const now = new Date();
     const formattedMeetings = (meetings || []).map((m) => {
@@ -170,20 +173,26 @@ exports.update = async (id, data) => {
     if (!meeting) return response(true, null, 'Meeting not found');
 
     if (meeting.participants && meeting.participants.length > 0) {
-      meeting.participants.forEach(participantId => {
-        notificationService.create({
-          user: participantId,
-          message: `Meeting '${meeting.title}' has been updated`,
-          type: 'info',
-          metadata: { type: 'meeting', meetingId: meeting._id, link: `/meetings` }
-        }).catch(console.error);
+      meeting.participants.forEach((participantId) => {
+        notificationService
+          .create({
+            user: participantId,
+            message: `Meeting '${meeting.title}' has been updated`,
+            type: 'info',
+            metadata: {
+              type: 'meeting',
+              meetingId: meeting._id,
+              link: `/meetings`,
+            },
+          })
+          .catch(console.error);
       });
     }
 
     notificationService.notifyAdmins({
       message: `Meeting '${meeting.title}' has been updated`,
       type: 'info',
-      metadata: { type: 'meeting', meetingId: meeting._id, link: `/meetings` }
+      metadata: { type: 'meeting', meetingId: meeting._id, link: `/meetings` },
     });
 
     return response(false, meeting, 'Meeting updated successfully');
@@ -203,13 +212,19 @@ exports.remove = async (id) => {
     if (!meeting) return response(true, null, 'Meeting not found');
 
     if (meeting.participants && meeting.participants.length > 0) {
-      meeting.participants.forEach(participantId => {
-        notificationService.create({
-          user: participantId,
-          message: `Meeting '${meeting.title}' has been cancelled`,
-          type: 'warning',
-          metadata: { type: 'meeting', meetingId: meeting._id, link: `/meetings` }
-        }).catch(console.error);
+      meeting.participants.forEach((participantId) => {
+        notificationService
+          .create({
+            user: participantId,
+            message: `Meeting '${meeting.title}' has been cancelled`,
+            type: 'warning',
+            metadata: {
+              type: 'meeting',
+              meetingId: meeting._id,
+              link: `/meetings`,
+            },
+          })
+          .catch(console.error);
       });
     }
 

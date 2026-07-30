@@ -50,7 +50,8 @@ exports.getAll = async (currentUser = null) => {
       (facultyProjects || []).forEach((p) => {
         if (p.leader) {
           allowedStudentIds.add((p.leader._id || p.leader).toString());
-          if (p.leader.email) allowedStudentIds.add(p.leader.email.toLowerCase());
+          if (p.leader.email)
+            allowedStudentIds.add(p.leader.email.toLowerCase());
         }
         (p.members || []).forEach((m) => {
           allowedStudentIds.add((m._id || m).toString());
@@ -126,9 +127,10 @@ exports.getAll = async (currentUser = null) => {
 
     let resultList = Array.from(studentMap.values());
     if (allowedStudentIds) {
-      resultList = resultList.filter((s) =>
-        allowedStudentIds.has((s._id || s.id).toString()) ||
-        (s.email && allowedStudentIds.has(s.email.toLowerCase()))
+      resultList = resultList.filter(
+        (s) =>
+          allowedStudentIds.has((s._id || s.id).toString()) ||
+          (s.email && allowedStudentIds.has(s.email.toLowerCase()))
       );
     }
 
@@ -314,7 +316,6 @@ exports.create = async (data) => {
  * @returns {Promise<Object>} Formatted service response with deletion status
  */
 exports.remove = async (id) => {
-
   try {
     let deletedStudent = null;
     let deletedUser = null;

@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Bell, CheckCircle2, Trash2, CheckCheck, RefreshCw, Filter } from 'lucide-react';
+import {
+  Bell,
+  CheckCircle2,
+  Trash2,
+  CheckCheck,
+  RefreshCw,
+  Filter,
+} from 'lucide-react';
 import PageHeader from '../../common/PageHeader';
 import { useNotificationsContext } from '../../../context/NotificationContext';
 import { timeAgo } from '../../../utils/helpers';
@@ -78,7 +85,9 @@ const NotificationsPage = () => {
         <div className='flex items-center justify-between border-b border-gray-100 dark:border-slate-700 pb-4'>
           <div className='flex items-center gap-2'>
             <Filter size={16} className='text-gray-400' />
-            <span className='text-xs font-bold text-gray-500 dark:text-gray-400'>Filter:</span>
+            <span className='text-xs font-bold text-gray-500 dark:text-gray-400'>
+              Filter:
+            </span>
             {['all', 'unread', 'read'].map((mode) => (
               <button
                 key={mode}
@@ -138,10 +147,10 @@ const NotificationsPage = () => {
                         notif.type === 'error'
                           ? 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400'
                           : notif.type === 'success'
-                          ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400'
-                          : notif.type === 'warning'
-                          ? 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400'
-                          : 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'
+                            ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400'
+                            : notif.type === 'warning'
+                              ? 'bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400'
+                              : 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'
                       }`}
                     >
                       <Bell size={18} />

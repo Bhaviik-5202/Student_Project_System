@@ -28,11 +28,15 @@ const Feedback = () => {
         rating,
         category,
         feedback: comments,
-        role: user?.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : 'Guest',
+        role: user?.role
+          ? user.role.charAt(0).toUpperCase() + user.role.slice(1)
+          : 'Guest',
         date: new Date().toLocaleString(),
       });
       setSubmitted(true);
-      toast.success('Thank you! Your feedback has been sent to er.bhavik5202@gmail.com');
+      toast.success(
+        'Thank you! Your feedback has been sent to er.bhavik5202@gmail.com'
+      );
     } catch (err) {
       console.error('Feedback submit error:', err);
       setSubmitted(true);
@@ -56,9 +60,12 @@ const Feedback = () => {
             <div className='mx-auto h-16 w-16 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400'>
               <CheckCircle2 size={36} />
             </div>
-            <h3 className='text-2xl font-extrabold text-slate-900 dark:text-white'>Feedback Submitted!</h3>
+            <h3 className='text-2xl font-extrabold text-slate-900 dark:text-white'>
+              Feedback Submitted!
+            </h3>
             <p className='text-xs text-slate-600 dark:text-slate-400'>
-              We appreciate your time. Your input has been registered with our product development team.
+              We appreciate your time. Your input has been registered with our
+              product development team.
             </p>
             <button
               onClick={() => {
@@ -106,9 +113,13 @@ const Feedback = () => {
                 onChange={(e) => setCategory(e.target.value)}
                 className='w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none'
               >
-                <option value='User Interface & Design'>User Interface & Design</option>
+                <option value='User Interface & Design'>
+                  User Interface & Design
+                </option>
                 <option value='Performance & Speed'>Performance & Speed</option>
-                <option value='Project Workflow & Governance'>Project Workflow & Governance</option>
+                <option value='Project Workflow & Governance'>
+                  Project Workflow & Governance
+                </option>
                 <option value='Feature Request'>Feature Request</option>
                 <option value='Bug Report'>Bug Report</option>
                 <option value='General Improvement'>General Improvement</option>

@@ -94,16 +94,16 @@ const ProjectProposal = () => {
                 : '',
               members: Array.isArray(project.members)
                 ? project.members.map((m) =>
-                  typeof m === 'object' ? m._id || m.id : m
-                )
+                    typeof m === 'object' ? m._id || m.id : m
+                  )
                 : [],
               startDate: project.startDate
                 ? new Date(project.startDate).toISOString().split('T')[0]
                 : '',
               expectedCompletionDate: project.expectedCompletionDate
                 ? new Date(project.expectedCompletionDate)
-                  .toISOString()
-                  .split('T')[0]
+                    .toISOString()
+                    .split('T')[0]
                 : '',
               progress: project.progress || 0,
               status: project.status || 'assigned',
@@ -130,13 +130,17 @@ const ProjectProposal = () => {
 
   const availableCategories = useMemo(() => {
     if (!formData.department) return [];
-    const deptObj = optionsHierarchy.find((d) => d.name === formData.department);
+    const deptObj = optionsHierarchy.find(
+      (d) => d.name === formData.department
+    );
     return deptObj ? deptObj.categories.map((c) => c.name) : [];
   }, [optionsHierarchy, formData.department]);
 
   const availableProjectTypes = useMemo(() => {
     if (!formData.department || !formData.category) return [];
-    const deptObj = optionsHierarchy.find((d) => d.name === formData.department);
+    const deptObj = optionsHierarchy.find(
+      (d) => d.name === formData.department
+    );
     if (!deptObj) return [];
     const catObj = deptObj.categories.find((c) => c.name === formData.category);
     return catObj ? catObj.projectTypes : [];
@@ -304,7 +308,9 @@ const ProjectProposal = () => {
                   name='category'
                   value={formData.category}
                   onChange={handleCategoryChange}
-                  disabled={!formData.department || availableCategories.length === 0}
+                  disabled={
+                    !formData.department || availableCategories.length === 0
+                  }
                   required
                 >
                   <option value=''>
@@ -325,7 +331,9 @@ const ProjectProposal = () => {
                   name='projectType'
                   value={formData.projectType}
                   onChange={handleChange}
-                  disabled={!formData.category || availableProjectTypes.length === 0}
+                  disabled={
+                    !formData.category || availableProjectTypes.length === 0
+                  }
                   required
                 >
                   <option value=''>
@@ -432,10 +440,11 @@ const ProjectProposal = () => {
                   <div
                     key={sId}
                     onClick={() => handleMemberToggle(sId)}
-                    className={`flex items-center justify-between p-2.5 rounded-xl border cursor-pointer transition-all ${isSelected
-                      ? 'border-indigo-500 bg-indigo-50/50 dark:border-indigo-500 dark:bg-indigo-900/20'
-                      : 'border-gray-100 hover:border-gray-200 dark:border-slate-700'
-                      }`}
+                    className={`flex items-center justify-between p-2.5 rounded-xl border cursor-pointer transition-all ${
+                      isSelected
+                        ? 'border-indigo-500 bg-indigo-50/50 dark:border-indigo-500 dark:bg-indigo-900/20'
+                        : 'border-gray-100 hover:border-gray-200 dark:border-slate-700'
+                    }`}
                   >
                     <span className='text-xs font-bold text-gray-900 dark:text-white'>
                       {s.name} ({s.department || 'Student'})

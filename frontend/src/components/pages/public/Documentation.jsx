@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
-import { BookOpen, FileText, Layers, ShieldCheck, Search, ChevronRight, Terminal, UserCheck } from 'lucide-react';
+import {
+  BookOpen,
+  FileText,
+  Layers,
+  ShieldCheck,
+  Search,
+  ChevronRight,
+  Terminal,
+  UserCheck,
+} from 'lucide-react';
 import PageHeader from '../../common/PageHeader';
 
 const DOC_SECTIONS = [
@@ -9,17 +18,32 @@ const DOC_SECTIONS = [
     icon: BookOpen,
     content: (
       <div className='space-y-4 text-xs leading-relaxed text-slate-700 dark:text-slate-300'>
-        <h3 className='text-base font-bold text-slate-900 dark:text-white'>System Overview</h3>
+        <h3 className='text-base font-bold text-slate-900 dark:text-white'>
+          System Overview
+        </h3>
         <p>
-          Student Project System is a centralized portal for managing academic projects, team allocations, project proposals, milestone evaluation, and faculty feedback.
+          Student Project System is a centralized portal for managing academic
+          projects, team allocations, project proposals, milestone evaluation,
+          and faculty feedback.
         </p>
         <div className='p-4 rounded-xl bg-indigo-50/50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800 space-y-2'>
-          <h4 className='font-bold text-indigo-900 dark:text-indigo-300 text-xs'>Quick Onboarding Steps</h4>
+          <h4 className='font-bold text-indigo-900 dark:text-indigo-300 text-xs'>
+            Quick Onboarding Steps
+          </h4>
           <ol className='list-decimal list-inside space-y-1 text-xs text-indigo-800 dark:text-indigo-200'>
             <li>Log in using your institutionally assigned credentials.</li>
-            <li>Navigate to <strong>My Profile</strong> to verify department and contact information.</li>
-            <li>Go to <strong>Projects</strong> to view assigned projects or submit new proposals.</li>
-            <li>Track timeline deadlines and meetings directly from your <strong>Dashboard</strong>.</li>
+            <li>
+              Navigate to <strong>My Profile</strong> to verify department and
+              contact information.
+            </li>
+            <li>
+              Go to <strong>Projects</strong> to view assigned projects or
+              submit new proposals.
+            </li>
+            <li>
+              Track timeline deadlines and meetings directly from your{' '}
+              <strong>Dashboard</strong>.
+            </li>
           </ol>
         </div>
       </div>
@@ -31,11 +55,17 @@ const DOC_SECTIONS = [
     icon: UserCheck,
     content: (
       <div className='space-y-4 text-xs leading-relaxed text-slate-700 dark:text-slate-300'>
-        <h3 className='text-base font-bold text-slate-900 dark:text-white'>Role-Based Access Controls</h3>
+        <h3 className='text-base font-bold text-slate-900 dark:text-white'>
+          Role-Based Access Controls
+        </h3>
         <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
           <div className='p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 space-y-2'>
-            <span className='px-2.5 py-1 rounded-md bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 font-bold text-[10px] uppercase'>Admin</span>
-            <p className='text-xs font-semibold text-slate-800 dark:text-white'>Full Management Access</p>
+            <span className='px-2.5 py-1 rounded-md bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 font-bold text-[10px] uppercase'>
+              Admin
+            </span>
+            <p className='text-xs font-semibold text-slate-800 dark:text-white'>
+              Full Management Access
+            </p>
             <ul className='list-disc list-inside text-xs text-slate-600 dark:text-slate-400 space-y-1'>
               <li>User management & role assignments</li>
               <li>Project approvals & archiving</li>
@@ -44,8 +74,12 @@ const DOC_SECTIONS = [
           </div>
 
           <div className='p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 space-y-2'>
-            <span className='px-2.5 py-1 rounded-md bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 font-bold text-[10px] uppercase'>Faculty</span>
-            <p className='text-xs font-semibold text-slate-800 dark:text-white'>Guide & Evaluation Access</p>
+            <span className='px-2.5 py-1 rounded-md bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 font-bold text-[10px] uppercase'>
+              Faculty
+            </span>
+            <p className='text-xs font-semibold text-slate-800 dark:text-white'>
+              Guide & Evaluation Access
+            </p>
             <ul className='list-disc list-inside text-xs text-slate-600 dark:text-slate-400 space-y-1'>
               <li>View assigned student projects</li>
               <li>Schedule & conduct project reviews</li>
@@ -54,8 +88,12 @@ const DOC_SECTIONS = [
           </div>
 
           <div className='p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 space-y-2'>
-            <span className='px-2.5 py-1 rounded-md bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 font-bold text-[10px] uppercase'>Student</span>
-            <p className='text-xs font-semibold text-slate-800 dark:text-white'>Project Execution Access</p>
+            <span className='px-2.5 py-1 rounded-md bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 font-bold text-[10px] uppercase'>
+              Student
+            </span>
+            <p className='text-xs font-semibold text-slate-800 dark:text-white'>
+              Project Execution Access
+            </p>
             <ul className='list-disc list-inside text-xs text-slate-600 dark:text-slate-400 space-y-1'>
               <li>Submit project proposals</li>
               <li>View team & guide details</li>
@@ -72,14 +110,21 @@ const DOC_SECTIONS = [
     icon: Layers,
     content: (
       <div className='space-y-4 text-xs leading-relaxed text-slate-700 dark:text-slate-300'>
-        <h3 className='text-base font-bold text-slate-900 dark:text-white'>Proposal Submission Guidelines</h3>
+        <h3 className='text-base font-bold text-slate-900 dark:text-white'>
+          Proposal Submission Guidelines
+        </h3>
         <p>
-          Students can create new proposals by selecting their department, domain category, project type, semester, and faculty guide.
+          Students can create new proposals by selecting their department,
+          domain category, project type, semester, and faculty guide.
         </p>
         <div className='p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 space-y-2'>
-          <h4 className='font-bold text-slate-900 dark:text-white text-xs'>Cascading Field Dependencies</h4>
+          <h4 className='font-bold text-slate-900 dark:text-white text-xs'>
+            Cascading Field Dependencies
+          </h4>
           <p className='text-xs text-slate-600 dark:text-slate-400'>
-            Selecting a Department automatically filters available Domain Categories. Selecting a Domain Category restricts available Project Types to relevant options stored in MongoDB.
+            Selecting a Department automatically filters available Domain
+            Categories. Selecting a Domain Category restricts available Project
+            Types to relevant options stored in MongoDB.
           </p>
         </div>
       </div>
@@ -91,9 +136,13 @@ const DOC_SECTIONS = [
     icon: Terminal,
     content: (
       <div className='space-y-4 text-xs leading-relaxed text-slate-700 dark:text-slate-300'>
-        <h3 className='text-base font-bold text-slate-900 dark:text-white'>RESTful API Architecture</h3>
+        <h3 className='text-base font-bold text-slate-900 dark:text-white'>
+          RESTful API Architecture
+        </h3>
         <p>
-          All API requests require Bearer JWT tokens in the <code>Authorization</code> header. Requests are validated using Mongoose schemas and strict Express role middleware.
+          All API requests require Bearer JWT tokens in the{' '}
+          <code>Authorization</code> header. Requests are validated using
+          Mongoose schemas and strict Express role middleware.
         </p>
       </div>
     ),
@@ -110,7 +159,8 @@ const Documentation = () => {
       s.id.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const currentSection = DOC_SECTIONS.find((s) => s.id === activeTab) || DOC_SECTIONS[0];
+  const currentSection =
+    DOC_SECTIONS.find((s) => s.id === activeTab) || DOC_SECTIONS[0];
 
   return (
     <div className='space-y-8 animate-fade-in pt-0 pb-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
@@ -152,7 +202,10 @@ const Documentation = () => {
                     <Icon size={16} />
                     <span>{sec.title}</span>
                   </div>
-                  <ChevronRight size={14} className={isActive ? 'opacity-100' : 'opacity-40'} />
+                  <ChevronRight
+                    size={14}
+                    className={isActive ? 'opacity-100' : 'opacity-40'}
+                  />
                 </button>
               );
             })}
@@ -166,8 +219,12 @@ const Documentation = () => {
               <currentSection.icon size={24} />
             </div>
             <div>
-              <h2 className='text-xl font-bold text-slate-900 dark:text-white'>{currentSection.title}</h2>
-              <p className='text-xs text-slate-500 dark:text-slate-400'>Official System Reference Guide</p>
+              <h2 className='text-xl font-bold text-slate-900 dark:text-white'>
+                {currentSection.title}
+              </h2>
+              <p className='text-xs text-slate-500 dark:text-slate-400'>
+                Official System Reference Guide
+              </p>
             </div>
           </div>
 

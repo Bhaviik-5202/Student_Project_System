@@ -11,14 +11,30 @@ import HeaderIcon from './HeaderIcon';
 const getNotificationStyle = (type) => {
   switch (type) {
     case 'success':
-      return { icon: 'check-circle', color: 'text-green-600', bgColor: 'bg-green-100 dark:bg-green-900/40' };
+      return {
+        icon: 'check-circle',
+        color: 'text-green-600',
+        bgColor: 'bg-green-100 dark:bg-green-900/40',
+      };
     case 'warning':
-      return { icon: 'triangle-exclamation', color: 'text-yellow-600', bgColor: 'bg-yellow-100 dark:bg-yellow-900/40' };
+      return {
+        icon: 'triangle-exclamation',
+        color: 'text-yellow-600',
+        bgColor: 'bg-yellow-100 dark:bg-yellow-900/40',
+      };
     case 'error':
-      return { icon: 'circle-xmark', color: 'text-red-600', bgColor: 'bg-red-100 dark:bg-red-900/40' };
+      return {
+        icon: 'circle-xmark',
+        color: 'text-red-600',
+        bgColor: 'bg-red-100 dark:bg-red-900/40',
+      };
     case 'info':
     default:
-      return { icon: 'bell', color: 'text-blue-600', bgColor: 'bg-blue-100 dark:bg-blue-900/40' };
+      return {
+        icon: 'bell',
+        color: 'text-blue-600',
+        bgColor: 'bg-blue-100 dark:bg-blue-900/40',
+      };
   }
 };
 
@@ -27,7 +43,7 @@ const formatTime = (dateString) => {
   const date = new Date(dateString);
   const now = new Date();
   const diffInSeconds = Math.floor((now - date) / 1000);
-  
+
   if (diffInSeconds < 60) return 'Just now';
   if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`;
   if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)}h ago`;
@@ -119,7 +135,11 @@ const NotificationMenu = ({
                       className='mt-0.5 opacity-0 transition-opacity hover:text-red-500 group-hover/notifitem:opacity-100'
                       title='Delete notification'
                     >
-                      <HeaderIcon name='trash' className='text-gray-400 hover:text-red-500' size='text-sm' />
+                      <HeaderIcon
+                        name='trash'
+                        className='text-gray-400 hover:text-red-500'
+                        size='text-sm'
+                      />
                     </button>
                   )}
                 </div>

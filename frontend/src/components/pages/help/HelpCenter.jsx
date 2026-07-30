@@ -192,7 +192,8 @@ const HelpCenter = memo(() => {
           Can't find what you're looking for?
         </h3>
         <p className='text-xs text-slate-600 dark:text-slate-400 max-w-lg mx-auto'>
-          Our institutional support team is ready to assist you with any project or administrative inquiry.
+          Our institutional support team is ready to assist you with any project
+          or administrative inquiry.
         </p>
 
         <div className='flex flex-wrap items-center justify-center gap-6 text-xs font-semibold py-2'>
@@ -207,7 +208,9 @@ const HelpCenter = memo(() => {
           </div>
 
           <div className='flex items-center gap-2'>
-            <span className='text-slate-500 dark:text-slate-400'>Helpline:</span>
+            <span className='text-slate-500 dark:text-slate-400'>
+              Helpline:
+            </span>
             <a
               href='tel:6353712057'
               className='text-slate-900 dark:text-white font-bold hover:text-blue-600'

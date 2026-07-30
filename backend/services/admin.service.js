@@ -119,14 +119,20 @@ const adminService = {
   processBatchOperation: async (operationData) => {
     const { operation, selectedUsers, message } = operationData;
     try {
-      if (operation === 'Notification' || operation === 'Message' || operation === 'Email') {
-        selectedUsers.forEach(userId => {
-          notificationService.create({
-            user: userId,
-            message: message || `System Announcement from Administrator`,
-            type: 'info',
-            metadata: { type: 'system', link: '/' }
-          }).catch(console.error);
+      if (
+        operation === 'Notification' ||
+        operation === 'Message' ||
+        operation === 'Email'
+      ) {
+        selectedUsers.forEach((userId) => {
+          notificationService
+            .create({
+              user: userId,
+              message: message || `System Announcement from Administrator`,
+              type: 'info',
+              metadata: { type: 'system', link: '/' },
+            })
+            .catch(console.error);
         });
       }
 

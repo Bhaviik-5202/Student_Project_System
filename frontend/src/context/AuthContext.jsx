@@ -142,15 +142,20 @@ export const AuthProvider = ({ children }) => {
             }
 
             // Sync with latest database state to prevent stale user profile info
-            authService.getProfile().then((res) => {
-              if (res && res.success && res.data) {
-                setUser(res.data);
-                safeLocalStorage.setItem(
-                  STORAGE_KEYS.USER,
-                  JSON.stringify(res.data)
-                );
-              }
-            }).catch(err => console.error('Failed to sync user profile:', err));
+            authService
+              .getProfile()
+              .then((res) => {
+                if (res && res.success && res.data) {
+                  setUser(res.data);
+                  safeLocalStorage.setItem(
+                    STORAGE_KEYS.USER,
+                    JSON.stringify(res.data)
+                  );
+                }
+              })
+              .catch((err) =>
+                console.error('Failed to sync user profile:', err)
+              );
           }
         } else if (!isAuthPage) {
           clearAuthData();

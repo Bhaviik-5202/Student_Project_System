@@ -41,6 +41,10 @@ router.put('/:id', reportController.updateReport);
  * @desc    Delete a report
  * @access  Private (Admin, Faculty)
  */
-router.delete('/:id', roleMiddleware(['admin', 'faculty']), reportController.deleteReport);
+router.delete(
+  '/:id',
+  roleMiddleware(['admin', 'faculty']),
+  reportController.deleteReport
+);
 
 module.exports = router;

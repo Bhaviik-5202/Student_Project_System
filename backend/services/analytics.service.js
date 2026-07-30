@@ -823,16 +823,27 @@ exports.getFacultyDashboardStats = async (userId) => {
 
     const upcomingDeadlines = [];
     (myProjects || []).forEach((p) => {
-      const targetDate = p.endDate || (p.createdAt ? new Date(new Date(p.createdAt).getTime() + 90 * 24 * 60 * 60 * 1000) : new Date(Date.now() + 14 * 24 * 60 * 60 * 1000));
+      const targetDate =
+        p.endDate ||
+        (p.createdAt
+          ? new Date(new Date(p.createdAt).getTime() + 90 * 24 * 60 * 60 * 1000)
+          : new Date(Date.now() + 14 * 24 * 60 * 60 * 1000));
       if (p.status !== 'completed' && p.status !== 'cancelled') {
         const dueDateObj = new Date(targetDate);
-        const daysLeft = Math.max(0, Math.ceil((dueDateObj - new Date()) / (1000 * 60 * 60 * 24)));
+        const daysLeft = Math.max(
+          0,
+          Math.ceil((dueDateObj - new Date()) / (1000 * 60 * 60 * 24))
+        );
         upcomingDeadlines.push({
           id: p._id.toString(),
           title: `${p.title} - Progress Review`,
           projectTitle: p.title,
           date: targetDate,
-          due: dueDateObj.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }),
+          due: dueDateObj.toLocaleDateString(undefined, {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+          }),
           time: '05:00 PM',
           daysLeft,
           priority: daysLeft <= 5 ? 'high' : 'normal',
@@ -843,13 +854,20 @@ exports.getFacultyDashboardStats = async (userId) => {
         p.milestones.forEach((m) => {
           if (m.dueDate && m.status !== 'completed') {
             const dueDateObj = new Date(m.dueDate);
-            const daysLeft = Math.max(0, Math.ceil((dueDateObj - new Date()) / (1000 * 60 * 60 * 24)));
+            const daysLeft = Math.max(
+              0,
+              Math.ceil((dueDateObj - new Date()) / (1000 * 60 * 60 * 24))
+            );
             upcomingDeadlines.push({
               id: (m._id || `${p._id}-${m.title}`).toString(),
               title: `${p.title}: ${m.title}`,
               projectTitle: p.title,
               date: m.dueDate,
-              due: dueDateObj.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }),
+              due: dueDateObj.toLocaleDateString(undefined, {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+              }),
               time: '11:59 PM',
               daysLeft,
               priority: daysLeft <= 3 ? 'high' : 'normal',
@@ -1017,7 +1035,9 @@ exports.getStudentDashboardStats = async (studentId) => {
       const Timeline = require('../models/timeline.model');
       const projectIds = studentProjects.map((p) => p._id);
       if (projectIds.length > 0) {
-        const timelines = await Timeline.find({ project: { $in: projectIds } }).populate('project');
+        const timelines = await Timeline.find({
+          project: { $in: projectIds },
+        }).populate('project');
         timelines.forEach((tl) => {
           (tl.milestones || []).forEach((m) => {
             if (!m.completed && m.dueDate) {

@@ -346,15 +346,15 @@ export const TemplateLibrary = () => {
                     >
                       Download
                     </Button>
-                        {isAdmin && (
-                          <button
-                            onClick={() => handleDelete(tpl)}
-                            className='rounded-lg p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40'
-                            title='Delete'
-                          >
-                            <Trash2 className='h-4 w-4' />
-                          </button>
-                        )}
+                    {isAdmin && (
+                      <button
+                        onClick={() => handleDelete(tpl)}
+                        className='rounded-lg p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40'
+                        title='Delete'
+                      >
+                        <Trash2 className='h-4 w-4' />
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>

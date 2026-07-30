@@ -146,7 +146,10 @@ const UserForm = () => {
       }
 
       // Broadcast so AdminDashboard, UserManagement, etc. auto-refresh
-      notifyDataChanged({ type: 'user_changed', action: isEditMode ? 'updated' : 'created' });
+      notifyDataChanged({
+        type: 'user_changed',
+        action: isEditMode ? 'updated' : 'created',
+      });
       navigate('/user-management', { state: { refresh: true } });
     } catch (err) {
       console.error('Failed to save user:', err);

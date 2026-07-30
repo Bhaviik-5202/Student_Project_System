@@ -26,7 +26,7 @@ const ParticleCloud = ({ isDarkMode }) => {
   const sphere = useMemo(() => generateParticles(2500), []);
 
   // Theme-aware colors: subtle glowing purple in dark mode, light blue in light mode
-  const particleColor = isDarkMode ? '#8b5cf6' : '#60a5fa'; 
+  const particleColor = isDarkMode ? '#8b5cf6' : '#60a5fa';
   const particleOpacity = isDarkMode ? 0.6 : 0.4;
   const particleSize = isDarkMode ? 0.04 : 0.06;
 
@@ -62,7 +62,7 @@ const AnimatedBackground = () => {
       <Canvas
         camera={{ position: [0, 0, 15], fov: 60 }}
         dpr={[1, 2]} // Optimize for high DPI, capping at 2x
-        gl={{ antialias: false, alpha: true, powerPreference: 'low-power' }} 
+        gl={{ antialias: false, alpha: true, powerPreference: 'low-power' }}
       >
         <Suspense fallback={null}>
           <ParticleCloud isDarkMode={isDarkMode} />

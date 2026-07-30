@@ -99,17 +99,19 @@ exports.register = async ({
       });
     }
 
-    notificationService.create({
-      user: user._id,
-      message: `Welcome to Student Project System, ${user.name}!`,
-      type: 'success',
-      metadata: { type: 'system', link: '/profile' }
-    }).catch(console.error);
+    notificationService
+      .create({
+        user: user._id,
+        message: `Welcome to Student Project System, ${user.name}!`,
+        type: 'success',
+        metadata: { type: 'system', link: '/profile' },
+      })
+      .catch(console.error);
 
     notificationService.notifyAdmins({
       message: `New ${finalRole} registered: ${user.name}`,
       type: 'info',
-      metadata: { type: 'system', link: '/user-management' }
+      metadata: { type: 'system', link: '/user-management' },
     });
 
     return response(false, user, 'User registered successfully');
@@ -273,17 +275,19 @@ exports.create = async (data) => {
       });
     }
 
-    notificationService.create({
-      user: user._id,
-      message: `Your account has been created by an administrator. Welcome, ${user.name}!`,
-      type: 'success',
-      metadata: { type: 'system', link: '/profile' }
-    }).catch(console.error);
+    notificationService
+      .create({
+        user: user._id,
+        message: `Your account has been created by an administrator. Welcome, ${user.name}!`,
+        type: 'success',
+        metadata: { type: 'system', link: '/profile' },
+      })
+      .catch(console.error);
 
     notificationService.notifyAdmins({
       message: `New user account created: ${user.name} (${user.role})`,
       type: 'info',
-      metadata: { type: 'system', link: '/user-management' }
+      metadata: { type: 'system', link: '/user-management' },
     });
 
     return response(false, user, 'User created successfully');

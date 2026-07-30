@@ -342,19 +342,21 @@ export const ResourceBrowser = () => {
         <div className='flex items-center gap-1 rounded-xl border border-slate-200 p-1 dark:border-slate-800'>
           <button
             onClick={() => setViewMode('grid')}
-            className={`rounded-lg p-2 text-xs font-semibold transition-all ${viewMode === 'grid'
+            className={`rounded-lg p-2 text-xs font-semibold transition-all ${
+              viewMode === 'grid'
                 ? 'bg-indigo-600 text-white shadow-xs'
                 : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white dark:text-white '
-              }`}
+            }`}
           >
             <Grid className='h-4 w-4' />
           </button>
           <button
             onClick={() => setViewMode('list')}
-            className={`rounded-lg p-2 text-xs font-semibold transition-all ${viewMode === 'list'
+            className={`rounded-lg p-2 text-xs font-semibold transition-all ${
+              viewMode === 'list'
                 ? 'bg-indigo-600 text-white shadow-xs'
                 : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white dark:text-white '
-              }`}
+            }`}
           >
             <List className='h-4 w-4' />
           </button>

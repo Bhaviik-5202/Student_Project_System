@@ -33,8 +33,6 @@ const AuditLog = memo(() => {
           createdAt: currentFilters.date || undefined,
         };
 
-
-
         const response = await api.get('/auditlogs', { params: queryParams });
 
         if (response.success) {
@@ -62,7 +60,6 @@ const AuditLog = memo(() => {
   }, []);
 
   const handleApplyFilters = () => {
-
     fetchLogs(filters);
   };
 

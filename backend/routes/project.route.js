@@ -96,8 +96,10 @@ router.put('/:id/guide', roleMiddleware(['admin']), (req, res, next) =>
 /**
  * Progress & Status Lifecycle
  */
-router.patch('/:id/progress', roleMiddleware(['admin', 'faculty']), (req, res, next) =>
-  projectController.updateProgress(req, res, next)
+router.patch(
+  '/:id/progress',
+  roleMiddleware(['admin', 'faculty']),
+  (req, res, next) => projectController.updateProgress(req, res, next)
 );
 
 /**
@@ -106,8 +108,10 @@ router.patch('/:id/progress', roleMiddleware(['admin', 'faculty']), (req, res, n
 router.post('/:id/files', (req, res, next) =>
   projectController.addProjectFile(req, res, next)
 );
-router.delete('/:id/files/:fileId', roleMiddleware(['admin', 'faculty']), (req, res, next) =>
-  projectController.removeProjectFile(req, res, next)
+router.delete(
+  '/:id/files/:fileId',
+  roleMiddleware(['admin', 'faculty']),
+  (req, res, next) => projectController.removeProjectFile(req, res, next)
 );
 
 /**

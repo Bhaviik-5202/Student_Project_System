@@ -1,6 +1,5 @@
 import toast from 'react-hot-toast';
 
-
 /**
  * Custom Toast Notifications System
  * Features:

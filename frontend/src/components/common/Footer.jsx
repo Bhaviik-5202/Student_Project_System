@@ -342,7 +342,9 @@ const Footer = memo(({ variant = 'minimal' }) => {
             >
               Terms of Service
             </Link>
-              <span className='text-xs text-slate-500 dark:text-slate-400'>EN</span>
+            <span className='text-xs text-slate-500 dark:text-slate-400'>
+              EN
+            </span>
           </div>
         </div>
       </div>

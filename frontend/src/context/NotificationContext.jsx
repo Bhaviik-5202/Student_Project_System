@@ -1,4 +1,11 @@
-import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+} from 'react';
 import { useLocation } from 'react-router-dom';
 import api from '../utils/api';
 import { useAuth } from '../hooks/useAuth';
@@ -161,7 +168,9 @@ export const NotificationProvider = ({ children }) => {
     try {
       await api.patch(`/notifications/${id}/read`);
       setNotifications((prev) =>
-        prev.map((n) => (n._id === id || n.id === id ? { ...n, read: true } : n))
+        prev.map((n) =>
+          n._id === id || n.id === id ? { ...n, read: true } : n
+        )
       );
     } catch (error) {
       console.error('Failed to mark notification as read:', error);
@@ -180,7 +189,9 @@ export const NotificationProvider = ({ children }) => {
   const deleteNotification = async (id) => {
     try {
       await api.delete(`/notifications/${id}`);
-      setNotifications((prev) => prev.filter((n) => n._id !== id && n.id !== id));
+      setNotifications((prev) =>
+        prev.filter((n) => n._id !== id && n.id !== id)
+      );
     } catch (error) {
       console.error('Failed to delete notification:', error);
     }

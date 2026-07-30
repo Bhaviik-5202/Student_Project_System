@@ -21,7 +21,7 @@ import QuickAddMenu from './header/QuickAddMenu';
 const Header = memo(
   ({
     isScrolled = false,
-    clearNotifications = () => { },
+    clearNotifications = () => {},
     onMobileMenuToggle,
     isMobileMenuOpen = false,
   }) => {
@@ -44,9 +44,22 @@ const Header = memo(
     const calendarRef = useRef(null);
 
     // Global notifications context
-    const { notifications, unreadCount, markAllAsRead, deleteNotification, clearNotificationsState } = useNotificationsContext();
+    const {
+      notifications,
+      unreadCount,
+      markAllAsRead,
+      deleteNotification,
+      clearNotificationsState,
+    } = useNotificationsContext();
 
-    const AUTH_PAGES = ['/', '/login', '/register', '/forgot-password', '/reset-password', '/verify-otp'];
+    const AUTH_PAGES = [
+      '/',
+      '/login',
+      '/register',
+      '/forgot-password',
+      '/reset-password',
+      '/verify-otp',
+    ];
     const isAuthPage = AUTH_PAGES.includes(location.pathname);
     const shouldShowNotifications = Boolean(user) && !isAuthPage;
 
@@ -67,7 +80,12 @@ const Header = memo(
         clearNotifications();
       }
       logout();
-    }, [closeAllDropdowns, clearNotificationsState, clearNotifications, logout]);
+    }, [
+      closeAllDropdowns,
+      clearNotificationsState,
+      clearNotifications,
+      logout,
+    ]);
 
     // Outside click handler
     useEffect(() => {
@@ -253,10 +271,11 @@ const Header = memo(
     return (
       <>
         <header
-          className={`relative z-[100] h-16 w-full transition-all duration-300 ${isScrolled
-            ? 'bg-white/95 backdrop-blur-md shadow-sm dark:bg-slate-900/95'
-            : 'bg-white border-b border-gray-200/80 dark:bg-slate-900 dark:border-gray-700/80'
-            }`}
+          className={`relative z-[100] h-16 w-full transition-all duration-300 ${
+            isScrolled
+              ? 'bg-white/95 backdrop-blur-md shadow-sm dark:bg-slate-900/95'
+              : 'bg-white border-b border-gray-200/80 dark:bg-slate-900 dark:border-gray-700/80'
+          }`}
         >
           <div className='h-full w-full px-4 lg:px-6'>
             <div className='flex h-full items-center justify-between gap-4'>
@@ -377,7 +396,10 @@ const Header = memo(
                         </span>
                       )}
                     </button>
-                    <Dropdown isOpen={showNotifications} className='w-80 sm:w-96'>
+                    <Dropdown
+                      isOpen={showNotifications}
+                      className='w-80 sm:w-96'
+                    >
                       <NotificationMenu
                         notifications={notifications}
                         unreadCount={unreadCount}

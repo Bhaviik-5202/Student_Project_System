@@ -25,21 +25,34 @@ exports.create = async (data) => {
     const resource = await resourceRepository.create(data);
 
     // Notify all active students about the new resource
-    userRepository.findAll({ role: 'student', status: 'Active' }).then(students => {
-      students.forEach(student => {
-        notificationService.create({
-          user: student._id,
-          message: `New resource uploaded: ${resource.title}`,
-          type: 'info',
-          metadata: { type: 'resource', resourceId: resource._id, link: `/resources` }
-        }).catch(console.error);
-      });
-    }).catch(console.error);
+    userRepository
+      .findAll({ role: 'student', status: 'Active' })
+      .then((students) => {
+        students.forEach((student) => {
+          notificationService
+            .create({
+              user: student._id,
+              message: `New resource uploaded: ${resource.title}`,
+              type: 'info',
+              metadata: {
+                type: 'resource',
+                resourceId: resource._id,
+                link: `/resources`,
+              },
+            })
+            .catch(console.error);
+        });
+      })
+      .catch(console.error);
 
     notificationService.notifyAdmins({
       message: `New resource uploaded: ${resource.title}`,
       type: 'info',
-      metadata: { type: 'resource', resourceId: resource._id, link: `/resources` }
+      metadata: {
+        type: 'resource',
+        resourceId: resource._id,
+        link: `/resources`,
+      },
     });
 
     return response(false, resource, 'Resource created successfully');
