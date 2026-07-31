@@ -31,26 +31,33 @@ async function sendEmail({ to, subject, text, html }) {
     return;
   }
 
-  const secure = port === 465;
+  const isGmail = host && (host.toLowerCase().includes('gmail') || host.toLowerCase().includes('google'));
 
-  const transportConfig = {
-    host,
-    port,
-    secure,
-    connectionTimeout: 10000, // 10s connection timeout
-    greetingTimeout: 10000,   // 10s greeting timeout
-    socketTimeout: 15000,     // 15s socket timeout
-    tls: {
-      rejectUnauthorized: false, // Bypass certificate verification errors for self-signed or relay certs
-    },
-  };
-
-  if (user && pass) {
-    transportConfig.auth = {
-      user,
-      pass,
-    };
-  }
+  const transportConfig = isGmail
+    ? {
+        service: 'gmail',
+        auth: user && pass ? { user, pass } : undefined,
+        family: 4,
+        connectionTimeout: 10000,
+        greetingTimeout: 10000,
+        socketTimeout: 15000,
+        tls: {
+          rejectUnauthorized: false,
+        },
+      }
+    : {
+        host,
+        port,
+        secure,
+        family: 4, // Force IPv4 connection to prevent ENETUNREACH IPv6 errors on cloud hosts (Render/Vercel)
+        connectionTimeout: 10000, // 10s connection timeout
+        greetingTimeout: 10000,   // 10s greeting timeout
+        socketTimeout: 15000,     // 15s socket timeout
+        tls: {
+          rejectUnauthorized: false, // Bypass certificate verification errors for self-signed or relay certs
+        },
+        auth: user && pass ? { user, pass } : undefined,
+      };
 
   const transporter = nodemailer.createTransport(transportConfig);
 

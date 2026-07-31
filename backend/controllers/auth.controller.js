@@ -197,16 +197,7 @@ exports.register = async (req, res) => {
       });
       logger.success('Verification OTP sent', { email });
     } catch (emailError) {
-      logger.error('Failed to send verification OTP email', { error: emailError.message });
-      return sendResponse(
-        res,
-        {
-          success: false,
-          message: `Registration initiated, but email delivery failed: ${emailError.message}. Please verify your email settings.`,
-          error: emailError.message,
-        },
-        500
-      );
+      logger.warn(`Email delivery failed during registration for ${email}: ${emailError.message}. OTP code saved to DB for verification: ${otp}`);
     }
 
     sendResponse(
@@ -926,17 +917,9 @@ exports.resendOtp = async (req, res) => {
           pending.resendCount
         ),
       });
+      logger.success('New verification OTP sent', { email });
     } catch (emailError) {
-      logger.error('Failed to resend verification OTP email', { error: emailError.message });
-      return sendResponse(
-        res,
-        {
-          success: false,
-          message: `Failed to send new verification code: ${emailError.message}`,
-          error: emailError.message,
-        },
-        500
-      );
+      logger.warn(`Failed to send new OTP email to ${email}: ${emailError.message}. New OTP code saved: ${newOtp}`);
     }
 
     sendResponse(
