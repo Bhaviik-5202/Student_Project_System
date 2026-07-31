@@ -31,24 +31,24 @@ const BADGE_CONFIGS = {
 
 const VARIANT_STYLES = {
   default: {
-    wrapper: 'p-6 sm:p-7 md:p-8 min-h-[108px] sm:min-h-[120px]',
-    icon: 'h-14 w-14 rounded-2xl',
-    iconSize: 28,
-    title: 'text-xl sm:text-2xl',
-    subtitle: 'text-sm',
+    wrapper: 'p-4 sm:p-6 md:p-8 min-h-[90px] sm:min-h-[108px]',
+    icon: 'h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14 rounded-xl sm:rounded-2xl',
+    iconSize: 22,
+    title: 'text-lg sm:text-xl md:text-2xl',
+    subtitle: 'text-xs sm:text-sm',
   },
   small: {
-    wrapper: 'px-4 py-4 sm:px-5 sm:py-4.5 min-h-[72px]',
-    icon: 'h-11 w-11 rounded-xl',
-    iconSize: 22,
-    title: 'text-lg',
+    wrapper: 'px-3 py-3 sm:px-5 sm:py-4.5 min-h-[64px]',
+    icon: 'h-9 w-9 sm:h-11 sm:w-11 rounded-lg sm:rounded-xl',
+    iconSize: 18,
+    title: 'text-base sm:text-lg',
     subtitle: 'text-xs',
   },
   compact: {
-    wrapper: 'px-3 py-3 sm:px-4 sm:py-3.5 min-h-[60px]',
-    icon: 'h-9 w-9 rounded-lg',
-    iconSize: 18,
-    title: 'text-base sm:text-lg',
+    wrapper: 'px-3 py-2.5 sm:px-4 sm:py-3.5 min-h-[52px]',
+    icon: 'h-8 w-8 sm:h-9 sm:w-9 rounded-lg',
+    iconSize: 16,
+    title: 'text-sm sm:text-base md:text-lg',
     subtitle: 'text-xs',
   },
 };

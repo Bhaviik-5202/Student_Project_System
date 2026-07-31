@@ -122,9 +122,9 @@ const StudentRow = memo(({ student, onEdit, onDelete, userRole }) => (
     </td>
 
     {/* Actions */}
-    <td className='whitespace-nowrap px-6 py-4 text-right text-sm'>
+    <td className='whitespace-nowrap px-3 py-3 sm:px-6 sm:py-4 text-right text-sm'>
       {userRole === 'admin' && (
-        <div className='flex justify-end gap-1.5 opacity-0 transition-opacity group-hover:opacity-100'>
+        <div className='flex justify-end gap-1.5 opacity-100 sm:opacity-0 transition-opacity sm:group-hover:opacity-100'>
           <button
             onClick={() => onEdit(student.id)}
             className='rounded-xl p-2 text-indigo-600 transition-all hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-900/30'
@@ -370,7 +370,7 @@ const StudentsList = memo(() => {
 
       {/* Modern Table Container */}
       <div className='overflow-hidden rounded-2xl border border-slate-200/80 bg-white dark:bg-slate-900 shadow-xs backdrop-blur-sm dark:border-slate-800 '>
-        <div className='overflow-x-auto'>
+        <div className='table-responsive overflow-x-auto'>
           <table className='w-full border-collapse text-left'>
             <thead>
               <tr className='border-b border-slate-200/80 bg-slate-50 dark:bg-slate-800/60 dark:border-slate-800 dark:bg-slate-900/80'>

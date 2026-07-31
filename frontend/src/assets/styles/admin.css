@@ -290,10 +290,10 @@
   background-color: rgba(15, 23, 42, 0.5);
   backdrop-filter: blur(4px);
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
   z-index: 9999;
-  padding: 60px 16px;
+  padding: 16px;
   overflow-y: auto;
 }
 
@@ -305,6 +305,7 @@
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
   color: var(--admin-text-main);
   border: 1px solid var(--admin-border);
+  margin: auto;
 }
 
 .admin-modal-header {

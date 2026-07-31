@@ -313,11 +313,11 @@ const Footer = memo(({ variant = 'minimal' }) => {
         </div>
 
         {/* Bottom Bar */}
-        <div className='mt-12 pt-6 border-t border-slate-200 dark:border-white/5 flex flex-col items-center justify-between gap-4 sm:flex-row'>
+        <div className='mt-12 pt-6 border-t border-slate-200 dark:border-white/5 flex flex-col items-center justify-between gap-4 sm:flex-row text-center sm:text-left'>
           <p className='text-xs text-slate-500 dark:text-slate-400'>
             © {currentYear} Student Project System. All rights reserved.
           </p>
-          <div className='flex items-center gap-6 text-xs text-slate-500 dark:text-slate-400'>
+          <div className='flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-xs text-slate-500 dark:text-slate-400'>
             <Link
               to='/about'
               className='hover:text-indigo-600 dark:hover:text-white transition-colors focus:text-indigo-600 dark:focus:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-md px-1'

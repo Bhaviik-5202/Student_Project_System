@@ -100,8 +100,8 @@ const StaffRow = memo(({ staff, onEdit, onDelete }) => (
     </td>
 
     {/* Actions */}
-    <td className='whitespace-nowrap px-6 py-4 text-right'>
-      <div className='flex justify-end gap-2 opacity-0 transition-opacity group-hover:opacity-100'>
+    <td className='whitespace-nowrap px-3 py-3 sm:px-6 sm:py-4 text-right'>
+      <div className='flex justify-end gap-2 opacity-100 sm:opacity-0 transition-opacity sm:group-hover:opacity-100'>
         <button
           onClick={() => onEdit(staff)}
           className='rounded-xl p-2 text-indigo-600 transition-all hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-900/30'
@@ -324,7 +324,7 @@ const Staff = memo(() => {
       </div>
 
       {/* Table Container */}
-      <div className='table-container shadow-md'>
+      <div className='table-container table-responsive overflow-x-auto shadow-md'>
         <table className='table'>
           <thead>
             <tr className='bg-gray-50 dark:bg-gray-800/50 dark:bg-slate-900/50'>

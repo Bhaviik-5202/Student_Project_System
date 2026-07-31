@@ -296,7 +296,7 @@ const MeetingList = () => {
           </div>
         </div>
 
-        <div className='overflow-x-auto'>
+        <div className='table-responsive overflow-x-auto'>
           {loading ? (
             <div className='p-12 text-center text-sm font-medium italic text-slate-400'>
               Accessing meeting schedule archive...

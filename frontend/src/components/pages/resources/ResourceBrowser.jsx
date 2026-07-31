@@ -513,7 +513,7 @@ export const ResourceBrowser = () => {
         </div>
       ) : (
         /* List View */
-        <div className='overflow-hidden rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 shadow-xs dark:border-slate-800 '>
+        <div className='table-responsive overflow-x-auto rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 shadow-xs dark:border-slate-800 '>
           <table className='w-full text-left text-sm text-slate-600 dark:text-slate-400'>
             <thead className='border-b border-slate-200 bg-slate-50 dark:bg-slate-800 text-xs uppercase text-slate-500 dark:text-slate-400 dark:border-slate-800 /50 '>
               <tr>
