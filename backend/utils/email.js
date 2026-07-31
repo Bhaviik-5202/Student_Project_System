@@ -4,7 +4,17 @@
  */
 
 const nodemailer = require('nodemailer');
+const dns = require('dns');
 const logger = require('./logger');
+
+// Ensure Node defaults to IPv4 first globally
+if (typeof dns.setDefaultResultOrder === 'function') {
+  dns.setDefaultResultOrder('ipv4first');
+}
+
+const customIPv4Lookup = (hostname, options, callback) => {
+  return dns.lookup(hostname, { family: 4, hints: dns.ADDRCONFIG }, callback);
+};
 
 /**
  * Dispatch an email message
@@ -32,12 +42,14 @@ async function sendEmail({ to, subject, text, html }) {
   }
 
   const isGmail = host && (host.toLowerCase().includes('gmail') || host.toLowerCase().includes('google'));
+  const secure = port === 465;
 
   const transportConfig = isGmail
     ? {
         service: 'gmail',
         auth: user && pass ? { user, pass } : undefined,
         family: 4,
+        lookup: customIPv4Lookup,
         connectionTimeout: 10000,
         greetingTimeout: 10000,
         socketTimeout: 15000,
@@ -50,6 +62,7 @@ async function sendEmail({ to, subject, text, html }) {
         port,
         secure,
         family: 4, // Force IPv4 connection to prevent ENETUNREACH IPv6 errors on cloud hosts (Render/Vercel)
+        lookup: customIPv4Lookup,
         connectionTimeout: 10000, // 10s connection timeout
         greetingTimeout: 10000,   // 10s greeting timeout
         socketTimeout: 15000,     // 15s socket timeout
