@@ -183,6 +183,8 @@ if (require.main === module) {
       await connectDB();
       await seedAdmin();
       await backfillMissingIdentifiers();
+      const sendEmail = require('./utils/email');
+      await sendEmail.verifySMTP();
       isDbInitialized = true;
 
       const server = app.listen(PORT, () => {
