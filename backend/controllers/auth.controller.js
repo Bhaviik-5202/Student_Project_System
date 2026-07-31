@@ -48,6 +48,7 @@ function decryptPassword(text) {
 async function isEmailDeliverable(email) {
   const domain = email.split('@')[1];
   if (
+    !domain ||
     process.env.NODE_ENV === 'test' ||
     process.env.NODE_ENV === 'development' ||
     domain.endsWith('.test') ||
@@ -57,13 +58,15 @@ async function isEmailDeliverable(email) {
     return true;
   }
   try {
-    const mx = await dns.resolveMx(domain);
-    return mx && mx.length > 0;
+    const mxPromise = dns.resolveMx(domain);
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('DNS lookup timeout')), 3000)
+    );
+    const mx = await Promise.race([mxPromise, timeoutPromise]);
+    return Array.isArray(mx) && mx.length > 0;
   } catch (err) {
-    logger.warn(`MX record check failed for domain ${domain}`, {
-      error: err.message,
-    });
-    return false;
+    logger.warn(`MX record check skipped for domain ${domain}: ${err.message}`);
+    return true; // Fallback to true so DNS lookup delays or restrictions never block valid registration
   }
 }
 
@@ -185,14 +188,26 @@ exports.register = async (req, res) => {
       { upsert: true, returnDocument: 'after' }
     );
 
-    await sendEmail({
-      to: email,
-      subject: 'Your Student Project System Verification Code',
-      text: `Hello ${name},\n\nYour 6-digit verification code is: ${otp}\n\nThis code will expire in 5 minutes.`,
-      html: getVerificationEmail(name, otp, false),
-    });
-
-    logger.success('Verification OTP sent', { email });
+    try {
+      await sendEmail({
+        to: email,
+        subject: 'Your Student Project System Verification Code',
+        text: `Hello ${name},\n\nYour 6-digit verification code is: ${otp}\n\nThis code will expire in 5 minutes.`,
+        html: getVerificationEmail(name, otp, false),
+      });
+      logger.success('Verification OTP sent', { email });
+    } catch (emailError) {
+      logger.error('Failed to send verification OTP email', { error: emailError.message });
+      return sendResponse(
+        res,
+        {
+          success: false,
+          message: `Registration initiated, but email delivery failed: ${emailError.message}. Please verify your email settings.`,
+          error: emailError.message,
+        },
+        500
+      );
+    }
 
     sendResponse(
       res,
@@ -899,17 +914,30 @@ exports.resendOtp = async (req, res) => {
     pending.lastResent = new Date();
     await pending.save();
 
-    await sendEmail({
-      to: email,
-      subject: 'Your New Student Project System Verification Code',
-      text: `Hello ${pending.name},\n\nYour new 6-digit verification code is: ${newOtp}\n\nThis code will expire in 5 minutes.`,
-      html: getVerificationEmail(
-        pending.name,
-        newOtp,
-        true,
-        pending.resendCount
-      ),
-    });
+    try {
+      await sendEmail({
+        to: email,
+        subject: 'Your New Student Project System Verification Code',
+        text: `Hello ${pending.name},\n\nYour new 6-digit verification code is: ${newOtp}\n\nThis code will expire in 5 minutes.`,
+        html: getVerificationEmail(
+          pending.name,
+          newOtp,
+          true,
+          pending.resendCount
+        ),
+      });
+    } catch (emailError) {
+      logger.error('Failed to resend verification OTP email', { error: emailError.message });
+      return sendResponse(
+        res,
+        {
+          success: false,
+          message: `Failed to send new verification code: ${emailError.message}`,
+          error: emailError.message,
+        },
+        500
+      );
+    }
 
     sendResponse(
       res,

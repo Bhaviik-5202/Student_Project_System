@@ -3,7 +3,7 @@ import { API_BASE_URL, LOCAL_STORAGE_KEYS } from './constants';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 60000, // 60 seconds (accommodates Render free tier spin-up / cold starts)
+  timeout: 30000, // 30 seconds timeout to prevent indefinite hanging while accommodating cold starts
 });
 
 // Request interceptor
@@ -48,7 +48,10 @@ api.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    if (error.response?.status === 401) {
+    const isAuthPath = ['/login', '/register', '/verify-otp', '/forgot-password', '/reset-password'].includes(
+      window.location.pathname
+    );
+    if (error.response?.status === 401 && !isAuthPath) {
       localStorage.removeItem(LOCAL_STORAGE_KEYS.TOKEN);
       localStorage.removeItem(LOCAL_STORAGE_KEYS.USER);
       localStorage.removeItem(LOCAL_STORAGE_KEYS.USER_ROLE);
