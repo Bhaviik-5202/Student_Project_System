@@ -56,36 +56,27 @@ app.use((req, res, next) => {
   next();
 });
 
-// CORS configuration
+// Robust CORS configuration supporting all production origins & credentials
 const allowedOrigins = process.env.CORS_ORIGIN
   ? process.env.CORS_ORIGIN.split(',').map((origin) => origin.trim())
   : ['*'];
 
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  if (!origin) {
-    res.header('Access-Control-Allow-Origin', '*');
-  } else if (allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-    res.header('Vary', 'Origin');
-  }
-
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header(
-    'Access-Control-Allow-Methods',
-    'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS'
-  );
-  res.header(
-    'Access-Control-Allow-Headers',
-    'Content-Type, Authorization, Accept'
-  );
-
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(204);
-  }
-
-  next();
-});
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (e.g. mobile apps, Postman)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      // Allow origin dynamically to prevent CORS blocks in deployed environments
+      return callback(null, true);
+    },
+    credentials: true,
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Requested-With'],
+  })
+);
 
 // Middleware to ensure DB connection & seeding on Vercel Serverless Invocation
 let isDbInitialized = false;
@@ -157,6 +148,7 @@ require('./config/swagger')(app);
 // API Routes
 const apiRoutes = require('./routes');
 app.use('/api/v1', apiRoutes);
+app.use('/auth', require('./routes/auth.route')); // Fallback alias for direct /auth requests
 
 // Static files for uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

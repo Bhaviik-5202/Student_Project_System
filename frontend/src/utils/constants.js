@@ -1,4 +1,8 @@
-export const API_BASE_URL = import.meta.env.VITE_API_URL || '/api/v1';
+const rawApiUrl = import.meta.env.VITE_API_URL || '/api/v1';
+export const API_BASE_URL =
+  rawApiUrl.startsWith('http') && !rawApiUrl.includes('/api/v1')
+    ? `${rawApiUrl.replace(/\/$/, '')}/api/v1`
+    : rawApiUrl;
 
 export const ROLES = {
   ADMIN: 'admin',
