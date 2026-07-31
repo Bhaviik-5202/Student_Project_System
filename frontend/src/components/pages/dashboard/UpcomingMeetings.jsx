@@ -200,7 +200,7 @@ const UpcomingMeetings = ({ meetings = [], userRole, title, emptyMessage }) => {
           })
         ) : (
           <div className='flex flex-col items-center justify-center rounded-lg border border-dashed border-slate-200 py-10 text-center dark:border-slate-700'>
-            <CalendarIcon className='mb-3 h-10 w-10 text-slate-300 dark:text-slate-600' />
+            <CalendarIcon className='mb-3 h-8 w-8 text-slate-300 dark:text-slate-600 sm:h-10 sm:w-10' />
             <p className='text-sm font-semibold text-slate-600 dark:text-slate-300'>
               {emptyMessage || 'No upcoming meetings.'}
             </p>

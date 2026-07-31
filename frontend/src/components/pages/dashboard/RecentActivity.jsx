@@ -43,9 +43,9 @@ const ActivityItem = memo(({ activity, isLast }) => {
   const itemContent = (
     <div className='relative z-10 flex items-start gap-4 rounded-xl p-3 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-800 dark:hover:bg-slate-700'>
       <div
-        className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg border border-transparent ${colorClass}`}
+        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-transparent sm:h-10 sm:w-10 md:h-12 md:w-12 ${colorClass}`}
       >
-        <i className={`fas ${getIconClass(activity.icon)} text-base`}></i>
+        <i className={`fas ${getIconClass(activity.icon)} text-xs sm:text-sm md:text-base`}></i>
       </div>
 
       <div className='min-w-0 flex-1 pt-1'>

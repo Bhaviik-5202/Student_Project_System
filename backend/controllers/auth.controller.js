@@ -89,12 +89,13 @@ exports.register = async (req, res) => {
   try {
     const { name, email, password, role = 'student' } = req.body;
 
-    if (role && String(role).toLowerCase().trim() === 'admin') {
+    const requestedRole = String(role || 'student').toLowerCase().trim();
+    if (requestedRole === 'faculty' || requestedRole === 'admin') {
       return sendResponse(
         res,
         {
           success: false,
-          message: 'Admin registration is not allowed.',
+          message: 'Only Student registration is allowed.',
           error: 'Forbidden',
         },
         403

@@ -25,15 +25,6 @@ const Register = memo(() => {
   const { register, isLoading: loading } = useAuth();
   const navigate = useNavigate();
 
-  // Roles tab configuration (Public registration allows ONLY Student & Faculty)
-  const roles = useMemo(
-    () => [
-      { id: 'student', label: 'Student', icon: GraduationCap },
-      { id: 'faculty', label: 'Faculty', icon: UserCheck },
-    ],
-    []
-  );
-
   // Calculate password check states dynamically
   const passwordChecks = useMemo(() => {
     const pass = formData.password;
@@ -76,10 +67,6 @@ const Register = memo(() => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   }, []);
 
-  const selectRole = useCallback((roleId) => {
-    setFormData((prev) => ({ ...prev, role: roleId }));
-  }, []);
-
   const handleSubmit = useCallback(
     async (e) => {
       e.preventDefault();
@@ -110,7 +97,7 @@ const Register = memo(() => {
           name: formData.name.trim(),
           email: formData.email.trim(),
           password: formData.password,
-          role: formData.role,
+          role: 'student',
         });
 
         if (res && res.success) {
@@ -412,37 +399,6 @@ const Register = memo(() => {
             className='auth-input'
             placeholder='darshan@university.edu'
           />
-        </motion.div>
-
-        {/* Role Segmented tab control — Theme-aware pill-card style */}
-        <motion.div variants={itemVariants} className='group'>
-          <label className='auth-label'>Register As</label>
-          <div className='role-select-container'>
-            {roles.map((role) => {
-              const isSelected = formData.role === role.id;
-              const Icon = role.icon;
-              return (
-                <button
-                  key={role.id}
-                  type='button'
-                  onClick={() => selectRole(role.id)}
-                  aria-pressed={isSelected}
-                  className={`role-select-btn ${isSelected ? 'active' : ''}`}
-                >
-                  {Icon && (
-                    <Icon
-                      className={`h-4 w-4 transition-colors ${
-                        isSelected
-                          ? 'text-indigo-600 dark:text-indigo-300'
-                          : 'text-slate-400 dark:text-slate-500'
-                      }`}
-                    />
-                  )}
-                  <span>{role.label}</span>
-                </button>
-              );
-            })}
-          </div>
         </motion.div>
 
         {/* Password Input - Separate line */}

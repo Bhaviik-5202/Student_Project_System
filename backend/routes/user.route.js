@@ -12,7 +12,7 @@ const userController = require('../controllers/user.controller');
 const authMiddleware = require('../middleware/auth.middleware');
 const roleMiddleware = require('../middleware/roleMiddleware');
 const validateRequest = require('../middleware/validateRequest');
-const { rejectAdminCreation, protectSuperAdmin } = require('../middleware/adminGuard');
+const { rejectAdminRole, protectSuperAdmin } = require('../middleware/adminGuard');
 
 /**
  * @route   POST /api/v1/users
@@ -23,7 +23,7 @@ router.post(
   '/',
   authMiddleware,
   roleMiddleware(['admin']),
-  rejectAdminCreation,
+  rejectAdminRole,
   userController.createUser
 );
 
@@ -60,7 +60,7 @@ router.put(
   '/:id',
   authMiddleware,
   roleMiddleware(['admin']),
-  rejectAdminCreation,
+  rejectAdminRole,
   protectSuperAdmin,
   [
     body('name').optional().notEmpty().withMessage('Name cannot be empty'),

@@ -281,16 +281,6 @@ const Header = memo(
             <div className='flex h-full items-center justify-between gap-4'>
               {/* Logo Section */}
               <div className='flex items-center gap-3'>
-                <button
-                  onClick={onMobileMenuToggle}
-                  className='rounded-xl p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:bg-gray-800  dark:hover:bg-gray-800 lg:hidden'
-                  aria-label='Toggle mobile menu'
-                >
-                  <HeaderIcon
-                    name={isMobileMenuOpen ? 'xmark' : 'bars'}
-                    size='text-xl'
-                  />
-                </button>
                 <Link to='/dashboard' className='group flex items-center gap-3'>
                   <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 shadow-lg'>
                     <HeaderIcon

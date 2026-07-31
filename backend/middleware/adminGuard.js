@@ -3,10 +3,33 @@ const Staff = require('../models/staff.model');
 const sendResponse = require('../utils/response');
 
 /**
- * Admin Security Guard Middleware
- * Rejects any request attempt to register or create an Admin user or elevate any user role to 'admin'.
+ * Public Signup Guard Middleware
+ * Rejects any public registration attempt with role = 'faculty' or role = 'admin'.
+ * Returns HTTP 403 Forbidden with exact message: "Only Student registration is allowed."
  */
 const rejectAdminCreation = (req, res, next) => {
+  const role = req.body?.role ? String(req.body.role).toLowerCase().trim() : null;
+
+  if (role === 'admin' || role === 'faculty') {
+    return sendResponse(
+      res,
+      {
+        success: false,
+        message: 'Only Student registration is allowed.',
+        error: 'Forbidden',
+      },
+      403
+    );
+  }
+
+  next();
+};
+
+/**
+ * Admin Role Protection Guard (for User Management CRUD)
+ * Rejects creating or updating a user with role = 'admin'.
+ */
+const rejectAdminRole = (req, res, next) => {
   const role = req.body?.role ? String(req.body.role).toLowerCase().trim() : null;
 
   if (role === 'admin') {
@@ -85,5 +108,6 @@ const protectSuperAdmin = async (req, res, next) => {
 
 module.exports = {
   rejectAdminCreation,
+  rejectAdminRole,
   protectSuperAdmin,
 };

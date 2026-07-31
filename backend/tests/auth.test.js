@@ -8,6 +8,8 @@ const { expect } = require('chai');
 const app = require('../server');
 
 describe('Authentication API', function () {
+  this.timeout(10000);
+
   const testUser = {
     name: 'Auth Test User',
     email: `authtest+${Date.now()}@example.com`,
@@ -19,7 +21,7 @@ describe('Authentication API', function () {
   /**
    * Registration Tests
    */
-  it('should register a new user', async function () {
+  it('should register a new student user', async function () {
     const res = await request(app).post('/api/v1/auth/register').send(testUser);
 
     expect(res.statusCode).to.equal(201);
@@ -41,10 +43,10 @@ describe('Authentication API', function () {
 
     expect(res.statusCode).to.equal(403);
     expect(res.body.success).to.be.false;
-    expect(res.body.message).to.equal('Admin registration is not allowed.');
+    expect(res.body.message).to.equal('Only Student registration is allowed.');
   });
 
-  it('should register a new faculty user', async function () {
+  it('should reject registering a faculty user with 403 Forbidden', async function () {
     const facultyUser = {
       name: 'Faculty Test User',
       email: `facultytest+${Date.now()}@example.com`,
@@ -56,9 +58,9 @@ describe('Authentication API', function () {
       .post('/api/v1/auth/register')
       .send(facultyUser);
 
-    expect(res.statusCode).to.equal(201);
-    expect(res.body.success).to.be.true;
-    expect(res.body.data.role).to.equal('faculty');
+    expect(res.statusCode).to.equal(403);
+    expect(res.body.success).to.be.false;
+    expect(res.body.message).to.equal('Only Student registration is allowed.');
   });
 
   /**
@@ -81,7 +83,7 @@ describe('Authentication API', function () {
       password: 'wrongpassword',
     });
 
-    expect(res.statusCode).to.equal(400); // Backend returns 400 for login failure
+    expect(res.statusCode).to.equal(400);
     expect(res.body.success).to.be.false;
   });
 
@@ -89,7 +91,6 @@ describe('Authentication API', function () {
    * Password Management Tests
    */
   it('should request password reset', async function () {
-    this.timeout(10000);
     const res = await request(app)
       .post('/api/v1/auth/forgot-password')
       .send({ email: testUser.email });

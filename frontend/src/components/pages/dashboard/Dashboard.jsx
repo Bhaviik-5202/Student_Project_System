@@ -189,11 +189,10 @@ const AnimatedStatCard = ({ stat, index, onClick }) => {
 
   return (
     <div
-      className={`group relative rounded-2xl border bg-white dark:bg-slate-800 ${borderColor} cursor-pointer overflow-hidden p-6 transition-all duration-300 ${
-        isVisible
-          ? 'translate-y-0 opacity-100 hover:border-transparent hover:shadow-lg dark:hover:shadow-slate-700/30'
-          : 'translate-y-4 opacity-0'
-      }`}
+      className={`group relative rounded-2xl border bg-white dark:bg-slate-800 ${borderColor} cursor-pointer overflow-hidden p-6 transition-all duration-300 ${isVisible
+        ? 'translate-y-0 opacity-100 hover:border-transparent hover:shadow-lg dark:hover:shadow-slate-700/30'
+        : 'translate-y-4 opacity-0'
+        }`}
       onClick={onClick}
     >
       {/* Background overlay - same as Quick Access */}
@@ -204,20 +203,19 @@ const AnimatedStatCard = ({ stat, index, onClick }) => {
       <div className='relative z-10'>
         <div className='mb-6 flex items-center justify-between'>
           <div
-            className={`h-14 w-14 ${bgColor} flex items-center justify-center rounded-xl border ${borderColor}`}
+            className={`h-11 w-11 shrink-0 sm:h-12 sm:w-12 md:h-14 md:w-14 ${bgColor} flex items-center justify-center rounded-xl border ${borderColor}`}
           >
             <Icon
-              className={`h-7 w-7 ${iconColor} transform transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-125`}
+              className={`h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7 ${iconColor} transform transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-125`}
             />
           </div>
           <span
-            className={`rounded-full px-3 py-1.5 text-xs font-semibold ${
-              stat.trend === 'up'
-                ? 'border border-green-200 bg-gradient-to-r from-green-100 to-green-50 text-green-700 dark:border-green-800 dark:from-green-900/40 dark:to-green-800/30 dark:text-green-400'
-                : stat.trend === 'attention'
-                  ? 'border border-yellow-200 bg-gradient-to-r from-yellow-100 to-yellow-50 text-yellow-700 dark:border-yellow-800 dark:from-yellow-900/40 dark:to-yellow-800/30 dark:text-yellow-400'
-                  : 'border border-blue-200 bg-gradient-to-r from-blue-100 to-blue-50 text-blue-700 dark:border-blue-800 dark:from-blue-900/40 dark:to-blue-800/30 dark:text-blue-400'
-            }`}
+            className={`rounded-full px-3 py-1.5 text-xs font-semibold ${stat.trend === 'up'
+              ? 'border border-green-200 bg-gradient-to-r from-green-100 to-green-50 text-green-700 dark:border-green-800 dark:from-green-900/40 dark:to-green-800/30 dark:text-green-400'
+              : stat.trend === 'attention'
+                ? 'border border-yellow-200 bg-gradient-to-r from-yellow-100 to-yellow-50 text-yellow-700 dark:border-yellow-800 dark:from-yellow-900/40 dark:to-yellow-800/30 dark:text-yellow-400'
+                : 'border border-blue-200 bg-gradient-to-r from-blue-100 to-blue-50 text-blue-700 dark:border-blue-800 dark:from-blue-900/40 dark:to-blue-800/30 dark:text-blue-400'
+              }`}
           >
             {stat.change}
           </span>
@@ -321,21 +319,21 @@ const Dashboard = () => {
       const greetings =
         user?.role === 'student'
           ? [
-              'Welcome back! Track your project milestones, deadlines, assigned guide, and meeting schedules.',
-              'Great to see you! Review your team project progress and upcoming deadlines.',
-              'Ready to achieve your project goals today?',
-            ]
+            'Welcome back! Track your project milestones, deadlines, assigned guide, and meeting schedules.',
+            'Great to see you! Review your team project progress and upcoming deadlines.',
+            'Ready to achieve your project goals today?',
+          ]
           : user?.role === 'faculty'
             ? [
-                'Welcome back! Review student proposals, manage assigned projects, and conduct sync meetings.',
-                "Ready to evaluate today's project submissions and provide guidance?",
-                'Great to have you back in the faculty workspace.',
-              ]
+              'Welcome back! Review student proposals, manage assigned projects, and conduct sync meetings.',
+              "Ready to evaluate today's project submissions and provide guidance?",
+              'Great to have you back in the faculty workspace.',
+            ]
             : [
-                'Welcome to System Oversight. Manage operations, users, faculty guides, and project governance.',
-                'Administrator Console ready. System status and analytics are up to date.',
-                'Ready to optimize organizational project workflow?',
-              ];
+              'Welcome to System Oversight. Manage operations, users, faculty guides, and project governance.',
+              'Administrator Console ready. System status and analytics are up to date.',
+              'Ready to optimize organizational project workflow?',
+            ];
       setGreeting(greetings[Math.floor(Math.random() * greetings.length)]);
 
       // Fetch dashboard data
@@ -464,8 +462,8 @@ const Dashboard = () => {
         case 'student': {
           const formattedStatus = statsData.projectStatus
             ? statsData.projectStatus
-                .replace(/_/g, ' ')
-                .replace(/\b\w/g, (l) => l.toUpperCase())
+              .replace(/_/g, ' ')
+              .replace(/\b\w/g, (l) => l.toUpperCase())
             : 'Not Assigned';
 
           data = {
@@ -643,8 +641,8 @@ const Dashboard = () => {
           <div className='flex-1'>
             <div className='flex flex-col justify-between gap-4 md:flex-row md:items-center'>
               <div className='flex items-center gap-4'>
-                <div className='flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 shadow-md'>
-                  <HomeIcon className='h-7 w-7 text-white' />
+                <div className='flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 shadow-md sm:h-12 sm:w-12 md:h-14 md:w-14'>
+                  <HomeIcon className='h-5 w-5 text-white sm:h-6 sm:w-6 md:h-7 md:w-7' />
                 </div>
                 <div>
                   <h1 className='text-2xl font-bold text-gray-900 dark:text-gray-100 md:text-3xl'>
@@ -812,59 +810,59 @@ const Dashboard = () => {
       {/* Urgent Alert Section */}
       {(upcomingDeadlines?.filter((d) => d.priority === 'high')?.length || 0) >
         0 && (
-        <div className='rounded-2xl border border-red-200 bg-gradient-to-r from-red-50 to-red-100/50 p-6 shadow-sm dark:border-red-800 dark:from-red-900/30 dark:to-red-800/20'>
-          <div className='flex flex-col md:flex-row md:items-center'>
-            <div className='flex items-start md:items-center'>
-              <div className='flex-shrink-0'>
-                <ExclamationTriangleIcon className='h-6 w-6 text-red-600 dark:text-red-400' />
+          <div className='rounded-2xl border border-red-200 bg-gradient-to-r from-red-50 to-red-100/50 p-6 shadow-sm dark:border-red-800 dark:from-red-900/30 dark:to-red-800/20'>
+            <div className='flex flex-col md:flex-row md:items-center'>
+              <div className='flex items-start md:items-center'>
+                <div className='flex-shrink-0'>
+                  <ExclamationTriangleIcon className='h-5 w-5 text-red-600 dark:text-red-400 sm:h-6 sm:w-6' />
+                </div>
+                <div className='ml-4 flex-1'>
+                  <h3 className='mb-1 text-lg font-bold text-gray-900 dark:text-white'>
+                    ⚠️ Urgent Action Required
+                  </h3>
+                  <p className='text-gray-700 dark:text-gray-300'>
+                    {
+                      upcomingDeadlines?.filter((d) => d.priority === 'high')[0]
+                        ?.title
+                    }{' '}
+                    due{' '}
+                    <span className='font-semibold'>
+                      {
+                        upcomingDeadlines?.filter((d) => d.priority === 'high')[0]
+                          ?.due
+                      }
+                    </span>{' '}
+                    at{' '}
+                    <span className='font-semibold'>
+                      {
+                        upcomingDeadlines?.filter((d) => d.priority === 'high')[0]
+                          ?.time
+                      }
+                    </span>
+                  </p>
+                </div>
               </div>
-              <div className='ml-4 flex-1'>
-                <h3 className='mb-1 text-lg font-bold text-gray-900 dark:text-white'>
-                  ⚠️ Urgent Action Required
-                </h3>
-                <p className='text-gray-700 dark:text-gray-300'>
-                  {
-                    upcomingDeadlines?.filter((d) => d.priority === 'high')[0]
-                      ?.title
-                  }{' '}
-                  due{' '}
-                  <span className='font-semibold'>
-                    {
-                      upcomingDeadlines?.filter((d) => d.priority === 'high')[0]
-                        ?.due
-                    }
-                  </span>{' '}
-                  at{' '}
-                  <span className='font-semibold'>
-                    {
-                      upcomingDeadlines?.filter((d) => d.priority === 'high')[0]
-                        ?.time
-                    }
+              <div className='mt-4 flex gap-3 md:ml-6 md:mt-0'>
+                <button
+                  onClick={() => navigate('/assignments')}
+                  className='group relative overflow-hidden rounded-xl bg-gradient-to-r from-red-600 to-red-500 px-5 py-2.5 font-medium text-white shadow-md transition-all duration-300 hover:shadow-xl'
+                >
+                  <div className='absolute inset-0 bg-gradient-to-r from-red-700 to-red-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
+                  <span className='relative z-10 inline-block transition-transform duration-300 group-hover:scale-105'>
+                    Start Now
                   </span>
-                </p>
+                </button>
+                <button
+                  onClick={() => toast.info('Extension requested')}
+                  className='group relative overflow-hidden rounded-xl border border-red-300 px-5 py-2.5 font-medium text-red-700 transition-all duration-300 hover:border-transparent hover:shadow-lg dark:border-red-700 dark:text-red-400'
+                >
+                  <div className='absolute inset-0 bg-red-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:bg-red-900/30' />
+                  <span className='relative z-10'>Request Extension</span>
+                </button>
               </div>
-            </div>
-            <div className='mt-4 flex gap-3 md:ml-6 md:mt-0'>
-              <button
-                onClick={() => navigate('/assignments')}
-                className='group relative overflow-hidden rounded-xl bg-gradient-to-r from-red-600 to-red-500 px-5 py-2.5 font-medium text-white shadow-md transition-all duration-300 hover:shadow-xl'
-              >
-                <div className='absolute inset-0 bg-gradient-to-r from-red-700 to-red-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
-                <span className='relative z-10 inline-block transition-transform duration-300 group-hover:scale-105'>
-                  Start Now
-                </span>
-              </button>
-              <button
-                onClick={() => toast.info('Extension requested')}
-                className='group relative overflow-hidden rounded-xl border border-red-300 px-5 py-2.5 font-medium text-red-700 transition-all duration-300 hover:border-transparent hover:shadow-lg dark:border-red-700 dark:text-red-400'
-              >
-                <div className='absolute inset-0 bg-red-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:bg-red-900/30' />
-                <span className='relative z-10'>Request Extension</span>
-              </button>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
       {/* Stats Grid - Role Specific with Animations */}
       {dashboardData.stats.length > 0 && (
@@ -895,8 +893,8 @@ const Dashboard = () => {
           <div className='flex-1 flex flex-col rounded-2xl border border-gray-100 bg-white dark:bg-slate-900 p-6 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800'>
             <div className='mb-8 flex items-center justify-between'>
               <div className='flex items-center'>
-                <div className='mr-3 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-orange-50 to-orange-100/50 dark:from-orange-900/30 dark:to-orange-800/20'>
-                  <CalendarDaysIcon className='h-5 w-5 text-orange-600 dark:text-orange-400' />
+                <div className='mr-3 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-orange-50 to-orange-100/50 dark:from-orange-900/30 dark:to-orange-800/20 sm:h-10 sm:w-10'>
+                  <CalendarDaysIcon className='h-4 w-4 text-orange-600 dark:text-orange-400 sm:h-5 sm:w-5' />
                 </div>
                 <div>
                   <h3 className='text-xl font-bold text-gray-900 dark:text-white'>
@@ -919,8 +917,8 @@ const Dashboard = () => {
             <div className='flex-1 flex flex-col space-y-4'>
               {upcomingDeadlines.length === 0 ? (
                 <div className='flex flex-1 flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50/50 py-12 text-center dark:border-slate-700/50 dark:bg-slate-800/30'>
-                  <div className='mb-4 rounded-full bg-slate-100 p-4 dark:bg-slate-800'>
-                    <CalendarDaysIcon className='h-8 w-8 text-slate-400 dark:text-slate-500' />
+                  <div className='mb-4 rounded-full bg-slate-100 p-3 sm:p-4 dark:bg-slate-800'>
+                    <CalendarDaysIcon className='h-6 w-6 text-slate-400 dark:text-slate-500 sm:h-8 sm:w-8' />
                   </div>
                   <h4 className='text-base font-semibold text-slate-700 dark:text-slate-300'>
                     No Upcoming Deadlines
@@ -933,21 +931,19 @@ const Dashboard = () => {
                 upcomingDeadlines.map((deadline) => (
                   <div
                     key={deadline.id}
-                    className={`group flex items-center justify-between rounded-2xl border p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${
-                      deadline.priority === 'high'
-                        ? 'border-red-100 bg-gradient-to-r from-red-50 to-white dark:border-red-900/30 dark:from-red-900/10 dark:to-slate-800/80 hover:border-red-200'
-                        : 'border-slate-100 bg-white dark:border-slate-700/50 dark:bg-slate-800/80 hover:border-blue-100 hover:bg-blue-50/50 dark:hover:border-blue-900/30 dark:hover:bg-slate-800'
-                    }`}
+                    className={`group flex items-center justify-between rounded-2xl border p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${deadline.priority === 'high'
+                      ? 'border-red-100 bg-gradient-to-r from-red-50 to-white dark:border-red-900/30 dark:from-red-900/10 dark:to-slate-800/80 hover:border-red-200'
+                      : 'border-slate-100 bg-white dark:border-slate-700/50 dark:bg-slate-800/80 hover:border-blue-100 hover:bg-blue-50/50 dark:hover:border-blue-900/30 dark:hover:bg-slate-800'
+                      }`}
                   >
                     <div className='flex items-center gap-5'>
                       <div
-                        className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl transition-colors duration-300 ${
-                          deadline.priority === 'high'
-                            ? 'bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400'
-                            : 'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400 group-hover:bg-blue-100 group-hover:text-blue-600 dark:group-hover:bg-blue-900/40 dark:group-hover:text-blue-400'
-                        }`}
+                        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-colors duration-300 sm:h-12 sm:w-12 ${deadline.priority === 'high'
+                          ? 'bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400'
+                          : 'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400 group-hover:bg-blue-100 group-hover:text-blue-600 dark:group-hover:bg-blue-900/40 dark:group-hover:text-blue-400'
+                          }`}
                       >
-                        <CalendarDaysIcon className='h-6 w-6' />
+                        <CalendarDaysIcon className='h-5 w-5 sm:h-6 sm:w-6' />
                       </div>
                       <div className='flex flex-col justify-center'>
                         <h4 className='text-base font-bold text-gray-900 transition-colors duration-300 group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400'>
@@ -963,13 +959,13 @@ const Dashboard = () => {
                             {deadline.due ||
                               (deadline.date
                                 ? new Date(deadline.date).toLocaleDateString(
-                                    undefined,
-                                    {
-                                      month: 'short',
-                                      day: 'numeric',
-                                      year: 'numeric',
-                                    }
-                                  )
+                                  undefined,
+                                  {
+                                    month: 'short',
+                                    day: 'numeric',
+                                    year: 'numeric',
+                                  }
+                                )
                                 : 'Upcoming')}
                           </span>
                         </div>
@@ -977,11 +973,10 @@ const Dashboard = () => {
                     </div>
                     <div className='ml-4 shrink-0'>
                       <span
-                        className={`inline-flex items-center rounded-full px-3.5 py-1.5 text-xs font-bold tracking-wide uppercase shadow-sm ${
-                          deadline.priority === 'high'
-                            ? 'border border-red-200 bg-gradient-to-r from-red-100 to-red-50 text-red-700 dark:border-red-800 dark:from-red-900/50 dark:to-red-800/30 dark:text-red-300'
-                            : 'border border-slate-200 bg-gradient-to-r from-slate-100 to-slate-50 text-slate-700 dark:border-slate-700 dark:from-slate-800 dark:to-slate-700/50 dark:text-slate-300'
-                        }`}
+                        className={`inline-flex items-center rounded-full px-3.5 py-1.5 text-xs font-bold tracking-wide uppercase shadow-sm ${deadline.priority === 'high'
+                          ? 'border border-red-200 bg-gradient-to-r from-red-100 to-red-50 text-red-700 dark:border-red-800 dark:from-red-900/50 dark:to-red-800/30 dark:text-red-300'
+                          : 'border border-slate-200 bg-gradient-to-r from-slate-100 to-slate-50 text-slate-700 dark:border-slate-700 dark:from-slate-800 dark:to-slate-700/50 dark:text-slate-300'
+                          }`}
                       >
                         {deadline.priority === 'high' ? 'URGENT' : 'UPCOMING'}
                       </span>
@@ -999,8 +994,8 @@ const Dashboard = () => {
           <div className='rounded-2xl border border-gray-100 bg-white dark:bg-slate-900 p-6 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800'>
             <div className='mb-8 flex items-center justify-between'>
               <div className='flex items-center'>
-                <div className='mr-3 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/30 dark:to-blue-800/20'>
-                  <BellIcon className='h-5 w-5 text-blue-600 dark:text-blue-400' />
+                <div className='mr-3 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-900/30 dark:to-blue-800/20 sm:h-10 sm:w-10'>
+                  <BellIcon className='h-4 w-4 text-blue-600 dark:text-blue-400 sm:h-5 sm:w-5' />
                 </div>
                 <div>
                   <h3 className='text-xl font-bold text-gray-900 dark:text-white'>
@@ -1022,7 +1017,7 @@ const Dashboard = () => {
             <div className='max-h-96 space-y-4 overflow-y-auto pr-2'>
               {notifications.length === 0 ? (
                 <div className='flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-200 py-10 text-center dark:border-slate-700'>
-                  <BellIcon className='mb-3 h-10 w-10 text-slate-300 dark:text-slate-600' />
+                  <BellIcon className='mb-3 h-8 w-8 text-slate-300 dark:text-slate-600 sm:h-10 sm:w-10' />
                   <p className='text-sm font-semibold text-slate-600 dark:text-slate-300'>
                     No new notifications.
                   </p>
@@ -1034,11 +1029,10 @@ const Dashboard = () => {
                 notifications.map((notification) => (
                   <div
                     key={notification._id || notification.id}
-                    className={`cursor-pointer rounded-xl border p-4 transition-all duration-300 hover:shadow-sm ${
-                      notification.read
-                        ? 'border-gray-200 bg-white dark:bg-slate-900 dark:border-slate-700 dark:bg-slate-800'
-                        : 'border-blue-200 bg-gradient-to-r from-blue-50 to-blue-100/50 dark:border-blue-800 dark:from-blue-900/30 dark:to-blue-800/20'
-                    }`}
+                    className={`cursor-pointer rounded-xl border p-4 transition-all duration-300 hover:shadow-sm ${notification.read
+                      ? 'border-gray-200 bg-white dark:bg-slate-900 dark:border-slate-700 dark:bg-slate-800'
+                      : 'border-blue-200 bg-gradient-to-r from-blue-50 to-blue-100/50 dark:border-blue-800 dark:from-blue-900/30 dark:to-blue-800/20'
+                      }`}
                     onClick={() =>
                       handleNotificationClick(
                         notification._id || notification.id
@@ -1057,11 +1051,10 @@ const Dashboard = () => {
                       >
                         <div className='mb-2 flex items-center'>
                           <span
-                            className={`mr-2 h-2 w-2 rounded-full ${
-                              notification.read
-                                ? 'bg-gray-300 dark:bg-gray-600'
-                                : 'bg-blue-500'
-                            }`}
+                            className={`mr-2 h-2 w-2 rounded-full ${notification.read
+                              ? 'bg-gray-300 dark:bg-gray-600'
+                              : 'bg-blue-500'
+                              }`}
                           ></span>
                           <span className='rounded bg-gray-100 dark:bg-gray-800 px-2 py-1 text-xs font-semibold text-gray-700 dark:text-gray-200 dark:bg-slate-700 dark:text-gray-300'>
                             {notification.type?.toUpperCase()}
@@ -1074,11 +1067,10 @@ const Dashboard = () => {
                           </span>
                         </div>
                         <p
-                          className={`font-medium ${
-                            notification.read
-                              ? 'text-gray-700 dark:text-gray-300'
-                              : 'text-gray-900 dark:text-white'
-                          }`}
+                          className={`font-medium ${notification.read
+                            ? 'text-gray-700 dark:text-gray-300'
+                            : 'text-gray-900 dark:text-white'
+                            }`}
                         >
                           {notification.message}
                         </p>
@@ -1116,8 +1108,8 @@ const Dashboard = () => {
           <div className='flex-1 flex flex-col justify-between rounded-2xl border border-gray-100 bg-white dark:bg-slate-900 p-6 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800'>
             <div className='mb-8 flex items-center justify-between'>
               <div className='flex items-center'>
-                <div className='mr-3 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-900/30 dark:to-green-800/20'>
-                  <BookOpenIcon className='h-5 w-5 text-green-600 dark:text-green-400' />
+                <div className='mr-3 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-green-50 to-green-100/50 dark:from-green-900/30 dark:to-green-800/20 sm:h-10 sm:w-10'>
+                  <BookOpenIcon className='h-4 w-4 text-green-600 dark:text-green-400 sm:h-5 sm:w-5' />
                 </div>
                 <div>
                   <h3 className='text-xl font-bold text-gray-900 dark:text-white'>
@@ -1207,7 +1199,7 @@ const Dashboard = () => {
                       <div
                         className={`${iconColorClass} mb-3 flex transform justify-center transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-125`}
                       >
-                        <resource.icon className='h-7 w-7' aria-hidden='true' />
+                        <resource.icon className='h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7' aria-hidden='true' />
                       </div>
                       <div className='font-semibold text-gray-900 dark:text-white transition-colors '>
                         {resource.label}
@@ -1227,8 +1219,8 @@ const Dashboard = () => {
         <div className='rounded-2xl border border-gray-100 bg-white dark:bg-slate-900 p-6 shadow-sm transition-all hover:shadow-md dark:border-slate-700 dark:bg-slate-800'>
           <div className='mb-8 flex items-center justify-between'>
             <div className='flex items-center'>
-              <div className='mr-3 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-50 to-indigo-100/50 dark:from-indigo-900/30 dark:to-indigo-800/20'>
-                <ChartBarIcon className='h-5 w-5 text-indigo-600 dark:text-indigo-400' />
+              <div className='mr-3 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-50 to-indigo-100/50 dark:from-indigo-900/30 dark:to-indigo-800/20 sm:h-10 sm:w-10'>
+                <ChartBarIcon className='h-4 w-4 text-indigo-600 dark:text-indigo-400 sm:h-5 sm:w-5' />
               </div>
               <div>
                 <h3 className='text-xl font-bold text-gray-900 dark:text-white'>
@@ -1264,7 +1256,7 @@ const Dashboard = () => {
           <div className='flex flex-col justify-between gap-6 md:flex-row md:items-start'>
             <div className='flex items-start'>
               <div className='flex-shrink-0'>
-                <InformationCircleIcon className='h-6 w-6 text-yellow-600 dark:text-yellow-400' />
+                <InformationCircleIcon className='h-5 w-5 shrink-0 text-yellow-600 dark:text-yellow-400 sm:h-6 sm:w-6' />
               </div>
               <div className='ml-4'>
                 <h4 className='mb-3 text-lg font-bold text-yellow-800 dark:text-yellow-200'>
@@ -1302,7 +1294,7 @@ const Dashboard = () => {
           <div className='flex flex-col justify-between gap-6 md:flex-row md:items-start'>
             <div className='flex items-start'>
               <div className='flex-shrink-0'>
-                <LightBulbIcon className='h-6 w-6 text-blue-600 dark:text-blue-400' />
+                <LightBulbIcon className='h-5 w-5 shrink-0 text-blue-600 dark:text-blue-400 sm:h-6 sm:w-6' />
               </div>
               <div className='ml-4'>
                 <h4 className='mb-3 text-lg font-bold text-blue-800 dark:text-blue-200'>
