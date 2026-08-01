@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import Header from '../common/Header';
 import TopNav from '../common/TopNav';
 import Footer from '../common/Footer';
+import BottomNav from '../common/BottomNav';
 import LoadingSpinner from '../common/LoadingSpinner';
 import BackToTop from '../common/BackToTop.jsx';
 import PageTransition from '../common/PageTransition';
@@ -61,7 +62,7 @@ const MainLayout = () => {
         onCloseMobileMenu={handleCloseMobileMenu}
       />
 
-      <div className='flex flex-1 mt-6'>
+      <div className='flex flex-1 mt-4 md:mt-6'>
         <div className='relative flex w-full min-w-0 flex-1 flex-col'>
           {/* AnimatedBackground is lazy — Three.js loads after main UI is ready */}
           <Suspense fallback={null}>
@@ -69,7 +70,7 @@ const MainLayout = () => {
           </Suspense>
           <main
             id='main-content'
-            className='relative z-10 flex-1 px-4 pb-6 md:px-6'
+            className='relative z-10 flex-1 px-4 pb-20 md:pb-6 md:px-6'
           >
             <ErrorBoundary>
               <Suspense
@@ -112,6 +113,7 @@ const MainLayout = () => {
           />
         </div>
       </div>
+      <BottomNav />
     </div>
   );
 };

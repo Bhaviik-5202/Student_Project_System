@@ -280,20 +280,23 @@ const Header = memo(
           <div className='h-full w-full px-4 lg:px-6'>
             <div className='flex h-full items-center justify-between gap-4'>
               {/* Logo Section */}
-              <div className='flex items-center gap-2 sm:gap-3'>
+              <div className='flex items-center gap-3'>
+                {/* Mobile (< 768px): Tapping blue graduation cap button opens sidebar drawer */}
                 <button
                   type='button'
                   onClick={onMobileMenuToggle}
-                  className='flex items-center justify-center rounded-xl p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition md:hidden'
+                  className='flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 shadow-md shadow-blue-500/20 transition-transform active:scale-95 md:hidden focus:outline-none'
                   aria-label='Toggle navigation menu'
                 >
                   <HeaderIcon
-                    name={isMobileMenuOpen ? 'times' : 'bars'}
+                    name='graduation-cap'
+                    className='text-white'
                     size='text-lg'
-                    className='text-indigo-600 dark:text-indigo-400'
                   />
                 </button>
-                <Link to='/dashboard' className='group flex items-center gap-3'>
+
+                {/* Desktop (>= 768px): Standard logo linking to /dashboard */}
+                <Link to='/dashboard' className='hidden md:flex group items-center gap-3'>
                   <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 shadow-lg'>
                     <HeaderIcon
                       name='graduation-cap'
@@ -301,7 +304,7 @@ const Header = memo(
                       size='text-lg'
                     />
                   </div>
-                  <div className='hidden sm:block'>
+                  <div>
                     <h1 className='text-base font-bold leading-tight text-gray-900 dark:text-white'>
                       Student Project System
                     </h1>
