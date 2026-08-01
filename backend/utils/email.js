@@ -53,14 +53,13 @@ async function getTransporter() {
     user = 'resend'; // Resend SMTP authentication strictly requires username 'resend'
   }
 
-  // Use port 587 STARTTLS (secure: false) by default for cloud host compatibility
   let port = Number(rawPort) || 587;
   let secure =
     rawSecure !== undefined
       ? rawSecure === 'true' || rawSecure === '1'
       : port === 465;
 
-  if (isGmail || isSendGrid || isResend || port === 465) {
+  if ((isSendGrid || isResend) && port !== 465) {
     port = 587;
     secure = false;
   }
