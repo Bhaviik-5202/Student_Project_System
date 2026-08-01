@@ -16,7 +16,7 @@ before(async function () {
     name: 'Activity User',
     email: `activity+${Date.now()}@example.com`,
     password: 'testpass123',
-    role: 'faculty',
+    role: 'student',
     bypassOTP: true,
   };
 

@@ -193,10 +193,10 @@ if (require.main === module) {
             mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected',
         });
 
-        // Async verify SMTP after server binds port & container network attaches
+        // Async verify email service after server binds port & container network attaches
         const sendEmail = require('./utils/email');
-        sendEmail.verifySMTP().catch((err) => {
-          logger.warn(`[SMTP] Background verification notice: ${err.message}`);
+        sendEmail.verifyEmailService().catch((err) => {
+          logger.warn(`[Email] Background verification notice: ${err.message}`);
         });
       });
 

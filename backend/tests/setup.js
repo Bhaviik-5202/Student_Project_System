@@ -3,15 +3,14 @@
  * Configures the global test environment, including database connection pooling and timeout management.
  */
 
-const app = require('../server');
+const connectDB = require('../config/db');
 const mongoose = require('mongoose');
 
 before(async function () {
   this.timeout(180000);
-  console.log('Waiting for MongoDB Memory Server to connect...');
-  // Wait until mongoose is connected
-  while (mongoose.connection.readyState !== 1) {
-    await new Promise((res) => setTimeout(res, 100));
+  console.log('Connecting to MongoDB for test suite...');
+  if (mongoose.connection.readyState !== 1) {
+    await connectDB();
   }
   console.log('MongoDB is connected for tests.');
 });

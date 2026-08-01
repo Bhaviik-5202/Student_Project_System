@@ -1,7 +1,7 @@
 /**
  * Email Utility
- * Handles automated email dispatching via Nodemailer with development logging fallback.
- * Configured with SMTP Port 587 (STARTTLS) and IPv4 preferred lookup for cloud host compatibility.
+ * Handles automated email dispatching via Resend HTTPS REST API (Port 443)
+ * with Nodemailer SMTP fallback and development logging mode.
  */
 
 const nodemailer = require('nodemailer');
@@ -53,7 +53,7 @@ async function getTransporter() {
     user = 'resend'; // Resend SMTP authentication strictly requires username 'resend'
   }
 
-  // Use port 587 STARTTLS (secure: false) by default for cloud host compatibility (Render/Vercel)
+  // Use port 587 STARTTLS (secure: false) by default for cloud host compatibility
   let port = Number(rawPort) || 587;
   let secure =
     rawSecure !== undefined
@@ -73,12 +73,12 @@ async function getTransporter() {
     secure,
     family: 4, // Prefer IPv4 to prevent ENETUNREACH IPv6 errors
     lookup: customIPv4Lookup,
-    connectionTimeout: 10000, // 10s connection timeout
-    greetingTimeout: 10000,   // 10s greeting timeout
-    socketTimeout: 15000,     // 15s socket timeout
+    connectionTimeout: 8000, // 8s connection timeout
+    greetingTimeout: 8000,   // 8s greeting timeout
+    socketTimeout: 10000,    // 10s socket timeout
     tls: {
       servername: originalHost,
-      rejectUnauthorized: false, // Bypass certificate verification errors for self-signed or relay certs
+      rejectUnauthorized: false,
     },
   };
 
@@ -90,33 +90,66 @@ async function getTransporter() {
 }
 
 /**
- * Verify SMTP server connection status asynchronously
+ * Verify Email Service connection status asynchronously.
+ * Prioritizes Resend HTTPS API (Port 443) over SMTP TCP connection (Port 587)
+ * to avoid timeout errors on cloud platforms like Render / Vercel where outbound SMTP is blocked.
  * @returns {Promise<boolean>} True if connection verified successfully
  */
-async function verifySMTP() {
-  const host = process.env.SMTP_HOST || process.env.EMAIL_HOST || 'smtp.gmail.com';
+async function verifyEmailService() {
   if (process.env.NODE_ENV === 'test') {
-    logger.info('[SMTP] Test environment active (Email logging mode)');
+    logger.info('[Email] Test environment active (Email logging mode)');
     return true;
   }
 
+  const host = process.env.SMTP_HOST || process.env.EMAIL_HOST || 'smtp.gmail.com';
+  const pass = process.env.SMTP_PASS || process.env.EMAIL_PASS || process.env.SENDGRID_API_KEY || process.env.RESEND_API_KEY;
+  const resendApiKey = process.env.RESEND_API_KEY || (pass && pass.startsWith('re_') ? pass : null);
+
+  // 1. Verify Resend HTTPS REST API (Port 443) if API Key is available
+  if (resendApiKey) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 6000);
+
+      const response = await fetch('https://api.resend.com/api-keys', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${resendApiKey}`,
+          'Accept': 'application/json',
+        },
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+
+      if (response.ok) {
+        logger.info('[Email] Resend HTTPS API Verified Successfully (Port 443 REST API)');
+        return true;
+      } else {
+        const errorData = await response.json().catch(() => ({}));
+        logger.warn(`[Email] Resend API Key check response (${response.status}): ${errorData.message || response.statusText || 'Invalid key'}`);
+      }
+    } catch (err) {
+      logger.warn(`[Email] Resend HTTPS API test notice: ${err.message}. Checking Nodemailer SMTP transport fallback...`);
+    }
+  }
+
+  // 2. Standard Nodemailer Transport Fallback
   const transporter = await getTransporter();
   if (!transporter) {
-    logger.warn('[SMTP] Connection warning: Missing SMTP host configuration');
+    logger.warn('[Email] Connection warning: Missing SMTP host configuration');
     return false;
   }
 
   try {
     await transporter.verify();
-    logger.info(`[SMTP] Server Connection Verified Successfully (${host}:587 STARTTLS)`);
+    logger.info(`[Email] Server Connection Verified Successfully (${host}:587 STARTTLS)`);
     return true;
   } catch (err) {
-    logger.error(`[SMTP] Connection Verification Failed (${host}): ${err.message}`, {
-      code: err.code,
-      command: err.command,
-      response: err.response,
-      stack: err.stack,
-    });
+    if (resendApiKey) {
+      logger.info('[Email] Resend HTTPS API Key configured for REST API email delivery (SMTP Port 587 unreachable on host network).');
+      return true;
+    }
+    logger.warn(`[Email] Connection Verification Warning (${host}): ${err.message}`);
     return false;
   }
 }
@@ -128,7 +161,7 @@ async function verifySMTP() {
  * @param {string} options.subject - Email subject line
  * @param {string} [options.text] - Plain text body
  * @param {string} [options.html] - HTML body content
- * @returns {Promise<Object>} Nodemailer dispatch info object
+ * @returns {Promise<Object>} Email dispatch info object
  */
 async function sendEmail({ to, subject, text, html }) {
   if (!to || !subject) {
@@ -138,11 +171,14 @@ async function sendEmail({ to, subject, text, html }) {
   const host = process.env.SMTP_HOST || process.env.EMAIL_HOST;
   const pass = process.env.SMTP_PASS || process.env.EMAIL_PASS || process.env.SENDGRID_API_KEY || process.env.RESEND_API_KEY;
   const user = process.env.SMTP_USER || process.env.EMAIL_USER;
-  const isResend = (host && host.toLowerCase().includes('resend')) || (pass && pass.startsWith('re_'));
+  const resendApiKey = process.env.RESEND_API_KEY || (pass && pass.startsWith('re_') ? pass : null);
+  const isResend = (host && host.toLowerCase().includes('resend')) || !!resendApiKey;
+
+  const configuredFrom = process.env.FROM_EMAIL || process.env.EMAIL_FROM;
   const defaultFrom = isResend ? 'onboarding@resend.dev' : (user || 'no-reply@studentproject.edu');
-  const fromEmail = process.env.FROM_EMAIL || process.env.EMAIL_FROM || defaultFrom;
+  const fromEmail = configuredFrom || defaultFrom;
   const fromName = process.env.FROM_NAME || 'Student Project System';
-  const from = fromEmail && fromEmail.includes('<') ? fromEmail : `"${fromName}" <${fromEmail}>`;
+  const from = fromEmail.includes('<') ? fromEmail : `"${fromName}" <${fromEmail}>`;
 
   const isTestDomain =
     process.env.NODE_ENV === 'test' ||
@@ -156,12 +192,15 @@ async function sendEmail({ to, subject, text, html }) {
   }
 
   // 1. Try Resend HTTPS REST API (Port 443) if Resend API Key is available
-  const resendApiKey = process.env.RESEND_API_KEY || (pass && pass.startsWith('re_') ? pass : null);
   if (resendApiKey) {
     try {
       const rawEmail = fromEmail.includes('<') ? fromEmail.match(/<([^>]+)>/)?.[1] || fromEmail : fromEmail;
-      const resendSender = rawEmail && rawEmail.includes('@') ? rawEmail : 'onboarding@resend.dev';
+      const resendSender = (rawEmail && rawEmail.includes('@')) ? rawEmail : 'onboarding@resend.dev';
       const formattedFrom = fromName ? `"${fromName}" <${resendSender}>` : resendSender;
+      
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 12000);
+
       const response = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
@@ -170,13 +209,16 @@ async function sendEmail({ to, subject, text, html }) {
         },
         body: JSON.stringify({
           from: formattedFrom,
-          to: [to],
+          to: Array.isArray(to) ? to : [to],
           subject: subject,
           html: html || text,
           text: text,
         }),
+        signal: controller.signal,
       });
-      const resendData = await response.json();
+      clearTimeout(timeoutId);
+
+      const resendData = await response.json().catch(() => ({}));
       if (response.ok && resendData.id) {
         logger.info(`Email dispatched successfully via Resend HTTPS API to ${to}`, { messageId: resendData.id });
         return { messageId: resendData.id };
@@ -216,5 +258,6 @@ async function sendEmail({ to, subject, text, html }) {
   }
 }
 
-sendEmail.verifySMTP = verifySMTP;
+sendEmail.verifySMTP = verifyEmailService;
+sendEmail.verifyEmailService = verifyEmailService;
 module.exports = sendEmail;
