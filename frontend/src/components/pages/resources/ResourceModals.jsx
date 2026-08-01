@@ -207,7 +207,7 @@ export const DetailsModal = ({
             </p>
           </div>
 
-          <div className='grid grid-cols-2 gap-4 rounded-xl bg-slate-50 dark:bg-slate-800 p-4 dark:bg-slate-700/40 border border-slate-200 dark:border-slate-700 text-xs'>
+          <div className='grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 rounded-xl bg-slate-50 dark:bg-slate-800 p-4 dark:bg-slate-700/40 border border-slate-200 dark:border-slate-700 text-xs'>
             <div className='flex items-center gap-2.5 text-slate-700 dark:text-slate-300'>
               <User size={16} className='text-slate-400' />
               <div>
@@ -404,7 +404,7 @@ export const EditModal = ({ resource, isOpen, onClose, onSave }) => {
             />
           </div>
 
-          <div className='grid grid-cols-2 gap-4'>
+          <div className='grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4'>
             <div>
               <label className='block font-semibold text-slate-700 dark:text-slate-300 mb-1'>
                 Category
@@ -451,7 +451,7 @@ export const EditModal = ({ resource, isOpen, onClose, onSave }) => {
             />
           </div>
 
-          <div className='grid grid-cols-2 gap-4'>
+          <div className='grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4'>
             <div>
               <label className='block font-semibold text-slate-700 dark:text-slate-300 mb-1'>
                 Status
@@ -586,7 +586,7 @@ export const UploadModal = ({
             />
           </div>
 
-          <div className='grid grid-cols-2 gap-4'>
+          <div className='grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4'>
             <div>
               <label className='block font-semibold text-slate-700 dark:text-slate-300 mb-1'>
                 Category

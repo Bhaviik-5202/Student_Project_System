@@ -37,7 +37,7 @@ export const TableRow = ({ children, className = '', ...props }) => {
 
 export const TableHead = ({ children, className = '', ...props }) => {
   return (
-    <th className={`px-6 py-3.5 ${className}`} {...props}>
+    <th className={`px-3 sm:px-6 py-3 sm:py-3.5 ${className}`} {...props}>
       {children}
     </th>
   );
@@ -56,7 +56,7 @@ export const TableBody = ({ children, className = '', ...props }) => {
 
 export const TableCell = ({ children, className = '', ...props }) => {
   return (
-    <td className={`px-6 py-4 whitespace-nowrap ${className}`} {...props}>
+    <td className={`px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap ${className}`} {...props}>
       {children}
     </td>
   );
@@ -69,7 +69,7 @@ export const Pagination = ({
   totalItems,
 }) => {
   return (
-    <div className='flex items-center justify-between px-6 py-3.5 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400'>
+    <div className='flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-0 px-4 sm:px-6 py-3.5 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400'>
       <div>
         {totalItems !== undefined && (
           <span>

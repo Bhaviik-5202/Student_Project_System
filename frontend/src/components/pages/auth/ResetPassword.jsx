@@ -298,12 +298,12 @@ const ResetPassword = memo(() => {
         <div className='group'>
           <label
             htmlFor='new-password'
-            className='mb-1.5 block text-sm font-bold text-slate-700 dark:text-slate-300'
+            className='mb-1.5 block text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300'
           >
             New Password
           </label>
           <div className='relative'>
-            <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 transition-colors group-focus-within:text-blue-500'>
+            <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 transition-colors group-focus-within:text-blue-500 dark:text-slate-500 dark:group-focus-within:text-blue-400'>
               <Lock className='h-5 w-5' />
             </div>
             <input
@@ -314,7 +314,7 @@ const ResetPassword = memo(() => {
               onChange={(e) => setPassword(e.target.value)}
               onFocus={() => setShowRequirements(true)}
               autoComplete='new-password'
-              className='w-full rounded-xl border border-slate-200 bg-slate-50 dark:bg-slate-800 py-3.5 pl-11 pr-12 text-sm transition-all focus:border-blue-500 focus:bg-white dark:bg-slate-900 focus:outline-none focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700  dark:text-white dark:focus:border-blue-500/30'
+              className='w-full rounded-xl border border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 hover:border-slate-300 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-500/15 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500 dark:hover:border-slate-600 dark:focus:border-blue-400 dark:focus:bg-slate-900 dark:focus:ring-blue-400/20 dark:disabled:bg-slate-800/80 py-3.5 pl-11 pr-12 text-sm transition-all'
               placeholder='••••••••'
             />
             <button
@@ -322,7 +322,7 @@ const ResetPassword = memo(() => {
               id='toggle-new-password'
               onClick={() => setShowPassword((v) => !v)}
               tabIndex={-1}
-              className='absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 transition-colors hover:text-slate-600 dark:text-slate-300 dark:hover:text-slate-300'
+              className='absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 transition-colors hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-200'
               aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
               {showPassword ? (
@@ -354,12 +354,12 @@ const ResetPassword = memo(() => {
         <div className='group'>
           <label
             htmlFor='confirm-password'
-            className='mb-1.5 block text-sm font-bold text-slate-700 dark:text-slate-300'
+            className='mb-1.5 block text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300'
           >
             Confirm Password
           </label>
           <div className='relative'>
-            <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 transition-colors group-focus-within:text-blue-500'>
+            <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 transition-colors group-focus-within:text-blue-500 dark:text-slate-500 dark:group-focus-within:text-blue-400'>
               <ShieldCheck className='h-5 w-5' />
             </div>
             <input
@@ -369,13 +369,13 @@ const ResetPassword = memo(() => {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               autoComplete='new-password'
-              className={`w-full rounded-xl border py-3.5 pl-11 pr-12 text-sm transition-all focus:outline-none focus:ring-4 ${
+              className={`w-full rounded-xl border py-3.5 pl-11 pr-12 text-sm transition-all focus:outline-none focus:ring-4 placeholder:text-slate-400 dark:placeholder:text-slate-500 ${
                 confirmPassword
                   ? passwordsMatch
-                    ? 'border-emerald-400 bg-emerald-50/50 focus:border-emerald-500 focus:ring-emerald-500/10 dark:border-emerald-700 dark:bg-emerald-900/10'
-                    : 'border-red-400 bg-red-50/50 focus:border-red-500 focus:ring-red-500/10 dark:border-red-700 dark:bg-red-900/10'
-                  : 'border-slate-200 bg-slate-50 dark:bg-slate-800 focus:border-blue-500 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-900'
-              } dark:text-white`}
+                    ? 'border-emerald-400 bg-emerald-50/50 text-slate-900 focus:border-emerald-500 focus:ring-emerald-500/15 dark:border-emerald-700/80 dark:bg-emerald-950/20 dark:text-slate-100 dark:focus:border-emerald-400 dark:focus:ring-emerald-400/20'
+                    : 'border-red-400 bg-red-50/50 text-slate-900 focus:border-red-500 focus:ring-red-500/15 dark:border-red-700/80 dark:bg-red-950/20 dark:text-slate-100 dark:focus:border-red-400 dark:focus:ring-red-400/20'
+                  : 'border-slate-200 bg-white text-slate-900 hover:border-slate-300 focus:border-blue-500 focus:bg-white focus:ring-blue-500/15 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:border-slate-600 dark:focus:border-blue-400 dark:focus:bg-slate-900 dark:focus:ring-blue-400/20'
+              }`}
               placeholder='••••••••'
             />
             <button
@@ -383,7 +383,7 @@ const ResetPassword = memo(() => {
               id='toggle-confirm-password'
               onClick={() => setShowConfirm((v) => !v)}
               tabIndex={-1}
-              className='absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 transition-colors hover:text-slate-600 dark:text-slate-300 dark:hover:text-slate-300'
+              className='absolute inset-y-0 right-0 flex items-center pr-4 text-slate-400 transition-colors hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-200'
               aria-label={showConfirm ? 'Hide password' : 'Show password'}
             >
               {showConfirm ? (

@@ -147,7 +147,7 @@ const Register = memo(() => {
       variants={cardVariants}
       initial='hidden'
       animate='show'
-      className='auth-card relative mx-auto w-full max-w-xl space-y-8 p-10 sm:p-12'
+      className='auth-card relative mx-auto w-full max-w-xl space-y-6 sm:space-y-8 p-5 sm:p-8 md:p-10'
     >
       {/* Local CSS Isolation Block supporting Light and Dark modes */}
       <style>{`
