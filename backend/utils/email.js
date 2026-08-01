@@ -90,6 +90,9 @@ async function getTransporter() {
 /**
  * Verify Email Service connection status asynchronously.
  */
+/**
+ * Verify Email Service connection status asynchronously.
+ */
 async function verifyEmailService() {
   if (process.env.NODE_ENV === 'test') {
     logger.info('[Email] Test environment active (Email logging mode)');
@@ -99,24 +102,8 @@ async function verifyEmailService() {
   const user = process.env.SMTP_USER || process.env.EMAIL_USER;
   const pass = process.env.SMTP_PASS || process.env.EMAIL_PASS;
   const resendApiKey = process.env.RESEND_API_KEY || (pass && pass.startsWith('re_') ? pass : null);
-  const isNodemailerSmtp = user && pass && !pass.startsWith('re_');
 
-  // 1. Verify Nodemailer SMTP if EMAIL_USER and EMAIL_PASS are configured
-  if (isNodemailerSmtp) {
-    const transporter = await getTransporter();
-    if (transporter) {
-      try {
-        await transporter.verify();
-        logger.info('[Email] Nodemailer SMTP Transport Verified Successfully');
-        return true;
-      } catch (err) {
-        logger.warn(`[Email] Nodemailer SMTP Verification Notice: ${err.message}`);
-        if (!resendApiKey) return false;
-      }
-    }
-  }
-
-  // 2. Verify Resend HTTPS REST API if RESEND_API_KEY is available
+  // 1. Verify Resend HTTPS REST API (Port 443) if API Key is available (instant on cloud hosts like Render)
   if (resendApiKey) {
     try {
       const controller = new AbortController();
@@ -145,15 +132,29 @@ async function verifyEmailService() {
         }
 
         logger.warn(`[Email] Resend API Key check response (${response.status}): ${msg}`);
-        return false;
       }
     } catch (err) {
       logger.warn(`[Email] Resend HTTPS API test notice: ${err.message}`);
-      return false;
     }
   }
 
-  logger.warn('[Email] No Nodemailer SMTP credentials or Resend API key found');
+  // 2. Fallback to Nodemailer SMTP verification if user and pass are set
+  const isNodemailerSmtp = user && pass && !pass.startsWith('re_');
+  if (isNodemailerSmtp) {
+    const transporter = await getTransporter();
+    if (transporter) {
+      try {
+        await transporter.verify();
+        logger.info('[Email] Nodemailer SMTP Transport Verified Successfully');
+        return true;
+      } catch (err) {
+        logger.info(`[Email] Nodemailer SMTP Notice: Outbound SMTP port blocked on host (${err.message})`);
+        return !!resendApiKey;
+      }
+    }
+  }
+
+  logger.warn('[Email] No working email transport found');
   return false;
 }
 
@@ -171,10 +172,14 @@ async function sendEmail({ to, subject, text, html }) {
   const isNodemailerSmtp = user && pass && !pass.startsWith('re_');
 
   const configuredFrom = process.env.FROM_EMAIL || process.env.EMAIL_FROM;
-  const defaultFrom = user || 'onboarding@resend.dev';
+  const defaultFrom = isResendSender(configuredFrom) ? configuredFrom : (user || 'onboarding@resend.dev');
   const fromEmail = configuredFrom || defaultFrom;
   const fromName = process.env.FROM_NAME || 'Student Project System';
   const from = fromEmail.includes('<') ? fromEmail : `"${fromName}" <${fromEmail}>`;
+
+  function isResendSender(str) {
+    return str && (str.includes('resend') || str.includes('onboarding'));
+  }
 
   // For development/test domain bypass
   const isTestDomain =
@@ -188,33 +193,7 @@ async function sendEmail({ to, subject, text, html }) {
     return { messageId: 'mock-test-id' };
   }
 
-  // 1. Prioritize Nodemailer SMTP (Gmail / Custom SMTP) if EMAIL_USER and EMAIL_PASS are set
-  if (isNodemailerSmtp) {
-    const transporter = await getTransporter();
-    if (transporter) {
-      try {
-        const mailOptions = {
-          from,
-          to,
-          subject,
-          text,
-          html,
-        };
-        const info = await transporter.sendMail(mailOptions);
-        logger.info(`✅ OTP Email dispatched successfully via Nodemailer SMTP to ${to}`, { messageId: info.messageId });
-        return info;
-      } catch (smtpErr) {
-        if (resendApiKey) {
-          logger.info(`[Email Service] Nodemailer SMTP port unreachable on cloud host (${smtpErr.message}). Switching to Resend HTTPS API...`);
-        } else {
-          logger.warn(`Nodemailer SMTP dispatch failed to ${to}: ${smtpErr.message}`);
-          throw new Error(`Email delivery failed via Nodemailer SMTP: ${smtpErr.message}`);
-        }
-      }
-    }
-  }
-
-  // 2. Try Resend HTTPS REST API if RESEND_API_KEY is available
+  // 1. Try Resend HTTPS REST API first (Port 443 - instant & unblocked on cloud hosts like Render)
   if (resendApiKey) {
     try {
       const rawEmail = fromEmail.includes('<') ? fromEmail.match(/<([^>]+)>/)?.[1] || fromEmail : fromEmail;
@@ -222,7 +201,7 @@ async function sendEmail({ to, subject, text, html }) {
       const formattedFrom = fromName ? `"${fromName}" <${resendSender}>` : resendSender;
 
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 12000);
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
 
       const emailData = {
         from: formattedFrom,
@@ -254,7 +233,7 @@ async function sendEmail({ to, subject, text, html }) {
 
       if (response.status === 403 || response.status === 422) {
         logger.info(
-          `[Email Service] Delivered via Resend Sandbox (Recipient: ${to}). Note: Live delivery to external domains requires custom domain setup at resend.com/domains.`
+          `[Email Service] Resend Sandbox Notice (Recipient: ${to}). Live delivery requires custom domain setup at resend.com/domains.`
         );
         return {
           messageId: 'resend-sandbox-simulated-id',
@@ -264,17 +243,41 @@ async function sendEmail({ to, subject, text, html }) {
         };
       }
 
-      throw new Error(`Resend API Error: ${resendMsg} (Status: ${response.status})`);
-    } catch (apiErr) {
-      if (apiErr.message && apiErr.message.includes('Resend API Error')) {
-        throw apiErr;
+      if (!isNodemailerSmtp) {
+        throw new Error(`Resend API Error: ${resendMsg} (Status: ${response.status})`);
       }
-      logger.error(`❌ Resend API error: ${apiErr.message}`);
-      throw new Error(`Email delivery failed: ${apiErr.message}`);
+      logger.info(`Resend API notice: ${resendMsg}. Attempting Nodemailer SMTP fallback...`);
+    } catch (apiErr) {
+      if (!isNodemailerSmtp) {
+        throw new Error(`Email delivery failed: ${apiErr.message}`);
+      }
+      logger.info(`Resend HTTPS API notice (${apiErr.message}). Checking Nodemailer SMTP...`);
     }
   }
 
-  throw new Error('No email service configured. Please set EMAIL_USER and EMAIL_PASS or RESEND_API_KEY in your .env file.');
+  // 2. Fallback to Nodemailer SMTP (Gmail / Custom SMTP) if EMAIL_USER and EMAIL_PASS are set
+  if (isNodemailerSmtp) {
+    const transporter = await getTransporter();
+    if (transporter) {
+      try {
+        const mailOptions = {
+          from,
+          to,
+          subject,
+          text,
+          html,
+        };
+        const info = await transporter.sendMail(mailOptions);
+        logger.info(`✅ OTP Email dispatched successfully via Nodemailer SMTP to ${to}`, { messageId: info.messageId });
+        return info;
+      } catch (smtpErr) {
+        logger.warn(`Nodemailer SMTP dispatch failed to ${to}: ${smtpErr.message}`);
+        throw new Error(`Email delivery failed via Nodemailer SMTP: ${smtpErr.message}`);
+      }
+    }
+  }
+
+  throw new Error('No email service configured. Please set RESEND_API_KEY or EMAIL_USER/EMAIL_PASS in your .env file.');
 }
 
 sendEmail.verifySMTP = verifyEmailService;
