@@ -201,13 +201,19 @@ if (require.main === module) {
       });
 
       /* Graceful Shutdown */
+      let isShuttingDown = false;
       const shutdown = async (signal) => {
+        if (isShuttingDown) return;
+        isShuttingDown = true;
         logger.warn(`${signal} received — shutting down gracefully...`);
-        await mongoose.disconnect();
-        server.close(() => {
+        server.close(async () => {
+          try {
+            await mongoose.disconnect();
+          } catch (err) {}
           logger.info('Server closed. All connections terminated cleanly.');
           process.exit(0);
         });
+        setTimeout(() => process.exit(0), 3000);
       };
 
       process.on('SIGINT', () => shutdown('SIGINT'));

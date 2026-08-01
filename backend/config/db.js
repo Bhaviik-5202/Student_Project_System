@@ -101,10 +101,13 @@ const connectDB = async () => {
       }
     }
 
+    let isExplicitDisconnect = false;
     mongoose.connection.on('disconnected', () => {
-      logger.warn(
-        'MongoDB connection lost. Mongoose will attempt to reconnect...'
-      );
+      if (!isExplicitDisconnect && mongoose.connection.readyState !== 0) {
+        logger.warn(
+          'MongoDB connection lost. Mongoose will attempt to reconnect...'
+        );
+      }
     });
 
     mongoose.connection.on('error', (err) => {
