@@ -249,170 +249,205 @@ const TopNav = memo(
     };
 
     return (
-      <nav
-        ref={navRef}
-        aria-label='Secondary Navigation'
-        className={`sticky top-0 z-[90] border-b transition-all duration-300 ${
-          isScrolled
-            ? 'bg-white/90 backdrop-blur-md shadow-md border-slate-200/90 dark:bg-slate-900/90 dark:border-slate-800/90'
-            : 'bg-white border-slate-200 dark:bg-slate-900 dark:border-slate-800'
-        }`}
-      >
-        <div className='w-full px-4 lg:px-6'>
-          {/* Desktop Top Navigation Bar */}
-          <div className='hidden h-12 w-full items-center justify-between lg:flex'>
-            <div className='flex items-center gap-1.5 justify-start'>
-              {filteredItems.map(renderDesktopNavItem)}
-            </div>
-
-            {/* Active Route / Section Indicator Badge */}
-            {currentActiveItem && (
-              <div className='flex shrink-0 whitespace-nowrap items-center gap-2 rounded-full border border-slate-200/80 bg-slate-50/90 px-3.5 py-1.5 text-xs font-bold text-slate-700 shadow-xs backdrop-blur-sm dark:border-slate-700/80 dark:bg-slate-800/90 dark:text-slate-200'>
-                <i
-                  className={`fas fa-${currentActiveItem.icon} text-xs text-indigo-500 dark:text-indigo-400`}
-                />
-                <span>{currentActiveItem.title}</span>
-                {currentActiveSubTitle && (
-                  <>
-                    <i className='fas fa-chevron-right text-[9px] text-slate-400' />
-                    <span className='font-extrabold text-indigo-600 dark:text-indigo-400'>
-                      {currentActiveSubTitle}
-                    </span>
-                  </>
-                )}
+      <>
+        {/* Desktop Top Navigation Bar (Hidden on mobile < 768px) */}
+        <nav
+          ref={navRef}
+          aria-label='Secondary Navigation'
+          className={`hidden md:block sticky top-0 z-[90] border-b transition-all duration-300 ${
+            isScrolled
+              ? 'bg-white/90 backdrop-blur-md shadow-md border-slate-200/90 dark:bg-slate-900/90 dark:border-slate-800/90'
+              : 'bg-white border-slate-200 dark:bg-slate-900 dark:border-slate-800'
+          }`}
+        >
+          <div className='w-full px-4 lg:px-6'>
+            <div className='flex h-12 w-full items-center justify-between'>
+              <div className='flex items-center gap-1.5 justify-start'>
+                {filteredItems.map(renderDesktopNavItem)}
               </div>
-            )}
-          </div>
 
-          {/* Mobile Header Bar */}
-          <div className='flex h-12 items-center justify-between lg:hidden'>
+              {/* Active Route / Section Indicator Badge */}
+              {currentActiveItem && (
+                <div className='flex shrink-0 whitespace-nowrap items-center gap-2 rounded-full border border-slate-200/80 bg-slate-50/90 px-3.5 py-1.5 text-xs font-bold text-slate-700 shadow-xs backdrop-blur-sm dark:border-slate-700/80 dark:bg-slate-800/90 dark:text-slate-200'>
+                  <i
+                    className={`fas fa-${currentActiveItem.icon} text-xs text-indigo-500 dark:text-indigo-400`}
+                  />
+                  <span>{currentActiveItem.title}</span>
+                  {currentActiveSubTitle && (
+                    <>
+                      <i className='fas fa-chevron-right text-[9px] text-slate-400' />
+                      <span className='font-extrabold text-indigo-600 dark:text-indigo-400'>
+                        {currentActiveSubTitle}
+                      </span>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </nav>
+
+        {/* Mobile Navigation Sidebar Drawer (< 768px) */}
+        {/* Semi-transparent Backdrop Overlay */}
+        <div
+          className={`fixed inset-0 z-[9998] bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300 ${
+            isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          }`}
+          onClick={onCloseMobileMenu}
+          aria-hidden='true'
+        />
+
+        {/* Left-Sliding Sidebar Drawer Panel */}
+        <aside
+          className={`fixed inset-y-0 left-0 z-[9999] flex w-72 max-w-[85vw] flex-col bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 shadow-2xl transition-transform duration-300 ease-in-out ${
+            isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
+          aria-label='Mobile Sidebar Navigation'
+        >
+          {/* Sidebar Drawer Header */}
+          <div className='flex items-center justify-between border-b border-slate-200 dark:border-slate-800 px-4 py-3.5'>
+            <div className='flex items-center gap-2.5'>
+              <div className='flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-700 shadow-md shadow-indigo-500/20'>
+                <i className='fas fa-graduation-cap text-white text-sm' />
+              </div>
+              <div>
+                <h2 className='text-sm font-bold text-slate-900 dark:text-white leading-tight'>
+                  Student Project
+                </h2>
+                <span className='inline-block rounded-full bg-indigo-50 dark:bg-indigo-950/60 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-indigo-600 dark:text-indigo-400'>
+                  {userRole}
+                </span>
+              </div>
+            </div>
             <button
               type='button'
-              onClick={onMobileMenuToggle}
-              className='inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 dark:bg-slate-800 px-3.5 py-1.5 text-sm font-bold text-slate-700 dark:text-slate-200 transition hover:bg-slate-100 dark:hover:bg-slate-700  dark:border-slate-700   '
+              onClick={onCloseMobileMenu}
+              className='rounded-xl p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-200 transition-colors'
+              aria-label='Close navigation menu'
             >
-              <i
-                className={`fas ${
-                  isMobileMenuOpen ? 'fa-times' : 'fa-bars'
-                } text-sm text-indigo-600 dark:text-indigo-400`}
-              />
-              <span>Navigation</span>
+              <i className='fas fa-times text-base' />
             </button>
-
-            {currentActiveItem && (
-              <div className='truncate text-sm font-bold text-indigo-600 dark:text-indigo-400'>
-                {currentActiveItem.title}
-                {currentActiveSubTitle ? ` › ${currentActiveSubTitle}` : ''}
-              </div>
-            )}
           </div>
-        </div>
 
-        {/* Mobile Navigation Dropdown Drawer */}
-        {isMobileMenuOpen && (
-          <div className='border-t border-slate-200 bg-white dark:bg-slate-900/95 px-4 py-3 shadow-2xl backdrop-blur-md dark:border-slate-800  lg:hidden max-h-[75vh] overflow-y-auto animate-in fade-in duration-150'>
-            <div className='space-y-1'>
-              {filteredItems.map((item) => {
-                const hasSubmenu = item.submenu && item.submenu.length > 0;
-                const isActive =
-                  location.pathname === item.path ||
-                  (hasSubmenu &&
-                    item.submenu.some((sub) => location.pathname === sub.path));
-                const isExpanded = expandedMobileItem === item.title;
-                const visibleSubmenu = hasSubmenu
-                  ? item.submenu.filter((sub) => sub.roles.includes(userRole))
-                  : [];
+          {/* Sidebar Drawer Navigation Items */}
+          <div className='flex-1 overflow-y-auto p-4 space-y-1'>
+            {filteredItems.map((item) => {
+              const hasSubmenu = item.submenu && item.submenu.length > 0;
+              const isActive =
+                location.pathname === item.path ||
+                (hasSubmenu &&
+                  item.submenu.some((sub) => location.pathname === sub.path));
+              const isExpanded = expandedMobileItem === item.title;
+              const visibleSubmenu = hasSubmenu
+                ? item.submenu.filter((sub) => sub.roles.includes(userRole))
+                : [];
 
-                return (
-                  <div key={item.title} className='rounded-xl space-y-1'>
-                    {hasSubmenu ? (
-                      <div>
-                        <button
-                          type='button'
-                          onClick={() => toggleMobileSubmenu(item.title)}
-                          className={`flex w-full items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-semibold transition ${
-                            isActive
-                              ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400'
-                              : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800  dark:hover:bg-slate-800'
-                          }`}
-                        >
-                          <div className='flex items-center gap-2.5'>
-                            <i
-                              className={`fas fa-${item.icon} text-base ${
-                                isActive
-                                  ? 'text-indigo-600 dark:text-indigo-400'
-                                  : 'text-slate-400'
-                              }`}
-                            />
-                            <span>{item.title}</span>
-                          </div>
-                          <i
-                            className={`fas fa-chevron-down text-xs transition-transform ${
-                              isExpanded ? 'rotate-180 text-indigo-600' : ''
-                            }`}
-                          />
-                        </button>
-
-                        {isExpanded && visibleSubmenu.length > 0 && (
-                          <div className='ml-4 mt-1 space-y-1 border-l-2 border-indigo-100 pl-3 dark:border-indigo-900/40'>
-                            {visibleSubmenu.map((subItem, idx) => {
-                              const subIsActive =
-                                location.pathname === subItem.path;
-                              const subIcon =
-                                SUBMENU_ICONS[subItem.title] || 'angle-right';
-
-                              return (
-                                <NavLink
-                                  key={`mob-${item.title}-${idx}`}
-                                  to={subItem.path}
-                                  onClick={onCloseMobileMenu}
-                                  className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition ${
-                                    subIsActive
-                                      ? 'bg-indigo-50/90 text-indigo-600 font-semibold dark:bg-indigo-950/70 dark:text-indigo-400'
-                                      : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800  dark:hover:bg-slate-800'
-                                  }`}
-                                >
-                                  <i
-                                    className={`fas fa-${subIcon} text-xs w-3.5 text-center ${
-                                      subIsActive
-                                        ? 'text-indigo-600 dark:text-indigo-400'
-                                        : 'text-slate-400'
-                                    }`}
-                                  />
-                                  <span>{subItem.title}</span>
-                                </NavLink>
-                              );
-                            })}
-                          </div>
-                        )}
-                      </div>
-                    ) : (
-                      <NavLink
-                        to={item.path}
-                        onClick={onCloseMobileMenu}
-                        className={`flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition ${
+              return (
+                <div key={item.title} className='rounded-xl space-y-1'>
+                  {hasSubmenu ? (
+                    <div>
+                      <button
+                        type='button'
+                        onClick={() => toggleMobileSubmenu(item.title)}
+                        className={`flex w-full items-center justify-between rounded-xl px-3.5 py-2.5 text-sm font-semibold transition ${
                           isActive
                             ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400'
-                            : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800  dark:hover:bg-slate-800'
+                            : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
                         }`}
                       >
+                        <div className='flex items-center gap-2.5'>
+                          <i
+                            className={`fas fa-${item.icon} text-base ${
+                              isActive
+                                ? 'text-indigo-600 dark:text-indigo-400'
+                                : 'text-slate-400'
+                            }`}
+                          />
+                          <span>{item.title}</span>
+                        </div>
                         <i
-                          className={`fas fa-${item.icon} text-base ${
-                            isActive
-                              ? 'text-indigo-600 dark:text-indigo-400'
-                              : 'text-slate-400'
+                          className={`fas fa-chevron-down text-xs transition-transform duration-200 ${
+                            isExpanded ? 'rotate-180 text-indigo-600' : ''
                           }`}
                         />
-                        <span>{item.title}</span>
-                      </NavLink>
-                    )}
-                  </div>
-                );
-              })}
+                      </button>
+
+                      {isExpanded && visibleSubmenu.length > 0 && (
+                        <div className='ml-4 mt-1 space-y-1 border-l-2 border-indigo-100 pl-3 dark:border-indigo-900/40'>
+                          {visibleSubmenu.map((subItem, idx) => {
+                            const subIsActive =
+                              location.pathname === subItem.path;
+                            const subIcon =
+                              SUBMENU_ICONS[subItem.title] || 'angle-right';
+
+                            return (
+                              <NavLink
+                                key={`mob-${item.title}-${idx}`}
+                                to={subItem.path}
+                                onClick={onCloseMobileMenu}
+                                className={`flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition ${
+                                  subIsActive
+                                    ? 'bg-indigo-50/90 text-indigo-600 font-semibold dark:bg-indigo-950/70 dark:text-indigo-400'
+                                    : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                                }`}
+                              >
+                                <i
+                                  className={`fas fa-${subIcon} text-xs w-3.5 text-center ${
+                                    subIsActive
+                                      ? 'text-indigo-600 dark:text-indigo-400'
+                                      : 'text-slate-400'
+                                  }`}
+                                />
+                                <span>{subItem.title}</span>
+                              </NavLink>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <NavLink
+                      to={item.path}
+                      onClick={onCloseMobileMenu}
+                      className={`flex items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition ${
+                        isActive
+                          ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400'
+                          : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
+                      }`}
+                    >
+                      <i
+                        className={`fas fa-${item.icon} text-base ${
+                          isActive
+                            ? 'text-indigo-600 dark:text-indigo-400'
+                            : 'text-slate-400'
+                        }`}
+                      />
+                      <span>{item.title}</span>
+                    </NavLink>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Sidebar Drawer Footer */}
+          <div className='border-t border-slate-200 dark:border-slate-800 p-4 bg-slate-50/50 dark:bg-slate-900/50'>
+            <div className='flex items-center gap-3'>
+              <div className='flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-100 dark:bg-indigo-950/80 text-indigo-600 dark:text-indigo-400 font-bold text-xs'>
+                {user?.name ? user.name.slice(0, 2).toUpperCase() : 'U'}
+              </div>
+              <div className='truncate'>
+                <p className='text-xs font-bold text-slate-800 dark:text-slate-200 truncate'>
+                  {user?.name || 'User'}
+                </p>
+                <p className='text-[10px] text-slate-500 dark:text-slate-400 truncate capitalize'>
+                  {userRole} Portal
+                </p>
+              </div>
             </div>
           </div>
-        )}
-      </nav>
+        </aside>
+      </>
     );
   }
 );
