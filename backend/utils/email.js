@@ -71,9 +71,9 @@ async function getTransporter() {
     secure,
     family: 4,
     lookup: customIPv4Lookup,
-    connectionTimeout: 10000,
-    greetingTimeout: 10000,
-    socketTimeout: 15000,
+    connectionTimeout: 4000,
+    greetingTimeout: 4000,
+    socketTimeout: 5000,
     tls: {
       servername: originalHost,
       rejectUnauthorized: false,
@@ -204,8 +204,10 @@ async function sendEmail({ to, subject, text, html }) {
         logger.info(`✅ OTP Email dispatched successfully via Nodemailer SMTP to ${to}`, { messageId: info.messageId });
         return info;
       } catch (smtpErr) {
-        logger.warn(`Nodemailer SMTP dispatch failed to ${to}: ${smtpErr.message}. Checking Resend fallback...`);
-        if (!resendApiKey) {
+        if (resendApiKey) {
+          logger.info(`[Email Service] Nodemailer SMTP port unreachable on cloud host (${smtpErr.message}). Switching to Resend HTTPS API...`);
+        } else {
+          logger.warn(`Nodemailer SMTP dispatch failed to ${to}: ${smtpErr.message}`);
           throw new Error(`Email delivery failed via Nodemailer SMTP: ${smtpErr.message}`);
         }
       }
