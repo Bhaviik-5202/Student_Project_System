@@ -281,11 +281,11 @@ const Header = memo(
             <div className='flex h-full items-center justify-between gap-4'>
               {/* Logo Section */}
               <div className='flex items-center gap-3'>
-                {/* Mobile (< 768px): Tapping blue graduation cap button opens sidebar drawer */}
+                {/* Mobile (< 768px): Blue circular button with white graduation cap opening drawer */}
                 <button
                   type='button'
                   onClick={onMobileMenuToggle}
-                  className='flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 shadow-md shadow-blue-500/20 transition-transform active:scale-95 md:hidden focus:outline-none'
+                  className='flex h-11 w-11 items-center justify-center rounded-full bg-blue-600 shadow-md shadow-blue-600/30 transition-transform active:scale-95 md:hidden focus:outline-none'
                   aria-label='Toggle navigation menu'
                 >
                   <HeaderIcon
