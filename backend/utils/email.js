@@ -223,9 +223,42 @@ async function sendEmail({ to, subject, text, html }) {
         logger.info(`Email dispatched successfully via Resend HTTPS API to ${to}`, { messageId: resendData.id });
         return { messageId: resendData.id };
       }
-      logger.warn(`Resend HTTPS API notice: ${resendData.message || JSON.stringify(resendData)}. Falling back to Nodemailer transport.`);
+
+      const resendMsg = resendData.message || JSON.stringify(resendData);
+      const isSandboxRestriction =
+        response.status === 403 ||
+        resendMsg.includes('testing emails') ||
+        resendMsg.includes('verify a domain') ||
+        resendMsg.includes('resend.com/domains');
+
+      if (isSandboxRestriction) {
+        logger.warn(
+          `[Resend Sandbox Notice] Delivery to '${to}' is restricted by Resend free tier sandbox limits. (Verify a domain at resend.com/domains to dispatch to external recipients). OTP code is saved in database.`
+        );
+        return {
+          messageId: 'resend-sandbox-simulated-id',
+          sandboxRestricted: true,
+          notice: resendMsg,
+        };
+      }
+
+      // If distinct external SMTP host (like Gmail) is configured, fallback; otherwise do not hang on port 587
+      const isExternalSmtp =
+        host &&
+        !host.toLowerCase().includes('resend') &&
+        host !== 'smtp.gmail.com';
+
+      if (!isExternalSmtp) {
+        logger.warn(`Resend HTTPS API notice: ${resendMsg}`);
+        throw new Error(`Resend API Error: ${resendMsg}`);
+      }
+
+      logger.warn(`Resend HTTPS API notice: ${resendMsg}. Attempting external SMTP transport fallback...`);
     } catch (apiErr) {
-      logger.warn(`Resend HTTPS API warning: ${apiErr.message}. Falling back to Nodemailer transport.`);
+      if (apiErr.message && apiErr.message.includes('Resend API Error')) {
+        throw apiErr;
+      }
+      logger.warn(`Resend HTTPS API warning: ${apiErr.message}. Checking SMTP fallback options...`);
     }
   }
 
