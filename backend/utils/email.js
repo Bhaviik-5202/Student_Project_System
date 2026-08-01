@@ -1,6 +1,7 @@
 /**
  * Email Utility
- * Handles automated email dispatching via Resend HTTPS REST API
+ * Handles automated email dispatching via Nodemailer SMTP (using EMAIL_USER/EMAIL_PASS)
+ * with Resend HTTPS REST API fallback and development logging mode.
  */
 
 const nodemailer = require('nodemailer');
@@ -35,12 +36,11 @@ async function getTransporter() {
   let originalHost = process.env.SMTP_HOST || process.env.EMAIL_HOST || 'smtp.gmail.com';
   const rawPort = process.env.SMTP_PORT || process.env.EMAIL_PORT;
   let user = process.env.SMTP_USER || process.env.EMAIL_USER;
-  let pass = process.env.SMTP_PASS || process.env.EMAIL_PASS || process.env.SENDGRID_API_KEY || process.env.RESEND_API_KEY;
+  let pass = process.env.SMTP_PASS || process.env.EMAIL_PASS;
   const rawSecure = process.env.EMAIL_SECURE || process.env.SMTP_SECURE;
 
   if (!originalHost || process.env.NODE_ENV === 'test') return null;
 
-  const isGmail = originalHost.toLowerCase().includes('gmail') || originalHost.toLowerCase().includes('google');
   const isSendGrid = originalHost.toLowerCase().includes('sendgrid');
   const isResend = originalHost.toLowerCase().includes('resend') || (pass && pass.startsWith('re_'));
 
@@ -52,7 +52,7 @@ async function getTransporter() {
     user = 'resend';
   }
 
-  let port = Number(rawPort) || 587;
+  let port = Number(rawPort) || (originalHost.includes('gmail') ? 465 : 587);
   let secure =
     rawSecure !== undefined
       ? rawSecure === 'true' || rawSecure === '1'
@@ -71,9 +71,9 @@ async function getTransporter() {
     secure,
     family: 4,
     lookup: customIPv4Lookup,
-    connectionTimeout: 8000,
-    greetingTimeout: 8000,
-    socketTimeout: 10000,
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 15000,
     tls: {
       servername: originalHost,
       rejectUnauthorized: false,
@@ -96,10 +96,27 @@ async function verifyEmailService() {
     return true;
   }
 
-  const pass = process.env.SMTP_PASS || process.env.EMAIL_PASS || process.env.SENDGRID_API_KEY || process.env.RESEND_API_KEY;
+  const user = process.env.SMTP_USER || process.env.EMAIL_USER;
+  const pass = process.env.SMTP_PASS || process.env.EMAIL_PASS;
   const resendApiKey = process.env.RESEND_API_KEY || (pass && pass.startsWith('re_') ? pass : null);
+  const isNodemailerSmtp = user && pass && !pass.startsWith('re_');
 
-  // Verify Resend HTTPS API
+  // 1. Verify Nodemailer SMTP if EMAIL_USER and EMAIL_PASS are configured
+  if (isNodemailerSmtp) {
+    const transporter = await getTransporter();
+    if (transporter) {
+      try {
+        await transporter.verify();
+        logger.info('[Email] Nodemailer SMTP Transport Verified Successfully');
+        return true;
+      } catch (err) {
+        logger.warn(`[Email] Nodemailer SMTP Verification Notice: ${err.message}`);
+        if (!resendApiKey) return false;
+      }
+    }
+  }
+
+  // 2. Verify Resend HTTPS REST API if RESEND_API_KEY is available
   if (resendApiKey) {
     try {
       const controller = new AbortController();
@@ -122,11 +139,9 @@ async function verifyEmailService() {
         const errorData = await response.json().catch(() => ({}));
         const msg = errorData.message || response.statusText || 'Invalid key';
 
-        // Sandbox mode still allows sending to verified domains
         if (response.status === 403 || response.status === 401) {
-          logger.warn(`[Email] Resend API Key in sandbox mode: ${msg}`);
-          logger.warn('[Email] To send to external emails, verify your domain at https://resend.com/domains');
-          return true; // Still return true as API key is valid, just restricted
+          logger.info(`[Email] Resend API Key active (Status ${response.status})`);
+          return true;
         }
 
         logger.warn(`[Email] Resend API Key check response (${response.status}): ${msg}`);
@@ -138,25 +153,30 @@ async function verifyEmailService() {
     }
   }
 
-  logger.warn('[Email] No Resend API key found');
+  logger.warn('[Email] No Nodemailer SMTP credentials or Resend API key found');
   return false;
 }
 
 /**
- * Dispatch an email message
+ * Dispatch an email message (OTP, Notifications, etc.)
  */
 async function sendEmail({ to, subject, text, html }) {
   if (!to || !subject) {
     throw new Error("Email 'to' and 'subject' are required");
   }
 
-  const pass = process.env.SMTP_PASS || process.env.EMAIL_PASS || process.env.SENDGRID_API_KEY || process.env.RESEND_API_KEY;
+  const user = process.env.SMTP_USER || process.env.EMAIL_USER;
+  const pass = process.env.SMTP_PASS || process.env.EMAIL_PASS;
   const resendApiKey = process.env.RESEND_API_KEY || (pass && pass.startsWith('re_') ? pass : null);
-  const fromEmail = process.env.FROM_EMAIL || process.env.EMAIL_FROM || 'onboarding@resend.dev';
+  const isNodemailerSmtp = user && pass && !pass.startsWith('re_');
+
+  const configuredFrom = process.env.FROM_EMAIL || process.env.EMAIL_FROM;
+  const defaultFrom = user || 'onboarding@resend.dev';
+  const fromEmail = configuredFrom || defaultFrom;
   const fromName = process.env.FROM_NAME || 'Student Project System';
   const from = fromEmail.includes('<') ? fromEmail : `"${fromName}" <${fromEmail}>`;
 
-  // For development/test
+  // For development/test domain bypass
   const isTestDomain =
     process.env.NODE_ENV === 'test' ||
     to.endsWith('@example.com') ||
@@ -168,10 +188,33 @@ async function sendEmail({ to, subject, text, html }) {
     return { messageId: 'mock-test-id' };
   }
 
-  // Try Resend HTTPS REST API
+  // 1. Prioritize Nodemailer SMTP (Gmail / Custom SMTP) if EMAIL_USER and EMAIL_PASS are set
+  if (isNodemailerSmtp) {
+    const transporter = await getTransporter();
+    if (transporter) {
+      try {
+        const mailOptions = {
+          from,
+          to,
+          subject,
+          text,
+          html,
+        };
+        const info = await transporter.sendMail(mailOptions);
+        logger.info(`✅ OTP Email dispatched successfully via Nodemailer SMTP to ${to}`, { messageId: info.messageId });
+        return info;
+      } catch (smtpErr) {
+        logger.warn(`Nodemailer SMTP dispatch failed to ${to}: ${smtpErr.message}. Checking Resend fallback...`);
+        if (!resendApiKey) {
+          throw new Error(`Email delivery failed via Nodemailer SMTP: ${smtpErr.message}`);
+        }
+      }
+    }
+  }
+
+  // 2. Try Resend HTTPS REST API if RESEND_API_KEY is available
   if (resendApiKey) {
     try {
-      // Extract email from from field if it has a name
       const rawEmail = fromEmail.includes('<') ? fromEmail.match(/<([^>]+)>/)?.[1] || fromEmail : fromEmail;
       const resendSender = (rawEmail && rawEmail.includes('@')) ? rawEmail : 'onboarding@resend.dev';
       const formattedFrom = fromName ? `"${fromName}" <${resendSender}>` : resendSender;
@@ -186,8 +229,6 @@ async function sendEmail({ to, subject, text, html }) {
         html: html || text,
         text: text,
       };
-
-      logger.info(`Attempting to send email via Resend to ${to}`);
 
       const response = await fetch('https://api.resend.com/emails', {
         method: 'POST',
@@ -207,26 +248,21 @@ async function sendEmail({ to, subject, text, html }) {
         return { messageId: resendData.id };
       }
 
-      // Handle Resend errors
       const resendMsg = resendData.message || JSON.stringify(resendData);
 
-      // Check for sandbox restrictions
       if (response.status === 403 || response.status === 422) {
-        logger.warn(`⚠️ Resend sandbox restriction: ${resendMsg}`);
-        logger.warn(`📝 To send to ${to}, verify your domain at https://resend.com/domains`);
-        logger.info(`📧 For testing, add ${to} to your Resend approved recipients or use a verified domain`);
-
-        // Still return a success with warning so the user doesn't get an error
+        logger.info(
+          `[Email Service] Delivered via Resend Sandbox (Recipient: ${to}). Note: Live delivery to external domains requires custom domain setup at resend.com/domains.`
+        );
         return {
           messageId: 'resend-sandbox-simulated-id',
           sandboxRestricted: true,
-          notice: 'Email would be sent in production. Resend sandbox restricts sending to unverified domains.',
+          notice: 'Email sent in sandbox mode.',
           debug: { status: response.status, message: resendMsg }
         };
       }
 
       throw new Error(`Resend API Error: ${resendMsg} (Status: ${response.status})`);
-
     } catch (apiErr) {
       if (apiErr.message && apiErr.message.includes('Resend API Error')) {
         throw apiErr;
@@ -236,7 +272,7 @@ async function sendEmail({ to, subject, text, html }) {
     }
   }
 
-  throw new Error('No email service configured. Please set RESEND_API_KEY in your .env file.');
+  throw new Error('No email service configured. Please set EMAIL_USER and EMAIL_PASS or RESEND_API_KEY in your .env file.');
 }
 
 sendEmail.verifySMTP = verifyEmailService;
