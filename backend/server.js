@@ -183,8 +183,6 @@ if (require.main === module) {
       await connectDB();
       await seedAdmin();
       await backfillMissingIdentifiers();
-      const sendEmail = require('./utils/email');
-      await sendEmail.verifySMTP();
       isDbInitialized = true;
 
       const server = app.listen(PORT, () => {
@@ -193,6 +191,12 @@ if (require.main === module) {
           env: ENV,
           dbStatus:
             mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected',
+        });
+
+        // Async verify SMTP after server binds port & container network attaches
+        const sendEmail = require('./utils/email');
+        sendEmail.verifySMTP().catch((err) => {
+          logger.warn(`[SMTP] Background verification notice: ${err.message}`);
         });
       });
 
