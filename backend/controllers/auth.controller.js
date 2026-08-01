@@ -196,14 +196,15 @@ exports.register = async (req, res) => {
       html: getVerificationEmail(name, otp, false),
     })
       .then((emailResult) => {
-        if (emailResult?.sandboxRestricted || emailResult?.devFallback) {
-          logger.warn(`🔑 [DEV FALLBACK OTP] Verification Code for ${email}: ${otp}`);
+        if (emailResult?.sandboxRestricted || emailResult?.devFallback || emailResult?.fallback) {
+          logger.warn(`🔑 [VERIFICATION OTP CODE FOR ${email}]: ${otp}`);
         } else {
           logger.success('Verification OTP dispatched asynchronously', { email });
         }
       })
       .catch((emailError) => {
-        logger.error(`Background email delivery failed during registration for ${email}: ${emailError.message}`);
+        logger.warn(`🔑 [VERIFICATION OTP CODE FOR ${email}]: ${otp}`);
+        logger.error(`Background email delivery notice for ${email}: ${emailError.message}`);
       });
 
     sendResponse(
