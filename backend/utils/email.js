@@ -146,7 +146,6 @@ async function sendEmail({ to, subject, text, html }) {
 
   const isTestDomain =
     process.env.NODE_ENV === 'test' ||
-    !host ||
     to.endsWith('@example.com') ||
     to.endsWith('@test.com') ||
     to.includes('authtest+');
@@ -156,6 +155,39 @@ async function sendEmail({ to, subject, text, html }) {
     return { messageId: 'mock-test-id' };
   }
 
+  // 1. Try Resend HTTPS REST API (Port 443) if Resend API Key is available
+  const resendApiKey = process.env.RESEND_API_KEY || (pass && pass.startsWith('re_') ? pass : null);
+  if (resendApiKey) {
+    try {
+      const rawEmail = fromEmail.includes('<') ? fromEmail.match(/<([^>]+)>/)?.[1] || fromEmail : fromEmail;
+      const resendSender = rawEmail && rawEmail.includes('@') ? rawEmail : 'onboarding@resend.dev';
+      const formattedFrom = fromName ? `"${fromName}" <${resendSender}>` : resendSender;
+      const response = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${resendApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          from: formattedFrom,
+          to: [to],
+          subject: subject,
+          html: html || text,
+          text: text,
+        }),
+      });
+      const resendData = await response.json();
+      if (response.ok && resendData.id) {
+        logger.info(`Email dispatched successfully via Resend HTTPS API to ${to}`, { messageId: resendData.id });
+        return { messageId: resendData.id };
+      }
+      logger.warn(`Resend HTTPS API notice: ${resendData.message || JSON.stringify(resendData)}. Falling back to Nodemailer transport.`);
+    } catch (apiErr) {
+      logger.warn(`Resend HTTPS API warning: ${apiErr.message}. Falling back to Nodemailer transport.`);
+    }
+  }
+
+  // 2. Standard Nodemailer Transport Fallback
   const transporter = await getTransporter();
   if (!transporter) {
     throw new Error('SMTP Transport is not configured (Missing SMTP host)');
