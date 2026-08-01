@@ -259,14 +259,14 @@ exports.login = async (req, res) => {
 
     if (!result.error && result.data && result.data.user) {
       const u = result.data.user;
-      // Log successful login
-      await auditLogService.create({
+      // Log successful login asynchronously
+      auditLogService.create({
         action: 'User Login',
         user: u.id || u._id,
         details: `User logged in: ${req.body.email}`,
         status: 'Success',
         ip: req.ip || '127.0.0.1',
-      });
+      }).catch((err) => logger.warn('Audit log write notice', { error: err.message }));
 
       logger.auth({
         event: 'LOGIN SUCCESS',
