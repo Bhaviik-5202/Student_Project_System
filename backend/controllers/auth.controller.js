@@ -189,19 +189,24 @@ exports.register = async (req, res) => {
     );
 
     try {
-      const emailResult = await sendEmail({
+      await sendEmail({
         to: email,
         subject: 'Your Student Project System Verification Code',
         text: `Hello ${name},\n\nYour 6-digit verification code is: ${otp}\n\nThis code will expire in 5 minutes.`,
         html: getVerificationEmail(name, otp, false),
       });
-      if (emailResult?.sandboxRestricted) {
-        logger.info(`[Resend Sandbox Testing OTP] Verification Code for ${email}: ${otp}`);
-      } else {
-        logger.success('Verification OTP sent', { email });
-      }
+      logger.success('Verification OTP sent', { email });
     } catch (emailError) {
-      logger.warn(`Email delivery failed during registration for ${email}: ${emailError.message}. OTP code saved to DB for verification: ${otp}`);
+      logger.error(`Email delivery failed during registration for ${email}: ${emailError.message}`);
+      return sendResponse(
+        res,
+        {
+          success: false,
+          message: `Failed to send verification email: ${emailError.message}`,
+          error: emailError.message,
+        },
+        500
+      );
     }
 
     sendResponse(
@@ -283,13 +288,14 @@ exports.login = async (req, res) => {
       });
     }
 
+    const errorMessage = result.message || 'Invalid email or password';
     sendResponse(
       res,
       {
         success: !result.error,
-        message: result.error ? 'Login failed' : 'Login successful',
+        message: result.error ? errorMessage : 'Login successful',
         data: result.data || null,
-        error: result.error || null,
+        error: result.error ? errorMessage : null,
       },
       result.error ? 400 : 200
     );
@@ -910,7 +916,7 @@ exports.resendOtp = async (req, res) => {
     await pending.save();
 
     try {
-      const emailResult = await sendEmail({
+      await sendEmail({
         to: email,
         subject: 'Your New Student Project System Verification Code',
         text: `Hello ${pending.name},\n\nYour new 6-digit verification code is: ${newOtp}\n\nThis code will expire in 5 minutes.`,
@@ -921,13 +927,18 @@ exports.resendOtp = async (req, res) => {
           pending.resendCount
         ),
       });
-      if (emailResult?.sandboxRestricted) {
-        logger.info(`[Resend Sandbox Testing OTP] Resent Verification Code for ${email}: ${newOtp}`);
-      } else {
-        logger.success('New verification OTP sent', { email });
-      }
+      logger.success('New verification OTP sent', { email });
     } catch (emailError) {
-      logger.warn(`Failed to send new OTP email to ${email}: ${emailError.message}. New OTP code saved: ${newOtp}`);
+      logger.error(`Failed to send new OTP email to ${email}: ${emailError.message}`);
+      return sendResponse(
+        res,
+        {
+          success: false,
+          message: `Failed to resend verification email: ${emailError.message}`,
+          error: emailError.message,
+        },
+        500
+      );
     }
 
     sendResponse(

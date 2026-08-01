@@ -189,12 +189,9 @@ async function sendViaResend({ to, subject, text, html, fromName, fromEmail, res
 
   // Handle Resend sandbox restriction (403/422)
   if (response.status === 403 || response.status === 422) {
-    logger.info(`[Email Service] Resend Sandbox Notice (Recipient: ${to}). Live delivery requires verified domain at resend.com/domains.`);
-    return {
-      messageId: 'resend-sandbox-simulated-id',
-      sandboxRestricted: true,
-      notice: data.message || 'Resend sandbox mode',
-    };
+    const errorMsg = data.message || 'Resend sandbox restriction: verified domain required at resend.com/domains';
+    logger.warn(`[Email Service] Resend Sandbox Restriction (Recipient: ${to}): ${errorMsg}`);
+    throw new Error(`Resend API Restriction (${response.status}): ${errorMsg}`);
   }
 
   throw new Error(`Resend API Error (${response.status}): ${data.message || JSON.stringify(data)}`);
@@ -254,7 +251,7 @@ async function sendEmail({ to, subject, text, html }) {
   const fromEmail = configuredFrom || defaultFrom;
   const formattedFrom = fromEmail.includes('<') ? fromEmail : `"${fromName}" <${fromEmail}>`;
 
-  // ── 1. Try Brevo HTTPS API if key present (Port 443 - delivers to ANY recipient for free!) ──────
+  // ── 1. Try Brevo HTTPS API if key present ──────────────────────────────────
   if (brevoApiKey) {
     try {
       return await sendViaBrevo({ to, subject, text, html, fromName, fromEmail, brevoApiKey });
@@ -263,39 +260,20 @@ async function sendEmail({ to, subject, text, html }) {
     }
   }
 
-  // Detect Cloud Environment (Render/Vercel/Production)
-  const isCloudHost = !!process.env.RENDER || !!process.env.VERCEL || (process.env.NODE_ENV === 'production' && resendApiKey);
-
-  // ── 2. Cloud Hosts (Render): Resend HTTPS REST API first (Port 443 - ~150ms response time) ──────
-  if (isCloudHost && resendApiKey) {
-    try {
-      return await sendViaResend({ to, subject, text, html, fromName, fromEmail, resendApiKey });
-    } catch (resendErr) {
-      if (hasSmtp) {
-        try {
-          return await sendViaSmtp({ to, subject, text, html, formattedFrom });
-        } catch (smtpErr) {
-          throw new Error(`Email delivery failed: ${resendErr.message} | ${smtpErr.message}`);
-        }
-      }
-      throw resendErr;
-    }
-  }
-
-  // ── 3. Local Machine (Dev): Nodemailer Gmail SMTP first ──────────────────
+  // ── 2. Nodemailer SMTP (Gmail / Custom SMTP) if EMAIL_USER and EMAIL_PASS are set ──
   if (hasSmtp) {
     try {
       return await sendViaSmtp({ to, subject, text, html, formattedFrom });
     } catch (smtpErr) {
       if (resendApiKey) {
-        logger.info(`[Email Service] Nodemailer SMTP notice (${smtpErr.message}). Switching to Resend REST API...`);
+        logger.info(`[Email Service] Nodemailer SMTP unavailable (${smtpErr.message}). Switching to Resend REST API...`);
         return await sendViaResend({ to, subject, text, html, fromName, fromEmail, resendApiKey });
       }
       throw new Error(`SMTP Email delivery failed: ${smtpErr.message}`);
     }
   }
 
-  // ── 4. Resend REST API Fallback ──────────────────────────────────────────
+  // ── 3. Resend HTTPS REST API (Port 443) ──────────────────────────────────
   if (resendApiKey) {
     return await sendViaResend({ to, subject, text, html, fromName, fromEmail, resendApiKey });
   }
