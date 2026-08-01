@@ -641,163 +641,175 @@ const Dashboard = () => {
   return (
     <div className='animate-fade-in space-y-6 pt-0 px-0 pb-6'>
       {/* ================================================== */}
-      {/* MOBILE DASHBOARD VIEW (< 768px / Dedicated Native Mobile UI) */}
+      {/* PREMIUM NATIVE MOBILE DASHBOARD VIEW (< 768px) */}
       {/* ================================================== */}
       <div className='block md:hidden space-y-4'>
-        {/* Mobile Welcome Header Card */}
-        <div className='rounded-3xl border border-slate-100 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 space-y-3'>
-          <div className='flex items-center gap-3'>
-            <div className='flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 text-white shadow-sm'>
-              <HomeIcon className='h-5 w-5 text-white' />
-            </div>
-            <div className='min-w-0 flex-1'>
-              <h1 className='text-xl font-extrabold text-slate-900 dark:text-white truncate tracking-tight'>
-                {timeOfDay},{' '}
-                <span className='text-blue-600 dark:text-blue-400'>
-                  {user?.name || 'User'}
-                </span>
-              </h1>
-              <p className='text-xs font-medium text-slate-500 dark:text-slate-400 truncate'>
-                {greeting}
-              </p>
-            </div>
-          </div>
+        {/* 1. Premium Glassmorphic Welcome Card */}
+        <div className='relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 p-4 sm:p-5 text-white shadow-lg shadow-indigo-500/20'>
+          {/* Ambient Glow Graphic */}
+          <div className='absolute -right-8 -top-8 h-36 w-36 rounded-full bg-white/10 blur-xl pointer-events-none' />
 
-          <div className='flex items-center justify-between pt-1 border-t border-slate-100 dark:border-slate-800/80 text-xs'>
-            <span className='inline-flex items-center rounded-full bg-blue-50 px-2.5 py-0.5 font-bold text-blue-700 dark:bg-blue-950/70 dark:text-blue-300'>
-              {user?.role === 'admin'
-                ? 'Administrator'
-                : user?.role === 'faculty'
-                  ? 'Faculty'
-                  : 'Student'}
-            </span>
-            <span className='inline-flex items-center gap-1 font-medium text-slate-500 dark:text-slate-400'>
-              <CalendarDaysIcon className='h-3.5 w-3.5 text-slate-400' />
-              {new Date().toLocaleDateString('en-US', {
-                weekday: 'short',
-                month: 'short',
-                day: 'numeric',
-              })}
-            </span>
+          <div className='relative z-10 space-y-3'>
+            <div className='flex items-center gap-3'>
+              {/* User Avatar Circle */}
+              <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/20 backdrop-blur-md text-white font-bold text-sm border border-white/30 shadow-xs'>
+                {user?.name
+                  ? user.name
+                      .split(' ')
+                      .map((n) => n[0])
+                      .join('')
+                      .substring(0, 2)
+                      .toUpperCase()
+                  : 'BP'}
+              </div>
+              <div className='min-w-0 flex-1'>
+                <h1 className='text-lg font-extrabold text-white leading-tight truncate'>
+                  {timeOfDay},{' '}
+                  <span className='underline decoration-sky-300 decoration-2 underline-offset-2'>
+                    {user?.name || 'User'}
+                  </span>
+                </h1>
+                <p className='text-xs text-blue-100/90 truncate font-medium'>
+                  {greeting}
+                </p>
+              </div>
+            </div>
+
+            <div className='flex items-center justify-between pt-2 border-t border-white/15 text-xs font-semibold text-blue-100'>
+              <span className='inline-flex items-center rounded-full bg-white/20 backdrop-blur-md px-3 py-0.5 text-xs font-bold text-white border border-white/25'>
+                {user?.role === 'admin'
+                  ? 'Administrator'
+                  : user?.role === 'faculty'
+                    ? 'Faculty'
+                    : 'Student'}
+              </span>
+              <span className='inline-flex items-center gap-1.5 text-xs text-blue-100/90 font-medium'>
+                <CalendarDaysIcon className='h-3.5 w-3.5 text-blue-200' />
+                {new Date().toLocaleDateString('en-US', {
+                  weekday: 'short',
+                  month: 'short',
+                  day: 'numeric',
+                })}
+              </span>
+            </div>
           </div>
         </div>
 
-        {/* Quick Actions (2-Column Square Cards) */}
+        {/* 2. Quick Actions Grid (2-Column Square Icon Cards) */}
         <div>
-          <h2 className='text-xs font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2 px-1'>
-            Quick Actions
-          </h2>
+          <div className='flex items-center justify-between mb-2 px-1'>
+            <h2 className='text-xs font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500'>
+              Quick Actions
+            </h2>
+            <span className='text-[10px] font-bold text-blue-600 dark:text-blue-400'>
+              Tap to action
+            </span>
+          </div>
           <div className='grid grid-cols-2 gap-2.5'>
-            <button
-              onClick={handleRefresh}
-              disabled={isLoading}
-              className='flex flex-col items-center justify-center p-3.5 rounded-2xl border border-slate-100 bg-white shadow-2xs hover:shadow-sm dark:border-slate-800 dark:bg-slate-900 active:scale-95 transition-all text-center group'
+            {/* 1. Projects Card */}
+            <div
+              onClick={() => navigate('/projects')}
+              className='group relative flex flex-col justify-between h-28 rounded-2xl border border-slate-100 bg-white dark:border-slate-800 dark:bg-slate-900 p-3.5 shadow-2xs hover:shadow-md active:scale-95 transition-all cursor-pointer overflow-hidden'
             >
-              <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 mb-2 group-hover:scale-105 transition-transform'>
-                <RefreshIcon className={`h-5 w-5 ${isLoading ? 'animate-spin' : ''}`} />
+              <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform'>
+                <FolderKanbanIcon className='h-5 w-5' />
               </div>
-              <span className='text-xs font-bold text-slate-800 dark:text-slate-200 line-clamp-1'>
-                {isLoading ? 'Refreshing…' : 'Refresh'}
-              </span>
-            </button>
+              <div>
+                <h3 className='text-xs font-bold text-slate-900 dark:text-white line-clamp-1'>
+                  Projects
+                </h3>
+                <p className='text-[10px] font-medium text-slate-500 dark:text-slate-400 line-clamp-1'>
+                  Manage & view all
+                </p>
+              </div>
+            </div>
 
-            {user?.role === 'admin' && (
-              <button
+            {/* 2. Meetings Card */}
+            <div
+              onClick={() => navigate('/meetings')}
+              className='group relative flex flex-col justify-between h-28 rounded-2xl border border-slate-100 bg-white dark:border-slate-800 dark:bg-slate-900 p-3.5 shadow-2xs hover:shadow-md active:scale-95 transition-all cursor-pointer overflow-hidden'
+            >
+              <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform'>
+                <ClockIcon className='h-5 w-5' />
+              </div>
+              <div>
+                <h3 className='text-xs font-bold text-slate-900 dark:text-white line-clamp-1'>
+                  Meetings
+                </h3>
+                <p className='text-[10px] font-medium text-slate-500 dark:text-slate-400 line-clamp-1'>
+                  Schedules & sync
+                </p>
+              </div>
+            </div>
+
+            {/* 3. Resources Card */}
+            <div
+              onClick={() => navigate('/resources')}
+              className='group relative flex flex-col justify-between h-28 rounded-2xl border border-slate-100 bg-white dark:border-slate-800 dark:bg-slate-900 p-3.5 shadow-2xs hover:shadow-md active:scale-95 transition-all cursor-pointer overflow-hidden'
+            >
+              <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform'>
+                <BookOpenIcon className='h-5 w-5' />
+              </div>
+              <div>
+                <h3 className='text-xs font-bold text-slate-900 dark:text-white line-clamp-1'>
+                  Resources
+                </h3>
+                <p className='text-[10px] font-medium text-slate-500 dark:text-slate-400 line-clamp-1'>
+                  Assets & files
+                </p>
+              </div>
+            </div>
+
+            {/* 4. Admin Action / Milestones Card */}
+            {user?.role === 'admin' ? (
+              <div
                 onClick={() => navigate('/project-types')}
-                className='flex flex-col items-center justify-center p-3.5 rounded-2xl border border-slate-100 bg-white shadow-2xs hover:shadow-sm dark:border-slate-800 dark:bg-slate-900 active:scale-95 transition-all text-center group'
+                className='group relative flex flex-col justify-between h-28 rounded-2xl border border-slate-100 bg-white dark:border-slate-800 dark:bg-slate-900 p-3.5 shadow-2xs hover:shadow-md active:scale-95 transition-all cursor-pointer overflow-hidden'
               >
-                <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 mb-2 group-hover:scale-105 transition-transform'>
+                <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform'>
                   <PlusIcon className='h-5 w-5' />
                 </div>
-                <span className='text-xs font-bold text-slate-800 dark:text-slate-200 line-clamp-1'>
-                  New Project
-                </span>
-              </button>
-            )}
-
-            {user?.role === 'admin' && (
-              <button
-                onClick={() => {
-                  try {
-                    exportDashboardToCSV(dashboardData, user?.role || 'user');
-                    toast.success('Report generated successfully!');
-                  } catch (error) {
-                    toast.error('Failed to generate report');
-                  }
-                }}
-                className='flex flex-col items-center justify-center p-3.5 rounded-2xl border border-slate-100 bg-white shadow-2xs hover:shadow-sm dark:border-slate-800 dark:bg-slate-900 active:scale-95 transition-all text-center group'
-              >
-                <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 mb-2 group-hover:scale-105 transition-transform'>
-                  <DownloadIcon className='h-5 w-5' />
+                <div>
+                  <h3 className='text-xs font-bold text-slate-900 dark:text-white line-clamp-1'>
+                    New Project
+                  </h3>
+                  <p className='text-[10px] font-medium text-slate-500 dark:text-slate-400 line-clamp-1'>
+                    Create project type
+                  </p>
                 </div>
-                <span className='text-xs font-bold text-slate-800 dark:text-slate-200 line-clamp-1'>
-                  Export Report
-                </span>
-              </button>
-            )}
-
-            {user?.role === 'faculty' && (
-              <>
-                <button
-                  onClick={() => navigate('/meetings')}
-                  className='flex flex-col items-center justify-center p-3.5 rounded-2xl border border-slate-100 bg-white shadow-2xs hover:shadow-sm dark:border-slate-800 dark:bg-slate-900 active:scale-95 transition-all text-center group'
-                >
-                  <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 mb-2 group-hover:scale-105 transition-transform'>
-                    <ClockIcon className='h-5 w-5' />
-                  </div>
-                  <span className='text-xs font-bold text-slate-800 dark:text-slate-200 line-clamp-1'>
-                    My Meetings
-                  </span>
-                </button>
-                <button
-                  onClick={() => navigate('/resources')}
-                  className='flex flex-col items-center justify-center p-3.5 rounded-2xl border border-slate-100 bg-white shadow-2xs hover:shadow-sm dark:border-slate-800 dark:bg-slate-900 active:scale-95 transition-all text-center group'
-                >
-                  <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 mb-2 group-hover:scale-105 transition-transform'>
-                    <BookOpenIcon className='h-5 w-5' />
-                  </div>
-                  <span className='text-xs font-bold text-slate-800 dark:text-slate-200 line-clamp-1'>
-                    Resources
-                  </span>
-                </button>
-              </>
-            )}
-
-            {user?.role === 'student' && (
-              <>
-                <button
-                  onClick={() => navigate('/meetings')}
-                  className='flex flex-col items-center justify-center p-3.5 rounded-2xl border border-slate-100 bg-white shadow-2xs hover:shadow-sm dark:border-slate-800 dark:bg-slate-900 active:scale-95 transition-all text-center group'
-                >
-                  <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 mb-2 group-hover:scale-105 transition-transform'>
-                    <ClockIcon className='h-5 w-5' />
-                  </div>
-                  <span className='text-xs font-bold text-slate-800 dark:text-slate-200 line-clamp-1'>
-                    My Meetings
-                  </span>
-                </button>
-                <button
-                  onClick={() => navigate('/projects')}
-                  className='flex flex-col items-center justify-center p-3.5 rounded-2xl border border-slate-100 bg-white shadow-2xs hover:shadow-sm dark:border-slate-800 dark:bg-slate-900 active:scale-95 transition-all text-center group'
-                >
-                  <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 mb-2 group-hover:scale-105 transition-transform'>
-                    <FolderKanbanIcon className='h-5 w-5' />
-                  </div>
-                  <span className='text-xs font-bold text-slate-800 dark:text-slate-200 line-clamp-1'>
-                    View Projects
-                  </span>
-                </button>
-              </>
+              </div>
+            ) : (
+              <div
+                onClick={() => navigate('/milestones')}
+                className='group relative flex flex-col justify-between h-28 rounded-2xl border border-slate-100 bg-white dark:border-slate-800 dark:bg-slate-900 p-3.5 shadow-2xs hover:shadow-md active:scale-95 transition-all cursor-pointer overflow-hidden'
+              >
+                <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 group-hover:scale-110 transition-transform'>
+                  <FlagIcon className='h-5 w-5' />
+                </div>
+                <div>
+                  <h3 className='text-xs font-bold text-slate-900 dark:text-white line-clamp-1'>
+                    Milestones
+                  </h3>
+                  <p className='text-[10px] font-medium text-slate-500 dark:text-slate-400 line-clamp-1'>
+                    Track progress
+                  </p>
+                </div>
+              </div>
             )}
           </div>
         </div>
 
-        {/* Statistics Grid (2-Column) */}
+        {/* 3. Overview Statistics Grid (2-Column) */}
         {dashboardData.stats.length > 0 && (
           <div>
-            <h2 className='text-xs font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2 px-1'>
-              Overview Statistics
-            </h2>
+            <div className='flex items-center justify-between mb-2 px-1'>
+              <h2 className='text-xs font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500'>
+                Overview Statistics
+              </h2>
+              <span className='text-[10px] font-bold text-blue-600 dark:text-blue-400'>
+                Live metrics
+              </span>
+            </div>
             <div className='grid grid-cols-2 gap-2.5'>
               {dashboardData.stats.map((stat, index) => {
                 const Icon = stat.icon;
@@ -805,25 +817,72 @@ const Dashboard = () => {
                   <div
                     key={index}
                     onClick={stat.onClick}
-                    className='rounded-2xl border border-slate-100 bg-white p-3.5 shadow-2xs dark:border-slate-800 dark:bg-slate-900 cursor-pointer active:scale-95 transition-all'
+                    className='rounded-2xl border border-slate-100 bg-white p-3.5 shadow-2xs dark:border-slate-800 dark:bg-slate-900 cursor-pointer active:scale-95 transition-all space-y-2'
                   >
-                    <div className='flex items-center justify-between mb-2'>
+                    <div className='flex items-center justify-between'>
                       <div className='flex h-9 w-9 items-center justify-center rounded-xl bg-orange-50 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400'>
                         <Icon className='h-4 w-4' />
                       </div>
-                      <span className='text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full'>
+                      <span className='text-[10px] font-extrabold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full'>
                         {stat.change}
                       </span>
                     </div>
-                    <div className='text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight'>
-                      {stat.value}
+                    <div>
+                      <div className='text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight tabular-nums'>
+                        {stat.value}
+                      </div>
+                      <div className='text-xs font-bold text-slate-600 dark:text-slate-400 truncate mt-0.5'>
+                        {stat.title}
+                      </div>
                     </div>
-                    <div className='text-xs font-medium text-slate-500 dark:text-slate-400 truncate mt-0.5'>
-                      {stat.title}
+                    <div className='h-1 w-full rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden'>
+                      <div className='h-full bg-blue-600 dark:bg-blue-400 rounded-full w-full' />
                     </div>
                   </div>
                 );
               })}
+            </div>
+          </div>
+        )}
+
+        {/* 4. Upcoming Deadlines & Schedule Timeline */}
+        {upcomingDeadlines.length > 0 && (
+          <div>
+            <div className='flex items-center justify-between mb-2 px-1'>
+              <h2 className='text-xs font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500'>
+                Upcoming Deadlines
+              </h2>
+              <button
+                onClick={() => navigate('/meetings')}
+                className='text-[11px] font-bold text-blue-600 dark:text-blue-400 flex items-center gap-0.5'
+              >
+                View Calendar <ChevronRightIcon className='h-3 w-3' />
+              </button>
+            </div>
+            <div className='space-y-2'>
+              {upcomingDeadlines.slice(0, 3).map((item) => (
+                <div
+                  key={item.id}
+                  className='flex items-center justify-between rounded-2xl border border-slate-100 bg-white p-3 shadow-2xs dark:border-slate-800 dark:bg-slate-900'
+                >
+                  <div className='flex items-center gap-3 min-w-0'>
+                    <div className='flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400'>
+                      <CalendarDaysIcon className='h-4 w-4' />
+                    </div>
+                    <div className='min-w-0'>
+                      <h4 className='text-xs font-bold text-slate-900 dark:text-white truncate'>
+                        {item.title}
+                      </h4>
+                      <p className='text-[11px] font-medium text-slate-500 dark:text-slate-400'>
+                        Due {item.due} at {item.time}
+                      </p>
+                    </div>
+                  </div>
+                  <span className='shrink-0 text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 px-2 py-0.5 rounded-full'>
+                    {item.priority || 'Normal'}
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
         )}
