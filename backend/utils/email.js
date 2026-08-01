@@ -66,7 +66,19 @@ async function verifyEmailService() {
   const smtpUser = process.env.EMAIL_USER || process.env.SMTP_USER;
   const smtpPass = process.env.EMAIL_PASS || process.env.SMTP_PASS;
 
-  // 1. Verify Nodemailer SMTP if credentials provided (local dev)
+  // 1. Check Brevo HTTPS API if key exists (Preferred for Cloud Hosts like Render)
+  if (brevoApiKey) {
+    logger.info('[Email Service] Brevo HTTPS REST API ready (Port 443)');
+    return true;
+  }
+
+  // 2. Check Resend HTTPS API if key exists
+  if (resendApiKey && resendApiKey.startsWith('re_')) {
+    logger.info('[Email Service] Resend HTTPS API configured');
+    return true;
+  }
+
+  // 3. Verify Nodemailer SMTP if credentials provided (local dev)
   if (smtpUser && smtpPass && !smtpPass.startsWith('re_') && !smtpPass.startsWith('xkeysib-')) {
     const transporter = createSmtpTransporter();
     if (transporter) {
@@ -78,18 +90,6 @@ async function verifyEmailService() {
         logger.info(`[Email Service] SMTP verification notice: ${err.message}`);
       }
     }
-  }
-
-  // 2. Check Brevo HTTPS API if key exists
-  if (brevoApiKey) {
-    logger.info('[Email Service] Brevo HTTPS REST API ready (Port 443)');
-    return true;
-  }
-
-  // 3. Check Resend HTTPS API if key exists
-  if (resendApiKey && resendApiKey.startsWith('re_')) {
-    logger.info('[Email Service] Resend HTTPS API configured');
-    return true;
   }
 
   if (process.env.NODE_ENV !== 'production') {
@@ -250,17 +250,7 @@ async function sendEmail({ to, subject, text, html }) {
 
   const errors = [];
 
-  // ── 1. Nodemailer SMTP (Gmail / Custom SMTP) ──
-  if (hasSmtp) {
-    try {
-      return await sendViaSmtp({ to, subject, text, html, formattedFrom });
-    } catch (smtpErr) {
-      logger.warn(`[Email Service] Nodemailer SMTP notice: ${smtpErr.message}`);
-      errors.push(`SMTP: ${smtpErr.message}`);
-    }
-  }
-
-  // ── 2. Brevo HTTPS API if key present ──
+  // ── 1. Brevo HTTPS REST API (Port 443 - Unblocked on Render/Cloud hosts) ──
   if (brevoApiKey) {
     try {
       return await sendViaBrevo({ to, subject, text, html, fromName, fromEmail, brevoApiKey });
@@ -270,7 +260,7 @@ async function sendEmail({ to, subject, text, html }) {
     }
   }
 
-  // ── 3. Resend HTTPS REST API if key present ──
+  // ── 2. Resend HTTPS REST API (Port 443) ──
   if (resendApiKey && resendApiKey.startsWith('re_')) {
     try {
       const resendResult = await sendViaResend({ to, subject, text, html, fromName, fromEmail, resendApiKey });
@@ -278,6 +268,16 @@ async function sendEmail({ to, subject, text, html }) {
     } catch (resendErr) {
       logger.warn(`[Email Service] Resend API notice: ${resendErr.message}`);
       errors.push(`Resend: ${resendErr.message}`);
+    }
+  }
+
+  // ── 3. Nodemailer SMTP (Gmail / Custom SMTP - Ideal for local dev) ──
+  if (hasSmtp) {
+    try {
+      return await sendViaSmtp({ to, subject, text, html, formattedFrom });
+    } catch (smtpErr) {
+      logger.warn(`[Email Service] Nodemailer SMTP notice: ${smtpErr.message}`);
+      errors.push(`SMTP: ${smtpErr.message}`);
     }
   }
 
