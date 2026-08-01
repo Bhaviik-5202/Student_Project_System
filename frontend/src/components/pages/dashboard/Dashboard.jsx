@@ -640,205 +640,342 @@ const Dashboard = () => {
   // --- Render ---
   return (
     <div className='animate-fade-in space-y-6 pt-0 px-0 pb-6'>
-      {/* Top Greeting Heading (Outside Card) */}
-      <div className='mb-2 sm:mb-4'>
-        <h1 className='text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl'>
-          {timeOfDay},{' '}
-          <span className='text-blue-600 font-bold dark:text-blue-400'>
-            {user?.name || 'Bhaviik Parmar'}
-          </span>
-        </h1>
-        <p className='mt-1 text-sm font-medium text-slate-600 dark:text-slate-400'>
-          {greeting}
-        </p>
-      </div>
+      {/* ================================================== */}
+      {/* MOBILE DASHBOARD VIEW (< 768px / Dedicated Native Mobile UI) */}
+      {/* ================================================== */}
+      <div className='block md:hidden space-y-4'>
+        {/* Mobile Welcome Header Card */}
+        <div className='rounded-3xl border border-slate-100 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 space-y-3'>
+          <div className='flex items-center gap-3'>
+            <div className='flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-purple-600 text-white shadow-sm'>
+              <HomeIcon className='h-5 w-5 text-white' />
+            </div>
+            <div className='min-w-0 flex-1'>
+              <h1 className='text-xl font-extrabold text-slate-900 dark:text-white truncate tracking-tight'>
+                {timeOfDay},{' '}
+                <span className='text-blue-600 dark:text-blue-400'>
+                  {user?.name || 'User'}
+                </span>
+              </h1>
+              <p className='text-xs font-medium text-slate-500 dark:text-slate-400 truncate'>
+                {greeting}
+              </p>
+            </div>
+          </div>
 
-      {/* Welcome Card - Soft white card with rounded-3xl matching reference mockup */}
-      <div className='rounded-3xl border border-slate-100 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:p-6 md:p-8 space-y-4'>
-        {/* Left Icon Box */}
-        <div className='flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-tr from-purple-500 via-indigo-600 to-blue-500 text-white shadow-md'>
-          <HomeIcon className='h-7 w-7 text-white' />
+          <div className='flex items-center justify-between pt-1 border-t border-slate-100 dark:border-slate-800/80 text-xs'>
+            <span className='inline-flex items-center rounded-full bg-blue-50 px-2.5 py-0.5 font-bold text-blue-700 dark:bg-blue-950/70 dark:text-blue-300'>
+              {user?.role === 'admin'
+                ? 'Administrator'
+                : user?.role === 'faculty'
+                  ? 'Faculty'
+                  : 'Student'}
+            </span>
+            <span className='inline-flex items-center gap-1 font-medium text-slate-500 dark:text-slate-400'>
+              <CalendarDaysIcon className='h-3.5 w-3.5 text-slate-400' />
+              {new Date().toLocaleDateString('en-US', {
+                weekday: 'short',
+                month: 'short',
+                day: 'numeric',
+              })}
+            </span>
+          </div>
         </div>
 
-        {/* Badge & Date Row */}
-        <div className='flex items-center gap-2.5 flex-wrap'>
-          <span className='inline-flex items-center rounded-full bg-blue-100/90 px-3.5 py-1 text-xs font-semibold text-blue-700 dark:bg-blue-950/70 dark:text-blue-300'>
-            {user?.role === 'admin'
-              ? 'Administrator'
-              : user?.role === 'faculty'
-                ? 'Faculty'
-                : 'Student'}
-          </span>
-          <span className='inline-flex items-center gap-1.5 text-xs font-medium text-slate-500 dark:text-slate-400'>
-            <CalendarDaysIcon className='h-4 w-4 text-slate-400' />
-            {new Date().toLocaleDateString('en-US', {
-              weekday: 'long',
-              month: 'long',
-              day: 'numeric',
-            })}
-          </span>
-        </div>
-
-        {/* Action Buttons: Stacked rounded-2xl buttons matching mockup */}
-        <div className='flex flex-col sm:flex-row flex-wrap gap-2.5 pt-1'>
-          <button
-            onClick={handleRefresh}
-            disabled={isLoading}
-            className='inline-flex items-center justify-start gap-2.5 rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 transition-all active:scale-[0.98]'
-          >
-            {isLoading ? (
-              <RefreshIcon className='h-4 w-4 animate-spin text-slate-600 dark:text-slate-400' />
-            ) : (
-              <RefreshIcon className='h-4 w-4 text-slate-600 dark:text-slate-400' />
-            )}
-            <span>{isLoading ? 'Refreshing…' : 'Refresh Dashboard'}</span>
-          </button>
-
-          {user?.role === 'admin' && (
+        {/* Quick Actions (2-Column Square Cards) */}
+        <div>
+          <h2 className='text-xs font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2 px-1'>
+            Quick Actions
+          </h2>
+          <div className='grid grid-cols-2 gap-2.5'>
             <button
-              onClick={() => navigate('/project-types')}
-              className='inline-flex items-center justify-start gap-2.5 rounded-2xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md hover:bg-blue-700 transition-all active:scale-[0.98]'
+              onClick={handleRefresh}
+              disabled={isLoading}
+              className='flex flex-col items-center justify-center p-3.5 rounded-2xl border border-slate-100 bg-white shadow-2xs hover:shadow-sm dark:border-slate-800 dark:bg-slate-900 active:scale-95 transition-all text-center group'
             >
-              <PlusIcon className='h-4 w-4' />
-              <span>New Project Type</span>
-            </button>
-          )}
-
-          {user?.role === 'admin' && (
-            <button
-              onClick={() => {
-                try {
-                  exportDashboardToCSV(dashboardData, user?.role || 'user');
-                  toast.success('Report generated successfully!');
-                } catch (error) {
-                  console.error('Export failed:', error);
-                  toast.error('Failed to generate report');
-                }
-              }}
-              className='inline-flex items-center justify-start gap-2.5 rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 transition-all active:scale-[0.98]'
-            >
-              <DownloadIcon className='h-4 w-4 text-slate-600 dark:text-slate-400' />
-              <span>Export Report</span>
-            </button>
-          )}
-
-          {user?.role === 'faculty' && (
-            <>
-              <button
-                onClick={() => navigate('/meetings')}
-                className='inline-flex items-center justify-start gap-2.5 rounded-2xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md hover:bg-blue-700 transition-all active:scale-[0.98]'
-              >
-                <ClockIcon className='h-4 w-4' />
-                <span>My Meetings</span>
-              </button>
-              <button
-                onClick={() => navigate('/resources')}
-                className='inline-flex items-center justify-start gap-2.5 rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 transition-all active:scale-[0.98]'
-              >
-                <BookOpenIcon className='h-4 w-4 text-emerald-600 dark:text-emerald-400' />
-                <span>Resource Library</span>
-              </button>
-            </>
-          )}
-
-          {user?.role === 'student' && (
-            <>
-              <button
-                onClick={() => navigate('/meetings')}
-                className='inline-flex items-center justify-start gap-2.5 rounded-2xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md hover:bg-blue-700 transition-all active:scale-[0.98]'
-              >
-                <ClockIcon className='h-4 w-4' />
-                <span>My Meetings</span>
-              </button>
-              <button
-                onClick={() => navigate('/resources')}
-                className='inline-flex items-center justify-start gap-2.5 rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 transition-all active:scale-[0.98]'
-              >
-                <BookOpenIcon className='h-4 w-4 text-emerald-600 dark:text-emerald-400' />
-                <span>Resource Library</span>
-              </button>
-              <button
-                onClick={() => navigate('/milestones')}
-                className='inline-flex items-center justify-start gap-2.5 rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 transition-all active:scale-[0.98]'
-              >
-                <FlagIcon className='h-4 w-4 text-amber-600 dark:text-amber-400' />
-                <span>My Milestones</span>
-              </button>
-            </>
-          )}
-        </div>
-      </div>
-
-      {/* Urgent Alert Section */}
-      {(upcomingDeadlines?.filter((d) => d.priority === 'high')?.length || 0) >
-        0 && (
-          <div className='rounded-2xl border border-red-200 bg-gradient-to-r from-red-50 to-red-100/50 p-6 shadow-sm dark:border-red-800 dark:from-red-900/30 dark:to-red-800/20'>
-            <div className='flex flex-col md:flex-row md:items-center'>
-              <div className='flex items-start md:items-center'>
-                <div className='flex-shrink-0'>
-                  <ExclamationTriangleIcon className='h-5 w-5 text-red-600 dark:text-red-400 sm:h-6 sm:w-6' />
-                </div>
-                <div className='ml-4 flex-1'>
-                  <h3 className='mb-1 text-lg font-bold text-gray-900 dark:text-white'>
-                    ⚠️ Urgent Action Required
-                  </h3>
-                  <p className='text-gray-700 dark:text-gray-300'>
-                    {
-                      upcomingDeadlines?.filter((d) => d.priority === 'high')[0]
-                        ?.title
-                    }{' '}
-                    due{' '}
-                    <span className='font-semibold'>
-                      {
-                        upcomingDeadlines?.filter((d) => d.priority === 'high')[0]
-                          ?.due
-                      }
-                    </span>{' '}
-                    at{' '}
-                    <span className='font-semibold'>
-                      {
-                        upcomingDeadlines?.filter((d) => d.priority === 'high')[0]
-                          ?.time
-                      }
-                    </span>
-                  </p>
-                </div>
+              <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 mb-2 group-hover:scale-105 transition-transform'>
+                <RefreshIcon className={`h-5 w-5 ${isLoading ? 'animate-spin' : ''}`} />
               </div>
-              <div className='mt-4 flex gap-3 md:ml-6 md:mt-0'>
+              <span className='text-xs font-bold text-slate-800 dark:text-slate-200 line-clamp-1'>
+                {isLoading ? 'Refreshing…' : 'Refresh'}
+              </span>
+            </button>
+
+            {user?.role === 'admin' && (
+              <button
+                onClick={() => navigate('/project-types')}
+                className='flex flex-col items-center justify-center p-3.5 rounded-2xl border border-slate-100 bg-white shadow-2xs hover:shadow-sm dark:border-slate-800 dark:bg-slate-900 active:scale-95 transition-all text-center group'
+              >
+                <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 mb-2 group-hover:scale-105 transition-transform'>
+                  <PlusIcon className='h-5 w-5' />
+                </div>
+                <span className='text-xs font-bold text-slate-800 dark:text-slate-200 line-clamp-1'>
+                  New Project
+                </span>
+              </button>
+            )}
+
+            {user?.role === 'admin' && (
+              <button
+                onClick={() => {
+                  try {
+                    exportDashboardToCSV(dashboardData, user?.role || 'user');
+                    toast.success('Report generated successfully!');
+                  } catch (error) {
+                    toast.error('Failed to generate report');
+                  }
+                }}
+                className='flex flex-col items-center justify-center p-3.5 rounded-2xl border border-slate-100 bg-white shadow-2xs hover:shadow-sm dark:border-slate-800 dark:bg-slate-900 active:scale-95 transition-all text-center group'
+              >
+                <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 mb-2 group-hover:scale-105 transition-transform'>
+                  <DownloadIcon className='h-5 w-5' />
+                </div>
+                <span className='text-xs font-bold text-slate-800 dark:text-slate-200 line-clamp-1'>
+                  Export Report
+                </span>
+              </button>
+            )}
+
+            {user?.role === 'faculty' && (
+              <>
                 <button
-                  onClick={() => navigate('/assignments')}
-                  className='group relative overflow-hidden rounded-xl bg-gradient-to-r from-red-600 to-red-500 px-5 py-2.5 font-medium text-white shadow-md transition-all duration-300 hover:shadow-xl'
+                  onClick={() => navigate('/meetings')}
+                  className='flex flex-col items-center justify-center p-3.5 rounded-2xl border border-slate-100 bg-white shadow-2xs hover:shadow-sm dark:border-slate-800 dark:bg-slate-900 active:scale-95 transition-all text-center group'
                 >
-                  <div className='absolute inset-0 bg-gradient-to-r from-red-700 to-red-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
-                  <span className='relative z-10 inline-block transition-transform duration-300 group-hover:scale-105'>
-                    Start Now
+                  <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 mb-2 group-hover:scale-105 transition-transform'>
+                    <ClockIcon className='h-5 w-5' />
+                  </div>
+                  <span className='text-xs font-bold text-slate-800 dark:text-slate-200 line-clamp-1'>
+                    My Meetings
                   </span>
                 </button>
                 <button
-                  onClick={() => toast.info('Extension requested')}
-                  className='group relative overflow-hidden rounded-xl border border-red-300 px-5 py-2.5 font-medium text-red-700 transition-all duration-300 hover:border-transparent hover:shadow-lg dark:border-red-700 dark:text-red-400'
+                  onClick={() => navigate('/resources')}
+                  className='flex flex-col items-center justify-center p-3.5 rounded-2xl border border-slate-100 bg-white shadow-2xs hover:shadow-sm dark:border-slate-800 dark:bg-slate-900 active:scale-95 transition-all text-center group'
                 >
-                  <div className='absolute inset-0 bg-red-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:bg-red-900/30' />
-                  <span className='relative z-10'>Request Extension</span>
+                  <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 mb-2 group-hover:scale-105 transition-transform'>
+                    <BookOpenIcon className='h-5 w-5' />
+                  </div>
+                  <span className='text-xs font-bold text-slate-800 dark:text-slate-200 line-clamp-1'>
+                    Resources
+                  </span>
                 </button>
-              </div>
+              </>
+            )}
+
+            {user?.role === 'student' && (
+              <>
+                <button
+                  onClick={() => navigate('/meetings')}
+                  className='flex flex-col items-center justify-center p-3.5 rounded-2xl border border-slate-100 bg-white shadow-2xs hover:shadow-sm dark:border-slate-800 dark:bg-slate-900 active:scale-95 transition-all text-center group'
+                >
+                  <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 mb-2 group-hover:scale-105 transition-transform'>
+                    <ClockIcon className='h-5 w-5' />
+                  </div>
+                  <span className='text-xs font-bold text-slate-800 dark:text-slate-200 line-clamp-1'>
+                    My Meetings
+                  </span>
+                </button>
+                <button
+                  onClick={() => navigate('/projects')}
+                  className='flex flex-col items-center justify-center p-3.5 rounded-2xl border border-slate-100 bg-white shadow-2xs hover:shadow-sm dark:border-slate-800 dark:bg-slate-900 active:scale-95 transition-all text-center group'
+                >
+                  <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 mb-2 group-hover:scale-105 transition-transform'>
+                    <FolderKanbanIcon className='h-5 w-5' />
+                  </div>
+                  <span className='text-xs font-bold text-slate-800 dark:text-slate-200 line-clamp-1'>
+                    View Projects
+                  </span>
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Statistics Grid (2-Column) */}
+        {dashboardData.stats.length > 0 && (
+          <div>
+            <h2 className='text-xs font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2 px-1'>
+              Overview Statistics
+            </h2>
+            <div className='grid grid-cols-2 gap-2.5'>
+              {dashboardData.stats.map((stat, index) => {
+                const Icon = stat.icon;
+                return (
+                  <div
+                    key={index}
+                    onClick={stat.onClick}
+                    className='rounded-2xl border border-slate-100 bg-white p-3.5 shadow-2xs dark:border-slate-800 dark:bg-slate-900 cursor-pointer active:scale-95 transition-all'
+                  >
+                    <div className='flex items-center justify-between mb-2'>
+                      <div className='flex h-9 w-9 items-center justify-center rounded-xl bg-orange-50 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400'>
+                        <Icon className='h-4 w-4' />
+                      </div>
+                      <span className='text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full'>
+                        {stat.change}
+                      </span>
+                    </div>
+                    <div className='text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight'>
+                      {stat.value}
+                    </div>
+                    <div className='text-xs font-medium text-slate-500 dark:text-slate-400 truncate mt-0.5'>
+                      {stat.title}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
+      </div>
 
-      {/* Stats Grid - Role Specific with Animations */}
-      {dashboardData.stats.length > 0 && (
-        <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4'>
-          {dashboardData.stats.map((stat, index) => (
-            <AnimatedStatCard
-              key={index}
-              stat={stat}
-              index={index}
-              onClick={stat.onClick}
-            />
-          ))}
+      {/* ================================================== */}
+      {/* DESKTOP & TABLET DASHBOARD VIEW (>= 768px / Preserved Unchanged) */}
+      {/* ================================================== */}
+      <div className='hidden md:block space-y-6'>
+        {/* Top Greeting Heading (Outside Card) */}
+        <div className='mb-2 sm:mb-4'>
+          <h1 className='text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl'>
+            {timeOfDay},{' '}
+            <span className='text-blue-600 font-bold dark:text-blue-400'>
+              {user?.name || 'Bhaviik Parmar'}
+            </span>
+          </h1>
+          <p className='mt-1 text-sm font-medium text-slate-600 dark:text-slate-400'>
+            {greeting}
+          </p>
         </div>
-      )}
+
+        {/* Welcome Card - Soft white card with rounded-3xl matching reference mockup */}
+        <div className='rounded-3xl border border-slate-100 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:p-6 md:p-8 space-y-4'>
+          {/* Left Icon Box */}
+          <div className='flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-tr from-purple-500 via-indigo-600 to-blue-500 text-white shadow-md'>
+            <HomeIcon className='h-7 w-7 text-white' />
+          </div>
+
+          {/* Badge & Date Row */}
+          <div className='flex items-center gap-2.5 flex-wrap'>
+            <span className='inline-flex items-center rounded-full bg-blue-100/90 px-3.5 py-1 text-xs font-semibold text-blue-700 dark:bg-blue-950/70 dark:text-blue-300'>
+              {user?.role === 'admin'
+                ? 'Administrator'
+                : user?.role === 'faculty'
+                  ? 'Faculty'
+                  : 'Student'}
+            </span>
+            <span className='inline-flex items-center gap-1.5 text-xs font-medium text-slate-500 dark:text-slate-400'>
+              <CalendarDaysIcon className='h-4 w-4 text-slate-400' />
+              {new Date().toLocaleDateString('en-US', {
+                weekday: 'long',
+                month: 'long',
+                day: 'numeric',
+              })}
+            </span>
+          </div>
+
+          {/* Action Buttons: Stacked rounded-2xl buttons matching mockup */}
+          <div className='flex flex-col sm:flex-row flex-wrap gap-2.5 pt-1'>
+            <button
+              onClick={handleRefresh}
+              disabled={isLoading}
+              className='inline-flex items-center justify-start gap-2.5 rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 transition-all active:scale-[0.98]'
+            >
+              {isLoading ? (
+                <RefreshIcon className='h-4 w-4 animate-spin text-slate-600 dark:text-slate-400' />
+              ) : (
+                <RefreshIcon className='h-4 w-4 text-slate-600 dark:text-slate-400' />
+              )}
+              <span>{isLoading ? 'Refreshing…' : 'Refresh Dashboard'}</span>
+            </button>
+
+            {user?.role === 'admin' && (
+              <button
+                onClick={() => navigate('/project-types')}
+                className='inline-flex items-center justify-start gap-2.5 rounded-2xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md hover:bg-blue-700 transition-all active:scale-[0.98]'
+              >
+                <PlusIcon className='h-4 w-4' />
+                <span>New Project Type</span>
+              </button>
+            )}
+
+            {user?.role === 'admin' && (
+              <button
+                onClick={() => {
+                  try {
+                    exportDashboardToCSV(dashboardData, user?.role || 'user');
+                    toast.success('Report generated successfully!');
+                  } catch (error) {
+                    console.error('Export failed:', error);
+                    toast.error('Failed to generate report');
+                  }
+                }}
+                className='inline-flex items-center justify-start gap-2.5 rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 transition-all active:scale-[0.98]'
+              >
+                <DownloadIcon className='h-4 w-4 text-slate-600 dark:text-slate-400' />
+                <span>Export Report</span>
+              </button>
+            )}
+
+            {user?.role === 'faculty' && (
+              <>
+                <button
+                  onClick={() => navigate('/meetings')}
+                  className='inline-flex items-center justify-start gap-2.5 rounded-2xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md hover:bg-blue-700 transition-all active:scale-[0.98]'
+                >
+                  <ClockIcon className='h-4 w-4' />
+                  <span>My Meetings</span>
+                </button>
+                <button
+                  onClick={() => navigate('/resources')}
+                  className='inline-flex items-center justify-start gap-2.5 rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 transition-all active:scale-[0.98]'
+                >
+                  <BookOpenIcon className='h-4 w-4 text-emerald-600 dark:text-emerald-400' />
+                  <span>Resource Library</span>
+                </button>
+              </>
+            )}
+
+            {user?.role === 'student' && (
+              <>
+                <button
+                  onClick={() => navigate('/meetings')}
+                  className='inline-flex items-center justify-start gap-2.5 rounded-2xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md hover:bg-blue-700 transition-all active:scale-[0.98]'
+                >
+                  <ClockIcon className='h-4 w-4' />
+                  <span>My Meetings</span>
+                </button>
+                <button
+                  onClick={() => navigate('/resources')}
+                  className='inline-flex items-center justify-start gap-2.5 rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 transition-all active:scale-[0.98]'
+                >
+                  <BookOpenIcon className='h-4 w-4 text-emerald-600 dark:text-emerald-400' />
+                  <span>Resource Library</span>
+                </button>
+                <button
+                  onClick={() => navigate('/milestones')}
+                  className='inline-flex items-center justify-start gap-2.5 rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 transition-all active:scale-[0.98]'
+                >
+                  <FlagIcon className='h-4 w-4 text-amber-600 dark:text-amber-400' />
+                  <span>My Milestones</span>
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Stats Grid - Role Specific with Animations */}
+        {dashboardData.stats.length > 0 && (
+          <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4'>
+            {dashboardData.stats.map((stat, index) => (
+              <AnimatedStatCard
+                key={index}
+                stat={stat}
+                index={index}
+                onClick={stat.onClick}
+              />
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Main Content Grid */}
       <div className='grid grid-cols-1 gap-8 lg:grid-cols-3'>
