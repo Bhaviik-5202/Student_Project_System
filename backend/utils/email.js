@@ -41,6 +41,7 @@ function createSmtpTransporter() {
     host,
     port,
     secure,
+    family: 4,
     auth: { user, pass },
     connectionTimeout: timeoutMs,
     greetingTimeout: timeoutMs,
