@@ -2,10 +2,10 @@
  * Universal Email Utility
  * ------------------------------------------------------------------
  * Handles automated email dispatching supporting:
- *  1. Brevo (Sendinblue) HTTPS REST API (BREVO_API_KEY) - Free 300 emails/day to ANY inbox on cloud hosts
- *  2. Resend HTTPS REST API (RESEND_API_KEY) - Port 443 REST API for verified domains / account owner
- *  3. Nodemailer SMTP (Gmail / Custom SMTP) - Ideal for local development
- *  4. Test & Development logging fallback
+ *  1. Nodemailer SMTP (Gmail / Custom SMTP) - Ideal for local development
+ *  2. Brevo (Sendinblue) HTTPS REST API (BREVO_API_KEY) - Free 300 emails/day to ANY inbox on cloud hosts
+ *  3. Resend HTTPS REST API (RESEND_API_KEY) - Port 443 REST API for verified domains / account owner
+ *  4. Test & Development logging fallback (Guarantees zero-crash local signup)
  */
 
 const nodemailer = require('nodemailer');
@@ -40,9 +40,9 @@ function createSmtpTransporter() {
     port,
     secure,
     auth: { user, pass },
-    connectionTimeout: 4000,
-    greetingTimeout: 4000,
-    socketTimeout: 5000,
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 15000,
     tls: {
       rejectUnauthorized: false,
     },
@@ -64,37 +64,7 @@ async function verifyEmailService() {
   const smtpUser = process.env.EMAIL_USER || process.env.SMTP_USER;
   const smtpPass = process.env.EMAIL_PASS || process.env.SMTP_PASS;
 
-  // 1. Check Brevo HTTPS API if key exists
-  if (brevoApiKey) {
-    logger.info('[Email Service] Brevo HTTPS REST API ready (Port 443)');
-    return true;
-  }
-
-  // 2. Check Resend HTTPS API if key exists
-  if (resendApiKey) {
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 4000);
-      const res = await fetch('https://api.resend.com/api-keys', {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${resendApiKey}`,
-          'Accept': 'application/json',
-        },
-        signal: controller.signal,
-      });
-      clearTimeout(timeoutId);
-
-      if (res.ok || res.status === 401 || res.status === 403) {
-        logger.info('[Email Service] Resend HTTPS API ready (Port 443 REST API)');
-        return true;
-      }
-    } catch (err) {
-      logger.info(`[Email Service] Resend API check notice: ${err.message}`);
-    }
-  }
-
-  // 3. Verify Nodemailer SMTP if credentials provided (local dev)
+  // 1. Verify Nodemailer SMTP if credentials provided (local dev)
   if (smtpUser && smtpPass && !smtpPass.startsWith('re_') && !smtpPass.startsWith('xkeysib-')) {
     const transporter = createSmtpTransporter();
     if (transporter) {
@@ -104,9 +74,25 @@ async function verifyEmailService() {
         return true;
       } catch (err) {
         logger.info(`[Email Service] SMTP verification notice: ${err.message}`);
-        return !!resendApiKey;
       }
     }
+  }
+
+  // 2. Check Brevo HTTPS API if key exists
+  if (brevoApiKey) {
+    logger.info('[Email Service] Brevo HTTPS REST API ready (Port 443)');
+    return true;
+  }
+
+  // 3. Check Resend HTTPS API if key exists
+  if (resendApiKey && resendApiKey.startsWith('re_')) {
+    logger.info('[Email Service] Resend HTTPS API configured');
+    return true;
+  }
+
+  if (process.env.NODE_ENV !== 'production') {
+    logger.info('[Email Service] Development fallback mode active (Logs OTP to console if dispatch fails)');
+    return true;
   }
 
   logger.warn('[Email Service] No active email service configured in .env');
@@ -187,11 +173,20 @@ async function sendViaResend({ to, subject, text, html, fromName, fromEmail, res
     return { messageId: data.id };
   }
 
-  // Handle Resend sandbox restriction (403/422)
-  if (response.status === 403 || response.status === 422) {
-    const errorMsg = data.message || 'Resend sandbox restriction: verified domain required at resend.com/domains';
-    logger.warn(`[Email Service] Resend Sandbox Restriction (Recipient: ${to}): ${errorMsg}`);
-    throw new Error(`Resend API Restriction (${response.status}): ${errorMsg}`);
+  // Handle Resend sandbox restriction (403/422) or invalid API key (401)
+  if (response.status === 403 || response.status === 422 || response.status === 401) {
+    const errorMsg = data.message || `Resend API Error (${response.status})`;
+    logger.warn(`[Email Service] Resend Notice (Recipient: ${to}): ${errorMsg}`);
+
+    if (process.env.NODE_ENV !== 'production') {
+      return {
+        messageId: 'resend-sandbox-simulated-id',
+        sandboxRestricted: true,
+        notice: errorMsg,
+      };
+    }
+
+    throw new Error(`Resend API Error (${response.status}): ${errorMsg}`);
   }
 
   throw new Error(`Resend API Error (${response.status}): ${data.message || JSON.stringify(data)}`);
@@ -220,7 +215,7 @@ async function sendViaSmtp({ to, subject, text, html, formattedFrom }) {
 
 /**
  * Main function to dispatch an email.
- * Supports Brevo HTTPS API, Resend HTTPS API, and Nodemailer SMTP.
+ * Cascades through Nodemailer SMTP -> Brevo HTTPS API -> Resend HTTPS API -> Dev Fallback.
  */
 async function sendEmail({ to, subject, text, html }) {
   if (!to || !subject) {
@@ -251,34 +246,50 @@ async function sendEmail({ to, subject, text, html }) {
   const fromEmail = configuredFrom || defaultFrom;
   const formattedFrom = fromEmail.includes('<') ? fromEmail : `"${fromName}" <${fromEmail}>`;
 
-  // ── 1. Try Brevo HTTPS API if key present ──────────────────────────────────
-  if (brevoApiKey) {
-    try {
-      return await sendViaBrevo({ to, subject, text, html, fromName, fromEmail, brevoApiKey });
-    } catch (brevoErr) {
-      logger.warn(`Brevo API error: ${brevoErr.message}. Trying next provider...`);
-    }
-  }
+  const errors = [];
 
-  // ── 2. Nodemailer SMTP (Gmail / Custom SMTP) if EMAIL_USER and EMAIL_PASS are set ──
+  // ── 1. Nodemailer SMTP (Gmail / Custom SMTP) ──
   if (hasSmtp) {
     try {
       return await sendViaSmtp({ to, subject, text, html, formattedFrom });
     } catch (smtpErr) {
-      if (resendApiKey) {
-        logger.info(`[Email Service] Nodemailer SMTP unavailable (${smtpErr.message}). Switching to Resend REST API...`);
-        return await sendViaResend({ to, subject, text, html, fromName, fromEmail, resendApiKey });
-      }
-      throw new Error(`SMTP Email delivery failed: ${smtpErr.message}`);
+      logger.warn(`[Email Service] Nodemailer SMTP notice: ${smtpErr.message}`);
+      errors.push(`SMTP: ${smtpErr.message}`);
     }
   }
 
-  // ── 3. Resend HTTPS REST API (Port 443) ──────────────────────────────────
-  if (resendApiKey) {
-    return await sendViaResend({ to, subject, text, html, fromName, fromEmail, resendApiKey });
+  // ── 2. Brevo HTTPS API if key present ──
+  if (brevoApiKey) {
+    try {
+      return await sendViaBrevo({ to, subject, text, html, fromName, fromEmail, brevoApiKey });
+    } catch (brevoErr) {
+      logger.warn(`[Email Service] Brevo API notice: ${brevoErr.message}`);
+      errors.push(`Brevo: ${brevoErr.message}`);
+    }
   }
 
-  throw new Error('No email transport configured. Please set BREVO_API_KEY, RESEND_API_KEY, or EMAIL_USER/EMAIL_PASS in .env');
+  // ── 3. Resend HTTPS REST API if key present ──
+  if (resendApiKey && resendApiKey.startsWith('re_')) {
+    try {
+      const resendResult = await sendViaResend({ to, subject, text, html, fromName, fromEmail, resendApiKey });
+      if (resendResult) return resendResult;
+    } catch (resendErr) {
+      logger.warn(`[Email Service] Resend API notice: ${resendErr.message}`);
+      errors.push(`Resend: ${resendErr.message}`);
+    }
+  }
+
+  // ── 4. Development Fallback ──
+  if (process.env.NODE_ENV !== 'production') {
+    logger.warn(`[Email Service - Dev Fallback] All email dispatches failed or unconfigured (${errors.join(' | ') || 'No valid transport'}). Simulated delivery to ${to}.`);
+    return {
+      messageId: 'dev-fallback-simulated-id',
+      devFallback: true,
+      notice: errors.length > 0 ? errors.join(' | ') : 'Development fallback mode',
+    };
+  }
+
+  throw new Error(`Email delivery failed: ${errors.join(' | ') || 'No email transport configured in .env'}`);
 }
 
 sendEmail.verifySMTP = verifyEmailService;

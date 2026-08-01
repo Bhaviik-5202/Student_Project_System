@@ -54,10 +54,18 @@ const connectDB = async () => {
       mongoUri === 'memory';
 
     if (process.env.NODE_ENV === 'test' || isPlaceholder) {
-      logger.info('Using MongoMemoryServer for database instance...');
-      const { MongoMemoryServer } = require('mongodb-memory-server');
-      const mongoServer = await MongoMemoryServer.create();
-      mongoUri = mongoServer.getUri();
+      try {
+        logger.info('Using MongoMemoryServer for database instance...');
+        const { MongoMemoryServer } = require('mongodb-memory-server');
+        const mongoServer = await MongoMemoryServer.create();
+        mongoUri = mongoServer.getUri();
+      } catch (memServerErr) {
+        logger.warn(`MongoMemoryServer spawn failed (${memServerErr.message}). Falling back to MONGO_URI...`);
+        if (!process.env.MONGO_URI) {
+          throw memServerErr;
+        }
+        mongoUri = process.env.MONGO_URI;
+      }
     }
 
     const maskedUri = mongoUri.replace(/:([^@]+)@/, ':****@');

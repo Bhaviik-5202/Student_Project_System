@@ -188,26 +188,23 @@ exports.register = async (req, res) => {
       { upsert: true, returnDocument: 'after' }
     );
 
-    try {
-      await sendEmail({
-        to: email,
-        subject: 'Your Student Project System Verification Code',
-        text: `Hello ${name},\n\nYour 6-digit verification code is: ${otp}\n\nThis code will expire in 5 minutes.`,
-        html: getVerificationEmail(name, otp, false),
+    // Asynchronous background email dispatch for instant sub-100ms API response time
+    sendEmail({
+      to: email,
+      subject: 'Your Student Project System Verification Code',
+      text: `Hello ${name},\n\nYour 6-digit verification code is: ${otp}\n\nThis code will expire in 5 minutes.`,
+      html: getVerificationEmail(name, otp, false),
+    })
+      .then((emailResult) => {
+        if (emailResult?.sandboxRestricted || emailResult?.devFallback) {
+          logger.warn(`🔑 [DEV FALLBACK OTP] Verification Code for ${email}: ${otp}`);
+        } else {
+          logger.success('Verification OTP dispatched asynchronously', { email });
+        }
+      })
+      .catch((emailError) => {
+        logger.error(`Background email delivery failed during registration for ${email}: ${emailError.message}`);
       });
-      logger.success('Verification OTP sent', { email });
-    } catch (emailError) {
-      logger.error(`Email delivery failed during registration for ${email}: ${emailError.message}`);
-      return sendResponse(
-        res,
-        {
-          success: false,
-          message: `Failed to send verification email: ${emailError.message}`,
-          error: emailError.message,
-        },
-        500
-      );
-    }
 
     sendResponse(
       res,
@@ -915,31 +912,28 @@ exports.resendOtp = async (req, res) => {
     pending.lastResent = new Date();
     await pending.save();
 
-    try {
-      await sendEmail({
-        to: email,
-        subject: 'Your New Student Project System Verification Code',
-        text: `Hello ${pending.name},\n\nYour new 6-digit verification code is: ${newOtp}\n\nThis code will expire in 5 minutes.`,
-        html: getVerificationEmail(
-          pending.name,
-          newOtp,
-          true,
-          pending.resendCount
-        ),
+    // Asynchronous background email dispatch for instant sub-100ms API response time
+    sendEmail({
+      to: email,
+      subject: 'Your New Student Project System Verification Code',
+      text: `Hello ${pending.name},\n\nYour new 6-digit verification code is: ${newOtp}\n\nThis code will expire in 5 minutes.`,
+      html: getVerificationEmail(
+        pending.name,
+        newOtp,
+        true,
+        pending.resendCount
+      ),
+    })
+      .then((emailResult) => {
+        if (emailResult?.sandboxRestricted || emailResult?.devFallback) {
+          logger.warn(`🔑 [DEV FALLBACK OTP] Resent Verification Code for ${email}: ${newOtp}`);
+        } else {
+          logger.success('New verification OTP dispatched asynchronously', { email });
+        }
+      })
+      .catch((emailError) => {
+        logger.error(`Background resend OTP email delivery failed for ${email}: ${emailError.message}`);
       });
-      logger.success('New verification OTP sent', { email });
-    } catch (emailError) {
-      logger.error(`Failed to send new OTP email to ${email}: ${emailError.message}`);
-      return sendResponse(
-        res,
-        {
-          success: false,
-          message: `Failed to resend verification email: ${emailError.message}`,
-          error: emailError.message,
-        },
-        500
-      );
-    }
 
     sendResponse(
       res,
