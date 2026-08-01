@@ -35,14 +35,16 @@ function createSmtpTransporter() {
   const port = Number(rawPort) || (isGmail ? 465 : 587);
   const secure = rawSecure !== undefined ? (rawSecure === 'true' || rawSecure === '1') : (port === 465);
 
+  const timeoutMs = process.env.NODE_ENV === 'production' ? 3000 : 6000;
+
   return nodemailer.createTransport({
     host,
     port,
     secure,
     auth: { user, pass },
-    connectionTimeout: 10000,
-    greetingTimeout: 10000,
-    socketTimeout: 15000,
+    connectionTimeout: timeoutMs,
+    greetingTimeout: timeoutMs,
+    socketTimeout: timeoutMs,
     tls: {
       rejectUnauthorized: false,
     },
