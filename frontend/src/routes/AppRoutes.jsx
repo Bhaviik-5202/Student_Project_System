@@ -272,6 +272,17 @@ const AppRoutes = () => {
         }
       />
 
+      {/* Public Pages accessible without login requirement */}
+      <Route path='/privacy' element={<PrivacyPolicy />} />
+      <Route path='/terms' element={<TermsAndConditions />} />
+      <Route path='/privacy-policy' element={<Navigate to='/privacy' replace />} />
+      <Route path='/terms-and-conditions' element={<Navigate to='/terms' replace />} />
+      <Route path='/about' element={<AboutUs />} />
+      <Route path='/contact' element={<ContactUs />} />
+      <Route path='/docs' element={<Documentation />} />
+      <Route path='/status' element={<SystemStatus />} />
+      <Route path='/feedback' element={<Feedback />} />
+
       {/* Protected Routes with MainLayout */}
       <Route
         element={

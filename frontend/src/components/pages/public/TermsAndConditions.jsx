@@ -1,14 +1,24 @@
 import React from 'react';
-import { FileText, Scale, CheckCircle2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { FileText, Scale, CheckCircle2, ArrowLeft } from 'lucide-react';
 import PageHeader from '../../common/PageHeader';
 
 const TermsAndConditions = () => {
   return (
-    <div className='space-y-8 animate-fade-in pt-0 pb-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+    <div className='space-y-8 animate-fade-in pt-6 pb-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
       <PageHeader
         title='Terms of Service & Conditions'
         subtitle='Terms governing institutional system usage, academic integrity, and acceptable user conduct.'
         icon={Scale}
+        actions={
+          <Link
+            to='/'
+            className='inline-flex items-center space-x-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-700 shadow-xs transition-colors hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800'
+          >
+            <ArrowLeft className='h-4 w-4' />
+            <span>Back to Home</span>
+          </Link>
+        }
       />
 
       <div className='rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 space-y-6 text-xs leading-relaxed text-slate-700 dark:text-slate-300 shadow-sm'>

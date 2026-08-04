@@ -148,7 +148,7 @@ const Login = memo(({ forceAdminMode = false }) => {
       variants={cardVariants}
       initial='hidden'
       animate='show'
-      className='auth-card relative mx-auto w-full max-w-xl space-y-8 p-10 sm:p-12 lg:max-w-4xl'
+      className='auth-card relative mx-auto w-full max-w-xl space-y-6 sm:space-y-8 p-4 sm:p-8 md:p-10 lg:max-w-4xl'
     >
       {/* Local CSS Isolation Block supporting Light and Dark modes */}
       <style>{`

@@ -33,8 +33,13 @@ import {
   UserCheck,
   Award,
   Check,
+  Sun,
+  Moon,
+  Menu,
+  X,
 } from 'lucide-react';
 import { CONTACT_INFO } from '../../../utils/constants';
+import { useTheme } from '../../../hooks/useTheme';
 
 // Canvas-based particle and grid pulse background animation for premium technology aesthetic
 const ParticleNetwork = memo(() => {
@@ -70,9 +75,12 @@ const ParticleNetwork = memo(() => {
       }
 
       draw() {
+        const isDark = document.documentElement.classList.contains('dark');
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(99, 102, 241, 0.12)';
+        ctx.fillStyle = isDark
+          ? 'rgba(99, 102, 241, 0.12)'
+          : 'rgba(79, 70, 229, 0.22)';
         ctx.fill();
       }
     }
@@ -88,7 +96,7 @@ const ParticleNetwork = memo(() => {
         this.coord =
           Math.floor(
             Math.random() *
-              (this.isVertical ? width / gridSize : height / gridSize)
+            (this.isVertical ? width / gridSize : height / gridSize)
           ) * gridSize;
         this.pos = 0;
         this.speed = Math.random() * 1.2 + 0.8;
@@ -147,9 +155,12 @@ const ParticleNetwork = memo(() => {
 
     const animate = () => {
       ctx.clearRect(0, 0, width, height);
+      const isDark = document.documentElement.classList.contains('dark');
 
-      // 1. Draw Grid Lines with very low opacity
-      ctx.strokeStyle = 'rgba(99, 102, 241, 0.012)';
+      // 1. Draw Grid Lines with low opacity
+      ctx.strokeStyle = isDark
+        ? 'rgba(99, 102, 241, 0.012)'
+        : 'rgba(79, 70, 229, 0.04)';
       ctx.lineWidth = 0.8;
 
       for (let x = 0; x < width; x += gridSize) {
@@ -183,8 +194,10 @@ const ParticleNetwork = memo(() => {
           const dist = Math.hypot(p1.x - p2.x, p1.y - p2.y);
 
           if (dist < connectionDistance) {
-            const alpha = (1 - dist / connectionDistance) * 0.1;
-            ctx.strokeStyle = `rgba(99, 102, 241, ${alpha})`;
+            const alpha = (1 - dist / connectionDistance) * (isDark ? 0.1 : 0.16);
+            ctx.strokeStyle = isDark
+              ? `rgba(99, 102, 241, ${alpha})`
+              : `rgba(79, 70, 229, ${alpha})`;
             ctx.lineWidth = 0.8;
             ctx.beginPath();
             ctx.moveTo(p1.x, p1.y);
@@ -216,44 +229,13 @@ const ParticleNetwork = memo(() => {
 ParticleNetwork.displayName = 'ParticleNetwork';
 
 const Landing = memo(() => {
+  const { isDarkMode, toggleTheme } = useTheme();
   const [activeSection, setActiveSection] = useState('hero');
   const [openFaq, setOpenFaq] = useState(null);
   const [faqSearch, setFaqSearch] = useState('');
   const [faqCategory, setFaqCategory] = useState('all');
   const [isScrolled, setIsScrolled] = useState(false);
-
-  // Force Dark Theme on mount and restore on unmount
-  useEffect(() => {
-    const root = document.documentElement;
-
-    // Force dark mode on html root
-    root.classList.add('dark');
-    root.classList.remove('light');
-    root.setAttribute('data-theme', 'dark');
-
-    return () => {
-      // Re-apply the user's actual selected theme class on cleanup
-      const savedThemeMode = localStorage.getItem('app_theme_mode') || 'auto';
-
-      let systemPrefersDark = window.matchMedia(
-        '(prefers-color-scheme: dark)'
-      ).matches;
-      let targetTheme = savedThemeMode;
-      if (savedThemeMode === 'auto') {
-        targetTheme = systemPrefersDark ? 'dark' : 'light';
-      }
-
-      if (targetTheme === 'dark') {
-        root.classList.add('dark');
-        root.classList.remove('light');
-        root.setAttribute('data-theme', 'dark');
-      } else {
-        root.classList.add('light');
-        root.classList.remove('dark');
-        root.setAttribute('data-theme', 'light');
-      }
-    };
-  }, []);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Scroll handler for navbar glass effect
   useEffect(() => {
@@ -526,7 +508,7 @@ const Landing = memo(() => {
   };
 
   return (
-    <div className='font-sans-custom relative min-h-screen overflow-hidden bg-slate-950 text-slate-100 transition-colors duration-300'>
+    <div className='font-sans-custom relative min-h-screen overflow-hidden bg-slate-50 text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100'>
       {/* Import Pairing Fonts dynamically via style block */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
@@ -547,13 +529,23 @@ const Landing = memo(() => {
         .blueprint-grid-overlay {
           background-size: 50px 50px;
           background-image: 
+            linear-gradient(to right, rgba(99, 102, 241, 0.04) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(99, 102, 241, 0.04) 1px, transparent 1px);
+          animation: flowGrid 20s infinite linear;
+        }
+
+        .dark .blueprint-grid-overlay {
+          background-image: 
             linear-gradient(to right, rgba(99, 102, 241, 0.025) 1px, transparent 1px),
             linear-gradient(to bottom, rgba(99, 102, 241, 0.025) 1px, transparent 1px);
-          animation: flowGrid 20s infinite linear;
         }
 
         .blueprint-dots {
           background-size: 25px 25px;
+          background-image: radial-gradient(rgba(99, 102, 241, 0.04) 1px, transparent 1px);
+        }
+
+        .dark .blueprint-dots {
           background-image: radial-gradient(rgba(99, 102, 241, 0.025) 1px, transparent 1px);
         }
 
@@ -573,9 +565,15 @@ const Landing = memo(() => {
 
         /* Glowing Orbs */
         .glow-orb-cyan {
+          background: radial-gradient(circle, rgba(6, 182, 212, 0.08) 0%, transparent 70%);
+        }
+        .dark .glow-orb-cyan {
           background: radial-gradient(circle, rgba(6, 182, 212, 0.05) 0%, transparent 70%);
         }
         .glow-orb-indigo {
+          background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%);
+        }
+        .dark .glow-orb-indigo {
           background: radial-gradient(circle, rgba(99, 102, 241, 0.05) 0%, transparent 70%);
         }
       `}</style>
@@ -592,24 +590,23 @@ const Landing = memo(() => {
 
       {/* Sticky Premium Navbar */}
       <nav
-        className={`fixed left-4 right-4 top-4 z-50 mx-auto max-w-7xl rounded-2xl border transition-all duration-300 ${
-          isScrolled
-            ? 'border-slate-800/80 bg-slate-950/85 px-6 py-3.5 shadow-lg shadow-black/20 backdrop-blur-md'
-            : 'py-4.5 border-transparent bg-slate-950/15 px-6 backdrop-blur-[2px]'
-        }`}
+        className={`fixed left-2 right-2 top-3 z-50 mx-auto max-w-7xl rounded-2xl border transition-all duration-300 sm:left-4 sm:right-4 sm:top-4 ${isScrolled
+          ? 'border-slate-200/90 bg-white/90 px-3.5 py-3 shadow-lg shadow-slate-200/50 backdrop-blur-md sm:px-6 sm:py-3.5 dark:border-slate-800/80 dark:bg-slate-950/85 dark:shadow-black/20'
+          : 'border-transparent bg-white/40 px-3.5 py-3 backdrop-blur-[2px] sm:px-6 sm:py-4.5 dark:bg-slate-950/15'
+          }`}
       >
         <div className='flex items-center justify-between'>
           {/* Logo */}
-          <Link to='/' className='group flex items-center space-x-3'>
-            <div className='to-indigo-650 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 shadow-md shadow-blue-500/20 transition-all duration-300 group-hover:scale-105'>
-              <GraduationCap className='h-5.5 w-5.5 text-white' />
+          <Link to='/' className='group flex items-center space-x-2.5 sm:space-x-3'>
+            <div className='flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 shadow-md shadow-blue-500/20 transition-all duration-300 group-hover:scale-105 sm:h-10 sm:w-10'>
+              <GraduationCap className='h-5 w-5 text-white sm:h-5.5 sm:w-5.5' />
             </div>
-            <span className='font-display text-lg font-extrabold tracking-tight text-white sm:text-xl'>
+            <span className='font-display text-base font-extrabold tracking-tight text-slate-900 sm:text-xl dark:text-white'>
               Student Project
             </span>
           </Link>
 
-          {/* Links Section with Active Underlines */}
+          {/* Desktop Links Section with Active Underlines */}
           <div className='hidden items-center space-x-8 md:flex'>
             {[
               { id: 'about', label: 'About' },
@@ -621,17 +618,16 @@ const Landing = memo(() => {
               <a
                 key={sect.id}
                 href={`#section-${sect.id}`}
-                className={`relative text-xs font-bold uppercase tracking-wider transition-colors duration-200 ${
-                  activeSection === sect.id
-                    ? 'text-blue-400'
-                    : 'text-slate-400 hover:text-white'
-                }`}
+                className={`relative text-xs font-bold uppercase tracking-wider transition-colors duration-200 ${activeSection === sect.id
+                  ? 'text-indigo-600 dark:text-blue-400'
+                  : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
+                  }`}
               >
                 {sect.label}
                 {activeSection === sect.id && (
                   <motion.div
                     layoutId='navIndicator'
-                    className='absolute -bottom-1.5 left-0 right-0 h-0.5 rounded-full bg-blue-500'
+                    className='absolute -bottom-1.5 left-0 right-0 h-0.5 rounded-full bg-indigo-600 dark:bg-blue-500'
                     transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                   />
                 )}
@@ -640,62 +636,143 @@ const Landing = memo(() => {
           </div>
 
           {/* Actions */}
-          <div className='flex items-center space-x-5'>
-            <Link
-              to='/login'
-              className='text-slate-350 text-xs font-bold uppercase tracking-wider transition-colors hover:text-blue-400'
+          <div className='flex items-center space-x-2 sm:space-x-4'>
+            {/* Theme Toggle Switch */}
+            <button
+              type='button'
+              onClick={toggleTheme}
+              className='flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white/80 text-slate-700 shadow-xs transition-all hover:bg-slate-100 hover:text-indigo-600 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white'
+              aria-label={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
             >
-              Sign In
-            </Link>
-            <Link
-              to='/register'
-              className='relative flex items-center space-x-1.5 overflow-hidden rounded-xl border border-slate-800 bg-transparent px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-slate-300 shadow-sm transition-all hover:-translate-y-0.5 hover:bg-slate-900/40 hover:text-white active:scale-95'
+              {isDarkMode ? (
+                <Sun className='h-4.5 w-4.5 text-amber-400' />
+              ) : (
+                <Moon className='h-4.5 w-4.5 text-indigo-600' />
+              )}
+            </button>
+
+            {/* Desktop Auth Links */}
+            <div className='hidden items-center space-x-3 sm:flex'>
+              <Link
+                to='/login'
+                className='text-xs font-bold uppercase tracking-wider text-slate-600 transition-colors hover:text-indigo-600 dark:text-slate-300 dark:hover:text-blue-400'
+              >
+                Sign In
+              </Link>
+              <Link
+                to='/register'
+                className='relative flex items-center space-x-1.5 overflow-hidden rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold uppercase tracking-wider text-slate-700 shadow-xs transition-all hover:-translate-y-0.5 hover:bg-slate-50 hover:text-indigo-600 active:scale-95 sm:px-5 sm:py-2.5 dark:border-slate-800 dark:bg-transparent dark:text-slate-300 dark:hover:bg-slate-900/40 dark:hover:text-white'
+              >
+                <span>Register</span>
+                <ChevronRight className='h-4 w-4' />
+              </Link>
+            </div>
+
+            {/* Mobile Menu Toggle Button */}
+            <button
+              type='button'
+              onClick={() => setMobileMenuOpen((prev) => !prev)}
+              className='flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white/80 text-slate-700 shadow-xs transition-all hover:bg-slate-100 hover:text-indigo-600 md:hidden dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white'
+              aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
             >
-              <span>Register</span>
-              <ChevronRight className='h-4 w-4' />
-            </Link>
+              {mobileMenuOpen ? (
+                <X className='h-5 w-5 text-slate-700 dark:text-slate-200' />
+              ) : (
+                <Menu className='h-5 w-5 text-slate-700 dark:text-slate-200' />
+              )}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Navigation Dropdown Drawer */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.2 }}
+              className='mt-3 flex flex-col space-y-2 overflow-hidden rounded-xl border border-slate-200 bg-white/95 p-3 shadow-xl backdrop-blur-md md:hidden dark:border-slate-800 dark:bg-slate-950/95'
+            >
+              {[
+                { id: 'about', label: 'About' },
+                { id: 'features', label: 'Features' },
+                { id: 'operational', label: 'Operational' },
+                { id: 'modules', label: 'Modules' },
+                { id: 'faq', label: 'FAQ' },
+              ].map((sect) => (
+                <a
+                  key={sect.id}
+                  href={`#section-${sect.id}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`rounded-lg px-3 py-2 text-xs font-bold uppercase tracking-wider transition-colors ${activeSection === sect.id
+                    ? 'bg-indigo-50 text-indigo-600 dark:bg-slate-900 dark:text-blue-400'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-white'
+                    }`}
+                >
+                  {sect.label}
+                </a>
+              ))}
+              <div className='flex items-center space-x-2 pt-2 border-t border-slate-100 dark:border-slate-800'>
+                <Link
+                  to='/login'
+                  onClick={() => setMobileMenuOpen(false)}
+                  className='flex-1 rounded-xl border border-slate-200 bg-slate-50 py-2.5 text-center text-xs font-bold uppercase tracking-wider text-slate-700 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300'
+                >
+                  Sign In
+                </Link>
+                <Link
+                  to='/register'
+                  onClick={() => setMobileMenuOpen(false)}
+                  className='flex-1 rounded-xl bg-indigo-600 py-2.5 text-center text-xs font-bold uppercase tracking-wider text-white hover:bg-indigo-700'
+                >
+                  Register
+                </Link>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </nav>
 
       {/* Section 1: Hero Section */}
       <section
         id='section-hero'
-        className='relative mx-auto mt-20 flex min-h-[calc(100vh-80px)] w-full max-w-5xl items-center justify-center bg-transparent px-6 pb-20 pt-12 text-center'
+        className='relative mx-auto mt-16 sm:mt-20 flex min-h-[calc(100vh-80px)] w-full max-w-5xl items-center justify-center bg-transparent px-4 sm:px-6 pb-12 sm:pb-20 pt-10 sm:pt-16 text-center'
       >
-        <div className='z-10 w-full space-y-8'>
-          <div className='bg-blue-955/35 mx-auto inline-flex items-center space-x-2.5 rounded-full border border-blue-900/30 px-4 py-1.5'>
-            <Sparkles className='text-blue-450 h-4 w-4 animate-pulse' />
-            <span className='text-blue-450 text-[10px] font-extrabold uppercase tracking-widest'>
+        <div className='z-10 w-full space-y-6 sm:space-y-8'>
+          <div className='inline-flex items-center space-x-2 rounded-full border border-blue-200 bg-blue-50/80 px-3.5 py-1.5 sm:space-x-2.5 sm:px-4 dark:border-blue-900/40 dark:bg-blue-950/40'>
+            <Sparkles className='h-3.5 w-3.5 sm:h-4 sm:w-4 animate-pulse text-indigo-600 dark:text-blue-400' />
+            <span className='text-[9px] sm:text-[10px] font-extrabold uppercase tracking-widest text-indigo-700 dark:text-blue-400'>
               Academic Student Project Portal
             </span>
           </div>
 
-          {/* High-Contrast Hero Title (Fixed non-existent from-blue-450 class to standard from-blue-400) */}
-          <h1 className='font-display text-4xl font-extrabold leading-[1.12] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl'>
-            Manage Student Projects <br />
-            <span className='bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent'>
+          {/* High-Contrast Hero Title */}
+          <h1 className='font-display text-3xl font-extrabold leading-[1.15] tracking-tight text-slate-900 sm:text-5xl md:text-6xl lg:text-7xl dark:text-white'>
+            Manage Student Projects <br className='hidden sm:inline' />
+            <span className='bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:via-indigo-400 dark:to-purple-400'>
               Without Operational Friction
             </span>
           </h1>
 
-          <p className='mx-auto max-w-2xl text-base font-medium leading-relaxed text-slate-400 sm:text-lg md:text-xl'>
+          <p className='mx-auto max-w-2xl text-base font-medium leading-relaxed text-slate-600 sm:text-lg md:text-xl dark:text-slate-400'>
             A high-end SaaS-style workspace engineered for academic departments.
             Manage team collaborations, allocate guides, submit abstracts, and
             track progress on a unified grid interface.
           </p>
 
-          {/* Premium Clean CTA Buttons (Start Free Account and Sign In Portal styled identically as requested) */}
+          {/* Premium Clean CTA Buttons */}
           <div className='flex flex-col items-center justify-center space-y-4 pt-3 sm:flex-row sm:space-x-4 sm:space-y-0'>
             <Link
               to='/register'
-              className='hover:bg-slate-850 flex w-full items-center justify-center rounded-xl border border-slate-800 bg-slate-900/50 px-8 py-4 text-center text-sm font-extrabold uppercase tracking-wider text-slate-300 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:scale-[1.01] hover:border-slate-700 hover:text-white active:scale-95 sm:w-auto'
+              className='flex w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-8 py-4 text-center text-sm font-extrabold uppercase tracking-wider text-slate-800 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:scale-[1.01] hover:border-slate-300 hover:bg-slate-50 hover:text-indigo-600 active:scale-95 sm:w-auto dark:border-slate-800 dark:bg-slate-900/50 dark:text-slate-300 dark:hover:border-slate-700 dark:hover:bg-slate-800 dark:hover:text-white'
             >
               Start Free Account
             </Link>
             <Link
               to='/login'
-              className='hover:bg-slate-850 flex w-full items-center justify-center rounded-xl border border-slate-800 bg-slate-900/50 px-8 py-4 text-center text-sm font-extrabold uppercase tracking-wider text-slate-300 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:scale-[1.01] hover:border-slate-700 hover:text-white active:scale-95 sm:w-auto'
+              className='flex w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-8 py-4 text-center text-sm font-extrabold uppercase tracking-wider text-slate-800 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:scale-[1.01] hover:border-slate-300 hover:bg-slate-50 hover:text-indigo-600 active:scale-95 sm:w-auto dark:border-slate-800 dark:bg-slate-900/50 dark:text-slate-300 dark:hover:border-slate-700 dark:hover:bg-slate-800 dark:hover:text-white'
             >
               Sign In Portal
             </Link>
@@ -706,138 +783,138 @@ const Landing = memo(() => {
       {/* Section 2: Platform Specifications & Overview */}
       <section
         id='section-about'
-        className='relative flex w-full items-center justify-center border-t border-slate-900 bg-transparent px-6 py-28'
+        className='relative flex w-full items-center justify-center border-t border-slate-200 bg-transparent px-4 sm:px-6 py-16 sm:py-28 dark:border-slate-900'
       >
         <div className='flex w-full max-w-7xl flex-col justify-center bg-transparent'>
-          <div className='mx-auto mb-16 max-w-2xl text-center'>
-            <span className='rounded-full border border-blue-900/30 bg-blue-950/40 px-3.5 py-1 text-[10px] font-extrabold uppercase tracking-widest text-blue-400'>
+          <div className='mx-auto mb-10 sm:mb-16 max-w-2xl text-center'>
+            <span className='rounded-full border border-blue-200 bg-blue-50/80 px-3.5 py-1 text-[10px] font-extrabold uppercase tracking-widest text-indigo-700 dark:border-blue-900/40 dark:bg-blue-950/40 dark:text-blue-400'>
               Overview
             </span>
-            <h2 className='font-display mt-4 text-3xl font-extrabold tracking-tight text-white sm:text-4xl'>
+            <h2 className='font-display mt-4 text-2xl font-extrabold tracking-tight text-slate-900 sm:text-4xl dark:text-white'>
               Platform Specifications & Architecture
             </h2>
-            <p className='mt-3 text-sm font-medium text-slate-400 sm:text-base'>
+            <p className='mt-3 text-xs font-medium text-slate-600 sm:text-base dark:text-slate-400'>
               A robust environment tailored to coordinate documents, timelines,
               and guides with complete academic structure.
             </p>
           </div>
 
-          <div className='grid w-full grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4'>
+          <div className='grid w-full grid-cols-1 gap-5 sm:gap-6 md:grid-cols-2 lg:grid-cols-4'>
             {/* Card 1: Central Repository */}
-            <div className='group flex flex-col justify-between space-y-6 rounded-3xl border border-slate-800 bg-slate-900/30 p-8 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-cyan-500/20 hover:bg-slate-900/70'>
+            <div className='group flex flex-col justify-between space-y-6 rounded-3xl border border-slate-200/90 bg-white p-5 sm:p-8 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-cyan-500/30 hover:shadow-md dark:border-slate-800 dark:bg-slate-900/30 dark:hover:bg-slate-900/70'>
               <div className='space-y-4'>
-                <div className='bg-cyan-955/50 flex h-12 w-12 items-center justify-center rounded-2xl border border-cyan-900/30 text-cyan-400'>
+                <div className='flex h-12 w-12 items-center justify-center rounded-2xl border border-cyan-200 bg-cyan-50 text-cyan-700 dark:border-cyan-800/60 dark:bg-cyan-950/60 dark:text-cyan-300'>
                   <FileText className='h-6 w-6' />
                 </div>
-                <h3 className='font-display text-lg font-bold text-white transition-colors group-hover:text-cyan-400'>
+                <h3 className='font-display text-lg font-bold text-slate-900 transition-colors group-hover:text-cyan-600 dark:text-white dark:group-hover:text-cyan-400'>
                   Document Library
                 </h3>
-                <p className='text-xs font-semibold leading-relaxed text-slate-400'>
+                <p className='text-xs font-semibold leading-relaxed text-slate-600 dark:text-slate-400'>
                   Consolidate project abstracts, presentations, and repository
                   archives in shared file vaults accessible to faculty.
                 </p>
               </div>
-              <ul className='text-slate-450 space-y-1.5 border-t border-slate-800/80 pt-3 text-[11px] font-bold'>
+              <ul className='space-y-1.5 border-t border-slate-100 pt-3 text-[11px] font-bold text-slate-600 dark:border-slate-800/80 dark:text-slate-400'>
                 <li className='flex items-center gap-2'>
-                  <Check className='text-cyan-450 h-3.5 w-3.5' /> PDF, ZIP, PPTX
+                  <Check className='h-3.5 w-3.5 text-cyan-600 dark:text-cyan-400' /> PDF, ZIP, PPTX
                   format
                 </li>
                 <li className='flex items-center gap-2'>
-                  <Check className='text-cyan-450 h-3.5 w-3.5' /> Max file
+                  <Check className='h-3.5 w-3.5 text-cyan-600 dark:text-cyan-400' /> Max file
                   limit: 50MB
                 </li>
                 <li className='flex items-center gap-2'>
-                  <Check className='text-cyan-450 h-3.5 w-3.5' /> Git URL
+                  <Check className='h-3.5 w-3.5 text-cyan-600 dark:text-cyan-400' /> Git URL
                   linking
                 </li>
               </ul>
             </div>
 
             {/* Card 2: Team Collaboration */}
-            <div className='group flex flex-col justify-between space-y-6 rounded-3xl border border-slate-800 bg-slate-900/30 p-8 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-500/20 hover:bg-slate-900/70'>
+            <div className='group flex flex-col justify-between space-y-6 rounded-3xl border border-slate-200/90 bg-white p-5 sm:p-8 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-500/30 hover:shadow-md dark:border-slate-800 dark:bg-slate-900/30 dark:hover:bg-slate-900/70'>
               <div className='space-y-4'>
-                <div className='bg-blue-955/50 flex h-12 w-12 items-center justify-center rounded-2xl border border-blue-900/30 text-blue-400'>
+                <div className='flex h-12 w-12 items-center justify-center rounded-2xl border border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-800/60 dark:bg-blue-950/60 dark:text-blue-300'>
                   <Users className='h-6 w-6' />
                 </div>
-                <h3 className='font-display text-lg font-bold text-white transition-colors group-hover:text-blue-400'>
+                <h3 className='font-display text-lg font-bold text-slate-900 transition-colors group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400'>
                   Team Assembly
                 </h3>
-                <p className='text-xs font-semibold leading-relaxed text-slate-400'>
+                <p className='text-xs font-semibold leading-relaxed text-slate-600 dark:text-slate-400'>
                   Form collaborative student groups, define leaders, and search
                   candidate records directly inside the directory.
                 </p>
               </div>
-              <ul className='text-slate-450 space-y-1.5 border-t border-slate-800/80 pt-3 text-[11px] font-bold'>
+              <ul className='space-y-1.5 border-t border-slate-100 pt-3 text-[11px] font-bold text-slate-600 dark:border-slate-800/80 dark:text-slate-400'>
                 <li className='flex items-center gap-2'>
-                  <Check className='text-blue-455 h-3.5 w-3.5' /> Dynamic
+                  <Check className='h-3.5 w-3.5 text-blue-600 dark:text-blue-400' /> Dynamic
                   project invites
                 </li>
                 <li className='flex items-center gap-2'>
-                  <Check className='text-blue-455 h-3.5 w-3.5' /> Team
+                  <Check className='h-3.5 w-3.5 text-blue-600 dark:text-blue-400' /> Team
                   leadership flags
                 </li>
                 <li className='flex items-center gap-2'>
-                  <Check className='text-blue-455 h-3.5 w-3.5' /> Group limits
+                  <Check className='h-3.5 w-3.5 text-blue-600 dark:text-blue-400' /> Group limits
                   controls
                 </li>
               </ul>
             </div>
 
             {/* Card 3: Academic Workflow */}
-            <div className='group flex flex-col justify-between space-y-6 rounded-3xl border border-slate-800 bg-slate-900/30 p-8 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-purple-500/20 hover:bg-slate-900/70'>
+            <div className='group flex flex-col justify-between space-y-6 rounded-3xl border border-slate-200/90 bg-white p-5 sm:p-8 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-purple-500/30 hover:shadow-md dark:border-slate-800 dark:bg-slate-900/30 dark:hover:bg-slate-900/70'>
               <div className='space-y-4'>
-                <div className='bg-purple-955/50 flex h-12 w-12 items-center justify-center rounded-2xl border border-purple-900/30 text-purple-400'>
+                <div className='flex h-12 w-12 items-center justify-center rounded-2xl border border-purple-200 bg-purple-50 text-purple-700 dark:border-purple-800/60 dark:bg-purple-950/60 dark:text-purple-300'>
                   <Target className='h-6 w-6' />
                 </div>
-                <h3 className='font-display text-lg font-bold text-white transition-colors group-hover:text-purple-400'>
+                <h3 className='font-display text-lg font-bold text-slate-900 transition-colors group-hover:text-purple-600 dark:text-white dark:group-hover:text-purple-400'>
                   Goal Alignment
                 </h3>
-                <p className='text-xs font-semibold leading-relaxed text-slate-400'>
+                <p className='text-xs font-semibold leading-relaxed text-slate-600 dark:text-slate-400'>
                   Align with course standards by submitting proposals that map
                   to institutional targets and evaluation criteria.
                 </p>
               </div>
-              <ul className='text-slate-450 space-y-1.5 border-t border-slate-800/80 pt-3 text-[11px] font-bold'>
+              <ul className='space-y-1.5 border-t border-slate-100 pt-3 text-[11px] font-bold text-slate-600 dark:border-slate-800/80 dark:text-slate-400'>
                 <li className='flex items-center gap-2'>
-                  <Check className='text-purple-455 h-3.5 w-3.5' /> UDP/IDP
+                  <Check className='h-3.5 w-3.5 text-purple-600 dark:text-purple-400' /> UDP/IDP
                   matching templates
                 </li>
                 <li className='flex items-center gap-2'>
-                  <Check className='text-purple-455 h-3.5 w-3.5' /> Status step
+                  <Check className='h-3.5 w-3.5 text-purple-600 dark:text-purple-400' /> Status step
                   alerts
                 </li>
                 <li className='flex items-center gap-2'>
-                  <Check className='text-purple-455 h-3.5 w-3.5' /> Project
+                  <Check className='h-3.5 w-3.5 text-purple-600 dark:text-purple-400' /> Project
                   milestone timelines
                 </li>
               </ul>
             </div>
 
             {/* Card 4: Faculty Evaluation */}
-            <div className='group flex flex-col justify-between space-y-6 rounded-3xl border border-slate-800 bg-slate-900/30 p-8 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-emerald-500/20 hover:bg-slate-900/70'>
+            <div className='group flex flex-col justify-between space-y-6 rounded-3xl border border-slate-200/90 bg-white p-5 sm:p-8 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-emerald-500/30 hover:shadow-md dark:border-slate-800 dark:bg-slate-900/30 dark:hover:bg-slate-900/70'>
               <div className='space-y-4'>
-                <div className='bg-emerald-955/50 flex h-12 w-12 items-center justify-center rounded-2xl border border-emerald-900/30 text-emerald-400'>
+                <div className='flex h-12 w-12 items-center justify-center rounded-2xl border border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-800/60 dark:bg-emerald-950/60 dark:text-emerald-300'>
                   <ShieldCheck className='h-6 w-6' />
                 </div>
-                <h3 className='font-display text-lg font-bold text-white transition-colors group-hover:text-emerald-400'>
+                <h3 className='font-display text-lg font-bold text-slate-900 transition-colors group-hover:text-emerald-600 dark:text-white dark:group-hover:text-emerald-400'>
                   Mentor Reviews
                 </h3>
-                <p className='text-xs font-semibold leading-relaxed text-slate-400'>
+                <p className='text-xs font-semibold leading-relaxed text-slate-600 dark:text-slate-400'>
                   Allocated faculty mentors write feedback notes, grade
                   milestones, and verify meeting audits.
                 </p>
               </div>
-              <ul className='text-slate-450 space-y-1.5 border-t border-slate-800/80 pt-3 text-[11px] font-bold'>
+              <ul className='space-y-1.5 border-t border-slate-100 pt-3 text-[11px] font-bold text-slate-600 dark:border-slate-800/80 dark:text-slate-400'>
                 <li className='flex items-center gap-2'>
-                  <Check className='text-emerald-450 h-3.5 w-3.5' /> Feedback
+                  <Check className='h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400' /> Feedback
                   audit logs
                 </li>
                 <li className='flex items-center gap-2'>
-                  <Check className='text-emerald-450 h-3.5 w-3.5' /> Secure
+                  <Check className='h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400' /> Secure
                   milestone marks
                 </li>
                 <li className='flex items-center gap-2'>
-                  <Check className='text-emerald-450 h-3.5 w-3.5' /> Guide
+                  <Check className='h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400' /> Guide
                   matching criteria
                 </li>
               </ul>
@@ -846,20 +923,20 @@ const Landing = memo(() => {
         </div>
       </section>
 
-      {/* Section 3: Platform Features (Redesigned with soft neutral background tones, accent border hover, and matching icons) */}
+      {/* Section 3: Platform Features */}
       <section
         id='section-features'
-        className='relative flex w-full items-center justify-center border-t border-slate-900 bg-transparent px-6 py-28'
+        className='relative flex w-full items-center justify-center border-t border-slate-200 bg-transparent px-4 sm:px-6 py-16 sm:py-28 dark:border-slate-900'
       >
         <div className='flex w-full max-w-7xl flex-col justify-center bg-transparent'>
-          <div className='mx-auto mb-16 max-w-2xl text-center'>
-            <span className='rounded-full border border-emerald-900/30 bg-emerald-950/40 px-3.5 py-1 text-[10px] font-extrabold uppercase tracking-widest text-emerald-400'>
+          <div className='mx-auto mb-10 sm:mb-16 max-w-2xl text-center'>
+            <span className='rounded-full border border-emerald-200 bg-emerald-50/80 px-3.5 py-1 text-[10px] font-extrabold uppercase tracking-widest text-emerald-700 dark:border-emerald-900/30 dark:bg-emerald-950/40 dark:text-emerald-400'>
               Features
             </span>
-            <h2 className='font-display mt-4 text-3xl font-extrabold tracking-tight text-white sm:text-4xl'>
+            <h2 className='font-display mt-4 text-2xl font-extrabold tracking-tight text-slate-900 sm:text-4xl dark:text-white'>
               Core Platform Capabilities
             </h2>
-            <p className='mt-3 text-sm font-medium text-slate-400 sm:text-base'>
+            <p className='mt-3 text-xs font-medium text-slate-600 sm:text-base dark:text-slate-400'>
               High-fidelity project coordination features custom-built for
               academic project courses.
             </p>
@@ -867,80 +944,77 @@ const Landing = memo(() => {
 
           <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4'>
             {features.map((feat, idx) => {
-              // Softer accent border configuration and matching details (No bright saturated card backgrounds)
               const hoverGlowClass =
                 feat.accent === 'blue'
-                  ? 'hover:border-blue-500/25 dark:hover:shadow-[0_0_20px_rgba(59,130,246,0.03)]'
+                  ? 'hover:border-blue-500/30 hover:shadow-md'
                   : feat.accent === 'emerald'
-                    ? 'hover:border-emerald-500/25 dark:hover:shadow-[0_0_20px_rgba(16,185,129,0.03)]'
+                    ? 'hover:border-emerald-500/30 hover:shadow-md'
                     : feat.accent === 'cyan'
-                      ? 'hover:border-cyan-500/25 dark:hover:shadow-[0_0_20px_rgba(6,182,212,0.03)]'
+                      ? 'hover:border-cyan-500/30 hover:shadow-md'
                       : feat.accent === 'purple'
-                        ? 'hover:border-purple-500/25 dark:hover:shadow-[0_0_20px_rgba(139,92,246,0.03)]'
+                        ? 'hover:border-purple-500/30 hover:shadow-md'
                         : feat.accent === 'teal'
-                          ? 'hover:border-teal-500/25 dark:hover:shadow-[0_0_20px_rgba(20,184,166,0.03)]'
+                          ? 'hover:border-teal-500/30 hover:shadow-md'
                           : feat.accent === 'sky'
-                            ? 'hover:border-sky-500/25 dark:hover:shadow-[0_0_20px_rgba(56,189,248,0.03)]'
+                            ? 'hover:border-sky-500/30 hover:shadow-md'
                             : feat.accent === 'indigo'
-                              ? 'hover:border-indigo-500/25 dark:hover:shadow-[0_0_20px_rgba(99,102,241,0.03)]'
-                              : 'hover:border-slate-500/25 dark:hover:shadow-[0_0_20px_rgba(148,163,184,0.03)]';
+                              ? 'hover:border-indigo-500/30 hover:shadow-md'
+                              : 'hover:border-slate-400 hover:shadow-md';
 
               const iconBgClass =
                 feat.accent === 'blue'
-                  ? 'bg-blue-955/40 text-blue-400 border border-blue-900/30'
+                  ? 'bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-900/30'
                   : feat.accent === 'emerald'
-                    ? 'bg-emerald-955/40 text-emerald-400 border border-emerald-900/30'
+                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-900/30'
                     : feat.accent === 'cyan'
-                      ? 'bg-cyan-955/40 text-cyan-400 border border-cyan-900/30'
+                      ? 'bg-cyan-50 text-cyan-700 border border-cyan-200 dark:bg-cyan-950/40 dark:text-cyan-400 dark:border-cyan-900/30'
                       : feat.accent === 'purple'
-                        ? 'bg-purple-955/40 text-purple-400 border border-purple-900/30'
+                        ? 'bg-purple-50 text-purple-700 border border-purple-200 dark:bg-purple-950/40 dark:text-purple-400 dark:border-purple-900/30'
                         : feat.accent === 'teal'
-                          ? 'bg-teal-955/40 text-teal-400 border border-teal-900/30'
+                          ? 'bg-teal-50 text-teal-700 border border-teal-200 dark:bg-teal-950/40 dark:text-teal-400 dark:border-teal-900/30'
                           : feat.accent === 'sky'
-                            ? 'bg-sky-955/40 text-sky-400 border border-sky-900/30'
+                            ? 'bg-sky-50 text-sky-700 border border-sky-200 dark:bg-sky-950/40 dark:text-sky-400 dark:border-sky-900/30'
                             : feat.accent === 'indigo'
-                              ? 'bg-indigo-955/40 text-indigo-400 border border-indigo-900/30'
-                              : 'bg-slate-900/40 text-slate-400 border border-slate-800';
+                              ? 'bg-indigo-50 text-indigo-700 border border-indigo-200 dark:bg-indigo-950/40 dark:text-indigo-400 dark:border-indigo-900/30'
+                              : 'bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-900/40 dark:text-slate-400 dark:border-slate-800';
 
               const checkColorClass =
                 feat.accent === 'blue'
-                  ? 'text-blue-400'
+                  ? 'text-blue-600 dark:text-blue-400'
                   : feat.accent === 'emerald'
-                    ? 'text-emerald-400'
+                    ? 'text-emerald-600 dark:text-emerald-400'
                     : feat.accent === 'cyan'
-                      ? 'text-cyan-400'
+                      ? 'text-cyan-600 dark:text-cyan-400'
                       : feat.accent === 'purple'
-                        ? 'text-purple-400'
+                        ? 'text-purple-600 dark:text-purple-400'
                         : feat.accent === 'teal'
-                          ? 'text-teal-400'
+                          ? 'text-teal-600 dark:text-teal-400'
                           : feat.accent === 'sky'
-                            ? 'text-sky-400'
+                            ? 'text-sky-600 dark:text-sky-400'
                             : feat.accent === 'indigo'
-                              ? 'text-indigo-400'
-                              : 'text-slate-400';
+                              ? 'text-indigo-600 dark:text-indigo-400'
+                              : 'text-slate-600 dark:text-slate-400';
 
               return (
                 <div
                   key={idx}
-                  className={`group flex flex-col justify-between space-y-6 rounded-3xl border border-slate-800 bg-slate-900/25 p-8 transition-all duration-300 hover:-translate-y-1.5 ${hoverGlowClass}`}
+                  className={`group flex flex-col justify-between space-y-6 rounded-3xl border border-slate-200/90 bg-white p-5 sm:p-8 shadow-sm transition-all duration-300 hover:-translate-y-1.5 dark:border-slate-800 dark:bg-slate-900/25 ${hoverGlowClass}`}
                 >
                   <div className='space-y-4'>
-                    {/* Consistent icon wrap dimensions and rounded borders */}
                     <div
                       className={`flex h-12 w-12 items-center justify-center rounded-2xl transition-colors ${iconBgClass}`}
                     >
                       {feat.icon}
                     </div>
-                    <h3 className='font-display group-hover:text-slate-205 text-lg font-bold text-white transition-colors'>
+                    <h3 className='font-display text-lg font-bold text-slate-900 transition-colors dark:text-white'>
                       {feat.title}
                     </h3>
-                    <p className='text-xs font-semibold leading-relaxed text-slate-400'>
+                    <p className='text-xs font-semibold leading-relaxed text-slate-600 dark:text-slate-400'>
                       {feat.description}
                     </p>
                   </div>
 
-                  {/* Bottom Checklist mapping exactly to modules card structure */}
-                  <div className='text-slate-450 space-y-2 border-t border-slate-800/80 pt-4 text-xs font-bold'>
+                  <div className='space-y-2 border-t border-slate-100 pt-4 text-xs font-bold text-slate-700 dark:border-slate-800/80 dark:text-slate-300'>
                     {feat.points.map((pt, pIdx) => (
                       <div key={pIdx} className='flex items-center gap-2'>
                         <Check className={`h-4 w-4 ${checkColorClass}`} />
@@ -958,34 +1032,32 @@ const Landing = memo(() => {
       {/* Section 4: Operational Workflow & Lifecycle */}
       <section
         id='section-operational'
-        className='relative flex w-full items-center justify-center border-t border-slate-900 bg-transparent px-6 py-28'
+        className='relative flex w-full items-center justify-center border-t border-slate-200 bg-transparent px-4 sm:px-6 py-16 sm:py-28 dark:border-slate-900'
       >
         <div className='w-full max-w-6xl text-left'>
-          <div className='mx-auto mb-20 max-w-2xl text-center'>
-            <span className='rounded-full border border-indigo-900/30 bg-indigo-950/40 px-3.5 py-1 text-[10px] font-extrabold uppercase tracking-widest text-indigo-400'>
+          <div className='mx-auto mb-10 sm:mb-20 max-w-2xl text-center'>
+            <span className='rounded-full border border-indigo-200 bg-indigo-50/80 px-3.5 py-1 text-[10px] font-extrabold uppercase tracking-widest text-indigo-700 dark:border-indigo-900/30 dark:bg-indigo-950/40 dark:text-indigo-400'>
               Operational
             </span>
-            <h2 className='font-display mt-4 text-3xl font-extrabold tracking-tight text-white sm:text-4xl'>
+            <h2 className='font-display mt-4 text-2xl font-extrabold tracking-tight text-slate-900 sm:text-4xl dark:text-white'>
               Operational Workflow & Lifecycle
             </h2>
-            <p className='text-slate-455 mt-3 text-sm font-medium sm:text-base'>
+            <p className='mt-3 text-xs font-medium text-slate-600 sm:text-base dark:text-slate-400'>
               Follow the process steps to deploy and audit projects correctly.
             </p>
           </div>
 
-          {/* Stepper connector list */}
           <div className='relative mx-auto w-full max-w-4xl'>
             <div className='absolute bottom-4 left-8 top-4 hidden w-0.5 bg-gradient-to-b from-blue-500 via-indigo-500 to-emerald-500 opacity-20 md:block' />
 
-            <div className='w-full space-y-10'>
+            <div className='w-full space-y-6 sm:space-y-10'>
               {workflowSteps.map((step, idx) => (
                 <div
                   key={idx}
                   className='group relative flex w-full flex-col items-start md:flex-row md:space-x-8'
                 >
-                  {/* Step visual indicator */}
                   <div className='relative z-10 flex items-center space-x-4 md:space-x-0'>
-                    <div className='flex h-16 w-16 items-center justify-center rounded-2xl border-2 border-slate-800 bg-slate-900 text-blue-400 shadow-xl transition-all duration-300 group-hover:scale-105 group-hover:border-blue-500/50 group-hover:text-blue-300'>
+                    <div className='flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl border-2 border-slate-200 bg-white text-indigo-600 shadow-md transition-all duration-300 group-hover:scale-105 group-hover:border-indigo-500/50 dark:border-slate-800 dark:bg-slate-900 dark:text-blue-400'>
                       {step.icon}
                     </div>
                     <span className='text-xs font-black uppercase text-slate-500 dark:text-slate-400 md:hidden'>
@@ -993,17 +1065,16 @@ const Landing = memo(() => {
                     </span>
                   </div>
 
-                  {/* Step Card details */}
-                  <div className='mt-4 w-full flex-1 rounded-2xl border border-slate-800/80 bg-slate-900/40 p-5 transition-all duration-300 group-hover:border-slate-700/80 group-hover:bg-slate-900/70 md:mt-0'>
+                  <div className='mt-3 w-full flex-1 rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-sm transition-all duration-300 group-hover:border-slate-300 group-hover:shadow-md dark:border-slate-800/80 dark:bg-slate-900/40 dark:group-hover:border-slate-700/80 dark:group-hover:bg-slate-900/70 md:mt-0'>
                     <div className='flex items-center justify-between'>
-                      <h4 className='font-display text-base font-bold text-white sm:text-lg'>
+                      <h4 className='font-display text-base font-bold text-slate-900 sm:text-lg dark:text-white'>
                         {step.title}
                       </h4>
-                      <span className='hidden rounded-md bg-slate-950 px-2 py-0.5 font-mono text-xs font-black text-slate-500 dark:text-slate-400 md:inline-block'>
+                      <span className='hidden rounded-md bg-slate-100 px-2 py-0.5 font-mono text-xs font-black text-slate-600 dark:bg-slate-900 dark:text-slate-300 md:inline-block'>
                         0{step.number} / 09
                       </span>
                     </div>
-                    <p className='mt-2 text-xs font-medium leading-relaxed text-slate-400 sm:text-sm'>
+                    <p className='mt-2 text-xs font-medium leading-relaxed text-slate-600 sm:text-sm dark:text-slate-400'>
                       {step.desc}
                     </p>
                   </div>
@@ -1017,126 +1088,126 @@ const Landing = memo(() => {
       {/* Section 5: Modules breakdown */}
       <section
         id='section-modules'
-        className='relative flex w-full items-center justify-center border-t border-slate-900 bg-transparent px-6 py-28'
+        className='relative flex w-full items-center justify-center border-t border-slate-200 bg-transparent px-4 sm:px-6 py-16 sm:py-28 dark:border-slate-900'
       >
         <div className='w-full max-w-7xl'>
-          <div className='mx-auto mb-16 max-w-2xl text-center'>
-            <span className='rounded-full border border-violet-900/30 bg-violet-950/40 px-3.5 py-1 text-[10px] font-extrabold uppercase tracking-widest text-violet-400'>
+          <div className='mx-auto mb-10 sm:mb-16 max-w-2xl text-center'>
+            <span className='rounded-full border border-violet-200 bg-violet-50/80 px-3.5 py-1 text-[10px] font-extrabold uppercase tracking-widest text-violet-700 dark:border-violet-900/30 dark:bg-violet-950/40 dark:text-violet-400'>
               Modules
             </span>
-            <h2 className='font-display mt-4 text-3xl font-extrabold tracking-tight text-white sm:text-4xl'>
+            <h2 className='font-display mt-4 text-2xl font-extrabold tracking-tight text-slate-900 sm:text-4xl dark:text-white'>
               Distinct Portal Modules
             </h2>
-            <p className='mt-3 text-sm font-medium text-slate-400 sm:text-base'>
+            <p className='mt-3 text-xs font-medium text-slate-600 sm:text-base dark:text-slate-400'>
               Tailored workspaces engineered with distinct features matching
               user roles.
             </p>
           </div>
 
-          <div className='grid grid-cols-1 gap-8 md:grid-cols-3'>
+          <div className='grid grid-cols-1 gap-6 sm:gap-8 md:grid-cols-3'>
             {/* Student portal card - Cyan Accent */}
-            <div className='group flex flex-col justify-between space-y-6 rounded-3xl border border-slate-800 bg-slate-900/30 p-8 transition-all duration-300 hover:-translate-y-1.5 hover:border-cyan-500/30 dark:hover:shadow-[0_0_20px_rgba(6,182,212,0.06)]'>
+            <div className='group flex flex-col justify-between space-y-6 rounded-3xl border border-slate-200/90 bg-white p-5 sm:p-8 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-cyan-500/30 hover:shadow-md dark:border-slate-800 dark:bg-slate-900/30'>
               <div className='space-y-4'>
                 <div className='flex items-center justify-between'>
-                  <div className='bg-cyan-955/50 flex h-12 w-12 items-center justify-center rounded-2xl border border-cyan-900/30 text-cyan-400 transition-colors group-hover:border-cyan-500/40'>
+                  <div className='flex h-12 w-12 items-center justify-center rounded-2xl border border-cyan-200 bg-cyan-50 text-cyan-700 transition-colors dark:border-cyan-800/60 dark:bg-cyan-950/60 dark:text-cyan-300'>
                     <Users className='h-6 w-6' />
                   </div>
-                  <span className='bg-cyan-955/50 rounded-full border border-cyan-900/30 px-2.5 py-1 text-[9px] font-black uppercase tracking-widest text-cyan-400'>
+                  <span className='rounded-full border border-cyan-200 bg-cyan-50 px-2.5 py-1 text-[9px] font-black uppercase tracking-widest text-cyan-700 dark:border-cyan-800/60 dark:bg-cyan-950/60 dark:text-cyan-300'>
                     Student Portal
                   </span>
                 </div>
-                <h4 className='font-display text-xl font-bold text-white'>
+                <h4 className='font-display text-xl font-bold text-slate-900 dark:text-white'>
                   Propose & Collaborate
                 </h4>
-                <p className='text-xs font-semibold leading-relaxed text-slate-400'>
+                <p className='text-xs font-semibold leading-relaxed text-slate-600 dark:text-slate-400'>
                   Propose UDP or IDP project titles, invite other students to
                   your team directory, upload slide decks, and coordinate
                   deliverables.
                 </p>
               </div>
-              <div className='text-slate-450 space-y-2.5 border-t border-slate-800/80 pt-4 text-xs font-bold'>
+              <div className='space-y-2.5 border-t border-slate-100 pt-4 text-xs font-bold text-slate-700 dark:border-slate-800/80 dark:text-slate-300'>
                 <div className='flex items-center gap-2'>
-                  <Check className='h-4.5 w-4.5 text-cyan-400' /> Propose
+                  <Check className='h-4.5 w-4.5 text-cyan-600 dark:text-cyan-400' /> Propose
                   UDP/IDP Projects
                 </div>
                 <div className='flex items-center gap-2'>
-                  <Check className='h-4.5 w-4.5 text-cyan-400' /> Upload Reports
+                  <Check className='h-4.5 w-4.5 text-cyan-600 dark:text-cyan-400' /> Upload Reports
                   & Archives
                 </div>
                 <div className='flex items-center gap-2'>
-                  <Check className='h-4.5 w-4.5 text-cyan-400' /> Monitor Guide
+                  <Check className='h-4.5 w-4.5 text-cyan-600 dark:text-cyan-400' /> Monitor Guide
                   Feedback
                 </div>
               </div>
             </div>
 
             {/* Faculty portal card - Emerald Accent */}
-            <div className='group flex flex-col justify-between space-y-6 rounded-3xl border border-slate-800 bg-slate-900/30 p-8 transition-all duration-300 hover:-translate-y-1.5 hover:border-emerald-500/30 dark:hover:shadow-[0_0_20px_rgba(16,185,129,0.06)]'>
+            <div className='group flex flex-col justify-between space-y-6 rounded-3xl border border-slate-200/90 bg-white p-5 sm:p-8 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-emerald-500/30 hover:shadow-md dark:border-slate-800 dark:bg-slate-900/30'>
               <div className='space-y-4'>
                 <div className='flex items-center justify-between'>
-                  <div className='bg-emerald-955/50 flex h-12 w-12 items-center justify-center rounded-2xl border border-emerald-900/30 text-emerald-400 transition-colors group-hover:border-emerald-500/40'>
+                  <div className='flex h-12 w-12 items-center justify-center rounded-2xl border border-emerald-200 bg-emerald-50 text-emerald-700 transition-colors dark:border-emerald-800/60 dark:bg-emerald-950/60 dark:text-emerald-300'>
                     <ShieldCheck className='h-6 w-6' />
                   </div>
-                  <span className='bg-emerald-955/50 rounded-full border border-emerald-900/30 px-2.5 py-1 text-[9px] font-black uppercase tracking-widest text-emerald-400'>
+                  <span className='rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[9px] font-black uppercase tracking-widest text-emerald-700 dark:border-emerald-800/60 dark:bg-emerald-950/60 dark:text-emerald-300'>
                     Mentor Portal
                   </span>
                 </div>
-                <h4 className='font-display text-xl font-bold text-white'>
+                <h4 className='font-display text-xl font-bold text-slate-900 dark:text-white'>
                   Evaluate & Review
                 </h4>
-                <p className='text-xs font-semibold leading-relaxed text-slate-400'>
+                <p className='text-xs font-semibold leading-relaxed text-slate-600 dark:text-slate-400'>
                   Evaluate deliverables uploaded by assigned groups, write
                   feedback notes, schedule milestone reviews, and authorize
                   status logs.
                 </p>
               </div>
-              <div className='text-slate-450 space-y-2.5 border-t border-slate-800/80 pt-4 text-xs font-bold'>
+              <div className='space-y-2.5 border-t border-slate-100 pt-4 text-xs font-bold text-slate-700 dark:border-slate-800/80 dark:text-slate-300'>
                 <div className='flex items-center gap-2'>
-                  <Check className='h-4.5 w-4.5 text-emerald-400' /> Evaluate
+                  <Check className='h-4.5 w-4.5 text-emerald-600 dark:text-emerald-400' /> Evaluate
                   Live Submissions
                 </div>
                 <div className='flex items-center gap-2'>
-                  <Check className='h-4.5 w-4.5 text-emerald-400' /> Log Meeting
+                  <Check className='h-4.5 w-4.5 text-emerald-600 dark:text-emerald-400' /> Log Meeting
                   Minutes
                 </div>
                 <div className='flex items-center gap-2'>
-                  <Check className='h-4.5 w-4.5 text-emerald-400' /> Approve
+                  <Check className='h-4.5 w-4.5 text-emerald-600 dark:text-emerald-400' /> Approve
                   Project Milestone
                 </div>
               </div>
             </div>
 
             {/* Admin portal card - Violet Accent */}
-            <div className='group flex flex-col justify-between space-y-6 rounded-3xl border border-slate-800 bg-slate-900/30 p-8 transition-all duration-300 hover:-translate-y-1.5 hover:border-violet-500/30 dark:hover:shadow-[0_0_20px_rgba(139,92,246,0.06)]'>
+            <div className='group flex flex-col justify-between space-y-6 rounded-3xl border border-slate-200/90 bg-white p-5 sm:p-8 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-violet-500/30 hover:shadow-md dark:border-slate-800 dark:bg-slate-900/30'>
               <div className='space-y-4'>
                 <div className='flex items-center justify-between'>
-                  <div className='bg-violet-955/50 flex h-12 w-12 items-center justify-center rounded-2xl border border-violet-900/30 text-violet-400 transition-colors group-hover:border-violet-500/40'>
+                  <div className='flex h-12 w-12 items-center justify-center rounded-2xl border border-violet-200 bg-violet-50 text-violet-700 transition-colors dark:border-violet-800/60 dark:bg-violet-950/60 dark:text-violet-300'>
                     <Layers className='h-6 w-6' />
                   </div>
-                  <span className='bg-violet-955/50 rounded-full border border-violet-900/30 px-2.5 py-1 text-[9px] font-black uppercase tracking-widest text-violet-400'>
+                  <span className='rounded-full border border-violet-200 bg-violet-50 px-2.5 py-1 text-[9px] font-black uppercase tracking-widest text-violet-700 dark:border-violet-800/60 dark:bg-violet-950/60 dark:text-violet-300'>
                     Admin Portal
                   </span>
                 </div>
-                <h4 className='font-display text-xl font-bold text-white'>
+                <h4 className='font-display text-xl font-bold text-slate-900 dark:text-white'>
                   Govern & Allocate
                 </h4>
-                <p className='text-xs font-semibold leading-relaxed text-slate-400'>
+                <p className='text-xs font-semibold leading-relaxed text-slate-600 dark:text-slate-400'>
                   Coordinate system timelines, manage student and staff
                   accounts, auto-allocate guides to proposals, and verify global
                   audit logs.
                 </p>
               </div>
-              <div className='text-slate-450 space-y-2.5 border-t border-slate-800/80 pt-4 text-xs font-bold'>
+              <div className='space-y-2.5 border-t border-slate-100 pt-4 text-xs font-bold text-slate-700 dark:border-slate-800/80 dark:text-slate-300'>
                 <div className='flex items-center gap-2'>
-                  <Check className='h-4.5 w-4.5 text-violet-400' /> Allocate
+                  <Check className='h-4.5 w-4.5 text-violet-600 dark:text-violet-400' /> Allocate
                   Faculty Mentors
                 </div>
                 <div className='flex items-center gap-2'>
-                  <Check className='h-4.5 w-4.5 text-violet-400' /> Govern User
+                  <Check className='h-4.5 w-4.5 text-violet-600 dark:text-violet-400' /> Govern User
                   Permissions
                 </div>
                 <div className='flex items-center gap-2'>
-                  <Check className='h-4.5 w-4.5 text-violet-400' /> Monitor
+                  <Check className='h-4.5 w-4.5 text-violet-600 dark:text-violet-400' /> Monitor
                   System Audit Logs
                 </div>
               </div>
@@ -1145,28 +1216,28 @@ const Landing = memo(() => {
         </div>
       </section>
 
-      {/* Section 6: Frequently Asked Questions (Redesigned Category Tabs to segmented-control) */}
+      {/* Section 6: Frequently Asked Questions */}
       <section
         id='section-faq'
-        className='relative flex w-full items-center justify-center border-t border-slate-900 bg-transparent px-6 py-28'
+        className='relative flex w-full items-center justify-center border-t border-slate-200 bg-transparent px-4 sm:px-6 py-16 sm:py-28 dark:border-slate-900'
       >
         <div className='w-full max-w-4xl space-y-10 text-left'>
           {/* Header */}
           <div className='mx-auto max-w-2xl text-center'>
-            <span className='bg-blue-955/40 rounded-full border border-blue-900/30 px-3.5 py-1 text-[10px] font-extrabold uppercase tracking-widest text-blue-400'>
+            <span className='rounded-full border border-blue-200 bg-blue-50/80 px-3.5 py-1 text-[10px] font-extrabold uppercase tracking-widest text-indigo-700 dark:border-blue-900/40 dark:bg-blue-950/40 dark:text-blue-400'>
               FAQ
             </span>
-            <h2 className='font-display mt-4 text-3xl font-extrabold tracking-tight text-white sm:text-4xl'>
+            <h2 className='font-display mt-4 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl dark:text-white'>
               Frequently Asked Questions
             </h2>
-            <p className='mt-3 text-sm font-medium text-slate-400 sm:text-base'>
+            <p className='mt-3 text-sm font-medium text-slate-600 sm:text-base dark:text-slate-400'>
               Got questions? Search our database or browse by category tabs.
             </p>
           </div>
 
           {/* Interactive Search Bar */}
           <div className='relative mx-auto max-w-lg'>
-            <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-500 dark:text-slate-400'>
+            <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 dark:text-slate-500'>
               <Search className='h-5 w-5' />
             </div>
             <input
@@ -1174,12 +1245,12 @@ const Landing = memo(() => {
               value={faqSearch}
               onChange={(e) => setFaqSearch(e.target.value)}
               placeholder='Search questions or topics...'
-              className='theme-input w-full rounded-xl border border-slate-800 bg-slate-900/40 py-3.5 pl-12 pr-4 text-white placeholder-slate-500 shadow-sm outline-none transition-colors focus:border-blue-500'
+              className='theme-input w-full rounded-xl border border-slate-200 bg-white py-3.5 pl-12 pr-4 text-slate-900 placeholder-slate-400 shadow-sm outline-none transition-colors focus:border-indigo-500 dark:border-slate-800 dark:bg-slate-900/40 dark:text-white dark:placeholder-slate-500 dark:focus:border-blue-500'
             />
           </div>
 
-          {/* Segmented-control style category tabs (No bright/saturated blue highlights) */}
-          <div className='mx-auto flex max-w-lg flex-wrap justify-center gap-2.5 rounded-2xl border border-slate-800/80 bg-slate-900/60 p-1.5'>
+          {/* Segmented-control style category tabs */}
+          <div className='mx-auto flex max-w-lg flex-wrap justify-center gap-2.5 rounded-2xl border border-slate-200 bg-slate-100/80 p-1.5 dark:border-slate-800/80 dark:bg-slate-900/60'>
             {[
               { id: 'all', label: 'Show All' },
               { id: 'general', label: 'General Info' },
@@ -1189,18 +1260,17 @@ const Landing = memo(() => {
               <button
                 key={cat.id}
                 onClick={() => setFaqCategory(cat.id)}
-                className={`rounded-xl px-4 py-2 text-xs font-bold transition-all duration-200 ${
-                  faqCategory === cat.id
-                    ? 'border border-indigo-500/35 bg-indigo-500/20 text-indigo-300 shadow-sm'
-                    : 'border border-transparent bg-transparent text-slate-400 hover:text-slate-200'
-                }`}
+                className={`rounded-xl px-4 py-2 text-xs font-bold transition-all duration-200 ${faqCategory === cat.id
+                  ? 'border border-indigo-200 bg-white text-indigo-700 shadow-xs dark:border-indigo-500/35 dark:bg-indigo-500/20 dark:text-indigo-300'
+                  : 'border border-transparent bg-transparent text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
+                  }`}
               >
                 {cat.label}
               </button>
             ))}
           </div>
 
-          {/* Polished FAQ Accordions (using a lighter card background shade for contrast, space-y-5, rounded-3xl) */}
+          {/* Polished FAQ Accordions */}
           <div className='space-y-5'>
             <AnimatePresence>
               {filteredFaqs.length > 0 ? (
@@ -1209,24 +1279,21 @@ const Landing = memo(() => {
                   return (
                     <div
                       key={faq.q}
-                      className={`overflow-hidden rounded-3xl border shadow-md transition-all duration-300 ${
-                        isOpen
-                          ? 'border-indigo-500/25 bg-slate-900/80'
-                          : 'border-slate-800/70 bg-slate-900/50 hover:border-slate-700/60'
-                      }`}
+                      className={`overflow-hidden rounded-3xl border shadow-sm transition-all duration-300 ${isOpen
+                        ? 'border-indigo-200 bg-indigo-50/40 dark:border-indigo-500/25 dark:bg-slate-900/80'
+                        : 'border-slate-200/90 bg-white hover:border-slate-300 dark:border-slate-800/70 dark:bg-slate-900/50 dark:hover:border-slate-700/60'
+                        }`}
                     >
                       <button
                         onClick={() => toggleFaq(faq.q)}
-                        className='py-5.5 hover:bg-slate-855/10 font-display flex w-full items-center justify-between px-6 text-left text-sm font-bold text-slate-200 transition-colors sm:text-base'
+                        className='font-display flex w-full items-center justify-between px-6 py-5.5 text-left text-sm font-bold text-slate-900 transition-colors sm:text-base dark:text-slate-200'
                       >
                         <span className='pr-4'>{faq.q}</span>
-                        {/* Enclosed Chevron Indicator with clean circular wrapper */}
                         <div
-                          className={`flex h-8 w-8 items-center justify-center rounded-full border transition-colors duration-300 ${
-                            isOpen
-                              ? 'border-indigo-550/30 bg-indigo-950/20 text-indigo-400'
-                              : 'border-slate-800 bg-slate-950/50 text-slate-400'
-                          }`}
+                          className={`flex h-8 w-8 items-center justify-center rounded-full border transition-colors duration-300 ${isOpen
+                            ? 'border-indigo-200 bg-indigo-100 text-indigo-700 dark:border-indigo-550/30 dark:bg-indigo-950/20 dark:text-indigo-400'
+                            : 'border-slate-200 bg-slate-100 text-slate-500 dark:border-slate-800 dark:bg-slate-950/50 dark:text-slate-400'
+                            }`}
                         >
                           {isOpen ? (
                             <ChevronUp className='h-4 w-4' />
@@ -1245,7 +1312,7 @@ const Landing = memo(() => {
                             transition={{ duration: 0.25 }}
                             className='overflow-hidden'
                           >
-                            <div className='border-t border-slate-800/50 px-6 pb-6 pt-2.5 text-xs font-medium leading-relaxed text-slate-400 sm:text-sm'>
+                            <div className='border-t border-slate-100 px-6 pb-6 pt-2.5 text-xs font-medium leading-relaxed text-slate-600 sm:text-sm dark:border-slate-800/50 dark:text-slate-400'>
                               {faq.a}
                             </div>
                           </motion.div>
@@ -1265,20 +1332,20 @@ const Landing = memo(() => {
       </section>
 
       {/* Footer */}
-      <footer className='relative z-10 border-t border-slate-900/60 bg-slate-950/40 px-6 py-20 text-white backdrop-blur-sm'>
-        <div className='mx-auto grid max-w-7xl grid-cols-1 gap-12 border-b border-slate-900/60 pb-16 md:grid-cols-12'>
+      <footer className='relative z-10 border-t border-slate-200 bg-slate-100/80 px-6 py-20 text-slate-800 backdrop-blur-sm dark:border-slate-900/60 dark:bg-slate-950/40 dark:text-white'>
+        <div className='mx-auto grid max-w-7xl grid-cols-1 gap-12 border-b border-slate-200 pb-16 md:grid-cols-12 dark:border-slate-900/60'>
           {/* Column 1 - Brand & Stats */}
           <div className='space-y-6 md:col-span-6'>
             <div className='flex items-center space-x-3'>
-              <div className='from-blue-650 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr to-indigo-600 shadow-md shadow-indigo-500/20'>
+              <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 shadow-md shadow-indigo-500/20'>
                 <GraduationCap className='h-5.5 w-5.5 text-white' />
               </div>
-              <span className='font-display bg-gradient-to-r from-white to-slate-300 bg-clip-text text-xl font-extrabold tracking-tight text-transparent'>
+              <span className='font-display text-xl font-extrabold tracking-tight text-slate-900 dark:bg-gradient-to-r dark:from-white dark:to-slate-300 dark:bg-clip-text dark:text-transparent'>
                 Student Project
               </span>
             </div>
 
-            <p className='max-w-sm text-xs font-medium leading-relaxed text-slate-400'>
+            <p className='max-w-sm text-xs font-medium leading-relaxed text-slate-600 dark:text-slate-400'>
               A state-of-the-art academic workspace engineered to manage team
               collaborations, upload project documentations, track guides, and
               evaluate deliverables cleanly.
@@ -1286,27 +1353,27 @@ const Landing = memo(() => {
 
             {/* Platform Stats */}
             <div className='grid max-w-sm grid-cols-3 gap-4 pt-2'>
-              <div className='border-l-2 border-cyan-500/80 pl-3'>
-                <div className='font-mono text-base font-black text-white'>
+              <div className='border-l-2 border-cyan-500 pl-3'>
+                <div className='font-mono text-base font-black text-slate-900 dark:text-white'>
                   10k+
                 </div>
-                <div className='text-[10px] font-extrabold uppercase tracking-wide text-slate-400'>
+                <div className='text-[10px] font-extrabold uppercase tracking-wide text-slate-500 dark:text-slate-400'>
                   Students
                 </div>
               </div>
-              <div className='border-l-2 border-indigo-500/80 pl-3'>
-                <div className='font-mono text-base font-black text-white'>
+              <div className='border-l-2 border-indigo-500 pl-3'>
+                <div className='font-mono text-base font-black text-slate-900 dark:text-white'>
                   500+
                 </div>
-                <div className='text-[10px] font-extrabold uppercase tracking-wide text-slate-400'>
+                <div className='text-[10px] font-extrabold uppercase tracking-wide text-slate-500 dark:text-slate-400'>
                   Faculty
                 </div>
               </div>
-              <div className='border-l-2 border-purple-500/80 pl-3'>
-                <div className='font-mono text-base font-black text-white'>
+              <div className='border-l-2 border-purple-500 pl-3'>
+                <div className='font-mono text-base font-black text-slate-900 dark:text-white'>
                   1,200+
                 </div>
-                <div className='text-[10px] font-extrabold uppercase tracking-wide text-slate-400'>
+                <div className='text-[10px] font-extrabold uppercase tracking-wide text-slate-500 dark:text-slate-400'>
                   Projects
                 </div>
               </div>
@@ -1315,36 +1382,36 @@ const Landing = memo(() => {
 
           {/* Column 2 - Links */}
           <div className='space-y-4 md:col-span-3'>
-            <h4 className='text-xs font-black uppercase tracking-widest text-indigo-400'>
+            <h4 className='text-xs font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400'>
               Platform
             </h4>
-            <div className='text-slate-350 flex flex-col space-y-3 text-xs font-bold'>
+            <div className='flex flex-col space-y-3 text-xs font-bold text-slate-600 dark:text-slate-400'>
               <a
                 href='#section-about'
-                className='flex items-center gap-1.5 transition-all duration-200 hover:translate-x-1 hover:text-indigo-400'
+                className='flex items-center gap-1.5 transition-all duration-200 hover:translate-x-1 hover:text-indigo-600 dark:hover:text-indigo-400'
               >
-                <ChevronRight className='h-3 w-3 text-slate-700 dark:text-slate-200' />
+                <ChevronRight className='h-3 w-3 text-slate-400 dark:text-slate-500' />
                 About System
               </a>
               <a
                 href='#section-features'
-                className='flex items-center gap-1.5 transition-all duration-200 hover:translate-x-1 hover:text-indigo-400'
+                className='flex items-center gap-1.5 transition-all duration-200 hover:translate-x-1 hover:text-indigo-600 dark:hover:text-indigo-400'
               >
-                <ChevronRight className='h-3 w-3 text-slate-700 dark:text-slate-200' />
+                <ChevronRight className='h-3 w-3 text-slate-400 dark:text-slate-500' />
                 System Features
               </a>
               <a
                 href='#section-operational'
-                className='flex items-center gap-1.5 transition-all duration-200 hover:translate-x-1 hover:text-indigo-400'
+                className='flex items-center gap-1.5 transition-all duration-200 hover:translate-x-1 hover:text-indigo-600 dark:hover:text-indigo-400'
               >
-                <ChevronRight className='h-3 w-3 text-slate-700 dark:text-slate-200' />
+                <ChevronRight className='h-3 w-3 text-slate-400 dark:text-slate-500' />
                 Operational Process
               </a>
               <Link
                 to='/login'
-                className='flex items-center gap-1.5 transition-all duration-200 hover:translate-x-1 hover:text-indigo-400'
+                className='flex items-center gap-1.5 transition-all duration-200 hover:translate-x-1 hover:text-indigo-600 dark:hover:text-indigo-400'
               >
-                <ChevronRight className='h-3 w-3 text-slate-700 dark:text-slate-200' />
+                <ChevronRight className='h-3 w-3 text-slate-400 dark:text-slate-500' />
                 Sign In Portal
               </Link>
             </div>
@@ -1352,25 +1419,25 @@ const Landing = memo(() => {
 
           {/* Column 3 - Contact & Support */}
           <div className='space-y-4 md:col-span-3'>
-            <h4 className='text-xs font-black uppercase tracking-widest text-purple-400'>
+            <h4 className='text-xs font-black uppercase tracking-widest text-purple-600 dark:text-purple-400'>
               Support
             </h4>
-            <div className='text-slate-350 space-y-3.5 text-xs font-bold'>
+            <div className='space-y-3.5 text-xs font-bold text-slate-600 dark:text-slate-400'>
               <div className='group/email flex items-center space-x-2.5'>
-                <Mail className='text-slate-450 h-4 w-4 flex-shrink-0 transition-colors group-hover/email:text-indigo-400' />
+                <Mail className='h-4 w-4 flex-shrink-0 text-slate-400 transition-colors group-hover/email:text-indigo-600 dark:text-slate-500 dark:group-hover/email:text-indigo-400' />
                 <a
                   href={`mailto:${CONTACT_INFO.EMAIL}`}
-                  className='decoration-indigo-400/30 transition-colors duration-200 hover:text-indigo-400 hover:underline'
+                  className='transition-colors duration-200 hover:text-indigo-600 hover:underline dark:hover:text-indigo-400'
                 >
                   {CONTACT_INFO.EMAIL}
                 </a>
               </div>
               <div className='flex items-center space-x-2.5'>
-                <Phone className='text-slate-450 h-4 w-4 flex-shrink-0' />
+                <Phone className='h-4 w-4 flex-shrink-0 text-slate-400 dark:text-slate-500' />
                 <span>{CONTACT_INFO.PHONE}</span>
               </div>
               <div className='flex items-center space-x-2.5'>
-                <MapPin className='text-slate-450 h-4 w-4 flex-shrink-0' />
+                <MapPin className='h-4 w-4 flex-shrink-0 text-slate-400 dark:text-slate-500' />
                 <span>{CONTACT_INFO.ADDRESS}</span>
               </div>
             </div>
@@ -1378,7 +1445,7 @@ const Landing = memo(() => {
         </div>
 
         {/* Footer Bottom bar */}
-        <div className='mx-auto mt-12 flex max-w-7xl flex-col items-center justify-between gap-6 border-t border-slate-900 pt-8 text-xs font-semibold text-slate-400 sm:flex-row'>
+        <div className='mx-auto mt-12 flex max-w-7xl flex-col items-center justify-between gap-6 border-t border-slate-200 pt-8 text-xs font-semibold text-slate-500 sm:flex-row dark:border-slate-900 dark:text-slate-400'>
           <div>
             © {new Date().getFullYear()} Student Project System. All rights
             reserved.
@@ -1390,7 +1457,7 @@ const Landing = memo(() => {
               href={CONTACT_INFO.SOCIALS.TWITTER}
               target='_blank'
               rel='noopener noreferrer'
-              className='rounded-xl bg-slate-900 p-2.5 shadow-md transition-all hover:bg-indigo-600 hover:text-white active:scale-95'
+              className='rounded-xl border border-slate-200 bg-white p-2.5 text-slate-600 shadow-xs transition-all hover:bg-indigo-600 hover:text-white active:scale-95 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 dark:hover:bg-indigo-600 dark:hover:text-white'
               aria-label='Twitter Profile'
             >
               <Twitter className='h-4 w-4' />
@@ -1399,7 +1466,7 @@ const Landing = memo(() => {
               href={CONTACT_INFO.SOCIALS.LINKEDIN}
               target='_blank'
               rel='noopener noreferrer'
-              className='rounded-xl bg-slate-900 p-2.5 shadow-md transition-all hover:bg-indigo-600 hover:text-white active:scale-95'
+              className='rounded-xl border border-slate-200 bg-white p-2.5 text-slate-600 shadow-xs transition-all hover:bg-indigo-600 hover:text-white active:scale-95 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 dark:hover:bg-indigo-600 dark:hover:text-white'
               aria-label='LinkedIn Profile'
             >
               <Linkedin className='h-4 w-4' />
@@ -1408,19 +1475,19 @@ const Landing = memo(() => {
               href={CONTACT_INFO.SOCIALS.GITHUB}
               target='_blank'
               rel='noopener noreferrer'
-              className='hover:bg-indigo-650 rounded-xl bg-slate-900 p-2.5 shadow-md transition-all hover:text-white active:scale-95'
+              className='rounded-xl border border-slate-200 bg-white p-2.5 text-slate-600 shadow-xs transition-all hover:bg-indigo-600 hover:text-white active:scale-95 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 dark:hover:bg-indigo-600 dark:hover:text-white'
               aria-label='GitHub Profile'
             >
               <Github className='h-4 w-4' />
             </a>
           </div>
 
-          <div className='text-slate-450 flex space-x-4'>
-            <Link to='#' className='transition-colors hover:text-white'>
+          <div className='flex space-x-4 text-slate-500 dark:text-slate-400'>
+            <Link to='/privacy' className='transition-colors hover:text-indigo-600 dark:hover:text-white'>
               Privacy Policy
             </Link>
             <span>•</span>
-            <Link to='#' className='transition-colors hover:text-white'>
+            <Link to='/terms' className='transition-colors hover:text-indigo-600 dark:hover:text-white'>
               Terms of Service
             </Link>
           </div>

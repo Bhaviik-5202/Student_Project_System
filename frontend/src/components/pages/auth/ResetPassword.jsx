@@ -314,7 +314,7 @@ const ResetPassword = memo(() => {
               onChange={(e) => setPassword(e.target.value)}
               onFocus={() => setShowRequirements(true)}
               autoComplete='new-password'
-              className='w-full rounded-xl border border-slate-200 bg-slate-50 dark:bg-slate-800 py-3.5 pl-11 pr-12 text-sm transition-all focus:border-blue-500 focus:bg-white dark:bg-slate-900 focus:outline-none focus:ring-4 focus:ring-blue-500/10 dark:border-slate-700  dark:text-white dark:focus:border-blue-500/30'
+              className='w-full rounded-xl border border-slate-200 bg-slate-50 text-slate-900 placeholder-slate-400 transition-all hover:border-slate-300 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 py-3.5 pl-11 pr-12 text-sm dark:border-slate-700 dark:bg-slate-900/90 dark:text-slate-100 dark:placeholder-slate-500 dark:hover:border-slate-600 dark:focus:border-indigo-400 dark:focus:bg-slate-900 dark:focus:ring-indigo-400/20'
               placeholder='••••••••'
             />
             <button
@@ -369,13 +369,13 @@ const ResetPassword = memo(() => {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               autoComplete='new-password'
-              className={`w-full rounded-xl border py-3.5 pl-11 pr-12 text-sm transition-all focus:outline-none focus:ring-4 ${
+              className={`w-full rounded-xl border py-3.5 pl-11 pr-12 text-sm transition-all focus:outline-none focus:ring-4 placeholder-slate-400 dark:placeholder-slate-500 ${
                 confirmPassword
                   ? passwordsMatch
-                    ? 'border-emerald-400 bg-emerald-50/50 focus:border-emerald-500 focus:ring-emerald-500/10 dark:border-emerald-700 dark:bg-emerald-900/10'
-                    : 'border-red-400 bg-red-50/50 focus:border-red-500 focus:ring-red-500/10 dark:border-red-700 dark:bg-red-900/10'
-                  : 'border-slate-200 bg-slate-50 dark:bg-slate-800 focus:border-blue-500 focus:ring-blue-500/10 dark:border-slate-700 dark:bg-slate-900'
-              } dark:text-white`}
+                    ? 'border-emerald-400 bg-emerald-50/50 text-slate-900 focus:border-emerald-500 focus:ring-emerald-500/10 dark:border-emerald-700 dark:bg-emerald-950/20 dark:text-slate-100'
+                    : 'border-rose-400 bg-rose-50/50 text-slate-900 focus:border-rose-500 focus:ring-rose-500/10 dark:border-rose-700 dark:bg-rose-950/20 dark:text-slate-100'
+                  : 'border-slate-200 bg-slate-50 text-slate-900 hover:border-slate-300 focus:border-indigo-500 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-900/90 dark:text-slate-100 dark:hover:border-slate-600 dark:focus:border-indigo-400 dark:focus:bg-slate-900 dark:focus:ring-indigo-400/20'
+              }`}
               placeholder='••••••••'
             />
             <button

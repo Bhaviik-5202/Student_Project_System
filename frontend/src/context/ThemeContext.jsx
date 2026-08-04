@@ -80,31 +80,21 @@ export const ThemeProvider = ({ children }) => {
       safeLocalStorage.setItem(THEME_STORAGE_KEY, themeMode);
       const root = document.documentElement;
 
-      const isLanding =
-        typeof window !== 'undefined' && window.location.pathname === '/';
-
-      if (isLanding) {
+      if (appliedTheme === THEMES.DARK) {
         root.classList.add('dark');
         root.classList.remove('light');
-        root.setAttribute('data-theme', 'dark');
       } else {
-        if (appliedTheme === THEMES.DARK) {
-          root.classList.add('dark');
-          root.classList.remove('light');
-        } else {
-          root.classList.add('light');
-          root.classList.remove('dark');
-        }
-        root.setAttribute('data-theme', appliedTheme);
+        root.classList.add('light');
+        root.classList.remove('dark');
       }
-
+      root.setAttribute('data-theme', appliedTheme);
       root.setAttribute('data-theme-mode', themeMode);
 
       const metaThemeColor = document.querySelector('meta[name="theme-color"]');
       if (metaThemeColor) {
         metaThemeColor.setAttribute(
           'content',
-          isLanding || appliedTheme === THEMES.DARK ? '#0f172a' : '#ffffff'
+          appliedTheme === THEMES.DARK ? '#0f172a' : '#ffffff'
         );
       }
     } catch (error) {

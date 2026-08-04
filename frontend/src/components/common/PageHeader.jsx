@@ -109,7 +109,7 @@ export const PageHeader = ({
   return (
     <header
       className={`
-        flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between
+        w-full flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between
         rounded-2xl border border-slate-200/80
         bg-gradient-to-r from-white via-slate-50/50 to-white
         shadow-sm backdrop-blur-sm transition-all duration-200
@@ -121,7 +121,7 @@ export const PageHeader = ({
       data-testid={testId}
       role='banner'
     >
-      <div className='flex items-center gap-4 min-w-0'>
+      <div className='flex items-center gap-4 min-w-0 w-full md:w-auto'>
         {Icon && (
           <div
             className={`
@@ -190,7 +190,7 @@ export const PageHeader = ({
       {actions && (
         <div
           className={`
-          flex flex-wrap items-center gap-3 shrink-0
+          w-full md:w-auto flex flex-wrap items-center gap-2.5 sm:gap-3 shrink-0
           pt-2 md:pt-0
           ${effectiveVariant !== 'compact' ? 'border-t border-slate-100 dark:border-slate-700/50 md:border-t-0' : ''}
         `}
