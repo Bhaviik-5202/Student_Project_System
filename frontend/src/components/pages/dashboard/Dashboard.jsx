@@ -21,6 +21,8 @@ import api from '../../../utils/api';
 import { timeAgo } from '../../../utils/helpers';
 import { subscribeDataChanged } from '../../../utils/eventBus';
 import { DashboardSkeleton } from '../../common/Skeleton';
+import useScreenSize from '../../../hooks/useScreenSize';
+import MobileDashboard from './MobileDashboard';
 
 // Import icons from lucide-react
 import {
@@ -623,12 +625,38 @@ const Dashboard = () => {
     }
   };
 
+  const { isMobile } = useScreenSize();
+
   // Loading state with Skeleton Loader
   if (authLoading || isLoading) {
     return (
       <div className='space-y-6 pt-0 px-0 pb-6'>
         <DashboardSkeleton />
       </div>
+    );
+  }
+
+  // --- Mobile View Render ---
+  if (isMobile) {
+    return (
+      <MobileDashboard
+        user={user}
+        timeOfDay={timeOfDay}
+        greeting={greeting}
+        isLoading={isLoading}
+        handleRefresh={handleRefresh}
+        dashboardData={dashboardData}
+        upcomingDeadlines={upcomingDeadlines}
+        todayMeetings={todayMeetings}
+        projectProgressData={projectProgressData}
+        statsData={statsData}
+        recentActivities={recentActivities}
+        notifications={notifications}
+        unreadCount={unreadCount}
+        markAsRead={markAsRead}
+        markAllAsRead={markAllAsRead}
+        navigate={navigate}
+      />
     );
   }
 

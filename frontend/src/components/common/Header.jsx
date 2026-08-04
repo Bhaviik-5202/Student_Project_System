@@ -10,6 +10,7 @@ import SearchBar from './header/SearchBar';
 import NotificationMenu from './header/NotificationMenu';
 import UserMenu from './header/UserMenu';
 import QuickAddMenu from './header/QuickAddMenu';
+import MobileSidebar from './header/MobileSidebar';
 
 /**
  * Header Component
@@ -36,6 +37,7 @@ const Header = memo(
     const [showQuickAdd, setShowQuickAdd] = useState(false);
     const [showCalendar, setShowCalendar] = useState(false);
     const [showSearch, setShowSearch] = useState(false);
+    const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
     // Refs for outside click handling
     const userMenuRef = useRef(null);
@@ -281,7 +283,8 @@ const Header = memo(
             <div className='flex h-full items-center justify-between gap-4'>
               {/* Logo Section */}
               <div className='flex items-center gap-3'>
-                <Link to='/dashboard' className='group flex items-center gap-3'>
+                {/* Desktop & Tablet Logo Link */}
+                <Link to='/dashboard' className='group hidden md:flex items-center gap-3'>
                   <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 shadow-lg'>
                     <HeaderIcon
                       name='graduation-cap'
@@ -289,7 +292,7 @@ const Header = memo(
                       size='text-lg'
                     />
                   </div>
-                  <div className='hidden sm:block'>
+                  <div>
                     <h1 className='text-base font-bold leading-tight text-gray-900 dark:text-white'>
                       Student Project System
                     </h1>
@@ -298,18 +301,35 @@ const Header = memo(
                     </p>
                   </div>
                 </Link>
+
+                {/* Mobile Logo Button - Opens Full Navigation Sidebar Drawer */}
+                <button
+                  type='button'
+                  onClick={() => setIsMobileSidebarOpen(true)}
+                  className='group flex md:hidden items-center gap-2.5 text-left outline-none transition-transform active:scale-[0.97]'
+                  aria-label='Open Navigation Menu'
+                >
+                  <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 shadow-lg'>
+                    <HeaderIcon
+                      name='graduation-cap'
+                      className='text-white'
+                      size='text-lg'
+                    />
+                  </div>
+                  <div>
+                    <h1 className='text-sm font-bold leading-tight text-gray-900 dark:text-white'>
+                      Student Project System
+                    </h1>
+                    <p className='text-[11px] font-semibold text-blue-600 dark:text-blue-400 flex items-center gap-0.5'>
+                      <span>Menu & Modules</span>
+                      <i className='fas fa-chevron-right text-[9px] ml-0.5 opacity-80' />
+                    </p>
+                  </div>
+                </button>
               </div>
 
               {/* Action Buttons */}
               <div className='flex items-center gap-1 sm:gap-2'>
-                <button
-                  onClick={() => setShowSearch(true)}
-                  className='rounded-xl p-2.5 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:bg-gray-800  dark:hover:bg-gray-800 lg:hidden'
-                  aria-label='Search'
-                >
-                  <HeaderIcon name='magnifying-glass' size='text-lg' />
-                </button>
-
                 {user?.role === 'admin' && (
                   <div className='relative hidden md:block' ref={quickAddRef}>
                     <button
@@ -439,6 +459,12 @@ const Header = memo(
             </div>
           </div>
         </header>
+
+        {/* Mobile Navigation Sidebar Drawer */}
+        <MobileSidebar
+          isOpen={isMobileSidebarOpen}
+          onClose={() => setIsMobileSidebarOpen(false)}
+        />
 
         {showSearch && (
           <div

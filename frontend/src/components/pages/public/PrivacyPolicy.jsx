@@ -1,9 +1,26 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Shield, Lock, FileText, CheckCircle2, ArrowLeft } from 'lucide-react';
 import PageHeader from '../../common/PageHeader';
+import { useAuth } from '../../../hooks/useAuth';
 
 const PrivacyPolicy = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const handleBackToHome = () => {
+    if (!user) {
+      navigate('/');
+      return;
+    }
+    const role = user.role?.toLowerCase();
+    if (role === 'admin') {
+      navigate('/admin-dashboard');
+    } else {
+      navigate('/dashboard');
+    }
+  };
+
   return (
     <div className='space-y-8 animate-fade-in pt-6 pb-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
       <PageHeader
@@ -11,13 +28,13 @@ const PrivacyPolicy = () => {
         subtitle='How we collect, protect, and manage academic user data and records.'
         icon={Shield}
         actions={
-          <Link
-            to='/'
+          <button
+            onClick={handleBackToHome}
             className='inline-flex items-center space-x-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-700 shadow-xs transition-colors hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800'
           >
             <ArrowLeft className='h-4 w-4' />
             <span>Back to Home</span>
-          </Link>
+          </button>
         }
       />
 

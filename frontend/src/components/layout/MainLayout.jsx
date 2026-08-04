@@ -2,6 +2,7 @@ import { useState, useEffect, Suspense, useCallback, memo, lazy } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Header from '../common/Header';
 import TopNav from '../common/TopNav';
+import BottomNav from '../common/BottomNav';
 import Footer from '../common/Footer';
 import LoadingSpinner from '../common/LoadingSpinner';
 import BackToTop from '../common/BackToTop.jsx';
@@ -69,7 +70,7 @@ const MainLayout = () => {
           </Suspense>
           <main
             id='main-content'
-            className='relative z-10 flex-1 px-4 pb-6 md:px-6'
+            className='relative z-10 flex-1 px-4 pb-24 md:pb-6 md:px-6'
           >
             <ErrorBoundary>
               <Suspense
@@ -107,11 +108,15 @@ const MainLayout = () => {
             {isScrolled && <BackToTop />}
           </main>
 
-          <Footer
-            variant={location.pathname === '/dashboard' ? 'full' : 'minimal'}
-          />
+          <div className='pb-24 md:pb-0'>
+            <Footer
+              variant={location.pathname === '/dashboard' ? 'full' : 'minimal'}
+            />
+          </div>
         </div>
       </div>
+
+      <BottomNav />
     </div>
   );
 };

@@ -237,6 +237,22 @@ const Landing = memo(() => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Smooth scroll handler for nav section links
+  const scrollToSection = (e, sectionId) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    setMobileMenuOpen(false);
+    setTimeout(() => {
+      const element = document.getElementById(`section-${sectionId}`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setActiveSection(sectionId);
+      }
+    }, 60);
+  };
+
   // Scroll handler for navbar glass effect
   useEffect(() => {
     const handleScroll = () => {
@@ -618,6 +634,7 @@ const Landing = memo(() => {
               <a
                 key={sect.id}
                 href={`#section-${sect.id}`}
+                onClick={(e) => scrollToSection(e, sect.id)}
                 className={`relative text-xs font-bold uppercase tracking-wider transition-colors duration-200 ${activeSection === sect.id
                   ? 'text-indigo-600 dark:text-blue-400'
                   : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
@@ -705,7 +722,7 @@ const Landing = memo(() => {
                 <a
                   key={sect.id}
                   href={`#section-${sect.id}`}
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={(e) => scrollToSection(e, sect.id)}
                   className={`rounded-lg px-3 py-2 text-xs font-bold uppercase tracking-wider transition-colors ${activeSection === sect.id
                     ? 'bg-indigo-50 text-indigo-600 dark:bg-slate-900 dark:text-blue-400'
                     : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-white'
@@ -738,7 +755,7 @@ const Landing = memo(() => {
       {/* Section 1: Hero Section */}
       <section
         id='section-hero'
-        className='relative mx-auto mt-16 sm:mt-20 flex min-h-[calc(100vh-80px)] w-full max-w-5xl items-center justify-center bg-transparent px-4 sm:px-6 pb-12 sm:pb-20 pt-10 sm:pt-16 text-center'
+        className='scroll-mt-24 relative mx-auto mt-16 sm:mt-20 flex min-h-[calc(100vh-80px)] w-full max-w-5xl items-center justify-center bg-transparent px-4 sm:px-6 pb-12 sm:pb-20 pt-10 sm:pt-16 text-center'
       >
         <div className='z-10 w-full space-y-6 sm:space-y-8'>
           <div className='inline-flex items-center space-x-2 rounded-full border border-blue-200 bg-blue-50/80 px-3.5 py-1.5 sm:space-x-2.5 sm:px-4 dark:border-blue-900/40 dark:bg-blue-950/40'>
@@ -783,7 +800,7 @@ const Landing = memo(() => {
       {/* Section 2: Platform Specifications & Overview */}
       <section
         id='section-about'
-        className='relative flex w-full items-center justify-center border-t border-slate-200 bg-transparent px-4 sm:px-6 py-16 sm:py-28 dark:border-slate-900'
+        className='scroll-mt-24 relative flex w-full items-center justify-center border-t border-slate-200 bg-transparent px-4 sm:px-6 py-16 sm:py-28 dark:border-slate-900'
       >
         <div className='flex w-full max-w-7xl flex-col justify-center bg-transparent'>
           <div className='mx-auto mb-10 sm:mb-16 max-w-2xl text-center'>
@@ -926,7 +943,7 @@ const Landing = memo(() => {
       {/* Section 3: Platform Features */}
       <section
         id='section-features'
-        className='relative flex w-full items-center justify-center border-t border-slate-200 bg-transparent px-4 sm:px-6 py-16 sm:py-28 dark:border-slate-900'
+        className='scroll-mt-24 relative flex w-full items-center justify-center border-t border-slate-200 bg-transparent px-4 sm:px-6 py-16 sm:py-28 dark:border-slate-900'
       >
         <div className='flex w-full max-w-7xl flex-col justify-center bg-transparent'>
           <div className='mx-auto mb-10 sm:mb-16 max-w-2xl text-center'>
@@ -1032,7 +1049,7 @@ const Landing = memo(() => {
       {/* Section 4: Operational Workflow & Lifecycle */}
       <section
         id='section-operational'
-        className='relative flex w-full items-center justify-center border-t border-slate-200 bg-transparent px-4 sm:px-6 py-16 sm:py-28 dark:border-slate-900'
+        className='scroll-mt-24 relative flex w-full items-center justify-center border-t border-slate-200 bg-transparent px-4 sm:px-6 py-16 sm:py-28 dark:border-slate-900'
       >
         <div className='w-full max-w-6xl text-left'>
           <div className='mx-auto mb-10 sm:mb-20 max-w-2xl text-center'>
@@ -1088,7 +1105,7 @@ const Landing = memo(() => {
       {/* Section 5: Modules breakdown */}
       <section
         id='section-modules'
-        className='relative flex w-full items-center justify-center border-t border-slate-200 bg-transparent px-4 sm:px-6 py-16 sm:py-28 dark:border-slate-900'
+        className='scroll-mt-24 relative flex w-full items-center justify-center border-t border-slate-200 bg-transparent px-4 sm:px-6 py-16 sm:py-28 dark:border-slate-900'
       >
         <div className='w-full max-w-7xl'>
           <div className='mx-auto mb-10 sm:mb-16 max-w-2xl text-center'>
@@ -1219,7 +1236,7 @@ const Landing = memo(() => {
       {/* Section 6: Frequently Asked Questions */}
       <section
         id='section-faq'
-        className='relative flex w-full items-center justify-center border-t border-slate-200 bg-transparent px-4 sm:px-6 py-16 sm:py-28 dark:border-slate-900'
+        className='scroll-mt-24 relative flex w-full items-center justify-center border-t border-slate-200 bg-transparent px-4 sm:px-6 py-16 sm:py-28 dark:border-slate-900'
       >
         <div className='w-full max-w-4xl space-y-10 text-left'>
           {/* Header */}
@@ -1388,6 +1405,7 @@ const Landing = memo(() => {
             <div className='flex flex-col space-y-3 text-xs font-bold text-slate-600 dark:text-slate-400'>
               <a
                 href='#section-about'
+                onClick={(e) => scrollToSection(e, 'about')}
                 className='flex items-center gap-1.5 transition-all duration-200 hover:translate-x-1 hover:text-indigo-600 dark:hover:text-indigo-400'
               >
                 <ChevronRight className='h-3 w-3 text-slate-400 dark:text-slate-500' />
@@ -1395,6 +1413,7 @@ const Landing = memo(() => {
               </a>
               <a
                 href='#section-features'
+                onClick={(e) => scrollToSection(e, 'features')}
                 className='flex items-center gap-1.5 transition-all duration-200 hover:translate-x-1 hover:text-indigo-600 dark:hover:text-indigo-400'
               >
                 <ChevronRight className='h-3 w-3 text-slate-400 dark:text-slate-500' />
@@ -1402,6 +1421,7 @@ const Landing = memo(() => {
               </a>
               <a
                 href='#section-operational'
+                onClick={(e) => scrollToSection(e, 'operational')}
                 className='flex items-center gap-1.5 transition-all duration-200 hover:translate-x-1 hover:text-indigo-600 dark:hover:text-indigo-400'
               >
                 <ChevronRight className='h-3 w-3 text-slate-400 dark:text-slate-500' />

@@ -252,7 +252,7 @@ const TopNav = memo(
       <nav
         ref={navRef}
         aria-label='Secondary Navigation'
-        className={`sticky top-0 z-[90] border-b transition-all duration-300 ${
+        className={`sticky top-0 z-[90] border-b transition-all duration-300 hidden md:block ${
           isScrolled
             ? 'bg-white/90 backdrop-blur-md shadow-md border-slate-200/90 dark:bg-slate-900/90 dark:border-slate-800/90'
             : 'bg-white border-slate-200 dark:bg-slate-900 dark:border-slate-800'
@@ -260,7 +260,7 @@ const TopNav = memo(
       >
         <div className='w-full px-4 lg:px-6'>
           {/* Desktop Top Navigation Bar */}
-          <div className='hidden h-12 w-full items-center justify-between lg:flex'>
+          <div className='flex h-12 w-full items-center justify-between'>
             <div className='flex items-center gap-1.5 justify-start'>
               {filteredItems.map(renderDesktopNavItem)}
             </div>

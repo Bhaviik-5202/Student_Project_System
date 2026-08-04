@@ -1,6 +1,7 @@
 import { useMemo, memo } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import MobileFooter from './MobileFooter';
 import {
   Github,
   Linkedin,
@@ -121,51 +122,56 @@ const Footer = memo(({ variant = 'minimal' }) => {
   // ─── Minimal Footer ──────────────────────────────────────
   if (variant === 'minimal') {
     return (
-      <footer
-        className='border-t border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900 py-4 transition-colors'
-        role='contentinfo'
-        aria-label='Site footer'
-      >
-        <div className='mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 sm:flex-row sm:px-6 lg:px-8'>
-          <div className='flex items-center gap-3'>
-            <div className='flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-indigo-600 shadow-md shadow-indigo-500/20'>
-              <Shield size={16} className='text-white' />
+      <>
+        <MobileFooter />
+        <footer
+          className='hidden md:block border-t border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900 py-4 transition-colors'
+          role='contentinfo'
+          aria-label='Site footer'
+        >
+          <div className='mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 sm:flex-row sm:px-6 lg:px-8'>
+            <div className='flex items-center gap-3'>
+              <div className='flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-indigo-600 shadow-md shadow-indigo-500/20'>
+                <Shield size={16} className='text-white' />
+              </div>
+              <p className='text-sm font-medium text-slate-600 dark:text-slate-400'>
+                © {currentYear}{' '}
+                <span className='font-semibold text-slate-800 dark:text-white'>
+                  Student Project System
+                </span>
+              </p>
             </div>
-            <p className='text-sm font-medium text-slate-600 dark:text-slate-400'>
-              © {currentYear}{' '}
-              <span className='font-semibold text-slate-800 dark:text-white'>
-                Student Project System
-              </span>
-            </p>
-          </div>
 
-          <div className='flex items-center gap-6'>
-            <span className='flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400'>
-              <Sparkles
-                size={12}
-                className='text-indigo-500 dark:text-indigo-400'
-                aria-hidden='true'
-              />
-              <span>Making education better</span>
-            </span>
-            <div className='flex items-center gap-2'>
-              {SOCIAL_LINKS.slice(0, 3).map((link) => (
-                <SocialLink key={link.label} {...link} />
-              ))}
+            <div className='flex items-center gap-6'>
+              <span className='flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400'>
+                <Sparkles
+                  size={12}
+                  className='text-indigo-500 dark:text-indigo-400'
+                  aria-hidden='true'
+                />
+                <span>Making education better</span>
+              </span>
+              <div className='flex items-center gap-2'>
+                {SOCIAL_LINKS.slice(0, 3).map((link) => (
+                  <SocialLink key={link.label} {...link} />
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      </footer>
+        </footer>
+      </>
     );
   }
 
   // ─── Full Footer ────────────────────────────────────────
   return (
-    <footer
-      className='relative bg-white dark:bg-gradient-to-b dark:from-slate-900 dark:via-slate-950 dark:to-black text-slate-700 dark:text-slate-300 pt-16 pb-6 border-t border-slate-200 dark:border-transparent transition-colors'
-      role='contentinfo'
-      aria-label='Site footer'
-    >
+    <>
+      <MobileFooter />
+      <footer
+        className='hidden md:block relative bg-white dark:bg-gradient-to-b dark:from-slate-900 dark:via-slate-950 dark:to-black text-slate-700 dark:text-slate-300 pt-16 pb-6 border-t border-slate-200 dark:border-transparent transition-colors'
+        role='contentinfo'
+        aria-label='Site footer'
+      >
       {/* Decorative Elements - Only visible in dark mode */}
       <div className='absolute inset-0 overflow-hidden pointer-events-none dark:block hidden'>
         <div className='absolute -top-40 -right-40 h-80 w-80 rounded-full bg-indigo-500/5 blur-3xl' />
@@ -343,6 +349,7 @@ const Footer = memo(({ variant = 'minimal' }) => {
         </div>
       </div>
     </footer>
+  </>
   );
 });
 
