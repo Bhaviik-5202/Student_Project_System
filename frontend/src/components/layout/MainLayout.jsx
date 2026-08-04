@@ -108,14 +108,11 @@ const MainLayout = () => {
             {isScrolled && <BackToTop />}
           </main>
 
-          <div className='pb-24 md:pb-0'>
-            <Footer
-              variant={location.pathname === '/dashboard' ? 'full' : 'minimal'}
-            />
-          </div>
+          <Footer
+            variant={location.pathname === '/dashboard' ? 'full' : 'minimal'}
+          />
         </div>
       </div>
-
       <BottomNav />
     </div>
   );

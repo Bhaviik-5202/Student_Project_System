@@ -6,6 +6,7 @@ import ProgressVisualization from './ProgressVisualization';
 import SystemMetrics from './SystemMetrics';
 import { exportDashboardToCSV } from '../../../utils/exportUtils';
 import { toast } from 'react-hot-toast';
+import { useNotificationsContext } from '../../../context/NotificationContext';
 
 // Import Lucide React icons
 import {
@@ -29,7 +30,160 @@ import {
   FileText as DocumentTextIcon,
   Sparkles as SparklesIcon,
   Check as CheckIcon,
+  UserPlus,
+  FolderPlus,
+  ClipboardList,
+  Video,
+  PackageOpen,
+  Send,
+  MessageSquare,
+  TimerOff,
+  Star,
 } from 'lucide-react';
+
+/**
+ * MobileAlerts - Role-specific, real-data alert section
+ * Uses notifications from NotificationContext for live backend data.
+ */
+const ROLE_ALERT_META = {
+  admin: [
+    { type: 'user_registered', label: 'New User Registered', icon: UserPlus, color: 'text-blue-600 bg-blue-50 dark:bg-blue-950/60 dark:text-blue-400 border-blue-100 dark:border-blue-900/40' },
+    { type: 'project_created', label: 'New Project Created', icon: FolderPlus, color: 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/60 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/40' },
+    { type: 'approval', label: 'Pending Approval', icon: ClipboardList, color: 'text-amber-600 bg-amber-50 dark:bg-amber-950/60 dark:text-amber-400 border-amber-100 dark:border-amber-900/40' },
+    { type: 'meeting', label: 'Meeting Alert', icon: Video, color: 'text-rose-600 bg-rose-50 dark:bg-rose-950/60 dark:text-rose-400 border-rose-100 dark:border-rose-900/40' },
+    { type: 'resource', label: 'Resource Update', icon: PackageOpen, color: 'text-purple-600 bg-purple-50 dark:bg-purple-950/60 dark:text-purple-400 border-purple-100 dark:border-purple-900/40' },
+    { type: 'system', label: 'System Notification', icon: ShieldCheckIcon, color: 'text-slate-600 bg-slate-50 dark:bg-slate-800/60 dark:text-slate-400 border-slate-200 dark:border-slate-700' },
+  ],
+  faculty: [
+    { type: 'project', label: 'Project Assignment', icon: FolderKanbanIcon, color: 'text-blue-600 bg-blue-50 dark:bg-blue-950/60 dark:text-blue-400 border-blue-100 dark:border-blue-900/40' },
+    { type: 'submission', label: 'Student Submission', icon: Send, color: 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/60 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/40' },
+    { type: 'meeting', label: 'Upcoming Meeting', icon: Video, color: 'text-rose-600 bg-rose-50 dark:bg-rose-950/60 dark:text-rose-400 border-rose-100 dark:border-rose-900/40' },
+    { type: 'review', label: 'Pending Review', icon: ClipboardList, color: 'text-amber-600 bg-amber-50 dark:bg-amber-950/60 dark:text-amber-400 border-amber-100 dark:border-amber-900/40' },
+    { type: 'deadline', label: 'Deadline Reminder', icon: TimerOff, color: 'text-purple-600 bg-purple-50 dark:bg-purple-950/60 dark:text-purple-400 border-purple-100 dark:border-purple-900/40' },
+  ],
+  student: [
+    { type: 'project', label: 'Project Update', icon: FolderKanbanIcon, color: 'text-blue-600 bg-blue-50 dark:bg-blue-950/60 dark:text-blue-400 border-blue-100 dark:border-blue-900/40' },
+    { type: 'meeting', label: 'Meeting Invitation', icon: Video, color: 'text-rose-600 bg-rose-50 dark:bg-rose-950/60 dark:text-rose-400 border-rose-100 dark:border-rose-900/40' },
+    { type: 'deadline', label: 'Submission Deadline', icon: TimerOff, color: 'text-amber-600 bg-amber-50 dark:bg-amber-950/60 dark:text-amber-400 border-amber-100 dark:border-amber-900/40' },
+    { type: 'feedback', label: 'Feedback Received', icon: MessageSquare, color: 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/60 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/40' },
+    { type: 'resource', label: 'Resource Update', icon: PackageOpen, color: 'text-purple-600 bg-purple-50 dark:bg-purple-950/60 dark:text-purple-400 border-purple-100 dark:border-purple-900/40' },
+  ],
+};
+
+const MobileAlerts = ({ userRole, navigate }) => {
+  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotificationsContext();
+
+  const roleAlertTypes = (ROLE_ALERT_META[userRole] || []).map((m) => m.type);
+
+  // Filter notifications relevant to this role's alert types (or show all if types don't match)
+  const roleNotifications = notifications
+    .filter((n) => {
+      if (!n) return false;
+      const nType = (n.type || '').toLowerCase();
+      // Match by type keyword or show all unread for this role
+      return roleAlertTypes.some((t) => nType.includes(t)) || !n.read;
+    })
+    .slice(0, 6);
+
+  const alertMeta = ROLE_ALERT_META[userRole] || [];
+
+  const getAlertMeta = (notification) => {
+    const nType = (notification.type || '').toLowerCase();
+    const match = alertMeta.find((m) => nType.includes(m.type));
+    return match || { icon: BellIcon, label: notification.title || 'Notification', color: 'text-blue-600 bg-blue-50 dark:bg-blue-950/60 dark:text-blue-400 border-blue-100 dark:border-blue-900/40' };
+  };
+
+  const handleMarkAllRead = async () => {
+    try {
+      await markAllAsRead();
+      toast.success('All alerts marked as read');
+    } catch {
+      toast.error('Failed to mark alerts as read');
+    }
+  };
+
+  return (
+    <div className='rounded-2xl border border-slate-200/80 bg-white p-4 shadow-xs dark:border-slate-800 dark:bg-slate-900'>
+      {/* Header */}
+      <div className='flex items-center justify-between mb-3'>
+        <div className='flex items-center gap-2'>
+          <div className='relative flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 text-white'>
+            <BellIcon className='h-3.5 w-3.5' />
+            {unreadCount > 0 && (
+              <span className='absolute -top-1 -right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-red-500 text-[8px] font-bold text-white leading-none'>
+                {unreadCount > 9 ? '9+' : unreadCount}
+              </span>
+            )}
+          </div>
+          <h2 className='text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400'>
+            Alerts
+          </h2>
+        </div>
+        {unreadCount > 0 && (
+          <button
+            onClick={handleMarkAllRead}
+            className='flex items-center gap-1 text-[11px] font-semibold text-blue-600 dark:text-blue-400 active:opacity-70 transition-opacity'
+          >
+            <CheckIcon className='h-3 w-3' />
+            Mark All Read
+          </button>
+        )}
+      </div>
+
+      {/* Alert Items */}
+      {roleNotifications.length === 0 ? (
+        <div className='flex flex-col items-center justify-center py-6 gap-2'>
+          <CheckCircleIcon className='h-8 w-8 text-emerald-400' />
+          <p className='text-xs font-semibold text-slate-500 dark:text-slate-400'>All caught up!</p>
+          <p className='text-[11px] text-slate-400 dark:text-slate-500'>No new alerts for you.</p>
+        </div>
+      ) : (
+        <div className='space-y-2'>
+          {roleNotifications.map((notif) => {
+            const meta = getAlertMeta(notif);
+            const Icon = meta.icon;
+            const isUnread = !notif.read;
+            return (
+              <button
+                key={notif._id || notif.id}
+                onClick={() => markAsRead(notif._id || notif.id)}
+                className={`w-full flex items-start gap-3 rounded-xl border px-3 py-2.5 text-left transition-all duration-150 active:scale-[0.98] ${
+                  isUnread
+                    ? 'bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700'
+                    : 'bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 opacity-60'
+                }`}
+              >
+                <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border ${meta.color}`}>
+                  <Icon className='h-4 w-4' />
+                </div>
+                <div className='min-w-0 flex-1'>
+                  <p className={`text-xs font-semibold truncate ${ isUnread ? 'text-slate-900 dark:text-white' : 'text-slate-600 dark:text-slate-400' }`}>
+                    {notif.title || meta.label}
+                  </p>
+                  {notif.message && (
+                    <p className='text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5'>
+                      {notif.message}
+                    </p>
+                  )}
+                </div>
+                {isUnread && (
+                  <span className='h-2 w-2 rounded-full bg-blue-500 shrink-0 mt-1.5' />
+                )}
+              </button>
+            );
+          })}
+          <button
+            onClick={() => navigate('/notifications')}
+            className='w-full flex items-center justify-center gap-1 rounded-xl border border-slate-200 dark:border-slate-700 py-2 text-xs font-semibold text-blue-600 dark:text-blue-400 active:bg-slate-50 dark:active:bg-slate-800 transition-colors'
+          >
+            View All Alerts
+            <ChevronRightIcon className='h-3.5 w-3.5' />
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
 
 // Animated Counter Hook for mobile stat cards
 const useAnimatedCounter = (endValue, duration = 800) => {
@@ -176,7 +330,7 @@ const MobileDashboard = ({
   const quickAccessItems = getQuickAccessItems();
 
   return (
-    <div className='w-full space-y-5 px-3 pt-2 pb-36 max-w-full overflow-x-hidden animate-fade-in'>
+    <div className='w-full space-y-4 px-3 pt-2 pb-4 max-w-full overflow-x-hidden animate-fade-in'>
       {/* 1. Compact Welcome ("Good Morning") Card */}
       <div className='rounded-2xl border border-gray-200/90 bg-white p-4 shadow-xs dark:border-slate-700/90 dark:bg-slate-900'>
         {/* Top Info Row */}
@@ -334,60 +488,8 @@ const MobileDashboard = ({
         </div>
       </div>
 
-      {/* 3. Urgent Action Alerts (If High Priority Deadline Exists) */}
-      {(upcomingDeadlines?.filter((d) => d.priority === 'high')?.length || 0) > 0 && (
-        <div className='rounded-2xl border border-red-200 bg-gradient-to-r from-red-50 to-white p-3.5 shadow-2xs dark:border-red-900/40 dark:from-red-950/30 dark:to-slate-900'>
-          <div className='flex items-start gap-2.5'>
-            <ExclamationTriangleIcon className='h-5 w-5 text-red-600 dark:text-red-400 shrink-0 mt-0.5' />
-            <div className='flex-1 min-w-0'>
-              <h3 className='text-xs font-bold text-gray-900 dark:text-white'>
-                ⚠️ Urgent Action Required
-              </h3>
-              <p className='text-xs text-gray-700 dark:text-gray-300 truncate mt-0.5'>
-                {upcomingDeadlines?.filter((d) => d.priority === 'high')[0]?.title}
-              </p>
-              <button
-                onClick={() => navigate('/assignments')}
-                className='mt-2 inline-flex items-center justify-center rounded-lg bg-red-600 px-3 py-1 text-xs font-bold text-white shadow-2xs active:scale-[0.98]'
-              >
-                Start Now
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* 4. System Notifications & Alerts Banner */}
-      {unreadCount > 0 && (
-        <div className='rounded-2xl border border-blue-200 bg-blue-50/70 p-3.5 shadow-2xs dark:border-blue-900/40 dark:bg-blue-950/30'>
-          <div className='flex items-center justify-between'>
-            <div className='flex items-center gap-2.5'>
-              <div className='relative flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white'>
-                <BellIcon className='h-4 w-4' />
-                <span className='absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white'>
-                  {unreadCount}
-                </span>
-              </div>
-              <div>
-                <h4 className='text-xs font-bold text-gray-900 dark:text-white'>
-                  {unreadCount} Unread Notifications
-                </h4>
-                <p className='text-[11px] text-gray-600 dark:text-gray-400'>
-                  Stay updated with latest activities
-                </p>
-              </div>
-            </div>
-
-            <button
-              onClick={markAllAsRead}
-              className='flex items-center gap-1 rounded-lg border border-blue-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-blue-700 shadow-2xs active:scale-[0.96] dark:border-blue-800 dark:bg-slate-800 dark:text-blue-300'
-            >
-              <CheckIcon className='h-3 w-3' />
-              <span>Mark Read</span>
-            </button>
-          </div>
-        </div>
-      )}
+      {/* 3 & 4. Role-Specific Alerts Section (Real Data from Notifications Context) */}
+      <MobileAlerts userRole={user?.role} navigate={navigate} />
 
       {/* 5. Overview Stat Metrics Cards Grid (2 Columns) */}
       {dashboardData.stats && dashboardData.stats.length > 0 && (
