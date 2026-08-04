@@ -189,60 +189,55 @@ const AnimatedStatCard = ({ stat, index, onClick }) => {
 
   return (
     <div
-      className={`group relative rounded-3xl border border-slate-100/90 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 cursor-pointer overflow-hidden transition-all duration-300 ${isVisible
-        ? 'translate-y-0 opacity-100 hover:shadow-md'
+      className={`group relative rounded-2xl border bg-white dark:bg-slate-800 ${borderColor} cursor-pointer overflow-hidden p-6 transition-all duration-300 ${isVisible
+        ? 'translate-y-0 opacity-100 hover:border-transparent hover:shadow-lg dark:hover:shadow-slate-700/30'
         : 'translate-y-4 opacity-0'
         }`}
       onClick={onClick}
     >
-      {/* Background overlay */}
+      {/* Background overlay - same as Quick Access */}
       <div
         className={`absolute inset-0 ${hoverBg} opacity-0 transition-opacity duration-300 group-hover:opacity-100`}
       />
 
-      <div className='relative z-10 space-y-3'>
-        <div className='flex items-center justify-between'>
+      <div className='relative z-10'>
+        <div className='mb-6 flex items-center justify-between'>
           <div
-            className={`h-11 w-11 shrink-0 ${bgColor} flex items-center justify-center rounded-2xl border ${borderColor}`}
+            className={`h-11 w-11 shrink-0 sm:h-12 sm:w-12 md:h-14 md:w-14 ${bgColor} flex items-center justify-center rounded-xl border ${borderColor}`}
           >
             <Icon
-              className={`h-5 w-5 ${iconColor} transform transition-transform duration-300 group-hover:scale-110`}
+              className={`h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7 ${iconColor} transform transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-125`}
             />
           </div>
           <span
-            className={`rounded-full px-3 py-1 text-xs font-bold ${stat.trend === 'up'
-              ? 'bg-emerald-100/90 text-emerald-700 dark:bg-emerald-950/70 dark:text-emerald-300'
+            className={`rounded-full px-3 py-1.5 text-xs font-semibold ${stat.trend === 'up'
+              ? 'border border-green-200 bg-gradient-to-r from-green-100 to-green-50 text-green-700 dark:border-green-800 dark:from-green-900/40 dark:to-green-800/30 dark:text-green-400'
               : stat.trend === 'attention'
-                ? 'bg-amber-100/90 text-amber-700 dark:bg-amber-950/70 dark:text-amber-300'
-                : 'bg-blue-100/90 text-blue-700 dark:bg-blue-950/70 dark:text-blue-300'
+                ? 'border border-yellow-200 bg-gradient-to-r from-yellow-100 to-yellow-50 text-yellow-700 dark:border-yellow-800 dark:from-yellow-900/40 dark:to-yellow-800/30 dark:text-yellow-400'
+                : 'border border-blue-200 bg-gradient-to-r from-blue-100 to-blue-50 text-blue-700 dark:border-blue-800 dark:from-blue-900/40 dark:to-blue-800/30 dark:text-blue-400'
               }`}
           >
             {stat.change}
           </span>
         </div>
-
-        <div>
-          <div className='text-3xl font-extrabold tabular-nums text-slate-900 dark:text-white tracking-tight'>
-            {animatedValue}
-            {suffix}
-          </div>
-          <div className='mt-0.5 text-sm font-bold text-slate-600 dark:text-slate-400'>
-            {stat.title}
-          </div>
+        <div className='mb-2 text-3xl font-bold tabular-nums text-gray-900 dark:text-white'>
+          {animatedValue}
+          {suffix}
         </div>
-
-        {/* Bottom colored progress accent bar */}
-        <div className={`h-1 w-full rounded-full ${bgColor} overflow-hidden`}>
+        <div className='text-lg font-medium text-gray-600 dark:text-gray-400'>
+          {stat.title}
+        </div>
+        {/* Progress bar animation */}
+        <div className={`mt-4 h-1 rounded-full ${bgColor} overflow-hidden`}>
           <div
             className={`h-full ${progressColor} rounded-full transition-all duration-1000 ease-out`}
             style={{ width: isVisible ? '100%' : '0%' }}
           />
         </div>
-
-        <div className='pt-1'>
-          <span className='inline-flex items-center text-xs font-bold text-blue-600 transition-colors duration-300 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300'>
+        <div className='mt-4 border-t border-gray-100 pt-4 dark:border-slate-700'>
+          <span className='flex items-center text-sm font-medium text-blue-600 transition-colors duration-300 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300'>
             View details
-            <ChevronRightIcon className='ml-1 h-3.5 w-3.5 transform transition-transform duration-300 group-hover:translate-x-1' />
+            <ChevronRightIcon className='ml-2 h-4 w-4 transform transition-transform duration-300 group-hover:translate-x-1' />
           </span>
         </div>
       </div>
@@ -640,401 +635,248 @@ const Dashboard = () => {
   // --- Render ---
   return (
     <div className='animate-fade-in space-y-6 pt-0 px-0 pb-6'>
-      {/* ================================================== */}
-      {/* PREMIUM NATIVE MOBILE DASHBOARD VIEW (< 768px) */}
-      {/* ================================================== */}
-      <div className='block md:hidden space-y-4'>
-        {/* 1. Premium Glassmorphic Welcome Card */}
-        <div className='relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 p-4 sm:p-5 text-white shadow-lg shadow-indigo-500/20'>
-          {/* Ambient Glow Graphic */}
-          <div className='absolute -right-8 -top-8 h-36 w-36 rounded-full bg-white/10 blur-xl pointer-events-none' />
-
-          <div className='relative z-10 space-y-3'>
-            <div className='flex items-center gap-3'>
-              {/* User Avatar Circle */}
-              <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/20 backdrop-blur-md text-white font-bold text-sm border border-white/30 shadow-xs'>
-                {user?.name
-                  ? user.name
-                      .split(' ')
-                      .map((n) => n[0])
-                      .join('')
-                      .substring(0, 2)
-                      .toUpperCase()
-                  : 'BP'}
+      {/* Dashboard Header with Welcome - Enhanced with animations */}
+      <div className='rounded-2xl border border-gray-200 bg-white dark:bg-slate-900 p-6 shadow-lg dark:border-slate-700 dark:bg-slate-800 md:p-8'>
+        <div className='flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-center'>
+          <div className='flex-1'>
+            <div className='flex flex-col justify-between gap-4 md:flex-row md:items-center'>
+              <div className='flex items-center gap-4'>
+                <div className='flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 shadow-md sm:h-12 sm:w-12 md:h-14 md:w-14'>
+                  <HomeIcon className='h-5 w-5 text-white sm:h-6 sm:w-6 md:h-7 md:w-7' />
+                </div>
+                <div>
+                  <h1 className='text-2xl font-bold text-gray-900 dark:text-gray-100 md:text-3xl'>
+                    {timeOfDay},{' '}
+                    <span className='text-blue-600 dark:text-blue-400'>
+                      {user?.name || 'Student'}
+                    </span>
+                  </h1>
+                  <p className='mt-1 text-lg text-gray-600 dark:text-gray-400'>
+                    {greeting}
+                  </p>
+                  <div className='mt-3 flex items-center gap-3'>
+                    <span className='inline-flex items-center rounded-full border border-blue-200 bg-gradient-to-r from-blue-100 to-blue-50 px-3 py-1 text-sm font-medium text-blue-700 dark:border-blue-700 dark:from-blue-900/40 dark:to-blue-800/30 dark:text-blue-300'>
+                      {user?.role === 'admin'
+                        ? 'Administrator'
+                        : user?.role === 'faculty'
+                          ? 'Faculty'
+                          : 'Student'}
+                    </span>
+                    <span className='flex items-center text-sm text-gray-500 dark:text-gray-400'>
+                      <CalendarDaysIcon className='mr-1 h-4 w-4' />
+                      {new Date().toLocaleDateString('en-US', {
+                        weekday: 'long',
+                        month: 'long',
+                        day: 'numeric',
+                      })}
+                    </span>
+                  </div>
+                </div>
               </div>
-              <div className='min-w-0 flex-1'>
-                <h1 className='text-lg font-extrabold text-white leading-tight truncate'>
-                  {timeOfDay},{' '}
-                  <span className='underline decoration-sky-300 decoration-2 underline-offset-2'>
-                    {user?.name || 'User'}
+            </div>
+
+            {/* Action Buttons with enhanced animations */}
+            <div className='mt-8 flex flex-wrap gap-4'>
+              <button
+                onClick={handleRefresh}
+                disabled={isLoading}
+                className='group relative inline-flex items-center overflow-hidden rounded-xl border border-gray-300 px-5 py-2.5 font-medium text-gray-700 dark:text-gray-200 transition-all duration-300 hover:border-transparent hover:shadow-lg disabled:opacity-50 dark:border-slate-600 dark:text-gray-300'
+              >
+                <div className='absolute inset-0 bg-gradient-to-r from-gray-100 to-gray-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-slate-700 dark:to-slate-600' />
+                <div className='relative z-10 flex items-center'>
+                  {isLoading ? (
+                    <RefreshIcon className='mr-2 h-4 w-4 animate-spin' />
+                  ) : (
+                    <RefreshIcon className='mr-2 h-4 w-4 transition-transform duration-300 group-hover:rotate-180' />
+                  )}
+                  <span>
+                    {isLoading ? 'Refreshing...' : 'Refresh Dashboard'}
                   </span>
-                </h1>
-                <p className='text-xs text-blue-100/90 truncate font-medium'>
-                  {greeting}
-                </p>
-              </div>
-            </div>
-
-            <div className='flex items-center justify-between pt-2 border-t border-white/15 text-xs font-semibold text-blue-100'>
-              <span className='inline-flex items-center rounded-full bg-white/20 backdrop-blur-md px-3 py-0.5 text-xs font-bold text-white border border-white/25'>
-                {user?.role === 'admin'
-                  ? 'Administrator'
-                  : user?.role === 'faculty'
-                    ? 'Faculty'
-                    : 'Student'}
-              </span>
-              <span className='inline-flex items-center gap-1.5 text-xs text-blue-100/90 font-medium'>
-                <CalendarDaysIcon className='h-3.5 w-3.5 text-blue-200' />
-                {new Date().toLocaleDateString('en-US', {
-                  weekday: 'short',
-                  month: 'short',
-                  day: 'numeric',
-                })}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* 2. Quick Actions Grid (2-Column Square Icon Cards) */}
-        <div>
-          <div className='flex items-center justify-between mb-2 px-1'>
-            <h2 className='text-xs font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500'>
-              Quick Actions
-            </h2>
-            <span className='text-[10px] font-bold text-blue-600 dark:text-blue-400'>
-              Tap to action
-            </span>
-          </div>
-          <div className='grid grid-cols-2 gap-2.5'>
-            {/* 1. Projects Card */}
-            <div
-              onClick={() => navigate('/projects')}
-              className='group relative flex flex-col justify-between h-28 rounded-2xl border border-slate-100 bg-white dark:border-slate-800 dark:bg-slate-900 p-3.5 shadow-2xs hover:shadow-md active:scale-95 transition-all cursor-pointer overflow-hidden'
-            >
-              <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform'>
-                <FolderKanbanIcon className='h-5 w-5' />
-              </div>
-              <div>
-                <h3 className='text-xs font-bold text-slate-900 dark:text-white line-clamp-1'>
-                  Projects
-                </h3>
-                <p className='text-[10px] font-medium text-slate-500 dark:text-slate-400 line-clamp-1'>
-                  Manage & view all
-                </p>
-              </div>
-            </div>
-
-            {/* 2. Meetings Card */}
-            <div
-              onClick={() => navigate('/meetings')}
-              className='group relative flex flex-col justify-between h-28 rounded-2xl border border-slate-100 bg-white dark:border-slate-800 dark:bg-slate-900 p-3.5 shadow-2xs hover:shadow-md active:scale-95 transition-all cursor-pointer overflow-hidden'
-            >
-              <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform'>
-                <ClockIcon className='h-5 w-5' />
-              </div>
-              <div>
-                <h3 className='text-xs font-bold text-slate-900 dark:text-white line-clamp-1'>
-                  Meetings
-                </h3>
-                <p className='text-[10px] font-medium text-slate-500 dark:text-slate-400 line-clamp-1'>
-                  Schedules & sync
-                </p>
-              </div>
-            </div>
-
-            {/* 3. Resources Card */}
-            <div
-              onClick={() => navigate('/resources')}
-              className='group relative flex flex-col justify-between h-28 rounded-2xl border border-slate-100 bg-white dark:border-slate-800 dark:bg-slate-900 p-3.5 shadow-2xs hover:shadow-md active:scale-95 transition-all cursor-pointer overflow-hidden'
-            >
-              <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform'>
-                <BookOpenIcon className='h-5 w-5' />
-              </div>
-              <div>
-                <h3 className='text-xs font-bold text-slate-900 dark:text-white line-clamp-1'>
-                  Resources
-                </h3>
-                <p className='text-[10px] font-medium text-slate-500 dark:text-slate-400 line-clamp-1'>
-                  Assets & files
-                </p>
-              </div>
-            </div>
-
-            {/* 4. Admin Action / Milestones Card */}
-            {user?.role === 'admin' ? (
-              <div
-                onClick={() => navigate('/project-types')}
-                className='group relative flex flex-col justify-between h-28 rounded-2xl border border-slate-100 bg-white dark:border-slate-800 dark:bg-slate-900 p-3.5 shadow-2xs hover:shadow-md active:scale-95 transition-all cursor-pointer overflow-hidden'
-              >
-                <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform'>
-                  <PlusIcon className='h-5 w-5' />
                 </div>
-                <div>
-                  <h3 className='text-xs font-bold text-slate-900 dark:text-white line-clamp-1'>
-                    New Project
-                  </h3>
-                  <p className='text-[10px] font-medium text-slate-500 dark:text-slate-400 line-clamp-1'>
-                    Create project type
-                  </p>
-                </div>
-              </div>
-            ) : (
-              <div
-                onClick={() => navigate('/milestones')}
-                className='group relative flex flex-col justify-between h-28 rounded-2xl border border-slate-100 bg-white dark:border-slate-800 dark:bg-slate-900 p-3.5 shadow-2xs hover:shadow-md active:scale-95 transition-all cursor-pointer overflow-hidden'
-              >
-                <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 group-hover:scale-110 transition-transform'>
-                  <FlagIcon className='h-5 w-5' />
-                </div>
-                <div>
-                  <h3 className='text-xs font-bold text-slate-900 dark:text-white line-clamp-1'>
-                    Milestones
-                  </h3>
-                  <p className='text-[10px] font-medium text-slate-500 dark:text-slate-400 line-clamp-1'>
-                    Track progress
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+              </button>
 
-        {/* 3. Overview Statistics Grid (2-Column) */}
-        {dashboardData.stats.length > 0 && (
-          <div>
-            <div className='flex items-center justify-between mb-2 px-1'>
-              <h2 className='text-xs font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500'>
-                Overview Statistics
-              </h2>
-              <span className='text-[10px] font-bold text-blue-600 dark:text-blue-400'>
-                Live metrics
-              </span>
-            </div>
-            <div className='grid grid-cols-2 gap-2.5'>
-              {dashboardData.stats.map((stat, index) => {
-                const Icon = stat.icon;
-                return (
-                  <div
-                    key={index}
-                    onClick={stat.onClick}
-                    className='rounded-2xl border border-slate-100 bg-white p-3.5 shadow-2xs dark:border-slate-800 dark:bg-slate-900 cursor-pointer active:scale-95 transition-all space-y-2'
+              {user?.role === 'faculty' && (
+                <>
+                  <button
+                    onClick={() => navigate('/meetings')}
+                    className='group relative inline-flex items-center overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 px-5 py-2.5 font-medium text-white shadow-md transition-all duration-300 hover:shadow-xl'
                   >
-                    <div className='flex items-center justify-between'>
-                      <div className='flex h-9 w-9 items-center justify-center rounded-xl bg-orange-50 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400'>
-                        <Icon className='h-4 w-4' />
-                      </div>
-                      <span className='text-[10px] font-extrabold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full'>
-                        {stat.change}
-                      </span>
+                    <div className='absolute inset-0 bg-gradient-to-r from-blue-700 to-blue-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
+                    <div className='relative z-10 flex items-center'>
+                      <ClockIcon className='mr-2 h-4 w-4 transition-transform duration-300 group-hover:scale-110' />
+                      <span>My Meetings</span>
                     </div>
-                    <div>
-                      <div className='text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight tabular-nums'>
-                        {stat.value}
-                      </div>
-                      <div className='text-xs font-bold text-slate-600 dark:text-slate-400 truncate mt-0.5'>
-                        {stat.title}
-                      </div>
+                  </button>
+
+                  <button
+                    onClick={() => navigate('/resources')}
+                    className='group relative inline-flex items-center overflow-hidden rounded-xl border border-gray-300 px-5 py-2.5 font-medium text-gray-700 dark:text-gray-200 transition-all duration-300 hover:border-transparent hover:shadow-lg dark:border-slate-600 dark:text-gray-300'
+                  >
+                    <div className='absolute inset-0 bg-gradient-to-r from-gray-100 to-gray-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-slate-700 dark:to-slate-600' />
+                    <div className='relative z-10 flex items-center'>
+                      <BookOpenIcon className='mr-2 h-4 w-4 transition-transform duration-300 group-hover:scale-110 text-emerald-600 dark:text-emerald-400' />
+                      <span>Resource Library</span>
                     </div>
-                    <div className='h-1 w-full rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden'>
-                      <div className='h-full bg-blue-600 dark:bg-blue-400 rounded-full w-full' />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* 4. Upcoming Deadlines & Schedule Timeline */}
-        {upcomingDeadlines.length > 0 && (
-          <div>
-            <div className='flex items-center justify-between mb-2 px-1'>
-              <h2 className='text-xs font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500'>
-                Upcoming Deadlines
-              </h2>
-              <button
-                onClick={() => navigate('/meetings')}
-                className='text-[11px] font-bold text-blue-600 dark:text-blue-400 flex items-center gap-0.5'
-              >
-                View Calendar <ChevronRightIcon className='h-3 w-3' />
-              </button>
-            </div>
-            <div className='space-y-2'>
-              {upcomingDeadlines.slice(0, 3).map((item) => (
-                <div
-                  key={item.id}
-                  className='flex items-center justify-between rounded-2xl border border-slate-100 bg-white p-3 shadow-2xs dark:border-slate-800 dark:bg-slate-900'
-                >
-                  <div className='flex items-center gap-3 min-w-0'>
-                    <div className='flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400'>
-                      <CalendarDaysIcon className='h-4 w-4' />
-                    </div>
-                    <div className='min-w-0'>
-                      <h4 className='text-xs font-bold text-slate-900 dark:text-white truncate'>
-                        {item.title}
-                      </h4>
-                      <p className='text-[11px] font-medium text-slate-500 dark:text-slate-400'>
-                        Due {item.due} at {item.time}
-                      </p>
-                    </div>
-                  </div>
-                  <span className='shrink-0 text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 px-2 py-0.5 rounded-full'>
-                    {item.priority || 'Normal'}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* ================================================== */}
-      {/* DESKTOP & TABLET DASHBOARD VIEW (>= 768px / Preserved Unchanged) */}
-      {/* ================================================== */}
-      <div className='hidden md:block space-y-6'>
-        {/* Top Greeting Heading (Outside Card) */}
-        <div className='mb-2 sm:mb-4'>
-          <h1 className='text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl'>
-            {timeOfDay},{' '}
-            <span className='text-blue-600 font-bold dark:text-blue-400'>
-              {user?.name || 'Bhaviik Parmar'}
-            </span>
-          </h1>
-          <p className='mt-1 text-sm font-medium text-slate-600 dark:text-slate-400'>
-            {greeting}
-          </p>
-        </div>
-
-        {/* Welcome Card - Soft white card with rounded-3xl matching reference mockup */}
-        <div className='rounded-3xl border border-slate-100 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:p-6 md:p-8 space-y-4'>
-          {/* Left Icon Box */}
-          <div className='flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-tr from-purple-500 via-indigo-600 to-blue-500 text-white shadow-md'>
-            <HomeIcon className='h-7 w-7 text-white' />
-          </div>
-
-          {/* Badge & Date Row */}
-          <div className='flex items-center gap-2.5 flex-wrap'>
-            <span className='inline-flex items-center rounded-full bg-blue-100/90 px-3.5 py-1 text-xs font-semibold text-blue-700 dark:bg-blue-950/70 dark:text-blue-300'>
-              {user?.role === 'admin'
-                ? 'Administrator'
-                : user?.role === 'faculty'
-                  ? 'Faculty'
-                  : 'Student'}
-            </span>
-            <span className='inline-flex items-center gap-1.5 text-xs font-medium text-slate-500 dark:text-slate-400'>
-              <CalendarDaysIcon className='h-4 w-4 text-slate-400' />
-              {new Date().toLocaleDateString('en-US', {
-                weekday: 'long',
-                month: 'long',
-                day: 'numeric',
-              })}
-            </span>
-          </div>
-
-          {/* Action Buttons: Stacked rounded-2xl buttons matching mockup */}
-          <div className='flex flex-col sm:flex-row flex-wrap gap-2.5 pt-1'>
-            <button
-              onClick={handleRefresh}
-              disabled={isLoading}
-              className='inline-flex items-center justify-start gap-2.5 rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 transition-all active:scale-[0.98]'
-            >
-              {isLoading ? (
-                <RefreshIcon className='h-4 w-4 animate-spin text-slate-600 dark:text-slate-400' />
-              ) : (
-                <RefreshIcon className='h-4 w-4 text-slate-600 dark:text-slate-400' />
+                  </button>
+                </>
               )}
-              <span>{isLoading ? 'Refreshing…' : 'Refresh Dashboard'}</span>
-            </button>
 
-            {user?.role === 'admin' && (
-              <button
-                onClick={() => navigate('/project-types')}
-                className='inline-flex items-center justify-start gap-2.5 rounded-2xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md hover:bg-blue-700 transition-all active:scale-[0.98]'
-              >
-                <PlusIcon className='h-4 w-4' />
-                <span>New Project Type</span>
-              </button>
-            )}
+              {user?.role === 'student' && (
+                <>
+                  <button
+                    onClick={() => navigate('/meetings')}
+                    className='group relative inline-flex items-center overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 px-5 py-2.5 font-medium text-white shadow-md transition-all duration-300 hover:shadow-xl'
+                  >
+                    <div className='absolute inset-0 bg-gradient-to-r from-blue-700 to-blue-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
+                    <div className='relative z-10 flex items-center'>
+                      <ClockIcon className='mr-2 h-4 w-4 transition-transform duration-300 group-hover:scale-110' />
+                      <span>My Meetings</span>
+                    </div>
+                  </button>
 
-            {user?.role === 'admin' && (
-              <button
-                onClick={() => {
-                  try {
-                    exportDashboardToCSV(dashboardData, user?.role || 'user');
-                    toast.success('Report generated successfully!');
-                  } catch (error) {
-                    console.error('Export failed:', error);
-                    toast.error('Failed to generate report');
-                  }
-                }}
-                className='inline-flex items-center justify-start gap-2.5 rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 transition-all active:scale-[0.98]'
-              >
-                <DownloadIcon className='h-4 w-4 text-slate-600 dark:text-slate-400' />
-                <span>Export Report</span>
-              </button>
-            )}
+                  <button
+                    onClick={() => navigate('/resources')}
+                    className='group relative inline-flex items-center overflow-hidden rounded-xl border border-gray-300 px-5 py-2.5 font-medium text-gray-700 dark:text-gray-200 transition-all duration-300 hover:border-transparent hover:shadow-lg dark:border-slate-600 dark:text-gray-300'
+                  >
+                    <div className='absolute inset-0 bg-gradient-to-r from-gray-100 to-gray-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-slate-700 dark:to-slate-600' />
+                    <div className='relative z-10 flex items-center'>
+                      <BookOpenIcon className='mr-2 h-4 w-4 transition-transform duration-300 group-hover:scale-110 text-emerald-600 dark:text-emerald-400' />
+                      <span>Resource Library</span>
+                    </div>
+                  </button>
 
-            {user?.role === 'faculty' && (
-              <>
-                <button
-                  onClick={() => navigate('/meetings')}
-                  className='inline-flex items-center justify-start gap-2.5 rounded-2xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md hover:bg-blue-700 transition-all active:scale-[0.98]'
-                >
-                  <ClockIcon className='h-4 w-4' />
-                  <span>My Meetings</span>
-                </button>
-                <button
-                  onClick={() => navigate('/resources')}
-                  className='inline-flex items-center justify-start gap-2.5 rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 transition-all active:scale-[0.98]'
-                >
-                  <BookOpenIcon className='h-4 w-4 text-emerald-600 dark:text-emerald-400' />
-                  <span>Resource Library</span>
-                </button>
-              </>
-            )}
+                  <button
+                    onClick={() => navigate('/milestones')}
+                    className='group relative inline-flex items-center overflow-hidden rounded-xl border border-gray-300 px-5 py-2.5 font-medium text-gray-700 dark:text-gray-200 transition-all duration-300 hover:border-transparent hover:shadow-lg dark:border-slate-600 dark:text-gray-300'
+                  >
+                    <div className='absolute inset-0 bg-gradient-to-r from-gray-100 to-gray-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-slate-700 dark:to-slate-600' />
+                    <div className='relative z-10 flex items-center'>
+                      <FlagIcon className='mr-2 h-4 w-4 transition-transform duration-300 group-hover:scale-110 text-amber-600 dark:text-amber-400' />
+                      <span>My Milestones</span>
+                    </div>
+                  </button>
 
-            {user?.role === 'student' && (
-              <>
+                  <button
+                    onClick={() => navigate('/timeline')}
+                    className='group relative inline-flex items-center overflow-hidden rounded-xl border border-gray-300 px-5 py-2.5 font-medium text-gray-700 dark:text-gray-200 transition-all duration-300 hover:border-transparent hover:shadow-lg dark:border-slate-600 dark:text-gray-300'
+                  >
+                    <div className='absolute inset-0 bg-gradient-to-r from-gray-100 to-gray-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-slate-700 dark:to-slate-600' />
+                    <div className='relative z-10 flex items-center'>
+                      <FolderKanbanIcon className='mr-2 h-4 w-4 transition-transform duration-300 group-hover:scale-110 text-indigo-600 dark:text-indigo-400' />
+                      <span>Project Timeline</span>
+                    </div>
+                  </button>
+                </>
+              )}
+
+              {user?.role === 'admin' && (
                 <button
-                  onClick={() => navigate('/meetings')}
-                  className='inline-flex items-center justify-start gap-2.5 rounded-2xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md hover:bg-blue-700 transition-all active:scale-[0.98]'
+                  onClick={() => navigate('/project-types')}
+                  className='group relative inline-flex items-center overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 px-5 py-2.5 font-medium text-white shadow-md transition-all duration-300 hover:shadow-xl'
                 >
-                  <ClockIcon className='h-4 w-4' />
-                  <span>My Meetings</span>
+                  <div className='absolute inset-0 bg-gradient-to-r from-blue-700 to-blue-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
+                  <div className='relative z-10 flex items-center'>
+                    <PlusIcon className='mr-2 h-4 w-4 transition-transform duration-300 group-hover:rotate-90 group-hover:scale-125' />
+                    <span>New Project Type</span>
+                  </div>
                 </button>
+              )}
+
+              {user?.role === 'admin' && (
                 <button
-                  onClick={() => navigate('/resources')}
-                  className='inline-flex items-center justify-start gap-2.5 rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 transition-all active:scale-[0.98]'
+                  onClick={() => {
+                    try {
+                      exportDashboardToCSV(dashboardData, user?.role || 'user');
+                      toast.success('Report generated successfully!');
+                    } catch (error) {
+                      console.error('Export failed:', error);
+                      toast.error('Failed to generate report');
+                    }
+                  }}
+                  className='group relative inline-flex items-center overflow-hidden rounded-xl border border-gray-300 px-5 py-2.5 font-medium text-gray-700 dark:text-gray-200 transition-all duration-300 hover:border-transparent hover:shadow-lg dark:border-slate-600 dark:text-gray-300'
                 >
-                  <BookOpenIcon className='h-4 w-4 text-emerald-600 dark:text-emerald-400' />
-                  <span>Resource Library</span>
+                  <div className='absolute inset-0 bg-gradient-to-r from-gray-100 to-gray-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-slate-700 dark:to-slate-600' />
+                  <div className='relative z-10 flex items-center'>
+                    <DownloadIcon className='mr-2 h-4 w-4 transition-transform duration-300 group-hover:translate-y-0.5 group-hover:scale-110' />
+                    <span>Export Report</span>
+                  </div>
                 </button>
-                <button
-                  onClick={() => navigate('/milestones')}
-                  className='inline-flex items-center justify-start gap-2.5 rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 transition-all active:scale-[0.98]'
-                >
-                  <FlagIcon className='h-4 w-4 text-amber-600 dark:text-amber-400' />
-                  <span>My Milestones</span>
-                </button>
-              </>
-            )}
+              )}
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* Stats Grid - Role Specific with Animations */}
-        {dashboardData.stats.length > 0 && (
-          <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4'>
-            {dashboardData.stats.map((stat, index) => (
-              <AnimatedStatCard
-                key={index}
-                stat={stat}
-                index={index}
-                onClick={stat.onClick}
-              />
-            ))}
+      {/* Urgent Alert Section */}
+      {(upcomingDeadlines?.filter((d) => d.priority === 'high')?.length || 0) >
+        0 && (
+          <div className='rounded-2xl border border-red-200 bg-gradient-to-r from-red-50 to-red-100/50 p-6 shadow-sm dark:border-red-800 dark:from-red-900/30 dark:to-red-800/20'>
+            <div className='flex flex-col md:flex-row md:items-center'>
+              <div className='flex items-start md:items-center'>
+                <div className='flex-shrink-0'>
+                  <ExclamationTriangleIcon className='h-5 w-5 text-red-600 dark:text-red-400 sm:h-6 sm:w-6' />
+                </div>
+                <div className='ml-4 flex-1'>
+                  <h3 className='mb-1 text-lg font-bold text-gray-900 dark:text-white'>
+                    ⚠️ Urgent Action Required
+                  </h3>
+                  <p className='text-gray-700 dark:text-gray-300'>
+                    {
+                      upcomingDeadlines?.filter((d) => d.priority === 'high')[0]
+                        ?.title
+                    }{' '}
+                    due{' '}
+                    <span className='font-semibold'>
+                      {
+                        upcomingDeadlines?.filter((d) => d.priority === 'high')[0]
+                          ?.due
+                      }
+                    </span>{' '}
+                    at{' '}
+                    <span className='font-semibold'>
+                      {
+                        upcomingDeadlines?.filter((d) => d.priority === 'high')[0]
+                          ?.time
+                      }
+                    </span>
+                  </p>
+                </div>
+              </div>
+              <div className='mt-4 flex gap-3 md:ml-6 md:mt-0'>
+                <button
+                  onClick={() => navigate('/assignments')}
+                  className='group relative overflow-hidden rounded-xl bg-gradient-to-r from-red-600 to-red-500 px-5 py-2.5 font-medium text-white shadow-md transition-all duration-300 hover:shadow-xl'
+                >
+                  <div className='absolute inset-0 bg-gradient-to-r from-red-700 to-red-600 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
+                  <span className='relative z-10 inline-block transition-transform duration-300 group-hover:scale-105'>
+                    Start Now
+                  </span>
+                </button>
+                <button
+                  onClick={() => toast.info('Extension requested')}
+                  className='group relative overflow-hidden rounded-xl border border-red-300 px-5 py-2.5 font-medium text-red-700 transition-all duration-300 hover:border-transparent hover:shadow-lg dark:border-red-700 dark:text-red-400'
+                >
+                  <div className='absolute inset-0 bg-red-50 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:bg-red-900/30' />
+                  <span className='relative z-10'>Request Extension</span>
+                </button>
+              </div>
+            </div>
           </div>
         )}
-      </div>
+
+      {/* Stats Grid - Role Specific with Animations */}
+      {dashboardData.stats.length > 0 && (
+        <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4'>
+          {dashboardData.stats.map((stat, index) => (
+            <AnimatedStatCard
+              key={index}
+              stat={stat}
+              index={index}
+              onClick={stat.onClick}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Main Content Grid */}
       <div className='grid grid-cols-1 gap-8 lg:grid-cols-3'>

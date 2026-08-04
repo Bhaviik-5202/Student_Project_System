@@ -241,7 +241,7 @@ const TutorialVideos = memo(() => {
 
       {/* Quick Stats */}
       <div className='mt-8 border-t border-gray-200 pt-6 dark:border-gray-700'>
-        <div className='grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4'>
+        <div className='grid grid-cols-2 gap-4 md:grid-cols-4'>
           <div className='rounded-lg bg-blue-50 p-4 text-center dark:bg-blue-900/30'>
             <div className='text-2xl font-bold text-blue-600'>
               {videos.length}

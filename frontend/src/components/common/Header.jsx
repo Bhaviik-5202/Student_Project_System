@@ -281,22 +281,7 @@ const Header = memo(
             <div className='flex h-full items-center justify-between gap-4'>
               {/* Logo Section */}
               <div className='flex items-center gap-3'>
-                {/* Mobile (< 768px): Blue circular button with white graduation cap opening drawer */}
-                <button
-                  type='button'
-                  onClick={onMobileMenuToggle}
-                  className='flex h-11 w-11 items-center justify-center rounded-full bg-blue-600 shadow-md shadow-blue-600/30 transition-transform active:scale-95 md:hidden focus:outline-none'
-                  aria-label='Toggle navigation menu'
-                >
-                  <HeaderIcon
-                    name='graduation-cap'
-                    className='text-white'
-                    size='text-lg'
-                  />
-                </button>
-
-                {/* Desktop (>= 768px): Standard logo linking to /dashboard */}
-                <Link to='/dashboard' className='hidden md:flex group items-center gap-3'>
+                <Link to='/dashboard' className='group flex items-center gap-3'>
                   <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 shadow-lg'>
                     <HeaderIcon
                       name='graduation-cap'
@@ -304,7 +289,7 @@ const Header = memo(
                       size='text-lg'
                     />
                   </div>
-                  <div>
+                  <div className='hidden sm:block'>
                     <h1 className='text-base font-bold leading-tight text-gray-900 dark:text-white'>
                       Student Project System
                     </h1>

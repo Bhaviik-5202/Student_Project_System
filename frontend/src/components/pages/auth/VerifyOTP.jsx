@@ -171,7 +171,7 @@ const VerifyOTP = memo(() => {
       <form onSubmit={handleSubmit} className='space-y-6'>
         {/* OTP Input Grid */}
         <div
-          className='grid grid-cols-6 gap-1.5 sm:gap-2.5 md:gap-3 py-2'
+          className='grid grid-cols-6 gap-2 sm:gap-3 py-2'
           onPaste={handlePaste}
         >
           {otp.map((digit, index) => {
@@ -190,8 +190,8 @@ const VerifyOTP = memo(() => {
                 onChange={(e) => handleChange(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
                 className={`
-                  h-11 sm:h-14 md:h-16 w-full max-w-[42px] min-w-[34px] sm:max-w-[56px] mx-auto rounded-xl sm:rounded-2xl
-                  text-center text-lg sm:text-2xl font-extrabold
+                  h-12 sm:h-14 md:h-16 w-full max-w-[56px] mx-auto rounded-xl sm:rounded-2xl
+                  text-center text-xl sm:text-2xl font-extrabold
                   transition-all duration-200 outline-none
                   
                   /* LIGHT MODE STYLING */

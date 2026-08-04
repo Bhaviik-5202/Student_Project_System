@@ -305,7 +305,7 @@ const AuthLayout = ({ children }) => {
       </div>
 
       {/* Right Side - Form Container */}
-      <div className='relative flex flex-1 items-center justify-center bg-transparent p-4 sm:p-6 md:p-12'>
+      <div className='relative flex flex-1 items-center justify-center bg-transparent p-6 sm:p-12'>
         <div
           className={`z-10 w-full max-w-lg transition-all duration-500 ${showContent ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'}`}
         >

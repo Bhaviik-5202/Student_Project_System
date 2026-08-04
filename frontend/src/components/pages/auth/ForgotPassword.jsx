@@ -200,14 +200,14 @@ const ForgotPassword = memo(() => {
       {/* Header */}
       <div className='text-center'>
         <div className='mb-4 flex justify-center'>
-          <div className='flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/20'>
-            <Key className='h-7 w-7 sm:h-8 sm:w-8 text-white' />
+          <div className='flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/20'>
+            <Key className='h-8 w-8 text-white' />
           </div>
         </div>
-        <h2 className='text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white'>
+        <h2 className='text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white'>
           Forgot Password?
         </h2>
-        <p className='mt-2 text-xs sm:text-sm text-slate-500 dark:text-slate-400'>
+        <p className='mt-2 text-sm text-slate-500 dark:text-slate-400'>
           Enter your email and we&apos;ll send you a secure reset link.
         </p>
       </div>
@@ -217,12 +217,12 @@ const ForgotPassword = memo(() => {
         <div className='group'>
           <label
             htmlFor='forgot-email'
-            className='mb-1.5 block text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300'
+            className='mb-1.5 block text-sm font-bold text-slate-700 dark:text-slate-300'
           >
             Email Address
           </label>
           <div className='relative'>
-            <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 transition-colors group-focus-within:text-blue-500 dark:text-slate-500 dark:group-focus-within:text-blue-400'>
+            <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 transition-colors group-focus-within:text-blue-500'>
               <Mail className='h-5 w-5' />
             </div>
             <input
@@ -233,7 +233,7 @@ const ForgotPassword = memo(() => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={loading}
-              className='w-full rounded-xl border border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 hover:border-slate-300 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-500/15 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500 dark:hover:border-slate-600 dark:focus:border-blue-400 dark:focus:bg-slate-900 dark:focus:ring-blue-400/20 dark:disabled:bg-slate-800/80 py-3.5 pl-11 pr-4 text-sm transition-all'
+              className='w-full rounded-xl border border-slate-200 bg-slate-50 dark:bg-slate-800 py-3.5 pl-11 pr-4 text-sm transition-all focus:border-blue-500 focus:bg-white dark:bg-slate-900 focus:outline-none focus:ring-4 focus:ring-blue-500/10 disabled:opacity-60 dark:border-slate-700  dark:text-white dark:focus:border-blue-500/30'
               placeholder='you@university.edu'
             />
           </div>
@@ -243,7 +243,7 @@ const ForgotPassword = memo(() => {
           type='submit'
           id='forgot-password-submit'
           disabled={loading}
-          className='flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 py-3.5 font-bold text-white shadow-lg shadow-blue-500/15 transition-all hover:brightness-110 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed'
+          className='flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 py-3.5 font-bold text-white shadow-lg shadow-blue-500/15 transition-all hover:brightness-110 active:scale-[0.98] disabled:opacity-60'
         >
           {loading ? (
             <>
@@ -261,7 +261,7 @@ const ForgotPassword = memo(() => {
         <div className='pt-1 text-center'>
           <Link
             to='/login'
-            className='inline-flex items-center justify-center gap-2 text-xs sm:text-sm font-bold text-slate-600 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 transition-colors'
+            className='inline-flex items-center justify-center gap-2 text-sm font-bold text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-slate-100 dark:text-slate-400 dark:hover:text-slate-200'
           >
             <ArrowLeft className='h-4 w-4' />
             <span>Back to Sign In</span>
