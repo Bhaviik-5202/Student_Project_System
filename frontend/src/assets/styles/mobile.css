@@ -24,7 +24,7 @@
   html,
   body,
   #root {
-    overflow-x: hidden;
+    overflow-x: clip;
     max-width: 100vw;
   }
 
@@ -580,10 +580,7 @@
     scroll-behavior: smooth;
   }
 
-  /* Hide doubled scrollbars */
-  .overflow-hidden {
-    overflow: hidden !important;
-  }
+  /* Allow native Tailwind overflow utilities to work normally */
 }
 
 /* --------------------------------------------------------------------------
