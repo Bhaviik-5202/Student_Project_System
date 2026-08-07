@@ -150,12 +150,16 @@ const AssignStudentsModal = ({ isOpen, onClose, project, onSuccess }) => {
           )}
         </div>
 
-        <div className='flex justify-end gap-3 border-t border-gray-100 pt-4 dark:border-slate-700'>
-          <SecondaryButton type='button' onClick={onClose}>
+        <div className='flex flex-col-reverse sm:flex-row sm:justify-end gap-3 border-t border-gray-100 pt-4 dark:border-slate-700'>
+          <SecondaryButton type='button' onClick={onClose} className='w-full sm:w-auto justify-center'>
             Cancel
           </SecondaryButton>
-          <PrimaryButton type='submit' disabled={submitting}>
-            {submitting ? 'Saving...' : 'Save Team Members'}
+          <PrimaryButton
+            type='submit'
+            disabled={submitting}
+            className='w-full sm:w-auto justify-center !bg-gradient-to-r !from-indigo-600 !to-indigo-700 hover:!from-indigo-700 hover:!to-indigo-800'
+          >
+            {submitting ? 'Saving...' : 'Confirm Selection'}
           </PrimaryButton>
         </div>
       </form>

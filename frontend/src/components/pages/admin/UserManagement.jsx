@@ -57,12 +57,11 @@ const MobileUserCard = memo(({ user, isSuperAdmin, onEdit, onDelete }) => (
           </span>
         ) : (
           <>
-            <button onClick={() => onEdit(user)} className='flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 transition-transform active:scale-90 dark:bg-indigo-500/20 dark:text-indigo-400'>
-              <RefreshCw size={14} className='hidden' />
+            <button onClick={() => onEdit(user)} className='flex h-8 px-3 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 transition-transform active:scale-90 dark:bg-indigo-500/20 dark:text-indigo-400 shadow-xs'>
               <span className='font-bold text-[11px]'>Edit</span>
             </button>
-            <button onClick={() => onDelete(user.id || user._id)} className='flex h-7 px-2 items-center justify-center rounded-lg bg-rose-50 text-rose-600 transition-transform active:scale-90 dark:bg-rose-500/20 dark:text-rose-400'>
-              <span className='font-bold text-[11px]'>Del</span>
+            <button onClick={() => onDelete(user.id || user._id)} className='flex h-8 px-3 items-center justify-center rounded-lg bg-rose-50 text-rose-600 transition-transform active:scale-90 dark:bg-rose-500/20 dark:text-rose-400 shadow-xs'>
+              <span className='font-bold text-[11px]'>Delete</span>
             </button>
           </>
         )}

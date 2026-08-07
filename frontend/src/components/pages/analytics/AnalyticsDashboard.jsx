@@ -140,7 +140,7 @@ export const AnalyticsDashboard = () => {
         icon={BarChart2}
         badge='Real-time Telemetry'
         actions={
-          <div className='flex items-center gap-2'>
+          <div className='flex flex-wrap items-center gap-2'>
             <Select
               value={timeRange}
               onChange={(e) => setTimeRange(e.target.value)}
@@ -149,7 +149,7 @@ export const AnalyticsDashboard = () => {
                 { value: 'semester', label: 'Fall 2026 Semester' },
                 { value: 'year', label: 'Academic Year 2025-2026' },
               ]}
-              className='w-44'
+              className='w-full sm:w-44'
             />
             <Button
               variant='outline'

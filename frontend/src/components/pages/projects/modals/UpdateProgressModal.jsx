@@ -101,14 +101,14 @@ const UpdateProgressModal = ({ isOpen, onClose, project, onSuccess }) => {
           />
         </FormGroup>
 
-        <div className='flex justify-end gap-3 border-t border-gray-100 pt-4 dark:border-slate-700'>
-          <SecondaryButton type='button' onClick={onClose}>
+        <div className='flex flex-col-reverse sm:flex-row sm:justify-end gap-3 border-t border-gray-100 pt-4 dark:border-slate-700'>
+          <SecondaryButton type='button' onClick={onClose} className='w-full sm:w-auto justify-center'>
             Cancel
           </SecondaryButton>
           <PrimaryButton
             type='submit'
             disabled={submitting}
-            className='!bg-gradient-to-r !from-blue-600 !to-blue-700 hover:!from-blue-700 hover:!to-blue-800'
+            className='w-full sm:w-auto justify-center !bg-gradient-to-r !from-blue-600 !to-blue-700 hover:!from-blue-700 hover:!to-blue-800'
           >
             {submitting ? 'Saving...' : 'Update Progress'}
           </PrimaryButton>

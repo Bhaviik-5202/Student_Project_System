@@ -40,14 +40,14 @@ export const Input = ({
 
       <div className='relative rounded-lg shadow-sm'>
         {Icon && type !== 'search' && (
-          <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500 dark:text-slate-400'>
-            <Icon className='w-4 h-4' />
+          <div className='absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-500 dark:text-slate-400'>
+            <Icon className='w-4 h-4 shrink-0' />
           </div>
         )}
 
         {type === 'search' && (
-          <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500 dark:text-slate-400'>
-            <Search className='w-4 h-4' />
+          <div className='absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-500 dark:text-slate-400'>
+            <Search className='w-4 h-4 shrink-0' />
           </div>
         )}
 
@@ -59,7 +59,7 @@ export const Input = ({
           />
         ) : type === 'select' ? (
           <select
-            className={`${inputBaseStyles} ${borderColor} ${Icon ? 'pl-9' : ''} ${className}`}
+            className={`${inputBaseStyles} ${borderColor} ${Icon ? 'pl-11' : ''} ${className}`}
             {...props}
           >
             {options.map((opt, idx) => (
@@ -72,8 +72,8 @@ export const Input = ({
           <input
             type={inputType}
             className={`${inputBaseStyles} ${borderColor} ${
-              Icon || type === 'search' ? 'pl-9' : ''
-            } ${isPassword ? 'pr-10' : ''} ${className}`}
+              Icon || type === 'search' ? 'pl-11' : ''
+            } ${isPassword ? 'pr-11' : ''} ${className}`}
             {...props}
           />
         )}
@@ -82,12 +82,12 @@ export const Input = ({
           <button
             type='button'
             onClick={() => setShowPassword(!showPassword)}
-            className='absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:text-slate-300 dark:hover:text-slate-200'
+            className='absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 hover:text-slate-600 dark:text-slate-300 dark:hover:text-slate-200 focus:outline-none'
           >
             {showPassword ? (
-              <EyeOff className='w-4 h-4' />
+              <EyeOff className='w-4 h-4 shrink-0' />
             ) : (
-              <Eye className='w-4 h-4' />
+              <Eye className='w-4 h-4 shrink-0' />
             )}
           </button>
         )}

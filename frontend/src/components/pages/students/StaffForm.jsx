@@ -306,18 +306,18 @@ const StaffForm = () => {
             </div>
 
             {/* Actions */}
-            <div className='flex items-center justify-end gap-3 border-t border-slate-100 pt-6 dark:border-slate-700'>
+            <div className='flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3 border-t border-slate-100 pt-6 dark:border-slate-700'>
               <button
                 type='button'
                 onClick={() => navigate('/staff')}
-                className='rounded-xl border border-slate-200 bg-white dark:bg-slate-900 px-5 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 dark:border-slate-600 dark:bg-slate-700  transition-colors'
+                className='w-full sm:w-auto justify-center rounded-xl border border-slate-200 bg-white dark:bg-slate-900 px-5 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 dark:border-slate-600 dark:bg-slate-700  transition-colors'
               >
                 Cancel
               </button>
               <button
                 type='submit'
                 disabled={submitting}
-                className='flex items-center gap-2 rounded-xl bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 transition-colors shadow-md shadow-indigo-100 dark:shadow-none disabled:opacity-50'
+                className='w-full sm:w-auto justify-center flex items-center gap-2 rounded-xl bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 transition-colors shadow-md shadow-indigo-100 dark:shadow-none disabled:opacity-50'
               >
                 {submitting ? (
                   <>

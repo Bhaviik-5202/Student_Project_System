@@ -406,15 +406,14 @@ const MobileDashboard = ({
         <h2 className='mb-3 pl-1 text-[13px] font-extrabold uppercase tracking-wide text-slate-500 dark:text-slate-400'>
           Quick Actions
         </h2>
-        <div className='flex w-full gap-3 overflow-x-auto pb-2 pl-1 pr-4 no-scrollbar' style={{ scrollSnapType: 'x mandatory' }}>
+        <div className='grid grid-cols-3 min-[380px]:grid-cols-4 gap-2.5 w-full pb-2'>
           {quickAccessItems.map((item, idx) => {
             const Icon = item.icon;
             return (
               <button
                 key={idx}
                 onClick={() => navigate(item.path)}
-                style={{ scrollSnapAlign: 'start' }}
-                className='flex min-w-[88px] flex-col items-center justify-center gap-2.5 rounded-3xl bg-white p-4 shadow-sm transition-transform active:scale-95 dark:bg-slate-800'
+                className='flex flex-col items-center justify-center gap-2 rounded-[1.25rem] bg-white p-3 shadow-sm transition-transform active:scale-95 dark:bg-slate-800 w-full'
               >
                 <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${item.color}`}>
                   <Icon className='h-5 w-5' />

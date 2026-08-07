@@ -108,14 +108,14 @@ const AddReviewModal = ({ isOpen, onClose, project, onSuccess }) => {
           />
         </FormGroup>
 
-        <div className='flex justify-end gap-3 border-t border-gray-100 pt-4 dark:border-slate-700'>
-          <SecondaryButton type='button' onClick={onClose}>
+        <div className='flex flex-col-reverse sm:flex-row sm:justify-end gap-3 border-t border-gray-100 pt-4 dark:border-slate-700'>
+          <SecondaryButton type='button' onClick={onClose} className='w-full sm:w-auto justify-center'>
             Cancel
           </SecondaryButton>
           <PrimaryButton
             type='submit'
             disabled={submitting}
-            className='!bg-gradient-to-r !from-amber-600 !to-amber-700 hover:!from-amber-700 hover:!to-amber-800'
+            className='w-full sm:w-auto justify-center !bg-gradient-to-r !from-amber-600 !to-amber-700 hover:!from-amber-700 hover:!to-amber-800'
           >
             {submitting ? 'Submitting...' : 'Submit Evaluation'}
           </PrimaryButton>

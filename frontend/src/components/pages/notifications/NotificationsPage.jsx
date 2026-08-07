@@ -157,7 +157,7 @@ const NotificationsPage = () => {
                     </div>
 
                     <div className='flex-1 min-w-0'>
-                      <div className='flex items-center gap-2 mb-1'>
+                      <div className='flex flex-wrap items-center gap-2 mb-1'>
                         <span className='rounded bg-gray-100 dark:bg-slate-700 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-gray-700 dark:text-gray-300'>
                           {notif.type || 'System'}
                         </span>

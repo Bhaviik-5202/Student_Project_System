@@ -142,25 +142,24 @@ const AssignGuideModal = ({ isOpen, onClose, project, onSuccess }) => {
           )}
         </div>
 
-        <div className='flex items-center justify-between border-t border-gray-100 pt-4 dark:border-slate-700'>
+        <div className='flex flex-col sm:flex-row items-center justify-between border-t border-gray-100 pt-4 dark:border-slate-700 gap-4 sm:gap-0'>
           <button
             type='button'
             onClick={() => setSelectedGuideId('')}
-            className='text-xs font-semibold text-red-600 hover:underline dark:text-red-400'
+            className='text-xs font-semibold text-red-600 hover:underline dark:text-red-400 order-last sm:order-first w-full sm:w-auto text-center'
           >
-            Unassign Guide
+            Clear Selection
           </button>
-
-          <div className='flex gap-3'>
-            <SecondaryButton type='button' onClick={onClose}>
+          <div className='flex flex-col-reverse sm:flex-row gap-3 w-full sm:w-auto'>
+            <SecondaryButton type='button' onClick={onClose} className='w-full sm:w-auto justify-center'>
               Cancel
             </SecondaryButton>
             <PrimaryButton
               type='submit'
               disabled={submitting}
-              className='!bg-gradient-to-r !from-purple-600 !to-purple-700 hover:!from-purple-700 hover:!to-purple-800'
+              className='w-full sm:w-auto justify-center !bg-gradient-to-r !from-purple-600 !to-purple-700 hover:!from-purple-700 hover:!to-purple-800'
             >
-              {submitting ? 'Saving...' : 'Confirm Allocation'}
+              {submitting ? 'Allocating...' : 'Allocate Guide'}
             </PrimaryButton>
           </div>
         </div>

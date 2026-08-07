@@ -546,24 +546,24 @@ const Settings = memo(() => {
 
         {/* Action Buttons */}
         <div className='border-t border-slate-200 bg-slate-50 dark:bg-slate-800 px-6 py-4 dark:border-slate-700 '>
-          <div className='flex justify-between'>
+          <div className='flex flex-col-reverse sm:flex-row justify-between gap-4'>
             <button
               onClick={handleReset}
-              className='rounded-lg border border-slate-300 px-4 py-2 text-slate-700 dark:text-slate-200 transition duration-150 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800 dark:border-slate-600  '
+              className='w-full sm:w-auto rounded-lg border border-slate-300 px-4 py-2 text-slate-700 dark:text-slate-200 transition duration-150 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800 dark:border-slate-600'
             >
               Reset to Default
             </button>
-            <div className='space-x-3'>
+            <div className='flex flex-col sm:flex-row gap-3 w-full sm:w-auto'>
               <button
                 onClick={() => setActiveTab('general')}
-                className='rounded-lg border border-slate-300 px-4 py-2 text-slate-700 dark:text-slate-200 transition duration-150 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800 dark:border-slate-600  '
+                className='w-full sm:w-auto rounded-lg border border-slate-300 px-4 py-2 text-slate-700 dark:text-slate-200 transition duration-150 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800 dark:border-slate-600'
               >
                 Cancel
               </button>
               <button
                 onClick={handleSave}
                 disabled={loading}
-                className='rounded-lg bg-blue-600 px-4 py-2 text-white transition duration-150 hover:bg-blue-700 disabled:opacity-50'
+                className='w-full sm:w-auto rounded-lg bg-blue-600 px-4 py-2 text-white transition duration-150 hover:bg-blue-700 disabled:opacity-50'
               >
                 {loading ? 'Saving...' : 'Save Changes'}
               </button>

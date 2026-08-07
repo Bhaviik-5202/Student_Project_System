@@ -31,11 +31,11 @@ const BADGE_CONFIGS = {
 
 const VARIANT_STYLES = {
   default: {
-    wrapper: 'p-4 sm:p-6 md:p-8 min-h-[90px] sm:min-h-[108px]',
+    wrapper: 'p-4 sm:p-6 md:p-8 min-h-[90px] sm:min-h-[108px] mt-2 sm:mt-0',
     icon: 'h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14 rounded-xl sm:rounded-2xl',
     iconSize: 22,
-    title: 'text-lg sm:text-xl md:text-2xl',
-    subtitle: 'text-xs sm:text-sm',
+    title: 'text-[17px] sm:text-xl md:text-2xl leading-tight',
+    subtitle: 'text-xs sm:text-sm mt-1',
   },
   small: {
     wrapper: 'px-3 py-3 sm:px-5 sm:py-4.5 min-h-[64px]',
@@ -147,7 +147,7 @@ export const PageHeader = ({
             <h1
               className={`
               font-bold text-slate-900 dark:text-white
-              tracking-tight flex items-center gap-2
+              tracking-tight flex items-center gap-2 break-words max-w-full
               ${styles.title}
             `}
             >
@@ -176,8 +176,8 @@ export const PageHeader = ({
           {subContent && (
             <p
               className={`
-              mt-1 text-slate-500 dark:text-slate-400
-              font-medium leading-relaxed
+              text-slate-500 dark:text-slate-400
+              font-medium leading-relaxed break-words max-w-full
               ${styles.subtitle}
             `}
             >
@@ -190,8 +190,8 @@ export const PageHeader = ({
       {actions && (
         <div
           className={`
-          w-full md:w-auto flex flex-wrap items-center gap-2.5 sm:gap-3 shrink-0
-          pt-2 md:pt-0
+          w-full md:w-auto flex flex-col sm:flex-row flex-wrap sm:items-center gap-2.5 sm:gap-3 shrink-0
+          pt-3 pb-1 md:pt-0 md:pb-0
           ${effectiveVariant !== 'compact' ? 'border-t border-slate-100 dark:border-slate-700/50 md:border-t-0' : ''}
         `}
         >

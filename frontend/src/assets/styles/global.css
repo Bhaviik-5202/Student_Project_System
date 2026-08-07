@@ -1682,6 +1682,15 @@ body,
   width: 100% !important;
 }
 
+/* Global Select Fixes for Mobile */
+select, select.form-control {
+  text-overflow: ellipsis !important;
+  padding-right: 2.25rem !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  min-height: 44px !important; /* Touch target size */
+}
+
 /* Touch momentum scrolling for all scroll containers */
 .table-responsive,
 .scroll-container,

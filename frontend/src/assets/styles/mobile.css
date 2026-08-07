@@ -28,6 +28,21 @@
     max-width: 100vw;
   }
 
+  /* GLOBAL FIX: Ensure all search inputs have enough left padding to clear icons */
+  input[type="text"][placeholder*="Search"],
+  input[type="search"],
+  input[placeholder*="search" i],
+  .relative > input.pl-8,
+  .relative > input.pl-9,
+  .relative > input.pl-10 {
+    padding-left: 2.75rem !important; /* 44px */
+  }
+  
+  /* GLOBAL FIX: Touch targets for inputs */
+  input, select, button {
+    min-height: 44px;
+  }
+
   /* Smooth scrolling on iOS */
   * {
     -webkit-overflow-scrolling: touch;

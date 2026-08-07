@@ -177,11 +177,18 @@
 }
 
 /* Calendar Specific */
+.meeting-calendar-grid-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 .meeting-calendar-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(120px, 1fr));
   background-color: var(--meeting-border);
   gap: 1px;
+  min-width: 800px;
 }
 
 .meeting-calendar-day {

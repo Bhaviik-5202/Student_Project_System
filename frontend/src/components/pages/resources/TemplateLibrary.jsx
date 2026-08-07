@@ -221,8 +221,8 @@ export const TemplateLibrary = () => {
         />
       </div>
 
-      <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-4 shadow-sm dark:border-slate-800 '>
-        <div className='flex flex-1 items-center gap-3'>
+      <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-4 shadow-sm dark:border-slate-800'>
+        <div className='flex w-full flex-col sm:flex-row sm:flex-1 items-start sm:items-center gap-3'>
           <SearchInput
             value={searchTerm}
             onChange={setSearchTerm}
@@ -238,7 +238,7 @@ export const TemplateLibrary = () => {
               { value: 'Presentation Decks', label: 'Presentation Decks' },
               { value: 'Code Skeletons', label: 'Code Skeletons' },
             ]}
-            className='w-48'
+            className='w-full sm:w-48'
           />
         </div>
       </div>

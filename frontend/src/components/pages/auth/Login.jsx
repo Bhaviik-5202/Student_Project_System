@@ -175,9 +175,9 @@ const Login = memo(({ forceAdminMode = false }) => {
           font-size: 0.875rem !important;
           font-weight: 500 !important;
           border-radius: 16px !important;
-          padding-top: 1.125rem !important;
-          padding-bottom: 1.125rem !important;
-          padding-left: 3rem !important;
+          padding-top: 1rem !important;
+          padding-bottom: 1rem !important;
+          padding-left: 3.25rem !important;
           padding-right: 1.125rem !important;
           outline: none !important;
           transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
@@ -283,7 +283,7 @@ const Login = memo(({ forceAdminMode = false }) => {
           font-weight: 800 !important;
           text-transform: uppercase !important;
           letter-spacing: 0.05em !important;
-          padding: 1.125rem !important;
+          padding: 1rem !important;
           border-radius: 16px !important;
           border: none !important;
           cursor: pointer !important;
@@ -345,9 +345,9 @@ const Login = memo(({ forceAdminMode = false }) => {
           {/* Email Address Input */}
           <motion.div variants={itemVariants} className='group'>
             <label className='auth-label'>Email Address</label>
-            <div className='relative'>
+            <div className='relative flex items-center'>
               <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 transition-colors group-focus-within:text-indigo-600 dark:text-slate-500 dark:text-slate-400 dark:group-focus-within:text-indigo-400'>
-                <Mail className='h-5 w-5' />
+                <Mail className='h-5 w-5 shrink-0' />
               </div>
               <input
                 type='email'
@@ -371,9 +371,9 @@ const Login = memo(({ forceAdminMode = false }) => {
                 Forgot password?
               </Link>
             </div>
-            <div className='relative'>
+            <div className='relative flex items-center'>
               <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400 transition-colors group-focus-within:text-indigo-600 dark:text-slate-500 dark:text-slate-400 dark:group-focus-within:text-indigo-400'>
-                <Lock className='h-5 w-5' />
+                <Lock className='h-5 w-5 shrink-0' />
               </div>
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -390,9 +390,9 @@ const Login = memo(({ forceAdminMode = false }) => {
                 aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? (
-                  <EyeOff className='h-5 w-5' />
+                  <EyeOff className='h-5 w-5 shrink-0' />
                 ) : (
-                  <Eye className='h-5 w-5' />
+                  <Eye className='h-5 w-5 shrink-0' />
                 )}
               </button>
             </div>

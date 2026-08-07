@@ -83,18 +83,25 @@ const StudentFilters = memo(({ onFilter }) => {
               <GraduationCap size={14} className='text-gray-400' />
               Academic Year
             </label>
-            <select
-              name='year'
-              value={filters.year}
-              onChange={handleChange}
-              className='form-control appearance-none'
-            >
-              {yearOptions.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
+            <div className='relative'>
+              <select
+                name='year'
+                value={filters.year}
+                onChange={handleChange}
+                className='form-control appearance-none w-full pr-8 truncate'
+              >
+                {yearOptions.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
+                <svg className="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                  <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                </svg>
+              </div>
+            </div>
           </div>
 
           <div className='form-group'>
@@ -102,18 +109,25 @@ const StudentFilters = memo(({ onFilter }) => {
               <Building size={14} className='text-gray-400' />
               Department
             </label>
-            <select
-              name='department'
-              value={filters.department}
-              onChange={handleChange}
-              className='form-control appearance-none'
-            >
-              {departmentOptions.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
+            <div className='relative'>
+              <select
+                name='department'
+                value={filters.department}
+                onChange={handleChange}
+                className='form-control appearance-none w-full pr-8 truncate'
+              >
+                {departmentOptions.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
+                <svg className="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                  <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                </svg>
+              </div>
+            </div>
           </div>
 
           <div className='form-group'>
@@ -121,18 +135,25 @@ const StudentFilters = memo(({ onFilter }) => {
               <CheckCircle2 size={14} className='text-gray-400' />
               Status
             </label>
-            <select
-              name='status'
-              value={filters.status}
-              onChange={handleChange}
-              className='form-control appearance-none'
-            >
-              {statusOptions.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
+            <div className='relative'>
+              <select
+                name='status'
+                value={filters.status}
+                onChange={handleChange}
+                className='form-control appearance-none w-full pr-8 truncate'
+              >
+                {statusOptions.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
+                <svg className="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                  <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                </svg>
+              </div>
+            </div>
           </div>
         </div>
 

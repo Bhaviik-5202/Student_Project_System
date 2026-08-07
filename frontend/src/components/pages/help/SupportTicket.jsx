@@ -173,20 +173,20 @@ const SupportTicket = memo(() => {
               </div>
             </div>
 
-            <div className='flex gap-3'>
-              <button
-                type='submit'
-                disabled={loading}
-                className='rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50 dark:bg-blue-500 dark:hover:bg-blue-600'
-              >
-                {loading ? 'Submitting...' : 'Submit Ticket'}
-              </button>
+            <div className='flex flex-col-reverse sm:flex-row gap-3 pt-2'>
               <button
                 type='button'
                 onClick={() => navigate('/help')}
-                className='rounded-lg border border-slate-300 px-4 py-2 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700'
+                className='w-full sm:w-auto rounded-lg border border-slate-300 px-4 py-2 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700'
               >
                 Cancel
+              </button>
+              <button
+                type='submit'
+                disabled={loading}
+                className='w-full sm:w-auto flex justify-center items-center rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50 dark:bg-blue-500 dark:hover:bg-blue-600'
+              >
+                {loading ? 'Submitting...' : 'Submit Ticket'}
               </button>
             </div>
           </form>

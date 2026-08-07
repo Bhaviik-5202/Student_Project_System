@@ -66,11 +66,11 @@ const MobileStaffCard = memo(({ staff, onEdit, onDelete }) => (
           {staff.phone && staff.phone !== 'N/A' ? staff.phone : <span className='italic'>6353712057</span>}
         </div>
         <div className='flex items-center gap-2'>
-          <button onClick={() => onEdit(staff)} className='flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 transition-transform active:scale-90 dark:bg-indigo-500/20 dark:text-indigo-400'>
-            <Edit2 size={12} />
+          <button onClick={() => onEdit(staff)} className='flex h-8 px-3 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 transition-transform active:scale-90 dark:bg-indigo-500/20 dark:text-indigo-400 shadow-xs'>
+            <span className='font-bold text-[11px]'>Edit</span>
           </button>
-          <button onClick={() => onDelete(staff.dbId || staff.id)} className='flex h-7 w-7 items-center justify-center rounded-lg bg-rose-50 text-rose-600 transition-transform active:scale-90 dark:bg-rose-500/20 dark:text-rose-400'>
-            <Trash2 size={12} />
+          <button onClick={() => onDelete(staff.dbId || staff.id)} className='flex h-8 px-3 items-center justify-center rounded-lg bg-rose-50 text-rose-600 transition-transform active:scale-90 dark:bg-rose-500/20 dark:text-rose-400 shadow-xs'>
+            <span className='font-bold text-[11px]'>Delete</span>
           </button>
         </div>
       </div>

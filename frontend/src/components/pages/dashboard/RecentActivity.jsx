@@ -41,24 +41,24 @@ const ActivityItem = memo(({ activity, isLast }) => {
 
   const colorClass = colorStyles[activity.color] || colorStyles.blue;
   const itemContent = (
-    <div className='relative z-10 flex items-start gap-4 rounded-xl p-3 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-800 dark:hover:bg-slate-700'>
+    <div className='relative z-10 flex items-start gap-3.5 rounded-2xl p-3.5 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/80 bg-white/40 dark:bg-slate-900/40 border border-slate-100/80 dark:border-slate-800/50 shadow-xs'>
       <div
-        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-transparent sm:h-10 sm:w-10 md:h-12 md:w-12 ${colorClass}`}
+        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-transparent sm:h-11 sm:w-11 ${colorClass}`}
       >
-        <i className={`fas ${getIconClass(activity.icon)} text-xs sm:text-sm md:text-base`}></i>
+        <i className={`fas ${getIconClass(activity.icon)} text-sm sm:text-base`}></i>
       </div>
 
-      <div className='min-w-0 flex-1 pt-1'>
-        <div className='mb-0.5 flex items-start justify-between'>
-          <h4 className='truncate pr-4 text-sm font-semibold text-gray-900 dark:text-white'>
+      <div className='min-w-0 flex-1 pt-0.5'>
+        <div className='mb-1 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 sm:gap-2'>
+          <h4 className='truncate text-[13px] sm:text-sm font-bold text-slate-900 dark:text-white leading-tight'>
             {activity.title}
           </h4>
-          <div className='flex items-center gap-1.5 whitespace-nowrap text-[10px] font-medium uppercase tracking-wider text-gray-400 dark:text-gray-500 dark:text-gray-400'>
-            <i className='far fa-clock'></i>
+          <div className='flex items-center gap-1.5 whitespace-nowrap text-[10px] sm:text-[11px] font-bold tracking-wide text-slate-500 dark:text-slate-400'>
+            <i className='far fa-clock opacity-70'></i>
             {activity.time || timeAgo(activity.updatedAt)}
           </div>
         </div>
-        <p className='line-clamp-2 text-sm text-gray-500 dark:text-gray-400'>
+        <p className='line-clamp-2 text-[12px] font-medium leading-snug text-slate-600 dark:text-slate-400'>
           {activity.description}
         </p>
       </div>
@@ -98,9 +98,9 @@ const ActivityItem = memo(({ activity, isLast }) => {
 
   return (
     <div className='relative'>
-      {/* Timeline connector */}
+      {/* Timeline connector - positioned exactly at the center of the 40px icon (padding 14px + 20px) = 34px -> left-[34px] */}
       {!isLast && (
-        <div className='absolute bottom-0 left-6 top-10 z-0 -mb-4 w-0.5 bg-gray-100 dark:bg-slate-700' />
+        <div className='absolute bottom-0 left-[34px] top-12 z-0 -mb-4 w-0.5 bg-slate-200 dark:bg-slate-700/60' />
       )}
 
       <Link to={getActivityPath()} className='block'>
@@ -117,13 +117,13 @@ const RecentActivity = memo(({ activities = [] }) => {
   const viewAllPath = user?.role === 'admin' ? '/audit-log' : '/projects';
 
   return (
-    <div className='h-full'>
-      <div className='mb-6 flex items-center justify-between'>
+    <div className='h-full p-4 sm:p-5'>
+      <div className='mb-5 flex items-center justify-between'>
         <div>
-          <h3 className='text-lg font-bold text-gray-900 dark:text-white'>
+          <h3 className='text-[15px] sm:text-lg font-extrabold text-slate-900 dark:text-white tracking-tight'>
             Recent Activity
           </h3>
-          <p className='text-xs text-gray-500 dark:text-gray-400'>
+          <p className='text-[11px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 mt-0.5'>
             Latest updates from your workspace
           </p>
         </div>

@@ -392,19 +392,19 @@ const Profile = memo(() => {
               </div>
 
               {isEditing && (
-                <div className='flex justify-end gap-3 pt-4'>
+                <div className='flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4'>
                   <button
                     type='button'
                     onClick={handleCancel}
                     disabled={isLoading}
-                    className='rounded-lg border border-slate-300 px-4 py-2 text-slate-700 dark:text-slate-200 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 '
+                    className='w-full sm:w-auto rounded-lg border border-slate-300 px-4 py-2 text-slate-700 dark:text-slate-200 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 '
                   >
                     Cancel
                   </button>
                   <button
                     type='submit'
                     disabled={isLoading}
-                    className='inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700'
+                    className='w-full sm:w-auto flex justify-center items-center rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700'
                   >
                     {isLoading ? (
                       <Loader2 className='mr-2 h-4 w-4 animate-spin' />
@@ -527,7 +527,7 @@ const Profile = memo(() => {
                   <button
                     type='submit'
                     disabled={securityLoading}
-                    className='inline-flex items-center rounded-lg bg-slate-900 px-4 py-2 text-white transition-colors hover:bg-slate-800 dark:bg-slate-100 dark:bg-slate-800 dark:text-slate-900 dark:text-white dark:hover:bg-slate-200 dark:hover:bg-slate-600 dark:bg-slate-700'
+                    className='w-full sm:w-auto flex justify-center items-center rounded-lg bg-slate-900 px-4 py-2 text-white transition-colors hover:bg-slate-800 dark:bg-slate-100 dark:bg-slate-800 dark:text-slate-900 dark:text-white dark:hover:bg-slate-200 dark:hover:bg-slate-600 dark:bg-slate-700'
                   >
                     {securityLoading ? (
                       <Loader2 className='mr-2 h-4 w-4 animate-spin' />

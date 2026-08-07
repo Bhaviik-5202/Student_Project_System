@@ -22,25 +22,32 @@ const Select = ({
           {label}
         </label>
       )}
-      <select
-        id={id}
-        value={value}
-        onChange={onChange}
-        disabled={disabled}
-        className={`w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2.5 text-sm text-slate-900 dark:text-white shadow-xs transition-colors focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 disabled:opacity-50 disabled:cursor-not-allowed`}
-        {...props}
-      >
-        {placeholder && <option value=''>{placeholder}</option>}
-        {options.map((opt) => {
-          const val = typeof opt === 'object' ? opt.value : opt;
-          const lbl = typeof opt === 'object' ? opt.label : opt;
-          return (
-            <option key={val} value={val}>
-              {lbl}
-            </option>
-          );
-        })}
-      </select>
+      <div className='relative'>
+        <select
+          id={id}
+          value={value}
+          onChange={onChange}
+          disabled={disabled}
+          className={`w-full appearance-none truncate rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 pl-3.5 pr-10 py-2.5 text-sm text-slate-900 dark:text-white shadow-xs transition-colors focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 disabled:opacity-50 disabled:cursor-not-allowed`}
+          {...props}
+        >
+          {placeholder && <option value=''>{placeholder}</option>}
+          {options.map((opt) => {
+            const val = typeof opt === 'object' ? opt.value : opt;
+            const lbl = typeof opt === 'object' ? opt.label : opt;
+            return (
+              <option key={val} value={val}>
+                {lbl}
+              </option>
+            );
+          })}
+        </select>
+        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
+          <svg className="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+            <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+          </svg>
+        </div>
+      </div>
       {error && <p className='text-xs text-rose-500 mt-1'>{error}</p>}
     </div>
   );

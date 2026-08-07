@@ -134,20 +134,21 @@ const MeetingCalendar = memo(() => {
         </div>
 
         {/* Calendar Grid */}
-        <div className='meeting-calendar-grid'>
-          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-            <div
-              key={day}
-              className='bg-gray-50 dark:bg-gray-800 p-4 text-center dark:bg-slate-900/50'
-            >
-              <span className='text-[10px] font-bold uppercase tracking-widest text-gray-400'>
-                {day}
-              </span>
-            </div>
-          ))}
+        <div className='meeting-calendar-grid-wrapper no-scrollbar'>
+          <div className='meeting-calendar-grid'>
+            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
+              <div
+                key={day}
+                className='bg-gray-50 dark:bg-gray-800 p-4 text-center dark:bg-slate-900/50'
+              >
+                <span className='text-[10px] font-bold uppercase tracking-widest text-gray-400'>
+                  {day}
+                </span>
+              </div>
+            ))}
 
-          {daysInMonth.map((item, index) => {
-            const dayMeetings = getMeetingsForDate(item.date);
+            {daysInMonth.map((item, index) => {
+              const dayMeetings = getMeetingsForDate(item.date);
             const isToday =
               item.date.toDateString() === new Date().toDateString();
 
@@ -183,9 +184,9 @@ const MeetingCalendar = memo(() => {
                     </div>
                   )}
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>

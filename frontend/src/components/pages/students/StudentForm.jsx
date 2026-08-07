@@ -376,7 +376,7 @@ const StudentForm = memo(() => {
             </div>
 
             {/* Bottom Action Controls */}
-            <div className='flex flex-col gap-3 pt-6 border-t border-slate-100 dark:border-slate-800 sm:flex-row sm:items-center sm:justify-end'>
+            <div className='flex flex-col-reverse gap-3 pt-6 border-t border-slate-100 dark:border-slate-800 sm:flex-row sm:items-center sm:justify-end'>
               <button
                 type='button'
                 onClick={() => navigate('/students')}
