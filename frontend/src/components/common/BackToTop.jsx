@@ -5,7 +5,9 @@ import { memo, useCallback } from 'react';
  *
  * A sticky accessibility button that provides a smooth-scrolling
  * return to the top of the viewport. Features gradient styling
- * and hover-driven scale animations for subtle user engagement.
+ * and active-press scale animations for touch feedback.
+ *
+ * On mobile, it is positioned above the BottomNav via mobile.css.
  */
 const BackToTop = memo(() => {
   const scrollToTop = useCallback(() => {
@@ -18,7 +20,7 @@ const BackToTop = memo(() => {
   return (
     <button
       onClick={scrollToTop}
-      className='group fixed bottom-6 right-6 z-40 rounded-full bg-gradient-to-r from-blue-600 to-blue-700 p-3 text-white shadow-lg transition-all duration-300 hover:scale-110 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:from-blue-700 dark:to-blue-800 dark:hover:scale-110 dark:hover:shadow-blue-500/30 dark:focus:ring-blue-400 dark:focus:ring-offset-gray-900'
+      className='back-to-top group fixed bottom-6 right-6 z-40 rounded-full bg-gradient-to-r from-blue-600 to-blue-700 p-3 text-white shadow-lg transition-all duration-300 hover:scale-110 active:scale-95 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:from-blue-700 dark:to-blue-800 dark:hover:shadow-blue-500/30 dark:focus:ring-blue-400 dark:focus:ring-offset-gray-900'
       aria-label='Back to top'
       title='Scroll to top'
     >

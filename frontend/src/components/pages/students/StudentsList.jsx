@@ -20,6 +20,80 @@ import studentService from '../../../services/studentService';
 import { subscribeDataChanged } from '../../../utils/eventBus';
 import PageHeader from '../../common/PageHeader';
 
+const MobileStudentCard = memo(({ student, onEdit, onDelete, userRole }) => (
+  <div className='flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900'>
+    <div className='flex items-start justify-between gap-3'>
+      <div className='flex items-center gap-3'>
+        {student.avatar ? (
+          <img
+            src={student.avatar}
+            alt={student.name}
+            className='h-12 w-12 rounded-2xl object-cover border border-slate-200 dark:border-slate-700'
+          />
+        ) : (
+          <div className='flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-50 to-indigo-100/50 text-lg font-black text-indigo-600 dark:from-indigo-950/60 dark:to-indigo-900/40 dark:text-indigo-400'>
+            {student.name ? student.name.charAt(0).toUpperCase() : <UserIcon size={20} />}
+          </div>
+        )}
+        <div className='flex flex-col'>
+          <div className='text-[15px] font-black text-slate-900 dark:text-white leading-tight'>
+            {student.name}
+          </div>
+          <div className='text-[11px] font-bold text-slate-500 dark:text-slate-400 mt-0.5'>
+            {student.rollNumber || `STU-2026-001`}
+          </div>
+        </div>
+      </div>
+      <span
+        className={`inline-flex shrink-0 items-center rounded-xl px-2.5 py-1 text-[10px] font-black uppercase tracking-wider ${
+          student.status === 'Active'
+            ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400'
+            : 'bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400'
+        }`}
+      >
+        {student.status || 'Active'}
+      </span>
+    </div>
+
+    <div className='mt-2 flex flex-col gap-2 rounded-xl bg-slate-50/50 p-3 dark:bg-slate-800/40'>
+      <div className='flex items-center gap-2 text-[12px] font-semibold text-slate-700 dark:text-slate-300'>
+        <MailIcon size={14} className='text-slate-400' />
+        <span className='truncate'>{student.email}</span>
+      </div>
+      <div className='flex items-center gap-2 text-[12px] font-semibold text-slate-700 dark:text-slate-300'>
+        <DeptIcon size={14} className='text-slate-400' />
+        <span className='truncate'>{student.department || 'Computer Engineering'}</span>
+      </div>
+      <div className='flex items-center justify-between mt-1'>
+        <div className='flex items-center gap-1.5'>
+          <span className='rounded-md bg-white px-2 py-1 text-[10px] font-bold text-slate-600 shadow-sm dark:bg-slate-700 dark:text-slate-300'>
+            {student.semester ? (student.semester.startsWith('Sem') ? student.semester : `Sem ${student.semester}`) : 'Sem 1'}
+          </span>
+          <span className='rounded-md bg-white px-2 py-1 text-[10px] font-bold text-slate-600 shadow-sm dark:bg-slate-700 dark:text-slate-300'>
+            Year {student.year || 1}
+          </span>
+        </div>
+        {userRole === 'admin' && (
+          <div className='flex items-center gap-2'>
+            <button
+              onClick={() => onEdit(student.id)}
+              className='flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 transition-transform active:scale-90 dark:bg-indigo-500/20 dark:text-indigo-400'
+            >
+              <EditIcon size={14} />
+            </button>
+            <button
+              onClick={() => onDelete(student.id)}
+              className='flex h-7 w-7 items-center justify-center rounded-lg bg-rose-50 text-rose-600 transition-transform active:scale-90 dark:bg-rose-500/20 dark:text-rose-400'
+            >
+              <TrashIcon size={14} />
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+));
+
 const StudentRow = memo(({ student, onEdit, onDelete, userRole }) => (
   <tr className='group transition-colors hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800/80 dark:hover:bg-slate-900/50'>
     {/* Roll Number & Enrollment */}
@@ -368,8 +442,8 @@ const StudentsList = memo(() => {
         </div>
       </div>
 
-      {/* Modern Table Container */}
-      <div className='overflow-hidden rounded-2xl border border-slate-200/80 bg-white dark:bg-slate-900 shadow-xs backdrop-blur-sm dark:border-slate-800 '>
+      {/* Modern Table Container - Desktop/Tablet Only */}
+      <div className='hidden md:block overflow-hidden rounded-2xl border border-slate-200/80 bg-white dark:bg-slate-900 shadow-xs backdrop-blur-sm dark:border-slate-800 '>
         <div className='table-responsive overflow-x-auto'>
           <table className='w-full border-collapse text-left'>
             <thead>
@@ -435,6 +509,37 @@ const StudentsList = memo(() => {
             </tbody>
           </table>
         </div>
+      </div>
+
+      {/* Mobile Card Layout */}
+      <div className='block md:hidden space-y-4'>
+        {filteredStudents.length > 0 ? (
+          filteredStudents.map((student) => (
+            <MobileStudentCard
+              key={student.id}
+              student={student}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              userRole={user?.role}
+            />
+          ))
+        ) : (
+          <div className='flex flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-white py-12 px-4 text-center dark:border-slate-800 dark:bg-slate-900'>
+            {loading ? (
+              <div className='flex flex-col items-center gap-3'>
+                <div className='h-6 w-6 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent' />
+                <span className='text-[13px] font-semibold text-slate-500'>Accessing directory...</span>
+              </div>
+            ) : (
+              <>
+                <UsersIcon className='mb-3 h-10 w-10 text-slate-300 dark:text-slate-600' />
+                <span className='text-[13px] font-semibold text-slate-500'>
+                  {error ? <span className='text-rose-500'>{error}</span> : 'No matching records found.'}
+                </span>
+              </>
+            )}
+          </div>
+        )}
       </div>
       <Outlet />
     </div>

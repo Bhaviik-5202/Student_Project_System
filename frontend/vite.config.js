@@ -6,14 +6,17 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
 
   server: {
-    port: 3000,
+    port: 5000,
     strictPort: true,
-    open: true,
+    open: false,
+    host: '0.0.0.0',
+    allowedHosts: 'all',
   },
 
   preview: {
-    port: 3000,
+    port: 5000,
     strictPort: true,
+    host: '0.0.0.0',
   },
 
   build: {

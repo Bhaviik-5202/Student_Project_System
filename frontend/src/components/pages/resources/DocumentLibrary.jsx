@@ -253,7 +253,7 @@ export const DocumentLibrary = () => {
           />
         </div>
 
-        <div className='flex items-center gap-1 rounded-xl border border-slate-200 p-1 dark:border-slate-800'>
+        <div className='hidden md:flex items-center gap-1 rounded-xl border border-slate-200 p-1 dark:border-slate-800'>
           <button
             onClick={() => setViewMode('table')}
             className={`rounded-lg p-2 text-xs font-semibold transition-all ${
@@ -293,8 +293,9 @@ export const DocumentLibrary = () => {
           actionText='Upload Document'
           onAction={() => setIsUploadOpen(true)}
         />
-      ) : viewMode === 'table' ? (
-        <div className='overflow-hidden rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 shadow-xs dark:border-slate-800 '>
+      ) : (
+        <>
+        <div className={`${viewMode === 'grid' ? 'hidden' : 'hidden md:block'} overflow-hidden rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 shadow-xs dark:border-slate-800 `}>
           <table className='w-full text-left text-sm text-slate-600 dark:text-slate-400'>
             <thead className='border-b border-slate-200 bg-slate-50 dark:bg-slate-800 text-xs uppercase text-slate-500 dark:text-slate-400 dark:border-slate-800 /50 '>
               <tr>
@@ -377,8 +378,7 @@ export const DocumentLibrary = () => {
             </tbody>
           </table>
         </div>
-      ) : (
-        <div className='grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3'>
+        <div className={`${viewMode === 'table' ? 'grid md:hidden' : 'grid'} grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3`}>
           {filteredDocs.map((doc) => {
             const docId = doc._id || doc.id;
             return (
@@ -432,6 +432,7 @@ export const DocumentLibrary = () => {
             );
           })}
         </div>
+        </>
       )}
 
       {/* Upload Modal */}

@@ -12,6 +12,65 @@ import '../../../assets/styles/admin.css';
 
 const SUPER_ADMIN_EMAIL = 'er.bhavik5202@gmail.com';
 
+const MobileUserCard = memo(({ user, isSuperAdmin, onEdit, onDelete }) => (
+  <div className='flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900'>
+    <div className='flex items-start justify-between gap-3'>
+      <div className='flex items-center gap-3'>
+        <div className='flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-50 to-indigo-100/50 text-lg font-black text-indigo-600 dark:from-indigo-950/60 dark:to-indigo-900/40 dark:text-indigo-400'>
+          {user.name ? user.name.charAt(0).toUpperCase() : <Users size={20} />}
+        </div>
+        <div className='flex flex-col'>
+          <div className='flex items-center gap-2 text-[15px] font-black text-slate-900 dark:text-white leading-tight'>
+            {user.name}
+            {isSuperAdmin && (
+              <span className='inline-flex items-center rounded-md bg-amber-50 px-1.5 py-0.5 text-[10px] font-bold text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 border border-amber-200 dark:border-amber-700/50' title='Protected Super Admin'>
+                <Shield size={10} className='mr-1' />
+                SA
+              </span>
+            )}
+          </div>
+          <div className='text-[11px] font-bold text-slate-500 dark:text-slate-400 mt-0.5 truncate'>
+            {user.email}
+          </div>
+        </div>
+      </div>
+      <span className='inline-flex shrink-0 items-center rounded-xl bg-emerald-50 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400'>
+        {user.status || 'Active'}
+      </span>
+    </div>
+
+    <div className='mt-2 flex items-center justify-between rounded-xl bg-slate-50/50 p-3 dark:bg-slate-800/40'>
+      <div className='flex items-center gap-2'>
+        <span className={`admin-badge ${isSuperAdmin ? 'admin-badge-blue' : user.role === 'faculty' ? 'admin-badge-success' : 'admin-badge-gray'}`}>
+          {user.role}
+        </span>
+        <span className='text-[10px] font-semibold text-slate-400'>
+          Joined {user.joined || (user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A')}
+        </span>
+      </div>
+      
+      <div className='flex items-center gap-2'>
+        {isSuperAdmin ? (
+          <span className='inline-flex items-center gap-1 rounded-lg border border-amber-200 bg-amber-50 px-2 py-1 text-[10px] font-bold text-amber-600 dark:border-amber-800/40 dark:bg-amber-950/40 dark:text-amber-400 select-none'>
+            <Shield size={10} />
+            Protected
+          </span>
+        ) : (
+          <>
+            <button onClick={() => onEdit(user)} className='flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 transition-transform active:scale-90 dark:bg-indigo-500/20 dark:text-indigo-400'>
+              <RefreshCw size={14} className='hidden' />
+              <span className='font-bold text-[11px]'>Edit</span>
+            </button>
+            <button onClick={() => onDelete(user.id || user._id)} className='flex h-7 px-2 items-center justify-center rounded-lg bg-rose-50 text-rose-600 transition-transform active:scale-90 dark:bg-rose-500/20 dark:text-rose-400'>
+              <span className='font-bold text-[11px]'>Del</span>
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  </div>
+));
+
 const UserManagement = memo(() => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -149,7 +208,7 @@ const UserManagement = memo(() => {
         }
       />
 
-      <div className='admin-table-container rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-sm dark:border-slate-700'>
+      <div className='hidden md:block admin-table-container rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-sm dark:border-slate-700'>
         <table className='admin-table'>
           <thead>
             <tr>
@@ -283,6 +342,37 @@ const UserManagement = memo(() => {
             )}
           </tbody>
         </table>
+      </div>
+      
+      {/* Mobile Card Layout */}
+      <div className='block md:hidden space-y-4'>
+        {loading ? (
+          <div className='flex flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-white py-12 px-4 text-center dark:border-slate-800 dark:bg-slate-900'>
+            <RefreshCw className='mb-3 h-6 w-6 animate-spin text-indigo-600' />
+            <span className='text-[13px] font-semibold text-slate-500'>Loading users...</span>
+          </div>
+        ) : error ? (
+          <div className='flex flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-white py-12 px-4 text-center dark:border-slate-800 dark:bg-slate-900'>
+            <AlertCircle className='mb-3 h-6 w-6 text-rose-500' />
+            <span className='text-[13px] font-semibold text-rose-500 mb-2'>{error}</span>
+            <button onClick={fetchUsers} className='rounded-lg bg-indigo-600 px-4 py-2 text-xs font-bold text-white hover:bg-indigo-700'>Retry</button>
+          </div>
+        ) : users.length === 0 ? (
+          <div className='flex flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-white py-12 px-4 text-center dark:border-slate-800 dark:bg-slate-900'>
+            <Users className='mb-3 h-10 w-10 text-slate-300 dark:text-slate-600' />
+            <span className='text-[13px] font-semibold text-slate-500'>No users found.</span>
+          </div>
+        ) : (
+          users.map((user) => (
+            <MobileUserCard
+              key={user.id || user._id}
+              user={user}
+              isSuperAdmin={isSuperAdminUser(user)}
+              onEdit={handleEditUser}
+              onDelete={handleDeleteUser}
+            />
+          ))
+        )}
       </div>
     </div>
   );

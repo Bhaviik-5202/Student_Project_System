@@ -1,0 +1,782 @@
+/* ==========================================================================
+   Mobile-Only Enhancement Stylesheet
+   Target: max-width 767px (phones only)
+   ❌ DO NOT use these styles at md: breakpoint or above
+   ✅ Every rule here is scoped to @media (max-width: 767px)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. SAFE AREA & VIEWPORT BASE
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  /* iOS/Android safe area awareness */
+  :root {
+    --safe-area-top: env(safe-area-inset-top, 0px);
+    --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-area-left: env(safe-area-inset-left, 0px);
+    --safe-area-right: env(safe-area-inset-right, 0px);
+    /* BottomNav height + safe area bottom */
+    --mobile-nav-height: calc(5rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Prevent horizontal overflow on the whole page */
+  html,
+  body,
+  #root {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+
+  /* Smooth scrolling on iOS */
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Remove double scrollbars */
+  body {
+    overscroll-behavior-y: contain;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   2. TYPOGRAPHY — Mobile scale-down
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  h1 {
+    font-size: 1.5rem !important; /* 24px */
+    line-height: 1.25 !important;
+  }
+
+  h2 {
+    font-size: 1.25rem !important; /* 20px */
+    line-height: 1.3 !important;
+  }
+
+  h3 {
+    font-size: 1.125rem !important; /* 18px */
+    line-height: 1.35 !important;
+  }
+
+  h4 {
+    font-size: 1rem !important; /* 16px */
+    line-height: 1.4 !important;
+  }
+
+  h5 {
+    font-size: 0.9375rem !important; /* 15px */
+    line-height: 1.4 !important;
+  }
+
+  h6 {
+    font-size: 0.875rem !important; /* 14px */
+    line-height: 1.45 !important;
+  }
+
+  p {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  /* Smaller page section headings used throughout the app */
+  .page-title,
+  .section-title {
+    font-size: 1.125rem !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   3. LAYOUT — Main content area
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  /* Main content: tighter padding, account for BottomNav */
+  #main-content {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+    padding-bottom: var(--mobile-nav-height) !important;
+  }
+
+  /* Remove excess top margin on mobile */
+  .flex.flex-1.mt-6 {
+    margin-top: 0.25rem !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   4. CARDS — Equal margin, no overflow, responsive radius
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  /* Base card overrides */
+  .card,
+  .theme-card,
+  .theme-card-hover {
+    border-radius: 1rem !important;
+    padding: 1rem !important;
+    overflow: hidden;
+  }
+
+  .card-body {
+    padding: 1rem !important;
+  }
+
+  .card-header {
+    padding: 0.875rem 1rem !important;
+  }
+
+  .card-footer {
+    padding: 0.875rem 1rem !important;
+  }
+
+  /* Responsive grid: always single column on phone */
+  .grid-auto-fit,
+  .grid-auto-fill {
+    grid-template-columns: 1fr !important;
+    gap: 0.875rem !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   5. BUTTONS — Touch-friendly minimum targets (44px Apple HIG)
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  /* All interactive buttons get at least 44px touch target */
+  .btn,
+  .theme-btn,
+  .theme-btn-primary,
+  .theme-btn-secondary,
+  .theme-btn-danger,
+  .theme-btn-warning,
+  .theme-btn-success,
+  button:not([class*='icon']):not([aria-label]):not(.no-touch-target) {
+    min-height: 44px;
+  }
+
+  /* Primary action buttons: full-width block by default on mobile when stacked */
+  .mobile-btn-full {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  /* Button text: keep legible */
+  .btn,
+  .theme-btn,
+  .theme-btn-primary,
+  .theme-btn-secondary {
+    font-size: 0.9375rem !important;
+  }
+
+  /* Icon-only buttons: ensure square touch target */
+  .btn-icon,
+  button[aria-label] {
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Loading state: don't break layout */
+  .btn[disabled],
+  button[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   6. FORMS — Full-width inputs, stacked layout, proper spacing
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  /* All form inputs go full width */
+  .form-group,
+  .input,
+  .theme-input,
+  .theme-select,
+  .theme-textarea,
+  select,
+  textarea {
+    width: 100% !important;
+  }
+
+  /* Input sizing */
+  .input,
+  .theme-input,
+  .theme-select,
+  input[type='text'],
+  input[type='email'],
+  input[type='password'],
+  input[type='search'],
+  input[type='tel'],
+  input[type='url'],
+  input[type='number'],
+  input[type='date'],
+  input[type='time'],
+  select,
+  textarea {
+    min-height: 44px;
+    font-size: 1rem !important; /* Prevents iOS auto-zoom on focus */
+    padding: 0.75rem 1rem !important;
+    border-radius: 0.875rem !important;
+  }
+
+  /* Labels */
+  .form-label,
+  .theme-input-label,
+  label {
+    font-size: 0.8125rem !important;
+    margin-bottom: 0.375rem !important;
+    display: block;
+  }
+
+  /* Validation messages */
+  .form-error,
+  .form-hint {
+    font-size: 0.8125rem !important;
+    margin-top: 0.25rem !important;
+  }
+
+  /* Form groups: stacked with proper spacing */
+  .form-group {
+    margin-bottom: 1rem !important;
+  }
+
+  /* Selects */
+  select {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  /* Checkbox & radio: proper touch target */
+  .checkbox,
+  .radio,
+  input[type='checkbox'],
+  input[type='radio'] {
+    min-width: 20px;
+    min-height: 20px;
+    cursor: pointer;
+  }
+
+  /* File upload */
+  input[type='file'] {
+    font-size: 0.875rem !important;
+    padding: 0.625rem !important;
+  }
+
+  /* Date pickers */
+  input[type='date'],
+  input[type='time'] {
+    min-height: 44px;
+  }
+
+  /* Textarea: minimum comfortable height */
+  textarea,
+  .theme-textarea {
+    min-height: 80px !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   7. MODALS — Full viewport, bottom-sheet on mobile
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  /* Modal overlay */
+  .modal-overlay,
+  .theme-modal-overlay {
+    padding: 0 !important;
+    align-items: flex-end !important;
+  }
+
+  /* Modal container — slide up from bottom */
+  .modal,
+  .theme-modal-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 92dvh !important;
+    border-radius: 1.5rem 1.5rem 0 0 !important;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    margin: 0 !important;
+    /* Safe area bottom */
+    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+  }
+
+  /* Modal header: compact on mobile */
+  .modal-header,
+  .theme-modal-header {
+    padding: 1rem 1.25rem 0.875rem !important;
+  }
+
+  /* Add a drag indicator to suggest bottom-sheet pattern */
+  .modal::before,
+  .theme-modal-container::before {
+    content: '';
+    display: block;
+    width: 2.5rem;
+    height: 0.25rem;
+    background-color: rgba(148, 163, 184, 0.5);
+    border-radius: 9999px;
+    margin: 0.625rem auto 0;
+    flex-shrink: 0;
+  }
+
+  /* Modal body: internal scroll */
+  .modal-body,
+  .theme-modal-body {
+    padding: 0.875rem 1.25rem !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    max-height: calc(92dvh - 8rem);
+  }
+
+  /* Modal footer */
+  .modal-footer,
+  .theme-modal-footer {
+    padding: 0.875rem 1.25rem !important;
+    flex-wrap: wrap !important;
+    gap: 0.625rem !important;
+  }
+
+  /* Modal footer buttons: full width on mobile */
+  .modal-footer button,
+  .theme-modal-footer button {
+    flex: 1 1 auto !important;
+    min-width: 120px;
+    justify-content: center !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   8. TABLES — Horizontal scroll wrapper on mobile
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  /* Table container: allow horizontal scroll */
+  .table-responsive,
+  .theme-table-container {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 0.875rem !important;
+    /* Scroll shadow cues */
+    background:
+      linear-gradient(to right, white 30%, rgba(255,255,255,0)),
+      linear-gradient(to right, rgba(255,255,255,0), white 70%) 0 100%,
+      radial-gradient(farthest-side at 0 50%, rgba(0,0,0,.08), rgba(0,0,0,0)),
+      radial-gradient(farthest-side at 100% 50%, rgba(0,0,0,.08), rgba(0,0,0,0)) 0 100%;
+    background-repeat: no-repeat;
+    background-color: white;
+    background-size: 40px 100%, 40px 100%, 14px 100%, 14px 100%;
+    background-position: 0 0, 100%, 0 0, 100%;
+    background-attachment: local, local, scroll, scroll;
+  }
+
+  .dark .table-responsive,
+  .dark .theme-table-container {
+    background: none;
+    background-color: transparent;
+  }
+
+  /* Table cells: compact on mobile */
+  .table th,
+  .theme-th {
+    padding: 0.625rem 0.875rem !important;
+    font-size: 0.6875rem !important;
+    white-space: nowrap;
+  }
+
+  .table td,
+  .theme-td {
+    padding: 0.75rem 0.875rem !important;
+    font-size: 0.8125rem !important;
+  }
+
+  /* Pagination: compact on mobile */
+  .table-responsive .flex.items-center.justify-between,
+  [class*='pagination'] {
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+    padding: 0.75rem 1rem !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   9. NAVIGATION — Bottom nav & sidebar polish
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  /* Ensure bottom nav doesn't cover content — already handled by pb-24 in layout
+     but we reinforce with safe area */
+  .bottom-nav-container {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* Sidebar drawer: full height, smooth */
+  .mobile-sidebar-drawer {
+    max-height: 100dvh;
+    overflow-y: auto;
+  }
+
+  /* Active nav item pulse */
+  @keyframes mobile-nav-bounce {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-2px) scale(1.08); }
+  }
+}
+
+/* --------------------------------------------------------------------------
+   10. BADGES — Readable on small screens
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  .badge,
+  .theme-badge,
+  .theme-badge-success,
+  .theme-badge-warning,
+  .theme-badge-danger,
+  .theme-badge-info,
+  .theme-badge-neutral {
+    font-size: 0.6875rem !important;
+    padding: 0.25rem 0.625rem !important;
+    letter-spacing: 0.025em;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   11. ALERTS — Readable, no overflow
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  .alert {
+    padding: 0.875rem 1rem !important;
+    font-size: 0.875rem !important;
+    border-radius: 0.875rem !important;
+  }
+
+  /* Alert icons: don't shrink */
+  .alert svg,
+  .alert i {
+    flex-shrink: 0;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   12. IMAGES, AVATARS, ICONS — Responsive sizing
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Avatars: don't overflow their containers */
+  .avatar {
+    flex-shrink: 0;
+  }
+
+  /* SVG icons in text: proper alignment */
+  svg {
+    vertical-align: middle;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   13. CHARTS & VISUALIZATIONS — Responsive resize
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  /* Recharts / chart containers: full width */
+  .recharts-wrapper,
+  .recharts-responsive-container,
+  [class*='chart-container'],
+  [class*='chart-wrapper'] {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden;
+  }
+
+  /* Chart text: readable but compact */
+  .recharts-text,
+  .recharts-cartesian-axis-tick-value {
+    font-size: 0.625rem !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   14. EMPTY STATES — Centered, properly spaced
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  .empty-state,
+  [class*='empty-state'] {
+    padding: 2rem 1.5rem !important;
+    text-align: center;
+  }
+
+  .empty-state svg,
+  .empty-state img {
+    width: 3rem;
+    height: 3rem;
+    margin: 0 auto 1rem;
+  }
+
+  .empty-state h3,
+  .empty-state p {
+    text-align: center;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   15. LOADING / SKELETON — No layout shifts
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  .skeleton {
+    border-radius: 0.625rem !important;
+  }
+
+  /* Loading spinner: always visible */
+  .spinner {
+    flex-shrink: 0;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   16. ERROR STATES — Readable on mobile
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  [class*='error-state'],
+  [class*='ErrorState'] {
+    padding: 1.5rem 1rem !important;
+    text-align: center;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   17. SCROLL BEHAVIOR FIXES
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  /* No unwanted horizontal scrolling */
+  main,
+  section,
+  article,
+  .container-wide,
+  .container-narrow {
+    overflow-x: hidden;
+    max-width: 100%;
+  }
+
+  /* Smooth vertical scrolling */
+  .overflow-y-auto,
+  [class*='overflow-y-auto'] {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+
+  /* Hide doubled scrollbars */
+  .overflow-hidden {
+    overflow: hidden !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   18. HEADER — Mobile-specific fixes
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  /* Header safe area at top (for notch devices) */
+  header {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+
+  /* Dropdown menus: full width on mobile */
+  .dropdown-enter {
+    width: calc(100vw - 2rem) !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    right: auto !important;
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   19. STATISTICS / STAT CARDS — Two-column grid on mobile
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  /* Stats grid — 2 columns on phone */
+  .stats-grid,
+  [class*='stats-grid'] {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.75rem !important;
+  }
+
+  /* Stat card: compact but readable */
+  [class*='stat-card'] {
+    padding: 0.875rem !important;
+    border-radius: 1rem !important;
+  }
+
+  /* Stat value: slightly smaller on mobile */
+  [class*='stat-value'] {
+    font-size: 1.5rem !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   20. PROGRESS BARS — Full width on mobile
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  .progress-bar {
+    width: 100% !important;
+    height: 0.375rem !important;
+    border-radius: 9999px !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   21. MOBILE FOOTER POLISH
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  /* Mobile footer: respect bottom nav height */
+  footer[class*='block'][class*='md:hidden'] {
+    padding-bottom: calc(var(--mobile-nav-height, 5rem) + 0.5rem) !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   22. ACCESSIBILITY — Touch targets & focus states
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  /* Larger focus ring for touch */
+  :focus-visible {
+    outline-offset: 3px !important;
+    outline-width: 2.5px !important;
+  }
+
+  /* Links: enough vertical padding for touch */
+  a:not([class]) {
+    padding: 0.125rem 0;
+    display: inline-block;
+  }
+
+  /* Interactive elements: 44px min touch target */
+  a,
+  button,
+  [role='button'],
+  input[type='checkbox'] + label,
+  input[type='radio'] + label,
+  select {
+    touch-action: manipulation;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   23. MISC — Page header, back-to-top, toasts
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  /* Page header: tighter on mobile */
+  .page-header,
+  [class*='PageHeader'] {
+    padding: 0.875rem 0 !important;
+    margin-bottom: 1rem !important;
+  }
+
+  /* BackToTop: above BottomNav */
+  .back-to-top,
+  [class*='back-to-top'],
+  [class*='BackToTop'] {
+    bottom: calc(var(--mobile-nav-height, 5rem) + 0.75rem) !important;
+    right: 1rem !important;
+  }
+
+  /* Toast notifications: above bottom nav */
+  [class*='toaster'],
+  [class*='Toaster'],
+  .react-hot-toast {
+    bottom: calc(var(--mobile-nav-height, 5rem) + 0.5rem) !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   24. FILTER BARS & SEARCH INPUTS — Mobile responsiveness
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  /* Search & filter bars stack vertically on mobile */
+  .filter-bar,
+  [class*='filter-bar'],
+  [class*='FilterBar'] {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.75rem !important;
+  }
+
+  /* Full width search fields */
+  [class*='SearchInput'],
+  [class*='search-input'] {
+    width: 100% !important;
+  }
+
+  /* Filter select dropdowns stack or wrap */
+  [class*='filter-select'],
+  [class*='FilterSelect'] {
+    width: 100% !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   25. TIMELINE CHARTS & ROADMAPS — Touch-scrolling containers
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  /* Gantt charts, Sprint planners, Roadmaps horizontal touch scroll */
+  [class*='gantt'],
+  [class*='Gantt'],
+  [class*='timeline'],
+  [class*='Timeline'],
+  [class*='sprint'],
+  [class*='Sprint'],
+  [class*='roadmap'],
+  [class*='Roadmap'] {
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   26. DETAIL PAGES & ACTIONS — Mobile padding & button stacking
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 767px) {
+  /* Action button groups stack vertically on mobile */
+  .action-buttons,
+  [class*='action-buttons'],
+  [class*='page-actions'] {
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 0.5rem !important;
+  }
+
+  /* Secondary cards on detail pages */
+  [class*='ProjectDetails'],
+  [class*='MeetingDetails'],
+  [class*='ResourceDetails'],
+  [class*='ProfileDetails'] {
+    padding: 0.75rem !important;
+  }
+}
+

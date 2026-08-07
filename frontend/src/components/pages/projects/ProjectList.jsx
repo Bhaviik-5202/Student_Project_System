@@ -249,7 +249,7 @@ const ProjectList = () => {
             )}
 
             {/* Grid vs Table View Mode */}
-            <div className='flex rounded-xl border border-gray-200 bg-white dark:bg-slate-900 p-1 dark:border-slate-700 dark:bg-slate-800'>
+            <div className='hidden md:flex rounded-xl border border-gray-200 bg-white dark:bg-slate-900 p-1 dark:border-slate-700 dark:bg-slate-800'>
               <IconButton
                 icon={LayoutGrid}
                 onClick={() => setViewMode('grid')}
@@ -354,9 +354,10 @@ const ProjectList = () => {
             onAction: () => navigate('/projects/new'),
           })}
         />
-      ) : viewMode === 'grid' ? (
-        /* GRID VIEW */
-        <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
+      ) : (
+        <>
+        {/* GRID VIEW */}
+        <div className={`${viewMode === 'table' ? 'hidden md:grid' : 'grid'} grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3`}>
           {projects.map((project) => (
             <Card
               key={project._id || project.id}
@@ -510,9 +511,10 @@ const ProjectList = () => {
             </Card>
           ))}
         </div>
-      ) : (
-        /* TABLE VIEW */
-        <Table>
+
+        {/* TABLE VIEW */}
+        <div className={`${viewMode === 'grid' ? 'hidden' : 'hidden md:block'}`}>
+          <Table>
           <TableHeader>
             <tr>
               <TableHead>Code</TableHead>
@@ -597,7 +599,9 @@ const ProjectList = () => {
               </TableRow>
             ))}
           </TableBody>
-        </Table>
+          </Table>
+        </div>
+        </>
       )}
 
       {/* Pagination Controls */}

@@ -13,8 +13,8 @@ import {
 } from 'lucide-react';
 
 /**
- * MobileFooter — Premium mobile-only footer (< 768px)
- * Minimal, elegant, perfectly spaced above the floating BottomNav.
+ * MobileFooter — Ultra-Premium mobile-only footer (< 768px)
+ * Matches the glassmorphic style of the new mobile dashboard.
  */
 const MobileFooter = memo(() => {
   const { user } = useAuth();
@@ -22,55 +22,63 @@ const MobileFooter = memo(() => {
   const dashPath = !user ? '/' : user.role === 'admin' ? '/admin-dashboard' : '/dashboard';
 
   return (
-    <footer className='block md:hidden'>
-      {/* Gradient divider */}
-      <div className='mx-5 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-slate-700' />
+    <footer className='block md:hidden relative mt-8 pb-[88px]'>
+      <div className='absolute inset-0 bg-gradient-to-b from-transparent to-slate-50/80 dark:to-slate-900/80 pointer-events-none' />
 
-      <div className='px-5 py-6 pb-28 space-y-5'>
+      {/* Decorative Blur */}
+      <div className='absolute bottom-0 left-1/2 -translate-x-1/2 h-40 w-full max-w-sm rounded-t-[100%] bg-blue-500/10 blur-3xl pointer-events-none' />
 
+      <div className='relative z-10 px-5 pt-8 pb-4 space-y-6'>
         {/* Brand row */}
-        <Link to={dashPath} className='flex items-center gap-2.5 w-fit active:opacity-75 transition-opacity'>
-          <div className='h-8 w-8 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-sm'>
-            <GraduationCap className='h-4 w-4 text-white' />
+        <Link to={dashPath} className='flex items-center gap-3 w-fit transition-transform active:scale-95'>
+          <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/30'>
+            <GraduationCap className='h-5 w-5 text-white' />
           </div>
-          <div>
-            <p className='text-xs font-bold text-slate-900 dark:text-white leading-none'>Student Project System</p>
-            <p className='text-[10px] text-slate-400 dark:text-slate-500 font-mono mt-0.5'>v2.4.0 · Academic Build</p>
+          <div className='flex flex-col'>
+            <p className='text-[14px] font-black tracking-tight text-slate-900 dark:text-white leading-tight'>
+              Student Project System
+            </p>
+            <p className='text-[10px] font-semibold tracking-widest text-slate-500 uppercase mt-0.5'>
+              Academic Build v2.5
+            </p>
           </div>
         </Link>
 
-        {/* Links — two rows */}
-        <div className='flex flex-wrap gap-x-5 gap-y-2'>
+        {/* Links Grid */}
+        <div className='grid grid-cols-2 gap-3'>
           {[
-            { label: 'About',    path: '/about',    icon: Info },
-            { label: 'Help',     path: '/help',     icon: HelpCircle },
-            { label: 'Contact',  path: '/contact',  icon: Mail },
-            { label: 'Feedback', path: '/feedback', icon: MessageSquare },
-            { label: 'Privacy',  path: '/privacy',  icon: Shield },
-            { label: 'Terms',    path: '/terms',    icon: FileText },
+            { label: 'About Us',    path: '/about',    icon: Info },
+            { label: 'Help Center', path: '/help',     icon: HelpCircle },
+            { label: 'Contact',     path: '/contact',  icon: Mail },
+            { label: 'Feedback',    path: '/feedback', icon: MessageSquare },
+            { label: 'Privacy',     path: '/privacy',  icon: Shield },
+            { label: 'Terms',       path: '/terms',    icon: FileText },
           ].map(({ label, path, icon: Icon }) => (
             <Link
               key={path}
               to={path}
-              className='flex items-center gap-1 text-[12px] font-medium text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 active:opacity-70 transition-colors'
+              className='flex items-center gap-2 rounded-2xl bg-white/60 p-3 shadow-sm backdrop-blur-md transition-transform active:scale-95 dark:bg-slate-800/60'
             >
-              <Icon className='h-3 w-3' />
-              {label}
+              <div className='flex h-7 w-7 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-700/50'>
+                <Icon className='h-3.5 w-3.5 text-slate-600 dark:text-slate-300' />
+              </div>
+              <span className='text-[12px] font-bold text-slate-700 dark:text-slate-300'>
+                {label}
+              </span>
             </Link>
           ))}
         </div>
 
         {/* Bottom copyright row */}
-        <div className='flex items-center justify-between pt-1 border-t border-slate-100 dark:border-slate-800'>
-          <p className='text-[11px] text-slate-400 dark:text-slate-600'>
-            © {year} Student Project System
-          </p>
-          <span className='inline-flex items-center gap-1 text-[10px] font-medium text-slate-400 dark:text-slate-600'>
-            <ExternalLink className='h-2.5 w-2.5' />
+        <div className='flex flex-col items-center justify-center pt-6 gap-2 border-t border-slate-200/60 dark:border-slate-800'>
+          <span className='inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-[10px] font-bold text-slate-500 dark:bg-slate-800 dark:text-slate-400'>
+            <ExternalLink className='h-3 w-3' />
             All rights reserved
           </span>
+          <p className='text-[11px] font-semibold text-slate-400 dark:text-slate-500'>
+            © {year} SPS Architecture
+          </p>
         </div>
-
       </div>
     </footer>
   );

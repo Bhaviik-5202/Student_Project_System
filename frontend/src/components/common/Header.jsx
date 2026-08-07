@@ -306,24 +306,24 @@ const Header = memo(
                 <button
                   type='button'
                   onClick={() => setIsMobileSidebarOpen(true)}
-                  className='group flex md:hidden items-center gap-2.5 text-left outline-none transition-transform active:scale-[0.97]'
+                  className='group flex md:hidden items-center gap-2 text-left outline-none transition-transform active:scale-[0.97] min-w-0 shrink py-1'
                   aria-label='Open Navigation Menu'
                 >
-                  <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 shadow-lg'>
+                  <div className='flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 shadow-md shadow-blue-500/20'>
                     <HeaderIcon
                       name='graduation-cap'
                       className='text-white'
-                      size='text-lg'
+                      size='text-base'
                     />
                   </div>
-                  <div>
-                    <h1 className='text-sm font-bold leading-tight text-gray-900 dark:text-white'>
+                  <div className='min-w-0 flex-1'>
+                    <h1 className='text-xs sm:text-sm font-extrabold leading-snug text-slate-900 dark:text-white truncate tracking-tight max-w-[135px] min-[380px]:max-w-[175px] sm:max-w-none'>
                       Student Project System
                     </h1>
-                    <p className='text-[11px] font-semibold text-blue-600 dark:text-blue-400 flex items-center gap-0.5'>
-                      <span>Menu & Modules</span>
-                      <i className='fas fa-chevron-right text-[9px] ml-0.5 opacity-80' />
-                    </p>
+                    <div className='flex items-center gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-400 mt-0.5 leading-none'>
+                      <span className='truncate'>Menu & Modules</span>
+                      <i className='fas fa-chevron-right text-[8px] opacity-80 shrink-0' />
+                    </div>
                   </div>
                 </button>
               </div>

@@ -12,9 +12,9 @@ import {
 /**
  * BottomNav Component
  *
- * Apple-grade Floating Bottom Navigation Bar for Mobile View (< 768px).
- * Features glassmorphism backdrop, active pill highlight, safe-area inset,
- * and high-end touch feedback transitions.
+ * Ultra-Premium Floating Bottom Navigation Bar for Mobile View (< 768px).
+ * Features an expanding pill for the active tab (shows text) and icon-only
+ * for inactive tabs. This perfectly resolves text overlap and feels like a native app.
  */
 const BottomNav = memo(() => {
   const { user } = useAuth();
@@ -38,7 +38,7 @@ const BottomNav = memo(() => {
 
   const navItems = [
     {
-      title: 'Dashboard',
+      title: 'Home',
       path: '/dashboard',
       icon: LayoutGrid,
     },
@@ -72,15 +72,17 @@ const BottomNav = memo(() => {
   };
 
   return (
-    <div className='block md:hidden fixed bottom-3 left-3 right-3 z-50 pointer-events-auto max-w-sm mx-auto select-none'>
-      <nav
-        aria-label='Mobile Floating Navigation Dock'
-        className='relative w-full rounded-[24px] border border-white/60 bg-white/85 p-1.5 backdrop-blur-2xl shadow-[0_12px_36px_rgba(0,0,0,0.14)] dark:border-slate-800/80 dark:bg-slate-900/85 dark:shadow-[0_14px_40px_rgba(0,0,0,0.6)]'
-        style={{
-          paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + 0.2rem)',
-        }}
-      >
-        <div className='flex items-center justify-between gap-1 h-12'>
+    <div
+      className='block md:hidden fixed bottom-0 left-0 right-0 z-[100] pointer-events-none'
+      style={{
+        paddingBottom: 'env(safe-area-inset-bottom, 16px)',
+      }}
+    >
+      <div className='mx-4 mb-4 pointer-events-auto flex justify-center'>
+        <nav
+          aria-label='Mobile Floating Navigation Dock'
+          className='flex w-full max-w-[360px] items-center justify-between rounded-full border border-white/40 bg-white/80 p-2 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.12)] dark:border-slate-700/50 dark:bg-slate-900/80 dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)]'
+        >
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = checkIsActive(item.path);
@@ -89,29 +91,35 @@ const BottomNav = memo(() => {
               <NavLink
                 key={item.title}
                 to={item.path}
-                className={`relative flex flex-1 flex-col items-center justify-center h-full py-1 rounded-xl transition-all duration-200 active:scale-90 ${isActive
-                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/25 scale-[1.02]'
-                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
-                  }`}
+                aria-label={item.title}
+                className={`relative flex items-center justify-center rounded-full transition-all duration-300 ease-out active:scale-95 ${
+                  isActive
+                    ? 'bg-blue-600 px-4 py-2.5 text-white shadow-md shadow-blue-500/30'
+                    : 'p-2.5 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
+                }`}
               >
-                {/* Icon */}
                 <Icon
-                  className={`h-4.5 w-4.5 transition-transform duration-200 ${isActive ? 'stroke-[2.2]' : 'stroke-[1.75]'
-                    }`}
+                  className={`shrink-0 transition-all duration-300 ${
+                    isActive ? 'h-5 w-5 stroke-[2.5]' : 'h-[22px] w-[22px] stroke-[1.75]'
+                  }`}
+                  aria-hidden='true'
                 />
-
-                {/* Title Label */}
-                <span
-                  className={`mt-0.5 text-[10px] leading-tight tracking-tight truncate max-w-full ${isActive ? 'font-bold text-white' : 'font-semibold'
-                    }`}
+                
+                {/* Expanding text for active state */}
+                <div
+                  className={`overflow-hidden transition-all duration-300 ease-out ${
+                    isActive ? 'ml-2 max-w-[80px] opacity-100' : 'max-w-0 opacity-0'
+                  }`}
                 >
-                  {item.title}
-                </span>
+                  <span className='whitespace-nowrap text-[13px] font-bold tracking-wide'>
+                    {item.title}
+                  </span>
+                </div>
               </NavLink>
             );
           })}
-        </div>
-      </nav>
+        </nav>
+      </div>
     </div>
   );
 });

@@ -339,7 +339,7 @@ export const ResourceBrowser = () => {
         </div>
 
         {/* View Toggle */}
-        <div className='flex items-center gap-1 rounded-xl border border-slate-200 p-1 dark:border-slate-800'>
+        <div className='hidden md:flex items-center gap-1 rounded-xl border border-slate-200 p-1 dark:border-slate-800'>
           <button
             onClick={() => setViewMode('grid')}
             className={`rounded-lg p-2 text-xs font-semibold transition-all ${
@@ -384,8 +384,9 @@ export const ResourceBrowser = () => {
           actionText='Upload First Resource'
           onAction={() => setIsUploadOpen(true)}
         />
-      ) : viewMode === 'grid' ? (
-        <div className='grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3'>
+      ) : (
+        <>
+        <div className={`${viewMode === 'list' ? 'hidden md:grid' : 'grid'} grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3`}>
           {filteredResources.map((resource) => {
             const { icon: FormatIcon, color: iconStyle } = getFormatIcon(
               resource.fileType,
@@ -511,9 +512,9 @@ export const ResourceBrowser = () => {
             );
           })}
         </div>
-      ) : (
-        /* List View */
-        <div className='table-responsive overflow-x-auto rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 shadow-xs dark:border-slate-800 '>
+
+        {/* List View */}
+        <div className={`${viewMode === 'grid' ? 'hidden' : 'hidden md:block'} table-responsive overflow-x-auto rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 shadow-xs dark:border-slate-800 `}>
           <table className='w-full text-left text-sm text-slate-600 dark:text-slate-400'>
             <thead className='border-b border-slate-200 bg-slate-50 dark:bg-slate-800 text-xs uppercase text-slate-500 dark:text-slate-400 dark:border-slate-800 /50 '>
               <tr>
@@ -601,6 +602,7 @@ export const ResourceBrowser = () => {
             </tbody>
           </table>
         </div>
+        </>
       )}
 
       {/* Upload Modal */}

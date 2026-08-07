@@ -5,6 +5,46 @@ import PageHeader from '../../common/PageHeader';
 import api from '../../../utils/api';
 import '../../../assets/styles/admin.css';
 
+const MobileAuditCard = memo(({ log, getUserDisplay }) => (
+  <div className='flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900'>
+    <div className='flex items-start justify-between gap-3'>
+      <div className='flex items-center gap-2'>
+        <i className='fas fa-user-circle text-2xl text-slate-400 dark:text-slate-500'></i>
+        <div className='flex flex-col'>
+          <span className='font-semibold text-slate-900 dark:text-slate-200 text-[14px] leading-tight'>
+            {getUserDisplay(log.user)}
+          </span>
+          <span className='font-mono text-[10px] text-slate-500 dark:text-slate-400 mt-0.5'>
+            {log.timestamp || (log.createdAt ? new Date(log.createdAt).toLocaleString() : 'N/A')}
+          </span>
+        </div>
+      </div>
+      <span className={`admin-badge shrink-0 text-[10px] ${
+        log.status === 'Success' ? 'admin-badge-success' : log.status === 'Warning' ? 'admin-badge-warning' : 'admin-badge-danger'
+      }`}>
+        {log.status || 'Unknown'}
+      </span>
+    </div>
+
+    <div className='mt-1 flex flex-col gap-1.5 rounded-xl bg-slate-50/50 p-3 dark:bg-slate-800/40'>
+      <div className='font-bold text-slate-900 dark:text-white text-[13px]'>
+        {log.action}
+      </div>
+      {log.details && (
+        <div className='text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed'>
+          {log.details}
+        </div>
+      )}
+      <div className='mt-2 flex items-center gap-1.5 pt-2 border-t border-slate-200/50 dark:border-slate-700/50'>
+        <i className='fas fa-network-wired text-slate-400 text-[10px]'></i>
+        <span className='font-mono text-[10px] text-slate-600 dark:text-slate-400 font-bold'>
+          {log.ip || '127.0.0.1'}
+        </span>
+      </div>
+    </div>
+  </div>
+));
+
 /**
  * AuditLog - Immutable record of system-wide administrative and security events.
  * Standardized to use global admin.css and FontAwesome icons.
@@ -260,7 +300,7 @@ const AuditLog = memo(() => {
         </div>
       </div>
 
-      <div className='admin-table-container'>
+      <div className='hidden md:block admin-table-container'>
         <table className='admin-table'>
           <thead>
             <tr>
@@ -356,6 +396,35 @@ const AuditLog = memo(() => {
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* Mobile Card Layout */}
+      <div className='block md:hidden space-y-4'>
+        {loading ? (
+          <div className='flex flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-white py-12 px-4 text-center dark:border-slate-800 dark:bg-slate-900'>
+            <i className='fas fa-circle-notch fa-spin text-2xl text-blue-500 mb-3'></i>
+            <span className='text-[13px] font-semibold text-slate-500'>Synchronizing records...</span>
+          </div>
+        ) : logs.length === 0 ? (
+          <div className='flex flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-white py-12 px-4 text-center dark:border-slate-800 dark:bg-slate-900'>
+            <i className='fas fa-folder-open mb-3 text-4xl text-slate-300 dark:text-slate-600'></i>
+            <span className='text-[13px] font-semibold text-slate-500 mb-2'>No security events found.</span>
+            <button
+              onClick={() => {
+                const resetFilters = { action: '', status: '', date: '' };
+                setFilters(resetFilters);
+                fetchLogs(resetFilters);
+              }}
+              className='text-xs font-bold text-blue-600 hover:underline dark:text-blue-400'
+            >
+              Clear search parameters
+            </button>
+          </div>
+        ) : (
+          logs.map((log) => (
+            <MobileAuditCard key={log.id || log._id} log={log} getUserDisplay={getUserDisplay} />
+          ))
+        )}
       </div>
     </div>
   );

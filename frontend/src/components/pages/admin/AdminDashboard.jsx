@@ -43,6 +43,27 @@ import { subscribeDataChanged } from '../../../utils/eventBus';
 
 const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6'];
 
+const MobileAdminUserCard = ({ u }) => (
+  <div className='flex items-center justify-between p-3 rounded-xl border border-slate-100 bg-slate-50 dark:border-slate-800 dark:bg-slate-800/50'>
+    <div className='flex flex-col'>
+      <div className='font-bold text-slate-900 dark:text-white text-sm'>
+        {u.name || 'User'}
+      </div>
+      <div className='text-[10px] text-slate-500 dark:text-slate-400'>
+        {u.email}
+      </div>
+    </div>
+    <div className='flex flex-col items-end gap-1.5'>
+      <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${
+        u.role === 'admin' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' : u.role === 'faculty' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400' : 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
+      }`}>
+        {u.role || 'Student'}
+      </span>
+      <StatusBadge status={u.status || 'active'} label={u.status || 'Active'} />
+    </div>
+  </div>
+);
+
 export const AdminDashboard = () => {
   const [stats, setStats] = useState({});
   const [users, setUsers] = useState([]);
@@ -481,7 +502,7 @@ export const AdminDashboard = () => {
                 </button>
               </div>
 
-              <div className='mt-4 overflow-x-auto'>
+              <div className='mt-4 hidden md:block overflow-x-auto'>
                 <table className='w-full text-left text-xs text-slate-600 dark:text-slate-400'>
                   <thead className='border-b border-slate-200 bg-slate-50 dark:bg-slate-800 uppercase text-slate-500 dark:text-slate-400 dark:border-slate-800 /50'>
                     <tr>
@@ -542,6 +563,19 @@ export const AdminDashboard = () => {
                     )}
                   </tbody>
                 </table>
+              </div>
+              
+              {/* Mobile Card Layout */}
+              <div className='mt-4 block md:hidden space-y-2'>
+                {users.length > 0 ? (
+                  users.slice(0, 5).map((u, idx) => (
+                    <MobileAdminUserCard key={u.id || u._id || idx} u={u} />
+                  ))
+                ) : (
+                  <div className='py-8 text-center text-slate-500 dark:text-slate-400 text-xs'>
+                    No users found.
+                  </div>
+                )}
               </div>
             </div>
           </div>

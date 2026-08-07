@@ -18,6 +18,66 @@ import staffService from '../../../services/staffService';
 import { subscribeDataChanged } from '../../../utils/eventBus';
 import { toast } from 'react-hot-toast';
 
+const MobileStaffCard = memo(({ staff, onEdit, onDelete }) => (
+  <div className='flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900'>
+    <div className='flex items-start justify-between gap-3'>
+      <div className='flex items-center gap-3'>
+        {staff.avatar ? (
+          <img src={staff.avatar} alt={staff.name} className='h-11 w-11 rounded-2xl object-cover border border-gray-200 dark:border-gray-700' />
+        ) : (
+          <div className='flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-50 to-purple-100/50 text-lg font-black text-purple-600 dark:from-purple-950/60 dark:to-purple-900/40 dark:text-purple-400'>
+            {staff.name ? staff.name.charAt(0).toUpperCase() : 'F'}
+          </div>
+        )}
+        <div className='flex flex-col'>
+          <div className='text-[14px] font-black text-slate-900 dark:text-white leading-tight line-clamp-1'>
+            {staff.name}
+          </div>
+          <div className='text-[11px] font-bold text-slate-500 dark:text-slate-400 mt-0.5 truncate'>
+            {staff.email}
+          </div>
+        </div>
+      </div>
+      <span className={`inline-flex shrink-0 items-center rounded-xl px-2 py-1 text-[10px] font-black uppercase tracking-wider ${
+        staff.status === 'Active' ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400' : 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400'
+      }`}>
+        <UserCheck size={10} className='mr-1' />
+        {staff.status || 'Active'}
+      </span>
+    </div>
+
+    <div className='mt-2 flex flex-col gap-2 rounded-xl bg-slate-50/50 p-3 dark:bg-slate-800/40'>
+      <div className='flex items-center justify-between'>
+        <span className='font-bold text-gray-800 dark:text-gray-200 text-[12px]'>
+          {staff.designation || 'Assistant Professor'}
+        </span>
+        <span className='text-[10px] font-bold text-purple-600 dark:text-purple-400 border border-purple-200 dark:border-purple-800 bg-purple-50 dark:bg-purple-900/30 px-1.5 py-0.5 rounded'>
+          {staff.facultyId || staff.staffId || 'FAC-2026-001'}
+        </span>
+      </div>
+      <div className='flex items-center gap-1 text-[11px] text-gray-600 dark:text-gray-400'>
+        <Building size={12} className='text-gray-400' />
+        {staff.department || 'Computer Engineering'}
+      </div>
+      
+      <div className='mt-2 flex items-center justify-between pt-2 border-t border-slate-200/50 dark:border-slate-700/50'>
+        <div className='flex items-center gap-1.5 text-[10px] text-gray-500 dark:text-gray-400 font-medium'>
+          <Phone size={12} className='text-gray-400' />
+          {staff.phone && staff.phone !== 'N/A' ? staff.phone : <span className='italic'>6353712057</span>}
+        </div>
+        <div className='flex items-center gap-2'>
+          <button onClick={() => onEdit(staff)} className='flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 transition-transform active:scale-90 dark:bg-indigo-500/20 dark:text-indigo-400'>
+            <Edit2 size={12} />
+          </button>
+          <button onClick={() => onDelete(staff.dbId || staff.id)} className='flex h-7 w-7 items-center justify-center rounded-lg bg-rose-50 text-rose-600 transition-transform active:scale-90 dark:bg-rose-500/20 dark:text-rose-400'>
+            <Trash2 size={12} />
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+));
+
 const StaffRow = memo(({ staff, onEdit, onDelete }) => (
   <tr className='group transition-colors hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-800 dark:hover:bg-slate-900/50'>
     {/* Faculty ID */}
@@ -324,7 +384,7 @@ const Staff = memo(() => {
       </div>
 
       {/* Table Container */}
-      <div className='table-container table-responsive overflow-x-auto shadow-md'>
+      <div className='hidden md:block table-container table-responsive overflow-x-auto shadow-md'>
         <table className='table'>
           <thead>
             <tr className='bg-gray-50 dark:bg-gray-800/50 dark:bg-slate-900/50'>
@@ -394,6 +454,34 @@ const Staff = memo(() => {
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* Mobile Cards Layout */}
+      <div className='block md:hidden space-y-4'>
+        {loading ? (
+          <div className='flex flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-white py-12 px-4 text-center dark:border-slate-800 dark:bg-slate-900'>
+            <div className='h-6 w-6 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent mb-3' />
+            <span className='text-[13px] font-semibold text-slate-500'>Accessing directory...</span>
+          </div>
+        ) : error ? (
+          <div className='flex flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-white py-12 px-4 text-center dark:border-slate-800 dark:bg-slate-900'>
+            <span className='text-[13px] font-semibold text-rose-500 mb-2'>{error}</span>
+          </div>
+        ) : filteredStaff.length === 0 ? (
+          <div className='flex flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-white py-12 px-4 text-center dark:border-slate-800 dark:bg-slate-900'>
+            <Users className='mb-3 h-10 w-10 text-slate-300 dark:text-slate-600' />
+            <span className='text-[13px] font-semibold text-slate-500'>No staff records found.</span>
+          </div>
+        ) : (
+          filteredStaff.map((staff) => (
+            <MobileStaffCard
+              key={staff.dbId}
+              staff={staff}
+              onEdit={handleEditStaff}
+              onDelete={handleDeleteStaff}
+            />
+          ))
+        )}
       </div>
     </div>
   );

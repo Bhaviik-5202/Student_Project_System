@@ -27,6 +27,46 @@ import StatusBadge from '../../ui/StatusBadge';
 import reportService from '../../../services/reportService';
 import useNotification from '../../../hooks/useNotification';
 
+const MobileReportCard = ({ rep, onDownload, onDelete }) => (
+  <div className='flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900'>
+    <div className='flex items-start justify-between gap-3'>
+      <div className='flex items-center gap-3'>
+        <div className='flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-50 to-indigo-100/50 text-lg font-black text-indigo-600 dark:from-indigo-950/60 dark:to-indigo-900/40 dark:text-indigo-400'>
+          <FileText size={20} />
+        </div>
+        <div className='flex flex-col'>
+          <div className='text-[14px] font-black text-slate-900 dark:text-white leading-tight line-clamp-1'>
+            {rep.title}
+          </div>
+          <div className='text-[11px] font-bold text-slate-500 dark:text-slate-400 mt-0.5 truncate'>
+            {rep.type || 'Academic Status'}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div className='mt-2 flex items-center justify-between rounded-xl bg-slate-50/50 p-3 dark:bg-slate-800/40'>
+      <div className='flex flex-col gap-1'>
+        <span className='font-bold uppercase text-indigo-600 dark:text-indigo-400 text-[10px]'>
+          {rep.format || 'PDF'}
+        </span>
+        <span className='text-[10px] font-semibold text-slate-400'>
+          Generated: {rep.date || 'Today'}
+        </span>
+      </div>
+      
+      <div className='flex items-center gap-2'>
+        <Button variant='primary' size='sm' icon={Download} onClick={() => onDownload(rep)}>
+          DL
+        </Button>
+        <button onClick={() => onDelete(rep.id || rep._id)} className='flex h-8 w-8 items-center justify-center rounded-lg bg-rose-50 text-rose-600 transition-transform active:scale-90 dark:bg-rose-500/20 dark:text-rose-400'>
+          <Trash2 size={14} />
+        </button>
+      </div>
+    </div>
+  </div>
+);
+
 export const Reports = () => {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -244,7 +284,9 @@ export const Reports = () => {
             icon={FileText}
           />
         ) : (
-          <div className='mt-4 overflow-x-auto'>
+          <>
+          {/* Desktop Table */}
+          <div className='mt-4 hidden md:block overflow-x-auto'>
             <table className='w-full text-left text-sm text-slate-600 dark:text-slate-400'>
               <thead className='border-b border-slate-200 bg-slate-50 dark:bg-slate-800 text-xs uppercase text-slate-500 dark:text-slate-400 dark:border-slate-800 /50 '>
                 <tr>
@@ -311,6 +353,19 @@ export const Reports = () => {
               </tbody>
             </table>
           </div>
+          
+          {/* Mobile Cards */}
+          <div className='mt-4 block md:hidden space-y-4'>
+            {reports.map((rep) => (
+              <MobileReportCard
+                key={rep.id || rep._id}
+                rep={rep}
+                onDownload={handleDownloadReport}
+                onDelete={handleDeleteReport}
+              />
+            ))}
+          </div>
+          </>
         )}
       </div>
     </div>
