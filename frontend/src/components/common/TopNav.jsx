@@ -5,35 +5,61 @@ import { useAuth } from '../../hooks/useAuth';
 import { useTheme } from '../../hooks/useTheme';
 import { navigationItems } from '../../config/navigation';
 import HeaderIcon from './header/HeaderIcon';
+import {
+  FolderKanban,
+  PlusCircle,
+  Users,
+  UserCheck,
+  GanttChart,
+  Flag,
+  GraduationCap,
+  CalendarDays,
+  CalendarClock,
+  CalendarPlus,
+  Library,
+  FileText,
+  Files,
+  Shield,
+  UserCog,
+  UsersRound,
+  Settings,
+  ShieldCheck,
+  LayoutDashboard,
+  Activity,
+  FileBarChart,
+  Headphones,
+  HelpCircle,
+  ChevronRight,
+} from 'lucide-react';
 
 /**
  * Submenu Icon Mapping
  * Provides clean visual identifiers for sub-navigation items
  */
 const SUBMENU_ICONS = {
-  'All Projects': 'th-large',
-  'Project Proposal': 'plus-circle',
-  'Project Groups': 'users',
-  'Guide Allocation': 'user-tag',
-  Timeline: 'stream',
-  Milestones: 'flag-checkered',
-  'Student List': 'user-graduate',
-  Calendar: 'calendar-alt',
-  'Meeting List': 'list-ul',
-  'Schedule Meeting': 'plus',
-  'Browse Resources': 'folder-open',
-  'Document Library': 'file-alt',
-  Templates: 'copy',
-  'Admin Dashboard': 'chart-pie',
-  'User Management': 'user-cog',
-  'Staff Management': 'id-badge',
-  'System Settings': 'sliders-h',
-  'Audit Log': 'shield-alt',
-  Dashboard: 'chart-line',
-  Performance: 'tachometer-alt',
-  Reports: 'file-invoice',
-  'Help Center': 'life-ring',
-  FAQ: 'question-circle',
+  'All Projects': FolderKanban,
+  'Project Proposal': PlusCircle,
+  'Project Groups': Users,
+  'Guide Allocation': UserCheck,
+  Timeline: GanttChart,
+  Milestones: Flag,
+  'Student List': GraduationCap,
+  Calendar: CalendarDays,
+  'Meeting List': CalendarClock,
+  'Schedule Meeting': CalendarPlus,
+  'Browse Resources': Library,
+  'Document Library': FileText,
+  Templates: Files,
+  'Admin Dashboard': Shield,
+  'User Management': UserCog,
+  'Staff Management': UsersRound,
+  'System Settings': Settings,
+  'Audit Log': ShieldCheck,
+  Dashboard: LayoutDashboard,
+  Performance: Activity,
+  Reports: FileBarChart,
+  'Help Center': Headphones,
+  FAQ: HelpCircle,
 };
 
 /**
@@ -218,8 +244,7 @@ const TopNav = memo(
                 <div className='space-y-0.5'>
                   {visibleSubmenu.map((subItem, idx) => {
                     const subIsActive = location.pathname === subItem.path;
-                    const subIcon =
-                      SUBMENU_ICONS[subItem.title] || 'angle-right';
+                    const SubIcon = SUBMENU_ICONS[subItem.title] || ChevronRight;
 
                     return (
                       <NavLink
@@ -232,10 +257,8 @@ const TopNav = memo(
                         }`}
                       >
                         <div className='flex items-center gap-2.5'>
-                          <HeaderIcon
-                            name={subIcon}
-                            size='w-4 h-4'
-                            className={`text-center ${
+                          <SubIcon
+                            className={`w-4 h-4 text-center ${
                               subIsActive
                                 ? 'text-indigo-600 dark:text-indigo-400'
                                 : 'text-slate-400 group-hover:text-indigo-500'
