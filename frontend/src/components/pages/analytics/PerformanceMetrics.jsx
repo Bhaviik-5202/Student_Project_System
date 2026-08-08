@@ -160,7 +160,8 @@ export const PerformanceMetrics = () => {
               </div>
             </div>
 
-            <div className='overflow-x-auto'>
+            {/* Desktop Table View */}
+            <div className='hidden md:block overflow-x-auto'>
               <table className='w-full text-left text-sm text-slate-600 dark:text-slate-400'>
                 <thead className='border-b border-slate-200 bg-slate-50 dark:bg-slate-800 text-xs uppercase text-slate-500 dark:text-slate-400 dark:border-slate-800 /50 '>
                   <tr>
@@ -224,6 +225,52 @@ export const PerformanceMetrics = () => {
                   )}
                 </tbody>
               </table>
+            </div>
+
+            {/* Mobile Cards View */}
+            <div className='block md:hidden space-y-4'>
+              {progressData.length === 0 ? (
+                <div className='text-center py-8 text-slate-500'>
+                  No active project data available.
+                </div>
+              ) : (
+                progressData.map((project, idx) => (
+                  <div key={idx} className='flex flex-col gap-3 rounded-2xl border border-slate-100 bg-slate-50/50 p-4 dark:border-slate-800/60 dark:bg-slate-800/40'>
+                    <div className='flex items-start justify-between gap-2'>
+                      <div className='font-bold text-slate-900 dark:text-white leading-tight'>
+                        {project.title}
+                      </div>
+                      <span
+                        className={`inline-flex shrink-0 items-center rounded-full px-2 py-1 text-[10px] font-bold uppercase tracking-wider ${
+                          project.timeline === 'On Track' || project.timeline === 'Ahead'
+                            ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400'
+                            : project.timeline === 'Behind Schedule'
+                              ? 'bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400'
+                              : 'bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400'
+                        }`}
+                      >
+                        {project.timeline}
+                      </span>
+                    </div>
+                    
+                    <div className='flex items-center justify-between text-xs'>
+                      <span className='font-semibold text-slate-600 dark:text-slate-300'>
+                        {project.teamSize} Member(s)
+                      </span>
+                      <span className='font-bold text-indigo-600 dark:text-indigo-400'>
+                        {project.progress}% Completed
+                      </span>
+                    </div>
+                    
+                    <div className='w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 mt-1'>
+                      <div
+                        className='bg-indigo-600 h-2 rounded-full'
+                        style={{ width: `${project.progress}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </>

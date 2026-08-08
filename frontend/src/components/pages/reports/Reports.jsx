@@ -45,8 +45,8 @@ const MobileReportCard = ({ rep, onDownload, onDelete }) => (
       </div>
     </div>
 
-    <div className='mt-2 flex items-center justify-between rounded-xl bg-slate-50/50 p-3 dark:bg-slate-800/40'>
-      <div className='flex flex-col gap-1'>
+    <div className='mt-2 flex flex-col gap-3 rounded-xl bg-slate-50/50 p-3 sm:flex-row sm:items-center sm:justify-between dark:bg-slate-800/40'>
+      <div className='flex flex-row items-center justify-between sm:flex-col sm:items-start sm:gap-1'>
         <span className='font-bold uppercase text-indigo-600 dark:text-indigo-400 text-[10px]'>
           {rep.format || 'PDF'}
         </span>
@@ -55,12 +55,19 @@ const MobileReportCard = ({ rep, onDownload, onDelete }) => (
         </span>
       </div>
       
-      <div className='flex items-center gap-2'>
-        <Button variant='primary' size='sm' icon={Download} onClick={() => onDownload(rep)}>
-          DL
-        </Button>
-        <button onClick={() => onDelete(rep.id || rep._id)} className='flex h-8 w-8 items-center justify-center rounded-lg bg-rose-50 text-rose-600 transition-transform active:scale-90 dark:bg-rose-500/20 dark:text-rose-400'>
-          <Trash2 size={14} />
+      <div className='flex w-full items-center gap-2 sm:w-auto'>
+        <button 
+          onClick={() => onDownload(rep)} 
+          className='flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 text-white shadow-sm transition-transform active:scale-90 dark:bg-indigo-500'
+        >
+          <Download size={16} />
+          <span className='text-sm font-semibold'>Download</span>
+        </button>
+        <button 
+          onClick={() => onDelete(rep.id || rep._id)} 
+          className='flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-rose-50 text-rose-600 transition-transform active:scale-90 dark:bg-rose-500/20 dark:text-rose-400'
+        >
+          <Trash2 size={16} />
         </button>
       </div>
     </div>

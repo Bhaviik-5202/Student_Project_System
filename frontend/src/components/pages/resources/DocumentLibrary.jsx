@@ -222,12 +222,12 @@ export const DocumentLibrary = () => {
       </div>
 
       <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-4 shadow-sm dark:border-slate-800 '>
-        <div className='flex flex-1 items-center gap-3'>
+        <div className='flex flex-col w-full sm:w-auto sm:flex-row flex-1 sm:items-center gap-3'>
           <SearchInput
             value={searchTerm}
             onChange={setSearchTerm}
             placeholder='Search document title or keywords...'
-            className='max-w-md'
+            className='w-full sm:max-w-md'
           />
           <Select
             value={categoryFilter}
@@ -239,7 +239,7 @@ export const DocumentLibrary = () => {
               { value: 'User Guides', label: 'User Guides' },
               { value: 'Templates', label: 'Templates' },
             ]}
-            className='w-44'
+            className='w-full sm:w-44'
           />
           <Select
             value={formatFilter}
@@ -249,7 +249,7 @@ export const DocumentLibrary = () => {
               { value: 'pdf', label: 'PDF' },
               { value: 'docx', label: 'DOCX' },
             ]}
-            className='w-36'
+            className='w-full sm:w-36'
           />
         </div>
 

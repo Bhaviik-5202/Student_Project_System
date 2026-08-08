@@ -66,11 +66,12 @@ const MobileStaffCard = memo(({ staff, onEdit, onDelete }) => (
           {staff.phone && staff.phone !== 'N/A' ? staff.phone : <span className='italic'>6353712057</span>}
         </div>
         <div className='flex items-center gap-2'>
-          <button onClick={() => onEdit(staff)} className='flex h-8 px-3 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 transition-transform active:scale-90 dark:bg-indigo-500/20 dark:text-indigo-400 shadow-xs'>
-            <span className='font-bold text-[11px]'>Edit</span>
+          <button onClick={() => onEdit(staff)} className='flex h-11 px-4 items-center gap-1.5 justify-center rounded-xl bg-indigo-50 text-indigo-600 transition-transform active:scale-90 dark:bg-indigo-500/20 dark:text-indigo-400 shadow-xs'>
+            <Edit2 size={14} />
+            <span className='font-bold text-[12px]'>Edit</span>
           </button>
-          <button onClick={() => onDelete(staff.dbId || staff.id)} className='flex h-8 px-3 items-center justify-center rounded-lg bg-rose-50 text-rose-600 transition-transform active:scale-90 dark:bg-rose-500/20 dark:text-rose-400 shadow-xs'>
-            <span className='font-bold text-[11px]'>Delete</span>
+          <button onClick={() => onDelete(staff.dbId || staff.id)} className='flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-rose-50 text-rose-600 transition-transform active:scale-90 dark:bg-rose-500/20 dark:text-rose-400 shadow-xs'>
+            <Trash2 size={16} />
           </button>
         </div>
       </div>
@@ -374,7 +375,7 @@ const Staff = memo(() => {
             <div className='absolute left-12 top-1/2 z-10 h-5 w-[1px] -translate-y-1/2 bg-gray-200 dark:bg-slate-700' />
             <input
               type='text'
-              className='form-control border-gray-100 bg-gray-50 pl-16 text-sm transition-all focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:focus:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500'
+              className='form-control border-gray-100 bg-gray-50 !pl-16 text-sm transition-all focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:focus:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500'
               placeholder='Search by name, ID, email, department...'
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}

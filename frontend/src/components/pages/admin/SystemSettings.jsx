@@ -249,7 +249,7 @@ export const SystemSettings = () => {
             />
 
             <div className='mt-4 space-y-3'>
-              <div className='flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50 dark:bg-slate-800 p-4 dark:border-slate-800 /50'>
+              <div className='flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50 dark:bg-slate-800 p-4 dark:border-slate-800/50'>
                 <div>
                   <p className='font-semibold text-slate-900 dark:text-white'>
                     Maintenance Mode
@@ -261,23 +261,27 @@ export const SystemSettings = () => {
                 <button
                   type='button'
                   onClick={() => toggleField('maintenanceMode')}
-                  className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors ${
-                    settings.maintenanceMode
-                      ? 'bg-indigo-600'
-                      : 'bg-slate-300 dark:bg-slate-700'
-                  }`}
+                  className='flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500/50'
                 >
-                  <span
-                    className={`inline-block h-5 w-5 transform rounded-full bg-white dark:bg-slate-900 shadow-xs transition-transform ${
+                  <div
+                    className={`relative inline-flex h-6 w-11 rounded-full transition-colors ${
                       settings.maintenanceMode
-                        ? 'translate-x-5'
-                        : 'translate-x-0.5'
-                    } my-0.5`}
-                  />
+                        ? 'bg-indigo-600'
+                        : 'bg-slate-300 dark:bg-slate-700'
+                    }`}
+                  >
+                    <span
+                      className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-xs transition-transform ${
+                        settings.maintenanceMode
+                          ? 'translate-x-5'
+                          : 'translate-x-0.5'
+                      } my-0.5`}
+                    />
+                  </div>
                 </button>
               </div>
 
-              <div className='flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50 dark:bg-slate-800 p-4 dark:border-slate-800 /50'>
+              <div className='flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50 dark:bg-slate-800 p-4 dark:border-slate-800/50'>
                 <div>
                   <p className='font-semibold text-slate-900 dark:text-white'>
                     Email Notifications
@@ -289,23 +293,27 @@ export const SystemSettings = () => {
                 <button
                   type='button'
                   onClick={() => toggleField('emailNotifications')}
-                  className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors ${
-                    settings.emailNotifications
-                      ? 'bg-indigo-600'
-                      : 'bg-slate-300 dark:bg-slate-700'
-                  }`}
+                  className='flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500/50'
                 >
-                  <span
-                    className={`inline-block h-5 w-5 transform rounded-full bg-white dark:bg-slate-900 shadow-xs transition-transform ${
+                  <div
+                    className={`relative inline-flex h-6 w-11 rounded-full transition-colors ${
                       settings.emailNotifications
-                        ? 'translate-x-5'
-                        : 'translate-x-0.5'
-                    } my-0.5`}
-                  />
+                        ? 'bg-indigo-600'
+                        : 'bg-slate-300 dark:bg-slate-700'
+                    }`}
+                  >
+                    <span
+                      className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-xs transition-transform ${
+                        settings.emailNotifications
+                          ? 'translate-x-5'
+                          : 'translate-x-0.5'
+                      } my-0.5`}
+                    />
+                  </div>
                 </button>
               </div>
 
-              <div className='flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50 dark:bg-slate-800 p-4 dark:border-slate-800 /50'>
+              <div className='flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50 dark:bg-slate-800 p-4 dark:border-slate-800/50'>
                 <div>
                   <p className='font-semibold text-slate-900 dark:text-white'>
                     Auto-Assign Faculty Guides
@@ -317,19 +325,23 @@ export const SystemSettings = () => {
                 <button
                   type='button'
                   onClick={() => toggleField('autoAssignGuides')}
-                  className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors ${
-                    settings.autoAssignGuides
-                      ? 'bg-indigo-600'
-                      : 'bg-slate-300 dark:bg-slate-700'
-                  }`}
+                  className='flex min-h-[44px] min-w-[44px] shrink-0 items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500/50'
                 >
-                  <span
-                    className={`inline-block h-5 w-5 transform rounded-full bg-white dark:bg-slate-900 shadow-xs transition-transform ${
+                  <div
+                    className={`relative inline-flex h-6 w-11 rounded-full transition-colors ${
                       settings.autoAssignGuides
-                        ? 'translate-x-5'
-                        : 'translate-x-0.5'
-                    } my-0.5`}
-                  />
+                        ? 'bg-indigo-600'
+                        : 'bg-slate-300 dark:bg-slate-700'
+                    }`}
+                  >
+                    <span
+                      className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-xs transition-transform ${
+                        settings.autoAssignGuides
+                          ? 'translate-x-5'
+                          : 'translate-x-0.5'
+                      } my-0.5`}
+                    />
+                  </div>
                 </button>
               </div>
             </div>

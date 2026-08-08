@@ -304,12 +304,12 @@ export const ResourceBrowser = () => {
 
       {/* Filter and Search Bar */}
       <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-4 shadow-sm dark:border-slate-800 '>
-        <div className='flex flex-1 items-center gap-3'>
+        <div className='flex flex-col w-full sm:w-auto sm:flex-row flex-1 sm:items-center gap-3'>
           <SearchInput
             value={searchQuery}
             onChange={setSearchQuery}
             placeholder='Search by title, description, or tags...'
-            className='max-w-md'
+            className='w-full sm:max-w-md'
           />
           <Select
             value={categoryFilter}
@@ -322,7 +322,7 @@ export const ResourceBrowser = () => {
               { value: 'User Guides', label: 'User Guides' },
               { value: 'Code Examples', label: 'Code Examples' },
             ]}
-            className='w-44'
+            className='w-full sm:w-44'
           />
           <Select
             value={typeFilter}
@@ -334,7 +334,7 @@ export const ResourceBrowser = () => {
               { value: 'template', label: 'Templates' },
               { value: 'video', label: 'Video Tutorials' },
             ]}
-            className='w-40'
+            className='w-full sm:w-40'
           />
         </div>
 
