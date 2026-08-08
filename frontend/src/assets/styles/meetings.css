@@ -179,30 +179,39 @@
 /* Calendar Specific */
 .meeting-calendar-grid-wrapper {
   width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
 }
 
 .meeting-calendar-grid {
   display: grid;
-  grid-template-columns: repeat(7, minmax(100px, 1fr));
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   background-color: var(--meeting-border);
   gap: 1px;
-  min-width: 700px;
+  width: 100%;
+}
+
+.meeting-calendar-day {
+  min-height: 80px;
+  padding: 0.25rem;
+  background-color: var(--meeting-bg);
+  transition: all 0.2s;
+  overflow: hidden;
 }
 
 @media (min-width: 768px) {
+  .meeting-calendar-grid-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
   .meeting-calendar-grid {
     grid-template-columns: repeat(7, minmax(120px, 1fr));
     min-width: 840px;
   }
-}
 
-.meeting-calendar-day {
-  min-height: 100px;
-  padding: 0.5rem;
-  background-color: var(--meeting-bg);
-  transition: all 0.2s;
+  .meeting-calendar-day {
+    min-height: 100px;
+    padding: 0.5rem;
+  }
 }
 
 .meeting-calendar-day.inactive {

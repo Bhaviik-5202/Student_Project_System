@@ -53,6 +53,7 @@ const AuditLog = memo(() => {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
 
   const [filters, setFilters] = useState({
     action: '',
@@ -192,8 +193,24 @@ const AuditLog = memo(() => {
         }
       />
 
-      <div className='admin-card mb-6'>
-        <div className='grid grid-cols-2 gap-3 md:gap-4 md:grid-cols-4'>
+      {/* Mobile Filter Toggle */}
+      <div className='md:hidden mb-4'>
+        <button
+          onClick={() => setShowMobileFilters(!showMobileFilters)}
+          className='flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white p-3 text-sm font-bold text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200'
+        >
+          <div className='flex items-center gap-2'>
+            <Filter size={16} className='text-indigo-500' />
+            Search & Filters
+          </div>
+          <span className='text-[10px] uppercase tracking-widest text-slate-400'>
+            {showMobileFilters ? 'Hide' : 'Show'}
+          </span>
+        </button>
+      </div>
+
+      <div className={`admin-card mb-6 ${showMobileFilters ? 'block' : 'hidden'} md:block`}>
+        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4'>
           <div className='admin-form-group mb-0'>
             <label className='admin-label'>
               <ListChecks size={16} className='mr-2 opacity-50' />

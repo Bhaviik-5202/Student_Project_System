@@ -279,13 +279,13 @@ const Settings = memo(() => {
         {notificationItems.map((item) => (
           <div
             key={item.name}
-            className='flex items-center justify-between rounded-lg border border-slate-200 p-4 hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 dark:border-slate-700 '
+            className='flex items-center justify-between rounded-lg border border-slate-200 p-3 sm:p-4 hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 dark:border-slate-700 '
           >
-            <div>
-              <p className='font-medium text-slate-900 dark:text-slate-100'>
+            <div className='min-w-0 flex-1 pr-4'>
+              <p className='font-medium text-slate-900 dark:text-slate-100 truncate sm:whitespace-normal'>
                 {item.label}
               </p>
-              <p className='text-sm text-slate-500 dark:text-slate-400'>
+              <p className='text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-snug sm:leading-normal mt-0.5 sm:mt-0'>
                 {item.description}
               </p>
             </div>
@@ -315,7 +315,7 @@ const Settings = memo(() => {
           {privacyOptions.map((option) => (
             <label
               key={option.value}
-              className='flex cursor-pointer items-center rounded-lg border border-slate-200 p-4 hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 dark:border-slate-700 '
+              className='flex cursor-pointer items-center rounded-lg border border-slate-200 p-3 sm:p-4 hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 dark:border-slate-700 '
             >
               <input
                 type='radio'
@@ -323,13 +323,13 @@ const Settings = memo(() => {
                 value={option.value}
                 checked={settings.profileVisibility === option.value}
                 onChange={handleChange}
-                className='h-4 w-4 border-slate-300 text-blue-600 focus:ring-blue-500 dark:border-slate-600'
+                className='h-4 w-4 shrink-0 border-slate-300 text-blue-600 focus:ring-blue-500 dark:border-slate-600'
               />
-              <div className='ml-3'>
-                <p className='font-medium text-slate-900 dark:text-slate-100'>
+              <div className='ml-3 min-w-0 flex-1'>
+                <p className='font-medium text-slate-900 dark:text-slate-100 truncate sm:whitespace-normal'>
                   {option.label}
                 </p>
-                <p className='text-sm text-slate-500 dark:text-slate-400'>
+                <p className='text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-snug sm:leading-normal mt-0.5 sm:mt-0'>
                   {option.description}
                 </p>
               </div>
@@ -342,13 +342,13 @@ const Settings = memo(() => {
         <h4 className='mb-4 font-semibold text-slate-900 dark:text-slate-100'>
           Contact Information
         </h4>
-        <div className='space-y-4'>
-          <label className='flex items-center justify-between rounded-lg border border-slate-200 p-4 hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 dark:border-slate-700 '>
-            <div>
-              <p className='font-medium text-slate-900 dark:text-slate-100'>
+        <div className='space-y-3 sm:space-y-4'>
+          <label className='flex items-center justify-between rounded-lg border border-slate-200 p-3 sm:p-4 hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 dark:border-slate-700 '>
+            <div className='min-w-0 flex-1 pr-4'>
+              <p className='font-medium text-slate-900 dark:text-slate-100 truncate sm:whitespace-normal'>
                 Show Email Address
               </p>
-              <p className='text-sm text-slate-500 dark:text-slate-400'>
+              <p className='text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-snug sm:leading-normal mt-0.5 sm:mt-0'>
                 Allow others to see your email
               </p>
             </div>
@@ -357,15 +357,15 @@ const Settings = memo(() => {
               name='showEmail'
               checked={settings.showEmail}
               onChange={handleChange}
-              className='h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 dark:border-slate-600'
+              className='h-4 w-4 shrink-0 rounded border-slate-300 text-blue-600 focus:ring-blue-500 dark:border-slate-600'
             />
           </label>
-          <label className='flex items-center justify-between rounded-lg border border-slate-200 p-4 hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 dark:border-slate-700 '>
-            <div>
-              <p className='font-medium text-slate-900 dark:text-slate-100'>
+          <label className='flex items-center justify-between rounded-lg border border-slate-200 p-3 sm:p-4 hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 dark:border-slate-700 '>
+            <div className='min-w-0 flex-1 pr-4'>
+              <p className='font-medium text-slate-900 dark:text-slate-100 truncate sm:whitespace-normal'>
                 Show Phone Number
               </p>
-              <p className='text-sm text-slate-500 dark:text-slate-400'>
+              <p className='text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-snug sm:leading-normal mt-0.5 sm:mt-0'>
                 Allow others to see your phone number
               </p>
             </div>
@@ -392,7 +392,7 @@ const Settings = memo(() => {
           Choose how the application looks. Auto mode follows your system
           preference.
         </p>
-        <div className='grid grid-cols-3 gap-4'>
+        <div className='grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4'>
           {themes.map((theme) => (
             <label key={theme.value} className='relative'>
               <input
@@ -403,18 +403,15 @@ const Settings = memo(() => {
                 onChange={handleThemeChange}
                 className='peer sr-only'
               />
-              <div className='cursor-pointer rounded-lg border-2 border-slate-200 p-4 text-center transition-all duration-200 hover:border-blue-500 peer-checked:border-blue-600 peer-checked:bg-blue-50 dark:border-slate-700 dark:peer-checked:bg-blue-950/40'>
+              <div className='flex sm:block items-center sm:items-start gap-4 sm:gap-0 cursor-pointer rounded-lg border-2 border-slate-200 p-3 sm:p-4 text-left sm:text-center transition-all duration-200 hover:border-blue-500 peer-checked:border-blue-600 peer-checked:bg-blue-50 dark:border-slate-700 dark:peer-checked:bg-blue-950/40'>
                 <i
-                  className={`fas ${theme.icon} mb-2 text-2xl ${themeIconClass[theme.value]}`}
+                  className={`fas ${theme.icon} sm:mb-2 text-xl sm:text-2xl shrink-0 ${themeIconClass[theme.value]}`}
                 ></i>
-                <p className='font-medium text-slate-900 dark:text-slate-100'>
-                  {theme.label}
-                </p>
-                {/* {theme.value === "auto" && (
-                  // <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  //   Syncs with OS
-                  // </p>
-                )} */}
+                <div className='min-w-0 flex-1'>
+                  <p className='font-medium text-slate-900 dark:text-slate-100'>
+                    {theme.label}
+                  </p>
+                </div>
               </div>
             </label>
           ))}
@@ -459,13 +456,13 @@ const Settings = memo(() => {
   const renderAccountSettings = () => (
     <div className='space-y-6'>
       <div className='rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-900/50 dark:bg-amber-950/30'>
-        <div className='flex'>
-          <AlertTriangle className='mr-3 mt-1 text-amber-600 dark:text-amber-400' size={20} />
-          <div>
-            <h4 className='font-medium text-amber-800 dark:text-amber-200'>
+        <div className='flex items-start'>
+          <AlertTriangle className='mr-3 mt-0.5 shrink-0 text-amber-600 dark:text-amber-400' size={20} />
+          <div className='min-w-0 flex-1'>
+            <h4 className='font-medium text-amber-800 dark:text-amber-200 leading-tight'>
               Account Management
             </h4>
-            <p className='mt-1 text-sm text-amber-700 dark:text-amber-300'>
+            <p className='mt-1 text-xs sm:text-sm text-amber-700 dark:text-amber-300'>
               These actions are irreversible. Please proceed with caution.
             </p>
           </div>
@@ -482,22 +479,22 @@ const Settings = memo(() => {
           </p>
           <button
             onClick={handleExportData}
-            className='rounded-lg bg-blue-50 px-4 py-2 text-blue-700 hover:bg-blue-100 dark:bg-blue-950/40 dark:text-blue-300 dark:hover:bg-blue-900/40'
+            className='w-full sm:w-auto rounded-lg bg-blue-50 px-4 py-2.5 sm:py-2 text-sm sm:text-base text-blue-700 hover:bg-blue-100 dark:bg-blue-950/40 dark:text-blue-300 dark:hover:bg-blue-900/40'
           >
             <Download className='mr-2 inline-block' size={16} /> Export My Data
           </button>
         </div>
 
         <div className='rounded-lg border border-rose-200 p-4 dark:border-rose-900/50'>
-          <h4 className='mb-2 font-semibold text-rose-800 dark:text-rose-200'>
+          <h4 className='mb-1 sm:mb-2 font-semibold text-rose-800 dark:text-rose-200'>
             Delete Account
           </h4>
-          <p className='mb-3 text-sm text-rose-600 dark:text-rose-300'>
+          <p className='mb-3 text-xs sm:text-sm text-rose-600 dark:text-rose-300'>
             This will permanently delete your account and all data
           </p>
           <button
             onClick={handleDeleteAccount}
-            className='rounded-lg bg-rose-50 px-4 py-2 text-rose-700 hover:bg-rose-100 dark:bg-rose-950/40 dark:text-rose-300 dark:hover:bg-rose-900/40'
+            className='w-full sm:w-auto rounded-lg bg-rose-50 px-4 py-2.5 sm:py-2 text-sm sm:text-base text-rose-700 hover:bg-rose-100 dark:bg-rose-950/40 dark:text-rose-300 dark:hover:bg-rose-900/40'
           >
             <Trash2 className='mr-2 inline-block' size={16} /> Delete Account
           </button>

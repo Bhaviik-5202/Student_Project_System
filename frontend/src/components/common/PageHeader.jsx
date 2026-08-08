@@ -31,11 +31,11 @@ const BADGE_CONFIGS = {
 
 const VARIANT_STYLES = {
   default: {
-    wrapper: 'px-4 py-6 sm:p-6 md:p-8 min-h-[100px] sm:min-h-[108px] mt-2 sm:mt-0',
-    icon: 'h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14 rounded-xl sm:rounded-2xl',
+    wrapper: 'px-5 py-7 sm:px-6 sm:py-6 md:p-8 min-h-[112px] sm:min-h-[108px] mt-3 sm:mt-0',
+    icon: 'h-12 w-12 sm:h-12 sm:w-12 md:h-14 md:w-14 rounded-xl sm:rounded-2xl',
     iconSize: 22,
-    title: 'text-[17px] sm:text-xl md:text-2xl leading-tight',
-    subtitle: 'text-xs sm:text-sm mt-2 sm:mt-1',
+    title: 'text-[19px] sm:text-xl md:text-2xl leading-tight',
+    subtitle: 'text-[13.5px] sm:text-sm mt-3 sm:mt-1',
   },
   small: {
     wrapper: 'px-3 py-3 sm:px-5 sm:py-4.5 min-h-[64px]',
@@ -109,11 +109,11 @@ export const PageHeader = ({
   return (
     <header
       className={`
-        w-full flex flex-col items-start gap-5 sm:gap-4 md:flex-row md:items-center md:justify-between
-        rounded-2xl border border-slate-200/80
+        w-full flex flex-col items-start gap-6 sm:gap-4 md:flex-row md:items-center md:justify-between
+        rounded-2xl border border-slate-300 dark:border-slate-600 sm:border-slate-200/80 sm:dark:border-slate-700/80
         bg-gradient-to-r from-white via-slate-50/50 to-white
-        shadow-sm backdrop-blur-sm transition-all duration-200
-        dark:border-slate-700/80 dark:from-slate-900 dark:via-slate-800/90 dark:to-slate-900
+        shadow-md sm:shadow-sm backdrop-blur-sm transition-all duration-200
+        dark:from-slate-900 dark:via-slate-800/90 dark:to-slate-900
         ${styles.wrapper}
         ${className}
       `}
@@ -121,7 +121,7 @@ export const PageHeader = ({
       data-testid={testId}
       role='banner'
     >
-      <div className='flex items-center gap-4 min-w-0 w-full md:w-auto'>
+      <div className='flex items-start sm:items-center gap-5 sm:gap-4 min-w-0 w-full md:w-auto'>
         {Icon && (
           <div
             className={`
@@ -138,7 +138,7 @@ export const PageHeader = ({
 
         <div className='min-w-0 flex-1'>
           {breadcrumbs && (
-            <div className='mb-3 sm:mb-1.5' aria-label='Breadcrumb navigation'>
+            <div className='mb-4 sm:mb-1.5' aria-label='Breadcrumb navigation'>
               {breadcrumbs}
             </div>
           )}
@@ -190,9 +190,9 @@ export const PageHeader = ({
       {actions && (
         <div
           className={`
-          w-full md:w-auto flex flex-col sm:flex-row flex-wrap sm:items-center gap-2.5 sm:gap-3 shrink-0
-          pt-5 pb-3 sm:pt-4 sm:pb-2 md:pt-0 md:pb-0
-          ${effectiveVariant !== 'compact' ? 'border-t border-slate-100 dark:border-slate-700/50 md:border-t-0' : ''}
+          w-full md:w-auto flex flex-col sm:flex-row flex-wrap sm:items-center gap-3.5 sm:gap-3 shrink-0
+          mt-3 sm:mt-0 pt-6 pb-2 sm:pt-4 sm:pb-2 md:pt-0 md:pb-0
+          ${effectiveVariant !== 'compact' ? 'border-t border-slate-200 dark:border-slate-700 md:border-t-0 sm:border-slate-100 sm:dark:border-slate-700/50' : ''}
         `}
         >
           {actions}

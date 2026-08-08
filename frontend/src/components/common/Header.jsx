@@ -20,7 +20,8 @@ import {
   PlusCircle,
   UploadCloud,
   CalendarDays,
-  FolderOpen
+  FolderOpen,
+  Menu
 } from 'lucide-react';
 /**
  * Header Component
@@ -288,8 +289,8 @@ const Header = memo(
             : 'bg-white border-b border-gray-200/80 dark:bg-slate-900 dark:border-gray-700/80'
             }`}
         >
-          <div className='h-full w-full px-4 lg:px-6'>
-            <div className='flex h-full items-center justify-between gap-4'>
+          <div className='h-full w-full px-3 sm:px-4 lg:px-6'>
+            <div className='flex h-full items-center justify-between gap-2 sm:gap-4'>
               {/* Logo Section */}
               <div className='flex items-center gap-3'>
                 {/* Desktop & Tablet Logo Link */}
@@ -311,26 +312,28 @@ const Header = memo(
                   </div>
                 </Link>
 
-                {/* Mobile Logo Button - Opens Full Navigation Sidebar Drawer */}
-                <button
-                  type='button'
-                  onClick={onMobileMenuToggle}
-                  className='group flex md:hidden items-center gap-2 text-left outline-none transition-transform active:scale-[0.97] min-w-0 shrink py-1'
-                  aria-label='Open Navigation Menu'
-                >
-                  <div className='flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 shadow-md shadow-blue-500/20'>
+                {/* Mobile Navigation Controls */}
+                <div className='flex md:hidden items-center gap-2'>
+                  <button
+                    type='button'
+                    onClick={onMobileMenuToggle}
+                    className='flex h-10 w-10 items-center justify-center rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 active:scale-95 transition-transform'
+                    aria-label='Open Navigation Menu'
+                  >
+                    <Menu className='h-5 w-5' />
+                  </button>
+                  <Link 
+                    to='/dashboard' 
+                    className='flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 shadow-md shadow-blue-500/20 active:scale-95 transition-transform'
+                    aria-label='Go to Dashboard'
+                  >
                     <HeaderIcon
                       name='graduation-cap'
                       className='text-white'
-                      size='w-4 h-4'
+                      size='w-5 h-5'
                     />
-                  </div>
-                  <div className='min-w-0 flex-1'>
-                    <h1 className='text-xs sm:text-sm font-extrabold leading-snug text-slate-900 dark:text-white truncate tracking-tight max-w-[135px] min-[380px]:max-w-[175px] sm:max-w-none'>
-                      Student Project System
-                    </h1>
-                  </div>
-                </button>
+                  </Link>
+                </div>
               </div>
 
               {/* Action Buttons */}
@@ -435,9 +438,9 @@ const Header = memo(
                       closeAllDropdowns();
                       setShowUserMenu(!showUserMenu);
                     }}
-                    className='flex items-center gap-2 sm:gap-3 rounded-xl p-1 sm:p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 dark:bg-gray-800 focus:ring-2 focus:ring-blue-500/50 dark:hover:bg-gray-800 active:scale-95 transition-transform'
+                    className='flex items-center gap-2 sm:gap-3 rounded-xl p-1 hover:bg-gray-100 dark:hover:bg-gray-700 dark:bg-gray-800 focus:ring-2 focus:ring-blue-500/50 active:scale-95 transition-transform'
                   >
-                    <div className='flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-md sm:shadow-lg sm:h-10 sm:w-10 shrink-0'>
+                    <div className='flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-md sm:shadow-lg sm:h-10 sm:w-10 shrink-0'>
                       <span className='text-sm font-bold text-white'>
                         {getUserInitials()}
                       </span>
