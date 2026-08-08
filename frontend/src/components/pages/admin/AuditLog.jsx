@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Shield, RefreshCw, Download } from 'lucide-react';
+import { Shield, RefreshCw, Download, User, Network, ListChecks, CheckCircle, Calendar, Filter, Loader2, FolderOpen } from 'lucide-react';
 import PageHeader from '../../common/PageHeader';
 import api from '../../../utils/api';
 import '../../../assets/styles/admin.css';
@@ -9,7 +9,7 @@ const MobileAuditCard = memo(({ log, getUserDisplay }) => (
   <div className='flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900'>
     <div className='flex items-start justify-between gap-3'>
       <div className='flex items-center gap-2'>
-        <i className='fas fa-user-circle text-2xl text-slate-400 dark:text-slate-500'></i>
+        <User size={24} className='text-slate-400 dark:text-slate-500' />
         <div className='flex flex-col'>
           <span className='font-semibold text-slate-900 dark:text-slate-200 text-[14px] leading-tight'>
             {getUserDisplay(log.user)}
@@ -36,7 +36,7 @@ const MobileAuditCard = memo(({ log, getUserDisplay }) => (
         </div>
       )}
       <div className='mt-2 flex items-center gap-1.5 pt-2 border-t border-slate-200/50 dark:border-slate-700/50'>
-        <i className='fas fa-network-wired text-slate-400 text-[10px]'></i>
+        <Network size={10} className='text-slate-400' />
         <span className='font-mono text-[10px] text-slate-600 dark:text-slate-400 font-bold'>
           {log.ip || '127.0.0.1'}
         </span>
@@ -196,7 +196,7 @@ const AuditLog = memo(() => {
         <div className='grid grid-cols-1 gap-4 md:grid-cols-4'>
           <div className='admin-form-group mb-0'>
             <label className='admin-label'>
-              <i className='fas fa-tasks mr-2 opacity-50'></i>
+              <ListChecks size={16} className='mr-2 opacity-50' />
               Action Type
             </label>
             <select
@@ -240,7 +240,7 @@ const AuditLog = memo(() => {
           </div>
           <div className='admin-form-group mb-0'>
             <label className='admin-label'>
-              <i className='fas fa-check-circle mr-2 opacity-50'></i>
+              <CheckCircle size={16} className='mr-2 opacity-50' />
               Status
             </label>
             <select
@@ -278,7 +278,7 @@ const AuditLog = memo(() => {
           </div>
           <div className='admin-form-group mb-0'>
             <label className='admin-label'>
-              <i className='fas fa-calendar-alt mr-2 opacity-50'></i>
+              <Calendar size={16} className='mr-2 opacity-50' />
               Event Date
             </label>
             <input
@@ -294,7 +294,7 @@ const AuditLog = memo(() => {
               onClick={handleApplyFilters}
               className='admin-btn admin-btn-primary w-full justify-center'
             >
-              <i className='fas fa-filter'></i>
+              <Filter size={16} />
               Apply Filters
             </button>
           </div>
@@ -317,7 +317,7 @@ const AuditLog = memo(() => {
               <tr>
                 <td colSpan='5' className='p-20 text-center'>
                   <div className='flex flex-col items-center gap-4 py-10'>
-                    <i className='fas fa-circle-notch fa-spin text-3xl text-blue-500'></i>
+                    <Loader2 size={30} className='animate-spin text-blue-500' />
                     <p className='font-medium text-slate-500 dark:text-slate-400'>
                       Synchronizing records...
                     </p>
@@ -328,7 +328,7 @@ const AuditLog = memo(() => {
               <tr>
                 <td colSpan='5' className='p-20 text-center'>
                   <div className='flex flex-col items-center gap-3 py-10'>
-                    <i className='fas fa-folder-open mb-2 text-5xl text-slate-300 dark:text-slate-600 dark:text-slate-300'></i>
+                    <FolderOpen size={48} className='mb-2 text-slate-300 dark:text-slate-600' />
                     <p className='font-bold text-slate-500 dark:text-slate-400'>
                       No security events found.
                     </p>
@@ -360,7 +360,7 @@ const AuditLog = memo(() => {
                   </td>
                   <td>
                     <div className='flex items-center gap-2'>
-                      <i className='fas fa-user-circle text-slate-400 dark:text-slate-500 dark:text-slate-400'></i>
+                      <User size={16} className='text-slate-400 dark:text-slate-500' />
                       <span className='font-semibold text-slate-900 dark:text-slate-200'>
                         {getUserDisplay(log.user)}
                       </span>
@@ -403,12 +403,12 @@ const AuditLog = memo(() => {
       <div className='block md:hidden space-y-4'>
         {loading ? (
           <div className='flex flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-white py-12 px-4 text-center dark:border-slate-800 dark:bg-slate-900'>
-            <i className='fas fa-circle-notch fa-spin text-2xl text-blue-500 mb-3'></i>
+            <Loader2 size={24} className='animate-spin text-blue-500 mb-3' />
             <span className='text-[13px] font-semibold text-slate-500'>Synchronizing records...</span>
           </div>
         ) : logs.length === 0 ? (
           <div className='flex flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-white py-12 px-4 text-center dark:border-slate-800 dark:bg-slate-900'>
-            <i className='fas fa-folder-open mb-3 text-4xl text-slate-300 dark:text-slate-600'></i>
+            <FolderOpen size={36} className='mb-3 text-slate-300 dark:text-slate-600' />
             <span className='text-[13px] font-semibold text-slate-500 mb-2'>No security events found.</span>
             <button
               onClick={() => {

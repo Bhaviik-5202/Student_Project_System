@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState, memo, useEffect } from 'react';
-import { Sliders } from 'lucide-react';
+import { Sliders, AlertTriangle, Download, Trash2, Settings as SettingsIcon, Bell, Lock, Palette, UserCog } from 'lucide-react';
 import PageHeader from '../../common/PageHeader';
 import { useTheme } from '../../../hooks/useTheme';
 import { useAuth } from '../../../hooks/useAuth';
@@ -134,11 +134,11 @@ const Settings = memo(() => {
 
   const tabs = useMemo(
     () => [
-      { id: 'general', label: 'General', icon: 'fa-cog' },
-      { id: 'notifications', label: 'Notifications', icon: 'fa-bell' },
-      { id: 'privacy', label: 'Privacy', icon: 'fa-lock' },
-      { id: 'appearance', label: 'Appearance', icon: 'fa-palette' },
-      { id: 'account', label: 'Account', icon: 'fa-user-cog' },
+      { id: 'general', label: 'General', icon: SettingsIcon },
+      { id: 'notifications', label: 'Notifications', icon: Bell },
+      { id: 'privacy', label: 'Privacy', icon: Lock },
+      { id: 'appearance', label: 'Appearance', icon: Palette },
+      { id: 'account', label: 'Account', icon: UserCog },
     ],
     []
   );
@@ -460,7 +460,7 @@ const Settings = memo(() => {
     <div className='space-y-6'>
       <div className='rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-900/50 dark:bg-amber-950/30'>
         <div className='flex'>
-          <i className='fas fa-exclamation-triangle mr-3 mt-1 text-amber-600 dark:text-amber-400'></i>
+          <AlertTriangle className='mr-3 mt-1 text-amber-600 dark:text-amber-400' size={20} />
           <div>
             <h4 className='font-medium text-amber-800 dark:text-amber-200'>
               Account Management
@@ -484,7 +484,7 @@ const Settings = memo(() => {
             onClick={handleExportData}
             className='rounded-lg bg-blue-50 px-4 py-2 text-blue-700 hover:bg-blue-100 dark:bg-blue-950/40 dark:text-blue-300 dark:hover:bg-blue-900/40'
           >
-            <i className='fas fa-download mr-2'></i> Export My Data
+            <Download className='mr-2 inline-block' size={16} /> Export My Data
           </button>
         </div>
 
@@ -499,7 +499,7 @@ const Settings = memo(() => {
             onClick={handleDeleteAccount}
             className='rounded-lg bg-rose-50 px-4 py-2 text-rose-700 hover:bg-rose-100 dark:bg-rose-950/40 dark:text-rose-300 dark:hover:bg-rose-900/40'
           >
-            <i className='fas fa-trash mr-2'></i> Delete Account
+            <Trash2 className='mr-2 inline-block' size={16} /> Delete Account
           </button>
         </div>
       </div>
@@ -522,13 +522,13 @@ const Settings = memo(() => {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center whitespace-nowrap border-b-2 px-6 py-4 text-sm font-medium transition duration-150 ${
+                className={`flex items-center whitespace-nowrap border-b-2 px-4 py-3 sm:px-6 sm:py-4 text-sm font-medium transition duration-150 ${
                   activeTab === tab.id
                     ? 'border-blue-500 text-blue-600 dark:text-blue-300'
                     : 'border-transparent text-slate-500 dark:text-slate-400 hover:border-slate-300 hover:text-slate-700  dark:hover:border-slate-600 dark:hover:text-slate-200'
                 }`}
               >
-                <i className={`fas ${tab.icon} mr-2`}></i>
+                <tab.icon className="mr-2 h-4 w-4" />
                 {tab.label}
               </button>
             ))}
@@ -536,7 +536,7 @@ const Settings = memo(() => {
         </div>
 
         {/* Tab Content */}
-        <div className='p-6'>
+        <div className='p-4 sm:p-6'>
           {activeTab === 'general' && renderGeneralSettings()}
           {activeTab === 'notifications' && renderNotificationSettings()}
           {activeTab === 'privacy' && renderPrivacySettings()}
@@ -545,7 +545,7 @@ const Settings = memo(() => {
         </div>
 
         {/* Action Buttons */}
-        <div className='border-t border-slate-200 bg-slate-50 dark:bg-slate-800 px-6 py-4 dark:border-slate-700 '>
+        <div className='border-t border-slate-200 bg-slate-50 dark:bg-slate-800 px-4 py-3 sm:px-6 sm:py-4 dark:border-slate-700 '>
           <div className='flex flex-col-reverse sm:flex-row justify-between gap-4'>
             <button
               onClick={handleReset}

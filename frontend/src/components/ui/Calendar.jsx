@@ -1,5 +1,6 @@
 import { useState, memo, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const Calendar = memo(({ onDateClick }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -70,19 +71,7 @@ const Calendar = memo(({ onDateClick }) => {
           aria-label='Previous month'
           title='Previous month'
         >
-          <svg
-            className='h-4 w-4'
-            fill='none'
-            stroke='currentColor'
-            viewBox='0 0 24 24'
-          >
-            <path
-              strokeLinecap='round'
-              strokeLinejoin='round'
-              strokeWidth={2}
-              d='M15 19l-7-7 7-7'
-            />
-          </svg>
+          <ChevronLeft className='h-4 w-4' />
         </button>
         <h3 className='text-sm font-semibold text-gray-900 dark:text-white'>
           {monthYear}
@@ -93,19 +82,7 @@ const Calendar = memo(({ onDateClick }) => {
           aria-label='Next month'
           title='Next month'
         >
-          <svg
-            className='h-4 w-4'
-            fill='none'
-            stroke='currentColor'
-            viewBox='0 0 24 24'
-          >
-            <path
-              strokeLinecap='round'
-              strokeLinejoin='round'
-              strokeWidth={2}
-              d='M9 5l7 7-7 7'
-            />
-          </svg>
+          <ChevronRight className='h-4 w-4' />
         </button>
       </div>
 

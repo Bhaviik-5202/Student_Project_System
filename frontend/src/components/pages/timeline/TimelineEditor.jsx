@@ -1,7 +1,7 @@
 import { useCallback, useState, useEffect, memo, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
-import { Edit, Save, ArrowLeft } from 'lucide-react';
+import { Save, Clock, Flag, X, ChevronDown, Plus, Info, History, Check, Trash2, Edit, ArrowLeft } from 'lucide-react';
 import PageHeader from '../../common/PageHeader';
 import timelineService from '../../../services/timelineService';
 import projectService from '../../../services/projectService';
@@ -288,14 +288,14 @@ const TimelineEditor = memo(() => {
                   onClick={addMilestone}
                   className='w-full rounded-lg bg-gray-900 py-2 text-xs font-bold tracking-wider text-white transition-all hover:opacity-90 active:scale-95 dark:bg-indigo-600'
                 >
-                  <i className='fas fa-plus mr-2' /> Stage Objective
+                  <Plus size={16} className='mr-2' /> Stage Objective
                 </button>
               </div>
             </div>
 
             <div className='rounded-xl border border-indigo-100 bg-indigo-50/50 p-6 shadow-sm dark:border-slate-700 dark:bg-indigo-900/10'>
               <h4 className='mb-2 flex items-center gap-2 text-[10px] font-bold tracking-widest text-indigo-700 dark:text-indigo-400'>
-                <i className='fas fa-info-circle text-[8px]' /> Editor's Note
+                <Info size={12} /> Editor's Note
               </h4>
               <p className='text-[10px] font-medium leading-relaxed text-gray-500 dark:text-gray-400'>
                 Staged objectives are only preserved once you save the timeline.
@@ -316,7 +316,7 @@ const TimelineEditor = memo(() => {
 
               {timeline.milestones.length === 0 ? (
                 <div className='flex flex-col items-center justify-center py-20 text-center'>
-                  <i className='fas fa-history mb-4 text-4xl text-gray-200' />
+                  <History size={36} className='mb-4 text-gray-200' />
                   <h4 className='mb-2 text-sm font-bold tracking-widest text-gray-900 dark:text-white'>
                     Timeline Uninitialized
                   </h4>
@@ -342,7 +342,7 @@ const TimelineEditor = memo(() => {
                                 : 'border-gray-200 text-transparent hover:border-indigo-500 dark:border-slate-700'
                             }`}
                           >
-                            <i className='fas fa-check text-xs' />
+                            <Check size={12} />
                           </button>
                           <div className='flex-1'>
                             <div className='mb-1 flex items-center gap-2'>
@@ -377,7 +377,7 @@ const TimelineEditor = memo(() => {
                           onClick={() => removeMilestone(m._id || m.id)}
                           className='flex h-8 w-8 items-center justify-center rounded-lg border border-gray-100 text-gray-300 transition-all hover:border-red-500/30 hover:text-red-500 dark:border-slate-700'
                         >
-                          <i className='fas fa-trash-alt text-xs' />
+                          <Trash2 size={12} />
                         </button>
                       </div>
                     </div>

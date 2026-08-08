@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
-import { Layers } from 'lucide-react';
+import { Layers, Mail, Bell, Download } from 'lucide-react';
 import PageHeader from '../../common/PageHeader';
 import api from '../../../utils/api';
 
@@ -101,13 +101,13 @@ const BatchOperations = memo(() => {
               </label>
               <div className='grid grid-cols-1 gap-4 md:grid-cols-3'>
                 {[
-                  { id: 'email', label: 'Send Email', icon: '📧' },
+                  { id: 'email', label: 'Send Email', icon: <Mail size={24} className="mx-auto" /> },
                   {
                     id: 'notification',
                     label: 'Send Notification',
-                    icon: '🔔',
+                    icon: <Bell size={24} className="mx-auto" />,
                   },
-                  { id: 'export', label: 'Export Data', icon: '📤' },
+                  { id: 'export', label: 'Export Data', icon: <Download size={24} className="mx-auto" /> },
                 ].map((op) => (
                   <button
                     key={op.id}

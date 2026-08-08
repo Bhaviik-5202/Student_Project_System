@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback, memo, useEffect } from 'react';
-import { Video } from 'lucide-react';
+import { PlayCircle, Search, Video, Play } from 'lucide-react';
 import PageHeader from '../../common/PageHeader';
 import resourceService from '../../../services/resourceService';
 
@@ -131,7 +131,7 @@ const TutorialVideos = memo(() => {
                 ) : (
                   <div className='flex h-full items-center justify-center'>
                     <div className='text-center'>
-                      <i className='fas fa-play-circle mb-4 text-6xl text-white opacity-50'></i>
+                      <PlayCircle className='mb-4 text-white opacity-50 mx-auto' size={60} />
                       <p className='text-white'>Video preview not available</p>
                     </div>
                   </div>
@@ -177,7 +177,7 @@ const TutorialVideos = memo(() => {
         <div className='lg:w-1/3'>
           <div className='mb-4'>
             <div className='relative'>
-              <i className='fas fa-search absolute left-3 top-1/2 -translate-y-1/2 transform text-gray-400 dark:text-gray-500 dark:text-gray-400' />
+              <Search className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500' size={16} />
               <input
                 type='text'
                 placeholder='Search tutorials...'
@@ -221,7 +221,7 @@ const TutorialVideos = memo(() => {
                 <div className='flex items-start space-x-3'>
                   <div className='relative'>
                     <div className='flex h-16 w-24 items-center justify-center overflow-hidden rounded bg-gray-200 dark:bg-gray-700'>
-                      <i className='fas fa-play text-gray-400 opacity-50' />
+                      <Play className='text-gray-400 opacity-50' size={24} />
                     </div>
                   </div>
                   <div className='flex-1'>

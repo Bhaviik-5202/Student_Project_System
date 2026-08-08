@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { History } from 'lucide-react';
 import { useAuth } from '../../../hooks/useAuth';
 import { timeAgo } from '../../../utils/helpers';
 
@@ -142,7 +143,7 @@ const RecentActivity = memo(({ activities = [] }) => {
             ))
         ) : (
           <div className='flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-200 py-10 text-center dark:border-slate-700'>
-            <i className='fas fa-history mb-3 text-4xl text-slate-300 dark:text-slate-600'></i>
+            <History className='mb-3 text-slate-300 dark:text-slate-600' size={36} />
             <p className='text-sm font-semibold text-slate-600 dark:text-slate-300'>
               No recent activities available.
             </p>

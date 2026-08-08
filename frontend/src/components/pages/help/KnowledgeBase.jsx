@@ -1,6 +1,6 @@
 import React, { memo, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BookOpen } from 'lucide-react';
+import { BookOpen, FileText, Search, Video, ArrowRight } from 'lucide-react';
 import PageHeader from '../../common/PageHeader';
 import api from '../../../utils/api';
 
@@ -112,7 +112,7 @@ const KnowledgeBase = memo(() => {
                     </div>
                   </div>
                   <button className='text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300'>
-                    Read →
+                    Read <ArrowRight className="inline ml-1" size={16} />
                   </button>
                 </div>
               ))}

@@ -1,5 +1,6 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
+import { LineChart } from 'lucide-react';
 import {
   AreaChart,
   Area,
@@ -23,7 +24,7 @@ const SystemMetrics = memo(({ stats = {} }) => {
       <div className='mb-6 flex items-center justify-between'>
         <div>
           <h3 className='text-lg font-bold text-slate-900 dark:text-white'>
-            <i className='fas fa-chart-line mr-2 text-blue-600'></i>
+            <LineChart className='mr-2 text-blue-600 inline-block' size={20} />
             System Telemetry
           </h3>
           <p className='text-sm text-slate-500 dark:text-slate-400'>

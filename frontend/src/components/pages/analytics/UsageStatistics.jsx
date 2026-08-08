@@ -1,6 +1,6 @@
 import { useState, useEffect, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LineChart, Download } from 'lucide-react';
+import { LineChart, Download, TrendingUp, TrendingDown, ArrowRight } from 'lucide-react';
 import PageHeader from '../../common/PageHeader';
 import api from '../../../utils/api';
 
@@ -153,10 +153,10 @@ const UsageStatistics = memo(() => {
                     }`}
                   >
                     {day.trend === 'up'
-                      ? '↗'
+                      ? <TrendingUp size={16} />
                       : day.trend === 'down'
-                        ? '↘'
-                        : '→'}
+                        ? <TrendingDown size={16} />
+                        : <ArrowRight size={16} />}
                   </div>
                 </div>
               </div>

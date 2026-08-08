@@ -24,6 +24,7 @@ import {
   Linkedin,
   Eye,
   EyeOff,
+  Edit2,
 } from 'lucide-react';
 
 /**
@@ -222,19 +223,9 @@ const Profile = memo(() => {
         subtitle='Manage your account information, security credentials, and preferences'
         icon={User}
         badge={user?.role?.toUpperCase()}
-        actions={
-          !isEditing && (
-            <button
-              onClick={() => setIsEditing(true)}
-              className='flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-100 hover:bg-indigo-700 transition-all dark:shadow-none'
-            >
-              Edit Profile
-            </button>
-          )
-        }
       />
 
-      <div className='grid grid-cols-1 gap-8 lg:grid-cols-3'>
+      <div className='grid grid-cols-1 gap-4 sm:gap-6 lg:gap-8 lg:grid-cols-3'>
         {/* Profile Card */}
         <div className='lg:col-span-1'>
           <div className='overflow-hidden rounded-xl border border-slate-200 bg-white dark:bg-slate-900 shadow-sm dark:border-slate-800 '>
@@ -277,6 +268,16 @@ const Profile = memo(() => {
               >
                 {roleLabels[user.role]}
               </span>
+
+              {!isEditing && (
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className='mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400 px-4 py-2.5 text-sm font-bold transition-colors hover:bg-indigo-100 dark:hover:bg-indigo-900/50 shadow-sm'
+                >
+                  <Edit2 className="h-4 w-4" />
+                  Edit Profile
+                </button>
+              )}
             </div>
           </div>
 
@@ -424,7 +425,7 @@ const Profile = memo(() => {
                 Security
               </h3>
               <form onSubmit={handleSecuritySubmit} className='space-y-6'>
-                <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+                <div className='grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2'>
                   <div>
                     <label className='mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300'>
                       Current Password

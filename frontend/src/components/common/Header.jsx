@@ -288,7 +288,7 @@ const Header = memo(
                     <HeaderIcon
                       name='graduation-cap'
                       className='text-white'
-                      size='text-lg'
+                      size='w-5 h-5'
                     />
                   </div>
                   <div>
@@ -312,7 +312,7 @@ const Header = memo(
                     <HeaderIcon
                       name='graduation-cap'
                       className='text-white'
-                      size='text-base'
+                      size='w-4 h-4'
                     />
                   </div>
                   <div className='min-w-0 flex-1'>
@@ -335,7 +335,7 @@ const Header = memo(
                       className={`rounded-xl p-2.5 transition-all ${showQuickAdd ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/40' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:bg-gray-800  dark:hover:bg-gray-800'}`}
                       aria-label='Quick Actions'
                     >
-                      <HeaderIcon name='plus' size='text-lg' />
+                      <HeaderIcon name='plus' size='w-5 h-5' />
                     </button>
                     <Dropdown isOpen={showQuickAdd} className='absolute right-0 top-full mt-2 w-60 origin-top-right'>
                       <QuickAddMenu
@@ -355,7 +355,7 @@ const Header = memo(
                     className={`rounded-xl p-2.5 transition-all ${showCalendar ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/40' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:bg-gray-800  dark:hover:bg-gray-800'}`}
                     aria-label='Calendar'
                   >
-                    <HeaderIcon name='calendar-days' size='text-lg' />
+                    <HeaderIcon name='calendar-days' size='w-5 h-5' />
                   </button>
                   {showCalendar && (
                     <div className='animate-dropdown absolute right-0 top-full z-50 mt-2'>
@@ -378,7 +378,7 @@ const Header = memo(
                 >
                   <HeaderIcon
                     name={isDarkMode ? 'sun' : 'moon'}
-                    size='text-lg'
+                    size='w-5 h-5'
                   />
                 </button>
 
@@ -392,7 +392,7 @@ const Header = memo(
                       className={`relative rounded-xl p-2 sm:p-2.5 transition-all active:scale-95 ${showNotifications ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/40' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:bg-gray-800 dark:hover:bg-gray-800'}`}
                       aria-label='Notifications'
                     >
-                      <HeaderIcon name='bell' size='text-lg' />
+                      <HeaderIcon name='bell' size='w-5 h-5' />
                       {unreadCount > 0 && (
                         <span className='absolute -right-0.5 -top-0.5 flex h-5 w-5'>
                           <span className='relative inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm'>
@@ -474,7 +474,7 @@ const Header = memo(
                   <HeaderIcon
                     name='magnifying-glass'
                     className='text-blue-500'
-                    size='text-sm'
+                    size='w-3.5 h-3.5'
                   />
                   Search
                 </h3>
@@ -482,7 +482,7 @@ const Header = memo(
                   onClick={() => setShowSearch(false)}
                   className='rounded-xl p-2 hover:bg-gray-100 dark:hover:bg-gray-700 dark:bg-gray-800 '
                 >
-                  <HeaderIcon name='xmark' size='text-lg' />
+                  <HeaderIcon name='xmark' size='w-5 h-5' />
                 </button>
               </div>
               <SearchBar

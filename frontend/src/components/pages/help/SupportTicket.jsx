@@ -1,6 +1,7 @@
 import React, { memo, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
+import { ArrowLeft, UploadCloud } from 'lucide-react';
 import api from '../../../utils/api';
 
 const SupportTicket = memo(() => {
@@ -50,7 +51,7 @@ const SupportTicket = memo(() => {
             onClick={() => navigate('/help')}
             className='mb-4 flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300'
           >
-            ← Back to Help Center
+            <ArrowLeft className="mr-2 inline" size={16} /> Back to Help Center
           </button>
           <h1 className='text-2xl font-bold text-slate-900 dark:text-white'>
             Submit Support Ticket
@@ -151,19 +152,7 @@ const SupportTicket = memo(() => {
                 />
                 <label htmlFor='file-upload' className='cursor-pointer'>
                   <div className='text-slate-600 dark:text-slate-400'>
-                    <svg
-                      className='mx-auto h-12 w-12 text-slate-400 dark:text-slate-500 dark:text-slate-400'
-                      stroke='currentColor'
-                      fill='none'
-                      viewBox='0 0 48 48'
-                    >
-                      <path
-                        d='M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02'
-                        strokeWidth='2'
-                        strokeLinecap='round'
-                        strokeLinejoin='round'
-                      />
-                    </svg>
+                    <UploadCloud className='mx-auto text-slate-400 dark:text-slate-500' size={48} />
                     <p className='mt-2'>Click to upload screenshots or files</p>
                     <p className='text-sm text-slate-500 dark:text-slate-400'>
                       PNG, JPG, PDF up to 10MB each

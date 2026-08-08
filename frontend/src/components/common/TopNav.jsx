@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { useAuth } from '../../hooks/useAuth';
 import { useTheme } from '../../hooks/useTheme';
 import { navigationItems } from '../../config/navigation';
+import HeaderIcon from './header/HeaderIcon';
 
 /**
  * Submenu Icon Mapping
@@ -156,16 +157,20 @@ const TopNav = memo(
                   : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800/80 hover:text-indigo-600  dark:hover:bg-slate-800/80 dark:hover:text-indigo-400'
               }`}
             >
-              <i
-                className={`fas fa-${item.icon} text-sm transition-transform duration-200 group-hover:scale-110 ${
+              <HeaderIcon
+                name={item.icon}
+                size='w-4 h-4'
+                className={`transition-transform duration-200 group-hover:scale-110 ${
                   isActive
                     ? 'text-indigo-600 dark:text-indigo-400'
                     : 'text-slate-400 group-hover:text-indigo-500'
                 }`}
               />
               <span>{item.title}</span>
-              <i
-                className={`fas fa-chevron-down text-xs opacity-70 transition-transform duration-200 ${
+              <HeaderIcon
+                name="chevron-down"
+                size="w-3.5 h-3.5"
+                className={`opacity-70 transition-transform duration-200 ${
                   isOpen
                     ? 'rotate-180 text-indigo-600 dark:text-indigo-400'
                     : ''
@@ -184,8 +189,10 @@ const TopNav = memo(
                   : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800/80 hover:text-indigo-600  dark:hover:bg-slate-800/80 dark:hover:text-indigo-400'
               }`}
             >
-              <i
-                className={`fas fa-${item.icon} text-sm transition-transform duration-200 group-hover:scale-110 ${
+              <HeaderIcon
+                name={item.icon}
+                size='w-4 h-4'
+                className={`transition-transform duration-200 group-hover:scale-110 ${
                   isActive
                     ? 'text-indigo-600 dark:text-indigo-400'
                     : 'text-slate-400 group-hover:text-indigo-500'
@@ -225,8 +232,10 @@ const TopNav = memo(
                         }`}
                       >
                         <div className='flex items-center gap-2.5'>
-                          <i
-                            className={`fas fa-${subIcon} text-xs w-4 text-center ${
+                          <HeaderIcon
+                            name={subIcon}
+                            size='w-4 h-4'
+                            className={`text-center ${
                               subIsActive
                                 ? 'text-indigo-600 dark:text-indigo-400'
                                 : 'text-slate-400 group-hover:text-indigo-500'
@@ -268,13 +277,11 @@ const TopNav = memo(
             {/* Active Route / Section Indicator Badge */}
             {currentActiveItem && (
               <div className='flex shrink-0 whitespace-nowrap items-center gap-2 rounded-full border border-slate-200/80 bg-slate-50/90 px-3.5 py-1.5 text-xs font-bold text-slate-700 shadow-xs backdrop-blur-sm dark:border-slate-700/80 dark:bg-slate-800/90 dark:text-slate-200'>
-                <i
-                  className={`fas fa-${currentActiveItem.icon} text-xs text-indigo-500 dark:text-indigo-400`}
-                />
-                <span>{currentActiveItem.title}</span>
+                <HeaderIcon name={currentActiveItem.icon} size='w-3.5 h-3.5' className='text-indigo-500 dark:text-indigo-400' />
+                <span className='font-semibold text-slate-800 dark:text-slate-100'>{currentActiveItem.title}</span>
                 {currentActiveSubTitle && (
                   <>
-                    <i className='fas fa-chevron-right text-[9px] text-slate-400' />
+                    <HeaderIcon name="chevron-right" size="w-2.5 h-2.5" className='text-slate-400' />
                     <span className='font-extrabold text-indigo-600 dark:text-indigo-400'>
                       {currentActiveSubTitle}
                     </span>

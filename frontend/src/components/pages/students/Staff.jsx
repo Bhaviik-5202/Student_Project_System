@@ -385,76 +385,78 @@ const Staff = memo(() => {
       </div>
 
       {/* Table Container */}
-      <div className='hidden md:block table-container table-responsive overflow-x-auto shadow-md'>
-        <table className='table'>
-          <thead>
-            <tr className='bg-gray-50 dark:bg-gray-800/50 dark:bg-slate-900/50'>
-              <th className='w-32 px-6 py-4 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400'>
-                Faculty ID
-              </th>
-              <th className='px-6 py-4 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400'>
-                Faculty Info
-              </th>
-              <th className='px-6 py-4 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400'>
-                Department
-              </th>
-              <th className='px-6 py-4 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400'>
-                Designation
-              </th>
-              <th className='px-6 py-4 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400'>
-                Contact No.
-              </th>
-              <th className='px-6 py-4 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400'>
-                Status
-              </th>
-              <th className='px-6 py-4 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400'>
-                Joining Date
-              </th>
-              <th className='px-6 py-4 text-right text-[10px] font-bold uppercase tracking-widest text-gray-400'>
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
-              <tr>
-                <td
-                  colSpan='7'
-                  className='py-20 text-center font-medium italic text-gray-400'
-                >
-                  Accessing personnel directory...
-                </td>
+      <div className='hidden md:block'>
+        <div className='table-container table-responsive overflow-x-auto shadow-md'>
+          <table className='table'>
+            <thead>
+              <tr className='bg-gray-50 dark:bg-gray-800/50 dark:bg-slate-900/50'>
+                <th className='w-32 px-6 py-4 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400'>
+                  Faculty ID
+                </th>
+                <th className='px-6 py-4 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400'>
+                  Faculty Info
+                </th>
+                <th className='px-6 py-4 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400'>
+                  Department
+                </th>
+                <th className='px-6 py-4 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400'>
+                  Designation
+                </th>
+                <th className='px-6 py-4 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400'>
+                  Contact No.
+                </th>
+                <th className='px-6 py-4 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400'>
+                  Status
+                </th>
+                <th className='px-6 py-4 text-left text-[10px] font-bold uppercase tracking-widest text-gray-400'>
+                  Joining Date
+                </th>
+                <th className='px-6 py-4 text-right text-[10px] font-bold uppercase tracking-widest text-gray-400'>
+                  Actions
+                </th>
               </tr>
-            ) : error ? (
-              <tr>
-                <td
-                  colSpan='8'
-                  className='py-20 text-center font-bold text-rose-500'
-                >
-                  {error}
-                </td>
-              </tr>
-            ) : filteredStaff.length === 0 ? (
-              <tr>
-                <td
-                  colSpan='8'
-                  className='py-20 text-center font-medium italic text-gray-400'
-                >
-                  No staff records found matching your query.
-                </td>
-              </tr>
-            ) : (
-              filteredStaff.map((staff) => (
-                <StaffRow
-                  key={staff.dbId}
-                  staff={staff}
-                  onEdit={handleEditStaff}
-                  onDelete={handleDeleteStaff}
-                />
-              ))
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td
+                    colSpan='7'
+                    className='py-20 text-center font-medium italic text-gray-400'
+                  >
+                    Accessing personnel directory...
+                  </td>
+                </tr>
+              ) : error ? (
+                <tr>
+                  <td
+                    colSpan='8'
+                    className='py-20 text-center font-bold text-rose-500'
+                  >
+                    {error}
+                  </td>
+                </tr>
+              ) : filteredStaff.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan='8'
+                    className='py-20 text-center font-medium italic text-gray-400'
+                  >
+                    No staff records found matching your query.
+                  </td>
+                </tr>
+              ) : (
+                filteredStaff.map((staff) => (
+                  <StaffRow
+                    key={staff.dbId}
+                    staff={staff}
+                    onEdit={handleEditStaff}
+                    onDelete={handleDeleteStaff}
+                  />
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Mobile Cards Layout */}

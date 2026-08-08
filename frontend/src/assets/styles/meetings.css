@@ -185,16 +185,16 @@
 
 .meeting-calendar-grid {
   display: grid;
-  grid-template-columns: repeat(7, minmax(40px, 1fr));
+  grid-template-columns: repeat(7, minmax(100px, 1fr));
   background-color: var(--meeting-border);
   gap: 1px;
-  min-width: 100%;
+  min-width: 700px;
 }
 
 @media (min-width: 768px) {
   .meeting-calendar-grid {
     grid-template-columns: repeat(7, minmax(120px, 1fr));
-    min-width: 800px;
+    min-width: 840px;
   }
 }
 
