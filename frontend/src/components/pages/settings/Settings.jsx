@@ -1,5 +1,15 @@
 import { useCallback, useMemo, useState, memo, useEffect } from 'react';
-import { Sliders, AlertTriangle, Download, Trash2, Settings as SettingsIcon, Bell, Lock, Palette, UserCog } from 'lucide-react';
+import {
+  Sliders,
+  AlertTriangle,
+  Download,
+  Trash2,
+  Settings as SettingsIcon,
+  Bell,
+  Lock,
+  Palette,
+  UserCog,
+} from 'lucide-react';
 import PageHeader from '../../common/PageHeader';
 import { useTheme } from '../../../hooks/useTheme';
 import { useAuth } from '../../../hooks/useAuth';
@@ -457,7 +467,10 @@ const Settings = memo(() => {
     <div className='space-y-6'>
       <div className='rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-900/50 dark:bg-amber-950/30'>
         <div className='flex items-start'>
-          <AlertTriangle className='mr-3 mt-0.5 shrink-0 text-amber-600 dark:text-amber-400' size={20} />
+          <AlertTriangle
+            className='mr-3 mt-0.5 shrink-0 text-amber-600 dark:text-amber-400'
+            size={20}
+          />
           <div className='min-w-0 flex-1'>
             <h4 className='font-medium text-amber-800 dark:text-amber-200 leading-tight'>
               Account Management

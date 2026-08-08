@@ -64,72 +64,93 @@ const getStatusBadge = (status) => {
   }
 };
 
-const MeetingCard = memo(({ meeting, onView, onEdit, onDelete, currentUser }) => {
-  const canManage = currentUser?.role === 'admin';
-  const isActive = meeting.isActive !== false && meeting.status !== 'cancelled';
+const MeetingCard = memo(
+  ({ meeting, onView, onEdit, onDelete, currentUser }) => {
+    const canManage = currentUser?.role === 'admin';
+    const isActive =
+      meeting.isActive !== false && meeting.status !== 'cancelled';
 
-  return (
-    <div className='flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 transition-all hover:shadow-md'>
-      <div className='flex items-start justify-between gap-3'>
-        <div className='flex flex-col'>
-          <div className='text-[15px] font-black text-slate-900 dark:text-white leading-tight'>
-            {meeting.title}
+    return (
+      <div className='flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 transition-all hover:shadow-md'>
+        <div className='flex items-start justify-between gap-3'>
+          <div className='flex flex-col'>
+            <div className='text-[15px] font-black text-slate-900 dark:text-white leading-tight'>
+              {meeting.title}
+            </div>
+            <div className='text-[11px] font-bold text-indigo-600 dark:text-indigo-400 mt-0.5'>
+              {TYPE_LABELS[meeting.type] || meeting.type || 'Sync Session'}
+            </div>
           </div>
-          <div className='text-[11px] font-bold text-indigo-600 dark:text-indigo-400 mt-0.5'>
-            {TYPE_LABELS[meeting.type] || meeting.type || 'Sync Session'}
-          </div>
+          <div className='shrink-0'>{getStatusBadge(meeting.status)}</div>
         </div>
-        <div className='shrink-0'>{getStatusBadge(meeting.status)}</div>
-      </div>
 
-      <div className='mt-2 flex flex-col gap-2 rounded-xl bg-slate-50/50 p-3 dark:bg-slate-800/40 flex-1'>
-        <div className='flex items-center gap-2 text-[12px] font-semibold text-slate-700 dark:text-slate-300'>
-          <Calendar size={14} className='text-slate-400' />
-          <span>{meeting.date ? new Date(meeting.date).toLocaleDateString(undefined, { dateStyle: 'medium' }) : 'N/A'}</span>
-          <span className='text-slate-400 mx-1'>•</span>
-          <Clock size={14} className='text-slate-400' />
-          <span>{meeting.time || '10:00 AM'}</span>
-        </div>
-        <div className='flex items-center gap-2 text-[12px] font-semibold text-slate-700 dark:text-slate-300'>
-          <User size={14} className='text-slate-400' />
-          <span className='truncate'>{meeting.organizer?.name || 'Faculty Guide'}</span>
-        </div>
-        {meeting.project?.title && (
+        <div className='mt-2 flex flex-col gap-2 rounded-xl bg-slate-50/50 p-3 dark:bg-slate-800/40 flex-1'>
           <div className='flex items-center gap-2 text-[12px] font-semibold text-slate-700 dark:text-slate-300'>
-            <FolderKanban size={14} className='text-slate-400' />
-            <span className='truncate'>{meeting.project.title}</span>
+            <Calendar size={14} className='text-slate-400' />
+            <span>
+              {meeting.date
+                ? new Date(meeting.date).toLocaleDateString(undefined, {
+                    dateStyle: 'medium',
+                  })
+                : 'N/A'}
+            </span>
+            <span className='text-slate-400 mx-1'>•</span>
+            <Clock size={14} className='text-slate-400' />
+            <span>{meeting.time || '10:00 AM'}</span>
           </div>
-        )}
-
-        <div className='mt-auto flex items-center justify-between pt-3 border-t border-slate-200/50 dark:border-slate-700/50'>
-          <div className='flex items-center gap-1.5'>
-            <Users size={14} className='text-indigo-500' />
-            <span className='text-[11px] font-bold text-slate-700 dark:text-slate-300'>
-              {Array.isArray(meeting.participants) ? meeting.participants.length : 0} Members
+          <div className='flex items-center gap-2 text-[12px] font-semibold text-slate-700 dark:text-slate-300'>
+            <User size={14} className='text-slate-400' />
+            <span className='truncate'>
+              {meeting.organizer?.name || 'Faculty Guide'}
             </span>
           </div>
-          <div className='flex items-center gap-2'>
-            <button onClick={() => onView(meeting.id)} className='flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl bg-slate-100 text-slate-600 transition-transform active:scale-90 dark:bg-slate-700 dark:text-slate-300'>
-              <Eye size={18} />
-            </button>
-            {canManage && (
-              <>
-                <button onClick={() => onEdit(meeting.id)} className='flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 transition-transform active:scale-90 dark:bg-indigo-500/20 dark:text-indigo-400'>
-                  <Edit2 size={18} />
-                </button>
-                <button onClick={() => onDelete(meeting.id)} className='flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl bg-rose-50 text-rose-600 transition-transform active:scale-90 dark:bg-rose-500/20 dark:text-rose-400'>
-                  <Trash2 size={18} />
-                </button>
-              </>
-            )}
+          {meeting.project?.title && (
+            <div className='flex items-center gap-2 text-[12px] font-semibold text-slate-700 dark:text-slate-300'>
+              <FolderKanban size={14} className='text-slate-400' />
+              <span className='truncate'>{meeting.project.title}</span>
+            </div>
+          )}
+
+          <div className='mt-auto flex items-center justify-between pt-3 border-t border-slate-200/50 dark:border-slate-700/50'>
+            <div className='flex items-center gap-1.5'>
+              <Users size={14} className='text-indigo-500' />
+              <span className='text-[11px] font-bold text-slate-700 dark:text-slate-300'>
+                {Array.isArray(meeting.participants)
+                  ? meeting.participants.length
+                  : 0}{' '}
+                Members
+              </span>
+            </div>
+            <div className='flex items-center gap-2'>
+              <button
+                onClick={() => onView(meeting.id)}
+                className='flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl bg-slate-100 text-slate-600 transition-transform active:scale-90 dark:bg-slate-700 dark:text-slate-300'
+              >
+                <Eye size={18} />
+              </button>
+              {canManage && (
+                <>
+                  <button
+                    onClick={() => onEdit(meeting.id)}
+                    className='flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 transition-transform active:scale-90 dark:bg-indigo-500/20 dark:text-indigo-400'
+                  >
+                    <Edit2 size={18} />
+                  </button>
+                  <button
+                    onClick={() => onDelete(meeting.id)}
+                    className='flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl bg-rose-50 text-rose-600 transition-transform active:scale-90 dark:bg-rose-500/20 dark:text-rose-400'
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  );
-});
-
-
+    );
+  }
+);
 
 const MeetingList = () => {
   const navigate = useNavigate();
@@ -229,16 +250,22 @@ const MeetingList = () => {
           {loading ? (
             <div className='col-span-full flex flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-white py-12 px-4 text-center dark:border-slate-800 dark:bg-slate-900'>
               <div className='h-6 w-6 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent' />
-              <span className='mt-3 text-[13px] font-semibold text-slate-500'>Accessing schedule...</span>
+              <span className='mt-3 text-[13px] font-semibold text-slate-500'>
+                Accessing schedule...
+              </span>
             </div>
           ) : error ? (
             <div className='col-span-full flex flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-white py-12 px-4 text-center dark:border-slate-800 dark:bg-slate-900'>
-              <span className='text-[13px] font-semibold text-rose-500'>{error}</span>
+              <span className='text-[13px] font-semibold text-rose-500'>
+                {error}
+              </span>
             </div>
           ) : meetings.length === 0 ? (
             <div className='col-span-full flex flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-white py-12 px-4 text-center dark:border-slate-800 dark:bg-slate-900'>
               <Calendar className='mb-3 h-10 w-10 text-slate-300 dark:text-slate-600' />
-              <span className='text-[13px] font-semibold text-slate-500'>No meetings scheduled.</span>
+              <span className='text-[13px] font-semibold text-slate-500'>
+                No meetings scheduled.
+              </span>
             </div>
           ) : (
             meetings.map((meeting) => (

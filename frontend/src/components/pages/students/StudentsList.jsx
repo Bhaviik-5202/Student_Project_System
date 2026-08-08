@@ -32,7 +32,11 @@ const MobileStudentCard = memo(({ student, onEdit, onDelete, userRole }) => (
           />
         ) : (
           <div className='flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-50 to-indigo-100/50 text-lg font-black text-indigo-600 dark:from-indigo-950/60 dark:to-indigo-900/40 dark:text-indigo-400'>
-            {student.name ? student.name.charAt(0).toUpperCase() : <UserIcon size={20} />}
+            {student.name ? (
+              student.name.charAt(0).toUpperCase()
+            ) : (
+              <UserIcon size={20} />
+            )}
           </div>
         )}
         <div className='flex flex-col'>
@@ -62,12 +66,18 @@ const MobileStudentCard = memo(({ student, onEdit, onDelete, userRole }) => (
       </div>
       <div className='flex items-center gap-2 text-[12px] font-semibold text-slate-700 dark:text-slate-300'>
         <DeptIcon size={14} className='text-slate-400' />
-        <span className='truncate'>{student.department || 'Computer Engineering'}</span>
+        <span className='truncate'>
+          {student.department || 'Computer Engineering'}
+        </span>
       </div>
       <div className='flex items-center justify-between mt-1'>
         <div className='flex items-center gap-1.5'>
           <span className='rounded-md bg-white px-2 py-1 text-[10px] font-bold text-slate-600 shadow-sm dark:bg-slate-700 dark:text-slate-300'>
-            {student.semester ? (student.semester.startsWith('Sem') ? student.semester : `Sem ${student.semester}`) : 'Sem 1'}
+            {student.semester
+              ? student.semester.startsWith('Sem')
+                ? student.semester
+                : `Sem ${student.semester}`
+              : 'Sem 1'}
           </span>
           <span className='rounded-md bg-white px-2 py-1 text-[10px] font-bold text-slate-600 shadow-sm dark:bg-slate-700 dark:text-slate-300'>
             Year {student.year || 1}
@@ -528,13 +538,19 @@ const StudentsList = memo(() => {
             {loading ? (
               <div className='flex flex-col items-center gap-3'>
                 <div className='h-6 w-6 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent' />
-                <span className='text-[13px] font-semibold text-slate-500'>Accessing directory...</span>
+                <span className='text-[13px] font-semibold text-slate-500'>
+                  Accessing directory...
+                </span>
               </div>
             ) : (
               <>
                 <UsersIcon className='mb-3 h-10 w-10 text-slate-300 dark:text-slate-600' />
                 <span className='text-[13px] font-semibold text-slate-500'>
-                  {error ? <span className='text-rose-500'>{error}</span> : 'No matching records found.'}
+                  {error ? (
+                    <span className='text-rose-500'>{error}</span>
+                  ) : (
+                    'No matching records found.'
+                  )}
                 </span>
               </>
             )}

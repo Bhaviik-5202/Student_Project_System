@@ -112,7 +112,9 @@ describe('User API', function () {
     const usersRes = await request(app)
       .get('/api/v1/users')
       .set('Authorization', `Bearer ${token}`);
-    const adminUser = (usersRes.body.data || []).find((u) => u.role === 'admin');
+    const adminUser = (usersRes.body.data || []).find(
+      (u) => u.role === 'admin'
+    );
 
     if (adminUser) {
       const putRes = await request(app)

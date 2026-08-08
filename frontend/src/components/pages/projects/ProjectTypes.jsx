@@ -273,10 +273,11 @@ const ProjectArchitecturesList = memo(() => {
             <button
               key={cat}
               onClick={() => setFilterCategory(cat)}
-              className={`rounded-xl px-3.5 py-2 text-xs font-bold transition-all ${filterCategory === cat
+              className={`rounded-xl px-3.5 py-2 text-xs font-bold transition-all ${
+                filterCategory === cat
                   ? 'bg-indigo-600 dark:bg-indigo-500 text-white shadow-sm'
                   : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 dark:text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-600 dark:bg-slate-700 '
-                }`}
+              }`}
             >
               {cat}
             </button>

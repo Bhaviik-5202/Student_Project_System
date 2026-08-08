@@ -46,7 +46,9 @@ const ActivityItem = memo(({ activity, isLast }) => {
       <div
         className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-transparent sm:h-11 sm:w-11 ${colorClass}`}
       >
-        <i className={`fas ${getIconClass(activity.icon)} text-sm sm:text-base`}></i>
+        <i
+          className={`fas ${getIconClass(activity.icon)} text-sm sm:text-base`}
+        ></i>
       </div>
 
       <div className='min-w-0 flex-1 pt-0.5'>
@@ -143,7 +145,10 @@ const RecentActivity = memo(({ activities = [] }) => {
             ))
         ) : (
           <div className='flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-200 py-10 text-center dark:border-slate-700'>
-            <History className='mb-3 text-slate-300 dark:text-slate-600' size={36} />
+            <History
+              className='mb-3 text-slate-300 dark:text-slate-600'
+              size={36}
+            />
             <p className='text-sm font-semibold text-slate-600 dark:text-slate-300'>
               No recent activities available.
             </p>

@@ -55,7 +55,9 @@ exports.register = async ({
     }
 
     const validRoles = ['student', 'faculty'];
-    const finalRole = validRoles.includes(requestedRole) ? requestedRole : 'student';
+    const finalRole = validRoles.includes(requestedRole)
+      ? requestedRole
+      : 'student';
 
     const existing = await userRepository.findByEmail(email);
     if (existing) return response(true, null, 'Email already registered');
@@ -219,7 +221,9 @@ exports.getById = async (id) => {
  */
 exports.create = async (data) => {
   try {
-    const requestedRole = String(data.role || '').toLowerCase().trim();
+    const requestedRole = String(data.role || '')
+      .toLowerCase()
+      .trim();
     if (requestedRole === 'admin') {
       return response(
         true,
@@ -306,7 +310,9 @@ exports.update = async (id, data) => {
       process.env.SUPER_ADMIN_EMAIL ||
       process.env.ADMIN_EMAIL ||
       'er.bhavik5202@gmail.com'
-    ).toLowerCase().trim();
+    )
+      .toLowerCase()
+      .trim();
 
     const existingUser = await userRepository.findById(id);
     if (!existingUser) return response(true, null, 'User not found');
@@ -328,14 +334,21 @@ exports.update = async (id, data) => {
 
     // Protect Super Admin properties from demotion or deactivation
     if (existingUser.email.toLowerCase().trim() === superAdminEmail) {
-      if (updatePayload.role && updatePayload.role.toLowerCase().trim() !== 'admin') {
+      if (
+        updatePayload.role &&
+        updatePayload.role.toLowerCase().trim() !== 'admin'
+      ) {
         return response(true, null, 'Super Admin role cannot be modified.');
       }
       if (
         updatePayload.status &&
         updatePayload.status.toLowerCase().trim() !== 'active'
       ) {
-        return response(true, null, 'Super Admin account cannot be deactivated.');
+        return response(
+          true,
+          null,
+          'Super Admin account cannot be deactivated.'
+        );
       }
     }
 

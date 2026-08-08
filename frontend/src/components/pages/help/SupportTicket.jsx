@@ -51,7 +51,7 @@ const SupportTicket = memo(() => {
             onClick={() => navigate('/help')}
             className='mb-4 flex items-center text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300'
           >
-            <ArrowLeft className="mr-2 inline" size={16} /> Back to Help Center
+            <ArrowLeft className='mr-2 inline' size={16} /> Back to Help Center
           </button>
           <h1 className='text-2xl font-bold text-slate-900 dark:text-white'>
             Submit Support Ticket
@@ -152,7 +152,10 @@ const SupportTicket = memo(() => {
                 />
                 <label htmlFor='file-upload' className='cursor-pointer'>
                   <div className='text-slate-600 dark:text-slate-400'>
-                    <UploadCloud className='mx-auto text-slate-400 dark:text-slate-500' size={48} />
+                    <UploadCloud
+                      className='mx-auto text-slate-400 dark:text-slate-500'
+                      size={48}
+                    />
                     <p className='mt-2'>Click to upload screenshots or files</p>
                     <p className='text-sm text-slate-500 dark:text-slate-400'>
                       PNG, JPG, PDF up to 10MB each

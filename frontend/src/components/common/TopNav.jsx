@@ -194,8 +194,8 @@ const TopNav = memo(
               />
               <span>{item.title}</span>
               <HeaderIcon
-                name="chevron-down"
-                size="w-3.5 h-3.5"
+                name='chevron-down'
+                size='w-3.5 h-3.5'
                 className={`opacity-70 transition-transform duration-200 ${
                   isOpen
                     ? 'rotate-180 text-indigo-600 dark:text-indigo-400'
@@ -244,7 +244,8 @@ const TopNav = memo(
                 <div className='space-y-0.5'>
                   {visibleSubmenu.map((subItem, idx) => {
                     const subIsActive = location.pathname === subItem.path;
-                    const SubIcon = SUBMENU_ICONS[subItem.title] || ChevronRight;
+                    const SubIcon =
+                      SUBMENU_ICONS[subItem.title] || ChevronRight;
 
                     return (
                       <NavLink
@@ -300,11 +301,21 @@ const TopNav = memo(
             {/* Active Route / Section Indicator Badge */}
             {currentActiveItem && (
               <div className='flex shrink-0 whitespace-nowrap items-center gap-2 rounded-full border border-slate-200/80 bg-slate-50/90 px-3.5 py-1.5 text-xs font-bold text-slate-700 shadow-xs backdrop-blur-sm dark:border-slate-700/80 dark:bg-slate-800/90 dark:text-slate-200'>
-                <HeaderIcon name={currentActiveItem.icon} size='w-3.5 h-3.5' className='text-indigo-500 dark:text-indigo-400' />
-                <span className='font-semibold text-slate-800 dark:text-slate-100'>{currentActiveItem.title}</span>
+                <HeaderIcon
+                  name={currentActiveItem.icon}
+                  size='w-3.5 h-3.5'
+                  className='text-indigo-500 dark:text-indigo-400'
+                />
+                <span className='font-semibold text-slate-800 dark:text-slate-100'>
+                  {currentActiveItem.title}
+                </span>
                 {currentActiveSubTitle && (
                   <>
-                    <HeaderIcon name="chevron-right" size="w-2.5 h-2.5" className='text-slate-400' />
+                    <HeaderIcon
+                      name='chevron-right'
+                      size='w-2.5 h-2.5'
+                      className='text-slate-400'
+                    />
                     <span className='font-extrabold text-indigo-600 dark:text-indigo-400'>
                       {currentActiveSubTitle}
                     </span>
@@ -337,8 +348,6 @@ const TopNav = memo(
             )}
           </div>
         </div>
-
-
       </nav>
     );
   }

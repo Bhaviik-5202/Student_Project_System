@@ -21,7 +21,7 @@ import {
   UploadCloud,
   CalendarDays,
   FolderOpen,
-  Menu
+  Menu,
 } from 'lucide-react';
 /**
  * Header Component
@@ -33,7 +33,7 @@ import {
 const Header = memo(
   ({
     isScrolled = false,
-    clearNotifications = () => { },
+    clearNotifications = () => {},
     onMobileMenuToggle,
     onCloseMobileMenu,
     isMobileMenuOpen = false,
@@ -284,17 +284,21 @@ const Header = memo(
     return (
       <>
         <header
-          className={`relative z-[100] h-16 w-full transition-all duration-300 ${isScrolled
-            ? 'bg-white/95 backdrop-blur-md shadow-sm dark:bg-slate-900/95'
-            : 'bg-white border-b border-gray-200/80 dark:bg-slate-900 dark:border-gray-700/80'
-            }`}
+          className={`relative z-[100] h-16 w-full transition-all duration-300 ${
+            isScrolled
+              ? 'bg-white/95 backdrop-blur-md shadow-sm dark:bg-slate-900/95'
+              : 'bg-white border-b border-gray-200/80 dark:bg-slate-900 dark:border-gray-700/80'
+          }`}
         >
           <div className='h-full w-full px-3 sm:px-4 lg:px-6'>
             <div className='flex h-full items-center justify-between gap-2 sm:gap-4'>
               {/* Logo Section */}
               <div className='flex items-center gap-3'>
                 {/* Desktop & Tablet Logo Link */}
-                <Link to='/dashboard' className='group hidden md:flex items-center gap-3'>
+                <Link
+                  to='/dashboard'
+                  className='group hidden md:flex items-center gap-3'
+                >
                   <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 shadow-lg'>
                     <HeaderIcon
                       name='graduation-cap'
@@ -322,8 +326,8 @@ const Header = memo(
                   >
                     <Menu className='h-5 w-5' />
                   </button>
-                  <Link 
-                    to='/dashboard' 
+                  <Link
+                    to='/dashboard'
                     className='flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 shadow-md shadow-blue-500/20 active:scale-95 transition-transform'
                     aria-label='Go to Dashboard'
                   >
@@ -350,7 +354,10 @@ const Header = memo(
                     >
                       <Plus className='h-5 w-5' />
                     </button>
-                    <Dropdown isOpen={showQuickAdd} className='absolute right-0 top-full mt-2 w-60 origin-top-right'>
+                    <Dropdown
+                      isOpen={showQuickAdd}
+                      className='absolute right-0 top-full mt-2 w-60 origin-top-right'
+                    >
                       <QuickAddMenu
                         actions={quickAddActions}
                         onActionClick={handleQuickAction}
@@ -454,7 +461,10 @@ const Header = memo(
                       </p>
                     </div>
                   </button>
-                  <Dropdown isOpen={showUserMenu} className='fixed left-4 right-4 top-[68px] sm:absolute sm:left-auto sm:top-full sm:mt-2 sm:right-0 sm:w-64 origin-top-right'>
+                  <Dropdown
+                    isOpen={showUserMenu}
+                    className='fixed left-4 right-4 top-[68px] sm:absolute sm:left-auto sm:top-full sm:mt-2 sm:right-0 sm:w-64 origin-top-right'
+                  >
                     <UserMenu
                       user={user}
                       initials={getUserInitials()}

@@ -42,31 +42,128 @@ import {
  */
 const ROLE_ALERT_META = {
   admin: [
-    { type: 'user_registered', label: 'New User Registered', icon: UserPlus, color: 'text-blue-600 bg-blue-50 dark:bg-blue-950/60 dark:text-blue-400 border-blue-100 dark:border-blue-900/40' },
-    { type: 'project_created', label: 'New Project Created', icon: FolderPlus, color: 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/60 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/40' },
-    { type: 'approval', label: 'Pending Approval', icon: ClipboardList, color: 'text-amber-600 bg-amber-50 dark:bg-amber-950/60 dark:text-amber-400 border-amber-100 dark:border-amber-900/40' },
-    { type: 'meeting', label: 'Meeting Alert', icon: Video, color: 'text-rose-600 bg-rose-50 dark:bg-rose-950/60 dark:text-rose-400 border-rose-100 dark:border-rose-900/40' },
-    { type: 'resource', label: 'Resource Update', icon: PackageOpen, color: 'text-purple-600 bg-purple-50 dark:bg-purple-950/60 dark:text-purple-400 border-purple-100 dark:border-purple-900/40' },
-    { type: 'system', label: 'System Notification', icon: ShieldCheckIcon, color: 'text-slate-600 bg-slate-50 dark:bg-slate-800/60 dark:text-slate-400 border-slate-200 dark:border-slate-700' },
+    {
+      type: 'user_registered',
+      label: 'New User Registered',
+      icon: UserPlus,
+      color:
+        'text-blue-600 bg-blue-50 dark:bg-blue-950/60 dark:text-blue-400 border-blue-100 dark:border-blue-900/40',
+    },
+    {
+      type: 'project_created',
+      label: 'New Project Created',
+      icon: FolderPlus,
+      color:
+        'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/60 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/40',
+    },
+    {
+      type: 'approval',
+      label: 'Pending Approval',
+      icon: ClipboardList,
+      color:
+        'text-amber-600 bg-amber-50 dark:bg-amber-950/60 dark:text-amber-400 border-amber-100 dark:border-amber-900/40',
+    },
+    {
+      type: 'meeting',
+      label: 'Meeting Alert',
+      icon: Video,
+      color:
+        'text-rose-600 bg-rose-50 dark:bg-rose-950/60 dark:text-rose-400 border-rose-100 dark:border-rose-900/40',
+    },
+    {
+      type: 'resource',
+      label: 'Resource Update',
+      icon: PackageOpen,
+      color:
+        'text-purple-600 bg-purple-50 dark:bg-purple-950/60 dark:text-purple-400 border-purple-100 dark:border-purple-900/40',
+    },
+    {
+      type: 'system',
+      label: 'System Notification',
+      icon: ShieldCheckIcon,
+      color:
+        'text-slate-600 bg-slate-50 dark:bg-slate-800/60 dark:text-slate-400 border-slate-200 dark:border-slate-700',
+    },
   ],
   faculty: [
-    { type: 'project', label: 'Project Assignment', icon: FolderKanbanIcon, color: 'text-blue-600 bg-blue-50 dark:bg-blue-950/60 dark:text-blue-400 border-blue-100 dark:border-blue-900/40' },
-    { type: 'submission', label: 'Student Submission', icon: Send, color: 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/60 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/40' },
-    { type: 'meeting', label: 'Upcoming Meeting', icon: Video, color: 'text-rose-600 bg-rose-50 dark:bg-rose-950/60 dark:text-rose-400 border-rose-100 dark:border-rose-900/40' },
-    { type: 'review', label: 'Pending Review', icon: ClipboardList, color: 'text-amber-600 bg-amber-50 dark:bg-amber-950/60 dark:text-amber-400 border-amber-100 dark:border-amber-900/40' },
-    { type: 'deadline', label: 'Deadline Reminder', icon: TimerOff, color: 'text-purple-600 bg-purple-50 dark:bg-purple-950/60 dark:text-purple-400 border-purple-100 dark:border-purple-900/40' },
+    {
+      type: 'project',
+      label: 'Project Assignment',
+      icon: FolderKanbanIcon,
+      color:
+        'text-blue-600 bg-blue-50 dark:bg-blue-950/60 dark:text-blue-400 border-blue-100 dark:border-blue-900/40',
+    },
+    {
+      type: 'submission',
+      label: 'Student Submission',
+      icon: Send,
+      color:
+        'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/60 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/40',
+    },
+    {
+      type: 'meeting',
+      label: 'Upcoming Meeting',
+      icon: Video,
+      color:
+        'text-rose-600 bg-rose-50 dark:bg-rose-950/60 dark:text-rose-400 border-rose-100 dark:border-rose-900/40',
+    },
+    {
+      type: 'review',
+      label: 'Pending Review',
+      icon: ClipboardList,
+      color:
+        'text-amber-600 bg-amber-50 dark:bg-amber-950/60 dark:text-amber-400 border-amber-100 dark:border-amber-900/40',
+    },
+    {
+      type: 'deadline',
+      label: 'Deadline Reminder',
+      icon: TimerOff,
+      color:
+        'text-purple-600 bg-purple-50 dark:bg-purple-950/60 dark:text-purple-400 border-purple-100 dark:border-purple-900/40',
+    },
   ],
   student: [
-    { type: 'project', label: 'Project Update', icon: FolderKanbanIcon, color: 'text-blue-600 bg-blue-50 dark:bg-blue-950/60 dark:text-blue-400 border-blue-100 dark:border-blue-900/40' },
-    { type: 'meeting', label: 'Meeting Invitation', icon: Video, color: 'text-rose-600 bg-rose-50 dark:bg-rose-950/60 dark:text-rose-400 border-rose-100 dark:border-rose-900/40' },
-    { type: 'deadline', label: 'Submission Deadline', icon: TimerOff, color: 'text-amber-600 bg-amber-50 dark:bg-amber-950/60 dark:text-amber-400 border-amber-100 dark:border-amber-900/40' },
-    { type: 'feedback', label: 'Feedback Received', icon: MessageSquare, color: 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/60 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/40' },
-    { type: 'resource', label: 'Resource Update', icon: PackageOpen, color: 'text-purple-600 bg-purple-50 dark:bg-purple-950/60 dark:text-purple-400 border-purple-100 dark:border-purple-900/40' },
+    {
+      type: 'project',
+      label: 'Project Update',
+      icon: FolderKanbanIcon,
+      color:
+        'text-blue-600 bg-blue-50 dark:bg-blue-950/60 dark:text-blue-400 border-blue-100 dark:border-blue-900/40',
+    },
+    {
+      type: 'meeting',
+      label: 'Meeting Invitation',
+      icon: Video,
+      color:
+        'text-rose-600 bg-rose-50 dark:bg-rose-950/60 dark:text-rose-400 border-rose-100 dark:border-rose-900/40',
+    },
+    {
+      type: 'deadline',
+      label: 'Submission Deadline',
+      icon: TimerOff,
+      color:
+        'text-amber-600 bg-amber-50 dark:bg-amber-950/60 dark:text-amber-400 border-amber-100 dark:border-amber-900/40',
+    },
+    {
+      type: 'feedback',
+      label: 'Feedback Received',
+      icon: MessageSquare,
+      color:
+        'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/60 dark:text-emerald-400 border-emerald-100 dark:border-emerald-900/40',
+    },
+    {
+      type: 'resource',
+      label: 'Resource Update',
+      icon: PackageOpen,
+      color:
+        'text-purple-600 bg-purple-50 dark:bg-purple-950/60 dark:text-purple-400 border-purple-100 dark:border-purple-900/40',
+    },
   ],
 };
 
 const MobileAlerts = ({ userRole, navigate }) => {
-  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotificationsContext();
+  const { notifications, unreadCount, markAsRead, markAllAsRead } =
+    useNotificationsContext();
   const roleAlertTypes = (ROLE_ALERT_META[userRole] || []).map((m) => m.type);
 
   const roleNotifications = notifications
@@ -82,7 +179,14 @@ const MobileAlerts = ({ userRole, navigate }) => {
   const getAlertMeta = (notification) => {
     const nType = (notification.type || '').toLowerCase();
     const match = alertMeta.find((m) => nType.includes(m.type));
-    return match || { icon: BellIcon, label: notification.title || 'Notification', color: 'text-blue-600 bg-blue-50 dark:bg-blue-950/60 dark:text-blue-400 border-blue-100 dark:border-blue-900/40' };
+    return (
+      match || {
+        icon: BellIcon,
+        label: notification.title || 'Notification',
+        color:
+          'text-blue-600 bg-blue-50 dark:bg-blue-950/60 dark:text-blue-400 border-blue-100 dark:border-blue-900/40',
+      }
+    );
   };
 
   const handleMarkAllRead = async () => {
@@ -129,8 +233,12 @@ const MobileAlerts = ({ userRole, navigate }) => {
             <CheckCircleIcon className='h-6 w-6 text-emerald-500 dark:text-emerald-400' />
           </div>
           <div className='text-center'>
-            <p className='text-sm font-bold text-slate-700 dark:text-slate-300'>All caught up!</p>
-            <p className='text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5'>No new alerts for you.</p>
+            <p className='text-sm font-bold text-slate-700 dark:text-slate-300'>
+              All caught up!
+            </p>
+            <p className='text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5'>
+              No new alerts for you.
+            </p>
           </div>
         </div>
       ) : (
@@ -149,11 +257,15 @@ const MobileAlerts = ({ userRole, navigate }) => {
                     : 'bg-slate-50/50 dark:bg-slate-800/40 border-transparent opacity-75'
                 }`}
               >
-                <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border ${meta.color}`}>
+                <div
+                  className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl border ${meta.color}`}
+                >
                   <Icon className='h-4.5 w-4.5' />
                 </div>
                 <div className='min-w-0 flex-1 py-0.5'>
-                  <p className={`text-[13px] font-bold truncate leading-tight ${isUnread ? 'text-slate-900 dark:text-white' : 'text-slate-600 dark:text-slate-400'}`}>
+                  <p
+                    className={`text-[13px] font-bold truncate leading-tight ${isUnread ? 'text-slate-900 dark:text-white' : 'text-slate-600 dark:text-slate-400'}`}
+                  >
                     {notif.title || meta.label}
                   </p>
                   {notif.message && (
@@ -217,10 +329,14 @@ const MobileStatCard = ({ stat, onClick }) => {
 
   const colorMap = {
     blue: 'from-blue-500/10 to-blue-500/5 text-blue-600 dark:text-blue-400 border-blue-200/50 dark:border-blue-900/30',
-    green: 'from-emerald-500/10 to-emerald-500/5 text-emerald-600 dark:text-emerald-400 border-emerald-200/50 dark:border-emerald-900/30',
-    purple: 'from-purple-500/10 to-purple-500/5 text-purple-600 dark:text-purple-400 border-purple-200/50 dark:border-purple-900/30',
-    orange: 'from-orange-500/10 to-orange-500/5 text-orange-600 dark:text-orange-400 border-orange-200/50 dark:border-orange-900/30',
-    amber: 'from-amber-500/10 to-amber-500/5 text-amber-600 dark:text-amber-400 border-amber-200/50 dark:border-amber-900/30',
+    green:
+      'from-emerald-500/10 to-emerald-500/5 text-emerald-600 dark:text-emerald-400 border-emerald-200/50 dark:border-emerald-900/30',
+    purple:
+      'from-purple-500/10 to-purple-500/5 text-purple-600 dark:text-purple-400 border-purple-200/50 dark:border-purple-900/30',
+    orange:
+      'from-orange-500/10 to-orange-500/5 text-orange-600 dark:text-orange-400 border-orange-200/50 dark:border-orange-900/30',
+    amber:
+      'from-amber-500/10 to-amber-500/5 text-amber-600 dark:text-amber-400 border-amber-200/50 dark:border-amber-900/30',
     rose: 'from-rose-500/10 to-rose-500/5 text-rose-600 dark:text-rose-400 border-rose-200/50 dark:border-rose-900/30',
   };
 
@@ -244,7 +360,8 @@ const MobileStatCard = ({ stat, onClick }) => {
 
       <div className='mt-1'>
         <div className='text-3xl font-black tracking-tight text-slate-900 dark:text-white'>
-          {animatedValue}{suffix}
+          {animatedValue}
+          {suffix}
         </div>
         <div className='mt-0.5 text-[12px] font-semibold text-slate-600 dark:text-slate-400 line-clamp-1'>
           {stat.title}
@@ -268,31 +385,100 @@ const MobileDashboard = ({
   recentActivities = [],
   navigate,
 }) => {
-
   const getQuickAccessItems = () => {
     if (user?.role === 'admin') {
       return [
-        { label: 'Projects', path: '/projects', icon: FolderKanbanIcon, color: 'text-blue-600 bg-blue-100/80 dark:bg-blue-500/10' },
-        { label: 'Students', path: '/students', icon: UsersIcon, color: 'text-emerald-600 bg-emerald-100/80 dark:bg-emerald-500/10' },
-        { label: 'Meetings', path: '/meetings', icon: CalendarDaysIcon, color: 'text-rose-600 bg-rose-100/80 dark:bg-rose-500/10' },
-        { label: 'Resources', path: '/resources', icon: BookOpenIcon, color: 'text-amber-600 bg-amber-100/80 dark:bg-amber-500/10' },
-        { label: 'Users', path: '/user-management', icon: ShieldCheckIcon, color: 'text-indigo-600 bg-indigo-100/80 dark:bg-indigo-500/10' },
-        { label: 'Logs', path: '/audit-log', icon: AdjustmentsIcon, color: 'text-purple-600 bg-purple-100/80 dark:bg-purple-500/10' },
+        {
+          label: 'Projects',
+          path: '/projects',
+          icon: FolderKanbanIcon,
+          color: 'text-blue-600 bg-blue-100/80 dark:bg-blue-500/10',
+        },
+        {
+          label: 'Students',
+          path: '/students',
+          icon: UsersIcon,
+          color: 'text-emerald-600 bg-emerald-100/80 dark:bg-emerald-500/10',
+        },
+        {
+          label: 'Meetings',
+          path: '/meetings',
+          icon: CalendarDaysIcon,
+          color: 'text-rose-600 bg-rose-100/80 dark:bg-rose-500/10',
+        },
+        {
+          label: 'Resources',
+          path: '/resources',
+          icon: BookOpenIcon,
+          color: 'text-amber-600 bg-amber-100/80 dark:bg-amber-500/10',
+        },
+        {
+          label: 'Users',
+          path: '/user-management',
+          icon: ShieldCheckIcon,
+          color: 'text-indigo-600 bg-indigo-100/80 dark:bg-indigo-500/10',
+        },
+        {
+          label: 'Logs',
+          path: '/audit-log',
+          icon: AdjustmentsIcon,
+          color: 'text-purple-600 bg-purple-100/80 dark:bg-purple-500/10',
+        },
       ];
     }
     if (user?.role === 'faculty') {
       return [
-        { label: 'Projects', path: '/projects', icon: FolderKanbanIcon, color: 'text-blue-600 bg-blue-100/80 dark:bg-blue-500/10' },
-        { label: 'Students', path: '/students', icon: UsersIcon, color: 'text-emerald-600 bg-emerald-100/80 dark:bg-emerald-500/10' },
-        { label: 'Schedule', path: '/meetings/new', icon: CalendarDaysIcon, color: 'text-rose-600 bg-rose-100/80 dark:bg-rose-500/10' },
-        { label: 'Resources', path: '/resources', icon: BookOpenIcon, color: 'text-amber-600 bg-amber-100/80 dark:bg-amber-500/10' },
+        {
+          label: 'Projects',
+          path: '/projects',
+          icon: FolderKanbanIcon,
+          color: 'text-blue-600 bg-blue-100/80 dark:bg-blue-500/10',
+        },
+        {
+          label: 'Students',
+          path: '/students',
+          icon: UsersIcon,
+          color: 'text-emerald-600 bg-emerald-100/80 dark:bg-emerald-500/10',
+        },
+        {
+          label: 'Schedule',
+          path: '/meetings/new',
+          icon: CalendarDaysIcon,
+          color: 'text-rose-600 bg-rose-100/80 dark:bg-rose-500/10',
+        },
+        {
+          label: 'Resources',
+          path: '/resources',
+          icon: BookOpenIcon,
+          color: 'text-amber-600 bg-amber-100/80 dark:bg-amber-500/10',
+        },
       ];
     }
     return [
-      { label: 'My Project', path: '/projects', icon: FolderKanbanIcon, color: 'text-blue-600 bg-blue-100/80 dark:bg-blue-500/10' },
-      { label: 'Milestones', path: '/milestones', icon: FlagIcon, color: 'text-amber-600 bg-amber-100/80 dark:bg-amber-500/10' },
-      { label: 'Meetings', path: '/meetings', icon: CalendarDaysIcon, color: 'text-rose-600 bg-rose-100/80 dark:bg-rose-500/10' },
-      { label: 'Resources', path: '/resources', icon: BookOpenIcon, color: 'text-emerald-600 bg-emerald-100/80 dark:bg-emerald-500/10' },
+      {
+        label: 'My Project',
+        path: '/projects',
+        icon: FolderKanbanIcon,
+        color: 'text-blue-600 bg-blue-100/80 dark:bg-blue-500/10',
+      },
+      {
+        label: 'Milestones',
+        path: '/milestones',
+        icon: FlagIcon,
+        color: 'text-amber-600 bg-amber-100/80 dark:bg-amber-500/10',
+      },
+      {
+        label: 'Meetings',
+        path: '/meetings',
+        icon: CalendarDaysIcon,
+        color: 'text-rose-600 bg-rose-100/80 dark:bg-rose-500/10',
+      },
+      {
+        label: 'Resources',
+        path: '/resources',
+        icon: BookOpenIcon,
+        color: 'text-emerald-600 bg-emerald-100/80 dark:bg-emerald-500/10',
+      },
     ];
   };
 
@@ -330,14 +516,20 @@ const MobileDashboard = ({
         <div className='relative z-10 mt-5 flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar'>
           <div className='inline-flex shrink-0 items-center gap-1.5 rounded-full bg-white/80 px-3 py-1.5 text-xs font-bold text-slate-700 shadow-sm backdrop-blur-md dark:bg-slate-900/60 dark:text-slate-300'>
             <SparklesIcon className='h-3.5 w-3.5 text-amber-500' />
-            {user?.role === 'admin' ? 'Administrator' : user?.role === 'faculty' ? 'Faculty Guide' : 'Student'}
+            {user?.role === 'admin'
+              ? 'Administrator'
+              : user?.role === 'faculty'
+                ? 'Faculty Guide'
+                : 'Student'}
           </div>
           <button
             onClick={handleRefresh}
             disabled={isLoading}
             className='inline-flex shrink-0 items-center gap-1.5 rounded-full bg-white/80 px-3 py-1.5 text-xs font-bold text-slate-700 shadow-sm backdrop-blur-md transition-transform active:scale-95 disabled:opacity-50 dark:bg-slate-900/60 dark:text-slate-300'
           >
-            <RefreshIcon className={`h-3.5 w-3.5 ${isLoading ? 'animate-spin' : ''}`} />
+            <RefreshIcon
+              className={`h-3.5 w-3.5 ${isLoading ? 'animate-spin' : ''}`}
+            />
             Refresh
           </button>
         </div>
@@ -415,7 +607,9 @@ const MobileDashboard = ({
                 onClick={() => navigate(item.path)}
                 className='flex flex-col items-center justify-center gap-2 rounded-[1.25rem] bg-white p-3 shadow-sm transition-transform active:scale-95 dark:bg-slate-800 w-full'
               >
-                <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${item.color}`}>
+                <div
+                  className={`flex h-12 w-12 items-center justify-center rounded-2xl ${item.color}`}
+                >
                   <Icon className='h-5 w-5' />
                 </div>
                 <span className='text-[11px] font-bold text-slate-700 dark:text-slate-300'>
@@ -438,11 +632,7 @@ const MobileDashboard = ({
           </h2>
           <div className='grid grid-cols-2 gap-3'>
             {dashboardData.stats.map((stat, index) => (
-              <MobileStatCard
-                key={index}
-                stat={stat}
-                onClick={stat.onClick}
-              />
+              <MobileStatCard key={index} stat={stat} onClick={stat.onClick} />
             ))}
           </div>
         </div>
@@ -463,17 +653,22 @@ const MobileDashboard = ({
           </button>
         </div>
         <div className='p-4'>
-          <ProgressVisualization projects={projectProgressData} userRole={user?.role} />
+          <ProgressVisualization
+            projects={projectProgressData}
+            userRole={user?.role}
+          />
         </div>
       </div>
 
       {/* 6. Today's Meetings */}
       <div className='w-full overflow-hidden'>
         <UpcomingMeetings
-          meetings={todayMeetings.length > 0 ? todayMeetings : upcomingDeadlines}
+          meetings={
+            todayMeetings.length > 0 ? todayMeetings : upcomingDeadlines
+          }
           userRole={user?.role}
           title="Today's Agenda"
-          emptyMessage="Your schedule is clear for today."
+          emptyMessage='Your schedule is clear for today.'
         />
       </div>
 

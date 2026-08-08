@@ -220,7 +220,10 @@ const ProjectTimeline = memo(() => {
               {/* Mobile View */}
               <div className='block md:hidden divide-y divide-gray-50 dark:divide-slate-700/50'>
                 {projects.map((project) => (
-                  <div key={project.id || project._id} className='p-4 space-y-3 transition-colors hover:bg-gray-50 dark:hover:bg-slate-800/30'>
+                  <div
+                    key={project.id || project._id}
+                    className='p-4 space-y-3 transition-colors hover:bg-gray-50 dark:hover:bg-slate-800/30'
+                  >
                     <div className='flex items-start justify-between'>
                       <div className='space-y-1'>
                         <div className='text-xs font-bold text-gray-900 dark:text-white'>

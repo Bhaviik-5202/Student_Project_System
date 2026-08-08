@@ -263,10 +263,10 @@ const MilestoneTracker = memo(() => {
           rawDueDate: m.dueDate || null,
           dueDate: m.dueDate
             ? new Date(m.dueDate).toLocaleDateString(undefined, {
-              year: 'numeric',
-              month: 'short',
-              day: 'numeric',
-            })
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+              })
             : 'TBD',
           completed: !!m.completed,
         }));
@@ -343,18 +343,18 @@ const MilestoneTracker = memo(() => {
           updated = milestones.map((m) =>
             m.id === editingMilestone.id
               ? {
-                ...m,
-                name: form.title,
-                description: form.description,
-                rawDueDate: form.dueDate || null,
-                dueDate: form.dueDate
-                  ? new Date(form.dueDate).toLocaleDateString(undefined, {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric',
-                  })
-                  : 'TBD',
-              }
+                  ...m,
+                  name: form.title,
+                  description: form.description,
+                  rawDueDate: form.dueDate || null,
+                  dueDate: form.dueDate
+                    ? new Date(form.dueDate).toLocaleDateString(undefined, {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                      })
+                    : 'TBD',
+                }
               : m
           );
         } else {
@@ -366,10 +366,10 @@ const MilestoneTracker = memo(() => {
             rawDueDate: form.dueDate || null,
             dueDate: form.dueDate
               ? new Date(form.dueDate).toLocaleDateString(undefined, {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric',
-              })
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric',
+                })
               : 'TBD',
             completed: false,
           };
@@ -600,17 +600,19 @@ const MilestoneTracker = memo(() => {
           {milestones.map((milestone) => (
             <div
               key={milestone.id || milestone.name}
-              className={`group relative rounded-2xl border bg-white dark:bg-slate-900 p-6 shadow-sm transition-all hover:shadow-md dark:bg-slate-800 ${milestone.completed
-                ? 'border-emerald-200 dark:border-emerald-900/40'
-                : 'border-slate-200 dark:border-slate-700'
-                }`}
+              className={`group relative rounded-2xl border bg-white dark:bg-slate-900 p-6 shadow-sm transition-all hover:shadow-md dark:bg-slate-800 ${
+                milestone.completed
+                  ? 'border-emerald-200 dark:border-emerald-900/40'
+                  : 'border-slate-200 dark:border-slate-700'
+              }`}
             >
               {/* Status stripe */}
               <div
-                className={`absolute left-0 top-0 h-full w-1 rounded-l-2xl ${milestone.completed
-                  ? 'bg-emerald-400'
-                  : 'bg-slate-300 dark:bg-slate-600'
-                  }`}
+                className={`absolute left-0 top-0 h-full w-1 rounded-l-2xl ${
+                  milestone.completed
+                    ? 'bg-emerald-400'
+                    : 'bg-slate-300 dark:bg-slate-600'
+                }`}
               />
 
               <div className='ml-2 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between'>
@@ -621,10 +623,11 @@ const MilestoneTracker = memo(() => {
                       Phase Milestone
                     </span>
                     <span
-                      className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${milestone.completed
-                        ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200'
-                        : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200  dark:text-slate-300'
-                        }`}
+                      className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
+                        milestone.completed
+                          ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200'
+                          : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200  dark:text-slate-300'
+                      }`}
                     >
                       {milestone.completed ? 'Completed' : 'Pending'}
                     </span>
@@ -675,10 +678,11 @@ const MilestoneTracker = memo(() => {
                             ? 'Mark as Pending'
                             : 'Mark as Complete'
                         }
-                        className={`rounded-xl p-2 transition-colors ${milestone.completed
-                          ? 'bg-emerald-100 text-emerald-600 hover:bg-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400'
-                          : 'border border-slate-200 bg-white dark:bg-slate-900 text-slate-400 hover:border-emerald-300 hover:text-emerald-500 dark:border-slate-600 dark:bg-slate-700'
-                          }`}
+                        className={`rounded-xl p-2 transition-colors ${
+                          milestone.completed
+                            ? 'bg-emerald-100 text-emerald-600 hover:bg-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400'
+                            : 'border border-slate-200 bg-white dark:bg-slate-900 text-slate-400 hover:border-emerald-300 hover:text-emerald-500 dark:border-slate-600 dark:bg-slate-700'
+                        }`}
                       >
                         <CheckCircle2 size={16} />
                       </button>

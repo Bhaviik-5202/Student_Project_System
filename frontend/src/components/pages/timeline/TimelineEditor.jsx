@@ -1,7 +1,20 @@
 import { useCallback, useState, useEffect, memo, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
-import { Save, Clock, Flag, X, ChevronDown, Plus, Info, History, Check, Trash2, Edit, ArrowLeft } from 'lucide-react';
+import {
+  Save,
+  Clock,
+  Flag,
+  X,
+  ChevronDown,
+  Plus,
+  Info,
+  History,
+  Check,
+  Trash2,
+  Edit,
+  ArrowLeft,
+} from 'lucide-react';
 import PageHeader from '../../common/PageHeader';
 import timelineService from '../../../services/timelineService';
 import projectService from '../../../services/projectService';

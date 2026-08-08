@@ -1,6 +1,19 @@
 import { useState, useEffect, useCallback, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Shield, RefreshCw, Download, User, Network, ListChecks, CheckCircle, Calendar, Filter, Loader2, FolderOpen, AlignCenter } from 'lucide-react';
+import {
+  Shield,
+  RefreshCw,
+  Download,
+  User,
+  Network,
+  ListChecks,
+  CheckCircle,
+  Calendar,
+  Filter,
+  Loader2,
+  FolderOpen,
+  AlignCenter,
+} from 'lucide-react';
 import PageHeader from '../../common/PageHeader';
 import api from '../../../utils/api';
 import '../../../assets/styles/admin.css';
@@ -15,12 +28,22 @@ const MobileAuditCard = memo(({ log, getUserDisplay }) => (
             {getUserDisplay(log.user)}
           </span>
           <span className='font-mono text-[10px] text-slate-500 dark:text-slate-400 mt-0.5'>
-            {log.timestamp || (log.createdAt ? new Date(log.createdAt).toLocaleString() : 'N/A')}
+            {log.timestamp ||
+              (log.createdAt
+                ? new Date(log.createdAt).toLocaleString()
+                : 'N/A')}
           </span>
         </div>
       </div>
-      <span className={`admin-badge shrink-0 text-[10px] ${log.status === 'Success' ? 'admin-badge-success' : log.status === 'Warning' ? 'admin-badge-warning' : 'admin-badge-danger'
-        }`}>
+      <span
+        className={`admin-badge shrink-0 text-[10px] ${
+          log.status === 'Success'
+            ? 'admin-badge-success'
+            : log.status === 'Warning'
+              ? 'admin-badge-warning'
+              : 'admin-badge-danger'
+        }`}
+      >
         {log.status || 'Unknown'}
       </span>
     </div>
@@ -177,7 +200,7 @@ const AuditLog = memo(() => {
               <RefreshCw
                 size={16}
                 className={refreshing ? 'animate-spin' : ''}
-                style={{ alignItems: "center" }}
+                style={{ alignItems: 'center' }}
               />
               Refresh
             </button>
@@ -209,7 +232,9 @@ const AuditLog = memo(() => {
         </button>
       </div>
 
-      <div className={`admin-card mb-6 ${showMobileFilters ? 'block' : 'hidden'} md:block`}>
+      <div
+        className={`admin-card mb-6 ${showMobileFilters ? 'block' : 'hidden'} md:block`}
+      >
         <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4'>
           <div className='admin-form-group mb-0'>
             <label className='admin-label'>
@@ -306,7 +331,9 @@ const AuditLog = memo(() => {
             />
           </div>
           <div className='admin-form-group mb-0 sm:col-span-2 md:col-span-1 flex flex-col justify-end'>
-            <label className='admin-label invisible hidden md:block'>Apply</label>
+            <label className='admin-label invisible hidden md:block'>
+              Apply
+            </label>
             <button
               onClick={handleApplyFilters}
               className='admin-btn admin-btn-primary w-full justify-center mt-2 md:mt-0'
@@ -345,7 +372,10 @@ const AuditLog = memo(() => {
               <tr>
                 <td colSpan='5' className='p-20 text-center'>
                   <div className='flex flex-col items-center gap-3 py-10'>
-                    <FolderOpen size={48} className='mb-2 text-slate-300 dark:text-slate-600' />
+                    <FolderOpen
+                      size={48}
+                      className='mb-2 text-slate-300 dark:text-slate-600'
+                    />
                     <p className='font-bold text-slate-500 dark:text-slate-400'>
                       No security events found.
                     </p>
@@ -377,7 +407,10 @@ const AuditLog = memo(() => {
                   </td>
                   <td>
                     <div className='flex items-center gap-2'>
-                      <User size={16} className='text-slate-400 dark:text-slate-500' />
+                      <User
+                        size={16}
+                        className='text-slate-400 dark:text-slate-500'
+                      />
                       <span className='font-semibold text-slate-900 dark:text-slate-200'>
                         {getUserDisplay(log.user)}
                       </span>
@@ -398,12 +431,13 @@ const AuditLog = memo(() => {
                   </td>
                   <td className='text-center'>
                     <span
-                      className={`admin-badge ${log.status === 'Success'
+                      className={`admin-badge ${
+                        log.status === 'Success'
                           ? 'admin-badge-success'
                           : log.status === 'Warning'
                             ? 'admin-badge-warning'
                             : 'admin-badge-danger'
-                        }`}
+                      }`}
                     >
                       {log.status || 'Unknown'}
                     </span>
@@ -420,12 +454,19 @@ const AuditLog = memo(() => {
         {loading ? (
           <div className='flex flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-white py-12 px-4 text-center dark:border-slate-800 dark:bg-slate-900'>
             <Loader2 size={24} className='animate-spin text-blue-500 mb-3' />
-            <span className='text-[13px] font-semibold text-slate-500'>Synchronizing records...</span>
+            <span className='text-[13px] font-semibold text-slate-500'>
+              Synchronizing records...
+            </span>
           </div>
         ) : logs.length === 0 ? (
           <div className='flex flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-white py-12 px-4 text-center dark:border-slate-800 dark:bg-slate-900'>
-            <FolderOpen size={36} className='mb-3 text-slate-300 dark:text-slate-600' />
-            <span className='text-[13px] font-semibold text-slate-500 mb-2'>No security events found.</span>
+            <FolderOpen
+              size={36}
+              className='mb-3 text-slate-300 dark:text-slate-600'
+            />
+            <span className='text-[13px] font-semibold text-slate-500 mb-2'>
+              No security events found.
+            </span>
             <button
               onClick={() => {
                 const resetFilters = { action: '', status: '', date: '' };
@@ -439,7 +480,11 @@ const AuditLog = memo(() => {
           </div>
         ) : (
           logs.map((log) => (
-            <MobileAuditCard key={log.id || log._id} log={log} getUserDisplay={getUserDisplay} />
+            <MobileAuditCard
+              key={log.id || log._id}
+              log={log}
+              getUserDisplay={getUserDisplay}
+            />
           ))
         )}
       </div>

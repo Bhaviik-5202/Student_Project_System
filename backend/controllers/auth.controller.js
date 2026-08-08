@@ -92,7 +92,9 @@ exports.register = async (req, res) => {
   try {
     const { name, email, password, role = 'student' } = req.body;
 
-    const requestedRole = String(role || 'student').toLowerCase().trim();
+    const requestedRole = String(role || 'student')
+      .toLowerCase()
+      .trim();
     if (requestedRole === 'faculty' || requestedRole === 'admin') {
       return sendResponse(
         res,
@@ -196,15 +198,23 @@ exports.register = async (req, res) => {
       html: getVerificationEmail(name, otp, false),
     })
       .then((emailResult) => {
-        if (emailResult?.sandboxRestricted || emailResult?.devFallback || emailResult?.fallback) {
+        if (
+          emailResult?.sandboxRestricted ||
+          emailResult?.devFallback ||
+          emailResult?.fallback
+        ) {
           logger.warn(`🔑 [VERIFICATION OTP CODE FOR ${email}]: ${otp}`);
         } else {
-          logger.success('Verification OTP dispatched asynchronously', { email });
+          logger.success('Verification OTP dispatched asynchronously', {
+            email,
+          });
         }
       })
       .catch((emailError) => {
         logger.warn(`🔑 [VERIFICATION OTP CODE FOR ${email}]: ${otp}`);
-        logger.error(`Background email delivery notice for ${email}: ${emailError.message}`);
+        logger.error(
+          `Background email delivery notice for ${email}: ${emailError.message}`
+        );
       });
 
     sendResponse(
@@ -261,13 +271,17 @@ exports.login = async (req, res) => {
     if (!result.error && result.data && result.data.user) {
       const u = result.data.user;
       // Log successful login asynchronously
-      auditLogService.create({
-        action: 'User Login',
-        user: u.id || u._id,
-        details: `User logged in: ${req.body.email}`,
-        status: 'Success',
-        ip: req.ip || '127.0.0.1',
-      }).catch((err) => logger.warn('Audit log write notice', { error: err.message }));
+      auditLogService
+        .create({
+          action: 'User Login',
+          user: u.id || u._id,
+          details: `User logged in: ${req.body.email}`,
+          status: 'Success',
+          ip: req.ip || '127.0.0.1',
+        })
+        .catch((err) =>
+          logger.warn('Audit log write notice', { error: err.message })
+        );
 
       logger.auth({
         event: 'LOGIN SUCCESS',
@@ -598,7 +612,9 @@ exports.deleteAccount = async (req, res) => {
       process.env.SUPER_ADMIN_EMAIL ||
       process.env.ADMIN_EMAIL ||
       'er.bhavik5202@gmail.com'
-    ).toLowerCase().trim();
+    )
+      .toLowerCase()
+      .trim();
 
     // Protect Super Admin from self-deletion
     const userResult = await userService.getById(req.user.id);
@@ -927,13 +943,19 @@ exports.resendOtp = async (req, res) => {
     })
       .then((emailResult) => {
         if (emailResult?.sandboxRestricted || emailResult?.devFallback) {
-          logger.warn(`🔑 [DEV FALLBACK OTP] Resent Verification Code for ${email}: ${newOtp}`);
+          logger.warn(
+            `🔑 [DEV FALLBACK OTP] Resent Verification Code for ${email}: ${newOtp}`
+          );
         } else {
-          logger.success('New verification OTP dispatched asynchronously', { email });
+          logger.success('New verification OTP dispatched asynchronously', {
+            email,
+          });
         }
       })
       .catch((emailError) => {
-        logger.error(`Background resend OTP email delivery failed for ${email}: ${emailError.message}`);
+        logger.error(
+          `Background resend OTP email delivery failed for ${email}: ${emailError.message}`
+        );
       });
 
     sendResponse(

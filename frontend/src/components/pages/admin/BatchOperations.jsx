@@ -101,13 +101,21 @@ const BatchOperations = memo(() => {
               </label>
               <div className='grid grid-cols-1 gap-4 md:grid-cols-3'>
                 {[
-                  { id: 'email', label: 'Send Email', icon: <Mail size={24} className="mx-auto" /> },
+                  {
+                    id: 'email',
+                    label: 'Send Email',
+                    icon: <Mail size={24} className='mx-auto' />,
+                  },
                   {
                     id: 'notification',
                     label: 'Send Notification',
-                    icon: <Bell size={24} className="mx-auto" />,
+                    icon: <Bell size={24} className='mx-auto' />,
                   },
-                  { id: 'export', label: 'Export Data', icon: <Download size={24} className="mx-auto" /> },
+                  {
+                    id: 'export',
+                    label: 'Export Data',
+                    icon: <Download size={24} className='mx-auto' />,
+                  },
                 ].map((op) => (
                   <button
                     key={op.id}

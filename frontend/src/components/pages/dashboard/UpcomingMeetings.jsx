@@ -234,7 +234,7 @@ const UpcomingMeetings = ({ meetings = [], userRole, title, emptyMessage }) => {
             to='/meetings/calendar'
             className='font-medium text-primary-600 hover:text-primary-700'
           >
-            View calendar <ArrowRight className="inline ml-1" size={16} />
+            View calendar <ArrowRight className='inline ml-1' size={16} />
           </Link>
         </div>
       </div>

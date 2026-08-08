@@ -31,7 +31,8 @@ const BADGE_CONFIGS = {
 
 const VARIANT_STYLES = {
   default: {
-    wrapper: 'px-6 py-8 sm:px-6 sm:py-6 md:p-8 min-h-[132px] sm:min-h-[108px] mt-2 sm:mt-0',
+    wrapper:
+      'px-6 py-8 sm:px-6 sm:py-6 md:p-8 min-h-[132px] sm:min-h-[108px] mt-2 sm:mt-0',
     icon: 'h-11 w-11 sm:h-12 sm:w-12 md:h-14 md:w-14 rounded-xl sm:rounded-2xl',
     iconSize: 22,
     title: 'text-[19px] sm:text-xl md:text-2xl leading-tight',
@@ -139,7 +140,10 @@ export const PageHeader = ({
 
         <div className='min-w-0 flex-1 pt-0.5 sm:pt-0'>
           {breadcrumbs && (
-            <div className='mb-2.5 sm:mb-1.5' aria-label='Breadcrumb navigation'>
+            <div
+              className='mb-2.5 sm:mb-1.5'
+              aria-label='Breadcrumb navigation'
+            >
               {breadcrumbs}
             </div>
           )}

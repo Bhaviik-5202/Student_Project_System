@@ -26,9 +26,7 @@ const QuickAddMenu = ({ actions, onActionClick }) => {
             <div
               className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl ${action.bgColor} mr-3 transition-transform group-hover:scale-105`}
             >
-              <action.icon
-                className={`h-4 w-4 ${action.color}`}
-              />
+              <action.icon className={`h-4 w-4 ${action.color}`} />
             </div>
             <span className='font-medium'>{action.label}</span>
           </button>

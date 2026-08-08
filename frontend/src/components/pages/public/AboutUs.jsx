@@ -57,28 +57,32 @@ const AboutUs = memo(() => {
       description:
         'Automated and manual guide allocation to balance guide workload and project domains.',
       icon: Users,
-      color: 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/50 dark:text-emerald-400',
+      color:
+        'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/50 dark:text-emerald-400',
     },
     {
       title: 'Evaluation & Rubrics',
       description:
         'Standardized grading rubrics, evaluation reviews, and feedback history logs.',
       icon: FileCheck2,
-      color: 'text-purple-600 bg-purple-50 dark:bg-purple-950/50 dark:text-purple-400',
+      color:
+        'text-purple-600 bg-purple-50 dark:bg-purple-950/50 dark:text-purple-400',
     },
     {
       title: 'Centralized Resource Repository',
       description:
         'Institutional templates, documentation guidelines, project guidelines, and sample reports.',
       icon: BookOpen,
-      color: 'text-amber-600 bg-amber-50 dark:bg-amber-950/50 dark:text-amber-400',
+      color:
+        'text-amber-600 bg-amber-50 dark:bg-amber-950/50 dark:text-amber-400',
     },
     {
       title: 'Institutional Audit & Security',
       description:
         'Role-based access control, activity audit trails, and strict data governance compliance.',
       icon: ShieldCheck,
-      color: 'text-indigo-600 bg-indigo-50 dark:bg-indigo-950/50 dark:text-indigo-400',
+      color:
+        'text-indigo-600 bg-indigo-50 dark:bg-indigo-950/50 dark:text-indigo-400',
     },
     {
       title: 'Analytics & Reporting',
@@ -112,7 +116,10 @@ const AboutUs = memo(() => {
           </h1>
 
           <p className='text-blue-100 text-xs sm:text-sm md:text-base leading-relaxed'>
-            Student Project System connects students, faculty guides, and system administrators into an integrated ecosystem. From initial project proposals to final rubric evaluations, every step is transparent, traceable, and secure.
+            Student Project System connects students, faculty guides, and system
+            administrators into an integrated ecosystem. From initial project
+            proposals to final rubric evaluations, every step is transparent,
+            traceable, and secure.
           </p>
 
           <div className='pt-2'>
@@ -137,7 +144,9 @@ const AboutUs = memo(() => {
             Institutional Mission
           </h3>
           <p className='text-xs leading-relaxed text-slate-600 dark:text-slate-400'>
-            To provide universities and colleges with robust digital infrastructure that standardizes project management, eliminates administrative bottlenecks, and ensures timely project completion.
+            To provide universities and colleges with robust digital
+            infrastructure that standardizes project management, eliminates
+            administrative bottlenecks, and ensures timely project completion.
           </p>
         </div>
 
@@ -149,7 +158,9 @@ const AboutUs = memo(() => {
             Role-Based Workflows
           </h3>
           <p className='text-xs leading-relaxed text-slate-600 dark:text-slate-400'>
-            Tailored dashboards for System Administrators, Faculty Guides, and Student Groups ensure every user accesses exact tools and insights relevant to their role.
+            Tailored dashboards for System Administrators, Faculty Guides, and
+            Student Groups ensure every user accesses exact tools and insights
+            relevant to their role.
           </p>
         </div>
 
@@ -161,7 +172,9 @@ const AboutUs = memo(() => {
             Compliance & Security
           </h3>
           <p className='text-xs leading-relaxed text-slate-600 dark:text-slate-400'>
-            Strict educational data protection standards with automated activity logging, role permissions enforcement, and secure repository management.
+            Strict educational data protection standards with automated activity
+            logging, role permissions enforcement, and secure repository
+            management.
           </p>
         </div>
       </div>
@@ -189,7 +202,9 @@ const AboutUs = memo(() => {
                 className='flex flex-col justify-between rounded-xl border border-slate-100 dark:border-slate-800/80 bg-slate-50/60 dark:bg-slate-800/40 p-4 space-y-2'
               >
                 <div className='flex items-center gap-3'>
-                  <div className={`flex h-9 w-9 items-center justify-center rounded-xl ${feature.color}`}>
+                  <div
+                    className={`flex h-9 w-9 items-center justify-center rounded-xl ${feature.color}`}
+                  >
                     <Icon className='h-4.5 w-4.5' />
                   </div>
                   <h4 className='text-xs font-bold text-slate-900 dark:text-white'>

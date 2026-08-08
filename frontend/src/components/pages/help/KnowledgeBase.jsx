@@ -112,7 +112,7 @@ const KnowledgeBase = memo(() => {
                     </div>
                   </div>
                   <button className='text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300'>
-                    Read <ArrowRight className="inline ml-1" size={16} />
+                    Read <ArrowRight className='inline ml-1' size={16} />
                   </button>
                 </div>
               ))}

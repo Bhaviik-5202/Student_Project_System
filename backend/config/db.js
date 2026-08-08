@@ -60,7 +60,9 @@ const connectDB = async () => {
         const mongoServer = await MongoMemoryServer.create();
         mongoUri = mongoServer.getUri();
       } catch (memServerErr) {
-        logger.warn(`MongoMemoryServer spawn failed (${memServerErr.message}). Falling back to MONGO_URI...`);
+        logger.warn(
+          `MongoMemoryServer spawn failed (${memServerErr.message}). Falling back to MONGO_URI...`
+        );
         if (!process.env.MONGO_URI) {
           throw memServerErr;
         }

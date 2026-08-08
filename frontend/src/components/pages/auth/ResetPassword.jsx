@@ -287,7 +287,8 @@ const ResetPassword = memo(() => {
                 to='/forgot-password'
                 className='mt-1 block text-xs font-bold text-red-600 underline hover:text-red-700 dark:text-red-400'
               >
-                Request a new reset link <ArrowRight className="inline ml-1" size={16} />
+                Request a new reset link{' '}
+                <ArrowRight className='inline ml-1' size={16} />
               </Link>
             )}
           </div>
@@ -403,9 +404,15 @@ const ResetPassword = memo(() => {
                   : 'text-red-500 dark:text-red-400'
               }`}
             >
-              {passwordsMatch
-                ? <><Check size={12} className="inline mr-1" /> Passwords match</>
-                : <><X size={12} className="inline mr-1" /> Passwords do not match</>}
+              {passwordsMatch ? (
+                <>
+                  <Check size={12} className='inline mr-1' /> Passwords match
+                </>
+              ) : (
+                <>
+                  <X size={12} className='inline mr-1' /> Passwords do not match
+                </>
+              )}
             </p>
           )}
         </div>

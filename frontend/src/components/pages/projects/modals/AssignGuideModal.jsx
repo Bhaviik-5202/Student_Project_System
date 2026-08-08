@@ -151,7 +151,11 @@ const AssignGuideModal = ({ isOpen, onClose, project, onSuccess }) => {
             Clear Selection
           </button>
           <div className='flex flex-col-reverse sm:flex-row gap-3 w-full sm:w-auto'>
-            <SecondaryButton type='button' onClick={onClose} className='w-full sm:w-auto justify-center'>
+            <SecondaryButton
+              type='button'
+              onClick={onClose}
+              className='w-full sm:w-auto justify-center'
+            >
               Cancel
             </SecondaryButton>
             <PrimaryButton

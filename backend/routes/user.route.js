@@ -12,7 +12,10 @@ const userController = require('../controllers/user.controller');
 const authMiddleware = require('../middleware/auth.middleware');
 const roleMiddleware = require('../middleware/roleMiddleware');
 const validateRequest = require('../middleware/validateRequest');
-const { rejectAdminRole, protectSuperAdmin } = require('../middleware/adminGuard');
+const {
+  rejectAdminRole,
+  protectSuperAdmin,
+} = require('../middleware/adminGuard');
 
 /**
  * @route   POST /api/v1/users

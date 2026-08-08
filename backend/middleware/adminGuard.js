@@ -8,7 +8,9 @@ const sendResponse = require('../utils/response');
  * Returns HTTP 403 Forbidden with exact message: "Only Student registration is allowed."
  */
 const rejectAdminCreation = (req, res, next) => {
-  const role = req.body?.role ? String(req.body.role).toLowerCase().trim() : null;
+  const role = req.body?.role
+    ? String(req.body.role).toLowerCase().trim()
+    : null;
 
   if (role === 'admin' || role === 'faculty') {
     return sendResponse(
@@ -30,7 +32,9 @@ const rejectAdminCreation = (req, res, next) => {
  * Rejects creating or updating a user with role = 'admin'.
  */
 const rejectAdminRole = (req, res, next) => {
-  const role = req.body?.role ? String(req.body.role).toLowerCase().trim() : null;
+  const role = req.body?.role
+    ? String(req.body.role).toLowerCase().trim()
+    : null;
 
   if (role === 'admin') {
     return sendResponse(
@@ -70,15 +74,20 @@ const protectSuperAdmin = async (req, res, next) => {
           Staff.findById(targetId).select('email role'),
         ]);
 
-        const targetEmail = (user?.email || staff?.email || '').toLowerCase().trim();
-        const targetRole = (user?.role || staff?.role || '').toLowerCase().trim();
+        const targetEmail = (user?.email || staff?.email || '')
+          .toLowerCase()
+          .trim();
+        const targetRole = (user?.role || staff?.role || '')
+          .toLowerCase()
+          .trim();
 
         if (targetEmail === superAdminEmail || targetRole === 'admin') {
           return sendResponse(
             res,
             {
               success: false,
-              message: 'Super Admin account is protected and cannot be modified.',
+              message:
+                'Super Admin account is protected and cannot be modified.',
               error: 'Forbidden',
             },
             403
@@ -86,7 +95,9 @@ const protectSuperAdmin = async (req, res, next) => {
         }
       }
 
-      const bodyEmail = req.body?.email ? String(req.body.email).toLowerCase().trim() : '';
+      const bodyEmail = req.body?.email
+        ? String(req.body.email).toLowerCase().trim()
+        : '';
       if (bodyEmail === superAdminEmail) {
         return sendResponse(
           res,

@@ -35,8 +35,8 @@ const Login = memo(({ forceAdminMode = false }) => {
 
   const [isAdminLoginMode, setIsAdminLoginMode] = useState(
     forceAdminMode ||
-    location.pathname === '/super-admin/login' ||
-    location.search.includes('admin=true')
+      location.pathname === '/super-admin/login' ||
+      location.search.includes('admin=true')
   );
 
   // Secret keyboard shortcut Ctrl + Shift + A to reveal Super Admin login mode

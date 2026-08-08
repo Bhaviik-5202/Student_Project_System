@@ -96,7 +96,7 @@ const ParticleNetwork = memo(() => {
         this.coord =
           Math.floor(
             Math.random() *
-            (this.isVertical ? width / gridSize : height / gridSize)
+              (this.isVertical ? width / gridSize : height / gridSize)
           ) * gridSize;
         this.pos = 0;
         this.speed = Math.random() * 1.2 + 0.8;
@@ -194,7 +194,8 @@ const ParticleNetwork = memo(() => {
           const dist = Math.hypot(p1.x - p2.x, p1.y - p2.y);
 
           if (dist < connectionDistance) {
-            const alpha = (1 - dist / connectionDistance) * (isDark ? 0.1 : 0.16);
+            const alpha =
+              (1 - dist / connectionDistance) * (isDark ? 0.1 : 0.16);
             ctx.strokeStyle = isDark
               ? `rgba(99, 102, 241, ${alpha})`
               : `rgba(79, 70, 229, ${alpha})`;
@@ -606,14 +607,18 @@ const Landing = memo(() => {
 
       {/* Sticky Premium Navbar */}
       <nav
-        className={`fixed left-2 right-2 top-3 z-50 mx-auto max-w-7xl rounded-2xl border transition-all duration-300 sm:left-4 sm:right-4 sm:top-4 ${isScrolled
-          ? 'border-slate-200/90 bg-white/90 px-3.5 py-3 shadow-lg shadow-slate-200/50 backdrop-blur-md sm:px-6 sm:py-3.5 dark:border-slate-800/80 dark:bg-slate-950/85 dark:shadow-black/20'
-          : 'border-transparent bg-white/40 px-3.5 py-3 backdrop-blur-[2px] sm:px-6 sm:py-4.5 dark:bg-slate-950/15'
-          }`}
+        className={`fixed left-2 right-2 top-3 z-50 mx-auto max-w-7xl rounded-2xl border transition-all duration-300 sm:left-4 sm:right-4 sm:top-4 ${
+          isScrolled
+            ? 'border-slate-200/90 bg-white/90 px-3.5 py-3 shadow-lg shadow-slate-200/50 backdrop-blur-md sm:px-6 sm:py-3.5 dark:border-slate-800/80 dark:bg-slate-950/85 dark:shadow-black/20'
+            : 'border-transparent bg-white/40 px-3.5 py-3 backdrop-blur-[2px] sm:px-6 sm:py-4.5 dark:bg-slate-950/15'
+        }`}
       >
         <div className='flex items-center justify-between'>
           {/* Logo */}
-          <Link to='/' className='group flex items-center space-x-2.5 sm:space-x-3'>
+          <Link
+            to='/'
+            className='group flex items-center space-x-2.5 sm:space-x-3'
+          >
             <div className='flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 shadow-md shadow-blue-500/20 transition-all duration-300 group-hover:scale-105 sm:h-10 sm:w-10'>
               <GraduationCap className='h-5 w-5 text-white sm:h-5.5 sm:w-5.5' />
             </div>
@@ -635,10 +640,11 @@ const Landing = memo(() => {
                 key={sect.id}
                 href={`#section-${sect.id}`}
                 onClick={(e) => scrollToSection(e, sect.id)}
-                className={`relative text-xs font-bold uppercase tracking-wider transition-colors duration-200 ${activeSection === sect.id
-                  ? 'text-indigo-600 dark:text-blue-400'
-                  : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
-                  }`}
+                className={`relative text-xs font-bold uppercase tracking-wider transition-colors duration-200 ${
+                  activeSection === sect.id
+                    ? 'text-indigo-600 dark:text-blue-400'
+                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
+                }`}
               >
                 {sect.label}
                 {activeSection === sect.id && (
@@ -659,8 +665,12 @@ const Landing = memo(() => {
               type='button'
               onClick={toggleTheme}
               className='flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white/80 text-slate-700 shadow-xs transition-all hover:bg-slate-100 hover:text-indigo-600 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white'
-              aria-label={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-              title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              aria-label={
+                isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'
+              }
+              title={
+                isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'
+              }
             >
               {isDarkMode ? (
                 <Sun className='h-4.5 w-4.5 text-amber-400' />
@@ -723,10 +733,11 @@ const Landing = memo(() => {
                   key={sect.id}
                   href={`#section-${sect.id}`}
                   onClick={(e) => scrollToSection(e, sect.id)}
-                  className={`rounded-lg px-3 py-2 text-xs font-bold uppercase tracking-wider transition-colors ${activeSection === sect.id
-                    ? 'bg-indigo-50 text-indigo-600 dark:bg-slate-900 dark:text-blue-400'
-                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-white'
-                    }`}
+                  className={`rounded-lg px-3 py-2 text-xs font-bold uppercase tracking-wider transition-colors ${
+                    activeSection === sect.id
+                      ? 'bg-indigo-50 text-indigo-600 dark:bg-slate-900 dark:text-blue-400'
+                      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-white'
+                  }`}
                 >
                   {sect.label}
                 </a>
@@ -833,16 +844,16 @@ const Landing = memo(() => {
               </div>
               <ul className='space-y-1.5 border-t border-slate-100 pt-3 text-[11px] font-bold text-slate-600 dark:border-slate-800/80 dark:text-slate-400'>
                 <li className='flex items-center gap-2'>
-                  <Check className='h-3.5 w-3.5 text-cyan-600 dark:text-cyan-400' /> PDF, ZIP, PPTX
-                  format
+                  <Check className='h-3.5 w-3.5 text-cyan-600 dark:text-cyan-400' />{' '}
+                  PDF, ZIP, PPTX format
                 </li>
                 <li className='flex items-center gap-2'>
-                  <Check className='h-3.5 w-3.5 text-cyan-600 dark:text-cyan-400' /> Max file
-                  limit: 50MB
+                  <Check className='h-3.5 w-3.5 text-cyan-600 dark:text-cyan-400' />{' '}
+                  Max file limit: 50MB
                 </li>
                 <li className='flex items-center gap-2'>
-                  <Check className='h-3.5 w-3.5 text-cyan-600 dark:text-cyan-400' /> Git URL
-                  linking
+                  <Check className='h-3.5 w-3.5 text-cyan-600 dark:text-cyan-400' />{' '}
+                  Git URL linking
                 </li>
               </ul>
             </div>
@@ -863,16 +874,16 @@ const Landing = memo(() => {
               </div>
               <ul className='space-y-1.5 border-t border-slate-100 pt-3 text-[11px] font-bold text-slate-600 dark:border-slate-800/80 dark:text-slate-400'>
                 <li className='flex items-center gap-2'>
-                  <Check className='h-3.5 w-3.5 text-blue-600 dark:text-blue-400' /> Dynamic
-                  project invites
+                  <Check className='h-3.5 w-3.5 text-blue-600 dark:text-blue-400' />{' '}
+                  Dynamic project invites
                 </li>
                 <li className='flex items-center gap-2'>
-                  <Check className='h-3.5 w-3.5 text-blue-600 dark:text-blue-400' /> Team
-                  leadership flags
+                  <Check className='h-3.5 w-3.5 text-blue-600 dark:text-blue-400' />{' '}
+                  Team leadership flags
                 </li>
                 <li className='flex items-center gap-2'>
-                  <Check className='h-3.5 w-3.5 text-blue-600 dark:text-blue-400' /> Group limits
-                  controls
+                  <Check className='h-3.5 w-3.5 text-blue-600 dark:text-blue-400' />{' '}
+                  Group limits controls
                 </li>
               </ul>
             </div>
@@ -893,16 +904,16 @@ const Landing = memo(() => {
               </div>
               <ul className='space-y-1.5 border-t border-slate-100 pt-3 text-[11px] font-bold text-slate-600 dark:border-slate-800/80 dark:text-slate-400'>
                 <li className='flex items-center gap-2'>
-                  <Check className='h-3.5 w-3.5 text-purple-600 dark:text-purple-400' /> UDP/IDP
-                  matching templates
+                  <Check className='h-3.5 w-3.5 text-purple-600 dark:text-purple-400' />{' '}
+                  UDP/IDP matching templates
                 </li>
                 <li className='flex items-center gap-2'>
-                  <Check className='h-3.5 w-3.5 text-purple-600 dark:text-purple-400' /> Status step
-                  alerts
+                  <Check className='h-3.5 w-3.5 text-purple-600 dark:text-purple-400' />{' '}
+                  Status step alerts
                 </li>
                 <li className='flex items-center gap-2'>
-                  <Check className='h-3.5 w-3.5 text-purple-600 dark:text-purple-400' /> Project
-                  milestone timelines
+                  <Check className='h-3.5 w-3.5 text-purple-600 dark:text-purple-400' />{' '}
+                  Project milestone timelines
                 </li>
               </ul>
             </div>
@@ -923,16 +934,16 @@ const Landing = memo(() => {
               </div>
               <ul className='space-y-1.5 border-t border-slate-100 pt-3 text-[11px] font-bold text-slate-600 dark:border-slate-800/80 dark:text-slate-400'>
                 <li className='flex items-center gap-2'>
-                  <Check className='h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400' /> Feedback
-                  audit logs
+                  <Check className='h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400' />{' '}
+                  Feedback audit logs
                 </li>
                 <li className='flex items-center gap-2'>
-                  <Check className='h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400' /> Secure
-                  milestone marks
+                  <Check className='h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400' />{' '}
+                  Secure milestone marks
                 </li>
                 <li className='flex items-center gap-2'>
-                  <Check className='h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400' /> Guide
-                  matching criteria
+                  <Check className='h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400' />{' '}
+                  Guide matching criteria
                 </li>
               </ul>
             </div>
@@ -1144,16 +1155,16 @@ const Landing = memo(() => {
               </div>
               <div className='space-y-2.5 border-t border-slate-100 pt-4 text-xs font-bold text-slate-700 dark:border-slate-800/80 dark:text-slate-300'>
                 <div className='flex items-center gap-2'>
-                  <Check className='h-4.5 w-4.5 text-cyan-600 dark:text-cyan-400' /> Propose
-                  UDP/IDP Projects
+                  <Check className='h-4.5 w-4.5 text-cyan-600 dark:text-cyan-400' />{' '}
+                  Propose UDP/IDP Projects
                 </div>
                 <div className='flex items-center gap-2'>
-                  <Check className='h-4.5 w-4.5 text-cyan-600 dark:text-cyan-400' /> Upload Reports
-                  & Archives
+                  <Check className='h-4.5 w-4.5 text-cyan-600 dark:text-cyan-400' />{' '}
+                  Upload Reports & Archives
                 </div>
                 <div className='flex items-center gap-2'>
-                  <Check className='h-4.5 w-4.5 text-cyan-600 dark:text-cyan-400' /> Monitor Guide
-                  Feedback
+                  <Check className='h-4.5 w-4.5 text-cyan-600 dark:text-cyan-400' />{' '}
+                  Monitor Guide Feedback
                 </div>
               </div>
             </div>
@@ -1180,16 +1191,16 @@ const Landing = memo(() => {
               </div>
               <div className='space-y-2.5 border-t border-slate-100 pt-4 text-xs font-bold text-slate-700 dark:border-slate-800/80 dark:text-slate-300'>
                 <div className='flex items-center gap-2'>
-                  <Check className='h-4.5 w-4.5 text-emerald-600 dark:text-emerald-400' /> Evaluate
-                  Live Submissions
+                  <Check className='h-4.5 w-4.5 text-emerald-600 dark:text-emerald-400' />{' '}
+                  Evaluate Live Submissions
                 </div>
                 <div className='flex items-center gap-2'>
-                  <Check className='h-4.5 w-4.5 text-emerald-600 dark:text-emerald-400' /> Log Meeting
-                  Minutes
+                  <Check className='h-4.5 w-4.5 text-emerald-600 dark:text-emerald-400' />{' '}
+                  Log Meeting Minutes
                 </div>
                 <div className='flex items-center gap-2'>
-                  <Check className='h-4.5 w-4.5 text-emerald-600 dark:text-emerald-400' /> Approve
-                  Project Milestone
+                  <Check className='h-4.5 w-4.5 text-emerald-600 dark:text-emerald-400' />{' '}
+                  Approve Project Milestone
                 </div>
               </div>
             </div>
@@ -1216,16 +1227,16 @@ const Landing = memo(() => {
               </div>
               <div className='space-y-2.5 border-t border-slate-100 pt-4 text-xs font-bold text-slate-700 dark:border-slate-800/80 dark:text-slate-300'>
                 <div className='flex items-center gap-2'>
-                  <Check className='h-4.5 w-4.5 text-violet-600 dark:text-violet-400' /> Allocate
-                  Faculty Mentors
+                  <Check className='h-4.5 w-4.5 text-violet-600 dark:text-violet-400' />{' '}
+                  Allocate Faculty Mentors
                 </div>
                 <div className='flex items-center gap-2'>
-                  <Check className='h-4.5 w-4.5 text-violet-600 dark:text-violet-400' /> Govern User
-                  Permissions
+                  <Check className='h-4.5 w-4.5 text-violet-600 dark:text-violet-400' />{' '}
+                  Govern User Permissions
                 </div>
                 <div className='flex items-center gap-2'>
-                  <Check className='h-4.5 w-4.5 text-violet-600 dark:text-violet-400' /> Monitor
-                  System Audit Logs
+                  <Check className='h-4.5 w-4.5 text-violet-600 dark:text-violet-400' />{' '}
+                  Monitor System Audit Logs
                 </div>
               </div>
             </div>
@@ -1277,10 +1288,11 @@ const Landing = memo(() => {
               <button
                 key={cat.id}
                 onClick={() => setFaqCategory(cat.id)}
-                className={`rounded-xl px-4 py-2 text-xs font-bold transition-all duration-200 ${faqCategory === cat.id
-                  ? 'border border-indigo-200 bg-white text-indigo-700 shadow-xs dark:border-indigo-500/35 dark:bg-indigo-500/20 dark:text-indigo-300'
-                  : 'border border-transparent bg-transparent text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
-                  }`}
+                className={`rounded-xl px-4 py-2 text-xs font-bold transition-all duration-200 ${
+                  faqCategory === cat.id
+                    ? 'border border-indigo-200 bg-white text-indigo-700 shadow-xs dark:border-indigo-500/35 dark:bg-indigo-500/20 dark:text-indigo-300'
+                    : 'border border-transparent bg-transparent text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
+                }`}
               >
                 {cat.label}
               </button>
@@ -1296,10 +1308,11 @@ const Landing = memo(() => {
                   return (
                     <div
                       key={faq.q}
-                      className={`overflow-hidden rounded-3xl border shadow-sm transition-all duration-300 ${isOpen
-                        ? 'border-indigo-200 bg-indigo-50/40 dark:border-indigo-500/25 dark:bg-slate-900/80'
-                        : 'border-slate-200/90 bg-white hover:border-slate-300 dark:border-slate-800/70 dark:bg-slate-900/50 dark:hover:border-slate-700/60'
-                        }`}
+                      className={`overflow-hidden rounded-3xl border shadow-sm transition-all duration-300 ${
+                        isOpen
+                          ? 'border-indigo-200 bg-indigo-50/40 dark:border-indigo-500/25 dark:bg-slate-900/80'
+                          : 'border-slate-200/90 bg-white hover:border-slate-300 dark:border-slate-800/70 dark:bg-slate-900/50 dark:hover:border-slate-700/60'
+                      }`}
                     >
                       <button
                         onClick={() => toggleFaq(faq.q)}
@@ -1307,10 +1320,11 @@ const Landing = memo(() => {
                       >
                         <span className='pr-4'>{faq.q}</span>
                         <div
-                          className={`flex h-8 w-8 items-center justify-center rounded-full border transition-colors duration-300 ${isOpen
-                            ? 'border-indigo-200 bg-indigo-100 text-indigo-700 dark:border-indigo-550/30 dark:bg-indigo-950/20 dark:text-indigo-400'
-                            : 'border-slate-200 bg-slate-100 text-slate-500 dark:border-slate-800 dark:bg-slate-950/50 dark:text-slate-400'
-                            }`}
+                          className={`flex h-8 w-8 items-center justify-center rounded-full border transition-colors duration-300 ${
+                            isOpen
+                              ? 'border-indigo-200 bg-indigo-100 text-indigo-700 dark:border-indigo-550/30 dark:bg-indigo-950/20 dark:text-indigo-400'
+                              : 'border-slate-200 bg-slate-100 text-slate-500 dark:border-slate-800 dark:bg-slate-950/50 dark:text-slate-400'
+                          }`}
                         >
                           {isOpen ? (
                             <ChevronUp className='h-4 w-4' />
@@ -1503,11 +1517,17 @@ const Landing = memo(() => {
           </div>
 
           <div className='flex space-x-4 text-slate-500 dark:text-slate-400'>
-            <Link to='/privacy' className='transition-colors hover:text-indigo-600 dark:hover:text-white'>
+            <Link
+              to='/privacy'
+              className='transition-colors hover:text-indigo-600 dark:hover:text-white'
+            >
               Privacy Policy
             </Link>
             <span>•</span>
-            <Link to='/terms' className='transition-colors hover:text-indigo-600 dark:hover:text-white'>
+            <Link
+              to='/terms'
+              className='transition-colors hover:text-indigo-600 dark:hover:text-white'
+            >
               Terms of Service
             </Link>
           </div>

@@ -16,22 +16,31 @@ const BackToTop = memo(() => {
   useEffect(() => {
     const checkFooter = () => {
       const footers = Array.from(document.querySelectorAll('footer'));
-      
+
       const visibleFooters = footers.filter((f) => {
         const style = window.getComputedStyle(f);
-        return style.display !== 'none' && style.visibility !== 'hidden' && f.offsetHeight > 0;
+        return (
+          style.display !== 'none' &&
+          style.visibility !== 'hidden' &&
+          f.offsetHeight > 0
+        );
       });
-      
+
       if (visibleFooters.length === 0) {
         setFooterOverlap(0);
         return;
       }
-      
+
       // Find the uppermost visible footer
-      const minTop = Math.min(...visibleFooters.map((f) => f.getBoundingClientRect().top));
-      const maxFooterHeight = Math.max(...visibleFooters.map((f) => f.offsetHeight));
-      const windowHeight = window.innerHeight || document.documentElement.clientHeight;
-      
+      const minTop = Math.min(
+        ...visibleFooters.map((f) => f.getBoundingClientRect().top)
+      );
+      const maxFooterHeight = Math.max(
+        ...visibleFooters.map((f) => f.offsetHeight)
+      );
+      const windowHeight =
+        window.innerHeight || document.documentElement.clientHeight;
+
       if (minTop < windowHeight) {
         let overlap = windowHeight - minTop;
         // Clamp overlap so it never pushes the button higher than the footer's height
@@ -41,7 +50,7 @@ const BackToTop = memo(() => {
         setFooterOverlap(0);
       }
     };
-    
+
     let ticking = false;
     const onScroll = () => {
       if (!ticking) {
@@ -57,7 +66,7 @@ const BackToTop = memo(() => {
     window.addEventListener('resize', checkFooter, { passive: true });
     // Run after a slight delay to ensure layout is complete
     setTimeout(checkFooter, 100);
-    
+
     return () => {
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', checkFooter);
@@ -77,7 +86,7 @@ const BackToTop = memo(() => {
   }, []);
 
   return (
-    <div 
+    <div
       className='fixed right-4 md:right-6 z-[100] pointer-events-none transition-all duration-100 ease-out bottom-[calc(var(--mobile-nav-height,5rem)+1rem)] md:bottom-6'
       style={{ paddingBottom: `${footerOverlap}px` }}
     >

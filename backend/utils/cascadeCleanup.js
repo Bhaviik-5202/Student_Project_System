@@ -50,7 +50,10 @@ const cascadeUserCleanup = async (userId, email) => {
       await Activity.deleteMany({ user: { $in: userIdsToClean } });
     }
 
-    logger.info('Cascade user cleanup completed successfully', { userId, email });
+    logger.info('Cascade user cleanup completed successfully', {
+      userId,
+      email,
+    });
   } catch (error) {
     logger.error('Error during cascade user cleanup', { error: error.message });
   }

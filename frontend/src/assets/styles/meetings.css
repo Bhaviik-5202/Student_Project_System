@@ -202,7 +202,7 @@
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
-  
+
   .meeting-calendar-grid {
     grid-template-columns: repeat(7, minmax(120px, 1fr));
     min-width: 840px;

@@ -21,7 +21,8 @@ if (typeof dns.setDefaultResultOrder === 'function') {
  * Create a Nodemailer Transporter instance based on environment variables.
  */
 function createSmtpTransporter() {
-  const host = process.env.EMAIL_HOST || process.env.SMTP_HOST || 'smtp.gmail.com';
+  const host =
+    process.env.EMAIL_HOST || process.env.SMTP_HOST || 'smtp.gmail.com';
   const rawPort = process.env.EMAIL_PORT || process.env.SMTP_PORT;
   const user = process.env.EMAIL_USER || process.env.SMTP_USER;
   const pass = process.env.EMAIL_PASS || process.env.SMTP_PASS;
@@ -31,9 +32,14 @@ function createSmtpTransporter() {
     return null;
   }
 
-  const isGmail = host.toLowerCase().includes('gmail') || host.toLowerCase().includes('google');
+  const isGmail =
+    host.toLowerCase().includes('gmail') ||
+    host.toLowerCase().includes('google');
   const port = Number(rawPort) || (isGmail ? 465 : 587);
-  const secure = rawSecure !== undefined ? (rawSecure === 'true' || rawSecure === '1') : (port === 465);
+  const secure =
+    rawSecure !== undefined
+      ? rawSecure === 'true' || rawSecure === '1'
+      : port === 465;
 
   const timeoutMs = process.env.NODE_ENV === 'production' ? 3000 : 6000;
 
@@ -62,7 +68,8 @@ async function verifyEmailService() {
     return true;
   }
 
-  const brevoApiKey = process.env.BREVO_API_KEY || process.env.SENDINBLUE_API_KEY;
+  const brevoApiKey =
+    process.env.BREVO_API_KEY || process.env.SENDINBLUE_API_KEY;
   const resendApiKey = process.env.RESEND_API_KEY;
   const smtpUser = process.env.EMAIL_USER || process.env.SMTP_USER;
   const smtpPass = process.env.EMAIL_PASS || process.env.SMTP_PASS;
@@ -80,7 +87,12 @@ async function verifyEmailService() {
   }
 
   // 3. Verify Nodemailer SMTP if credentials provided (local dev)
-  if (smtpUser && smtpPass && !smtpPass.startsWith('re_') && !smtpPass.startsWith('xkeysib-')) {
+  if (
+    smtpUser &&
+    smtpPass &&
+    !smtpPass.startsWith('re_') &&
+    !smtpPass.startsWith('xkeysib-')
+  ) {
     const transporter = createSmtpTransporter();
     if (transporter) {
       try {
@@ -94,7 +106,9 @@ async function verifyEmailService() {
   }
 
   if (process.env.NODE_ENV !== 'production') {
-    logger.info('[Email Service] Development fallback mode active (Logs OTP to console if dispatch fails)');
+    logger.info(
+      '[Email Service] Development fallback mode active (Logs OTP to console if dispatch fails)'
+    );
     return true;
   }
 
@@ -105,9 +119,22 @@ async function verifyEmailService() {
 /**
  * Send email via Brevo (Sendinblue) HTTPS REST API (Port 443)
  */
-async function sendViaBrevo({ to, subject, text, html, fromName, fromEmail, brevoApiKey }) {
-  const rawEmail = fromEmail.includes('<') ? fromEmail.match(/<([^>]+)>/)?.[1] || fromEmail : fromEmail;
-  const senderEmail = rawEmail && rawEmail.includes('@') ? rawEmail : 'no-reply@studentproject.edu';
+async function sendViaBrevo({
+  to,
+  subject,
+  text,
+  html,
+  fromName,
+  fromEmail,
+  brevoApiKey,
+}) {
+  const rawEmail = fromEmail.includes('<')
+    ? fromEmail.match(/<([^>]+)>/)?.[1] || fromEmail
+    : fromEmail;
+  const senderEmail =
+    rawEmail && rawEmail.includes('@')
+      ? rawEmail
+      : 'no-reply@studentproject.edu';
 
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 8000);
@@ -117,10 +144,13 @@ async function sendViaBrevo({ to, subject, text, html, fromName, fromEmail, brev
     headers: {
       'api-key': brevoApiKey,
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
+      Accept: 'application/json',
     },
     body: JSON.stringify({
-      sender: { name: fromName || 'Student Project System', email: senderEmail },
+      sender: {
+        name: fromName || 'Student Project System',
+        email: senderEmail,
+      },
       to: [{ email: Array.isArray(to) ? to[0] : to }],
       subject: subject,
       htmlContent: html || text,
@@ -134,20 +164,39 @@ async function sendViaBrevo({ to, subject, text, html, fromName, fromEmail, brev
 
   if (response.ok && (data.messageId || data.messageIds)) {
     const msgId = data.messageId || data.messageIds?.[0] || 'brevo-id';
-    logger.info(`✅ Email delivered via Brevo HTTPS API to ${to}`, { messageId: msgId });
+    logger.info(`✅ Email delivered via Brevo HTTPS API to ${to}`, {
+      messageId: msgId,
+    });
     return { messageId: msgId };
   }
 
-  throw new Error(`Brevo API Error (${response.status}): ${data.message || JSON.stringify(data)}`);
+  throw new Error(
+    `Brevo API Error (${response.status}): ${data.message || JSON.stringify(data)}`
+  );
 }
 
 /**
  * Send email via Resend HTTPS REST API (Port 443)
  */
-async function sendViaResend({ to, subject, text, html, fromName, fromEmail, resendApiKey }) {
-  const rawEmail = fromEmail.includes('<') ? fromEmail.match(/<([^>]+)>/)?.[1] || fromEmail : fromEmail;
-  const senderEmail = (rawEmail && rawEmail.includes('@') && !rawEmail.includes('gmail.com')) ? rawEmail : 'onboarding@resend.dev';
-  const senderHeader = fromName ? `"${fromName}" <${senderEmail}>` : senderEmail;
+async function sendViaResend({
+  to,
+  subject,
+  text,
+  html,
+  fromName,
+  fromEmail,
+  resendApiKey,
+}) {
+  const rawEmail = fromEmail.includes('<')
+    ? fromEmail.match(/<([^>]+)>/)?.[1] || fromEmail
+    : fromEmail;
+  const senderEmail =
+    rawEmail && rawEmail.includes('@') && !rawEmail.includes('gmail.com')
+      ? rawEmail
+      : 'onboarding@resend.dev';
+  const senderHeader = fromName
+    ? `"${fromName}" <${senderEmail}>`
+    : senderEmail;
 
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 8000);
@@ -155,7 +204,7 @@ async function sendViaResend({ to, subject, text, html, fromName, fromEmail, res
   const response = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${resendApiKey}`,
+      Authorization: `Bearer ${resendApiKey}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
@@ -172,14 +221,22 @@ async function sendViaResend({ to, subject, text, html, fromName, fromEmail, res
   const data = await response.json().catch(() => ({}));
 
   if (response.ok && data.id) {
-    logger.info(`✅ Email delivered via Resend HTTPS API to ${to}`, { messageId: data.id });
+    logger.info(`✅ Email delivered via Resend HTTPS API to ${to}`, {
+      messageId: data.id,
+    });
     return { messageId: data.id };
   }
 
   // Handle Resend sandbox restriction (403/422) or invalid API key (401)
-  if (response.status === 403 || response.status === 422 || response.status === 401) {
+  if (
+    response.status === 403 ||
+    response.status === 422 ||
+    response.status === 401
+  ) {
     const errorMsg = data.message || `Resend API Error (${response.status})`;
-    logger.warn(`[Email Service] Resend Notice (Recipient: ${to}): ${errorMsg}`);
+    logger.warn(
+      `[Email Service] Resend Notice (Recipient: ${to}): ${errorMsg}`
+    );
 
     if (process.env.NODE_ENV !== 'production') {
       return {
@@ -192,7 +249,9 @@ async function sendViaResend({ to, subject, text, html, fromName, fromEmail, res
     throw new Error(`Resend API Error (${response.status}): ${errorMsg}`);
   }
 
-  throw new Error(`Resend API Error (${response.status}): ${data.message || JSON.stringify(data)}`);
+  throw new Error(
+    `Resend API Error (${response.status}): ${data.message || JSON.stringify(data)}`
+  );
 }
 
 /**
@@ -212,7 +271,9 @@ async function sendViaSmtp({ to, subject, text, html, formattedFrom }) {
     html,
   };
   const info = await transporter.sendMail(mailOptions);
-  logger.info(`✅ Email delivered via Nodemailer SMTP to ${to}`, { messageId: info.messageId });
+  logger.info(`✅ Email delivered via Nodemailer SMTP to ${to}`, {
+    messageId: info.messageId,
+  });
   return info;
 }
 
@@ -237,24 +298,39 @@ async function sendEmail({ to, subject, text, html }) {
     return { messageId: 'mock-test-id' };
   }
 
-  const brevoApiKey = process.env.BREVO_API_KEY || process.env.SENDINBLUE_API_KEY;
+  const brevoApiKey =
+    process.env.BREVO_API_KEY || process.env.SENDINBLUE_API_KEY;
   const resendApiKey = process.env.RESEND_API_KEY;
   const smtpUser = process.env.EMAIL_USER || process.env.SMTP_USER;
   const smtpPass = process.env.EMAIL_PASS || process.env.SMTP_PASS;
-  const hasSmtp = smtpUser && smtpPass && !smtpPass.startsWith('re_') && !smtpPass.startsWith('xkeysib-');
+  const hasSmtp =
+    smtpUser &&
+    smtpPass &&
+    !smtpPass.startsWith('re_') &&
+    !smtpPass.startsWith('xkeysib-');
 
   const configuredFrom = process.env.FROM_EMAIL || process.env.EMAIL_FROM;
   const fromName = process.env.FROM_NAME || 'Student Project System';
   const defaultFrom = smtpUser || 'onboarding@resend.dev';
   const fromEmail = configuredFrom || defaultFrom;
-  const formattedFrom = fromEmail.includes('<') ? fromEmail : `"${fromName}" <${fromEmail}>`;
+  const formattedFrom = fromEmail.includes('<')
+    ? fromEmail
+    : `"${fromName}" <${fromEmail}>`;
 
   const errors = [];
 
   // ── 1. Brevo HTTPS REST API (Port 443 - Unblocked on Render/Cloud hosts) ──
   if (brevoApiKey) {
     try {
-      return await sendViaBrevo({ to, subject, text, html, fromName, fromEmail, brevoApiKey });
+      return await sendViaBrevo({
+        to,
+        subject,
+        text,
+        html,
+        fromName,
+        fromEmail,
+        brevoApiKey,
+      });
     } catch (brevoErr) {
       logger.warn(`[Email Service] Brevo API notice: ${brevoErr.message}`);
       errors.push(`Brevo: ${brevoErr.message}`);
@@ -264,7 +340,15 @@ async function sendEmail({ to, subject, text, html }) {
   // ── 2. Resend HTTPS REST API (Port 443) ──
   if (resendApiKey && resendApiKey.startsWith('re_')) {
     try {
-      const resendResult = await sendViaResend({ to, subject, text, html, fromName, fromEmail, resendApiKey });
+      const resendResult = await sendViaResend({
+        to,
+        subject,
+        text,
+        html,
+        fromName,
+        fromEmail,
+        resendApiKey,
+      });
       if (resendResult) return resendResult;
     } catch (resendErr) {
       logger.warn(`[Email Service] Resend API notice: ${resendErr.message}`);

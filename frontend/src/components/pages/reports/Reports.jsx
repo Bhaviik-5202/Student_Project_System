@@ -54,17 +54,17 @@ const MobileReportCard = ({ rep, onDownload, onDelete }) => (
           Generated: {rep.date || 'Today'}
         </span>
       </div>
-      
+
       <div className='flex w-full items-center gap-2 sm:w-auto'>
-        <button 
-          onClick={() => onDownload(rep)} 
+        <button
+          onClick={() => onDownload(rep)}
           className='flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 text-white shadow-sm transition-transform active:scale-90 dark:bg-indigo-500'
         >
           <Download size={16} />
           <span className='text-sm font-semibold'>Download</span>
         </button>
-        <button 
-          onClick={() => onDelete(rep.id || rep._id)} 
+        <button
+          onClick={() => onDelete(rep.id || rep._id)}
           className='flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-rose-50 text-rose-600 transition-transform active:scale-90 dark:bg-rose-500/20 dark:text-rose-400'
         >
           <Trash2 size={16} />
@@ -292,86 +292,88 @@ export const Reports = () => {
           />
         ) : (
           <>
-          {/* Desktop Table */}
-          <div className='mt-4 hidden md:block overflow-x-auto'>
-            <table className='w-full text-left text-sm text-slate-600 dark:text-slate-400'>
-              <thead className='border-b border-slate-200 bg-slate-50 dark:bg-slate-800 text-xs uppercase text-slate-500 dark:text-slate-400 dark:border-slate-800 /50 '>
-                <tr>
-                  <th className='px-6 py-3.5 font-semibold'>Report Title</th>
-                  <th className='px-6 py-3.5 font-semibold'>Category</th>
-                  <th className='px-6 py-3.5 font-semibold'>Format</th>
-                  <th className='px-6 py-3.5 font-semibold'>Generated Date</th>
-                  <th className='px-6 py-3.5 font-semibold'>Status</th>
-                  <th className='px-6 py-3.5 font-semibold text-right'>
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className='divide-y divide-slate-100 dark:divide-slate-800'>
-                {reports.map((rep) => {
-                  const repId = rep.id || rep._id;
-                  return (
-                    <tr
-                      key={repId}
-                      className='hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800/50 /50'
-                    >
-                      <td className='px-6 py-4 font-bold text-slate-900 dark:text-white'>
-                        <div className='flex items-center gap-3'>
-                          <div className='flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400'>
-                            <FileText className='h-5 w-5' />
+            {/* Desktop Table */}
+            <div className='mt-4 hidden md:block overflow-x-auto'>
+              <table className='w-full text-left text-sm text-slate-600 dark:text-slate-400'>
+                <thead className='border-b border-slate-200 bg-slate-50 dark:bg-slate-800 text-xs uppercase text-slate-500 dark:text-slate-400 dark:border-slate-800 /50 '>
+                  <tr>
+                    <th className='px-6 py-3.5 font-semibold'>Report Title</th>
+                    <th className='px-6 py-3.5 font-semibold'>Category</th>
+                    <th className='px-6 py-3.5 font-semibold'>Format</th>
+                    <th className='px-6 py-3.5 font-semibold'>
+                      Generated Date
+                    </th>
+                    <th className='px-6 py-3.5 font-semibold'>Status</th>
+                    <th className='px-6 py-3.5 font-semibold text-right'>
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className='divide-y divide-slate-100 dark:divide-slate-800'>
+                  {reports.map((rep) => {
+                    const repId = rep.id || rep._id;
+                    return (
+                      <tr
+                        key={repId}
+                        className='hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800/50 /50'
+                      >
+                        <td className='px-6 py-4 font-bold text-slate-900 dark:text-white'>
+                          <div className='flex items-center gap-3'>
+                            <div className='flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400'>
+                              <FileText className='h-5 w-5' />
+                            </div>
+                            <span>{rep.title}</span>
                           </div>
-                          <span>{rep.title}</span>
-                        </div>
-                      </td>
-                      <td className='px-6 py-4 font-medium'>
-                        {rep.type || 'Academic Status'}
-                      </td>
-                      <td className='px-6 py-4 font-bold uppercase text-indigo-600 dark:text-indigo-400 text-xs'>
-                        {rep.format || 'PDF'}
-                      </td>
-                      <td className='px-6 py-4 text-xs text-slate-500 dark:text-slate-400'>
-                        {rep.date || 'Today'}
-                      </td>
-                      <td className='px-6 py-4'>
-                        <StatusBadge status='completed' label='Ready' />
-                      </td>
-                      <td className='px-6 py-4 text-right'>
-                        <div className='flex items-center justify-end gap-2'>
-                          <Button
-                            variant='primary'
-                            size='sm'
-                            icon={Download}
-                            onClick={() => handleDownloadReport(rep)}
-                          >
-                            Download
-                          </Button>
-                          <button
-                            onClick={() => handleDeleteReport(repId)}
-                            className='rounded-lg p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40'
-                            title='Delete Log'
-                          >
-                            <Trash2 className='h-4 w-4' />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-          
-          {/* Mobile Cards */}
-          <div className='mt-4 block md:hidden space-y-4'>
-            {reports.map((rep) => (
-              <MobileReportCard
-                key={rep.id || rep._id}
-                rep={rep}
-                onDownload={handleDownloadReport}
-                onDelete={handleDeleteReport}
-              />
-            ))}
-          </div>
+                        </td>
+                        <td className='px-6 py-4 font-medium'>
+                          {rep.type || 'Academic Status'}
+                        </td>
+                        <td className='px-6 py-4 font-bold uppercase text-indigo-600 dark:text-indigo-400 text-xs'>
+                          {rep.format || 'PDF'}
+                        </td>
+                        <td className='px-6 py-4 text-xs text-slate-500 dark:text-slate-400'>
+                          {rep.date || 'Today'}
+                        </td>
+                        <td className='px-6 py-4'>
+                          <StatusBadge status='completed' label='Ready' />
+                        </td>
+                        <td className='px-6 py-4 text-right'>
+                          <div className='flex items-center justify-end gap-2'>
+                            <Button
+                              variant='primary'
+                              size='sm'
+                              icon={Download}
+                              onClick={() => handleDownloadReport(rep)}
+                            >
+                              Download
+                            </Button>
+                            <button
+                              onClick={() => handleDeleteReport(repId)}
+                              className='rounded-lg p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40'
+                              title='Delete Log'
+                            >
+                              <Trash2 className='h-4 w-4' />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Cards */}
+            <div className='mt-4 block md:hidden space-y-4'>
+              {reports.map((rep) => (
+                <MobileReportCard
+                  key={rep.id || rep._id}
+                  rep={rep}
+                  onDownload={handleDownloadReport}
+                  onDelete={handleDeleteReport}
+                />
+              ))}
+            </div>
           </>
         )}
       </div>

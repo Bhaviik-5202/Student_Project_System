@@ -1,6 +1,12 @@
 import React, { memo, useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BookOpen, Search, ArrowLeft, ArrowRight, FileText } from 'lucide-react';
+import {
+  BookOpen,
+  Search,
+  ArrowLeft,
+  ArrowRight,
+  FileText,
+} from 'lucide-react';
 import PageHeader from '../../common/PageHeader';
 import api from '../../../utils/api';
 
@@ -234,7 +240,8 @@ const UserGuide = memo(() => {
                       className='rounded-lg border border-slate-300 px-4 py-2 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-700'
                       disabled={activeChapter === 1}
                     >
-                      <ArrowLeft className="mr-2 inline" size={16} /> Previous Chapter
+                      <ArrowLeft className='mr-2 inline' size={16} /> Previous
+                      Chapter
                     </button>
                     <button
                       onClick={() =>
@@ -245,7 +252,8 @@ const UserGuide = memo(() => {
                       className='rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600'
                       disabled={activeChapter === chapters.length}
                     >
-                      Next Chapter <ArrowRight className="ml-2 inline" size={16} />
+                      Next Chapter{' '}
+                      <ArrowRight className='ml-2 inline' size={16} />
                     </button>
                   </div>
                 </div>

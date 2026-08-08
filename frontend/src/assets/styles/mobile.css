@@ -29,17 +29,19 @@
   }
 
   /* GLOBAL FIX: Ensure all search inputs have enough left padding to clear icons */
-  input[type="text"][placeholder*="Search"],
-  input[type="search"],
-  input[placeholder*="search" i],
+  input[type='text'][placeholder*='Search'],
+  input[type='search'],
+  input[placeholder*='search' i],
   .relative > input.pl-8,
   .relative > input.pl-9,
   .relative > input.pl-10 {
     padding-left: 2.75rem !important; /* 44px */
   }
-  
+
   /* GLOBAL FIX: Touch targets for inputs */
-  input, select, button {
+  input,
+  select,
+  button {
     min-height: 44px;
   }
 
@@ -379,14 +381,31 @@
     border-radius: 0.875rem !important;
     /* Scroll shadow cues */
     background:
-      linear-gradient(to right, white 30%, rgba(255,255,255,0)),
-      linear-gradient(to right, rgba(255,255,255,0), white 70%) 0 100%,
-      radial-gradient(farthest-side at 0 50%, rgba(0,0,0,.08), rgba(0,0,0,0)),
-      radial-gradient(farthest-side at 100% 50%, rgba(0,0,0,.08), rgba(0,0,0,0)) 0 100%;
+      linear-gradient(to right, white 30%, rgba(255, 255, 255, 0)),
+      linear-gradient(to right, rgba(255, 255, 255, 0), white 70%) 0 100%,
+      radial-gradient(
+        farthest-side at 0 50%,
+        rgba(0, 0, 0, 0.08),
+        rgba(0, 0, 0, 0)
+      ),
+      radial-gradient(
+          farthest-side at 100% 50%,
+          rgba(0, 0, 0, 0.08),
+          rgba(0, 0, 0, 0)
+        )
+        0 100%;
     background-repeat: no-repeat;
     background-color: white;
-    background-size: 40px 100%, 40px 100%, 14px 100%, 14px 100%;
-    background-position: 0 0, 100%, 0 0, 100%;
+    background-size:
+      40px 100%,
+      40px 100%,
+      14px 100%,
+      14px 100%;
+    background-position:
+      0 0,
+      100%,
+      0 0,
+      100%;
     background-attachment: local, local, scroll, scroll;
   }
 
@@ -438,8 +457,13 @@
 
   /* Active nav item pulse */
   @keyframes mobile-nav-bounce {
-    0%, 100% { transform: translateY(0) scale(1); }
-    50% { transform: translateY(-2px) scale(1.08); }
+    0%,
+    100% {
+      transform: translateY(0) scale(1);
+    }
+    50% {
+      transform: translateY(-2px) scale(1.08);
+    }
   }
 }
 
@@ -783,4 +807,3 @@
     padding: 0.75rem !important;
   }
 }
-

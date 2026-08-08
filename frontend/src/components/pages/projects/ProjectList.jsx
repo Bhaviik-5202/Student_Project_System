@@ -356,251 +356,257 @@ const ProjectList = () => {
         />
       ) : (
         <>
-        {/* GRID VIEW */}
-        <div className={`${viewMode === 'table' ? 'hidden md:grid' : 'grid'} grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3`}>
-          {projects.map((project) => (
-            <Card
-              key={project._id || project.id}
-              className='flex flex-col justify-between !p-5'
-            >
-              <div>
-                {/* Header Badge */}
-                <div className='flex items-start justify-between gap-2 mb-3'>
-                  <div className='flex items-center gap-1.5'>
-                    <Badge variant='indigo'>{project.code || 'PRJ-2026'}</Badge>
-                    <span className='text-[10px] font-bold text-gray-400 dark:text-gray-500 dark:text-gray-400 dark:text-gray-500'>
-                      {project.department}
-                    </span>
-                  </div>
-                  <StatusBadge status={project.status || 'assigned'} />
-                </div>
-
-                {/* Title */}
-                <h3
-                  onClick={() =>
-                    navigate(
-                      `/projects/${project.slug || project._id || project.id}`
-                    )
-                  }
-                  className='text-base font-bold text-gray-900 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400 dark:text-indigo-400  cursor-pointer line-clamp-2 transition-colors'
-                >
-                  {project.title}
-                </h3>
-
-                {/* Description abstract */}
-                <p className='mt-2 line-clamp-2 text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500'>
-                  {project.description || 'No detailed abstract specified.'}
-                </p>
-
-                {/* Guide & Team info */}
-                <div className='mt-4 space-y-2 border-t border-gray-100 pt-3 dark:border-slate-700/60'>
-                  <div className='flex items-center justify-between text-xs'>
-                    <span className='text-gray-400 dark:text-gray-500 font-medium'>
-                      Guide:
-                    </span>
-                    <span className='font-bold text-gray-800 dark:text-gray-200'>
-                      {project.guide
-                        ? typeof project.guide === 'object'
-                          ? project.guide.name
-                          : 'Assigned'
-                        : 'Unassigned'}
-                    </span>
-                  </div>
-                  <div className='flex items-center justify-between text-xs'>
-                    <span className='text-gray-400 dark:text-gray-500 font-medium'>
-                      Team:
-                    </span>
-                    <span className='font-semibold text-gray-700 dark:text-gray-300'>
-                      {Array.isArray(project.members)
-                        ? `${project.members.length} Students`
-                        : '0 Members'}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Progress bar */}
-                <div className='mt-3 space-y-1'>
-                  <div className='flex justify-between text-[10px] font-bold text-gray-400 dark:text-gray-500'>
-                    <span>PROGRESS</span>
-                    <span>{project.progress || 0}%</span>
-                  </div>
-                  <div className='h-1.5 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-slate-900'>
-                    <div
-                      className='h-full bg-indigo-600 dark:bg-indigo-500 transition-all duration-500 rounded-full'
-                      style={{ width: `${project.progress || 0}%` }}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Action buttons footer */}
-              <div className='mt-5 flex items-center justify-between border-t border-gray-100 pt-3 dark:border-slate-700'>
-                <div className='flex gap-1'>
-                  {canManageProjects && (
-                    <IconButton
-                      icon={UserCheck}
-                      variant='indigo'
-                      title='Assign Students'
-                      onClick={() => {
-                        setSelectedProjectForModal(project);
-                        setActiveModal('students');
-                      }}
-                    />
-                  )}
-                  {canAssignGuide && (
-                    <IconButton
-                      icon={Award}
-                      variant='purple'
-                      title='Assign Guide'
-                      onClick={() => {
-                        setSelectedProjectForModal(project);
-                        setActiveModal('guide');
-                      }}
-                    />
-                  )}
-                  {/* Update Progress – Admin/Faculty only */}
-                  {!isStudent && (
-                    <IconButton
-                      icon={TrendingUp}
-                      variant='blue'
-                      title='Update Progress'
-                      onClick={() => {
-                        setSelectedProjectForModal(project);
-                        setActiveModal('progress');
-                      }}
-                    />
-                  )}
-                  {canManageProjects &&
-                    (filters.isArchived ? (
-                      <IconButton
-                        icon={RotateCcw}
-                        variant='emerald'
-                        title='Restore Project'
-                        onClick={() => handleRestore(project)}
-                      />
-                    ) : (
-                      <IconButton
-                        icon={Archive}
-                        variant='amber'
-                        title='Archive Project'
-                        onClick={() => handleArchive(project)}
-                      />
-                    ))}
-                  {canManageProjects && (
-                    <IconButton
-                      icon={Trash2}
-                      variant='danger'
-                      title='Delete Project'
-                      onClick={() => handleDelete(project)}
-                    />
-                  )}
-                </div>
-
-                <SecondaryButton
-                  size='sm'
-                  icon={ExternalLink}
-                  onClick={() =>
-                    navigate(
-                      `/projects/${project.slug || project._id || project.id}`
-                    )
-                  }
-                >
-                  Details
-                </SecondaryButton>
-              </div>
-            </Card>
-          ))}
-        </div>
-
-        {/* TABLE VIEW */}
-        <div className={`${viewMode === 'grid' ? 'hidden' : 'hidden md:block'}`}>
-          <Table>
-          <TableHeader>
-            <tr>
-              <TableHead>Code</TableHead>
-              <TableHead>Project Title</TableHead>
-              <TableHead>Department</TableHead>
-              <TableHead>Guide</TableHead>
-              <TableHead>Progress</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead align='right'>Actions</TableHead>
-            </tr>
-          </TableHeader>
-          <TableBody>
+          {/* GRID VIEW */}
+          <div
+            className={`${viewMode === 'table' ? 'hidden md:grid' : 'grid'} grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3`}
+          >
             {projects.map((project) => (
-              <TableRow key={project._id || project.id}>
-                <TableCell className='font-extrabold text-indigo-600 dark:text-indigo-400 dark:text-indigo-300'>
-                  {project.code || 'PRJ'}
-                </TableCell>
-                <TableCell className='font-bold text-gray-900 dark:text-white max-w-xs truncate'>
-                  <span
+              <Card
+                key={project._id || project.id}
+                className='flex flex-col justify-between !p-5'
+              >
+                <div>
+                  {/* Header Badge */}
+                  <div className='flex items-start justify-between gap-2 mb-3'>
+                    <div className='flex items-center gap-1.5'>
+                      <Badge variant='indigo'>
+                        {project.code || 'PRJ-2026'}
+                      </Badge>
+                      <span className='text-[10px] font-bold text-gray-400 dark:text-gray-500 dark:text-gray-400 dark:text-gray-500'>
+                        {project.department}
+                      </span>
+                    </div>
+                    <StatusBadge status={project.status || 'assigned'} />
+                  </div>
+
+                  {/* Title */}
+                  <h3
                     onClick={() =>
                       navigate(
                         `/projects/${project.slug || project._id || project.id}`
                       )
                     }
-                    className='cursor-pointer hover:underline hover:text-indigo-600 dark:hover:text-indigo-400 dark:text-indigo-400 transition-colors'
+                    className='text-base font-bold text-gray-900 dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400 dark:text-indigo-400  cursor-pointer line-clamp-2 transition-colors'
                   >
                     {project.title}
-                  </span>
-                </TableCell>
-                <TableCell className='text-gray-600 dark:text-gray-300'>
-                  {project.department}
-                </TableCell>
-                <TableCell className='text-gray-700 dark:text-gray-300 font-semibold'>
-                  {project.guide
-                    ? typeof project.guide === 'object'
-                      ? project.guide.name
-                      : 'Assigned'
-                    : 'Unassigned'}
-                </TableCell>
-                <TableCell className='w-32'>
-                  <div className='flex items-center gap-2'>
-                    <div className='h-1.5 w-16 overflow-hidden rounded-full bg-gray-100 dark:bg-slate-900'>
+                  </h3>
+
+                  {/* Description abstract */}
+                  <p className='mt-2 line-clamp-2 text-xs text-gray-500 dark:text-gray-400 dark:text-gray-500'>
+                    {project.description || 'No detailed abstract specified.'}
+                  </p>
+
+                  {/* Guide & Team info */}
+                  <div className='mt-4 space-y-2 border-t border-gray-100 pt-3 dark:border-slate-700/60'>
+                    <div className='flex items-center justify-between text-xs'>
+                      <span className='text-gray-400 dark:text-gray-500 font-medium'>
+                        Guide:
+                      </span>
+                      <span className='font-bold text-gray-800 dark:text-gray-200'>
+                        {project.guide
+                          ? typeof project.guide === 'object'
+                            ? project.guide.name
+                            : 'Assigned'
+                          : 'Unassigned'}
+                      </span>
+                    </div>
+                    <div className='flex items-center justify-between text-xs'>
+                      <span className='text-gray-400 dark:text-gray-500 font-medium'>
+                        Team:
+                      </span>
+                      <span className='font-semibold text-gray-700 dark:text-gray-300'>
+                        {Array.isArray(project.members)
+                          ? `${project.members.length} Students`
+                          : '0 Members'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Progress bar */}
+                  <div className='mt-3 space-y-1'>
+                    <div className='flex justify-between text-[10px] font-bold text-gray-400 dark:text-gray-500'>
+                      <span>PROGRESS</span>
+                      <span>{project.progress || 0}%</span>
+                    </div>
+                    <div className='h-1.5 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-slate-900'>
                       <div
-                        className='h-full bg-indigo-600 dark:bg-indigo-500 rounded-full'
+                        className='h-full bg-indigo-600 dark:bg-indigo-500 transition-all duration-500 rounded-full'
                         style={{ width: `${project.progress || 0}%` }}
                       />
                     </div>
-                    <span className='font-bold text-[10px] text-gray-500 dark:text-gray-400 dark:text-gray-500'>
-                      {project.progress || 0}%
-                    </span>
                   </div>
-                </TableCell>
-                <TableCell>
-                  <StatusBadge status={project.status || 'assigned'} />
-                </TableCell>
-                <TableCell align='right'>
-                  <div className='flex justify-end gap-1'>
-                    <IconButton
-                      icon={ExternalLink}
-                      variant='indigo'
-                      title='View Details'
-                      onClick={() =>
-                        navigate(
-                          `/projects/${project.slug || project._id || project.id}`
-                        )
-                      }
-                    />
+                </div>
+
+                {/* Action buttons footer */}
+                <div className='mt-5 flex items-center justify-between border-t border-gray-100 pt-3 dark:border-slate-700'>
+                  <div className='flex gap-1'>
                     {canManageProjects && (
                       <IconButton
-                        icon={Edit}
+                        icon={UserCheck}
                         variant='indigo'
-                        title='Edit Project'
-                        onClick={() =>
-                          navigate(
-                            `/projects/${project._id || project.id}/edit`
-                          )
-                        }
+                        title='Assign Students'
+                        onClick={() => {
+                          setSelectedProjectForModal(project);
+                          setActiveModal('students');
+                        }}
+                      />
+                    )}
+                    {canAssignGuide && (
+                      <IconButton
+                        icon={Award}
+                        variant='purple'
+                        title='Assign Guide'
+                        onClick={() => {
+                          setSelectedProjectForModal(project);
+                          setActiveModal('guide');
+                        }}
+                      />
+                    )}
+                    {/* Update Progress – Admin/Faculty only */}
+                    {!isStudent && (
+                      <IconButton
+                        icon={TrendingUp}
+                        variant='blue'
+                        title='Update Progress'
+                        onClick={() => {
+                          setSelectedProjectForModal(project);
+                          setActiveModal('progress');
+                        }}
+                      />
+                    )}
+                    {canManageProjects &&
+                      (filters.isArchived ? (
+                        <IconButton
+                          icon={RotateCcw}
+                          variant='emerald'
+                          title='Restore Project'
+                          onClick={() => handleRestore(project)}
+                        />
+                      ) : (
+                        <IconButton
+                          icon={Archive}
+                          variant='amber'
+                          title='Archive Project'
+                          onClick={() => handleArchive(project)}
+                        />
+                      ))}
+                    {canManageProjects && (
+                      <IconButton
+                        icon={Trash2}
+                        variant='danger'
+                        title='Delete Project'
+                        onClick={() => handleDelete(project)}
                       />
                     )}
                   </div>
-                </TableCell>
-              </TableRow>
+
+                  <SecondaryButton
+                    size='sm'
+                    icon={ExternalLink}
+                    onClick={() =>
+                      navigate(
+                        `/projects/${project.slug || project._id || project.id}`
+                      )
+                    }
+                  >
+                    Details
+                  </SecondaryButton>
+                </div>
+              </Card>
             ))}
-          </TableBody>
-          </Table>
-        </div>
+          </div>
+
+          {/* TABLE VIEW */}
+          <div
+            className={`${viewMode === 'grid' ? 'hidden' : 'hidden md:block'}`}
+          >
+            <Table>
+              <TableHeader>
+                <tr>
+                  <TableHead>Code</TableHead>
+                  <TableHead>Project Title</TableHead>
+                  <TableHead>Department</TableHead>
+                  <TableHead>Guide</TableHead>
+                  <TableHead>Progress</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead align='right'>Actions</TableHead>
+                </tr>
+              </TableHeader>
+              <TableBody>
+                {projects.map((project) => (
+                  <TableRow key={project._id || project.id}>
+                    <TableCell className='font-extrabold text-indigo-600 dark:text-indigo-400 dark:text-indigo-300'>
+                      {project.code || 'PRJ'}
+                    </TableCell>
+                    <TableCell className='font-bold text-gray-900 dark:text-white max-w-xs truncate'>
+                      <span
+                        onClick={() =>
+                          navigate(
+                            `/projects/${project.slug || project._id || project.id}`
+                          )
+                        }
+                        className='cursor-pointer hover:underline hover:text-indigo-600 dark:hover:text-indigo-400 dark:text-indigo-400 transition-colors'
+                      >
+                        {project.title}
+                      </span>
+                    </TableCell>
+                    <TableCell className='text-gray-600 dark:text-gray-300'>
+                      {project.department}
+                    </TableCell>
+                    <TableCell className='text-gray-700 dark:text-gray-300 font-semibold'>
+                      {project.guide
+                        ? typeof project.guide === 'object'
+                          ? project.guide.name
+                          : 'Assigned'
+                        : 'Unassigned'}
+                    </TableCell>
+                    <TableCell className='w-32'>
+                      <div className='flex items-center gap-2'>
+                        <div className='h-1.5 w-16 overflow-hidden rounded-full bg-gray-100 dark:bg-slate-900'>
+                          <div
+                            className='h-full bg-indigo-600 dark:bg-indigo-500 rounded-full'
+                            style={{ width: `${project.progress || 0}%` }}
+                          />
+                        </div>
+                        <span className='font-bold text-[10px] text-gray-500 dark:text-gray-400 dark:text-gray-500'>
+                          {project.progress || 0}%
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <StatusBadge status={project.status || 'assigned'} />
+                    </TableCell>
+                    <TableCell align='right'>
+                      <div className='flex justify-end gap-1'>
+                        <IconButton
+                          icon={ExternalLink}
+                          variant='indigo'
+                          title='View Details'
+                          onClick={() =>
+                            navigate(
+                              `/projects/${project.slug || project._id || project.id}`
+                            )
+                          }
+                        />
+                        {canManageProjects && (
+                          <IconButton
+                            icon={Edit}
+                            variant='indigo'
+                            title='Edit Project'
+                            onClick={() =>
+                              navigate(
+                                `/projects/${project._id || project.id}/edit`
+                              )
+                            }
+                          />
+                        )}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </>
       )}
 

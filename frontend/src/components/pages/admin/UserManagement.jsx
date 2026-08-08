@@ -23,7 +23,10 @@ const MobileUserCard = memo(({ user, isSuperAdmin, onEdit, onDelete }) => (
           <div className='flex items-center gap-2 text-[15px] font-black text-slate-900 dark:text-white leading-tight'>
             {user.name}
             {isSuperAdmin && (
-              <span className='inline-flex items-center rounded-md bg-amber-50 px-1.5 py-0.5 text-[10px] font-bold text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 border border-amber-200 dark:border-amber-700/50' title='Protected Super Admin'>
+              <span
+                className='inline-flex items-center rounded-md bg-amber-50 px-1.5 py-0.5 text-[10px] font-bold text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 border border-amber-200 dark:border-amber-700/50'
+                title='Protected Super Admin'
+              >
                 <Shield size={10} className='mr-1' />
                 SA
               </span>
@@ -41,14 +44,20 @@ const MobileUserCard = memo(({ user, isSuperAdmin, onEdit, onDelete }) => (
 
     <div className='mt-2 flex items-center justify-between rounded-xl bg-slate-50/50 p-3 dark:bg-slate-800/40'>
       <div className='flex items-center gap-2'>
-        <span className={`admin-badge ${isSuperAdmin ? 'admin-badge-blue' : user.role === 'faculty' ? 'admin-badge-success' : 'admin-badge-gray'}`}>
+        <span
+          className={`admin-badge ${isSuperAdmin ? 'admin-badge-blue' : user.role === 'faculty' ? 'admin-badge-success' : 'admin-badge-gray'}`}
+        >
           {user.role}
         </span>
         <span className='text-[10px] font-semibold text-slate-400'>
-          Joined {user.joined || (user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A')}
+          Joined{' '}
+          {user.joined ||
+            (user.createdAt
+              ? new Date(user.createdAt).toLocaleDateString()
+              : 'N/A')}
         </span>
       </div>
-      
+
       <div className='flex items-center gap-2'>
         {isSuperAdmin ? (
           <span className='inline-flex items-center gap-1 rounded-lg border border-amber-200 bg-amber-50 px-2 py-1 text-[10px] font-bold text-amber-600 dark:border-amber-800/40 dark:bg-amber-950/40 dark:text-amber-400 select-none'>
@@ -57,10 +66,16 @@ const MobileUserCard = memo(({ user, isSuperAdmin, onEdit, onDelete }) => (
           </span>
         ) : (
           <>
-            <button onClick={() => onEdit(user)} className='flex h-8 px-3 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 transition-transform active:scale-90 dark:bg-indigo-500/20 dark:text-indigo-400 shadow-xs'>
+            <button
+              onClick={() => onEdit(user)}
+              className='flex h-8 px-3 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 transition-transform active:scale-90 dark:bg-indigo-500/20 dark:text-indigo-400 shadow-xs'
+            >
               <span className='font-bold text-[11px]'>Edit</span>
             </button>
-            <button onClick={() => onDelete(user.id || user._id)} className='flex h-8 px-3 items-center justify-center rounded-lg bg-rose-50 text-rose-600 transition-transform active:scale-90 dark:bg-rose-500/20 dark:text-rose-400 shadow-xs'>
+            <button
+              onClick={() => onDelete(user.id || user._id)}
+              className='flex h-8 px-3 items-center justify-center rounded-lg bg-rose-50 text-rose-600 transition-transform active:scale-90 dark:bg-rose-500/20 dark:text-rose-400 shadow-xs'
+            >
               <span className='font-bold text-[11px]'>Delete</span>
             </button>
           </>
@@ -172,7 +187,8 @@ const UserManagement = memo(() => {
       } catch (err) {
         console.error('Failed to delete user', err);
         toast.error(
-          err.response?.data?.message || 'Failed to delete user. Please try again.'
+          err.response?.data?.message ||
+            'Failed to delete user. Please try again.'
         );
       }
     }
@@ -327,7 +343,9 @@ const UserManagement = memo(() => {
                             Edit
                           </button>
                           <button
-                            onClick={() => handleDeleteUser(user.id || user._id)}
+                            onClick={() =>
+                              handleDeleteUser(user.id || user._id)
+                            }
                             className='text-sm font-semibold text-rose-600 hover:text-rose-800 dark:text-rose-400 dark:hover:text-rose-300'
                           >
                             Delete
@@ -342,24 +360,35 @@ const UserManagement = memo(() => {
           </tbody>
         </table>
       </div>
-      
+
       {/* Mobile Card Layout */}
       <div className='block md:hidden space-y-4'>
         {loading ? (
           <div className='flex flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-white py-12 px-4 text-center dark:border-slate-800 dark:bg-slate-900'>
             <RefreshCw className='mb-3 h-6 w-6 animate-spin text-indigo-600' />
-            <span className='text-[13px] font-semibold text-slate-500'>Loading users...</span>
+            <span className='text-[13px] font-semibold text-slate-500'>
+              Loading users...
+            </span>
           </div>
         ) : error ? (
           <div className='flex flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-white py-12 px-4 text-center dark:border-slate-800 dark:bg-slate-900'>
             <AlertCircle className='mb-3 h-6 w-6 text-rose-500' />
-            <span className='text-[13px] font-semibold text-rose-500 mb-2'>{error}</span>
-            <button onClick={fetchUsers} className='rounded-lg bg-indigo-600 px-4 py-2 text-xs font-bold text-white hover:bg-indigo-700'>Retry</button>
+            <span className='text-[13px] font-semibold text-rose-500 mb-2'>
+              {error}
+            </span>
+            <button
+              onClick={fetchUsers}
+              className='rounded-lg bg-indigo-600 px-4 py-2 text-xs font-bold text-white hover:bg-indigo-700'
+            >
+              Retry
+            </button>
           </div>
         ) : users.length === 0 ? (
           <div className='flex flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-white py-12 px-4 text-center dark:border-slate-800 dark:bg-slate-900'>
             <Users className='mb-3 h-10 w-10 text-slate-300 dark:text-slate-600' />
-            <span className='text-[13px] font-semibold text-slate-500'>No users found.</span>
+            <span className='text-[13px] font-semibold text-slate-500'>
+              No users found.
+            </span>
           </div>
         ) : (
           users.map((user) => (

@@ -56,7 +56,10 @@ export const TableBody = ({ children, className = '', ...props }) => {
 
 export const TableCell = ({ children, className = '', ...props }) => {
   return (
-    <td className={`px-3.5 sm:px-6 py-3 sm:py-4 whitespace-nowrap ${className}`} {...props}>
+    <td
+      className={`px-3.5 sm:px-6 py-3 sm:py-4 whitespace-nowrap ${className}`}
+      {...props}
+    >
       {children}
     </td>
   );

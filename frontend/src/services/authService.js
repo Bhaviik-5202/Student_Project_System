@@ -44,7 +44,10 @@ const authService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || error.message || 'Registration failed',
+        message:
+          error.response?.data?.message ||
+          error.message ||
+          'Registration failed',
       };
     }
   },
@@ -55,7 +58,10 @@ const authService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || error.message || 'Email validation failed',
+        message:
+          error.response?.data?.message ||
+          error.message ||
+          'Email validation failed',
       };
     }
   },
@@ -73,7 +79,10 @@ const authService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || error.message || 'Verification failed',
+        message:
+          error.response?.data?.message ||
+          error.message ||
+          'Verification failed',
       };
     }
   },
@@ -84,7 +93,10 @@ const authService = {
     } catch (error) {
       return {
         success: false,
-        message: error.response?.data?.message || error.message || 'Failed to resend code',
+        message:
+          error.response?.data?.message ||
+          error.message ||
+          'Failed to resend code',
       };
     }
   },

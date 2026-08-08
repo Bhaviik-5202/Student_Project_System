@@ -37,20 +37,44 @@ const ProjectArchitectureForm = memo(() => {
       const fetchArchitecture = async () => {
         try {
           setLoading(true);
-          
+
           // Prevent hitting the API with dummy IDs (1-6) from DEFAULT_ARCHITECTURES
           // MongoDB ObjectIds are 24 hex characters.
           if (id && id.length < 10) {
             // Provide some default dummy data for these templates
             const templates = {
-              '1': { name: 'Web Application Architecture', category: 'Software Development', duration: '12 Weeks' },
-              '2': { name: 'Data Pipeline & Analytics', category: 'Data Science', duration: '14 Weeks' },
-              '3': { name: 'Mobile App Ecosystem', category: 'Software Development', duration: '12 Weeks' },
-              '4': { name: 'AI/ML Model Deployment', category: 'Data Science', duration: '16 Weeks' },
-              '5': { name: 'Cloud & DevOps', category: 'Infrastructure', duration: '16 Weeks' },
-              '6': { name: 'IoT & Embedded Systems', category: 'Hardware & Systems', duration: '18 Weeks' },
+              1: {
+                name: 'Web Application Architecture',
+                category: 'Software Development',
+                duration: '12 Weeks',
+              },
+              2: {
+                name: 'Data Pipeline & Analytics',
+                category: 'Data Science',
+                duration: '14 Weeks',
+              },
+              3: {
+                name: 'Mobile App Ecosystem',
+                category: 'Software Development',
+                duration: '12 Weeks',
+              },
+              4: {
+                name: 'AI/ML Model Deployment',
+                category: 'Data Science',
+                duration: '16 Weeks',
+              },
+              5: {
+                name: 'Cloud & DevOps',
+                category: 'Infrastructure',
+                duration: '16 Weeks',
+              },
+              6: {
+                name: 'IoT & Embedded Systems',
+                category: 'Hardware & Systems',
+                duration: '18 Weeks',
+              },
             };
-            
+
             const template = templates[id];
             if (template) {
               setFormData({
@@ -107,7 +131,9 @@ const ProjectArchitectureForm = memo(() => {
       if (isEditing && id && id.length < 10) {
         // Simulate a successful update for the mock templates since the backend doesn't have them
         setTimeout(() => {
-          toast.success('Architecture template updated (Mock)', { id: toastId });
+          toast.success('Architecture template updated (Mock)', {
+            id: toastId,
+          });
           navigate('/project-types');
         }, 800);
         return;

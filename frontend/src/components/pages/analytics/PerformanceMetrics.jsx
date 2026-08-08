@@ -235,14 +235,18 @@ export const PerformanceMetrics = () => {
                 </div>
               ) : (
                 progressData.map((project, idx) => (
-                  <div key={idx} className='flex flex-col gap-3 rounded-2xl border border-slate-100 bg-slate-50/50 p-4 dark:border-slate-800/60 dark:bg-slate-800/40'>
+                  <div
+                    key={idx}
+                    className='flex flex-col gap-3 rounded-2xl border border-slate-100 bg-slate-50/50 p-4 dark:border-slate-800/60 dark:bg-slate-800/40'
+                  >
                     <div className='flex items-start justify-between gap-2'>
                       <div className='font-bold text-slate-900 dark:text-white leading-tight'>
                         {project.title}
                       </div>
                       <span
                         className={`inline-flex shrink-0 items-center rounded-full px-2 py-1 text-[10px] font-bold uppercase tracking-wider ${
-                          project.timeline === 'On Track' || project.timeline === 'Ahead'
+                          project.timeline === 'On Track' ||
+                          project.timeline === 'Ahead'
                             ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400'
                             : project.timeline === 'Behind Schedule'
                               ? 'bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400'
@@ -252,7 +256,7 @@ export const PerformanceMetrics = () => {
                         {project.timeline}
                       </span>
                     </div>
-                    
+
                     <div className='flex items-center justify-between text-xs'>
                       <span className='font-semibold text-slate-600 dark:text-slate-300'>
                         {project.teamSize} Member(s)
@@ -261,7 +265,7 @@ export const PerformanceMetrics = () => {
                         {project.progress}% Completed
                       </span>
                     </div>
-                    
+
                     <div className='w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2 mt-1'>
                       <div
                         className='bg-indigo-600 h-2 rounded-full'

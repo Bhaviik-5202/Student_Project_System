@@ -2,7 +2,14 @@ import { useState, memo, useCallback, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
-import { ArrowRight, Loader2, Eye, EyeOff, GraduationCap, UserCheck } from 'lucide-react';
+import {
+  ArrowRight,
+  Loader2,
+  Eye,
+  EyeOff,
+  GraduationCap,
+  UserCheck,
+} from 'lucide-react';
 import { useAuth } from '../../../hooks/useAuth';
 import { VALIDATION_RULES } from '../../../utils/constants';
 

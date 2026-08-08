@@ -43,8 +43,8 @@ const Select = ({
             );
           })}
         </select>
-        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
-          <ChevronDown className="h-4 w-4" />
+        <div className='pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500'>
+          <ChevronDown className='h-4 w-4' />
         </div>
       </div>
       {error && <p className='text-xs text-rose-500 mt-1'>{error}</p>}

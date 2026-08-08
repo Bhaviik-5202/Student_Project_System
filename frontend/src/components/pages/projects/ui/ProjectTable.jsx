@@ -6,7 +6,9 @@ export const Table = ({ children, className = '' }) => {
     <div
       className={`table-responsive overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-800 ${className}`}
     >
-      <table className='w-full text-left text-xs min-w-[600px]'>{children}</table>
+      <table className='w-full text-left text-xs min-w-[600px]'>
+        {children}
+      </table>
     </div>
   );
 };
@@ -42,7 +44,9 @@ export const TableHead = ({ children, className = '', align = 'left' }) => {
         ? 'text-center'
         : 'text-left';
   return (
-    <th className={`p-2.5 sm:p-4 font-bold ${alignClass} ${className}`}>{children}</th>
+    <th className={`p-2.5 sm:p-4 font-bold ${alignClass} ${className}`}>
+      {children}
+    </th>
   );
 };
 
@@ -63,7 +67,9 @@ export const TableCell = ({ children, className = '', align = 'left' }) => {
       : align === 'center'
         ? 'text-center'
         : 'text-left';
-  return <td className={`p-2.5 sm:p-4 ${alignClass} ${className}`}>{children}</td>;
+  return (
+    <td className={`p-2.5 sm:p-4 ${alignClass} ${className}`}>{children}</td>
+  );
 };
 
 export const Pagination = ({

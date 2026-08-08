@@ -386,222 +386,226 @@ export const ResourceBrowser = () => {
         />
       ) : (
         <>
-        <div className={`${viewMode === 'list' ? 'hidden md:grid' : 'grid'} grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3`}>
-          {filteredResources.map((resource) => {
-            const { icon: FormatIcon, color: iconStyle } = getFormatIcon(
-              resource.fileType,
-              resource.type
-            );
-            const resId = resource._id || resource.id;
+          <div
+            className={`${viewMode === 'list' ? 'hidden md:grid' : 'grid'} grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3`}
+          >
+            {filteredResources.map((resource) => {
+              const { icon: FormatIcon, color: iconStyle } = getFormatIcon(
+                resource.fileType,
+                resource.type
+              );
+              const resId = resource._id || resource.id;
 
-            return (
-              <div
-                key={resId}
-                className='group flex flex-col justify-between rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-5 shadow-xs transition-all duration-200 hover:-translate-y-1 hover:border-indigo-300 hover:shadow-md dark:border-slate-800 '
-              >
-                <div>
-                  <div className='mb-3.5 flex items-center justify-between'>
-                    <div className='flex items-center gap-3'>
-                      <div
-                        className={`flex h-11 w-11 items-center justify-center rounded-xl ${iconStyle}`}
-                      >
-                        <FormatIcon className='h-6 w-6' />
-                      </div>
-                      <div>
-                        <span className='inline-block rounded-full bg-slate-100 dark:bg-slate-800 px-2.5 py-0.5 text-xs font-semibold text-slate-700 dark:text-slate-200  dark:text-slate-300'>
-                          {resource.category || 'General'}
-                        </span>
-                        <p className='mt-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-400'>
-                          {resource.fileType || resource.type || 'FILE'}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <h3 className='line-clamp-1 font-bold text-slate-900 dark:text-white'>
-                    {resource.title}
-                  </h3>
-                  <p className='mt-1 line-clamp-2 text-xs text-slate-500 dark:text-slate-400'>
-                    {resource.description || 'No description provided.'}
-                  </p>
-
-                  {resource.tags && resource.tags.length > 0 && (
-                    <div className='mt-3 flex flex-wrap gap-1'>
-                      {resource.tags.slice(0, 3).map((tag, idx) => (
-                        <span
-                          key={idx}
-                          className='rounded-md bg-indigo-50/70 px-2 py-0.5 text-[10px] font-medium text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-300'
-                        >
-                          #{tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <div className='mt-5 border-t border-slate-100 pt-3 dark:border-slate-800/80'>
-                  <div className='flex items-center justify-between text-xs text-slate-500 dark:text-slate-400'>
-                    <span className='flex items-center gap-1'>
-                      <User className='h-3.5 w-3.5' />
-                      {resource.uploadedBy?.name || 'Admin'}
-                    </span>
-                    <span className='flex items-center gap-1'>
-                      <Download className='h-3.5 w-3.5 text-slate-400' />
-                      {resource.downloadsCount || resource.downloads || 0}
-                    </span>
-                  </div>
-
-                  <div className='mt-3 flex items-center justify-between gap-1'>
-                    <div className='flex items-center gap-1'>
-                      <button
-                        onClick={() => setPreviewResource(resource)}
-                        title='Preview'
-                        className='rounded-lg p-1.5 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800 hover:text-slate-800 dark:hover:text-slate-100 dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-white'
-                      >
-                        <Eye className='h-4 w-4' />
-                      </button>
-                      <button
-                        onClick={() => setDetailsResource(resource)}
-                        title='Details'
-                        className='rounded-lg p-1.5 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800 hover:text-slate-800 dark:hover:text-slate-100 dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-white'
-                      >
-                        <Info className='h-4 w-4' />
-                      </button>
-                      <button
-                        onClick={() => handleShare(resource)}
-                        title='Share link'
-                        className='rounded-lg p-1.5 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800 hover:text-slate-800 dark:hover:text-slate-100 dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-white'
-                      >
-                        {copiedId === resId ? (
-                          <Check className='h-4 w-4 text-emerald-500' />
-                        ) : (
-                          <Share2 className='h-4 w-4' />
-                        )}
-                      </button>
-                      {isAdmin && (
-                        <>
-                          <button
-                            onClick={() => setEditResource(resource)}
-                            title='Edit'
-                            className='rounded-lg p-1.5 text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-950/40'
-                          >
-                            <Edit className='h-4 w-4' />
-                          </button>
-                          <button
-                            onClick={() => handleDelete(resource)}
-                            title='Delete'
-                            className='rounded-lg p-1.5 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40'
-                          >
-                            <Trash2 className='h-4 w-4' />
-                          </button>
-                        </>
-                      )}
-                    </div>
-
-                    <Button
-                      variant='primary'
-                      size='sm'
-                      icon={Download}
-                      onClick={() => handleDownload(resource)}
-                    >
-                      Download
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* List View */}
-        <div className={`${viewMode === 'grid' ? 'hidden' : 'hidden md:block'} table-responsive overflow-x-auto rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 shadow-xs dark:border-slate-800 `}>
-          <table className='w-full text-left text-sm text-slate-600 dark:text-slate-400'>
-            <thead className='border-b border-slate-200 bg-slate-50 dark:bg-slate-800 text-xs uppercase text-slate-500 dark:text-slate-400 dark:border-slate-800 /50 '>
-              <tr>
-                <th className='px-6 py-3.5 font-semibold'>Title</th>
-                <th className='px-6 py-3.5 font-semibold'>Category</th>
-                <th className='px-6 py-3.5 font-semibold'>Uploaded By</th>
-                <th className='px-6 py-3.5 font-semibold'>Downloads</th>
-                <th className='px-6 py-3.5 font-semibold text-right'>
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className='divide-y divide-slate-100 dark:divide-slate-800'>
-              {filteredResources.map((resource) => {
-                const { icon: FormatIcon, color: iconStyle } = getFormatIcon(
-                  resource.fileType,
-                  resource.type
-                );
-                const resId = resource._id || resource.id;
-
-                return (
-                  <tr
-                    key={resId}
-                    className='hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800/50 /50'
-                  >
-                    <td className='px-6 py-4 font-medium text-slate-900 dark:text-white'>
+              return (
+                <div
+                  key={resId}
+                  className='group flex flex-col justify-between rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-5 shadow-xs transition-all duration-200 hover:-translate-y-1 hover:border-indigo-300 hover:shadow-md dark:border-slate-800 '
+                >
+                  <div>
+                    <div className='mb-3.5 flex items-center justify-between'>
                       <div className='flex items-center gap-3'>
                         <div
-                          className={`flex h-9 w-9 items-center justify-center rounded-lg ${iconStyle}`}
+                          className={`flex h-11 w-11 items-center justify-center rounded-xl ${iconStyle}`}
                         >
-                          <FormatIcon className='h-5 w-5' />
+                          <FormatIcon className='h-6 w-6' />
                         </div>
                         <div>
-                          <p className='font-semibold'>{resource.title}</p>
-                          <p className='text-xs text-slate-400'>
-                            {resource.fileType || 'File'}
+                          <span className='inline-block rounded-full bg-slate-100 dark:bg-slate-800 px-2.5 py-0.5 text-xs font-semibold text-slate-700 dark:text-slate-200  dark:text-slate-300'>
+                            {resource.category || 'General'}
+                          </span>
+                          <p className='mt-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-400'>
+                            {resource.fileType || resource.type || 'FILE'}
                           </p>
                         </div>
                       </div>
-                    </td>
-                    <td className='px-6 py-4'>
-                      <span className='rounded-full bg-slate-100 dark:bg-slate-800 px-2.5 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200  dark:text-slate-300'>
-                        {resource.category || 'General'}
+                    </div>
+
+                    <h3 className='line-clamp-1 font-bold text-slate-900 dark:text-white'>
+                      {resource.title}
+                    </h3>
+                    <p className='mt-1 line-clamp-2 text-xs text-slate-500 dark:text-slate-400'>
+                      {resource.description || 'No description provided.'}
+                    </p>
+
+                    {resource.tags && resource.tags.length > 0 && (
+                      <div className='mt-3 flex flex-wrap gap-1'>
+                        {resource.tags.slice(0, 3).map((tag, idx) => (
+                          <span
+                            key={idx}
+                            className='rounded-md bg-indigo-50/70 px-2 py-0.5 text-[10px] font-medium text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-300'
+                          >
+                            #{tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className='mt-5 border-t border-slate-100 pt-3 dark:border-slate-800/80'>
+                    <div className='flex items-center justify-between text-xs text-slate-500 dark:text-slate-400'>
+                      <span className='flex items-center gap-1'>
+                        <User className='h-3.5 w-3.5' />
+                        {resource.uploadedBy?.name || 'Admin'}
                       </span>
-                    </td>
-                    <td className='px-6 py-4 text-xs'>
-                      {resource.uploadedBy?.name || 'Admin'}
-                    </td>
-                    <td className='px-6 py-4 font-semibold text-slate-700 dark:text-slate-300'>
-                      {resource.downloadsCount || resource.downloads || 0}
-                    </td>
-                    <td className='px-6 py-4 text-right'>
-                      <div className='flex items-center justify-end gap-2'>
-                        <Button
-                          variant='outline'
-                          size='sm'
-                          icon={Eye}
+                      <span className='flex items-center gap-1'>
+                        <Download className='h-3.5 w-3.5 text-slate-400' />
+                        {resource.downloadsCount || resource.downloads || 0}
+                      </span>
+                    </div>
+
+                    <div className='mt-3 flex items-center justify-between gap-1'>
+                      <div className='flex items-center gap-1'>
+                        <button
                           onClick={() => setPreviewResource(resource)}
+                          title='Preview'
+                          className='rounded-lg p-1.5 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800 hover:text-slate-800 dark:hover:text-slate-100 dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-white'
                         >
-                          Preview
-                        </Button>
+                          <Eye className='h-4 w-4' />
+                        </button>
+                        <button
+                          onClick={() => setDetailsResource(resource)}
+                          title='Details'
+                          className='rounded-lg p-1.5 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800 hover:text-slate-800 dark:hover:text-slate-100 dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-white'
+                        >
+                          <Info className='h-4 w-4' />
+                        </button>
+                        <button
+                          onClick={() => handleShare(resource)}
+                          title='Share link'
+                          className='rounded-lg p-1.5 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800 hover:text-slate-800 dark:hover:text-slate-100 dark:text-slate-100 dark:hover:bg-slate-800 dark:hover:text-white'
+                        >
+                          {copiedId === resId ? (
+                            <Check className='h-4 w-4 text-emerald-500' />
+                          ) : (
+                            <Share2 className='h-4 w-4' />
+                          )}
+                        </button>
                         {isAdmin && (
+                          <>
+                            <button
+                              onClick={() => setEditResource(resource)}
+                              title='Edit'
+                              className='rounded-lg p-1.5 text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-950/40'
+                            >
+                              <Edit className='h-4 w-4' />
+                            </button>
+                            <button
+                              onClick={() => handleDelete(resource)}
+                              title='Delete'
+                              className='rounded-lg p-1.5 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40'
+                            >
+                              <Trash2 className='h-4 w-4' />
+                            </button>
+                          </>
+                        )}
+                      </div>
+
+                      <Button
+                        variant='primary'
+                        size='sm'
+                        icon={Download}
+                        onClick={() => handleDownload(resource)}
+                      >
+                        Download
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* List View */}
+          <div
+            className={`${viewMode === 'grid' ? 'hidden' : 'hidden md:block'} table-responsive overflow-x-auto rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 shadow-xs dark:border-slate-800 `}
+          >
+            <table className='w-full text-left text-sm text-slate-600 dark:text-slate-400'>
+              <thead className='border-b border-slate-200 bg-slate-50 dark:bg-slate-800 text-xs uppercase text-slate-500 dark:text-slate-400 dark:border-slate-800 /50 '>
+                <tr>
+                  <th className='px-6 py-3.5 font-semibold'>Title</th>
+                  <th className='px-6 py-3.5 font-semibold'>Category</th>
+                  <th className='px-6 py-3.5 font-semibold'>Uploaded By</th>
+                  <th className='px-6 py-3.5 font-semibold'>Downloads</th>
+                  <th className='px-6 py-3.5 font-semibold text-right'>
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className='divide-y divide-slate-100 dark:divide-slate-800'>
+                {filteredResources.map((resource) => {
+                  const { icon: FormatIcon, color: iconStyle } = getFormatIcon(
+                    resource.fileType,
+                    resource.type
+                  );
+                  const resId = resource._id || resource.id;
+
+                  return (
+                    <tr
+                      key={resId}
+                      className='hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800/50 /50'
+                    >
+                      <td className='px-6 py-4 font-medium text-slate-900 dark:text-white'>
+                        <div className='flex items-center gap-3'>
+                          <div
+                            className={`flex h-9 w-9 items-center justify-center rounded-lg ${iconStyle}`}
+                          >
+                            <FormatIcon className='h-5 w-5' />
+                          </div>
+                          <div>
+                            <p className='font-semibold'>{resource.title}</p>
+                            <p className='text-xs text-slate-400'>
+                              {resource.fileType || 'File'}
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className='px-6 py-4'>
+                        <span className='rounded-full bg-slate-100 dark:bg-slate-800 px-2.5 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200  dark:text-slate-300'>
+                          {resource.category || 'General'}
+                        </span>
+                      </td>
+                      <td className='px-6 py-4 text-xs'>
+                        {resource.uploadedBy?.name || 'Admin'}
+                      </td>
+                      <td className='px-6 py-4 font-semibold text-slate-700 dark:text-slate-300'>
+                        {resource.downloadsCount || resource.downloads || 0}
+                      </td>
+                      <td className='px-6 py-4 text-right'>
+                        <div className='flex items-center justify-end gap-2'>
                           <Button
                             variant='outline'
                             size='sm'
-                            icon={Edit}
-                            onClick={() => setEditResource(resource)}
+                            icon={Eye}
+                            onClick={() => setPreviewResource(resource)}
                           >
-                            Edit
+                            Preview
                           </Button>
-                        )}
-                        <Button
-                          variant='primary'
-                          size='sm'
-                          icon={Download}
-                          onClick={() => handleDownload(resource)}
-                        >
-                          Download
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+                          {isAdmin && (
+                            <Button
+                              variant='outline'
+                              size='sm'
+                              icon={Edit}
+                              onClick={() => setEditResource(resource)}
+                            >
+                              Edit
+                            </Button>
+                          )}
+                          <Button
+                            variant='primary'
+                            size='sm'
+                            icon={Download}
+                            onClick={() => handleDownload(resource)}
+                          >
+                            Download
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </>
       )}
 

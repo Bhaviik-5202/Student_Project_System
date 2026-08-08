@@ -48,9 +48,13 @@ api.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    const isAuthPath = ['/login', '/register', '/verify-otp', '/forgot-password', '/reset-password'].includes(
-      window.location.pathname
-    );
+    const isAuthPath = [
+      '/login',
+      '/register',
+      '/verify-otp',
+      '/forgot-password',
+      '/reset-password',
+    ].includes(window.location.pathname);
     if (error.response?.status === 401 && !isAuthPath) {
       localStorage.removeItem(LOCAL_STORAGE_KEYS.TOKEN);
       localStorage.removeItem(LOCAL_STORAGE_KEYS.USER);

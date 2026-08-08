@@ -1,5 +1,12 @@
 import { Link } from 'react-router-dom';
-import { LayoutDashboard, User as UserIcon, Settings, ShieldCheck, LogOut, Shield } from 'lucide-react';
+import {
+  LayoutDashboard,
+  User as UserIcon,
+  Settings,
+  ShieldCheck,
+  LogOut,
+  Shield,
+} from 'lucide-react';
 
 /**
  * UserMenu Component
@@ -84,10 +91,7 @@ const UserMenu = ({ user, initials, onLogout, onClose }) => {
           className='group flex w-full items-center px-4 py-2.5 text-sm text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20'
         >
           <div className='mr-3 flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 transition-colors group-hover:bg-red-100 dark:bg-red-900/30 dark:group-hover:bg-red-900/50'>
-            <LogOut
-              className='w-4 h-4 text-red-500'
-              aria-hidden='true'
-            />
+            <LogOut className='w-4 h-4 text-red-500' aria-hidden='true' />
           </div>
           <span className='font-medium'>Sign Out</span>
         </button>

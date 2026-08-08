@@ -23,7 +23,11 @@ const MobileStaffCard = memo(({ staff, onEdit, onDelete }) => (
     <div className='flex items-start justify-between gap-3'>
       <div className='flex items-center gap-3 min-w-0'>
         {staff.avatar ? (
-          <img src={staff.avatar} alt={staff.name} className='h-11 w-11 shrink-0 rounded-2xl object-cover border border-gray-200 dark:border-gray-700' />
+          <img
+            src={staff.avatar}
+            alt={staff.name}
+            className='h-11 w-11 shrink-0 rounded-2xl object-cover border border-gray-200 dark:border-gray-700'
+          />
         ) : (
           <div className='flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-50 to-purple-100/50 text-lg font-black text-purple-600 dark:from-purple-950/60 dark:to-purple-900/40 dark:text-purple-400'>
             {staff.name ? staff.name.charAt(0).toUpperCase() : 'F'}
@@ -38,9 +42,13 @@ const MobileStaffCard = memo(({ staff, onEdit, onDelete }) => (
           </div>
         </div>
       </div>
-      <span className={`inline-flex shrink-0 items-center rounded-xl px-2 py-1 text-[10px] font-black uppercase tracking-wider ${
-        staff.status === 'Active' ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400' : 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400'
-      }`}>
+      <span
+        className={`inline-flex shrink-0 items-center rounded-xl px-2 py-1 text-[10px] font-black uppercase tracking-wider ${
+          staff.status === 'Active'
+            ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400'
+            : 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400'
+        }`}
+      >
         <UserCheck size={10} className='mr-1' />
         {staff.status || 'Active'}
       </span>
@@ -57,20 +65,34 @@ const MobileStaffCard = memo(({ staff, onEdit, onDelete }) => (
       </div>
       <div className='flex items-center gap-1 text-[11px] text-gray-600 dark:text-gray-400'>
         <Building size={12} className='text-gray-400 shrink-0' />
-        <span className='truncate'>{staff.department || 'Computer Engineering'}</span>
+        <span className='truncate'>
+          {staff.department || 'Computer Engineering'}
+        </span>
       </div>
-      
+
       <div className='mt-2 flex flex-col gap-3 pt-2 border-t border-slate-200/50 dark:border-slate-700/50 sm:flex-row sm:items-center sm:justify-between'>
         <div className='flex items-center gap-1.5 text-[11px] text-gray-500 dark:text-gray-400 font-medium'>
           <Phone size={12} className='text-gray-400 shrink-0' />
-          <span className='truncate'>{staff.phone && staff.phone !== 'N/A' ? staff.phone : <span className='italic'>6353712057</span>}</span>
+          <span className='truncate'>
+            {staff.phone && staff.phone !== 'N/A' ? (
+              staff.phone
+            ) : (
+              <span className='italic'>6353712057</span>
+            )}
+          </span>
         </div>
         <div className='flex w-full items-center gap-2 sm:w-auto'>
-          <button onClick={() => onEdit(staff)} className='flex h-11 flex-1 px-4 items-center gap-1.5 justify-center rounded-xl bg-indigo-50 text-indigo-600 transition-transform active:scale-90 dark:bg-indigo-500/20 dark:text-indigo-400 shadow-xs'>
+          <button
+            onClick={() => onEdit(staff)}
+            className='flex h-11 flex-1 px-4 items-center gap-1.5 justify-center rounded-xl bg-indigo-50 text-indigo-600 transition-transform active:scale-90 dark:bg-indigo-500/20 dark:text-indigo-400 shadow-xs'
+          >
             <Edit2 size={14} />
             <span className='font-bold text-[12px]'>Edit</span>
           </button>
-          <button onClick={() => onDelete(staff.dbId || staff.id)} className='flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-rose-50 text-rose-600 transition-transform active:scale-90 dark:bg-rose-500/20 dark:text-rose-400 shadow-xs'>
+          <button
+            onClick={() => onDelete(staff.dbId || staff.id)}
+            className='flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-rose-50 text-rose-600 transition-transform active:scale-90 dark:bg-rose-500/20 dark:text-rose-400 shadow-xs'
+          >
             <Trash2 size={16} />
           </button>
         </div>
@@ -464,16 +486,22 @@ const Staff = memo(() => {
         {loading ? (
           <div className='flex flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-white py-12 px-4 text-center dark:border-slate-800 dark:bg-slate-900'>
             <div className='h-6 w-6 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent mb-3' />
-            <span className='text-[13px] font-semibold text-slate-500'>Accessing directory...</span>
+            <span className='text-[13px] font-semibold text-slate-500'>
+              Accessing directory...
+            </span>
           </div>
         ) : error ? (
           <div className='flex flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-white py-12 px-4 text-center dark:border-slate-800 dark:bg-slate-900'>
-            <span className='text-[13px] font-semibold text-rose-500 mb-2'>{error}</span>
+            <span className='text-[13px] font-semibold text-rose-500 mb-2'>
+              {error}
+            </span>
           </div>
         ) : filteredStaff.length === 0 ? (
           <div className='flex flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-white py-12 px-4 text-center dark:border-slate-800 dark:bg-slate-900'>
             <Users className='mb-3 h-10 w-10 text-slate-300 dark:text-slate-600' />
-            <span className='text-[13px] font-semibold text-slate-500'>No staff records found.</span>
+            <span className='text-[13px] font-semibold text-slate-500'>
+              No staff records found.
+            </span>
           </div>
         ) : (
           filteredStaff.map((staff) => (

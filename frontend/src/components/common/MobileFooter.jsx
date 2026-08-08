@@ -19,7 +19,11 @@ import {
 const MobileFooter = memo(() => {
   const { user } = useAuth();
   const year = new Date().getFullYear();
-  const dashPath = !user ? '/' : user.role === 'admin' ? '/admin-dashboard' : '/dashboard';
+  const dashPath = !user
+    ? '/'
+    : user.role === 'admin'
+      ? '/admin-dashboard'
+      : '/dashboard';
 
   return (
     <footer className='block md:hidden relative mt-8 pb-[88px]'>
@@ -30,7 +34,10 @@ const MobileFooter = memo(() => {
 
       <div className='relative z-10 px-5 pt-8 pb-4 space-y-6'>
         {/* Brand row */}
-        <Link to={dashPath} className='flex items-center gap-3 w-fit transition-transform active:scale-95'>
+        <Link
+          to={dashPath}
+          className='flex items-center gap-3 w-fit transition-transform active:scale-95'
+        >
           <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 shadow-lg shadow-blue-500/30'>
             <GraduationCap className='h-5 w-5 text-white' />
           </div>
@@ -47,12 +54,12 @@ const MobileFooter = memo(() => {
         {/* Links Grid */}
         <div className='grid grid-cols-2 gap-3'>
           {[
-            { label: 'About Us',    path: '/about',    icon: Info },
-            { label: 'Help Center', path: '/help',     icon: HelpCircle },
-            { label: 'Contact',     path: '/contact',  icon: Mail },
-            { label: 'Feedback',    path: '/feedback', icon: MessageSquare },
-            { label: 'Privacy',     path: '/privacy',  icon: Shield },
-            { label: 'Terms',       path: '/terms',    icon: FileText },
+            { label: 'About Us', path: '/about', icon: Info },
+            { label: 'Help Center', path: '/help', icon: HelpCircle },
+            { label: 'Contact', path: '/contact', icon: Mail },
+            { label: 'Feedback', path: '/feedback', icon: MessageSquare },
+            { label: 'Privacy', path: '/privacy', icon: Shield },
+            { label: 'Terms', path: '/terms', icon: FileText },
           ].map(({ label, path, icon: Icon }) => (
             <Link
               key={path}

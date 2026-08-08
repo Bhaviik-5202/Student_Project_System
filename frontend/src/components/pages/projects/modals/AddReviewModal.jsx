@@ -109,7 +109,11 @@ const AddReviewModal = ({ isOpen, onClose, project, onSuccess }) => {
         </FormGroup>
 
         <div className='flex flex-col-reverse sm:flex-row sm:justify-end gap-3 border-t border-gray-100 pt-4 dark:border-slate-700'>
-          <SecondaryButton type='button' onClick={onClose} className='w-full sm:w-auto justify-center'>
+          <SecondaryButton
+            type='button'
+            onClick={onClose}
+            className='w-full sm:w-auto justify-center'
+          >
             Cancel
           </SecondaryButton>
           <PrimaryButton

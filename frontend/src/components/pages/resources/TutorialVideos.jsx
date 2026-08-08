@@ -131,7 +131,10 @@ const TutorialVideos = memo(() => {
                 ) : (
                   <div className='flex h-full items-center justify-center'>
                     <div className='text-center'>
-                      <PlayCircle className='mb-4 text-white opacity-50 mx-auto' size={60} />
+                      <PlayCircle
+                        className='mb-4 text-white opacity-50 mx-auto'
+                        size={60}
+                      />
                       <p className='text-white'>Video preview not available</p>
                     </div>
                   </div>
@@ -177,7 +180,10 @@ const TutorialVideos = memo(() => {
         <div className='lg:w-1/3'>
           <div className='mb-4'>
             <div className='relative'>
-              <Search className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500' size={16} />
+              <Search
+                className='absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500'
+                size={16}
+              />
               <input
                 type='text'
                 placeholder='Search tutorials...'

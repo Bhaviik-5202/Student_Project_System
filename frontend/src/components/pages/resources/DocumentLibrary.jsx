@@ -295,143 +295,147 @@ export const DocumentLibrary = () => {
         />
       ) : (
         <>
-        <div className={`${viewMode === 'grid' ? 'hidden' : 'hidden md:block'} overflow-hidden rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 shadow-xs dark:border-slate-800 `}>
-          <table className='w-full text-left text-sm text-slate-600 dark:text-slate-400'>
-            <thead className='border-b border-slate-200 bg-slate-50 dark:bg-slate-800 text-xs uppercase text-slate-500 dark:text-slate-400 dark:border-slate-800 /50 '>
-              <tr>
-                <th className='px-6 py-3.5 font-semibold'>Document Title</th>
-                <th className='px-6 py-3.5 font-semibold'>Category</th>
-                <th className='px-6 py-3.5 font-semibold'>Format</th>
-                <th className='px-6 py-3.5 font-semibold'>Downloads</th>
-                <th className='px-6 py-3.5 font-semibold text-right'>
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className='divide-y divide-slate-100 dark:divide-slate-800'>
-              {filteredDocs.map((doc) => {
-                const docId = doc._id || doc.id;
-                return (
-                  <tr
-                    key={docId}
-                    className='hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800/50 /50'
-                  >
-                    <td className='px-6 py-4 font-medium text-slate-900 dark:text-white'>
-                      <div className='flex items-center gap-3'>
-                        <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400'>
-                          <FileText className='h-5 w-5' />
+          <div
+            className={`${viewMode === 'grid' ? 'hidden' : 'hidden md:block'} overflow-hidden rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 shadow-xs dark:border-slate-800 `}
+          >
+            <table className='w-full text-left text-sm text-slate-600 dark:text-slate-400'>
+              <thead className='border-b border-slate-200 bg-slate-50 dark:bg-slate-800 text-xs uppercase text-slate-500 dark:text-slate-400 dark:border-slate-800 /50 '>
+                <tr>
+                  <th className='px-6 py-3.5 font-semibold'>Document Title</th>
+                  <th className='px-6 py-3.5 font-semibold'>Category</th>
+                  <th className='px-6 py-3.5 font-semibold'>Format</th>
+                  <th className='px-6 py-3.5 font-semibold'>Downloads</th>
+                  <th className='px-6 py-3.5 font-semibold text-right'>
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className='divide-y divide-slate-100 dark:divide-slate-800'>
+                {filteredDocs.map((doc) => {
+                  const docId = doc._id || doc.id;
+                  return (
+                    <tr
+                      key={docId}
+                      className='hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800/50 /50'
+                    >
+                      <td className='px-6 py-4 font-medium text-slate-900 dark:text-white'>
+                        <div className='flex items-center gap-3'>
+                          <div className='flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400'>
+                            <FileText className='h-5 w-5' />
+                          </div>
+                          <div>
+                            <p className='font-semibold'>{doc.title}</p>
+                            <p className='line-clamp-1 text-xs text-slate-400'>
+                              {doc.description || 'No description'}
+                            </p>
+                          </div>
                         </div>
-                        <div>
-                          <p className='font-semibold'>{doc.title}</p>
-                          <p className='line-clamp-1 text-xs text-slate-400'>
-                            {doc.description || 'No description'}
-                          </p>
+                      </td>
+                      <td className='px-6 py-4'>
+                        <span className='rounded-full bg-slate-100 dark:bg-slate-800 px-2.5 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200  dark:text-slate-300'>
+                          {doc.category || 'General'}
+                        </span>
+                      </td>
+                      <td className='px-6 py-4 uppercase text-xs font-bold text-indigo-600 dark:text-indigo-400'>
+                        {doc.fileType || 'PDF'}
+                      </td>
+                      <td className='px-6 py-4 font-semibold text-slate-700 dark:text-slate-300'>
+                        {doc.downloadsCount || doc.downloads || 0}
+                      </td>
+                      <td className='px-6 py-4 text-right'>
+                        <div className='flex items-center justify-end gap-2'>
+                          <Button
+                            variant='outline'
+                            size='sm'
+                            icon={Eye}
+                            onClick={() => {
+                              setSelectedDoc(doc);
+                              setIsPreviewOpen(true);
+                            }}
+                          >
+                            Preview
+                          </Button>
+                          <Button
+                            variant='primary'
+                            size='sm'
+                            icon={Download}
+                            onClick={() => handleDownload(doc)}
+                          >
+                            Download
+                          </Button>
+                          {isAdmin && (
+                            <button
+                              onClick={() => handleDelete(doc)}
+                              className='rounded-lg p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40'
+                              title='Delete'
+                            >
+                              <Trash2 className='h-4 w-4' />
+                            </button>
+                          )}
                         </div>
-                      </div>
-                    </td>
-                    <td className='px-6 py-4'>
-                      <span className='rounded-full bg-slate-100 dark:bg-slate-800 px-2.5 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200  dark:text-slate-300'>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          <div
+            className={`${viewMode === 'table' ? 'grid md:hidden' : 'grid'} grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3`}
+          >
+            {filteredDocs.map((doc) => {
+              const docId = doc._id || doc.id;
+              return (
+                <div
+                  key={docId}
+                  className='flex flex-col justify-between rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-5 shadow-xs transition-all hover:border-indigo-300 dark:border-slate-800 '
+                >
+                  <div>
+                    <div className='flex items-center justify-between'>
+                      <span className='rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-semibold text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-300'>
                         {doc.category || 'General'}
                       </span>
-                    </td>
-                    <td className='px-6 py-4 uppercase text-xs font-bold text-indigo-600 dark:text-indigo-400'>
-                      {doc.fileType || 'PDF'}
-                    </td>
-                    <td className='px-6 py-4 font-semibold text-slate-700 dark:text-slate-300'>
-                      {doc.downloadsCount || doc.downloads || 0}
-                    </td>
-                    <td className='px-6 py-4 text-right'>
-                      <div className='flex items-center justify-end gap-2'>
-                        <Button
-                          variant='outline'
-                          size='sm'
-                          icon={Eye}
-                          onClick={() => {
-                            setSelectedDoc(doc);
-                            setIsPreviewOpen(true);
-                          }}
-                        >
-                          Preview
-                        </Button>
-                        <Button
-                          variant='primary'
-                          size='sm'
-                          icon={Download}
-                          onClick={() => handleDownload(doc)}
-                        >
-                          Download
-                        </Button>
-                        {isAdmin && (
-                          <button
-                            onClick={() => handleDelete(doc)}
-                            className='rounded-lg p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40'
-                            title='Delete'
-                          >
-                            <Trash2 className='h-4 w-4' />
-                          </button>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-        <div className={`${viewMode === 'table' ? 'grid md:hidden' : 'grid'} grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3`}>
-          {filteredDocs.map((doc) => {
-            const docId = doc._id || doc.id;
-            return (
-              <div
-                key={docId}
-                className='flex flex-col justify-between rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-5 shadow-xs transition-all hover:border-indigo-300 dark:border-slate-800 '
-              >
-                <div>
-                  <div className='flex items-center justify-between'>
-                    <span className='rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-semibold text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-300'>
-                      {doc.category || 'General'}
-                    </span>
-                    <span className='text-xs font-bold uppercase text-slate-400'>
-                      {doc.fileType || 'PDF'}
-                    </span>
+                      <span className='text-xs font-bold uppercase text-slate-400'>
+                        {doc.fileType || 'PDF'}
+                      </span>
+                    </div>
+                    <h3 className='mt-3 font-bold text-slate-900 dark:text-white'>
+                      {doc.title}
+                    </h3>
+                    <p className='mt-1 line-clamp-2 text-xs text-slate-500 dark:text-slate-400'>
+                      {doc.description || 'No description provided.'}
+                    </p>
                   </div>
-                  <h3 className='mt-3 font-bold text-slate-900 dark:text-white'>
-                    {doc.title}
-                  </h3>
-                  <p className='mt-1 line-clamp-2 text-xs text-slate-500 dark:text-slate-400'>
-                    {doc.description || 'No description provided.'}
-                  </p>
-                </div>
-                <div className='mt-5 flex items-center justify-between border-t border-slate-100 pt-3 dark:border-slate-800'>
-                  <span className='text-xs text-slate-400'>
-                    Downloads: {doc.downloadsCount || doc.downloads || 0}
-                  </span>
-                  <div className='flex items-center gap-2'>
-                    <Button
-                      variant='outline'
-                      size='sm'
-                      icon={Eye}
-                      onClick={() => {
-                        setSelectedDoc(doc);
-                        setIsPreviewOpen(true);
-                      }}
-                    >
-                      Preview
-                    </Button>
-                    <Button
-                      variant='primary'
-                      size='sm'
-                      icon={Download}
-                      onClick={() => handleDownload(doc)}
-                    >
-                      Download
-                    </Button>
+                  <div className='mt-5 flex items-center justify-between border-t border-slate-100 pt-3 dark:border-slate-800'>
+                    <span className='text-xs text-slate-400'>
+                      Downloads: {doc.downloadsCount || doc.downloads || 0}
+                    </span>
+                    <div className='flex items-center gap-2'>
+                      <Button
+                        variant='outline'
+                        size='sm'
+                        icon={Eye}
+                        onClick={() => {
+                          setSelectedDoc(doc);
+                          setIsPreviewOpen(true);
+                        }}
+                      >
+                        Preview
+                      </Button>
+                      <Button
+                        variant='primary'
+                        size='sm'
+                        icon={Download}
+                        onClick={() => handleDownload(doc)}
+                      >
+                        Download
+                      </Button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
         </>
       )}
 

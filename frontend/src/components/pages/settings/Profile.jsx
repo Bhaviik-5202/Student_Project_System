@@ -274,7 +274,7 @@ const Profile = memo(() => {
                   onClick={() => setIsEditing(true)}
                   className='mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400 px-4 py-2.5 text-sm font-bold transition-colors hover:bg-indigo-100 dark:hover:bg-indigo-900/50 shadow-sm'
                 >
-                  <Edit2 className="h-4 w-4" />
+                  <Edit2 className='h-4 w-4' />
                   Edit Profile
                 </button>
               )}

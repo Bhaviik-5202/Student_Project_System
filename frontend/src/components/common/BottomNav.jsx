@@ -100,15 +100,19 @@ const BottomNav = memo(() => {
               >
                 <Icon
                   className={`shrink-0 transition-all duration-300 ${
-                    isActive ? 'h-5 w-5 stroke-[2.5]' : 'h-[22px] w-[22px] stroke-[1.75]'
+                    isActive
+                      ? 'h-5 w-5 stroke-[2.5]'
+                      : 'h-[22px] w-[22px] stroke-[1.75]'
                   }`}
                   aria-hidden='true'
                 />
-                
+
                 {/* Expanding text for active state */}
                 <div
                   className={`overflow-hidden transition-all duration-300 ease-out ${
-                    isActive ? 'ml-2 max-w-[80px] opacity-100' : 'max-w-0 opacity-0'
+                    isActive
+                      ? 'ml-2 max-w-[80px] opacity-100'
+                      : 'max-w-0 opacity-0'
                   }`}
                 >
                   <span className='whitespace-nowrap text-[13px] font-bold tracking-wide'>
