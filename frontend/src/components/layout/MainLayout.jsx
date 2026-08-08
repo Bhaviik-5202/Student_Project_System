@@ -106,7 +106,7 @@ const MainLayout = () => {
                 </PageTransition>
               </Suspense>
             </ErrorBoundary>
-            {isScrolled && <BackToTop />}
+            <BackToTop />
           </main>
 
           <Footer
