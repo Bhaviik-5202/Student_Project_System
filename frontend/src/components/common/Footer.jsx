@@ -125,7 +125,7 @@ const Footer = memo(({ variant = 'minimal' }) => {
       <>
         <MobileFooter />
         <footer
-          className='hidden md:block border-t border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900 py-4 transition-colors'
+          className='relative z-20 hidden md:block border-t border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900 py-4 transition-colors'
           role='contentinfo'
           aria-label='Site footer'
         >
@@ -168,188 +168,188 @@ const Footer = memo(({ variant = 'minimal' }) => {
     <>
       <MobileFooter />
       <footer
-        className='hidden md:block relative bg-white dark:bg-gradient-to-b dark:from-slate-900 dark:via-slate-950 dark:to-black text-slate-700 dark:text-slate-300 pt-16 pb-6 border-t border-slate-200 dark:border-transparent transition-colors'
+        className='relative z-20 hidden md:block bg-white dark:bg-gradient-to-b dark:from-slate-900 dark:via-slate-950 dark:to-black text-slate-700 dark:text-slate-300 pt-16 pb-6 border-t border-slate-200 dark:border-transparent transition-colors'
         role='contentinfo'
         aria-label='Site footer'
       >
-      {/* Decorative Elements - Only visible in dark mode */}
-      <div className='absolute inset-0 overflow-hidden pointer-events-none dark:block hidden'>
-        <div className='absolute -top-40 -right-40 h-80 w-80 rounded-full bg-indigo-500/5 blur-3xl' />
-        <div className='absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-blue-500/5 blur-3xl' />
-        <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-purple-500/5 blur-3xl' />
-      </div>
+        {/* Decorative Elements - Only visible in dark mode */}
+        <div className='absolute inset-0 overflow-hidden pointer-events-none dark:block hidden'>
+          <div className='absolute -top-40 -right-40 h-80 w-80 rounded-full bg-indigo-500/5 blur-3xl' />
+          <div className='absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-blue-500/5 blur-3xl' />
+          <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-purple-500/5 blur-3xl' />
+        </div>
 
-      {/* Light mode decorative elements */}
-      <div className='absolute inset-0 overflow-hidden pointer-events-none dark:hidden'>
-        <div className='absolute -top-40 -right-40 h-80 w-80 rounded-full bg-indigo-50 blur-3xl' />
-        <div className='absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-blue-50 blur-3xl' />
-      </div>
+        {/* Light mode decorative elements */}
+        <div className='absolute inset-0 overflow-hidden pointer-events-none dark:hidden'>
+          <div className='absolute -top-40 -right-40 h-80 w-80 rounded-full bg-indigo-50 blur-3xl' />
+          <div className='absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-blue-50 blur-3xl' />
+        </div>
 
-      <div className='relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
-        {/* Main Footer Content */}
-        <div className='grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-12 lg:gap-8'>
-          {/* Brand Section */}
-          <div className='md:col-span-4 space-y-6'>
-            <Link
-              to='/dashboard'
-              className='inline-flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-950 rounded-lg'
-            >
-              <div className='relative'>
-                <div className='absolute inset-0 bg-indigo-500/20 blur-xl rounded-full group-hover:bg-indigo-500/30 transition-all duration-300' />
-                <div className='relative flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/25'>
-                  <Shield size={22} className='text-white' />
-                </div>
-              </div>
-              <div>
-                <h2 className='text-xl font-bold text-slate-900 dark:text-white tracking-tight'>
-                  Student
-                  <span className='text-indigo-500 dark:text-indigo-400'>
-                    .
-                  </span>
-                  Project
-                </h2>
-                <p className='text-xs font-medium text-slate-500 dark:text-slate-400 tracking-wider uppercase'>
-                  Academic Platform
-                </p>
-              </div>
-            </Link>
-
-            <p className='text-sm leading-relaxed text-slate-600 dark:text-slate-400 max-w-sm'>
-              Empowering students and faculty with modern tools for academic
-              project management, collaboration, and evaluation.
-            </p>
-
-            <div className='flex flex-wrap gap-2'>
-              {FEATURES.map((feature) => (
-                <FeatureBadge key={feature.text} {...feature} />
-              ))}
-            </div>
-
-            <div className='flex flex-wrap gap-3 pt-2'>
-              {SOCIAL_LINKS.map((link) => (
-                <SocialLink key={link.label} {...link} />
-              ))}
-            </div>
-          </div>
-
-          {/* Quick Links */}
-          <nav className='md:col-span-2' aria-label='Quick links'>
-            <h3 className='text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-white mb-4'>
-              Quick Links
-            </h3>
-            <ul className='space-y-2.5'>
-              {QUICK_LINKS.map((link) => (
-                <FooterLink key={link.name} {...link} />
-              ))}
-            </ul>
-          </nav>
-
-          {/* Support */}
-          <nav className='md:col-span-2' aria-label='Support links'>
-            <h3 className='text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-white mb-4'>
-              Support
-            </h3>
-            <ul className='space-y-2.5'>
-              {SUPPORT_LINKS.map((link) => (
-                <FooterLink key={link.name} {...link} />
-              ))}
-            </ul>
-          </nav>
-
-          {/* Stats & Updates */}
-          <div className='md:col-span-4 space-y-4'>
-            <h3 className='text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-white'>
-              Platform Status
-            </h3>
-
-            <div className='rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50/80 dark:bg-white/5 backdrop-blur-sm p-4 space-y-3 transition-colors'>
-              <div className='flex items-center justify-between'>
-                <div className='flex items-center gap-2'>
-                  <div className='relative'>
-                    <span className='block h-2.5 w-2.5 rounded-full bg-emerald-500 dark:bg-emerald-400' />
-                    <span className='absolute inset-0 animate-ping rounded-full bg-emerald-500 dark:bg-emerald-400 opacity-75' />
+        <div className='relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
+          {/* Main Footer Content */}
+          <div className='grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-12 lg:gap-8'>
+            {/* Brand Section */}
+            <div className='md:col-span-4 space-y-6'>
+              <Link
+                to='/dashboard'
+                className='inline-flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-950 rounded-lg'
+              >
+                <div className='relative'>
+                  <div className='absolute inset-0 bg-indigo-500/20 blur-xl rounded-full group-hover:bg-indigo-500/30 transition-all duration-300' />
+                  <div className='relative flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/25'>
+                    <Shield size={22} className='text-white' />
                   </div>
-                  <span className='text-sm font-medium text-emerald-600 dark:text-emerald-400'>
-                    All Systems Go
+                </div>
+                <div>
+                  <h2 className='text-xl font-bold text-slate-900 dark:text-white tracking-tight'>
+                    Student
+                    <span className='text-indigo-500 dark:text-indigo-400'>
+                      .
+                    </span>
+                    Project
+                  </h2>
+                  <p className='text-xs font-medium text-slate-500 dark:text-slate-400 tracking-wider uppercase'>
+                    Academic Platform
+                  </p>
+                </div>
+              </Link>
+
+              <p className='text-sm leading-relaxed text-slate-600 dark:text-slate-400 max-w-sm'>
+                Empowering students and faculty with modern tools for academic
+                project management, collaboration, and evaluation.
+              </p>
+
+              <div className='flex flex-wrap gap-2'>
+                {FEATURES.map((feature) => (
+                  <FeatureBadge key={feature.text} {...feature} />
+                ))}
+              </div>
+
+              <div className='flex flex-wrap gap-3 pt-2'>
+                {SOCIAL_LINKS.map((link) => (
+                  <SocialLink key={link.label} {...link} />
+                ))}
+              </div>
+            </div>
+
+            {/* Quick Links */}
+            <nav className='md:col-span-2' aria-label='Quick links'>
+              <h3 className='text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-white mb-4'>
+                Quick Links
+              </h3>
+              <ul className='space-y-2.5'>
+                {QUICK_LINKS.map((link) => (
+                  <FooterLink key={link.name} {...link} />
+                ))}
+              </ul>
+            </nav>
+
+            {/* Support */}
+            <nav className='md:col-span-2' aria-label='Support links'>
+              <h3 className='text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-white mb-4'>
+                Support
+              </h3>
+              <ul className='space-y-2.5'>
+                {SUPPORT_LINKS.map((link) => (
+                  <FooterLink key={link.name} {...link} />
+                ))}
+              </ul>
+            </nav>
+
+            {/* Stats & Updates */}
+            <div className='md:col-span-4 space-y-4'>
+              <h3 className='text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-white'>
+                Platform Status
+              </h3>
+
+              <div className='rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50/80 dark:bg-white/5 backdrop-blur-sm p-4 space-y-3 transition-colors'>
+                <div className='flex items-center justify-between'>
+                  <div className='flex items-center gap-2'>
+                    <div className='relative'>
+                      <span className='block h-2.5 w-2.5 rounded-full bg-emerald-500 dark:bg-emerald-400' />
+                      <span className='absolute inset-0 animate-ping rounded-full bg-emerald-500 dark:bg-emerald-400 opacity-75' />
+                    </div>
+                    <span className='text-sm font-medium text-emerald-600 dark:text-emerald-400'>
+                      All Systems Go
+                    </span>
+                  </div>
+                  <span className='text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1'>
+                    <Clock size={12} aria-hidden='true' />
+                    99.9% uptime
                   </span>
                 </div>
-                <span className='text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1'>
-                  <Clock size={12} aria-hidden='true' />
-                  99.9% uptime
+
+                <div className='flex items-center gap-3 text-xs text-slate-600 dark:text-slate-400'>
+                  <div className='flex items-center gap-1.5'>
+                    <CheckCircle
+                      size={12}
+                      className='text-indigo-500 dark:text-indigo-400'
+                      aria-hidden='true'
+                    />
+                    <span>Secure Management</span>
+                  </div>
+                  <div
+                    className='w-px h-4 bg-slate-200 dark:bg-white/10'
+                    aria-hidden='true'
+                  />
+                  <div className='flex items-center gap-1.5'>
+                    <Users
+                      size={12}
+                      className='text-indigo-500 dark:text-indigo-400'
+                      aria-hidden='true'
+                    />
+                    <span>Verified Access</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className='flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400'>
+                <span className='flex items-center gap-1.5'>
+                  <Heart
+                    size={12}
+                    className='text-rose-500 dark:text-rose-400 fill-rose-500 dark:fill-rose-400'
+                    aria-hidden='true'
+                  />
+                  Made with passion
                 </span>
-              </div>
-
-              <div className='flex items-center gap-3 text-xs text-slate-600 dark:text-slate-400'>
-                <div className='flex items-center gap-1.5'>
-                  <CheckCircle
-                    size={12}
-                    className='text-indigo-500 dark:text-indigo-400'
-                    aria-hidden='true'
-                  />
-                  <span>Secure Management</span>
-                </div>
-                <div
-                  className='w-px h-4 bg-slate-200 dark:bg-white/10'
-                  aria-hidden='true'
-                />
-                <div className='flex items-center gap-1.5'>
-                  <Users
-                    size={12}
-                    className='text-indigo-500 dark:text-indigo-400'
-                    aria-hidden='true'
-                  />
-                  <span>Verified Access</span>
-                </div>
+                <span aria-hidden='true'>•</span>
+                <span>v2.0.0</span>
               </div>
             </div>
+          </div>
 
-            <div className='flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400'>
-              <span className='flex items-center gap-1.5'>
-                <Heart
-                  size={12}
-                  className='text-rose-500 dark:text-rose-400 fill-rose-500 dark:fill-rose-400'
-                  aria-hidden='true'
-                />
-                Made with passion
+          {/* Bottom Bar */}
+          <div className='mt-12 pt-6 border-t border-slate-200 dark:border-white/5 flex flex-col items-center justify-between gap-4 sm:flex-row text-center sm:text-left'>
+            <p className='text-xs text-slate-500 dark:text-slate-400'>
+              © {currentYear} Student Project System. All rights reserved.
+            </p>
+            <div className='flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-xs text-slate-500 dark:text-slate-400'>
+              <Link
+                to='/about'
+                className='hover:text-indigo-600 dark:hover:text-white transition-colors focus:text-indigo-600 dark:focus:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-md px-1'
+              >
+                About Us
+              </Link>
+              <Link
+                to='/privacy'
+                className='hover:text-indigo-600 dark:hover:text-white transition-colors focus:text-indigo-600 dark:focus:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-md px-1'
+              >
+                Privacy Policy
+              </Link>
+              <Link
+                to='/terms'
+                className='hover:text-indigo-600 dark:hover:text-white transition-colors focus:text-indigo-600 dark:focus:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-md px-1'
+              >
+                Terms of Service
+              </Link>
+              <span className='text-xs text-slate-500 dark:text-slate-400'>
+                EN
               </span>
-              <span aria-hidden='true'>•</span>
-              <span>v2.0.0</span>
             </div>
           </div>
         </div>
-
-        {/* Bottom Bar */}
-        <div className='mt-12 pt-6 border-t border-slate-200 dark:border-white/5 flex flex-col items-center justify-between gap-4 sm:flex-row text-center sm:text-left'>
-          <p className='text-xs text-slate-500 dark:text-slate-400'>
-            © {currentYear} Student Project System. All rights reserved.
-          </p>
-          <div className='flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-xs text-slate-500 dark:text-slate-400'>
-            <Link
-              to='/about'
-              className='hover:text-indigo-600 dark:hover:text-white transition-colors focus:text-indigo-600 dark:focus:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-md px-1'
-            >
-              About Us
-            </Link>
-            <Link
-              to='/privacy'
-              className='hover:text-indigo-600 dark:hover:text-white transition-colors focus:text-indigo-600 dark:focus:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-md px-1'
-            >
-              Privacy Policy
-            </Link>
-            <Link
-              to='/terms'
-              className='hover:text-indigo-600 dark:hover:text-white transition-colors focus:text-indigo-600 dark:focus:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-md px-1'
-            >
-              Terms of Service
-            </Link>
-            <span className='text-xs text-slate-500 dark:text-slate-400'>
-              EN
-            </span>
-          </div>
-        </div>
-      </div>
-    </footer>
-  </>
+      </footer>
+    </>
   );
 });
 

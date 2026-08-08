@@ -31,25 +31,25 @@ const BADGE_CONFIGS = {
 
 const VARIANT_STYLES = {
   default: {
-    wrapper: 'px-10 py-8 sm:px-6 sm:py-6 md:p-8 min-h-[112px] sm:min-h-[108px] mt-3 sm:mt-0',
-    icon: 'h-12 w-12 sm:h-12 sm:w-12 md:h-14 md:w-14 rounded-xl sm:rounded-2xl',
+    wrapper: 'px-6 py-8 sm:px-6 sm:py-6 md:p-8 min-h-[132px] sm:min-h-[108px] mt-2 sm:mt-0',
+    icon: 'h-11 w-11 sm:h-12 sm:w-12 md:h-14 md:w-14 rounded-xl sm:rounded-2xl',
     iconSize: 22,
     title: 'text-[19px] sm:text-xl md:text-2xl leading-tight',
-    subtitle: 'text-[13.5px] sm:text-sm mt-3 sm:mt-1',
+    subtitle: 'text-[13px] sm:text-sm mt-1.5 sm:mt-1',
   },
   small: {
-    wrapper: 'px-6 py-4 sm:px-5 sm:py-4.5 min-h-[64px]',
-    icon: 'h-9 w-9 sm:h-11 sm:w-11 rounded-lg sm:rounded-xl',
+    wrapper: 'px-5 py-6 sm:px-5 sm:py-4.5 min-h-[96px] sm:min-h-[64px]',
+    icon: 'h-10 w-10 sm:h-11 sm:w-11 rounded-lg sm:rounded-xl',
     iconSize: 18,
-    title: 'text-base sm:text-lg',
-    subtitle: 'text-xs',
+    title: 'text-base sm:text-lg leading-tight',
+    subtitle: 'text-xs mt-1 sm:mt-0.5',
   },
   compact: {
-    wrapper: 'px-6 py-4 sm:px-4 sm:py-3.5 min-h-[52px]',
+    wrapper: 'px-5 py-5 sm:px-4 sm:py-3.5 min-h-[76px] sm:min-h-[52px]',
     icon: 'h-8 w-8 sm:h-9 sm:w-9 rounded-lg',
     iconSize: 16,
-    title: 'text-sm sm:text-base md:text-lg',
-    subtitle: 'text-xs',
+    title: 'text-sm sm:text-base md:text-lg leading-tight',
+    subtitle: 'text-[11px] sm:text-xs mt-0.5',
   },
 };
 
@@ -109,11 +109,12 @@ export const PageHeader = ({
   return (
     <header
       className={`
-        w-full flex flex-col items-start gap-6 sm:gap-4 md:flex-row md:items-center md:justify-between
-        rounded-2xl border border-slate-300 dark:border-slate-600 sm:border-slate-200/80 sm:dark:border-slate-700/80
+        relative w-full flex flex-col items-start gap-5 sm:gap-4 md:flex-row md:items-center md:justify-between
+        rounded-2xl border border-slate-200/80 sm:border-slate-300 dark:border-slate-700/80 sm:dark:border-slate-600
         bg-gradient-to-r from-white via-slate-50/50 to-white
-        shadow-md sm:shadow-sm backdrop-blur-sm transition-all duration-200
+        shadow-sm sm:shadow-md backdrop-blur-sm transition-all duration-200 overflow-hidden
         dark:from-slate-900 dark:via-slate-800/90 dark:to-slate-900
+        before:absolute before:top-0 before:left-0 before:w-full before:h-1 before:bg-gradient-to-r before:from-indigo-500 before:to-blue-500 sm:before:hidden
         ${styles.wrapper}
         ${className}
       `}
@@ -121,7 +122,7 @@ export const PageHeader = ({
       data-testid={testId}
       role='banner'
     >
-      <div className='flex items-start sm:items-center gap-5 sm:gap-4 min-w-0 w-full md:w-auto'>
+      <div className='relative z-10 flex items-start sm:items-center gap-4 sm:gap-4 min-w-0 w-full md:w-auto mt-6 sm:mt-0'>
         {Icon && (
           <div
             className={`
@@ -136,14 +137,14 @@ export const PageHeader = ({
           </div>
         )}
 
-        <div className='min-w-0 flex-1'>
+        <div className='min-w-0 flex-1 pt-0.5 sm:pt-0'>
           {breadcrumbs && (
-            <div className='mb-4 sm:mb-1.5' aria-label='Breadcrumb navigation'>
+            <div className='mb-2.5 sm:mb-1.5' aria-label='Breadcrumb navigation'>
               {breadcrumbs}
             </div>
           )}
 
-          <div className='flex items-center gap-3 sm:gap-2.5 flex-wrap'>
+          <div className='flex items-center gap-2 sm:gap-2.5 flex-wrap'>
             <h1
               className={`
               font-bold text-slate-900 dark:text-white
@@ -190,9 +191,9 @@ export const PageHeader = ({
       {actions && (
         <div
           className={`
-          w-full md:w-auto flex flex-col sm:flex-row flex-wrap sm:items-center gap-3.5 sm:gap-3 shrink-0
-          mt-3 sm:mt-0 pt-6 pb-2 sm:pt-4 sm:pb-2 md:pt-0 md:pb-0
-          ${effectiveVariant !== 'compact' ? 'border-t border-slate-200 dark:border-slate-700 md:border-t-0 sm:border-slate-100 sm:dark:border-slate-700/50' : ''}
+          relative z-10 w-full md:w-auto flex flex-col sm:flex-row flex-wrap sm:items-center gap-3 sm:gap-3 shrink-0
+          mt-1 sm:mt-0 pt-4 pb-1 sm:pt-4 sm:pb-2 md:pt-0 md:pb-0
+          ${effectiveVariant !== 'compact' ? 'border-t border-slate-100 dark:border-slate-800 sm:border-t sm:border-slate-200 sm:dark:border-slate-700 md:border-t-0' : ''}
         `}
         >
           {actions}
