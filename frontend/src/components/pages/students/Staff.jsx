@@ -21,16 +21,16 @@ import { toast } from 'react-hot-toast';
 const MobileStaffCard = memo(({ staff, onEdit, onDelete }) => (
   <div className='flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900'>
     <div className='flex items-start justify-between gap-3'>
-      <div className='flex items-center gap-3'>
+      <div className='flex items-center gap-3 min-w-0'>
         {staff.avatar ? (
-          <img src={staff.avatar} alt={staff.name} className='h-11 w-11 rounded-2xl object-cover border border-gray-200 dark:border-gray-700' />
+          <img src={staff.avatar} alt={staff.name} className='h-11 w-11 shrink-0 rounded-2xl object-cover border border-gray-200 dark:border-gray-700' />
         ) : (
-          <div className='flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-50 to-purple-100/50 text-lg font-black text-purple-600 dark:from-purple-950/60 dark:to-purple-900/40 dark:text-purple-400'>
+          <div className='flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-50 to-purple-100/50 text-lg font-black text-purple-600 dark:from-purple-950/60 dark:to-purple-900/40 dark:text-purple-400'>
             {staff.name ? staff.name.charAt(0).toUpperCase() : 'F'}
           </div>
         )}
-        <div className='flex flex-col'>
-          <div className='text-[14px] font-black text-slate-900 dark:text-white leading-tight line-clamp-1'>
+        <div className='flex flex-col min-w-0'>
+          <div className='text-[14px] font-black text-slate-900 dark:text-white leading-tight truncate'>
             {staff.name}
           </div>
           <div className='text-[11px] font-bold text-slate-500 dark:text-slate-400 mt-0.5 truncate'>
@@ -47,7 +47,7 @@ const MobileStaffCard = memo(({ staff, onEdit, onDelete }) => (
     </div>
 
     <div className='mt-2 flex flex-col gap-2 rounded-xl bg-slate-50/50 p-3 dark:bg-slate-800/40'>
-      <div className='flex items-center justify-between'>
+      <div className='flex flex-row items-center justify-between sm:flex-col sm:items-start sm:gap-1'>
         <span className='font-bold text-gray-800 dark:text-gray-200 text-[12px]'>
           {staff.designation || 'Assistant Professor'}
         </span>
@@ -56,17 +56,17 @@ const MobileStaffCard = memo(({ staff, onEdit, onDelete }) => (
         </span>
       </div>
       <div className='flex items-center gap-1 text-[11px] text-gray-600 dark:text-gray-400'>
-        <Building size={12} className='text-gray-400' />
-        {staff.department || 'Computer Engineering'}
+        <Building size={12} className='text-gray-400 shrink-0' />
+        <span className='truncate'>{staff.department || 'Computer Engineering'}</span>
       </div>
       
-      <div className='mt-2 flex items-center justify-between pt-2 border-t border-slate-200/50 dark:border-slate-700/50'>
-        <div className='flex items-center gap-1.5 text-[10px] text-gray-500 dark:text-gray-400 font-medium'>
-          <Phone size={12} className='text-gray-400' />
-          {staff.phone && staff.phone !== 'N/A' ? staff.phone : <span className='italic'>6353712057</span>}
+      <div className='mt-2 flex flex-col gap-3 pt-2 border-t border-slate-200/50 dark:border-slate-700/50 sm:flex-row sm:items-center sm:justify-between'>
+        <div className='flex items-center gap-1.5 text-[11px] text-gray-500 dark:text-gray-400 font-medium'>
+          <Phone size={12} className='text-gray-400 shrink-0' />
+          <span className='truncate'>{staff.phone && staff.phone !== 'N/A' ? staff.phone : <span className='italic'>6353712057</span>}</span>
         </div>
-        <div className='flex items-center gap-2'>
-          <button onClick={() => onEdit(staff)} className='flex h-11 px-4 items-center gap-1.5 justify-center rounded-xl bg-indigo-50 text-indigo-600 transition-transform active:scale-90 dark:bg-indigo-500/20 dark:text-indigo-400 shadow-xs'>
+        <div className='flex w-full items-center gap-2 sm:w-auto'>
+          <button onClick={() => onEdit(staff)} className='flex h-11 flex-1 px-4 items-center gap-1.5 justify-center rounded-xl bg-indigo-50 text-indigo-600 transition-transform active:scale-90 dark:bg-indigo-500/20 dark:text-indigo-400 shadow-xs'>
             <Edit2 size={14} />
             <span className='font-bold text-[12px]'>Edit</span>
           </button>
@@ -365,9 +365,9 @@ const Staff = memo(() => {
       />
 
       {/* Filter Bar */}
-      <div className='card'>
+      <div className='card mb-2'>
         <div className='card-body'>
-          <div className='group relative max-w-md'>
+          <div className='group relative w-full sm:max-w-md'>
             <Search
               size={18}
               className='pointer-events-none absolute left-4 top-1/2 z-10 -translate-y-1/2 text-gray-400 transition-colors group-focus-within:text-indigo-500'
@@ -375,7 +375,7 @@ const Staff = memo(() => {
             <div className='absolute left-12 top-1/2 z-10 h-5 w-[1px] -translate-y-1/2 bg-gray-200 dark:bg-slate-700' />
             <input
               type='text'
-              className='form-control border-gray-100 bg-gray-50 !pl-16 text-sm transition-all focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:focus:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500'
+              className='form-control border-gray-100 bg-gray-50 !pl-16 text-sm transition-all focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:focus:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500 w-full'
               placeholder='Search by name, ID, email, department...'
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}

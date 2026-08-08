@@ -52,6 +52,7 @@ const MainLayout = () => {
       <Header
         isScrolled={isScrolled}
         onMobileMenuToggle={handleMobileMenuToggle}
+        onCloseMobileMenu={handleCloseMobileMenu}
         isMobileMenuOpen={isMobileMenuOpen}
       />
 

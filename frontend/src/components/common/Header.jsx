@@ -24,6 +24,7 @@ const Header = memo(
     isScrolled = false,
     clearNotifications = () => { },
     onMobileMenuToggle,
+    onCloseMobileMenu,
     isMobileMenuOpen = false,
   }) => {
     const { user, logout } = useAuth();
@@ -37,7 +38,6 @@ const Header = memo(
     const [showQuickAdd, setShowQuickAdd] = useState(false);
     const [showCalendar, setShowCalendar] = useState(false);
     const [showSearch, setShowSearch] = useState(false);
-    const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
     // Refs for outside click handling
     const userMenuRef = useRef(null);
@@ -263,7 +263,7 @@ const Header = memo(
       if (!isOpen) return null;
       return (
         <div
-          className={`dropdown-enter absolute right-0 top-full z-[9999] mt-2 w-72 overflow-hidden rounded-2xl border border-gray-200 bg-white dark:bg-slate-900 shadow-2xl dark:border-gray-700 dark:bg-gray-800 sm:w-80 ${className}`}
+          className={`dropdown-enter z-[9999] overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl dark:border-gray-700 dark:bg-slate-800 ${className}`}
         >
           {children}
         </div>
@@ -304,7 +304,7 @@ const Header = memo(
                 {/* Mobile Logo Button - Opens Full Navigation Sidebar Drawer */}
                 <button
                   type='button'
-                  onClick={() => setIsMobileSidebarOpen(true)}
+                  onClick={onMobileMenuToggle}
                   className='group flex md:hidden items-center gap-2 text-left outline-none transition-transform active:scale-[0.97] min-w-0 shrink py-1'
                   aria-label='Open Navigation Menu'
                 >
@@ -337,7 +337,7 @@ const Header = memo(
                     >
                       <HeaderIcon name='plus' size='text-lg' />
                     </button>
-                    <Dropdown isOpen={showQuickAdd} className='w-60'>
+                    <Dropdown isOpen={showQuickAdd} className='absolute right-0 top-full mt-2 w-60 origin-top-right'>
                       <QuickAddMenu
                         actions={quickAddActions}
                         onActionClick={handleQuickAction}
@@ -403,7 +403,7 @@ const Header = memo(
                     </button>
                     <Dropdown
                       isOpen={showNotifications}
-                      className='w-[280px] min-[380px]:w-[320px] sm:w-96 right-0 origin-top-right'
+                      className='fixed left-4 right-4 top-[68px] sm:absolute sm:left-auto sm:top-full sm:mt-2 sm:right-0 sm:w-[380px] md:w-96 origin-top-right max-h-[85vh] overflow-y-auto'
                     >
                       <NotificationMenu
                         notifications={notifications}
@@ -441,7 +441,7 @@ const Header = memo(
                       </p>
                     </div>
                   </button>
-                  <Dropdown isOpen={showUserMenu} className="w-56 right-0 origin-top-right">
+                  <Dropdown isOpen={showUserMenu} className='fixed left-4 right-4 top-[68px] sm:absolute sm:left-auto sm:top-full sm:mt-2 sm:right-0 sm:w-64 origin-top-right'>
                     <UserMenu
                       user={user}
                       initials={getUserInitials()}
@@ -457,8 +457,8 @@ const Header = memo(
 
         {/* Mobile Navigation Sidebar Drawer */}
         <MobileSidebar
-          isOpen={isMobileSidebarOpen}
-          onClose={() => setIsMobileSidebarOpen(false)}
+          isOpen={isMobileMenuOpen}
+          onClose={onCloseMobileMenu || onMobileMenuToggle}
         />
 
         {showSearch && (

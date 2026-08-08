@@ -20,6 +20,7 @@ import {
   HelpCircle,
   User,
   LogOut,
+  Settings,
 } from 'lucide-react';
 
 const ICON_MAP = {
@@ -69,19 +70,17 @@ const MobileSidebar = memo(({ isOpen, onClose }) => {
     setTimeout(() => logout(), 200);
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className='fixed inset-0 z-[300] flex md:hidden'>
+    <div className={`fixed inset-0 z-[300] flex md:hidden transition-all duration-300 ease-in-out ${isOpen ? 'visible opacity-100' : 'invisible opacity-0'}`}>
       {/* Backdrop Overlay */}
       <div
-        className='fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity animate-fade-in'
+        className={`fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`}
         onClick={onClose}
         aria-hidden='true'
       />
 
       {/* Drawer Container */}
-      <div className='relative flex w-[85%] max-w-[320px] flex-col bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300 ease-out z-10 h-[100dvh] overflow-hidden border-r border-white/20 dark:border-slate-800/80'>
+      <div className={`relative flex w-[85%] max-w-[320px] flex-col bg-white dark:bg-slate-900 shadow-2xl transition-transform duration-300 ease-in-out z-10 h-[100dvh] overflow-hidden border-r border-white/20 dark:border-slate-800/80 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         {/* Drawer Header */}
         <div className='relative flex items-center justify-between p-5 border-b border-slate-100 dark:border-slate-800'>
           <div className='absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-50/50 to-transparent dark:from-blue-900/10' />
@@ -204,7 +203,17 @@ const MobileSidebar = memo(({ isOpen, onClose }) => {
         </div>
 
         {/* Drawer Footer Actions */}
-        <div className='border-t border-slate-100 p-4 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900'>
+        <div className='border-t border-slate-100 p-4 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900 space-y-3'>
+          <button
+            onClick={() => handleNavClick('/settings')}
+            className='flex w-full items-center gap-3 rounded-2xl p-3 text-[13px] font-bold text-slate-700 transition-colors active:bg-slate-100 dark:text-slate-200 dark:active:bg-slate-800'
+          >
+            <div className='flex h-8 w-8 items-center justify-center rounded-xl bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'>
+              <Settings className='h-4 w-4' />
+            </div>
+            <span>Settings</span>
+          </button>
+
           <button
             onClick={handleLogoutClick}
             className='flex w-full items-center justify-center gap-2 rounded-2xl bg-rose-50 p-3.5 text-[13px] font-bold text-rose-600 transition-transform active:scale-95 dark:bg-rose-500/10 dark:text-rose-400'
