@@ -72,8 +72,8 @@ export const Input = ({
           <input
             type={inputType}
             className={`${inputBaseStyles} ${borderColor} ${
-              Icon || type === 'search' ? 'pl-11' : ''
-            } ${isPassword ? 'pr-11' : ''} ${className}`}
+              Icon || type === 'search' ? '!pl-11' : ''
+            } ${isPassword ? '!pr-11' : ''} ${className}`}
             {...props}
           />
         )}

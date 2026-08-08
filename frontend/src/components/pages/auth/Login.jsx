@@ -177,8 +177,8 @@ const Login = memo(({ forceAdminMode = false }) => {
           border-radius: 16px !important;
           padding-top: 1rem !important;
           padding-bottom: 1rem !important;
-          padding-left: 3.25rem !important;
-          padding-right: 1.125rem !important;
+          padding-left: 3.5rem !important;
+          padding-right: 3.5rem !important;
           outline: none !important;
           transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
         }

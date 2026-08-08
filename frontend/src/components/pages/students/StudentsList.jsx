@@ -77,15 +77,15 @@ const MobileStudentCard = memo(({ student, onEdit, onDelete, userRole }) => (
           <div className='flex items-center gap-2'>
             <button
               onClick={() => onEdit(student.id)}
-              className='flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 transition-transform active:scale-90 dark:bg-indigo-500/20 dark:text-indigo-400'
+              className='flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 transition-transform active:scale-90 dark:bg-indigo-500/20 dark:text-indigo-400'
             >
-              <EditIcon size={14} />
+              <EditIcon size={18} />
             </button>
             <button
               onClick={() => onDelete(student.id)}
-              className='flex h-7 w-7 items-center justify-center rounded-lg bg-rose-50 text-rose-600 transition-transform active:scale-90 dark:bg-rose-500/20 dark:text-rose-400'
+              className='flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl bg-rose-50 text-rose-600 transition-transform active:scale-90 dark:bg-rose-500/20 dark:text-rose-400'
             >
-              <TrashIcon size={14} />
+              <TrashIcon size={18} />
             </button>
           </div>
         )}
@@ -358,7 +358,7 @@ const StudentsList = memo(() => {
               placeholder='Search by name, email or roll number...'
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className='w-full rounded-xl border border-slate-200/80 bg-slate-50 dark:bg-slate-800/60 py-2.5 pl-14 pr-10 text-sm text-slate-900 dark:text-white placeholder-slate-400 outline-none transition-all duration-200 hover:border-slate-300 focus:border-indigo-500 focus:bg-white dark:bg-slate-900 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-800 dark:bg-slate-950/50  dark:placeholder-slate-500 dark:focus:border-indigo-500/40 dark:focus:bg-slate-950'
+              className='w-full rounded-xl border border-slate-200/80 bg-slate-50 dark:bg-slate-800/60 py-2.5 !pl-14 pr-10 text-sm text-slate-900 dark:text-white placeholder-slate-400 outline-none transition-all duration-200 hover:border-slate-300 focus:border-indigo-500 focus:bg-white dark:bg-slate-900 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-800 dark:bg-slate-950/50  dark:placeholder-slate-500 dark:focus:border-indigo-500/40 dark:focus:bg-slate-950'
             />
             {search && (
               <button
@@ -381,7 +381,7 @@ const StudentsList = memo(() => {
             <select
               value={department}
               onChange={(e) => setDepartment(e.target.value)}
-              className='w-full cursor-pointer appearance-none rounded-xl border border-slate-200/80 bg-slate-50 dark:bg-slate-800/60 py-2.5 pl-14 pr-10 text-sm font-medium text-slate-900 dark:text-white outline-none transition-all duration-200 hover:border-slate-300 focus:border-indigo-500 focus:bg-white dark:bg-slate-900 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-800 dark:bg-slate-950/50  dark:focus:border-indigo-500/40 dark:focus:bg-slate-950'
+              className='w-full cursor-pointer appearance-none rounded-xl border border-slate-200/80 bg-slate-50 dark:bg-slate-800/60 py-2.5 !pl-14 pr-10 text-sm font-medium text-slate-900 dark:text-white outline-none transition-all duration-200 hover:border-slate-300 focus:border-indigo-500 focus:bg-white dark:bg-slate-900 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-800 dark:bg-slate-950/50  dark:focus:border-indigo-500/40 dark:focus:bg-slate-950'
             >
               <option value=''>All Departments</option>
               <option value='Computer Engineering'>Computer Engineering</option>
@@ -408,7 +408,7 @@ const StudentsList = memo(() => {
             <select
               value={year}
               onChange={(e) => setYear(e.target.value)}
-              className='w-full cursor-pointer appearance-none rounded-xl border border-slate-200/80 bg-slate-50 dark:bg-slate-800/60 py-2.5 pl-14 pr-10 text-sm font-medium text-slate-900 dark:text-white outline-none transition-all duration-200 hover:border-slate-300 focus:border-indigo-500 focus:bg-white dark:bg-slate-900 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-800 dark:bg-slate-950/50  dark:focus:border-indigo-500/40 dark:focus:bg-slate-950'
+              className='w-full cursor-pointer appearance-none rounded-xl border border-slate-200/80 bg-slate-50 dark:bg-slate-800/60 py-2.5 !pl-14 pr-10 text-sm font-medium text-slate-900 dark:text-white outline-none transition-all duration-200 hover:border-slate-300 focus:border-indigo-500 focus:bg-white dark:bg-slate-900 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-800 dark:bg-slate-950/50  dark:focus:border-indigo-500/40 dark:focus:bg-slate-950'
             >
               <option value=''>All Years</option>
               <option value='1'>1st Year</option>

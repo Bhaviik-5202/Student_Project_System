@@ -153,7 +153,7 @@ const ProjectTimeline = memo(() => {
           {/* Project Details List */}
           <div className='project-card-simple overflow-hidden'>
             <div className='overflow-x-auto'>
-              <table className='w-full text-left'>
+              <table className='hidden w-full text-left md:table'>
                 <thead>
                   <tr className='border-b border-gray-100 bg-gray-50 dark:bg-gray-800/50 dark:border-slate-700 dark:bg-slate-900/40'>
                     <th className='px-6 py-4 text-[10px] font-bold text-gray-400'>
@@ -216,6 +216,46 @@ const ProjectTimeline = memo(() => {
                   ))}
                 </tbody>
               </table>
+
+              {/* Mobile View */}
+              <div className='block md:hidden divide-y divide-gray-50 dark:divide-slate-700/50'>
+                {projects.map((project) => (
+                  <div key={project.id || project._id} className='p-4 space-y-3 transition-colors hover:bg-gray-50 dark:hover:bg-slate-800/30'>
+                    <div className='flex items-start justify-between'>
+                      <div className='space-y-1'>
+                        <div className='text-xs font-bold text-gray-900 dark:text-white'>
+                          {project.name}
+                        </div>
+                        <div className='text-[10px] font-bold text-gray-500 dark:text-gray-400'>
+                          {new Date(project.start).toLocaleDateString()} —{' '}
+                          {new Date(project.end).toLocaleDateString()}
+                        </div>
+                      </div>
+                      <button
+                        onClick={() =>
+                          navigate(
+                            `/projects/${project.projectSlug || project.projectId}`
+                          )
+                        }
+                        className='text-[10px] font-bold text-indigo-600 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 px-3 py-1.5'
+                      >
+                        Review
+                      </button>
+                    </div>
+                    <div className='flex items-center gap-2 pt-1'>
+                      <div className='h-1.5 flex-1 rounded-full bg-gray-100 dark:bg-slate-900 overflow-hidden'>
+                        <div
+                          className='h-full rounded-full bg-emerald-500'
+                          style={{ width: `${project.progress}%` }}
+                        />
+                      </div>
+                      <span className='text-[10px] font-bold text-emerald-600'>
+                        {project.progress}%
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>

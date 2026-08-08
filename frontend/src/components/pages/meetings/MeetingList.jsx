@@ -14,6 +14,7 @@ import {
   Eye,
   Edit2,
   Trash2,
+  FolderKanban,
 } from 'lucide-react';
 import PageHeader from '../../common/PageHeader';
 import '../../../assets/styles/meetings.css';
@@ -63,12 +64,12 @@ const getStatusBadge = (status) => {
   }
 };
 
-const MobileMeetingCard = memo(({ meeting, onView, onEdit, onDelete, currentUser }) => {
+const MeetingCard = memo(({ meeting, onView, onEdit, onDelete, currentUser }) => {
   const canManage = currentUser?.role === 'admin';
   const isActive = meeting.isActive !== false && meeting.status !== 'cancelled';
 
   return (
-    <div className='flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900'>
+    <div className='flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 transition-all hover:shadow-md'>
       <div className='flex items-start justify-between gap-3'>
         <div className='flex flex-col'>
           <div className='text-[15px] font-black text-slate-900 dark:text-white leading-tight'>
@@ -81,7 +82,7 @@ const MobileMeetingCard = memo(({ meeting, onView, onEdit, onDelete, currentUser
         <div className='shrink-0'>{getStatusBadge(meeting.status)}</div>
       </div>
 
-      <div className='mt-2 flex flex-col gap-2 rounded-xl bg-slate-50/50 p-3 dark:bg-slate-800/40'>
+      <div className='mt-2 flex flex-col gap-2 rounded-xl bg-slate-50/50 p-3 dark:bg-slate-800/40 flex-1'>
         <div className='flex items-center gap-2 text-[12px] font-semibold text-slate-700 dark:text-slate-300'>
           <Calendar size={14} className='text-slate-400' />
           <span>{meeting.date ? new Date(meeting.date).toLocaleDateString(undefined, { dateStyle: 'medium' }) : 'N/A'}</span>
@@ -99,7 +100,8 @@ const MobileMeetingCard = memo(({ meeting, onView, onEdit, onDelete, currentUser
             <span className='truncate'>{meeting.project.title}</span>
           </div>
         )}
-        <div className='flex items-center justify-between mt-1 pt-2 border-t border-slate-200/50 dark:border-slate-700/50'>
+
+        <div className='mt-auto flex items-center justify-between pt-3 border-t border-slate-200/50 dark:border-slate-700/50'>
           <div className='flex items-center gap-1.5'>
             <Users size={14} className='text-indigo-500' />
             <span className='text-[11px] font-bold text-slate-700 dark:text-slate-300'>
@@ -107,16 +109,16 @@ const MobileMeetingCard = memo(({ meeting, onView, onEdit, onDelete, currentUser
             </span>
           </div>
           <div className='flex items-center gap-2'>
-            <button onClick={() => onView(meeting.id)} className='flex h-7 w-7 items-center justify-center rounded-lg bg-slate-100 text-slate-600 transition-transform active:scale-90 dark:bg-slate-700 dark:text-slate-300'>
-              <Eye size={14} />
+            <button onClick={() => onView(meeting.id)} className='flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl bg-slate-100 text-slate-600 transition-transform active:scale-90 dark:bg-slate-700 dark:text-slate-300'>
+              <Eye size={18} />
             </button>
             {canManage && (
               <>
-                <button onClick={() => onEdit(meeting.id)} className='flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 transition-transform active:scale-90 dark:bg-indigo-500/20 dark:text-indigo-400'>
-                  <Edit2 size={14} />
+                <button onClick={() => onEdit(meeting.id)} className='flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 transition-transform active:scale-90 dark:bg-indigo-500/20 dark:text-indigo-400'>
+                  <Edit2 size={18} />
                 </button>
-                <button onClick={() => onDelete(meeting.id)} className='flex h-7 w-7 items-center justify-center rounded-lg bg-rose-50 text-rose-600 transition-transform active:scale-90 dark:bg-rose-500/20 dark:text-rose-400'>
-                  <Trash2 size={14} />
+                <button onClick={() => onDelete(meeting.id)} className='flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl bg-rose-50 text-rose-600 transition-transform active:scale-90 dark:bg-rose-500/20 dark:text-rose-400'>
+                  <Trash2 size={18} />
                 </button>
               </>
             )}
@@ -127,143 +129,7 @@ const MobileMeetingCard = memo(({ meeting, onView, onEdit, onDelete, currentUser
   );
 });
 
-const MeetingRow = memo(
-  ({ meeting, onView, onEdit, onDelete, currentUser }) => {
-    const canManage = currentUser?.role === 'admin';
-    const isActive = meeting.isActive !== false && meeting.status !== 'cancelled';
 
-    return (
-      <tr className='hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800/80 /40 transition-colors'>
-        {/* Title & Type */}
-        <td className='py-4 px-4'>
-          <div className='font-bold text-slate-900 dark:text-white text-sm'>
-            {meeting.title}
-          </div>
-          <div className='text-xs font-semibold text-indigo-600 dark:text-indigo-400 mt-0.5'>
-            {TYPE_LABELS[meeting.type] || meeting.type || 'Sync Session'}
-          </div>
-        </td>
-
-        {/* Project */}
-        <td className='py-4 px-4'>
-          <div className='text-xs font-semibold text-slate-800 dark:text-slate-200'>
-            {meeting.project?.title || (
-              <span className='text-slate-400 italic'>
-                General (No Project)
-              </span>
-            )}
-          </div>
-        </td>
-
-        {/* Organizer */}
-        <td className='py-4 px-4'>
-          <div className='flex items-center gap-1.5 text-xs font-medium text-slate-700 dark:text-slate-300'>
-            <User size={13} className='text-slate-400' />
-            <span>{meeting.organizer?.name || 'Faculty Guide'}</span>
-          </div>
-          {meeting.organizer?.email && (
-            <div className='text-[10px] text-slate-400 dark:text-slate-500 dark:text-slate-400'>
-              {meeting.organizer.email}
-            </div>
-          )}
-        </td>
-
-        {/* Participants */}
-        <td className='py-4 px-4'>
-          <div className='flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-400'>
-            <Users size={14} className='text-indigo-500' />
-            <span className='font-semibold text-slate-800 dark:text-slate-200'>
-              {Array.isArray(meeting.participants)
-                ? meeting.participants.length
-                : 0}{' '}
-              Members
-            </span>
-          </div>
-        </td>
-
-        {/* Date & Time */}
-        <td className='py-4 px-4 whitespace-nowrap'>
-          <div className='text-xs font-bold text-slate-900 dark:text-white'>
-            {meeting.date
-              ? new Date(meeting.date).toLocaleDateString(undefined, {
-                  dateStyle: 'medium',
-                })
-              : 'N/A'}
-          </div>
-          <div className='text-[11px] font-medium text-slate-500 dark:text-slate-400'>
-            {meeting.time || '10:00 AM'}
-          </div>
-        </td>
-
-        {/* Status Badge */}
-        <td className='py-4 px-4 whitespace-nowrap'>
-          {getStatusBadge(meeting.status)}
-        </td>
-
-        {/* Active / Inactive Badge */}
-        <td className='py-4 px-4 whitespace-nowrap'>
-          {isActive ? (
-            <span className='inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800'>
-              <span className='h-2 w-2 rounded-full bg-emerald-500 animate-pulse' />{' '}
-              Active
-            </span>
-          ) : (
-            <span className='inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-2.5 py-1 text-[11px] font-bold text-rose-700 dark:bg-rose-900/30 dark:text-rose-400 border border-rose-200 dark:border-rose-800'>
-              <span className='h-2 w-2 rounded-full bg-rose-500' /> Inactive
-            </span>
-          )}
-        </td>
-
-        {/* Created & Updated */}
-        <td className='py-4 px-4 text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap'>
-          <div>
-            Created:{' '}
-            {meeting.createdAt
-              ? new Date(meeting.createdAt).toLocaleDateString()
-              : 'N/A'}
-          </div>
-          <div className='text-[10px] text-slate-400'>
-            Updated:{' '}
-            {meeting.updatedAt
-              ? new Date(meeting.updatedAt).toLocaleDateString()
-              : 'N/A'}
-          </div>
-        </td>
-
-        {/* Actions */}
-        <td className='py-4 px-4 text-right whitespace-nowrap'>
-          <div className='flex items-center justify-end gap-1.5'>
-            <button
-              onClick={() => onView(meeting.id)}
-              className='rounded-lg p-1.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 dark:bg-slate-800   transition-colors'
-              title='View Details'
-            >
-              <Eye size={16} />
-            </button>
-            {canManage && (
-              <>
-                <button
-                  onClick={() => onEdit(meeting.id)}
-                  className='rounded-lg p-1.5 text-indigo-600 hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-900/30 transition-colors'
-                  title='Edit Meeting'
-                >
-                  <Edit2 size={16} />
-                </button>
-                <button
-                  onClick={() => onDelete(meeting.id)}
-                  className='rounded-lg p-1.5 text-rose-600 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-900/30 transition-colors'
-                  title='Delete Meeting'
-                >
-                  <Trash2 size={16} />
-                </button>
-              </>
-            )}
-          </div>
-        </td>
-      </tr>
-    );
-  }
-);
 
 const MeetingList = () => {
   const navigate = useNavigate();
@@ -358,70 +224,25 @@ const MeetingList = () => {
           </div>
         </div>
 
-        {/* Desktop Table View */}
-        <div className='hidden md:block table-responsive overflow-x-auto'>
+        {/* Unified Card Grid View */}
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
           {loading ? (
-            <div className='p-12 text-center text-sm font-medium italic text-slate-400'>
-              Accessing meeting schedule archive...
-            </div>
-          ) : error ? (
-            <div className='p-12 text-center text-sm font-bold tracking-wider text-rose-500'>
-              {error}
-            </div>
-          ) : meetings.length === 0 ? (
-            <div className='p-12 text-center text-slate-400 italic text-sm'>
-              No meetings scheduled at this time.
-            </div>
-          ) : (
-            <table className='w-full text-left border-collapse'>
-              <thead>
-                <tr className='border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 dark:bg-slate-900/50 text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400'>
-                  <th className='py-3 px-4'>Title & Type</th>
-                  <th className='py-3 px-4'>Project</th>
-                  <th className='py-3 px-4'>Organizer</th>
-                  <th className='py-3 px-4'>Participants</th>
-                  <th className='py-3 px-4'>Date & Time</th>
-                  <th className='py-3 px-4'>Status</th>
-                  <th className='py-3 px-4'>Active Status</th>
-                  <th className='py-3 px-4'>Timestamps</th>
-                  <th className='py-3 px-4 text-right'>Actions</th>
-                </tr>
-              </thead>
-              <tbody className='divide-y divide-slate-100 dark:divide-slate-700/50'>
-                {meetings.map((meeting) => (
-                  <MeetingRow
-                    key={meeting.id}
-                    meeting={meeting}
-                    onView={handleView}
-                    onEdit={handleEdit}
-                    onDelete={handleDelete}
-                    currentUser={user}
-                  />
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
-
-        {/* Mobile Card View */}
-        <div className='block md:hidden space-y-4'>
-          {loading ? (
-            <div className='flex flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-white py-12 px-4 text-center dark:border-slate-800 dark:bg-slate-900'>
+            <div className='col-span-full flex flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-white py-12 px-4 text-center dark:border-slate-800 dark:bg-slate-900'>
               <div className='h-6 w-6 animate-spin rounded-full border-2 border-indigo-500 border-t-transparent' />
               <span className='mt-3 text-[13px] font-semibold text-slate-500'>Accessing schedule...</span>
             </div>
           ) : error ? (
-            <div className='flex flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-white py-12 px-4 text-center dark:border-slate-800 dark:bg-slate-900'>
+            <div className='col-span-full flex flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-white py-12 px-4 text-center dark:border-slate-800 dark:bg-slate-900'>
               <span className='text-[13px] font-semibold text-rose-500'>{error}</span>
             </div>
           ) : meetings.length === 0 ? (
-            <div className='flex flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-white py-12 px-4 text-center dark:border-slate-800 dark:bg-slate-900'>
+            <div className='col-span-full flex flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-white py-12 px-4 text-center dark:border-slate-800 dark:bg-slate-900'>
               <Calendar className='mb-3 h-10 w-10 text-slate-300 dark:text-slate-600' />
               <span className='text-[13px] font-semibold text-slate-500'>No meetings scheduled.</span>
             </div>
           ) : (
             meetings.map((meeting) => (
-              <MobileMeetingCard
+              <MeetingCard
                 key={meeting.id}
                 meeting={meeting}
                 onView={handleView}
@@ -438,6 +259,5 @@ const MeetingList = () => {
   );
 };
 
-MeetingRow.displayName = 'MeetingRow';
 MeetingList.displayName = 'MeetingList';
 export default MeetingList;
