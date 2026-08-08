@@ -31,7 +31,7 @@ const BADGE_CONFIGS = {
 
 const VARIANT_STYLES = {
   default: {
-    wrapper: 'px-5 py-7 sm:px-6 sm:py-6 md:p-8 min-h-[112px] sm:min-h-[108px] mt-3 sm:mt-0',
+    wrapper: 'px-6 py-8 sm:px-6 sm:py-6 md:p-8 min-h-[112px] sm:min-h-[108px] mt-3 sm:mt-0',
     icon: 'h-12 w-12 sm:h-12 sm:w-12 md:h-14 md:w-14 rounded-xl sm:rounded-2xl',
     iconSize: 22,
     title: 'text-[19px] sm:text-xl md:text-2xl leading-tight',
