@@ -147,7 +147,7 @@ export const PageHeader = ({
             <h1
               className={`
               font-bold text-slate-900 dark:text-white
-              tracking-tight flex items-center gap-2 break-words max-w-full
+              tracking-tight break-words max-w-full
               ${styles.title}
             `}
             >
