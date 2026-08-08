@@ -5,7 +5,7 @@ import TopNav from '../common/TopNav';
 import BottomNav from '../common/BottomNav';
 import Footer from '../common/Footer';
 import LoadingSpinner from '../common/LoadingSpinner';
-import BackToTop from '../common/BackToTop.jsx';
+import BackToTop from '../common/BackToTop';
 import PageTransition from '../common/PageTransition';
 import ErrorBoundary from '../common/ErrorBoundary';
 import Skeleton, { DashboardSkeleton, TableSkeleton } from '../common/Skeleton';
