@@ -149,40 +149,41 @@ const MeetingCalendar = memo(() => {
 
             {daysInMonth.map((item, index) => {
               const dayMeetings = getMeetingsForDate(item.date);
-            const isToday =
-              item.date.toDateString() === new Date().toDateString();
+              const isToday =
+                item.date.toDateString() === new Date().toDateString();
 
-            return (
-              <div
-                key={index}
-                className={`meeting-calendar-day ${item.month !== 'curr' ? 'inactive' : ''} ${isToday ? 'selected' : ''}`}
-              >
-                <div className='mb-2 flex items-start justify-between'>
-                  <span
-                    className={`text-sm font-bold ${isToday ? 'text-indigo-600' : 'text-gray-500 dark:text-gray-400'}`}
-                  >
-                    {item.day}
-                  </span>
-                  {dayMeetings.length > 0 && (
-                    <span className='h-1.5 w-1.5 rounded-full bg-indigo-500'></span>
-                  )}
-                </div>
-
-                <div className='space-y-1'>
-                  {dayMeetings.slice(0, 2).map((m, i) => (
-                    <div
-                      key={i}
-                      onClick={() => navigate(`/meetings/${m._id || m.id}`)}
-                      className='cursor-pointer truncate rounded border border-indigo-100 bg-indigo-50 p-1 text-[9px] font-bold text-indigo-600 transition-colors hover:bg-indigo-100 dark:border-indigo-800/30 dark:bg-indigo-900/20 dark:text-indigo-400'
+              return (
+                <div
+                  key={index}
+                  className={`meeting-calendar-day ${item.month !== 'curr' ? 'inactive' : ''} ${isToday ? 'selected' : ''}`}
+                >
+                  <div className='mb-2 flex items-start justify-between'>
+                    <span
+                      className={`text-sm font-bold ${isToday ? 'text-indigo-600' : 'text-gray-500 dark:text-gray-400'}`}
                     >
-                      {m.time ? `${m.time} ${m.title}` : m.title}
-                    </div>
-                  ))}
-                  {dayMeetings.length > 2 && (
-                    <div className='pl-1 text-[9px] font-bold text-gray-400'>
-                      +{dayMeetings.length - 2} more
-                    </div>
-                  )}
+                      {item.day}
+                    </span>
+                    {dayMeetings.length > 0 && (
+                      <span className='h-1.5 w-1.5 rounded-full bg-indigo-500'></span>
+                    )}
+                  </div>
+
+                  <div className='space-y-1'>
+                    {dayMeetings.slice(0, 2).map((m, i) => (
+                      <div
+                        key={i}
+                        onClick={() => navigate(`/meetings/${m._id || m.id}`)}
+                        className='cursor-pointer truncate rounded border border-indigo-100 bg-indigo-50 p-1 text-[9px] font-bold text-indigo-600 transition-colors hover:bg-indigo-100 dark:border-indigo-800/30 dark:bg-indigo-900/20 dark:text-indigo-400'
+                      >
+                        {m.time ? `${m.time} ${m.title}` : m.title}
+                      </div>
+                    ))}
+                    {dayMeetings.length > 2 && (
+                      <div className='pl-1 text-[9px] font-bold text-gray-400'>
+                        +{dayMeetings.length - 2} more
+                      </div>
+                    )}
+                  </div>
                 </div>
               );
             })}
