@@ -308,7 +308,6 @@ const ProjectProposal = () => {
                   name='category'
                   value={formData.category}
                   onChange={handleCategoryChange}
-                  disabled={!formData.department}
                   required
                 >
                   <option value=''>
@@ -329,7 +328,6 @@ const ProjectProposal = () => {
                   name='projectType'
                   value={formData.projectType}
                   onChange={handleChange}
-                  disabled={!formData.category}
                   required
                 >
                   <option value=''>

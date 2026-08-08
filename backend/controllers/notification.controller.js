@@ -290,3 +290,39 @@ exports.getNotificationById = async (req, res) => {
     );
   }
 };
+
+/**
+ * Clear all notifications
+ * @route   DELETE /api/notifications/clear-all
+ * @desc    Remove all notifications for the authenticated user
+ * @access  Authenticated
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
+exports.clearAllNotifications = async (req, res) => {
+  try {
+    const result = await notificationService.removeAll(req.user.id);
+
+    sendResponse(
+      res,
+      {
+        success: !result.error,
+        message: result.message,
+        data: result.data || null,
+        error: result.error || null,
+      },
+      result.error ? 400 : 200
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: 'Internal server error',
+        data: null,
+        error: error.message,
+      },
+      500
+    );
+  }
+};

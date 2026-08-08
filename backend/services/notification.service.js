@@ -195,3 +195,17 @@ exports.remove = async (id, userId) => {
     return response(true, null, err.message || 'Failed to delete notification');
   }
 };
+
+/**
+ * Remove all notifications for a user
+ * @param {string} userId - Recipient user identifier
+ * @returns {Promise<Object>} Formatted service response with removal status
+ */
+exports.removeAll = async (userId) => {
+  try {
+    const result = await notificationRepository.removeMany({ user: userId });
+    return response(false, result, 'All notifications deleted successfully');
+  } catch (err) {
+    return response(true, null, err.message || 'Failed to clear notifications');
+  }
+};

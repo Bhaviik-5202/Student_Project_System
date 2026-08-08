@@ -59,7 +59,7 @@ const ProjectTimeline = memo(() => {
   const months = useMemo(() => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'], []);
 
   return (
-    <div className='project-page animate-fade-in text-gray-600 dark:text-gray-400'>
+    <div className='space-y-6 animate-fade-in text-gray-600 dark:text-gray-400'>
       <PageHeader
         title='Project Timelines'
         subtitle='Orchestration of active academic ventures and milestone schedules'
@@ -77,7 +77,7 @@ const ProjectTimeline = memo(() => {
           )
         }
       />
-      <br />
+
       {loading ? (
         <div className='p-20 text-center text-sm italic text-gray-400'>
           Synchronizing roadmap...

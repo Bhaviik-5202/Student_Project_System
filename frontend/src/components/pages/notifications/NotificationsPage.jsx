@@ -6,6 +6,9 @@ import {
   CheckCheck,
   RefreshCw,
   Filter,
+  AlertTriangle,
+  XCircle,
+  Info,
 } from 'lucide-react';
 import PageHeader from '../../common/PageHeader';
 import { useNotificationsContext } from '../../../context/NotificationContext';
@@ -135,13 +138,13 @@ const NotificationsPage = () => {
                 <div
                   key={id}
                   onClick={() => !notif.read && markAsRead(id)}
-                  className={`group flex items-start justify-between rounded-xl border p-4 transition-all duration-200 ${
+                  className={`group flex flex-col sm:flex-row sm:items-center items-start justify-between gap-4 rounded-xl border p-4 transition-all duration-200 ${
                     notif.read
                       ? 'border-gray-100 bg-white dark:border-slate-700/60 dark:bg-slate-800/60'
                       : 'border-blue-200 bg-gradient-to-r from-blue-50/70 to-blue-100/30 dark:border-blue-800/60 dark:from-blue-900/20 dark:to-slate-800'
                   }`}
                 >
-                  <div className='flex items-start gap-3.5 flex-1 min-w-0 pr-4'>
+                  <div className='flex items-start gap-3.5 w-full sm:flex-1 min-w-0'>
                     <div
                       className={`mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl font-bold text-xs ${
                         notif.type === 'error'
@@ -153,7 +156,15 @@ const NotificationsPage = () => {
                               : 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'
                       }`}
                     >
-                      <Bell size={18} />
+                      {notif.type === 'error' ? (
+                        <XCircle size={18} />
+                      ) : notif.type === 'success' ? (
+                        <CheckCircle2 size={18} />
+                      ) : notif.type === 'warning' ? (
+                        <AlertTriangle size={18} />
+                      ) : (
+                        <Info size={18} />
+                      )}
                     </div>
 
                     <div className='flex-1 min-w-0'>
@@ -181,7 +192,7 @@ const NotificationsPage = () => {
                     </div>
                   </div>
 
-                  <div className='flex items-center gap-1 shrink-0'>
+                  <div className='flex items-center gap-1 self-end sm:self-center shrink-0'>
                     {!notif.read && (
                       <button
                         onClick={(e) => {

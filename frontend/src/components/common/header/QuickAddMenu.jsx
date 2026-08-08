@@ -1,4 +1,4 @@
-import HeaderIcon from './HeaderIcon';
+import { Zap } from 'lucide-react';
 
 /**
  * QuickAddMenu Component
@@ -12,7 +12,7 @@ const QuickAddMenu = ({ actions, onActionClick }) => {
     <>
       <div className='border-b border-gray-100 px-4 py-3 dark:border-gray-700'>
         <h3 className='flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-white'>
-          <HeaderIcon name='bolt' className='text-yellow-500' size='text-sm' />
+          <Zap className='h-4 w-4 text-yellow-500' />
           Quick Actions
         </h3>
       </div>
@@ -26,10 +26,8 @@ const QuickAddMenu = ({ actions, onActionClick }) => {
             <div
               className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl ${action.bgColor} mr-3 transition-transform group-hover:scale-105`}
             >
-              <HeaderIcon
-                name={action.icon}
-                className={action.color}
-                size='text-sm'
+              <action.icon
+                className={`h-4 w-4 ${action.color}`}
               />
             </div>
             <span className='font-medium'>{action.label}</span>

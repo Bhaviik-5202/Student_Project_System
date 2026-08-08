@@ -56,6 +56,13 @@ router.patch('/mark-all-read', notificationController.markAllAsRead);
 router.patch('/:id/read', notificationController.markAsRead);
 
 /**
+ * @route   DELETE /api/v1/notifications/clear-all
+ * @desc    Clear all notifications for a user
+ * @access  Private (Authenticated Users)
+ */
+router.delete('/clear-all', notificationController.clearAllNotifications);
+
+/**
  * @route   DELETE /api/v1/notifications/:id
  * @desc    Delete a notification
  * @access  Private (Authenticated Users)

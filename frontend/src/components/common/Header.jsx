@@ -11,7 +11,17 @@ import NotificationMenu from './header/NotificationMenu';
 import UserMenu from './header/UserMenu';
 import QuickAddMenu from './header/QuickAddMenu';
 import MobileSidebar from './header/MobileSidebar';
-
+import {
+  Plus,
+  FolderKanban,
+  UserPlus,
+  CalendarPlus,
+  Settings,
+  PlusCircle,
+  UploadCloud,
+  CalendarDays,
+  FolderOpen
+} from 'lucide-react';
 /**
  * Header Component
  *
@@ -169,28 +179,28 @@ const Header = memo(
       if (user?.role === 'admin') {
         return [
           {
-            icon: 'diagram-project',
+            icon: FolderKanban,
             label: 'New Project Architecture',
             color: 'text-blue-600',
             bgColor: 'bg-blue-100 dark:bg-blue-900/40',
             path: '/project-types',
           },
           {
-            icon: 'user-plus',
+            icon: UserPlus,
             label: 'Add System User',
             color: 'text-indigo-600',
             bgColor: 'bg-indigo-100 dark:bg-indigo-900/40',
             path: '/user-management/new',
           },
           {
-            icon: 'calendar-plus',
+            icon: CalendarPlus,
             label: 'Schedule Meeting',
             color: 'text-green-600',
             bgColor: 'bg-green-100 dark:bg-green-900/40',
             path: '/meetings/new',
           },
           {
-            icon: 'gear',
+            icon: Settings,
             label: 'System Settings',
             color: 'text-amber-600',
             bgColor: 'bg-amber-100 dark:bg-amber-900/40',
@@ -202,21 +212,21 @@ const Header = memo(
       if (user?.role === 'faculty') {
         return [
           {
-            icon: 'plus',
+            icon: PlusCircle,
             label: 'New Student Project',
             color: 'text-blue-600',
             bgColor: 'bg-blue-100 dark:bg-blue-900/40',
             path: '/projects/new',
           },
           {
-            icon: 'calendar-plus',
+            icon: CalendarPlus,
             label: 'Schedule Consultation',
             color: 'text-green-600',
             bgColor: 'bg-green-100 dark:bg-green-900/40',
             path: '/meetings/new',
           },
           {
-            icon: 'file-arrow-up',
+            icon: UploadCloud,
             label: 'Upload Resource',
             color: 'text-emerald-600',
             bgColor: 'bg-emerald-100 dark:bg-emerald-900/40',
@@ -228,21 +238,21 @@ const Header = memo(
       // Student quick links
       return [
         {
-          icon: 'diagram-project',
+          icon: FolderKanban,
           label: 'My Assigned Project',
           color: 'text-blue-600',
           bgColor: 'bg-blue-100 dark:bg-blue-900/40',
           path: '/projects',
         },
         {
-          icon: 'calendar-days',
+          icon: CalendarDays,
           label: 'My Meetings',
           color: 'text-indigo-600',
           bgColor: 'bg-indigo-100 dark:bg-indigo-900/40',
           path: '/meetings',
         },
         {
-          icon: 'folder-open',
+          icon: FolderOpen,
           label: 'Browse Resources',
           color: 'text-emerald-600',
           bgColor: 'bg-emerald-100 dark:bg-emerald-900/40',
@@ -335,7 +345,7 @@ const Header = memo(
                       className={`rounded-xl p-2.5 transition-all ${showQuickAdd ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/40' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:bg-gray-800  dark:hover:bg-gray-800'}`}
                       aria-label='Quick Actions'
                     >
-                      <HeaderIcon name='plus' size='w-5 h-5' />
+                      <Plus className='h-5 w-5' />
                     </button>
                     <Dropdown isOpen={showQuickAdd} className='absolute right-0 top-full mt-2 w-60 origin-top-right'>
                       <QuickAddMenu

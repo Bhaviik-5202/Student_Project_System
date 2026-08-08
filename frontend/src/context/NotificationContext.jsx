@@ -89,7 +89,7 @@ export const NotificationProvider = ({ children }) => {
 
     try {
       setLoading(true);
-      const res = await api.get('/notifications');
+      const res = await api.get('/notifications?limit=100');
 
       let notifs = [];
       if (Array.isArray(res)) {
@@ -199,10 +199,7 @@ export const NotificationProvider = ({ children }) => {
 
   const clearAll = async () => {
     try {
-      const allNotifs = [...notifications];
-      for (const notif of allNotifs) {
-        await api.delete(`/notifications/${notif._id || notif.id}`);
-      }
+      await api.delete('/notifications/clear-all');
       setNotifications([]);
     } catch (error) {
       console.error('Failed to clear notifications:', error);

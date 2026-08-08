@@ -69,3 +69,10 @@ exports.updateMany = (filter, data) => Notification.updateMany(filter, data);
  * @returns {Promise<number>} Record count
  */
 exports.count = (filter = {}) => Notification.countDocuments(filter);
+
+/**
+ * Remove multiple notification records matching a specific filter
+ * @param {Object} filter - Mongoose filter object
+ * @returns {Promise<Object>} Deletion operation status
+ */
+exports.removeMany = (filter) => Notification.deleteMany(filter);

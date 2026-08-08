@@ -193,7 +193,7 @@ const AuditLog = memo(() => {
       />
 
       <div className='admin-card mb-6'>
-        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4'>
+        <div className='grid grid-cols-2 gap-3 md:gap-4 md:grid-cols-4'>
           <div className='admin-form-group mb-0'>
             <label className='admin-label'>
               <ListChecks size={16} className='mr-2 opacity-50' />

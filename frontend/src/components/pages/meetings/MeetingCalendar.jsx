@@ -133,8 +133,8 @@ const MeetingCalendar = memo(() => {
           </div>
         </div>
 
-        {/* Calendar Grid */}
-        <div className='meeting-calendar-grid-wrapper no-scrollbar'>
+        {/* Desktop View: Calendar Grid */}
+        <div className='hidden md:block meeting-calendar-grid-wrapper no-scrollbar'>
           <div className='meeting-calendar-grid'>
             {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
               <div
@@ -188,6 +188,64 @@ const MeetingCalendar = memo(() => {
               );
             })}
           </div>
+        </div>
+
+        {/* Mobile View: Agenda List */}
+        <div className='md:hidden flex flex-col p-4 bg-slate-50/50 dark:bg-slate-900/30'>
+          {meetings.filter(m => new Date(m.date).getMonth() === currentDate.getMonth() && new Date(m.date).getFullYear() === currentDate.getFullYear()).length === 0 ? (
+            <div className='py-12 flex flex-col items-center text-center'>
+              <CalendarIcon className='h-12 w-12 text-slate-300 dark:text-slate-700 mb-3' />
+              <p className='text-sm text-slate-500 dark:text-slate-400 font-medium'>No meetings scheduled this month.</p>
+            </div>
+          ) : (
+            <div className='space-y-3'>
+              {meetings
+                .filter(m => new Date(m.date).getMonth() === currentDate.getMonth() && new Date(m.date).getFullYear() === currentDate.getFullYear())
+                .sort((a, b) => new Date(a.date) - new Date(b.date))
+                .map((m) => {
+                  const mDate = new Date(m.date);
+                  const isToday = mDate.toDateString() === new Date().toDateString();
+                  return (
+                    <div
+                      key={m._id || m.id}
+                      onClick={() => navigate(`/meetings/${m._id || m.id}`)}
+                      className={`flex gap-4 p-4 rounded-2xl border bg-white dark:bg-slate-800 transition-all cursor-pointer shadow-sm ${
+                        isToday 
+                          ? 'border-indigo-200 dark:border-indigo-800/60 ring-1 ring-indigo-500/10' 
+                          : 'border-slate-100 dark:border-slate-700/60'
+                      }`}
+                    >
+                      <div className='flex flex-col items-center justify-center shrink-0 w-12 h-14 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-400 border border-indigo-100/50 dark:border-indigo-800/30'>
+                        <span className='text-[10px] font-bold uppercase tracking-widest opacity-80'>
+                          {mDate.toLocaleDateString('en-US', { weekday: 'short' })}
+                        </span>
+                        <span className='text-lg font-black leading-none mt-1'>
+                          {mDate.getDate()}
+                        </span>
+                      </div>
+                      
+                      <div className='flex flex-col flex-1 min-w-0 justify-center'>
+                        <h4 className='font-bold text-slate-900 dark:text-white truncate text-sm'>
+                          {m.title}
+                        </h4>
+                        <div className='flex items-center gap-3 mt-1.5 text-xs text-slate-500 dark:text-slate-400'>
+                          <span className='flex items-center gap-1 shrink-0'>
+                            <Clock size={12} className={isToday ? 'text-indigo-500' : ''} />
+                            {m.time || 'TBA'}
+                          </span>
+                          {m.location && (
+                            <span className='flex items-center gap-1 truncate'>
+                              <MapPin size={12} className={isToday ? 'text-indigo-500' : ''} />
+                              <span className='truncate'>{m.location}</span>
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
+          )}
         </div>
       </div>
     </div>
