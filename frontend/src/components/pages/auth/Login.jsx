@@ -35,8 +35,8 @@ const Login = memo(({ forceAdminMode = false }) => {
 
   const [isAdminLoginMode, setIsAdminLoginMode] = useState(
     forceAdminMode ||
-      location.pathname === '/super-admin/login' ||
-      location.search.includes('admin=true')
+    location.pathname === '/super-admin/login' ||
+    location.search.includes('admin=true')
   );
 
   // Secret keyboard shortcut Ctrl + Shift + A to reveal Super Admin login mode
@@ -354,7 +354,7 @@ const Login = memo(({ forceAdminMode = false }) => {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className='auth-input'
+                className='auth-input !pl-11'
                 placeholder='you@university.edu'
               />
             </div>
@@ -380,7 +380,7 @@ const Login = memo(({ forceAdminMode = false }) => {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className='auth-input'
+                className='auth-input !pl-11'
                 placeholder='••••••••'
               />
               <button
