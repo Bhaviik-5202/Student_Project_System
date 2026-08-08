@@ -1,5 +1,13 @@
 import { Link } from 'react-router-dom';
-import HeaderIcon from './HeaderIcon';
+import {
+  Bell,
+  CheckCircle,
+  AlertTriangle,
+  XCircle,
+  Trash2,
+  BellOff,
+  ArrowRight,
+} from 'lucide-react';
 
 /**
  * NotificationMenu Component
@@ -12,26 +20,26 @@ const getNotificationStyle = (type) => {
   switch (type) {
     case 'success':
       return {
-        icon: 'check-circle',
+        icon: CheckCircle,
         color: 'text-green-600',
         bgColor: 'bg-green-100 dark:bg-green-900/40',
       };
     case 'warning':
       return {
-        icon: 'triangle-exclamation',
+        icon: AlertTriangle,
         color: 'text-yellow-600',
         bgColor: 'bg-yellow-100 dark:bg-yellow-900/40',
       };
     case 'error':
       return {
-        icon: 'circle-xmark',
+        icon: XCircle,
         color: 'text-red-600',
         bgColor: 'bg-red-100 dark:bg-red-900/40',
       };
     case 'info':
     default:
       return {
-        icon: 'bell',
+        icon: Bell,
         color: 'text-blue-600',
         bgColor: 'bg-blue-100 dark:bg-blue-900/40',
       };
@@ -62,7 +70,7 @@ const NotificationMenu = ({
       <div className='border-b border-gray-100 px-4 py-3 dark:border-gray-700'>
         <div className='flex items-center justify-between'>
           <h3 className='flex items-center gap-2 font-semibold text-gray-900 dark:text-white'>
-            <HeaderIcon name='bell' className='text-blue-500' size='text-sm' />
+            <Bell className='h-4 w-4 text-blue-500' aria-hidden='true' />
             Notifications
           </h3>
           <div className='flex items-center gap-3'>
@@ -105,10 +113,9 @@ const NotificationMenu = ({
                   <div
                     className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl ${style.bgColor}`}
                   >
-                    <HeaderIcon
-                      name={style.icon}
-                      className={style.color}
-                      size='text-sm'
+                    <style.icon
+                      className={`h-4 w-4 ${style.color}`}
+                      aria-hidden='true'
                     />
                   </div>
                   <div className='min-w-0 flex-1'>
@@ -135,10 +142,9 @@ const NotificationMenu = ({
                       className='mt-0.5 opacity-0 transition-opacity hover:text-red-500 group-hover/notifitem:opacity-100'
                       title='Delete notification'
                     >
-                      <HeaderIcon
-                        name='trash'
-                        className='text-gray-400 hover:text-red-500'
-                        size='text-sm'
+                      <Trash2
+                        className='h-4 w-4 text-gray-400 hover:text-red-500'
+                        aria-hidden='true'
                       />
                     </button>
                   )}
@@ -148,10 +154,9 @@ const NotificationMenu = ({
           })
         ) : (
           <div className='px-4 py-8 text-center'>
-            <HeaderIcon
-              name='bell-slash'
-              className='mb-2 text-gray-300 dark:text-gray-600 dark:text-gray-300'
-              size='text-3xl'
+            <BellOff
+              className='mx-auto mb-2 h-8 w-8 text-gray-300 dark:text-gray-600'
+              aria-hidden='true'
             />
             <p className='text-sm text-gray-500 dark:text-gray-400'>
               No new notifications
@@ -170,7 +175,7 @@ const NotificationMenu = ({
           className='flex items-center justify-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300'
         >
           View all notifications
-          <HeaderIcon name='arrow-right' size='text-xs' />
+          <ArrowRight className='h-3 w-3' aria-hidden='true' />
         </Link>
       </div>
     </>

@@ -133,7 +133,7 @@ const ProjectProposal = () => {
     const deptObj = optionsHierarchy.find(
       (d) => d.name === formData.department
     );
-    return deptObj ? deptObj.categories.map((c) => c.name) : [];
+    return deptObj?.categories ? deptObj.categories.map((c) => c.name) : [];
   }, [optionsHierarchy, formData.department]);
 
   const availableProjectTypes = useMemo(() => {
@@ -141,9 +141,9 @@ const ProjectProposal = () => {
     const deptObj = optionsHierarchy.find(
       (d) => d.name === formData.department
     );
-    if (!deptObj) return [];
+    if (!deptObj?.categories) return [];
     const catObj = deptObj.categories.find((c) => c.name === formData.category);
-    return catObj ? catObj.projectTypes : [];
+    return catObj?.projectTypes ? catObj.projectTypes : [];
   }, [optionsHierarchy, formData.department, formData.category]);
 
   const handleChange = (e) => {
@@ -308,9 +308,7 @@ const ProjectProposal = () => {
                   name='category'
                   value={formData.category}
                   onChange={handleCategoryChange}
-                  disabled={
-                    !formData.department || availableCategories.length === 0
-                  }
+                  disabled={!formData.department}
                   required
                 >
                   <option value=''>
@@ -331,9 +329,7 @@ const ProjectProposal = () => {
                   name='projectType'
                   value={formData.projectType}
                   onChange={handleChange}
-                  disabled={
-                    !formData.category || availableProjectTypes.length === 0
-                  }
+                  disabled={!formData.category}
                   required
                 >
                   <option value=''>

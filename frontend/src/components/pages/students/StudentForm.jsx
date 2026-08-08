@@ -196,7 +196,7 @@ const StudentForm = memo(() => {
                       value={formData.name}
                       onChange={handleChange}
                       placeholder='Full Name (e.g. Alex Johnson)'
-                      className='w-full rounded-xl border border-slate-200/80 bg-slate-50 dark:bg-slate-800/50 py-3 pl-14 pr-4 text-sm text-slate-900 dark:text-white placeholder-slate-400 outline-none transition-all duration-200 hover:border-slate-300 focus:border-indigo-500 focus:bg-white dark:bg-slate-900 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-800 dark:bg-slate-950/50  dark:placeholder-slate-500 dark:focus:border-indigo-500/40 dark:focus:bg-slate-950'
+                      className='w-full rounded-xl border border-slate-200/80 bg-slate-50 dark:bg-slate-800/50 py-3 !pl-14 pr-4 text-sm text-slate-900 dark:text-white placeholder-slate-400 outline-none transition-all duration-200 hover:border-slate-300 focus:border-indigo-500 focus:bg-white dark:bg-slate-900 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-800 dark:bg-slate-950/50  dark:placeholder-slate-500 dark:focus:border-indigo-500/40 dark:focus:bg-slate-950'
                       required
                     />
                   </div>
@@ -219,7 +219,7 @@ const StudentForm = memo(() => {
                       value={formData.email}
                       onChange={handleChange}
                       placeholder='Email (e.g. student@university.edu)'
-                      className='w-full rounded-xl border border-slate-200/80 bg-slate-50 dark:bg-slate-800/50 py-3 pl-14 pr-4 text-sm text-slate-900 dark:text-white placeholder-slate-400 outline-none transition-all duration-200 hover:border-slate-300 focus:border-indigo-500 focus:bg-white dark:bg-slate-900 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-800 dark:bg-slate-950/50  dark:placeholder-slate-500 dark:focus:border-indigo-500/40 dark:focus:bg-slate-950'
+                      className='w-full rounded-xl border border-slate-200/80 bg-slate-50 dark:bg-slate-800/50 py-3 !pl-14 pr-4 text-sm text-slate-900 dark:text-white placeholder-slate-400 outline-none transition-all duration-200 hover:border-slate-300 focus:border-indigo-500 focus:bg-white dark:bg-slate-900 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-800 dark:bg-slate-950/50  dark:placeholder-slate-500 dark:focus:border-indigo-500/40 dark:focus:bg-slate-950'
                       required
                     />
                   </div>
@@ -242,7 +242,7 @@ const StudentForm = memo(() => {
                       value={formData.phone}
                       onChange={handleChange}
                       placeholder='Phone (e.g. +91 98765 43210)'
-                      className='w-full rounded-xl border border-slate-200/80 bg-slate-50 dark:bg-slate-800/50 py-3 pl-14 pr-4 text-sm text-slate-900 dark:text-white placeholder-slate-400 outline-none transition-all duration-200 hover:border-slate-300 focus:border-indigo-500 focus:bg-white dark:bg-slate-900 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-800 dark:bg-slate-950/50  dark:placeholder-slate-500 dark:focus:border-indigo-500/40 dark:focus:bg-slate-950'
+                      className='w-full rounded-xl border border-slate-200/80 bg-slate-50 dark:bg-slate-800/50 py-3 !pl-14 pr-4 text-sm text-slate-900 dark:text-white placeholder-slate-400 outline-none transition-all duration-200 hover:border-slate-300 focus:border-indigo-500 focus:bg-white dark:bg-slate-900 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-800 dark:bg-slate-950/50  dark:placeholder-slate-500 dark:focus:border-indigo-500/40 dark:focus:bg-slate-950'
                     />
                   </div>
                 </div>
@@ -283,7 +283,7 @@ const StudentForm = memo(() => {
                       value={formData.rollNumber}
                       onChange={handleChange}
                       placeholder='Roll No (e.g. 2026CS01)'
-                      className='w-full rounded-xl border border-slate-200/80 bg-slate-50 dark:bg-slate-800/50 py-3 pl-14 pr-4 font-mono text-sm text-slate-900 dark:text-white placeholder-slate-400 outline-none transition-all duration-200 hover:border-slate-300 focus:border-indigo-500 focus:bg-white dark:bg-slate-900 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-800 dark:bg-slate-950/50  dark:placeholder-slate-500 dark:focus:border-indigo-500/40 dark:focus:bg-slate-950'
+                      className='w-full rounded-xl border border-slate-200/80 bg-slate-50 dark:bg-slate-800/50 py-3 !pl-14 pr-4 font-mono text-sm text-slate-900 dark:text-white placeholder-slate-400 outline-none transition-all duration-200 hover:border-slate-300 focus:border-indigo-500 focus:bg-white dark:bg-slate-900 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-800 dark:bg-slate-950/50  dark:placeholder-slate-500 dark:focus:border-indigo-500/40 dark:focus:bg-slate-950'
                       required
                     />
                   </div>
@@ -304,7 +304,7 @@ const StudentForm = memo(() => {
                       name='year'
                       value={formData.year}
                       onChange={handleChange}
-                      className='w-full cursor-pointer appearance-none rounded-xl border border-slate-200/80 bg-slate-50 dark:bg-slate-800/50 py-3 pl-14 pr-10 text-sm font-medium text-slate-900 dark:text-white outline-none transition-all duration-200 hover:border-slate-300 focus:border-indigo-500 focus:bg-white dark:bg-slate-900 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-800 dark:bg-slate-950/50  dark:focus:border-indigo-500/40 dark:focus:bg-slate-950'
+                      className='w-full cursor-pointer appearance-none rounded-xl border border-slate-200/80 bg-slate-50 dark:bg-slate-800/50 py-3 !pl-14 pr-10 text-sm font-medium text-slate-900 dark:text-white outline-none transition-all duration-200 hover:border-slate-300 focus:border-indigo-500 focus:bg-white dark:bg-slate-900 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-800 dark:bg-slate-950/50  dark:focus:border-indigo-500/40 dark:focus:bg-slate-950'
                       required
                     >
                       <option value=''>Select Academic Year</option>
@@ -331,7 +331,7 @@ const StudentForm = memo(() => {
                       name='department'
                       value={formData.department}
                       onChange={handleChange}
-                      className='w-full cursor-pointer appearance-none rounded-xl border border-slate-200/80 bg-slate-50 dark:bg-slate-800/50 py-3 pl-14 pr-10 text-sm font-medium text-slate-900 dark:text-white outline-none transition-all duration-200 hover:border-slate-300 focus:border-indigo-500 focus:bg-white dark:bg-slate-900 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-800 dark:bg-slate-950/50  dark:focus:border-indigo-500/40 dark:focus:bg-slate-950'
+                      className='w-full cursor-pointer appearance-none rounded-xl border border-slate-200/80 bg-slate-50 dark:bg-slate-800/50 py-3 !pl-14 pr-10 text-sm font-medium text-slate-900 dark:text-white outline-none transition-all duration-200 hover:border-slate-300 focus:border-indigo-500 focus:bg-white dark:bg-slate-900 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-800 dark:bg-slate-950/50  dark:focus:border-indigo-500/40 dark:focus:bg-slate-950'
                       required
                     >
                       <option value=''>Select Department</option>
@@ -366,7 +366,7 @@ const StudentForm = memo(() => {
                         value={formData.customDepartment}
                         onChange={handleChange}
                         placeholder='Enter custom department title'
-                        className='w-full rounded-xl border border-slate-200/80 bg-slate-50 dark:bg-slate-800/50 py-3 pl-14 pr-4 text-sm text-slate-900 dark:text-white placeholder-slate-400 outline-none transition-all duration-200 hover:border-slate-300 focus:border-indigo-500 focus:bg-white dark:bg-slate-900 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-800 dark:bg-slate-950/50  dark:placeholder-slate-500 dark:focus:border-indigo-500/40 dark:focus:bg-slate-950'
+                        className='w-full rounded-xl border border-slate-200/80 bg-slate-50 dark:bg-slate-800/50 py-3 !pl-14 pr-4 text-sm text-slate-900 dark:text-white placeholder-slate-400 outline-none transition-all duration-200 hover:border-slate-300 focus:border-indigo-500 focus:bg-white dark:bg-slate-900 focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-800 dark:bg-slate-950/50  dark:placeholder-slate-500 dark:focus:border-indigo-500/40 dark:focus:bg-slate-950'
                         required
                       />
                     </div>

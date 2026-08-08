@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import HeaderIcon from './HeaderIcon';
+import { LayoutDashboard, User as UserIcon, Settings, ShieldCheck, LogOut, Shield } from 'lucide-react';
 
 /**
  * UserMenu Component
@@ -25,7 +25,7 @@ const UserMenu = ({ user, initials, onLogout, onClose }) => {
               {user?.email || 'user@example.com'}
             </p>
             <span className='mt-1.5 inline-flex items-center gap-1 rounded-lg bg-blue-100 px-2.5 py-1 text-xs font-semibold capitalize text-blue-700 dark:bg-blue-900/50 dark:text-blue-300'>
-              <HeaderIcon name='shield-halved' size='text-[10px]' />
+              <Shield className='w-3 h-3' />
               {user?.role || 'user'}
             </span>
           </div>
@@ -35,26 +35,28 @@ const UserMenu = ({ user, initials, onLogout, onClose }) => {
       {/* Menu Links */}
       <div className='py-2'>
         {[
-          { icon: 'gauge-high', label: 'Dashboard', path: '/dashboard' },
-          { icon: 'user', label: 'My Profile', path: '/profile' },
-          { icon: 'gear', label: 'Settings', path: '/settings' },
-        ].map((item) => (
-          <Link
-            key={item.path}
-            to={item.path}
-            onClick={onClose}
-            className='group flex items-center px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-800 hover:text-blue-600 dark:text-gray-300 dark:hover:bg-gray-700/50 dark:hover:text-blue-400'
-          >
-            <div className='mr-3 flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800 transition-colors group-hover:bg-blue-100 dark:bg-gray-700 dark:group-hover:bg-blue-900/40'>
-              <HeaderIcon
-                name={item.icon}
-                className='text-gray-500 dark:text-gray-400 group-hover:text-blue-600  dark:group-hover:text-blue-400'
-                size='text-sm'
-              />
-            </div>
-            <span className='font-medium'>{item.label}</span>
-          </Link>
-        ))}
+          { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
+          { icon: UserIcon, label: 'My Profile', path: '/profile' },
+          { icon: Settings, label: 'Settings', path: '/settings' },
+        ].map((item) => {
+          const Icon = item.icon;
+          return (
+            <Link
+              key={item.path}
+              to={item.path}
+              onClick={onClose}
+              className='group flex items-center px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-800 hover:text-blue-600 dark:text-gray-300 dark:hover:bg-gray-700/50 dark:hover:text-blue-400'
+            >
+              <div className='mr-3 flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800 transition-colors group-hover:bg-blue-100 dark:bg-gray-700 dark:group-hover:bg-blue-900/40'>
+                <Icon
+                  className='w-4 h-4 text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400'
+                  aria-hidden='true'
+                />
+              </div>
+              <span className='font-medium'>{item.label}</span>
+            </Link>
+          );
+        })}
 
         {user?.role === 'admin' && (
           <Link
@@ -63,10 +65,9 @@ const UserMenu = ({ user, initials, onLogout, onClose }) => {
             className='group flex items-center px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-800 hover:text-blue-600 dark:text-gray-300 dark:hover:bg-gray-700/50 dark:hover:text-blue-400'
           >
             <div className='mr-3 flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800 transition-colors group-hover:bg-blue-100 dark:bg-gray-700 dark:group-hover:bg-blue-900/40'>
-              <HeaderIcon
-                name='shield-halved'
-                className='text-gray-500 dark:text-gray-400 group-hover:text-blue-600  dark:group-hover:text-blue-400'
-                size='text-sm'
+              <ShieldCheck
+                className='w-4 h-4 text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400'
+                aria-hidden='true'
               />
             </div>
             <span className='font-medium'>Admin Panel</span>
@@ -83,10 +84,9 @@ const UserMenu = ({ user, initials, onLogout, onClose }) => {
           className='group flex w-full items-center px-4 py-2.5 text-sm text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20'
         >
           <div className='mr-3 flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 transition-colors group-hover:bg-red-100 dark:bg-red-900/30 dark:group-hover:bg-red-900/50'>
-            <HeaderIcon
-              name='right-from-bracket'
-              className='text-red-500'
-              size='text-sm'
+            <LogOut
+              className='w-4 h-4 text-red-500'
+              aria-hidden='true'
             />
           </div>
           <span className='font-medium'>Sign Out</span>

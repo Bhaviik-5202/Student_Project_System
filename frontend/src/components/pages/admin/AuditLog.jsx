@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Shield, RefreshCw, Download, User, Network, ListChecks, CheckCircle, Calendar, Filter, Loader2, FolderOpen } from 'lucide-react';
+import { Shield, RefreshCw, Download, User, Network, ListChecks, CheckCircle, Calendar, Filter, Loader2, FolderOpen, AlignCenter } from 'lucide-react';
 import PageHeader from '../../common/PageHeader';
 import api from '../../../utils/api';
 import '../../../assets/styles/admin.css';
@@ -19,9 +19,8 @@ const MobileAuditCard = memo(({ log, getUserDisplay }) => (
           </span>
         </div>
       </div>
-      <span className={`admin-badge shrink-0 text-[10px] ${
-        log.status === 'Success' ? 'admin-badge-success' : log.status === 'Warning' ? 'admin-badge-warning' : 'admin-badge-danger'
-      }`}>
+      <span className={`admin-badge shrink-0 text-[10px] ${log.status === 'Success' ? 'admin-badge-success' : log.status === 'Warning' ? 'admin-badge-warning' : 'admin-badge-danger'
+        }`}>
         {log.status || 'Unknown'}
       </span>
     </div>
@@ -177,6 +176,7 @@ const AuditLog = memo(() => {
               <RefreshCw
                 size={16}
                 className={refreshing ? 'animate-spin' : ''}
+                style={{ alignItems: "center" }}
               />
               Refresh
             </button>
@@ -193,7 +193,7 @@ const AuditLog = memo(() => {
       />
 
       <div className='admin-card mb-6'>
-        <div className='grid grid-cols-1 gap-4 md:grid-cols-4'>
+        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4'>
           <div className='admin-form-group mb-0'>
             <label className='admin-label'>
               <ListChecks size={16} className='mr-2 opacity-50' />
@@ -288,11 +288,11 @@ const AuditLog = memo(() => {
               onChange={(e) => setFilters({ ...filters, date: e.target.value })}
             />
           </div>
-          <div className='admin-form-group mb-0'>
-            <label className='admin-label invisible'>Apply</label>
+          <div className='admin-form-group mb-0 sm:col-span-2 md:col-span-1 flex flex-col justify-end'>
+            <label className='admin-label invisible hidden md:block'>Apply</label>
             <button
               onClick={handleApplyFilters}
-              className='admin-btn admin-btn-primary w-full justify-center'
+              className='admin-btn admin-btn-primary w-full justify-center mt-2 md:mt-0'
             >
               <Filter size={16} />
               Apply Filters
@@ -381,13 +381,12 @@ const AuditLog = memo(() => {
                   </td>
                   <td className='text-center'>
                     <span
-                      className={`admin-badge ${
-                        log.status === 'Success'
+                      className={`admin-badge ${log.status === 'Success'
                           ? 'admin-badge-success'
                           : log.status === 'Warning'
                             ? 'admin-badge-warning'
                             : 'admin-badge-danger'
-                      }`}
+                        }`}
                     >
                       {log.status || 'Unknown'}
                     </span>

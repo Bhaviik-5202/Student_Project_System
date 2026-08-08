@@ -165,11 +165,11 @@ const HelpCenter = memo(() => {
                 key={faq.id || faq._id}
                 className='p-6 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-900'
               >
-                <div className='mb-2 flex items-start justify-between'>
+                <div className='mb-2 flex items-start justify-between gap-3'>
                   <h3 className='font-medium text-slate-900 dark:text-white'>
                     {faq.question}
                   </h3>
-                  <span className='rounded bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[10px] font-bold text-slate-500 dark:text-slate-400 dark:bg-slate-700 '>
+                  <span className='shrink-0 rounded bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[10px] font-bold text-slate-500 dark:text-slate-400 dark:bg-slate-700 '>
                     {faq.category}
                   </span>
                 </div>
