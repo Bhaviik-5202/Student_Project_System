@@ -31,21 +31,21 @@ const BADGE_CONFIGS = {
 
 const VARIANT_STYLES = {
   default: {
-    wrapper: 'px-6 py-8 sm:px-6 sm:py-6 md:p-8 min-h-[112px] sm:min-h-[108px] mt-3 sm:mt-0',
+    wrapper: 'px-10 py-8 sm:px-6 sm:py-6 md:p-8 min-h-[112px] sm:min-h-[108px] mt-3 sm:mt-0',
     icon: 'h-12 w-12 sm:h-12 sm:w-12 md:h-14 md:w-14 rounded-xl sm:rounded-2xl',
     iconSize: 22,
     title: 'text-[19px] sm:text-xl md:text-2xl leading-tight',
     subtitle: 'text-[13.5px] sm:text-sm mt-3 sm:mt-1',
   },
   small: {
-    wrapper: 'px-3 py-3 sm:px-5 sm:py-4.5 min-h-[64px]',
+    wrapper: 'px-6 py-4 sm:px-5 sm:py-4.5 min-h-[64px]',
     icon: 'h-9 w-9 sm:h-11 sm:w-11 rounded-lg sm:rounded-xl',
     iconSize: 18,
     title: 'text-base sm:text-lg',
     subtitle: 'text-xs',
   },
   compact: {
-    wrapper: 'px-3 py-2.5 sm:px-4 sm:py-3.5 min-h-[52px]',
+    wrapper: 'px-6 py-4 sm:px-4 sm:py-3.5 min-h-[52px]',
     icon: 'h-8 w-8 sm:h-9 sm:w-9 rounded-lg',
     iconSize: 16,
     title: 'text-sm sm:text-base md:text-lg',

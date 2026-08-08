@@ -512,20 +512,36 @@ const Settings = memo(() => {
       />
 
       <div className='overflow-hidden rounded-xl border border-slate-200 bg-white dark:bg-slate-900 shadow-sm dark:border-slate-700 '>
-        {/* Settings Tabs */}
-        <div className='border-b border-slate-200 dark:border-slate-700'>
+        {/* Mobile Settings Tabs (Dropdown) */}
+        <div className='sm:hidden p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50'>
+          <select
+            aria-label='Select Settings Section'
+            value={activeTab}
+            onChange={(e) => setActiveTab(e.target.value)}
+            className='w-full appearance-none rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100'
+          >
+            {tabs.map((tab) => (
+              <option key={tab.id} value={tab.id}>
+                {tab.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Desktop Settings Tabs */}
+        <div className='hidden sm:block border-b border-slate-200 dark:border-slate-700'>
           <div className='flex overflow-x-auto'>
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center whitespace-nowrap border-b-2 px-4 py-3 sm:px-6 sm:py-4 text-sm font-medium transition duration-150 ${
+                className={`flex items-center whitespace-nowrap border-b-2 px-6 py-4 text-sm font-medium transition duration-150 ${
                   activeTab === tab.id
                     ? 'border-blue-500 text-blue-600 dark:text-blue-300'
-                    : 'border-transparent text-slate-500 dark:text-slate-400 hover:border-slate-300 hover:text-slate-700  dark:hover:border-slate-600 dark:hover:text-slate-200'
+                    : 'border-transparent text-slate-500 dark:text-slate-400 hover:border-slate-300 hover:text-slate-700 dark:hover:border-slate-600 dark:hover:text-slate-200'
                 }`}
               >
-                <tab.icon className="mr-2 h-4 w-4" />
+                <tab.icon className='mr-2 h-4 w-4' />
                 {tab.label}
               </button>
             ))}
