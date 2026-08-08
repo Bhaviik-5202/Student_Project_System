@@ -706,14 +706,6 @@
     margin-bottom: 1rem !important;
   }
 
-  /* BackToTop: above BottomNav */
-  .back-to-top,
-  [class*='back-to-top'],
-  [class*='BackToTop'] {
-    bottom: calc(var(--mobile-nav-height, 5rem) + 0.75rem) !important;
-    right: 1rem !important;
-  }
-
   /* Toast notifications: above bottom nav */
   [class*='toaster'],
   [class*='Toaster'],
