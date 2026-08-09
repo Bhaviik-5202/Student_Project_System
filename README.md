@@ -31,6 +31,10 @@ The Student Project Management System facilitates collaboration between Students
 - **Collaboration**: Milestone updates, document uploads, and meeting tracking.
 - **Resource Center**: Document libraries, project templates, and tutorial guides.
 
+### 📱 System & UI Architecture
+- **Premium Responsive Design**: Glassmorphic UI tailored for both Desktop and Mobile experiences with seamless native-app layouts on small screens.
+- **Dynamic Feedback**: Real-time toast notifications, animated skeleton loaders, and intuitive visual cues.
+
 ---
 
 ## 👥 Default User Roles

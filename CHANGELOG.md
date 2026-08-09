@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.0] - 2026-08-08
+
+### ✨ UI/UX & Responsive Enhancements
+- **Mobile-First Layout Redesign**: Introduced a tailored native-app feel for mobile devices, moving away from desktop-scaled interfaces.
+- **Premium PageHeader**: Redesigned mobile PageHeaders with custom glassmorphic top-accent borders, dynamic padding, and optimized spacing.
+- **Settings Navigation**: Replaced horizontally scrolling tabs with a clean, space-efficient dropdown menu for mobile users on the Application Settings page.
+- **Robust Layout Calculations**: Refactored the `BackToTop` button logic to dynamically calculate visible footers via DOM intersections, completely eliminating footer overlaps and broken positioning on mobile and desktop.
+- **Enhanced Mobile Footers**: Added a dedicated, glassmorphic `MobileFooter` optimized for small viewports.
+
+---
+
 ## [1.0.0] - 2026-07-30
 
 ### 🎉 Added
