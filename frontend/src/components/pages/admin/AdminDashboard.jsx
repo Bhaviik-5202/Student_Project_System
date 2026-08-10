@@ -85,7 +85,7 @@ export const AdminDashboard = () => {
     try {
       const [dashRes, userRes, auditRes] = await Promise.all([
         analyticsService.getDashboardStats(),
-        adminService.getUsers(),
+        adminService.getUsers({ limit: 5 }),
         auditlogService.getAllAuditLogs({ limit: 5 }),
       ]);
 

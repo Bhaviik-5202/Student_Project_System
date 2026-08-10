@@ -45,8 +45,10 @@ function decryptPassword(text) {
   }
 }
 
+const domainMxCache = new Map();
+
 async function isEmailDeliverable(email) {
-  const domain = email.split('@')[1];
+  const domain = (email.split('@')[1] || '').toLowerCase().trim();
   if (
     !domain ||
     process.env.NODE_ENV === 'test' ||
@@ -57,15 +59,23 @@ async function isEmailDeliverable(email) {
   ) {
     return true;
   }
+
+  if (domainMxCache.has(domain)) {
+    return domainMxCache.get(domain);
+  }
+
   try {
     const mxPromise = dns.resolveMx(domain);
     const timeoutPromise = new Promise((_, reject) =>
-      setTimeout(() => reject(new Error('DNS lookup timeout')), 3000)
+      setTimeout(() => reject(new Error('DNS lookup timeout')), 2000)
     );
     const mx = await Promise.race([mxPromise, timeoutPromise]);
-    return Array.isArray(mx) && mx.length > 0;
+    const isValid = Array.isArray(mx) && mx.length > 0;
+    domainMxCache.set(domain, isValid);
+    return isValid;
   } catch (err) {
     logger.warn(`MX record check skipped for domain ${domain}: ${err.message}`);
+    domainMxCache.set(domain, true);
     return true; // Fallback to true so DNS lookup delays or restrictions never block valid registration
   }
 }

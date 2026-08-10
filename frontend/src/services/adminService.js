@@ -46,9 +46,9 @@ const adminService = {
     }
   },
 
-  getUsers: async () => {
+  getUsers: async (params = {}) => {
     try {
-      return await api.get('/admin/users');
+      return await api.get('/admin/users', { params });
     } catch (error) {
       return {
         success: false,

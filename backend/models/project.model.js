@@ -255,5 +255,6 @@ projectSchema.set('toJSON', {
 
 projectSchema.index({ createdAt: -1 });
 projectSchema.index({ members: 1 });
+projectSchema.index({ status: 1, updatedAt: -1 });
 
 module.exports = mongoose.model('Project', projectSchema);

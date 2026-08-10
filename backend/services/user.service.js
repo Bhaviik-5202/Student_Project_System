@@ -194,9 +194,13 @@ exports.getAll = async (query = {}) => {
     if (query.role) filter.role = query.role;
     if (query.status) filter.status = query.status;
 
+    const limit = query.limit ? parseInt(query.limit, 10) : 0;
+    const select = query.select || '-password';
+
     const users = await userRepository.findAll(filter, {
       sort: { createdAt: -1 },
-      select: '-password',
+      limit,
+      select,
       lean: true,
     });
     return response(false, users, 'Users fetched successfully');

@@ -17,10 +17,14 @@ if (typeof dns.setDefaultResultOrder === 'function') {
   dns.setDefaultResultOrder('ipv4first');
 }
 
+let cachedTransporter = null;
+
 /**
- * Create a Nodemailer Transporter instance based on environment variables.
+ * Create or return a singleton Nodemailer Transporter instance with connection pooling.
  */
 function createSmtpTransporter() {
+  if (cachedTransporter) return cachedTransporter;
+
   const host =
     process.env.EMAIL_HOST || process.env.SMTP_HOST || 'smtp.gmail.com';
   const rawPort = process.env.EMAIL_PORT || process.env.SMTP_PORT;
@@ -41,12 +45,15 @@ function createSmtpTransporter() {
       ? rawSecure === 'true' || rawSecure === '1'
       : port === 465;
 
-  const timeoutMs = process.env.NODE_ENV === 'production' ? 3000 : 6000;
+  const timeoutMs = process.env.NODE_ENV === 'production' ? 4000 : 6000;
 
-  return nodemailer.createTransport({
+  cachedTransporter = nodemailer.createTransport({
     host,
     port,
     secure,
+    pool: true,
+    maxConnections: 5,
+    maxMessages: 100,
     family: 4,
     auth: { user, pass },
     connectionTimeout: timeoutMs,
@@ -56,6 +63,8 @@ function createSmtpTransporter() {
       rejectUnauthorized: false,
     },
   });
+
+  return cachedTransporter;
 }
 
 /**
