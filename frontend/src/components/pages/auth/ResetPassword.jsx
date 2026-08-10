@@ -1,5 +1,5 @@
 import { useState, memo, useCallback, useMemo } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import {
   Lock,
@@ -100,7 +100,9 @@ function RequirementRow({ met, label }) {
  * Phase 3: Success screen before redirecting to login
  */
 const ResetPassword = memo(() => {
-  const { token } = useParams();
+  const { token: routeToken } = useParams();
+  const [searchParams] = useSearchParams();
+  const token = routeToken || searchParams.get('token') || '';
   const navigate = useNavigate();
 
   const [password, setPassword] = useState('');

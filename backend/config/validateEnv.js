@@ -25,6 +25,20 @@ process.env.PORT = process.env.PORT || '5000';
 process.env.CORS_ORIGIN = process.env.CORS_ORIGIN || '*';
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
+// Ensure FRONTEND_URL is properly configured for reset password links
+if (!process.env.FRONTEND_URL) {
+  const firstCors =
+    process.env.CORS_ORIGIN && !process.env.CORS_ORIGIN.includes('*')
+      ? process.env.CORS_ORIGIN.split(',')[0].trim()
+      : null;
+  process.env.FRONTEND_URL =
+    process.env.CLIENT_URL ||
+    firstCors ||
+    (process.env.NODE_ENV === 'production'
+      ? 'https://student-project-system-beta.vercel.app'
+      : 'http://localhost:5173');
+}
+
 if (
   process.env.NODE_ENV === 'production' &&
   process.env.JWT_SECRET ===

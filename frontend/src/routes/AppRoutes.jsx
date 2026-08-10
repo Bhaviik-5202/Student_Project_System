@@ -271,6 +271,16 @@ const AppRoutes = () => {
           </PublicRoute>
         }
       />
+      <Route
+        path='/reset-password'
+        element={
+          <PublicRoute>
+            <AuthLayout>
+              <ResetPassword />
+            </AuthLayout>
+          </PublicRoute>
+        }
+      />
 
       {/* Public Pages accessible without login requirement */}
       <Route path='/privacy' element={<PrivacyPolicy />} />
