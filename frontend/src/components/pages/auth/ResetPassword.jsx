@@ -13,6 +13,8 @@ import {
   ArrowRight,
   LogIn,
   AlertTriangle,
+  CheckCircle2,
+  XCircle,
 } from 'lucide-react';
 import authService from '../../../services/authService';
 
