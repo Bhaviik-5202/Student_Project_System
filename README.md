@@ -1,106 +1,104 @@
 # 🎓 Student Project Management System
 
-![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
-![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
-![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)
-![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white)
-![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)
+![React](https://img.shields.io/badge/react-18.x-20232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![Vite](https://img.shields.io/badge/vite-5.x-646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/tailwindcss-3.x-06B6D4.svg?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![NodeJS](https://img.shields.io/badge/node.js-18.x-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
+![Express.js](https://img.shields.io/badge/express.js-4.x-404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)
+![MongoDB](https://img.shields.io/badge/MongoDB-6.x-4ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge)
 
-A full-stack, enterprise-grade application designed for universities and colleges to seamlessly manage academic student projects, guide allocations, project lifecycles, progress tracking, and administrative controls. Built with modern web technologies: **React 18**, **Node.js/Express**, and **MongoDB**.
+An enterprise-grade, full-stack web application designed for academic institutions to manage student project lifecycles, team allocations, faculty guide assignments, proposal evaluations, and administrative oversight. Built with **React 18**, **Node.js/Express**, and **MongoDB**.
 
 ---
 
-## 🌟 Overview & Key Modules
+## 🌟 Key Features & Architectural Innovations
 
-The Student Project Management System facilitates collaboration between Students, Faculty Supervisors (Guides), and System Administrators:
+### 🎓 End-to-End Student Academic Profile Flow
+- **Registration Integration**: Captures required **Department**, **Semester** (`Semester 1` .. `Semester 8`), and **Academic Year** (`2024-25`, `2025-26`, `2026-27`, `2027-28`) during Student signup.
+- **Dynamic Academic Options**: Serves active database department options via a public REST endpoint (`GET /api/v1/auth/academic-options`).
+- **OTP Verification Flow**: Preserves student academic details through email OTP verification.
+- **Academic Profile Visibility**: Renders Academic Year and Semester badges across the Student Directory, Admin User Management (`UserForm.jsx`), and Student Profile Settings (`Profile.jsx`).
 
-### 🛡️ Admin Module
-- **Dashboard & Analytics**: Comprehensive system-wide metrics, department distributions, and status summaries.
-- **User & Staff Management**: Complete CRUD controls for Student, Faculty, and Admin accounts.
-- **System Settings & Audit Logs**: System configuration parameters and security audit logging.
-- **Batch Operations & Backups**: Administrative batch actions and database snapshot backups.
+### ⚡ High-Performance Architecture
+- **Instant Signup Navigation (<200ms)**: Asynchronous background email dispatch enables instant UI navigation to the OTP verification screen.
+- **Singleton SMTP Transporter Pool**: Reuses Nodemailer transporter connections (`pool: true`) to eliminate TLS/SMTP handshake latency.
+- **Fast Admin Dashboard (<400ms)**: Query pagination (`limit: 5`) and projections prevent loading un-needed datasets on initial render.
+- **Compound MongoDB Indexing**: Optimized compound indexes on `User ({ role: 1, status: 1 })`, `User ({ createdAt: -1 })`, and `Project ({ status: 1, updatedAt: -1 })`.
+- **In-Memory Domain MX Cache**: Eliminates redundant 3-second DNS lookups during deliverability checks.
 
-### 👨‍🏫 Faculty (Guide) Module
-- **Mentorship Management**: Project proposal evaluation, guide allocation, and student assignment.
-- **Sprint & Milestone Tracking**: Progress monitoring, submission reviews, and feedback grading.
-- **Meeting Scheduler**: Meeting planning and calendar integration.
-
-### 🎓 Student Module
-- **Project Proposals**: Proposal submission, group formation, and architecture specification.
-- **Collaboration**: Milestone updates, document uploads, and meeting tracking.
-- **Resource Center**: Document libraries, project templates, and tutorial guides.
-
-### 📱 System & UI Architecture
-- **Premium Responsive Design**: Glassmorphic UI tailored for both Desktop and Mobile experiences with seamless native-app layouts on small screens.
-- **Dynamic Feedback**: Real-time toast notifications, animated skeleton loaders, and intuitive visual cues.
+### 🎨 Responsive & Accessible UI System
+- **Dark & Light Mode Support**: Glassmorphic styling with smooth theme transitions.
+- **Smart Floating Controls**: Adaptive `BackToTop` button with intelligent viewport intersection and footer/bottom-nav clearance logic.
+- **Mobile Bottom Navigation**: Native app experience on smaller devices.
 
 ---
 
-## 👥 Default User Roles
+## 👥 User Roles & Access Control (RBAC)
 
-1. **Admin (`admin`)**: Complete system access, user management, system configuration, audit logs, and reports.
-2. **Faculty (`faculty`)**: Mentorship tools, project reviews, student guide allocations, and meeting management.
-3. **Student (`student`)**: Project creation, proposal tracking, milestone submissions, and resource access.
+1. **Admin (`admin`)**: Complete system administration, user management, audit logs, system configuration, backup/restore operations, and high-level analytics.
+2. **Faculty (`faculty`)**: Proposal reviews, guide & co-guide allocations, sprint evaluations, student project tracking, and meeting scheduling.
+3. **Student (`student`)**: Account registration with academic details, project proposal submissions, group allocation, milestone tracking, and document resources.
 
 ---
 
 ## 🛠️ Technology Stack
 
-- **Frontend**: React 18, Vite, Vanilla CSS Design System, React Router DOM v7, Axios, Lucide React, Recharts
-- **Backend**: Node.js, Express.js (v5), Mongoose ODM, JWT, bcrypt, helmet, express-validator, Winston
-- **Database**: MongoDB with Mongoose Schema validation & Indexing
+- **Frontend**: React 18.2, Vite 5, TailwindCSS 3, Framer Motion 10, Recharts 2, Lucide Icons, Axios, React Hot Toast
+- **Backend**: Node.js 18, Express 4, Mongoose ODM 8, JWT, Bcrypt, Helmet, Express Rate Limit, Nodemailer, Winston
+- **Database**: MongoDB (Local or Atlas) with Schema Validation & Compound Indexes
+- **Testing**: Mocha, Chai, Supertest (40/40 Passing Integration Tests), ESLint (0 errors)
 
 ---
 
-## 📁 Repository Folder Structure
+## 📁 Repository Structure
 
 ```text
 Student Project System/
 ├── backend/                  # Node.js & Express REST API Server
 │   ├── config/               # Database and Swagger configuration
-│   ├── controllers/          # HTTP Request Controllers
+│   ├── controllers/          # Request handlers & validation
 │   ├── middleware/           # Auth JWT, Role RBAC, Validator, Error Handler
-│   ├── models/               # Mongoose DB Schemas
-│   ├── repositories/         # Data Access Layer
+│   ├── models/               # Mongoose DB Schemas & Indexes
+│   ├── repositories/         # Data Access Layer Abstractions
 │   ├── routes/               # Express Route Definitions (/api/v1/...)
-│   ├── services/             # Business Logic Layer
-│   ├── tests/                # Mocha & Chai Integration Tests
-│   └── utils/                # Logger, Response Formatters, Email Helpers
+│   ├── services/             # Core Business Logic Layer
+│   ├── tests/                # Automated Integration Tests (Mocha/Chai)
+│   ├── utils/                # Singleton Email Pool, Logger, Response Formatters
+│   ├── ARCHITECTURE.md       # High-level architecture documentation
+│   ├── STRUCTURE.md          # Detailed folder breakdown
+│   └── README.md             # Backend API Service documentation
 ├── frontend/                 # React 18 Single Page Application (Vite)
 │   ├── src/
-│   │   ├── assets/           # Global styles and static media
+│   │   ├── assets/           # Media assets and logos
 │   │   ├── components/       # Common, Layout, Pages, and UI Components
-│   │   ├── context/          # AuthContext, ThemeContext, NotificationContext
-│   │   ├── hooks/            # Custom Hooks (useProjects, useAuth, etc.)
-│   │   ├── routes/           # Protected and Public Router Configuration
-│   │   ├── services/         # Axios API Services
-│   │   └── utils/            # Toast and Helper utilities
-├── .gitignore                # Global Git Ignore Specification
-├── README.md                 # Project Overview & Quick Start
+│   │   ├── context/          # AuthContext and ThemeContext
+│   │   ├── hooks/            # Custom React hooks (useProjects, useAuth)
+│   │   ├── services/         # Axios API Service Modules
+│   │   └── utils/            # Toast and API instance helpers
+│   └── README.md             # Frontend Single Page App documentation
+├── README.md                 # Project Overview & High-Level Guide
 ├── INSTALL.md                # Local Development Installation Guide
 ├── DEPLOYMENT.md             # Production Deployment Guide
-├── CHANGELOG.md              # Version History
+├── CHANGELOG.md              # Version & Release History
 ├── CONTRIBUTING.md           # Contribution Guidelines
 └── LICENSE                   # MIT License
 ```
 
 ---
 
-## 🌐 API Endpoint Overview
+## 🌐 Key API Endpoints
 
-| Base Endpoint | Method | Role Access | Description |
+| Endpoint | Method | Access | Description |
 | :--- | :--- | :--- | :--- |
-| `/api/v1/auth/register` | POST | Public | User Registration |
-| `/api/v1/auth/login` | POST | Public | User Authentication & JWT Issuance |
+| `/api/v1/auth/register` | POST | Public | Register Student (requires Department, Semester, Academic Year) |
+| `/api/v1/auth/verify-otp` | POST | Public | Verify 6-digit OTP code & activate account |
+| `/api/v1/auth/login` | POST | Public | Authenticate user & return JWT token |
+| `/api/v1/auth/academic-options` | POST/GET | Public | Fetch dynamic departments, semesters, and academic years |
+| `/api/v1/users?limit=5` | GET | Admin | Paginated list of user accounts |
 | `/api/v1/projects` | GET / POST | Authenticated | List / Create Academic Projects |
-| `/api/v1/projects/:id` | GET / PUT / DELETE | Authenticated | Retrieve / Modify / Delete Project |
-| `/api/v1/students` | GET | Admin, Faculty | List Student Academic Profiles |
-| `/api/v1/staff` | GET / POST | Admin | Manage Faculty & Staff Profiles |
-| `/api/v1/meetings` | GET / POST | Authenticated | Schedule & View Meetings |
-| `/api/v1/resources` | GET / POST | Authenticated | Access Document Library & Templates |
-| `/api/v1/analytics` | GET | Admin | System Analytics & Metrics |
-| `/api/v1/auditlogs` | GET | Admin | System Security Audit Trail |
+| `/api/v1/analytics/dashboard` | GET | Admin | Aggregate dashboard metrics (<400ms load time) |
+| `/api/v1/admin/backups` | GET / POST | Admin | List & trigger manual database backups |
 
 ---
 
@@ -126,18 +124,15 @@ npm run dev
 
 ---
 
-## 🧪 Verification & Build
+## 🧪 Automated Testing & QA
 
-To run the frontend production build validation:
-
+Run frontend linting:
 ```bash
 cd frontend
 npm run lint
-npm run build
 ```
 
-To run backend integration tests:
-
+Run backend integration tests:
 ```bash
 cd backend
 npm test
@@ -145,8 +140,12 @@ npm test
 
 ---
 
-## 📄 License & Documentation
+## 📄 Documentation Links
 
+- [Frontend README](frontend/README.md)
+- [Backend README](backend/README.md)
+- [Backend Architecture](backend/ARCHITECTURE.md)
+- [Backend Folder Structure](backend/STRUCTURE.md)
 - [Installation Guide](INSTALL.md)
 - [Deployment Guide](DEPLOYMENT.md)
 - [Changelog](CHANGELOG.md)

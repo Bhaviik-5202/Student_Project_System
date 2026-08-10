@@ -1,17 +1,17 @@
-# 📦 Installation Guide
+# 📦 Local Development & Installation Guide
 
-This guide provides step-by-step instructions for setting up the **Student Project Management System** locally for development and testing.
+This guide provides step-by-step instructions for setting up the **Student Project Management System** locally for development, testing, and evaluation.
 
 ---
 
 ## 📋 Prerequisites
 
-Before starting, ensure you have installed:
+Ensure you have installed:
 
 - **Node.js**: `v18.0.0` or higher
 - **npm**: `v9.0.0` or higher
-- **MongoDB**: Local MongoDB instance (`mongodb://localhost:27017`) or a MongoDB Atlas cloud URI.
-- **Git**: For cloning the repository.
+- **MongoDB**: Local MongoDB server (`mongodb://localhost:27017`) or MongoDB Atlas cloud URI
+- **Git**: For cloning the repository
 
 ---
 
@@ -20,52 +20,60 @@ Before starting, ensure you have installed:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/student-project-management-system.git
-cd student-project-management-system
+git clone https://github.com/Bhaviik-5202/Student_Project_System.git
+cd Student_Project_System
 ```
 
 ---
 
-### 2. Backend Setup
+### 2. Backend API Setup
 
 ```bash
-# Navigate to backend directory
+# Navigate to the backend directory
 cd backend
 
 # Install dependencies
 npm install
 
-# Create environment configuration file
+# Copy environment configuration
 cp .env.example .env
 ```
 
-Open `.env` in your text editor and configure:
+Open `.env` in your text editor and fill in your local settings:
 
 ```env
 PORT=5000
 NODE_ENV=development
-MONGO_URI=mongodb://localhost:27017/student_project_system
+MONGODB_URI=mongodb://localhost:27017/student_project_db
 JWT_SECRET=your_super_secret_jwt_key_here
 JWT_EXPIRES_IN=1d
 CORS_ORIGIN=http://localhost:5173
+
+# Email Transport (Nodemailer SMTP / Brevo / Resend)
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=465
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_app_password
+FROM_EMAIL=no-reply@studentproject.edu
+FROM_NAME=Student Project System
 ```
 
 ---
 
-### 3. Frontend Setup
+### 3. Frontend SPA Setup
 
 ```bash
-# Open a new terminal window and navigate to frontend directory
+# In a new terminal window, navigate to the frontend directory
 cd frontend
 
 # Install dependencies
 npm install
 
-# Create environment configuration file
+# Copy environment configuration
 cp .env.example .env
 ```
 
-Open `.env` in your text editor and configure:
+Open `.env` in your text editor and set:
 
 ```env
 VITE_API_URL=http://localhost:5000/api/v1
@@ -73,53 +81,51 @@ VITE_API_URL=http://localhost:5000/api/v1
 
 ---
 
-### 4. Running the Application
+### 4. Running the Development Applications
 
-#### Start the Backend Server:
-
+#### Start Backend API Server:
 ```bash
 cd backend
 npm run dev
-# Server starts on http://localhost:5000
 ```
+*API Server starts at `http://localhost:5000` (Swagger UI at `http://localhost:5000/api-docs`)*
 
-#### Start the Frontend Client:
-
+#### Start Frontend Client:
 ```bash
 cd frontend
 npm run dev
-# Client starts on http://localhost:5173
 ```
+*Web Client starts at `http://localhost:5173`*
 
 ---
 
-## 🧪 Running Tests
+## 🧪 Quality Assurance & Test Verification
 
-To run integration tests on the backend API:
-
+### Run Backend Integration Tests (Mocha / Chai / Supertest)
 ```bash
 cd backend
 npm test
 ```
+*Executes all 40 automated backend integration test cases.*
 
-To run linting checks on the frontend client:
-
+### Run Frontend ESLint Checks
 ```bash
 cd frontend
 npm run lint
 ```
+*Ensures 0 syntax errors or warnings.*
 
-To test the production build:
-
+### Test Frontend Production Build
 ```bash
 cd frontend
 npm run build
+npm run preview
 ```
 
 ---
 
 ## ❓ Troubleshooting Common Setup Issues
 
-- **MongoDB Connection Failed**: Verify MongoDB service is running locally (`mongod`) or check network firewall settings if using MongoDB Atlas.
-- **CORS Error**: Ensure `CORS_ORIGIN` in `backend/.env` matches your frontend dev URL (e.g. `http://localhost:5173`).
-- **Port Conflict**: Change `PORT` in `backend/.env` if port 5000 is occupied.
+- **MongoDB Connection Error**: Check if MongoDB service is running locally (`mongod`) or verify network access/IP whitelist on MongoDB Atlas.
+- **CORS Blocked**: Confirm `CORS_ORIGIN` in `backend/.env` matches your frontend origin (e.g. `http://localhost:5173`).
+- **SMTP Authentication Failed**: Generate an App Password in your Google Account security settings if using Gmail SMTP, or use Brevo/Resend API keys.
