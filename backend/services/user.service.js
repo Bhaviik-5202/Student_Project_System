@@ -531,8 +531,8 @@ exports.forgotPassword = async (email) => {
       existingUser.resetPasswordToken &&
       existingUser.resetPasswordExpires &&
       existingUser.resetPasswordExpires >
-        Date.now() +
-          ((Number(process.env.RESET_TOKEN_EXPIRES_MS) || 1800000) - 60000)
+      Date.now() +
+      ((Number(process.env.RESET_TOKEN_EXPIRES_MS) || 1800000) - 60000)
     ) {
       return response(false, null, GENERIC_MSG);
     }
@@ -559,18 +559,12 @@ exports.forgotPassword = async (email) => {
         ? process.env.CORS_ORIGIN.split(',')[0].trim()
         : '');
 
-    if (process.env.NODE_ENV === 'production') {
-      if (
-        !targetFrontendUrl ||
-        targetFrontendUrl.includes('localhost') ||
-        targetFrontendUrl.includes('127.0.0.1')
-      ) {
-        targetFrontendUrl = 'https://student-project-system-beta.vercel.app';
-      }
-    } else {
-      if (!targetFrontendUrl || targetFrontendUrl.includes('localhost:3000')) {
-        targetFrontendUrl = 'http://localhost:5000';
-      }
+    if (
+      !targetFrontendUrl ||
+      targetFrontendUrl.includes('localhost') ||
+      targetFrontendUrl.includes('127.0.0.1')
+    ) {
+      targetFrontendUrl = 'https://student-project-system-beta.vercel.app';
     }
 
     const frontendUrl = targetFrontendUrl.replace(/\/$/, '');

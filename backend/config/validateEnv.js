@@ -26,24 +26,16 @@ process.env.CORS_ORIGIN = process.env.CORS_ORIGIN || '*';
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 // Ensure FRONTEND_URL is properly configured for reset password links
-const isProd = process.env.NODE_ENV === 'production';
 let frontendUrl = process.env.FRONTEND_URL || process.env.CLIENT_URL;
 
-if (isProd) {
-  if (!frontendUrl || frontendUrl.includes('localhost') || frontendUrl.includes('127.0.0.1')) {
-    frontendUrl = 'https://student-project-system-beta.vercel.app';
-  }
-} else {
-  if (!frontendUrl || frontendUrl.includes('localhost:3000')) {
-    // Vite frontend defaults to 5000 or 5173
-    frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5000';
-  }
+if (!frontendUrl || frontendUrl.includes('localhost') || frontendUrl.includes('127.0.0.1')) {
+  frontendUrl = 'https://student-project-system-beta.vercel.app';
 }
 
 process.env.FRONTEND_URL = frontendUrl.replace(/\/$/, '');
 
 if (
-  isProd &&
+  process.env.NODE_ENV === 'production' &&
   process.env.JWT_SECRET ===
     'dev-secret-key-student-project-management-system-2026'
 ) {
