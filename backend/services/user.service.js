@@ -552,16 +552,28 @@ exports.forgotPassword = async (email) => {
     });
 
     // --- Build reset URL ---
-    const rawFrontendUrl =
+    let targetFrontendUrl =
       process.env.FRONTEND_URL ||
       process.env.CLIENT_URL ||
       (process.env.CORS_ORIGIN && !process.env.CORS_ORIGIN.includes('*')
         ? process.env.CORS_ORIGIN.split(',')[0].trim()
-        : '') ||
-      (process.env.NODE_ENV === 'production'
-        ? 'https://student-project-system-beta.vercel.app'
-        : 'http://localhost:5173');
-    const frontendUrl = rawFrontendUrl.replace(/\/$/, '');
+        : '');
+
+    if (process.env.NODE_ENV === 'production') {
+      if (
+        !targetFrontendUrl ||
+        targetFrontendUrl.includes('localhost') ||
+        targetFrontendUrl.includes('127.0.0.1')
+      ) {
+        targetFrontendUrl = 'https://student-project-system-beta.vercel.app';
+      }
+    } else {
+      if (!targetFrontendUrl || targetFrontendUrl.includes('localhost:3000')) {
+        targetFrontendUrl = 'http://localhost:5000';
+      }
+    }
+
+    const frontendUrl = targetFrontendUrl.replace(/\/$/, '');
     const resetUrl = `${frontendUrl}/reset-password/${resetToken}`;
     const expiryMinutes = Math.round(expiresMs / 60000);
 
