@@ -90,7 +90,7 @@ async function isEmailDeliverable(email) {
  */
 exports.register = async (req, res) => {
   try {
-    const { name, email, password, role = 'student' } = req.body;
+    const { name, email, password, role = 'student', department, semester, academicYear } = req.body;
 
     const requestedRole = String(role || 'student')
       .toLowerCase()
@@ -110,9 +110,23 @@ exports.register = async (req, res) => {
     if (!name || !email || !password) {
       return sendResponse(
         res,
-        { success: false, message: 'All fields are required' },
+        { success: false, message: 'All required fields must be provided' },
         400
       );
+    }
+
+    if (requestedRole === 'student') {
+      if (!department || !semester || !academicYear) {
+        return sendResponse(
+          res,
+          {
+            success: false,
+            message: 'Department, Semester, and Academic Year are required for Student signup.',
+            error: 'Validation error',
+          },
+          400
+        );
+      }
     }
 
     const emailRegex = /^\S+@\S+\.\S+$/;
@@ -182,6 +196,9 @@ exports.register = async (req, res) => {
         name,
         password: encryptedPassword,
         role: role || 'student',
+        department,
+        semester,
+        academicYear,
         otp,
         expiresAt,
         resendCount: 0,
@@ -795,6 +812,9 @@ exports.verifyOtp = async (req, res) => {
       email: pending.email,
       password: decryptedPassword,
       role: pending.role || 'student',
+      department: pending.department,
+      semester: pending.semester,
+      academicYear: pending.academicYear,
     });
 
     if (result.error) {
@@ -979,3 +999,75 @@ exports.resendOtp = async (req, res) => {
     );
   }
 };
+
+/**
+ * Get dynamic Academic Options for registration (Departments, Semesters, Academic Years)
+ * @route   GET /api/v1/auth/academic-options
+ * @access  Public
+ */
+exports.getAcademicOptions = async (req, res) => {
+  try {
+    const ProjectType = require('../models/projectType.model');
+    const Project = require('../models/project.model');
+
+    const [projects, projectTypes] = await Promise.all([
+      Project.find({}).select('department').lean(),
+      ProjectType.find({ status: 'Active' }).select('department').lean(),
+    ]);
+
+    const deptSet = new Set([
+      'Computer Engineering',
+      'Information Technology',
+      'Electronics & Communication',
+      'Mechanical Engineering',
+      'Civil Engineering',
+      'Electrical Engineering',
+      'AI & Data Science',
+    ]);
+
+    projects.forEach((p) => {
+      if (p.department && p.department.trim()) deptSet.add(p.department.trim());
+    });
+    projectTypes.forEach((pt) => {
+      if (pt.department && pt.department.trim()) deptSet.add(pt.department.trim());
+    });
+
+    const departments = Array.from(deptSet).sort();
+    const semesters = [
+      'Semester 1',
+      'Semester 2',
+      'Semester 3',
+      'Semester 4',
+      'Semester 5',
+      'Semester 6',
+      'Semester 7',
+      'Semester 8',
+    ];
+    const academicYears = ['2024-25', '2025-26', '2026-27', '2027-28'];
+
+    sendResponse(
+      res,
+      {
+        success: true,
+        message: 'Academic options retrieved successfully',
+        data: {
+          departments,
+          semesters,
+          academicYears,
+        },
+      },
+      200
+    );
+  } catch (error) {
+    sendResponse(
+      res,
+      {
+        success: false,
+        message: 'Failed to retrieve academic options',
+        error: error.message,
+      },
+      500
+    );
+  }
+};
+

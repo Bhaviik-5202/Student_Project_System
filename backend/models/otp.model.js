@@ -31,6 +31,18 @@ const otpSchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
     },
+    department: {
+      type: String,
+      trim: true,
+    },
+    semester: {
+      type: String,
+      trim: true,
+    },
+    academicYear: {
+      type: String,
+      trim: true,
+    },
     otp: {
       type: String,
       required: [true, 'OTP is required'],

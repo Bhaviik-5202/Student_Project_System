@@ -42,6 +42,13 @@ router.post(
 );
 
 /**
+ * @route   GET /api/v1/auth/academic-options
+ * @desc    Get dynamic academic options (Departments, Semesters, Academic Years)
+ * @access  Public
+ */
+router.get('/academic-options', authController.getAcademicOptions);
+
+/**
  * @route   POST /api/v1/auth/validate-email
  * @desc    Validate email availability and MX records
  * @access  Public

@@ -69,6 +69,8 @@ exports.register = async ({
       password,
       role: finalRole,
       department: cleanDepartment,
+      semester: semester || 'Sem 1',
+      academicYear: academicYear || '2024-25',
       phone: phone || '',
     };
 
@@ -89,6 +91,8 @@ exports.register = async ({
         rollNumber: userData.rollNumber,
         enrollmentNumber: userData.enrollmentNumber,
         department: cleanDepartment,
+        semester: userData.semester,
+        academicYear: userData.academicYear,
         year: 1,
         phone: phone || '',
         status: 'Active',
@@ -257,6 +261,8 @@ exports.create = async (data) => {
         rollNumber: user.rollNumber,
         enrollmentNumber: user.enrollmentNumber,
         department: cleanDepartment,
+        semester: user.semester || 'Sem 1',
+        academicYear: user.academicYear || '2024-25',
         year: Number(user.year) || 1,
         phone: user.phone || '',
         status: user.status === 'active' ? 'Active' : 'Inactive',
@@ -375,6 +381,9 @@ exports.update = async (id, data) => {
           name: user.name,
           email: user.email,
           department: user.department,
+          semester: user.semester,
+          academicYear: user.academicYear,
+          year: Number(user.year) || 1,
           phone: user.phone || '',
           status:
             user.status === 'active' || user.status === 'Active'

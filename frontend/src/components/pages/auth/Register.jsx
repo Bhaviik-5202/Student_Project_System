@@ -1,4 +1,4 @@
-import { useState, memo, useCallback, useMemo } from 'react';
+import { useState, memo, useCallback, useMemo, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
@@ -9,9 +9,13 @@ import {
   EyeOff,
   GraduationCap,
   UserCheck,
+  Building,
+  Calendar,
+  BookOpen,
 } from 'lucide-react';
 import { useAuth } from '../../../hooks/useAuth';
 import { VALIDATION_RULES } from '../../../utils/constants';
+import api from '../../../utils/api';
 
 /**
  * Register Component - Account creation form
@@ -25,12 +29,63 @@ const Register = memo(() => {
     password: '',
     confirmPassword: '',
     role: 'student',
+    department: '',
+    semester: '',
+    academicYear: '',
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [academicOptions, setAcademicOptions] = useState({
+    departments: [
+      'Computer Engineering',
+      'Information Technology',
+      'Electronics & Communication',
+      'Mechanical Engineering',
+      'Civil Engineering',
+      'Electrical Engineering',
+      'AI & Data Science',
+    ],
+    semesters: [
+      'Semester 1',
+      'Semester 2',
+      'Semester 3',
+      'Semester 4',
+      'Semester 5',
+      'Semester 6',
+      'Semester 7',
+      'Semester 8',
+    ],
+    academicYears: ['2024-25', '2025-26', '2026-27', '2027-28'],
+  });
+  const [optionsLoading, setOptionsLoading] = useState(false);
 
   const { register, isLoading: loading } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchOptions = async () => {
+      try {
+        setOptionsLoading(true);
+        const res = await api.get('/auth/academic-options');
+        if (isMounted && res && res.data) {
+          setAcademicOptions({
+            departments: res.data.departments || academicOptions.departments,
+            semesters: res.data.semesters || academicOptions.semesters,
+            academicYears: res.data.academicYears || academicOptions.academicYears,
+          });
+        }
+      } catch (err) {
+        console.warn('Academic options fallback in use:', err.message);
+      } finally {
+        if (isMounted) setOptionsLoading(false);
+      }
+    };
+    fetchOptions();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Calculate password check states dynamically
   const passwordChecks = useMemo(() => {
@@ -89,6 +144,21 @@ const Register = memo(() => {
         return;
       }
 
+      if (formData.role === 'student') {
+        if (!formData.department) {
+          toast.error('Please select your Department');
+          return;
+        }
+        if (!formData.semester) {
+          toast.error('Please select your Semester');
+          return;
+        }
+        if (!formData.academicYear) {
+          toast.error('Please select your Academic Year');
+          return;
+        }
+      }
+
       if (!isPasswordValid) {
         toast.error('Password does not meet all security requirements');
         return;
@@ -100,12 +170,17 @@ const Register = memo(() => {
       }
 
       try {
-        const res = await register({
+        const payload = {
           name: formData.name.trim(),
           email: formData.email.trim(),
           password: formData.password,
           role: 'student',
-        });
+          department: formData.department,
+          semester: formData.semester,
+          academicYear: formData.academicYear,
+        };
+
+        const res = await register(payload);
 
         if (res && res.success) {
           toast.success(
@@ -407,6 +482,77 @@ const Register = memo(() => {
             placeholder='darshan@university.edu'
           />
         </motion.div>
+
+        {/* Academic Profile Details for Student Signup */}
+        {formData.role === 'student' && (
+          <motion.div variants={itemVariants} className='space-y-4'>
+            {/* Department Selection */}
+            <div className='group'>
+              <label className='auth-label'>
+                Department <span className='text-rose-500'>*</span>
+              </label>
+              <select
+                name='department'
+                required
+                value={formData.department}
+                onChange={handleChange}
+                className='auth-input cursor-pointer'
+              >
+                <option value=''>[ Select Department ]</option>
+                {academicOptions.departments.map((dept) => (
+                  <option key={dept} value={dept}>
+                    {dept}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Semester & Academic Year 2-Column Responsive Grid */}
+            <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+              {/* Semester Selection */}
+              <div className='group'>
+                <label className='auth-label'>
+                  Semester <span className='text-rose-500'>*</span>
+                </label>
+                <select
+                  name='semester'
+                  required
+                  value={formData.semester}
+                  onChange={handleChange}
+                  className='auth-input cursor-pointer'
+                >
+                  <option value=''>[ Select Semester ]</option>
+                  {academicOptions.semesters.map((sem) => (
+                    <option key={sem} value={sem}>
+                      {sem}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Academic Year Selection */}
+              <div className='group'>
+                <label className='auth-label'>
+                  Academic Year <span className='text-rose-500'>*</span>
+                </label>
+                <select
+                  name='academicYear'
+                  required
+                  value={formData.academicYear}
+                  onChange={handleChange}
+                  className='auth-input cursor-pointer'
+                >
+                  <option value=''>[ Select Year ]</option>
+                  {academicOptions.academicYears.map((yr) => (
+                    <option key={yr} value={yr}>
+                      {yr}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </motion.div>
+        )}
 
         {/* Password Input - Separate line */}
         <motion.div variants={itemVariants} className='group'>

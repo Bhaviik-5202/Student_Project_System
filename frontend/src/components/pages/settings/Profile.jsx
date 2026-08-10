@@ -84,6 +84,8 @@ const Profile = memo(() => {
       email: currentUser.email || '',
       phone: currentUser.phone || '',
       department: currentUser.department || '',
+      semester: currentUser.semester || '',
+      academicYear: currentUser.academicYear || '',
       year: currentUser.year || '',
       bio: currentUser.bio || '',
       avatar: currentUser.avatar || null,
@@ -363,19 +365,34 @@ const Profile = memo(() => {
                   />
                 </div>
                 {user.role === 'student' && (
-                  <div>
-                    <label className='mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300'>
-                      Year
-                    </label>
-                    <input
-                      type='text'
-                      name='year'
-                      value={formData.year}
-                      onChange={handleChange}
-                      disabled={!isEditing || isLoading}
-                      className={`${inputBase} ${isEditing ? inputEnabled : inputDisabled}`}
-                    />
-                  </div>
+                  <>
+                    <div>
+                      <label className='mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300'>
+                        Semester
+                      </label>
+                      <input
+                        type='text'
+                        name='semester'
+                        value={formData.semester}
+                        onChange={handleChange}
+                        disabled={!isEditing || isLoading}
+                        className={`${inputBase} ${isEditing ? inputEnabled : inputDisabled}`}
+                      />
+                    </div>
+                    <div>
+                      <label className='mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300'>
+                        Academic Year
+                      </label>
+                      <input
+                        type='text'
+                        name='academicYear'
+                        value={formData.academicYear}
+                        onChange={handleChange}
+                        disabled={!isEditing || isLoading}
+                        className={`${inputBase} ${isEditing ? inputEnabled : inputDisabled}`}
+                      />
+                    </div>
+                  </>
                 )}
               </div>
               <div>

@@ -71,7 +71,7 @@ const MobileStudentCard = memo(({ student, onEdit, onDelete, userRole }) => (
         </span>
       </div>
       <div className='flex items-center justify-between mt-1'>
-        <div className='flex items-center gap-1.5'>
+        <div className='flex items-center gap-1.5 flex-wrap'>
           <span className='rounded-md bg-white px-2 py-1 text-[10px] font-bold text-slate-600 shadow-sm dark:bg-slate-700 dark:text-slate-300'>
             {student.semester
               ? student.semester.startsWith('Sem')
@@ -79,8 +79,8 @@ const MobileStudentCard = memo(({ student, onEdit, onDelete, userRole }) => (
                 : `Sem ${student.semester}`
               : 'Sem 1'}
           </span>
-          <span className='rounded-md bg-white px-2 py-1 text-[10px] font-bold text-slate-600 shadow-sm dark:bg-slate-700 dark:text-slate-300'>
-            Year {student.year || 1}
+          <span className='rounded-md bg-white px-2 py-1 text-[10px] font-bold text-indigo-600 shadow-sm dark:bg-slate-700 dark:text-indigo-400'>
+            {student.academicYear || '2024-25'}
           </span>
         </div>
         {userRole === 'admin' && (
@@ -158,7 +158,7 @@ const StudentRow = memo(({ student, onEdit, onDelete, userRole }) => (
       </div>
     </td>
 
-    {/* Semester / Year */}
+    {/* Semester / Academic Year */}
     <td className='whitespace-nowrap px-6 py-4'>
       <div className='flex flex-col gap-0.5'>
         <span className='text-xs font-bold text-slate-800 dark:text-slate-200'>
@@ -168,8 +168,8 @@ const StudentRow = memo(({ student, onEdit, onDelete, userRole }) => (
               : `Sem ${student.semester}`
             : 'Sem 1'}
         </span>
-        <span className='text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 dark:text-slate-400'>
-          Year {student.year || 1}
+        <span className='text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider'>
+          {student.academicYear || '2024-25'}
         </span>
       </div>
     </td>
@@ -273,6 +273,7 @@ const StudentsList = memo(() => {
             enrollmentNumber: student.enrollmentNumber || '',
             department: student.department,
             semester: student.semester || '',
+            academicYear: student.academicYear || '',
             year: student.year,
             email: student.email,
             phone: student.phone || '',

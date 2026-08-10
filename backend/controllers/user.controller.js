@@ -37,6 +37,21 @@ exports.createUser = async (req, res) => {
       );
     }
 
+    const { role = 'student', department, semester, academicYear } = req.body;
+    if (role === 'student') {
+      if (!department || !semester || !academicYear) {
+        return sendResponse(
+          res,
+          {
+            success: false,
+            message: 'Department, Semester, and Academic Year are required for Student accounts.',
+            error: 'Validation error',
+          },
+          400
+        );
+      }
+    }
+
     const result = await userService.create(req.body);
 
     if (!result.error && result.data) {

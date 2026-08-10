@@ -33,6 +33,8 @@ const UserForm = () => {
     confirmPassword: '',
     role: 'student',
     department: 'Computer Engineering',
+    semester: 'Sem 1',
+    academicYear: '2024-25',
     status: 'active',
     phone: '',
     avatar: '',
@@ -79,6 +81,8 @@ const UserForm = () => {
           confirmPassword: '',
           role: userData.role || 'student',
           department: userData.department || 'Computer Engineering',
+          semester: userData.semester || 'Sem 1',
+          academicYear: userData.academicYear || '2024-25',
           status: (userData.status || 'active').toLowerCase(),
           phone: userData.phone || '',
           avatar: userData.avatar || '',
@@ -123,6 +127,13 @@ const UserForm = () => {
       return;
     }
 
+    if (formData.role === 'student') {
+      if (!formData.department || !formData.semester || !formData.academicYear) {
+        toast.error('Department, Semester, and Academic Year are required for Student accounts');
+        return;
+      }
+    }
+
     if (!isEditMode && !formData.password) {
       toast.error('Password is required for new users');
       return;
@@ -146,6 +157,8 @@ const UserForm = () => {
         email: formData.email.trim().toLowerCase(),
         role: formData.role,
         department: formData.department,
+        semester: formData.semester,
+        academicYear: formData.academicYear,
         status: formData.status,
         phone: formData.phone.trim(),
         avatar: formData.avatar.trim() || null,
@@ -355,6 +368,51 @@ const UserForm = () => {
                 </div>
               </div>
             </div>
+
+            {/* Student Specific Fields: Semester and Academic Year */}
+            {formData.role === 'student' && (
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-6 p-4 rounded-xl border border-indigo-100 dark:border-indigo-900/40 bg-indigo-50/40 dark:bg-indigo-950/20'>
+                <div>
+                  <label className='mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300'>
+                    Semester <span className='text-red-500'>*</span>
+                  </label>
+                  <select
+                    name='semester'
+                    required
+                    className='w-full appearance-none rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none transition focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500'
+                    value={formData.semester}
+                    onChange={handleChange}
+                  >
+                    <option value=''>[ Select Semester ]</option>
+                    {['Semester 1', 'Semester 2', 'Semester 3', 'Semester 4', 'Semester 5', 'Semester 6', 'Semester 7', 'Semester 8', 'Sem 1', 'Sem 2', 'Sem 3', 'Sem 4', 'Sem 5', 'Sem 6', 'Sem 7', 'Sem 8'].map((sem) => (
+                      <option key={sem} value={sem}>
+                        {sem}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className='mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300'>
+                    Academic Year <span className='text-red-500'>*</span>
+                  </label>
+                  <select
+                    name='academicYear'
+                    required
+                    className='w-full appearance-none rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-2.5 text-sm text-slate-900 dark:text-slate-100 outline-none transition focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500'
+                    value={formData.academicYear}
+                    onChange={handleChange}
+                  >
+                    <option value=''>[ Select Academic Year ]</option>
+                    {['2024-25', '2025-26', '2026-27', '2027-28'].map((yr) => (
+                      <option key={yr} value={yr}>
+                        {yr}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            )}
 
             {/* Contact & Avatar */}
             <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>

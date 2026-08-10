@@ -78,6 +78,11 @@ const userSchema = new mongoose.Schema(
       trim: true,
       default: 'Sem 1',
     },
+    academicYear: {
+      type: String,
+      trim: true,
+      default: '2024-25',
+    },
     rollNumber: {
       type: String,
       unique: true,
