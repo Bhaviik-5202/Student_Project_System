@@ -46,6 +46,8 @@ exports.register = async ({
   password,
   role = 'student',
   department,
+  semester,
+  academicYear,
   phone,
 }) => {
   try {

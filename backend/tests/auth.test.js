@@ -15,6 +15,9 @@ describe('Authentication API', function () {
     email: `authtest+${Date.now()}@example.com`,
     password: 'testpass123',
     role: 'student',
+    department: 'Computer Engineering',
+    semester: 'Sem 1',
+    academicYear: '2024-25',
     bypassOTP: true,
   };
 

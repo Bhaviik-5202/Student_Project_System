@@ -177,7 +177,7 @@ exports.register = async (req, res) => {
         {
           success: !result.error,
           message: result.error
-            ? 'Registration failed'
+            ? result.message || 'Registration failed'
             : 'User registered successfully',
           data: result.data || null,
           error: result.error || null,
